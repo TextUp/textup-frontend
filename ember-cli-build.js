@@ -25,6 +25,8 @@ module.exports = function(defaults) {
     // please specify an object with the list of modules as keys
     // along with the exports of each module as its value.
 
+    // font-awesome is imported by ember-cli-notifications (see environment.js)
+
     app.import(app.bowerDirectory + "/elessar/dist/elessar.min.js");
     app.import(app.bowerDirectory + "/elessar/elessar.css");
 

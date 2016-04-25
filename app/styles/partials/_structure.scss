@@ -31,6 +31,7 @@ hr {
 	z-index: $body-z-index;
 
 	.content, .details {
+		@extend %border-box;
 		width: 100%;
 	}
 	.content {
@@ -112,7 +113,6 @@ hr {
 @include mq($from: tablet) { // split screen view
 	#body {
 		.content, .details {
-			@extend %border-box;
 			height: 100%;
 			float: left;
 		}
@@ -185,6 +185,7 @@ hr {
 // --------------------------
 
 .single-container {
+	@extend %vertical-scroll;
 
 	.single-header, .single-footer {
 		position: relative;
@@ -251,7 +252,6 @@ hr {
 		}
 	}
 	@include mq($from: tablet) {
-		@extend %vertical-scroll;
 		margin: 0 auto;
 		height: 100%;
 		width: 50em;

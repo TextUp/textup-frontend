@@ -72,6 +72,12 @@ $bottom-layer: 5;
 			display: none;
 		}
 	}
+	// always hide toggle and sidebar on non-desktop views
+	@include mq($until: tablet) {
+		.sidebar-toggle {
+			display: none;
+		}
+	}
 }
 
 // positioning and open/close
@@ -81,11 +87,11 @@ $bottom-layer: 5;
 	$remaining-percent: 100 - $loc-sidebar-percent;
 
 	.location-sidebar {
-		width: #{$loc-sidebar-percent}%;
+		width: $loc-sidebar-percent * 1%;
 	}
 	.location-map {
-		width: #{$remaining-percent}%;
-		left: #{$loc-sidebar-percent}%;
+		width: $remaining-percent * 1%;
+		left: $loc-sidebar-percent * 1%;
 	}
 	@if $slide-off-controls {
 		.map-search-bar {

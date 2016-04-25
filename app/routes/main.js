@@ -10,7 +10,7 @@ export default Ember.Route.extend(Slideout, {
 		},
 		didTransition: function() {
 			this._closeSlideout();
-			return true
+			return true;
 		},
 		toggleDetailSlideout: function(name, context) {
 			this._toggleSlideout(name, context);

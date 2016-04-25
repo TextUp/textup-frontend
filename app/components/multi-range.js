@@ -171,7 +171,7 @@ export default Ember.Component.extend({
 				// don't trigger if index of range is greater than
 				// the last possible range
 				if (rangeIndex <= lastPossibleIndex) {
-					this.set('_touchedOnce', false)
+					this.set('_touchedOnce', false);
 					$range.trigger('mousemove', event);
 				}
 			}.bind(this))

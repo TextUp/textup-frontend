@@ -10,12 +10,6 @@
 .full-height {
 	height: 100%;
 }
-%row-item {
-	float: left;
-}
-%new-row {
-	clear: left;
-}
 // remainder breakpoints with appropriate media query
 // in order of smallest breakpoint to largest
 $abbrs: map-values($breakpoint-abbrs);
@@ -24,7 +18,7 @@ $abbrs: map-values($breakpoint-abbrs);
 	$breakpoint: nth($breakpoint-abbr, 1);
 	$abbr: nth($breakpoint-abbr, 2);
 	.#{$abbr}-new-row {
-		@extend %new-row;
+		clear: left;
 	}
 	// mobile first: smallest breakpoint has no media query
 	@if $i == 1 {
@@ -32,7 +26,7 @@ $abbrs: map-values($breakpoint-abbrs);
 			width: 100%;
 		}
 		@include responsive-grid('row', $abbr, width, $grid-splits) {
-			@extend %row-item;
+			float: left;
 		}
 		@include responsive-display("display", $abbr, $abbrs);
 	}
@@ -42,7 +36,7 @@ $abbrs: map-values($breakpoint-abbrs);
 				width: 100%;
 			}
 			@include responsive-grid('row', $abbr, width, $grid-splits) {
-				@extend %row-item;
+				float: left;
 			}
 			@include responsive-display("display", $abbr, $abbrs);
 		}
