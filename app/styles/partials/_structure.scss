@@ -1,0 +1,395 @@
+body {
+	overflow: hidden;
+	height: 100%;
+	width: 100%;
+}
+hr {
+	margin: $padding 0;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), $border-color, rgba(0, 0, 0, 0));
+}
+#container {
+	@extend %vertical-scroll;
+	width: 100%;
+    width: 100vw;
+    height: 100%;
+    height: 100vh;
+	background-color: $brand-color;
+	position: relative;
+}
+#menu, #body {
+	@extend %liquid-fire-full-height;
+	@extend %border-box;
+	float: left;
+}
+#body {
+	@extend %clearfix;
+	background-color: $bg-color;
+	position: relative;
+	width: 100%;
+	z-index: $body-z-index;
+
+	.content, .details {
+		width: 100%;
+	}
+	.content {
+		height: 100%;
+		background-color: $bg-lightest-color;
+		z-index: $contents-z-index;
+	}
+	.details { // should not have full height to allow for resizing of overlay
+		background-color: $bg-color;
+		z-index: $details-z-index;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+}
+#menu {
+	@extend .reset-list;
+	text-align: center;
+	border-right: 1px solid shade($border-color, 3);
+	width: $collapsed-menu-width;
+	max-width: 90%;
+	z-index: $menu-z-index;
+}
+.menu-item {
+	@extend %clearfix;
+	@extend .clickable;
+	@extend .text-ellipsis;
+	@extend %border-box;
+	@include button-colors($bg-dark-color);
+	padding: $padding;
+	text-align: center;
+	font-size: 1.3em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	transition: all 0.5s;
+	position: relative;
+
+	.indicator { // see _display for more details
+		@include v-center(right, 0.25 * $padding);
+	}
+	&.menu-header {
+		@include button-colors(shade($brand-color, 2));
+		height: $header-height;
+		padding: 0;
+		line-height: $header-height;
+	}
+	&.menu-slideout {
+		padding-left: 10px;
+		border-right-width: 10px;
+		border-right-style: solid;
+	}
+	&.success {
+		@include button-colors(shade($success-color, 2));
+	}
+	&.danger {
+		@include button-colors(shade($danger-color, 2));
+	}
+}
+.menu-divider {
+	@extend .text-ellipsis;
+	@extend .text-bold;
+	position: relative;
+	padding-top: 1em;
+	padding-bottom:0.5em;
+	line-height: 1.25em;
+	background-color: shade($bg-dark-color, 0.5);
+	border-bottom: 1px solid shade($bg-dark-color);
+	color: contrast-color($bg-dark-color);
+    text-transform: uppercase;
+}
+.slideout-pane.slideout-pane-left {
+	left: 0;
+	width: 100%;
+}
+.slideout-pane.slideout-pane-right {
+	width: 100%;
+}
+
+@include mq($from: tablet) { // split screen view
+	#body {
+		.content, .details {
+			@extend %border-box;
+			height: 100%;
+			float: left;
+		}
+		@include split(width, ".content" ".details", $split-sidebar-width);
+		.content {
+			border-right: 1px solid $border-color;
+		}
+		.details {
+			height: 100%;
+			left: $split-sidebar-width
+		}
+	}
+	.slideout-pane.slideout-pane-left {
+		left: $collapsed-menu-width;
+		width: calc(100% - #{$collapsed-menu-width});
+	}
+	.slideout-pane.slideout-pane-right {
+		width: $slideout-width;
+	}
+}
+@include mq($from: desktop) { // exposed menu
+	@include split(width, "#menu" "#body", $exposed-menu-width);
+	#menu {
+		border-right: 1px solid $border-color;
+		background-color: $bg-light-color;
+		// reset drawer-contents styles
+		position: relative;
+		opacity: 1;
+	}
+	.menu-divider {
+		background-color: $border-color;
+		border-bottom: 1px solid $border-color;
+	}
+	.menu-item {
+		@include button-colors($bg-color);
+		padding: $padding 0;
+
+		&.menu-header {
+			@include button-colors($brand-color);
+		}
+		&.menu-slideout {
+			padding-left: 5px;
+			border-right-width: 5px;
+		}
+		&.success {
+			@include button-colors($success-color);
+		}
+		&.danger {
+			@include button-colors($danger-color);
+		}
+	}
+	.menu-footer {
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		transform: translateX(-50%);
+		width: 100%;
+		z-index: -1; // position behind items on scroll
+		.brand {
+			width: 95%;
+		}
+	}
+	.slideout-pane.slideout-pane-left {
+		left: $exposed-menu-width;
+		width: $slideout-width;
+	}
+}
+
+// single container structure
+// --------------------------
+
+.single-container {
+
+	.single-header, .single-footer {
+		position: relative;
+		text-align: center;
+
+		.brand {
+			width: 125px;
+		}
+	}
+	.single-body {
+		background-color: $bg-light-color;
+		border-radius: $border-radius;
+
+		.single-body-header {
+			background-color: $bg-lightest-color;
+			border-bottom: 1px solid $border-color;
+			border-top-left-radius: $border-radius;
+			border-top-right-radius: $border-radius;
+		}
+		.single-body-footer {
+			background-color: $bg-lightest-color;
+			border-top: 1px solid $border-color;
+			border-bottom-left-radius: $border-radius;
+			border-bottom-right-radius: $border-radius;
+		}
+		.single-body-content {
+			&:first-child {
+				border-top-left-radius: $border-radius;
+				border-top-right-radius: $border-radius;
+			}
+			&:last-child {
+				border-bottom-left-radius: $border-radius;
+				border-bottom-right-radius: $border-radius;
+			}
+		}
+	}
+	@include mq($until: tablet) {
+		width: 100%;
+
+	    .single-header {
+			margin-top: 1em;
+			margin-bottom: 1em;
+			.subtitle {
+				text-align: center;
+		    	font-weight: $font-weight-bold;
+			}
+		}
+		.single-footer {
+			margin-top: 1em;
+			margin-bottom: 2em;
+		}
+		.single-body {
+			.single-body-header {
+				padding: $padding * 1.5;
+			}
+			.single-body-content {
+				padding: $padding * 0.5;
+				padding-top: $padding * 1;
+				padding-bottom: $padding * 1.5;
+			}
+			.single-body-footer {
+				padding: $padding 0;
+			}
+		}
+	}
+	@include mq($from: tablet) {
+		@extend %vertical-scroll;
+		margin: 0 auto;
+		height: 100%;
+		width: 50em;
+
+		&.single-container-small {
+			width: 25em;
+		}
+	    .single-header {
+			margin-top: 8vh;
+			margin-bottom: 1em;
+			.subtitle {
+				font-weight: $font-weight-bold;
+			    position: absolute;
+			    right: 0;
+			    bottom: 0;
+			    text-align: right;
+			}
+		}
+		.single-body {
+			.single-body-header {
+				padding: $padding * 2;
+			}
+			.single-body-content {
+				padding: $padding * 2;
+			}
+			.single-body-footer {
+				padding: $padding 0;
+			}
+		}
+		.single-footer {
+			margin-top: $padding;
+			margin-bottom: 8vh;
+		}
+	}
+}
+
+// List
+// ----
+
+%no-results {
+	.no-results {
+		@extend .text-center;
+    	margin-top: $padding;
+    	color: $font-color;
+	}
+}
+
+.result-list {
+	@extend .reset-list;
+	@extend %no-results;
+
+	.result-item {
+		@extend %border-box;
+		position: relative;
+		border-bottom: 1px solid $border-color;
+		background-color: $bg-lightest-color;
+		transition: all 0.5s;
+
+		&:hover {
+			background-color: $bg-light-color;
+		}
+		&.active:after, &.unread:after {
+			@extend %border-box;
+			position: absolute;
+		    content: ' ';
+		    height: 1em;
+		    right: 0;
+		    top: 0;
+		    height: 100%;
+		    width: $padding;
+		    border-right: ($padding * 0.5) solid $border-color;
+		}
+		&.active:after {
+		    background-color: $border-color;
+		    border-right-color: shade($border-color);
+		}
+		&.unread:after {
+			background-color: $brand-color;
+			border-right-color: shade($brand-color);
+		}
+	}
+}
+.tile-list {
+	@extend %clearfix;
+	@extend %border-box;
+	@extend %vertical-scroll;
+	@extend %no-results;
+	width: 100%;
+	list-style-type: none;
+	margin: 0;
+	padding: $padding;
+
+	.tile-list-item {
+		@extend .text-ellipsis;
+		@extend .text-bold;
+		@extend %border-box;
+		text-align: center;
+		position: relative;
+		padding: $padding ($padding * 2);
+		margin: $padding * 0.5;
+		background-color: $bg-lightest-color;
+		border-radius: $border-radius;
+		border: 1px solid $border-color;
+	}
+}
+.horizontal-items {
+	overflow-y: hidden;
+	overflow-x: auto;
+    white-space: nowrap;
+
+	@include mq($from: desktop) {
+		overflow: hidden;
+	}
+
+    & > :first-child {
+        margin-left: $badge-h-space;
+    }
+}
+
+// Section
+// -------
+
+@include split(height, ".section-header" ".section-body", $header-height);
+.section-header, .section-footer {
+	@extend %border-box;
+	background-color: $bg-lightest-color;
+	position: relative;
+}
+.section-header {
+	position: relative;
+	border-bottom: 1px solid $border-color;
+	z-index: 1;
+}
+.section-body {
+	@extend %border-box;
+	@extend %vertical-scroll;
+}
+.section-footer {
+	position: relative;
+	border-top: 1px solid $border-color;
+}

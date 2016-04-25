@@ -1,0 +1,83 @@
+.tab-container .tab-container-nav {
+	.tab-container-nav-controls {
+		display: none;
+	}
+	// After see if there is overflow in the nav list,
+	// apply either the inline or overflow styles to the nav
+	// the inline style will cause all nav items to float left
+	&.inline .tab-container-nav-list {
+		@extend %clearfix;
+		.tab-container-nav-item {
+			@extend .no-select;
+			@extend .clickable;
+			float: left;
+		}
+	}
+	// the overflow style hides the list altogether and
+	// instead shows the mobile controls
+	&.overflow {
+		.tab-container-nav-list {
+			display: none;
+		}
+		.tab-container-nav-controls {
+			display: block;
+		}
+	}
+}
+.tab-container .tab-container-nav-controls .tab-container-nav-display {
+	@extend .btn;
+	@extend .text-ellipsis;
+	width: 100%;
+	position: relative;
+}
+.tab-container .tab-container-nav-list {
+	width: 100%;
+	list-style-type: none;
+    padding: 0;
+    margin: 0;
+	overflow: hidden;
+	white-space: nowrap;
+
+	.tab-container-nav-item {
+		@extend .clickable;
+		@extend .text-ellipsis;
+		@extend %border-box;
+		text-align: center;
+		display: inline-block;
+		padding: $padding;
+		font-weight: $font-weight-bold;
+		border-top-left-radius: $border-radius;
+		border-top-right-radius: $border-radius;
+		min-width: 100px;
+		max-width: 100%;
+		border-bottom: 1px solid $border-color;
+		transition: all 0.5s;
+
+		&:hover:not(.active) {
+			background-color: $bg-color;
+			color: contrast-color($bg-color);
+		}
+		&.active {
+			background-color: $brand-color;
+			color: contrast-color($brand-color);
+			border-bottom: 1px solid $brand-color;
+		}
+	}
+}
+.tab-container .tab-container-body {
+	@extend %clearfix;
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+
+	.tab-container-item {
+		float: left;
+		overflow: hidden;
+		width: 100%;
+
+		&.pending {
+			position: absolute;
+			left: 100%;
+		}
+	}
+}

@@ -1,0 +1,19 @@
+<div class="form-element pad-l pad-r">
+    <label for="Your Name">Team Name</label>
+    {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
+</div>
+<div class="form-element pad-l pad-r">
+    <label for="Your Name">Team Color</label>
+    {{color-input color=team.color}}
+</div>
+<div class='form-element pad-l pad-r'>
+    <label for='TextUp Phone'>TextUp Phone</label>
+    {{phone-number number=team.phone}}
+</div>
+<div class="form-element">
+    <label for="Your Name" class='pad-l pad-r'>Location</label>
+    {{location-control/mutable
+        hideSidebar=true
+        location=(mut team.latLng)
+        description=(mut team.address)}}
+</div>

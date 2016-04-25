@@ -1,0 +1,25 @@
+<div class="input-group">
+    <input type="text" class="form-control text-bold text-center" readonly=""
+        placeholder={{placeholder}}
+        value={{hexColor}}
+        style='background-color:{{hexColor}}; color: {{complement}};'>
+    <span class="input-group-addon blend-in">
+        {{#hide-away tabindex=false
+            bodyClickClose=false
+            floating=true
+            floatMode=floatMode
+            animation='fade'
+            scrollSelector=scrollSelector as |dropdown position|}}
+            <div class="dropdown {{position.vertical}} {{position.horizontal}}">
+                {{col-pick value=hexColor
+                    flat=true
+                    useHashtag=true}}
+            </div>
+        {{else}}
+            <button class="btn" type='button'
+                style='color:{{hexColor}};'>
+                <span class="fa fa-pencil-square"></span>
+            </button>
+        {{/hide-away}}
+    </span>
+</div>

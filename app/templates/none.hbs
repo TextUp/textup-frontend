@@ -1,0 +1,30 @@
+<div class="single-container">
+    <div class="single-header">
+        <img class="brand" src='assets/images/logo.png' />
+        <h3>Account Pending</h3>
+        <div class="subtitle">
+            {{#link-to "index"}}Done editing info? <b>Log out.</b>{{/link-to}}
+        </div>
+    </div>
+    <div class="single-body">
+        <div class="single-body-header">
+            <div class="text-center pad-b">
+                <h5>One more thing...</h5>
+            </div>
+            <p class="text-justify">
+                {{#if isPendingStaff}}
+                    <span>Your account is waiting for an administrator's approval. You will be emailed when you receive confirmation.</span>
+                {{else}}
+                    <span>Your account's organization is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
+                {{/if}}
+                <span>If you have any questions, feel free to contact us at <span class='text-bold'>connect@textup.org</span></span>
+            </p>
+        </div>
+        <div class="single-body-content">
+            {{partial 'partials/staff-settings'}}
+        </div>
+    </div>
+    <div class="single-footer"></div>
+</div>
+
+

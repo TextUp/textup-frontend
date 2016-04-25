@@ -1,0 +1,98 @@
+<div class="details">
+	<div class="section-header">
+		<div class="horizontal-items xs-row-2 l-4-row-10 pull-left">
+			<span class='clear-badge'>
+                {{#hide-away/dropdown horizontal='left'}}
+                    <li tabindex='0' class='dropdown-item'>All</li>
+                    <li tabindex='0' class='dropdown-item'>Only staff</li>
+                    <li tabindex='0' class='dropdown-item'>None</li>
+                {{else}}
+                    <button class='btn' type='button'>
+                        <span class="display-xs">3 selected</span>
+                        <span class="display-s display-m display-l">Select</span>
+                        <span class='fa fa-caret-down'></span>
+                    </button>
+                {{/hide-away/dropdown}}
+			</span>
+            <span class='clear-badge display-s display-m display-l'>
+                {{#tool-tipster theme='tooltipster-clean'
+                    title=(concat '3' ' ' 'people selected')
+                    classNames='btn-expand'}}
+                    <span class='text-bold'>3</span>
+                    <span class="fa fa-user"></span>
+                {{/tool-tipster}}
+        	</span>
+            <span class='clear-badge display-s display-m display-l'>
+                {{#tool-tipster theme='tooltipster-clean'
+                    title=(concat '1' ' ' 'admins selected')
+                    classNames='btn-expand'}}
+                    <span class='text-bold'>1</span>
+                    <span class="fa fa-star-o"></span>
+                {{/tool-tipster}}
+            </span>
+		</div>
+		<div class="horizontal-items xs-row-2 l-6-row-10 pull-right">
+            <span class='clear-badge no-space display-xs'>
+                {{#hide-away/dropdown}}
+                    <li tabindex='0' class='dropdown-item'
+                        {{action 'toggleDetailSlideout' 'slideouts/teams/membership' 'admin/people/many'}}>
+                        Edit teams
+                    </li>
+                    <li class='dropdown-divider'>Status</li>
+                    <li tabindex='0' class='dropdown-item'>Demote to staff</li>
+                    <li tabindex='0' class='dropdown-item'>Promote to admin</li>
+                    <li tabindex='0' class='dropdown-item'>Block</li>
+                {{else}}
+                    <button class='btn' type='button'>
+                        Actions
+                        <span class='fa fa-caret-down'></span>
+                    </button>
+                {{/hide-away/dropdown}}
+            </span>
+            <span class='clear-badge no-space display-s display-m display-l'>
+                {{#hide-away/dropdown}}
+                    <li tabindex='0' class='dropdown-item'>Demote to staff</li>
+                    <li tabindex='0' class='dropdown-item'>Promote to admin</li>
+                    <li tabindex='0' class='dropdown-item'>Block</li>
+                {{else}}
+                    <button class='btn' type='button'>
+                        Status
+                        <span class='fa fa-caret-down'></span>
+                    </button>
+                {{/hide-away/dropdown}}
+            </span>
+            <span class='clear-badge display-s display-m display-l'>
+                <button class='btn' type='button'
+                	{{action 'toggleDetailSlideout' 'slideouts/teams/membership' 'admin/people/many'}}>
+                    Teams
+                </button>
+            </span>
+            <span class="clear-badge">
+            	{{#link-to (if team 'admin.team' 'admin.people')}}
+                    <span class="pad-all">
+                        <span class="fa fa-times"></span>
+                    </span>
+            	{{/link-to}}
+            </span>
+		</div>
+    </div>
+    <div class="section-body display-m display-l">
+		<ul class="tile-list">
+			{{#each people as |selected|}}
+				<li class='m-row-2 l-row-3'>
+					<div class="tile-list-item">
+                        {{#if (eq selected.status 'ADMIN')}}
+                            <span class="pull-left fa fa-star-o"></span>
+                        {{/if}}
+						{{selected.name}}
+						<span class="pull-right">
+                            <span class="pad-all">
+                                <span class="fa fa-times"></span>
+                            </span>
+                        </span>
+					</div>
+				</li>
+			{{/each}}
+		</ul>
+    </div>
+</div>

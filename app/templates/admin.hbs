@@ -1,0 +1,161 @@
+{{#sliding-drawer contentsId='menu'
+    closeOnContentsClick=true
+    allowCloseContentsSelector='.menu-item'
+    ignoreCloseContentsSelector='.menu-slideout, .header-slideout, .menu-header'
+    bodyId='body'
+    as |drawer|}}
+    <span class="display-xs display-s display-m menu-toggle">
+        <button class="btn btn-plain"
+            onclick={{drawer.actions.toggle}}>
+            <span class="fa fa-bars"></span>
+        </button>
+    </span>
+    {{#liquid-if showSlideout class='animate-slide-from-right animated-overflow'}}
+        {{outlet 'details-slideout'}}
+    {{/liquid-if}}
+    {{outlet}}
+{{else}}
+    <li class="header-slideout display-xs display-s display-m">
+        {{#hide-away tabindex=false
+            triggerClass='header-toggle'
+            allowedTriggerSelectors='.toggle-control'
+            bodyClickClose=true}}
+            <ul class="reset-list">
+            	{{#link-to 'main.contacts' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Kiki Bai</p>
+                        <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
+                    </div>
+                {{/link-to}}
+                <li class="menu-item">
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Housing First</p>
+                        <p class="text-bold text-ellipsis">(223) 290 - 1239</p>
+                    </div>
+                    <span class="indicator" style="background-color:#943;"></span>
+                </li>
+                {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Admin</p>
+                    </div>
+                {{/link-to}}
+                <li class="menu-divider"></li>
+                {{#link-to 'index' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Log Out</p>
+                    </div>
+                {{/link-to}}
+            </ul>
+        {{else}}
+            <div class="toggle-control xs-8-row-10">
+                <div class="offset-xs-row-10 xs-7-row-10 v-center-left text-left">
+                    <h4 class="text-lighten text-ellipsis">Admin</h4>
+                </div>
+                <div class="xs-2-row-10 v-center-right">
+                    <buton class="btn btn-expand btn-plain">
+                        <span class="fa fa-caret-down"></span>
+                    </buton>
+                </div>
+            </div>
+            <div class="xs-2-row-10 header-settings"
+                {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
+                <button class="btn btn-expand settings-btn">
+                    <span class="fa fa-cog"></span>
+                </button>
+            </div>
+        {{/hide-away}}
+    </li>
+    <li class='menu-item menu-header display-l'
+        {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Account'
+            classNames='btn-expand'}}
+            <span class="fa fa-bars"></span>
+        {{/tool-tipster}}
+    </li>
+    {{#link-to 'admin.pending' tagName='li' classNames='menu-item'}}
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title=(concat 'Pending (' '2' ')')
+            classNames='btn-expand display-l'}}
+            <span class="fa fa-clock-o"></span>
+        {{/tool-tipster}}
+        <div class="btn-expand display-xs display-s display-m">
+            <span class="text-bold">Pending</span>
+            <span class="badge dark">2</span>
+        </div>
+    {{/link-to}}
+    <li class="menu-divider display-l"></li>
+    <li class='menu-item menu-slideout display-l'
+        {{action 'toggleSlideout' 'slideouts/new-staff' 'admin'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Add Staff'
+            classNames='btn-expand'}}
+            <span class="fa fa-user-plus"></span>
+        {{/tool-tipster}}
+    </li>
+    {{#link-to 'admin.people' tagName='li' classNames='menu-item display-l'}}
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='People'
+            classNames='btn-expand'}}
+            <span class="fa fa-user"></span>
+        {{/tool-tipster}}
+    {{/link-to}}
+    <li class="menu-divider display-l"></li>
+    <li class='menu-item menu-slideout display-l'
+        {{action 'toggleSlideout' 'slideouts/teams/list' 'admin'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Teams'
+            classNames='btn-expand'}}
+            <span class="fa fa-users"></span>
+        {{/tool-tipster}}
+    </li>
+
+    {{!-- staff members --}}
+
+    <li class="menu-divider display-xs display-s display-m">
+        People
+        <button class="btn btn-plain v-center-right"
+            {{action 'toggleSlideout' 'slideouts/new-staff' 'admin'}}>
+            <span class="fa fa-plus"></span>
+        </button >
+    </li>
+    {{#link-to 'admin.people' tagName='li'
+        classNames='menu-item display-xs display-s display-m'}}
+        <span class="text-bold">Active</span>
+    {{/link-to}}
+    <li class='menu-item display-xs display-s display-m'>
+        <span class="text-bold">Admins</span>
+    </li>
+    <li class='menu-item display-xs display-s display-m'>
+        <span class="text-bold">Blocked</span>
+    </li>
+
+    {{!-- teams --}}
+
+    <li class="menu-divider display-xs display-s display-m">
+        Teams
+        <button class="btn btn-plain v-center-right"
+            {{action 'toggleSlideout' 'slideouts/teams/create' 'admin'}}>
+            <span class="fa fa-plus"></span>
+        </button >
+    </li>
+    {{#each teams as |team|}}
+        {{#link-to 'admin.team' tagName='li'
+            classNames='menu-item display-xs display-s display-m'}}
+            <span class="text-bold">{{team.name}}</span>
+            <span class="badge dark">{{team.numMembers}}</span>
+            <span class="indicator" style="background-color:{{team.color}};"></span>
+        {{/link-to}}
+    {{else}}
+        <li class='pad-t text-bold display-xs display-s display-m'>No teams yet.</li>
+    {{/each}}
+
+    <li class='menu-footer display-l'>
+        <img class="brand" src='assets/images/logo.png' />
+    </li>
+{{/sliding-drawer}}

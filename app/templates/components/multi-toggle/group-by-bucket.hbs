@@ -1,0 +1,52 @@
+<ul class="result-list">
+    {{#each buckets as |bucket|}}
+        <li class="result-item pad-t pad-b pad-l pad-r">
+            <div class="row">
+                <div class="xs-2-row-3 control-text text-bold">
+					{{yield bucket}}
+                </div>
+                {{#if hasManyItems}}
+                	{{#multi-toggle classNames='xs-row-3'
+                        wrapAround=wraparound as |toggle doRegister|}}
+                		{{#multi-toggle/item doRegister=doRegister
+                            isSelected=true
+                            color=noChangeColor
+                            onSelect=(action 'clearActions' bucket)}}
+                            {{noChangeLabel}}
+                        {{/multi-toggle/item}}
+                		{{#each multipleOptions as |option|}}
+                			{{#multi-toggle/item doRegister=doRegister
+	                            color=option.color
+	                            onSelect=(action 'doActions' bucket option.command)}}
+	                            {{option.display}}
+	                        {{/multi-toggle/item}}
+                		{{/each}}
+                    {{/multi-toggle}}
+                {{else}}
+                    {{#multi-toggle classNames='xs-row-3'
+                        wrapAround=wraparound as |toggle doRegister|}}
+                        {{#each singleOptions as |option|}}
+                        	{{#multi-toggle/item doRegister=doRegister
+	                            color=option.color
+	                            isSelected=(and
+                                    (or option.showWhenSelected itemBucketCommandProperty)
+                                    (eq
+                                        (if itemBucketCommandProperty option.command true)
+                                        (get firstItemBucketMemberships
+                                            (get bucket bucketIdentityProperty))))
+	                            onSelect=(action 'doActions' bucket option.command)}}
+	                            {{option.display}}
+	                        {{/multi-toggle/item}}
+                		{{/each}}
+                    {{/multi-toggle}}
+                {{/if}}
+            </div>
+        </li>
+    {{else}}
+    	{{#if (hasBlock 'inverse')}}
+    		{{yield to='inverse'}}
+    	{{else}}
+            <li class="no-results">{{noBucketsLabel}}</li>
+    	{{/if}}
+    {{/each}}
+</ul>

@@ -1,0 +1,46 @@
+<div class="single-body">
+    <div class="single-body-header">
+        <h5 class="text-center pad-b">You've selected Harrington Hall!</h5>
+        <p class="text-center">We need a little bit more information about you before we can create your account.</p>
+    </div>
+    <div class="single-body-content">
+        <div class="form-element">
+            <label for="Your Name">Your Name</label>
+            {{input value=staff.name type="text" placeholder="Your Name" class="form-control"}}
+        </div>
+        <div class="form-element">
+            <label for="Username">Username</label>
+            {{input value=staff.username type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+        </div>
+        <div class="form-element">
+            <label for="Email">Email</label>
+            {{input value=staff.email type="email" placeholder="Email" class="form-control"}}
+        </div>
+        <div class="form-element">
+            <label for="Password">Password</label>
+            {{input value=staff.password type="password" placeholder="Password" class="form-control"}}
+        </div>
+        <div class="form-element">
+            <label for="Confirm Password">Confirm Password</label>
+            {{input value=confirmPassword type="password" placeholder="Confirm Password" class="form-control"}}
+        </div>
+    </div>
+    <div class="single-body-footer text-center">
+        {{link-to "Finish" "none" tagName="button" classNames="btn btn-default"}}
+        {{!-- <button class='btn btn-default'>Finish</button> --}}
+    </div>
+</div>
+<div class='single-footer'>
+    {{#if isNew}}
+        <p class="emphasize text-darken">Want to edit your organization?</p>
+    	<h4>
+    		{{link-to "Create a new organization" "signup.new" classNames="text-darken"}}
+    	</h4>
+    {{else}}
+        <p class="emphasize text-darken">Want to pick another organization?</p>
+		<h4>
+			{{link-to "Choose existing organization" "signup.index" classNames="text-darken"}}
+		</h4>
+    {{/if}}
+</div>
+

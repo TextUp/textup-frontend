@@ -1,0 +1,76 @@
+<div class="details full-height">
+	<div class="section-header">
+		<div class="contact-details">
+			<div class="horizontal-items xs-row-3 s-row-2 pull-left">
+				<span class="clear-badge">
+					<h5>{{person.name}}</h5>
+				</span>
+				{{#if (eq person.status 'ADMIN')}}
+					<span class="badge display-s display-m display-l">Admin</span>
+				{{/if}}
+				<span class="badge display-s display-m display-l">Available</span>
+			</div>
+			<div class="horizontal-items xs-2-row-3 s-row-2 pull-right">
+	            <span class='clear-badge'>
+	            	{{#hide-away/dropdown}}
+	                    <li class='dropdown-divider'>Status</li>
+                        {{#if (eq person.status 'ADMIN')}}
+                        	<li tabindex='0' class='dropdown-item'>Demote to staff</li>
+                        {{else}}
+							<li tabindex='0' class='dropdown-item'>Promote to admin</li>
+                        {{/if}}
+                        <li tabindex='0' class='dropdown-item'>Block</li>
+		            {{else}}
+		                <button class='btn' type='button'>
+                            Actions
+                            <span class='fa fa-caret-down'></span>
+                        </button>
+		            {{/hide-away/dropdown}}
+	            </span>
+	            <span class="clear-badge">
+	            	{{#link-to (if team 'admin.team' 'admin.people')}}
+						<span class="pad-all">
+							<span class="fa fa-times"></span>
+						</span>
+	            	{{/link-to}}
+	            </span>
+			</div>
+		</div>
+        <div class="contact-tags">
+        	<span class='clear-badge'>
+				<a href='#'
+					{{action 'toggleDetailSlideout' 'slideouts/teams/membership' 'admin.people.person'}}>
+                    <span class="fa fa-users"></span>
+                </a>
+            </span>
+            <span class="badge-divider"></span>
+            {{#each person.teams as |team|}}
+                {{preview-badge color=team.color content=team.name}}
+            {{/each}}
+        </div>
+    </div>
+    <div class="section-body bg-color bg-lightest">
+    	{{#tab-container animation='fade' as |tabContainer doRegister|}}
+			{{#tab-container/item doRegister=doRegister
+				title="Details"}}
+				{{#with person as |staff|}}
+				    <div class="pad-all">
+						{{partial 'partials/edit-staff'}}
+					</div>
+				{{/with}}
+			{{/tab-container/item}}
+			{{#tab-container/item doRegister=doRegister
+				title="Availability"}}
+				{{tab-container/availability singleStaffData=(mut person.schedule)}}
+				<div class="text-center pad-b-double">
+		            <button class="btn" type='button'>
+		                Cancel
+		            </button>
+		            <button class="btn btn-default" type='button'>
+		                Update
+		            </button>
+				</div>
+			{{/tab-container/item}}
+    	{{/tab-container}}
+    </div>
+</div>

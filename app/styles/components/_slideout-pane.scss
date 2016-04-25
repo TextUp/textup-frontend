@@ -1,0 +1,35 @@
+// styles also overriden in _structure.scss
+
+.slideout-pane {
+    @extend %liquid-fire-full-height;
+    position: absolute;
+    top: 0;
+    width: $slideout-width;
+    z-index: $slideout-z-index;
+    background-color: $bg-lightest-color;
+    overflow: hidden;
+
+    .slideout-header, .slideout-body {
+        @extend %border-box;
+        position: relative;
+    }
+    .slideout-header {
+        min-height: $header-height;
+        border-bottom: 1px solid $border-color;
+        z-index: 20;
+    }
+    .slideout-body {
+        @extend %vertical-scroll;
+        height: calc(100% - #{$header-height});
+    }
+    &.slideout-pane-left {
+        left: 0;
+        box-shadow: 9px 0 20px -4px $border-color;
+        border-right: 1px solid $border-color;
+    }
+    &.slideout-pane-right {
+        right: 0;
+        box-shadow: -9px 0 20px -4px $border-color;
+        border-left: 1px solid $border-color;
+    }
+}

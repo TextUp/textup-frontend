@@ -1,0 +1,15 @@
+<div class="infinite-items {{containerClass}}">
+	{{#each _items as |item index|}}
+		{{yield item index publicAPI}}
+	{{else}}
+		{{yield to='inverse'}}
+	{{/each}}
+</div>
+<div class="infinite-control {{controlClass}}">
+	<div class="horizontal-items">
+		<span class='clear-badge'>{{loadingText}}</span>
+		<span class="clear-badge">
+			<span class="fa fa-circle-o-notch fa-spin"></span>
+		</span>
+	</div>
+</div>

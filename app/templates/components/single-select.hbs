@@ -1,0 +1,47 @@
+{{#if hasBlock}}
+	{{#multi-select displayProperty=displayProperty
+		identityProperty=identityProperty
+		filterProperty=filterProperty
+		inputComponent=inputComponent
+		data=data
+		selected=selectedArray
+		doCreate=doCreate
+		onInsert=(action 'select')
+		onReplace=onReplace
+		onRemove=onRemove
+		doSearch=doSearch
+		doFilter=doFilter
+		delayThreshold=delayThreshold
+		allowCreate=allowCreate
+		itemClass=itemClass
+		searchPlaceholder=searchPlaceholder
+		searchingMessage=searchingMessage
+		noResultsMessage=noResultsMessage
+		bodyClass=bodyClass
+		mode=mode
+		direction=direction as |item select|}}
+		{{yield item select}}
+	{{/multi-select}}
+{{else}}
+	{{multi-select displayProperty=displayProperty
+		identityProperty=identityProperty
+		filterProperty=filterProperty
+		inputComponent=inputComponent
+		data=data
+		selected=selectedArray
+		doCreate=doCreate
+		onInsert=(action 'select')
+		onReplace=onReplace
+		onRemove=onRemove
+		doSearch=doSearch
+		doFilter=doFilter
+		delayThreshold=delayThreshold
+		allowCreate=allowCreate
+		itemClass=itemClass
+		searchPlaceholder=searchPlaceholder
+		searchingMessage=searchingMessage
+		noResultsMessage=noResultsMessage
+		bodyClass=bodyClass
+		mode=mode
+		direction=direction}}
+{{/if}}

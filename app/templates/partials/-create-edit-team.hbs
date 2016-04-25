@@ -1,0 +1,19 @@
+<div class="pad-l pad-r form-element">
+    <label for="Your Name">Team Name</label>
+    {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
+</div>
+<div class="pad-l pad-r form-element">
+    <label for="Your Name">Team Color</label>
+    {{color-input color=team.color}}
+</div>
+{{#with team as |owner|}}
+    <div class="pad-l pad-r">
+        {{partial 'partials/update-delete-textup-number'}}
+    </div>
+{{/with}}
+<div class="form-element">
+    <label for="Your Name" class='pad-l pad-r'>Location</label>
+    {{location-control/mutable hideSidebar=true
+        location=(mut team.latLng)
+        description=(mut team.address)}}
+</div>

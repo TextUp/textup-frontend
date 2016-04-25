@@ -1,0 +1,96 @@
+<div class="full-height">
+	<div class="section-header">
+		<span class="contacts-title">
+			<div class="horizontal-items">
+				<div class="clear-badge">
+					<h5>Pending</h5>
+				</div>
+				<div class="badge {{if selectedPending 'hidden'}}">
+					{{#tool-tipster theme='tooltipster-clean'
+	                    title=(concat pendingStaff.length ' selected')
+	                    classNames='btn-expand'}}
+	                    <span class='text-bold'>
+	                    	{{pendingStaff.length}}
+	                    </span>
+						<span class="fa fa-user"></span>
+	                {{/tool-tipster}}
+				</div>
+				<span class="clear-badge display-m display-l
+					{{if (not selectedPending) 'hidden'}}">
+					{{#hide-away/dropdown horizontal='left'}}
+	                    <li tabindex='0' class='dropdown-item'
+	                    	{{action 'selectAllShown'}}>
+	                    	All Shown
+	                    </li>
+	                    <li tabindex='0' class='dropdown-item'
+	                    	{{action 'selectNone'}}>
+                    		None
+                		</li>
+		            {{else}}
+		                <button class='btn' type='button'>
+		                    {{selectedPending.length}} of {{pendingStaff.length}} selected
+		                    <span class='fa fa-caret-down'></span>
+		                </button>
+		            {{/hide-away/dropdown}}
+				</span>
+
+			</div>
+		</span>
+		{{#if selectedPending}}
+			<span class="pull-right">
+				<div class="horizontal-items">
+					<span class="clear-badge display-xs display-s">
+						{{#hide-away/dropdown}}
+							<li class='dropdown-divider'>Selection</li>
+							<li tabindex='0' class='dropdown-item'
+		                    	{{action 'selectAllShown'}}>
+		                    	All Shown
+		                    </li>
+		                    <li tabindex='0' class='dropdown-item'
+		                    	{{action 'selectNone'}}>
+	                    		None
+	                		</li>
+							<li class='dropdown-divider'>Status</li>
+							<li tabindex='0' class='dropdown-item'>Reject</li>
+							<li tabindex='0' class='dropdown-item'>Approve</li>
+		                {{else}}
+		                    <button class='btn' type='button'>
+		                        {{selectedPending.length}} of {{pendingStaff.length}}
+		                        <span class='fa fa-user'></span>
+		                        <span class='pad-l-half fa fa-caret-down'></span>
+		                    </button>
+		                {{/hide-away/dropdown}}
+					</span>
+					<span class="clear-badge display-m display-l">
+						<button class="btn btn-plain">Reject</button>
+					</span>
+					<span class="clear-badge display-m display-l">
+						<button class="btn btn-plain">Approve</button>
+					</span>
+				</div>
+			</span>
+		{{/if}}
+    </div>
+	{{#infinite-scroll classNames='section-body'
+        containerClass='tile-list'
+        direction='down'
+        data=pendingStaff
+        total=numPending
+        doLoad=(action 'loadMore') as |selected|}}
+		<div class='xs-full-row m-row-2 l-row-3'>
+			<div class="tile-list-item">
+				<span class="pull-left">
+					{{input type="checkbox" checked=selected.isSelected}}
+				</span>
+				<span class="text-bold pad-r">
+					{{selected.name}}
+				</span>
+				<span class="text-normal">
+					{{selected.email}}
+				</span>
+			</div>
+		</div>
+    {{else}}
+        <div class="no-results">No pending staff members right now.</div>
+    {{/infinite-scroll}}
+</div>

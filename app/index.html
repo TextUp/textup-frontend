@@ -3,9 +3,122 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>TextupFrontend</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TextUp</title>
+
+    <!-- CONFIGURATION -->
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-title" content="TextUp">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- ICONS -->
+
+    <!-- For Chrome for Android: -->
+    <link rel="icon"
+        sizes="192x192"
+        href="assets/images/touch-icon-192.png">
+    <!-- For iPhone 6 Plus with @3× display: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="180x180"
+        href="assets/images/apple-touch-icon-180x180-precomposed.png">
+    <!-- For iPad with @2× display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="152x152"
+        href="assets/images/apple-touch-icon-152x152-precomposed.png">
+    <!-- For iPad with @2× display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="assets/images/apple-touch-icon-144x144-precomposed.png">
+    <!-- For iPhone with @2× display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="120x120"
+        href="assets/images/apple-touch-icon-120x120-precomposed.png">
+    <!-- For iPhone with @2× display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="114x114"
+        href="assets/images/apple-touch-icon-114x114-precomposed.png">
+    <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="76x76"
+        href="assets/images/apple-touch-icon-76x76-precomposed.png">
+    <!-- For the iPad mini and the first- and second-generation iPad (@1× display) on iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed"
+        sizes="72x72"
+        href="assets/images/apple-touch-icon-72x72-precomposed.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed"
+        href="assets/images/apple-touch-icon-precomposed.png"><!-- 57×57px -->
+
+    <!-- STARTUP IMAGES -->
+
+    <!-- iPad retina portrait startup image -->
+    <link href="assets/images/textup-splash_1536x2008.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+                 and (-webkit-device-pixel-ratio: 2)
+                 and (orientation: portrait)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPad retina landscape startup image -->
+    <link href="assets/images/textup-splash_1496x2048.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+                 and (-webkit-device-pixel-ratio: 2)
+                 and (orientation: landscape)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPad non-retina portrait startup image -->
+    <link href="assets/images/textup-splash_768x1004.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+                 and (-webkit-device-pixel-ratio: 1)
+                 and (orientation: portrait)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPad non-retina landscape startup image -->
+    <link href="assets/images/textup-splash_748x1024.png"
+          media="(device-width: 768px) and (device-height: 1024px)
+                 and (-webkit-device-pixel-ratio: 1)
+                 and (orientation: landscape)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone 6 Plus portrait startup image -->
+    <link href="assets/images/textup-splash_1242x2148.png"
+          media="(device-width: 414px) and (device-height: 736px)
+                 and (-webkit-device-pixel-ratio: 3)
+                 and (orientation: portrait)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone 6 Plus landscape startup image -->
+    <link href="assets/images/textup-splash_1182x2208.png"
+          media="(device-width: 414px) and (device-height: 736px)
+                 and (-webkit-device-pixel-ratio: 3)
+                 and (orientation: landscape)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone 6 startup image -->
+    <link href="assets/images/textup-splash_750x1294.png"
+          media="(device-width: 375px) and (device-height: 667px)
+                 and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone 5 startup image -->
+    <link href="assets/images/textup-splash_640x1096.png"
+          media="(device-width: 320px) and (device-height: 568px)
+                 and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone < 5 retina startup image -->
+    <link href="assets/images/textup-splash_640x920.png"
+          media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
+
+    <!-- iPhone < 5 non-retina startup image -->
+    <link href="assets/images/textup-splash_320x460.png"
+          media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 1)"
+          rel="apple-touch-startup-image">
 
     {{content-for "head"}}
 

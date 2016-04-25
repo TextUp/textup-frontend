@@ -1,0 +1,64 @@
+.multi-select-body {
+	@extend %vertical-scroll;
+
+	position: relative; // so this can be the offsetParent
+	max-height: 150px;
+	background-color: $bg-lightest-color;
+	border: 1px solid $border-color;
+	border-top-width: 0;
+	border-bottom-left-radius: $border-radius;
+	border-bottom-right-radius: $border-radius;
+
+	.multi-select-item.multi-select-item-default {
+		padding: 1em;
+
+		&:hover {
+			background-color: $bg-light-color;
+		}
+		&.highlight {
+			background-color: $brand-color;
+			color: $font-light-color;
+		}
+	}
+}
+
+.multi-select-input {
+	@extend %clearfix;
+	@extend %input-decoration;
+	padding: 0.3em 0.6em;
+
+	.multi-select-input-item {
+		margin: 0.1em 0;
+		display: inline-block;
+
+		&:not(input) {
+			@extend .no-select;
+			background-color: $bg-color;
+			margin: 0.2em;
+			margin-left: 0;
+			padding-left: 0.3em;
+
+			.display-multi-select-input-item > .btn {
+		        height: inherit;
+		        min-width: auto;
+		        padding: 0.2em 0.5em 0 0;
+			}
+		}
+		& > input {
+			display: none;
+		}
+		&.editing {
+			background-color: transparent;
+
+			& > input {
+				display: inline-block;
+			}
+			& > .display-multi-select-input-item {
+				display: none;
+			}
+		}
+	}
+	input.multi-select-input-item, input.edit-multi-select-input-item {
+		@extend %input-decoration.silent;
+	}
+}

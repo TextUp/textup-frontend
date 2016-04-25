@@ -1,0 +1,66 @@
+{{#hide-away
+	doRegister=(action (mut _dropdown))
+	onOpened=(action 'afterDropdownOpen')
+	onClosed=(action 'afterDropdownClose')
+	disabled=disabled
+	scrollSelector=scrollSelector
+	animation=animation
+	openOn=openOn
+	floating=floating
+	horizontal=horizontal
+	vertical=vertical
+	throttleThreshold=throttleThreshold
+	autoOpen=false
+	bodyClickClose=false
+	clickOutToClose=true}}
+	<div class="{{bodyClass}}">
+		{{#each _remainingResults as |item index|}}
+			<div class="multi-select-item multi-select-item-default {{itemClass}}"
+				data-index={{index}} onclick={{action 'selectItem' item index}}>
+				{{#if hasBlock}}
+					{{yield item publicAPI}}
+				{{else}}
+					<span class="text-bold">
+						{{if displayProperty (get item displayProperty) item}}
+					</span>
+				{{/if}}
+			</div>
+		{{else if isSearching}}
+			<div class="multi-select-item multi-select-item-default {{itemClass}}">
+				{{searchingMessage}} <span class="fa fa-circle-o-notch fa-spin"></span>
+			</div>
+		{{else}}
+			<div class="multi-select-item multi-select-item-default {{itemClass}}">
+				{{noResultsMessage}}
+			</div>
+		{{/each}}
+	</div>
+{{else}}
+	{{#if hasBlock}}
+		{{#component inputComponent data=selected
+			displayProperty=displayProperty
+			autoCloseEdit=false
+			itemClass=itemClass
+			doRegister=(action (mut _input))
+			onUpdate=(action 'update')
+			onInsert=(action 'insert')
+			onRemove=(action 'remove')
+			onInputStart=(action 'inputStart')
+			onInput=(action 'inputChange')
+			placeholder=searchPlaceholder as |selectedItem|}}
+			{{yield selectedItem publicAPI}}
+		{{/component}}
+	{{else}}
+		{{component inputComponent data=selected
+			displayProperty=displayProperty
+			autoCloseEdit=false
+			itemClass=itemClass
+			doRegister=(action (mut _input))
+			onUpdate=(action 'update')
+			onInsert=(action 'insert')
+			onRemove=(action 'remove')
+			onInputStart=(action 'inputStart')
+			onInput=(action 'inputChange')
+			placeholder=searchPlaceholder}}
+	{{/if}}
+{{/hide-away}}

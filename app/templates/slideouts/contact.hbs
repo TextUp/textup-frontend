@@ -1,0 +1,32 @@
+{{#slideout-pane title=(if testNumbers 'John Doe' 'New Contact')
+    direction=(if testNumbers 'right' 'left')
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout'}}
+    <div class="input-group">
+        <div class="input-group-addon">
+            <button class="btn btn-span" type='button'>
+                Cancel
+            </button>
+        </div>
+        <div class="input-group-addon">
+            <button class="btn btn-default btn-span" type='button'>
+                {{if testNumbers 'Update' 'Create'}}
+            </button>
+        </div>
+    </div>
+    <form class="pad-t pad-l pad-r">
+        <div class="form-element">
+            <label for="Name">Name</label>
+            {{input value=c1.name type="text" placeholder="Name" class="form-control"
+                autocorrect="off" autocapitalize="off"}}
+        </div>
+        <div class="form-element">
+            <label for="Note">Note</label>
+            {{textarea rows="3" class="form-control" maxlength="1000" value=c1.note}}
+        </div>
+        <div class="form-element">
+            <label for="Note">Numbers</label>
+            {{sortable-group/numbers numbers=(mut testNumbers)}}
+        </div>
+    </form>
+{{/slideout-pane}}

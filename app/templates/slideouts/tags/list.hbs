@@ -1,0 +1,95 @@
+{{#slideout-pane title=(if tags 'Tags' 'New Tag')
+    direction='left'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    {{#hide-away clickOutToClose=false
+        animation='fade'
+        ignoreTriggerSelectors='.result-list'
+        startOpen=(if tags false true)
+        tabindex='-1'
+        hideTriggerOnOpen=true as |hideAway|}}
+        <div class="input-group">
+            <span class="input-addon">
+                <button class="btn btn-span" type='button'
+                    onclick={{hideAway.actions.close}}>
+                    Cancel
+                </button>
+            </span>
+            <span class="input-addon">
+                <button class="btn btn-default btn-span" type='button'
+                    onclick={{hideAway.actions.close}}>
+                    Create
+                </button>
+            </span>
+        </div>
+        <div class="pad-all">
+            {{partial 'partials/create-edit-tag'}}
+        </div>
+    {{else}}
+         <ul class="result-list">
+            {{#each tags as |tag|}}
+                {{#hide-away animation='slide'
+                    clickOutToClose=false
+                    hideTriggerOnOpen=true
+                    ignoreTriggerSelectors='.horizontal-items' as |dropdown|}}
+                    <li class="result-item">
+                        <div class="row pad-t pad-b pad-l pad-r clickable">
+                            <div class="control-text">
+                                <div class="horizontal-items xs-13-row-20 text-ellipsis">
+                                    {{preview-badge color=tag.color
+                                        onlyShowFull=true
+                                        content=tag.name}}
+                                    <span class="badge">
+                                        {{tag.numMembers}}
+                                        <span class="fa fa-user"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                                <button class="btn btn-plain btn-danger" type='button'
+                                    onclick={{dropdown.actions.close}}>
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                                <button class="btn btn-plain" type='button'
+                                    onclick={{dropdown.actions.close}}>
+                                    <span class="fa fa-undo"></span>
+                                </button>
+                                <button class="btn btn-plain" type='button'
+                                    onclick={{dropdown.actions.close}}>
+                                    <span class="fa fa-save"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <div class="pad-all bg-color border-b">
+                        {{partial 'partials/create-edit-tag'}}
+                    </div>
+                {{else}}
+                    <li class="result-item">
+                        <div class="row pad-all clickable">
+                            {{#link-to 'main.tag' tagName='div' classNames='control-text'}}
+                                <div class="horizontal-items">
+                                    {{preview-badge color=tag.color
+                                        onlyShowFull=true
+                                        content=tag.name}}
+                                    <span class="badge">
+                                        {{tag.numMembers}}
+                                        <span class="fa fa-user"></span>
+                                    </span>
+                                </div>
+                            {{/link-to}}
+                            <div class="pull-right">
+                                <button class="btn btn-plain" type='button'>
+                                    <span class="fa fa-pencil"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                {{/hide-away}}
+            {{/each}}
+        </ul>
+        <button class="btn btn-span" type='button'>
+            <span class="fa fa-plus"></span>
+        </button>
+    {{/hide-away}}
+{{/slideout-pane}}

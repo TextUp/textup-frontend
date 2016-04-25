@@ -1,0 +1,58 @@
+.multi-toggle {
+	overflow: hidden;
+	white-space: nowrap;
+	position: relative;
+	height: $control-height;
+
+	.multi-toggle-items {
+		position: relative;
+		transition: left 0.5s;
+	}
+	.multi-toggle-item {
+		@extend .no-select;
+		@extend .control-text;
+		@extend %border-box;
+
+		display: inline-block;
+		width: 100%;
+		height: 100%;
+		border-radius: $border-radius;
+		font-weight: $font-weight-bold;
+		padding: 0 $padding;
+		text-align: center;
+	}
+}
+
+.multi-toggle {
+	&.has-left .left-toggle, &.has-right .right-toggle {
+		display: block;
+	}
+	.left-toggle, .right-toggle {
+		@extend .clickable;
+		@extend .control-text;
+		@extend %border-box;
+
+		display: none;
+		z-index: 10;
+		width: 50%;
+		height: 100%;
+		top: 0;
+		position: absolute;
+		opacity: 0.5;
+		transition: opacity 0.5s;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+	.left-toggle {
+		left: 0;
+		text-align: left;
+		padding-left: 5%;
+	}
+	.right-toggle {
+		left: 50%;
+		text-align: right;
+		padding-right: 5%;
+	}
+}

@@ -1,0 +1,42 @@
+{{#slideout-pane title='New Staff'
+    direction='left'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    <div class="input-group">
+        <span class="input-addon">
+            <button class="btn btn-span" type='button'
+                onclick={{slideout.actions.close}}>
+                Cancel
+            </button>
+        </span>
+        <span class="input-addon">
+            <button class="btn btn-default btn-span" type='button'
+                onclick={{slideout.actions.close}}>
+                Create
+            </button>
+        </span>
+    </div>
+    <div class="pad-all">
+        <div class="form-element">
+            <label for="Staff Name">Staff Name</label>
+            {{input value=staff.name type="text" placeholder="Staff Name" class="form-control"}}
+        </div>
+        <div class="form-element">
+            <label for="Username">Username</label>
+            {{input value=staff.username type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+        </div>
+        <div class="form-element">
+            <label for="Staff Email">Staff Email</label>
+            {{input value=staff.email type="email" placeholder="Staff Email" class="form-control"}}
+        </div>
+        <div class="form-element row">
+            <div class="xs-2-row-3 control-text">
+                <label for="TextUp phone" class='text-ellipsis'>
+                    Give {{if staff.name staff.name 'staff'}} a TextUp phone?
+                </label>
+            </div>
+            {{multi-toggle/mutable-toggle classNames='xs-row-3'
+                value=allowNewTeamPhone}}
+        </div>
+    </div>
+{{/slideout-pane}}

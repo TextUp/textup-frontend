@@ -1,0 +1,307 @@
+.hidden {
+    display: none !important;
+}
+.clickable {
+    cursor: pointer;
+}
+.no-select {
+    cursor: default;
+    user-select: none;
+
+    &.clickable {
+        cursor: pointer;
+    }
+}
+.no-space {
+    margin: 0;
+    padding: 0;
+}
+@include spacing-tweaks(margin, 'margin');
+@include spacing-tweaks(padding, 'pad');
+@each $direction, $abbr in $directions-with-abbr {
+    .border-#{$abbr} {
+        border-#{$direction}: 1px solid $border-color;
+    }
+}
+.bg-color {
+    background-color: $bg-color;
+
+    &.bg-dark {
+        background-color: shade($bg-color);
+    }
+    &.bg-darkest {
+        background-color: $bg-dark-color;
+    }
+    &.bg-light {
+        background-color: $bg-light-color;
+    }
+    &.bg-lightest {
+        background-color: $bg-lightest-color;
+    }
+}
+.reset-list {
+    @extend %vertical-scroll;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+// Centering
+// ---------
+
+.v-center {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.v-center-right {
+    @extend .v-center;
+    right: 0;
+}
+.v-center-left {
+    @extend .v-center;
+    left: 0;
+}
+.pull-right {
+    @include v-center(right, 3%);
+    @extend .text-right;
+}
+.pull-left {
+    @include v-center(left, 3%);
+}
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// Badges
+// ------
+
+.btn, .dropdown-item, .menu-item {
+    .badge {
+        margin-top: -0.1em;
+        margin-left: 0.2em;
+        font-size: 0.8em;
+        margin-right: 0.2em;
+    }
+}
+.badge {
+    @extend .preview-badge;
+    max-width: initial;
+    border-color: $border-color;
+    background-color: $bg-color;
+
+    &.dark {
+        background-color: shade($bg-dark-color);
+        color: contrast-color(shade($bg-dark-color));
+    }
+    &.success {
+        background-color: $success-color;
+        color: contrast-color($success-color);
+    }
+    &.failed {
+        background-color: $danger-color;
+        color: contrast-color($danger-color);
+    }
+    .btn {
+        line-height: initial;
+    }
+}
+.clear-badge {
+    @extend .badge;
+    color: inherit;
+    background-color: transparent;
+    border-width: 0;
+}
+.badge-divider {
+    @extend .preview-badge;
+    border-radius: 0;
+    border-left: 1px solid $border-color;
+    margin-right: $badge-h-space;
+}
+
+// Dropdown
+// --------
+
+.dropdown {
+    @extend .reset-list;
+    background-color: $bg-lightest-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    min-width: 200px;
+    overflow: initial;
+
+    $triangle-size: $padding * 0.6;
+    &.hide-away-body--top {
+        @include triangle('bottom', $triangle-size, $border-color);
+        transform: translateY(-$triangle-size);
+
+        &.hide-away-body--left {
+            border-bottom-left-radius: 0;
+            box-shadow: -8px -8px 15px 0 $border-color;
+        }
+        &.hide-away-body--right {
+            border-bottom-right-radius: 0;
+            box-shadow: 8px -8px 15px 0 $border-color;
+        }
+    }
+    &.hide-away-body--bottom {
+        @include triangle('top', $triangle-size, $border-color);
+        transform: translateY($triangle-size);
+
+        &.hide-away-body--left {
+            &:after {
+                transform: translateX(50%);
+            }
+            box-shadow: -8px 8px 15px 0 $border-color;
+            border-top-left-radius: 0;
+        }
+        &.hide-away-body--right {
+            box-shadow: 8px 8px 15px 0 $border-color;
+            border-top-right-radius: 0;
+        }
+    }
+    &.hide-away-body--left:after {
+        left: 0;
+        right: auto;
+    }
+    &.hide-away-body--right:after {
+        right: 0;
+        left: auto;
+    }
+
+    .dropdown-item {
+        padding: $padding * 1.5;
+        user-select: none;
+        cursor: pointer;
+
+        &:not(:last-child) {
+            border-bottom: 1px solid $border-color;
+        }
+        &.active, &:hover, &:active, &:focus {
+            background-color: $bg-light-color;
+        }
+    }
+    .dropdown-divider {
+        padding-top: $padding;
+        padding-bottom: $padding * 0.5;
+        background-color: $bg-color;
+        border: 0 solid $border-color;
+        border-bottom-width: 1px;
+        font-weight: $font-weight-bold;
+        padding-left: $padding;
+        text-transform: uppercase;
+    }
+}
+@include mq($from: desktop) {
+    .dropdown {
+        min-width: 150px;
+
+        .dropdown-item {
+            padding: ($padding * 0.5) $padding;
+        }
+        .dropdown-divider {
+            padding-top: $padding * 0.5;
+            padding-bottom: $padding * 0.25;
+            padding-left: $padding;
+            font-size: 0.8em;
+        }
+    }
+}
+
+// Record bubbles
+// --------------
+
+.record-item {
+    position: relative;
+    max-width: 60%;
+    min-width: 20em;
+    border-radius: $border-radius;
+    position: relative;
+    color: contrast-color($bg-color);
+    background-color: $bg-color;
+    margin-bottom: $record-item-space;
+
+    @include mq($until:mobileLandscape) {
+        min-width: 15em;
+
+        &.incoming.voicemail {
+            min-width: 278px;
+        }
+    }
+    .contents {
+        position: relative;
+        padding: 0.5em 1em;
+    }
+    &:first-child {
+        margin-top: $record-item-space;
+    }
+    &.incoming, &.outgoing {
+        clear: both;
+        transition: all 0.5s;
+    }
+    &.incoming {
+        margin-left: $record-item-triangle * 1.5;
+        float: left;
+        color: contrast-color($incoming-color);
+        background-color: $incoming-color;
+        .contents {
+            @include triangle("left", $record-item-triangle, shade($incoming-color));
+        }
+        &.voicemail {
+            @extend .clickable;
+            width: 20em;
+        }
+    }
+    &.outgoing {
+        margin-right: $record-item-triangle * 1.5;
+        float: right;
+        color: contrast-color($outgoing-color);
+        background-color: $outgoing-color;
+
+        .contents {
+            @include triangle("right", $record-item-triangle, shade($outgoing-color));
+        }
+    }
+
+    %decoration {
+        @extend .small;
+        position: absolute;
+        height: $record-item-space * 0.9;
+        line-height: $record-item-space * 0.9;
+        color: $font-color;
+        font-weight: $font-weight-bold;
+    }
+    .decoration-left {
+        @extend %decoration;
+        bottom: -$record-item-space * 0.9;
+        left: 0;
+    }
+    .decoration-right {
+        @extend %decoration;
+        bottom: -$record-item-space * 0.9;
+        right: 0;
+    }
+    .decoration-center-left {
+        @include v-center(left, -1.5em);
+    }
+    .decoration-center-right {
+        @include v-center(right, -1.5em);
+    }
+}
+.indicator {
+    display: inline-block;
+    height: $record-item-space / 2;
+    width: $record-item-space / 2;
+    border-radius: 100%;
+    background-color: $border-color;
+
+    &.success {
+        background-color: $success-color;
+    }
+    &.failed {
+        background-color: $danger-color;
+    }
+}

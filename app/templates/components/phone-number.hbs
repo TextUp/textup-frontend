@@ -1,0 +1,66 @@
+<div class="input-group {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
+	<span class="input-group-element {{if allowChanges '' 'form-disabled'}}">
+		<span class="phone-number-input input-group">
+		    <span class="input-group-text-display">(</span>
+		    {{!-- numeric input mode allows for number keyboard on mobile  --}}
+		    {{!-- text type so that the up/down arrows don't show up on desktop --}}
+		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    	placeholder="###"
+		    	class="form-control text-center"
+		    	value=_cleanedAndSplit.first
+		    	focus-out=(action 'handleChange')
+		    	key-up=(action 'validateInputAndAdjustFocus' 'first')
+		    	disabled=(not allowChanges)}}
+		    <span class="input-group-text-display">)</span>
+		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    	placeholder="###"
+		    	class="form-control text-center"
+		    	value=_cleanedAndSplit.second
+		    	focus-out=(action 'handleChange')
+		    	key-up=(action 'validateInputAndAdjustFocus' 'second')
+		    	disabled=(not allowChanges)}}
+		    <span class="input-group-text-display">-</span>
+		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    	placeholder="####"
+		    	class="form-control text-center"
+		    	value=_cleanedAndSplit.third
+		    	key-up=(action 'handleLastInput')
+		    	focus-out=(action 'handleChange')
+		    	enter=(action 'lastInputDidEnter')
+		    	disabled=(not allowChanges)}}
+		</span>
+	</span>
+	{{#if (or showControl (or onClick onValidate))}}
+		<span class="input-group-addon {{controlClass}}">
+			<button class='btn {{controlButtonClass}}' type='button'
+				disabled={{and (not _isValid) someNumberPresent}}
+				{{action 'clickControl' bubbles=false}}>
+				{{#if (hasBlock 'inverse')}}
+					{{yield to='inverse'}}
+				{{else}}
+			        <span class="fa fa-plus"></span>
+				{{/if}}
+			</button>
+		</span>
+	{{/if}}
+</div>
+<div class="input-group {{if (or (not _isValidating) (not onValidate)) 'hidden' ''}}">
+	{{#if (and hasBlock (not forceDefaultValidate))}}
+		{{yield publicAPI}}
+	{{else}}
+		<span class="input-group-addon blend-in">
+	    	<button class='btn btn-default' type='button' {{action 'revert' bubbles=false}}>
+	        	<span class='fa fa-undo'></span>
+	    	</button>
+	    </span>
+	    {{input class='phone-number-validate form-control' placeholder='Verify number'
+	    	value=_validationCode enter='handleValidate'}}
+		<span class="input-group-addon blend-in">
+	    	<button class='btn btn-default' type='button'
+	    		disabled={{_isValidationCodeEmpty}}
+	    		{{action 'handleValidate' bubbles=false}}>
+	        	<span class='fa fa-check'></span>
+	    	</button>
+	    </span>
+	{{/if}}
+</div>

@@ -1,0 +1,19 @@
+{{#slideout-pane title=(if contacts
+        (concat 'Share (' contacts.length ' selected)')
+        (concat 'Share ' contact.name))
+    direction='right'
+    closeActionName='closeSlideout'}}
+    <div class="input-group">
+        <div class="input-group-addon">
+            <button class="btn btn-span" type='button'>
+                Cancel
+            </button>
+        </div>
+        <div class="input-group-addon">
+            <button class="btn btn-default btn-span" type='button'>
+                Update
+            </button>
+        </div>
+    </div>
+    {{multi-toggle/share contacts=(if contacts contacts contact) staffs=otherStaffs}}
+{{/slideout-pane}}

@@ -1,9 +1,15 @@
 {
   "name": "textup-frontend",
   "dependencies": {
-    "ember": "~2.3.1",
+    "ember": "~2.4.5",
     "ember-cli-shims": "0.1.0",
     "ember-cli-test-loader": "0.2.2",
-    "ember-qunit-notifications": "0.1.0"
+    "ember-qunit-notifications": "0.1.0",
+    "sass-mq": "~3.2.6",
+    "tooltipster": "^3.3.0",
+    "elessar": "^1.8.5",
+    "colpick": "2.0.2",
+    "mapbox.js": "^2.4.0",
+    "dom-ruler": "0.1.13"
   }
 }

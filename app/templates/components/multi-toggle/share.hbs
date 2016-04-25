@@ -1,0 +1,11 @@
+{{#multi-toggle/group-by-item itemBucketProperty='sharedWith'
+    itemBucketCommandProperty='permission'
+    bucketIdentityProperty='id'
+    singleOptions=singleOptions
+    multipleOptions=multipleOptions
+    items=contacts
+    buckets=staffs as |staff|}}
+        {{staff.name}}
+{{else}}
+    <li class="no-results">No staff members available to share with.</li>
+{{/multi-toggle/group-by-item}}

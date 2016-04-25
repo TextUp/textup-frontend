@@ -1,0 +1,61 @@
+.audio-control {
+	%labeled-bar {
+		@extend .no-select;
+		position: relative;
+		overflow: hidden;
+	}
+	.volume-control {
+		.input-group-element {
+			border-top: 1px solid $border-color;
+			border-bottom: 1px solid $border-color;
+		}
+	}
+	.volume-bar {
+		@extend %labeled-bar;
+		width: 75px;
+		background-color: $bg-color;
+	    position: relative;
+    	top: 0.15em;
+
+		.volume-level-bar {
+			height: 1em;
+			background-color: shade($bg-color);
+			transition: width 0.5s;
+		}
+	}
+	.audio-progress-bar {
+		@extend %labeled-bar;
+		width: 100%;
+		height: $control-height;
+		background-color: $bg-color;
+		color: contrast-color($bg-color);
+
+		.audio-progress {
+			@extend %labeled-bar;
+			width: 0;
+			height: $control-height;
+			background-color: $brand-color;
+			color: contrast-color($brand-color);
+			transition: width 1s;
+		}
+		.audio-loaded {
+			width: 30%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: $control-height;
+			$color: shade($bg-color);
+			background-color: $color;
+			color: contrast-color($color);
+			transition: width 1s;
+		}
+	}
+	.time-label {
+		@extend .text-bold;
+		@extend .no-select;
+		@include v-center('right', $padding);
+	}
+	.input-group-addon .btn {
+		border: 1px solid $border-color;
+	}
+}

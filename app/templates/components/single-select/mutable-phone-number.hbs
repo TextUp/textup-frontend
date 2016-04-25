@@ -1,0 +1,15 @@
+{{#single-select data=data
+    selected=selected
+    displayProperty='number'
+    identityProperty='number'
+    allowCreate=false
+    searchPlaceholder='Pick your TextUp number'
+    onInsert=(action 'select')
+    onRemove=(action 'deselect') as |item select|}}
+    <div class="text-ellipsis">
+        <span class="text-bold {{if item.region 'pad-r'}}">{{item.number}}</span>
+        {{#if item.region}}
+            <span class="text-normal">{{item.region}}</span>
+        {{/if}}
+    </div>
+{{/single-select}}

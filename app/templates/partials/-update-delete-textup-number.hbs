@@ -1,0 +1,66 @@
+{{#if (not owner.phone)}}
+    <div class="form-element row">
+        <div class="xs-2-row-3 control-text">
+            <label for="TextUp phone" class='text-ellipsis'>
+                Set up a TextUp phone?
+            </label>
+        </div>
+        {{multi-toggle/mutable-toggle classNames='xs-row-3'
+            value=ownerAddNewPhone}}
+    </div>
+    {{#liquid-if ownerAddNewPhone class='animate-slide-from-top'}}
+        {{single-select/mutable-phone-number data=numbers
+            selected=(mut owner.newNumber)
+            classNames='form-element pad-l pad-r'}}
+    {{/liquid-if}}
+{{else}}
+    <div class='form-element'>
+        <label for='TextUp Phone'>TextUp Phone</label>
+        {{phone-number number=owner.phone}}
+    </div>
+    <div class="form-element row">
+        <div class="xs-2-row-3 control-text">
+            <label for="TextUp phone" class='text-ellipsis'>
+                Change existing TextUp phone?
+            </label>
+        </div>
+        {{#multi-toggle classNames='xs-row-3'
+            wrapAround=true as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                isSelected=initialSelectFalse
+                color='#d3d3d3'
+                onSelect=(action (mut ownerChangeExistingPhone) null)}}
+                No Change
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#76c9ec'
+                onSelect=(action (mut ownerChangeExistingPhone) 'new')}}
+                New number
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#c9302c'
+                onSelect=(action (mut ownerChangeExistingPhone) 'delete')}}
+                Delete
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
+    </div>
+    <div class='{{if (eq ownerChangeExistingPhone 'new') '' 'hidden'}}'>
+        {{single-select/mutable-phone-number data=numbers
+            selected=(mut owner.newNumber)
+            classNames='form-element pad-l pad-r'}}
+    </div>
+    <div class='{{if (eq ownerChangeExistingPhone 'delete') '' 'hidden'}}'>
+        {{#hide-away classNames='form-element pad-l pad-r text-center'
+            tabindex=false
+            allowedTriggerSelectors='.btn'
+            hideTriggerOnOpen=true
+            clickOutToClose=false
+            bodyClickClose=false
+            animation='fade'}}
+            <p>You have confirmed deletion. To undo this action, switch the above slider to <span class="text-bold">No Change</span>. This number will be deleted when you press <span class="text-bold">Update</span>.</p>
+        {{else}}
+            <p class='margin-b'>Are you sure you want to delete? All contacts and messages will be saved, but you may not be able to reclaim this number.</p>
+            <button class="btn btn-danger" type='button'>I understand</button>
+        {{/hide-away}}
+    </div>
+{{/if}}

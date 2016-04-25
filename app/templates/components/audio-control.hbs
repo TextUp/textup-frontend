@@ -1,0 +1,88 @@
+<div class="input-group">
+	<div class="input-group-addon">
+		{{#if _isReady}}
+			<button tabindex='0' type="button" class="btn btn-plain" disabled='true'>
+				<span class="fa fa-circle-o-notch fa-spin"></span>
+			</button>
+		{{else if _isPlaying}}
+			<button tabindex='0' type="button" class="btn btn-plain"
+				{{action 'pause'}}>
+				{{#if _isLoading}}
+					<span class="fa fa-circle-o-notch fa-spin"></span>
+				{{else}}
+					<span class="fa fa-pause"></span>
+				{{/if}}
+			</button>
+		{{else}}
+			<button tabindex='0' type="button" class="btn btn-plain"
+				{{action 'play'}}>
+				<span class="fa fa-play"></span>
+			</button>
+		{{/if}}
+	</div>
+	<div class="input-group-element">
+		<div class="audio-progress-bar">
+			{{#if (or hasSource (not _hasError))}}
+				<div class="audio-loaded" style='width:{{_percentBuffered}};'></div>
+				<span class="time-label">{{_durationDisplay}}</span>
+				<div class="audio-progress" style='width:{{_percentComplete}};'>
+					<span class="time-label">{{_currentTimeDisplay}}</span>
+				</div>
+			{{else}}
+				<p class="pad-l control-text text-bold">
+					{{#if hasBlock}}
+						{{yield publicAPI}}
+					{{else}}
+						Cannot play audio
+						<span class="fa fa-frown-o"></span>
+					{{/if}}
+				</p>
+			{{/if}}
+		</div>
+	</div>
+	{{#hide-away classNames='input-group-addon'
+		disabled=(or (not hasSource) _hasError)
+		tabindex=false
+		animation='fade'
+		clickOutToClose=false
+		hideTriggerOnOpen=true as |hideAway|}}
+		<div class="input-group volume-control">
+			<div class="input-group-addon">
+				<button tabindex='0' type="button" class="btn btn-plain"
+					onclick={{hideAway.actions.close}}>
+					<span class="fa fa-angle-right"></span>
+				</button>
+			</div>
+			<div class="input-group-addon">
+				<button tabindex='0' type="button" class="btn btn-plain"
+					{{action 'toggleVolume'}}>
+					{{#if (or _isMuted (eq volume 0))}}
+						<span class="fa fa-volume-off"></span>
+					{{else if (gt volume 50)}}
+						<span class="fa fa-volume-up"></span>
+					{{else}}
+						<span class="fa fa-volume-down"></span>
+					{{/if}}
+				</button>
+			</div>
+			<div class="input-group-element">
+				<div class="volume-bar">
+					<div class="volume-level-bar" style='width:{{_volumePercentage}};'></div>
+				</div>
+			</div>
+			<div class="input-group-text text-bold">
+				{{if (lt _volume 10) (concat '0' _volume) _volume}}
+			</div>
+		</div>
+	{{else}}
+		<button tabindex='0' type="button" class="btn btn-plain">
+			{{#if (or _isMuted (eq volume 0))}}
+				<span class="fa fa-volume-off"></span>
+			{{else if (gt volume 50)}}
+				<span class="fa fa-volume-up"></span>
+			{{else}}
+				<span class="fa fa-volume-down"></span>
+			{{/if}}
+		</button>
+	{{/hide-away}}
+</div>

@@ -1,0 +1,19 @@
+<div class="hide-away-trigger {{triggerClass}}"
+	tabindex={{tabIndex}}
+    role={{role}}>
+	{{yield to='inverse'}}
+</div>
+
+{{#if _isOpen}}
+	{{#ember-wormhole to=destination renderInPlace=(not floating)
+		classNames=(if floating 'hide-away-body--hide-in-place')}}
+		<div class="hide-away-body {{elementId}} {{bodyClass}} {{if floating 'floating'}}
+			{{_bodyVerticalClass}} {{_bodyHorizontalClass}} {{if _willFloatOver 'overflow'}}"
+			tabindex={{tabIndex}}>
+			{{yield publicAPI (hash
+				vertical=_bodyVerticalClass
+				horizontal=_bodyHorizontalClass
+			)}}
+		</div>
+	{{/ember-wormhole}}
+{{/if}}

@@ -1,0 +1,92 @@
+<div class="content">
+	{{#hide-away tabindex=false
+        clickOutToClose=true
+        bodyClickClose=true
+        animation='slide'
+        allowedTriggerSelectors='.staff-filter' as |hideAway|}}
+        <ul class="reset-list">
+            {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">Active</p>
+                </div>
+            {{/link-to}}
+            <li class="menu-item">
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">Admins</p>
+                </div>
+            </li>
+            <li class="menu-item">
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">Blocked</p>
+                </div>
+            </li>
+        </ul>
+    {{else}}
+        <div class="section-header">
+        	{{#if team}}
+				<span class="indicator pull-left display-l"
+                    style='background-color:{{team.color}};'></span>
+                <div class="tag-title">
+                    <h4 class="text-ellipsis">
+                        {{team.name}}
+                    </h4>
+                    <p>{{team.numMembers}} {{if (eq team.numMembers 1) 'person' 'people'}}</p>
+                </div>
+				{{#link-to 'admin.team.edit' classNames='pull-right' tagName='div'}}
+                    <button class="btn btn-plain" type='button'>
+                        <span class="fa fa-pencil"></span>
+                    </button>
+                {{/link-to}}
+        	{{else}}
+        		<div class="contacts-title">
+	                <h4 class="text-ellipsis">Active</h4>
+	                <p>5 {{if (eq team.numMembers 1) 'person' 'people'}}</p>
+	            </div>
+	            <div class="staff-filter pull-right display-l">
+	                <button class="btn btn-plain" type='button'>
+	                    <span class="fa fa-filter"></span>
+	                </button>
+	            </div>
+        	{{/if}}
+        </div>
+    {{/hide-away}}
+    {{#infinite-scroll classNames='section-body'
+        containerClass='result-list'
+        direction='down'
+        data=people
+        total=numPeople
+        doLoad=(action 'loadMore') as |person index|}}
+        <div class="result-item pad-t
+            {{if (eq index 2) 'active'}}">
+            <div class="row">
+                <div class="contacts-control">
+                    {{#link-to (if team
+                            'admin.team.many'
+                            'admin.people.many')
+                        bubbles=false}}
+                        {{input type="checkbox" checked=person.isSelected}}
+                    {{/link-to}}
+                </div>
+                {{#link-to (if team
+                        'admin.team.person'
+                        'admin.people.person')
+                    classNames="contacts-info clickable"
+                    tagName="div"}}
+                    <p class="emphasize">{{person.name}}</p>
+                    <p>{{person.username}}</p>
+                {{/link-to}}
+            </div>
+            <div class="contacts-tags">
+                {{#if (eq person.status 'ADMIN')}}
+                    <span class="badge">Admin</span>
+                {{/if}}
+                {{#each person.teams as |team|}}
+                    {{preview-badge color=team.color content=team.name}}
+                {{/each}}
+            </div>
+        </div>
+    {{else}}
+        <div class="no-results">No people match this criteria.</div>
+    {{/infinite-scroll}}
+</div>
+{{outlet}}

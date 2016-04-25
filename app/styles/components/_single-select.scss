@@ -1,0 +1,25 @@
+.single-select-input {
+	width: 100%;
+
+	.single-select-input-display {
+		@extend .btn;
+		@extend .no-select;
+		width: 100%;
+		position: relative;
+	}
+	button.single-select-input-display { // more specific for overriding
+		padding-right: $padding * 3;
+		text-transform: none;
+	}
+	.single-select-input-edit {
+		display: none;
+	}
+}
+.single-select-input.editing {
+	.single-select-input-display {
+		display: none;
+	}
+	.single-select-input-edit {
+		display: block;
+	}
+}

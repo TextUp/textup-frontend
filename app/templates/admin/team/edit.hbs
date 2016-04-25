@@ -1,0 +1,39 @@
+<div class="details full-height">
+	<div class="section-header">
+		<span class="pull-left">
+			<div class="horizontal-items">
+				<div class="clear-badge">
+					<h5>{{team.name}}</h5>
+				</div>
+				<div class="badge">
+					{{team.numMembers}}
+					<span class="fa fa-user"></span>
+				</div>
+			</div>
+		</span>
+		<span class="pull-right pad-r">
+			{{#link-to 'admin.team'}}
+				<span class="pad-all">
+					<span class="fa fa-times"></span>
+				</span>
+        	{{/link-to}}
+		</span>
+    </div>
+    <div class="section-body bg-color bg-lightest">
+    	<div class="input-group">
+	        <div class="input-group-addon">
+	            <button class="btn btn-span" type='button'>
+	                Cancel
+	            </button>
+	        </div>
+	        <div class="input-group-addon">
+	            <button class="btn btn-default btn-span" type='button'>
+	                Update
+	            </button>
+	        </div>
+	    </div>
+    	<div class="pad-t pad-b">
+    		{{partial 'partials/create-edit-team'}}
+    	</div>
+    </div>
+</div>

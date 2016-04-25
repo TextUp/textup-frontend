@@ -1,0 +1,46 @@
+{{#sortable-group classNames='form-element'
+    onChange="reorderNumbers" as |group|}}
+    {{#each numbers as |num i|}}
+        {{#sortable-item classNames='input-group'
+            model=num group=group handle=".handle"}}
+            <div class="input-group-addon blend-in">
+                <button class="btn">
+                    <span class="fa fa-trash"></span>
+                </button>
+            </div>
+            {{#phone-number number=(readonly num.number)
+                controlClass='blend-in handle'
+                controlButtonClass='btn-default'
+                onChange=(action 'updateNumber' num)
+                showControl=true}}
+            {{else}}
+                <span class='fa fa-bars'></span>
+            {{/phone-number}}
+        {{/sortable-item}}
+    {{/each}}
+{{/sortable-group}}
+{{#hide-away tabindex=false
+    clickOutToClose=false
+    animation='fade'
+    startOpen=(if numbers false true)
+    onClose=(action 'clearNew')
+    hideTriggerOnOpen=true as |hideAway|}}
+    <div class='input-group'>
+        {{#if hasNumbers}}
+            <span class="input-group-addon">
+                <button class='btn' type='button'
+                    onclick={{hideAway.actions.close}}>
+                    <span class="fa fa-times"></span>
+                </button>
+            </span>
+        {{/if}}
+        {{phone-number number=newNumber
+            controlButtonClass='btn-success'
+            onChange=(action 'storeNewNumber')
+            onClick=(action 'addNewNumber')}}
+    </div>
+{{else}}
+    <button class="btn btn-span" type='button'>
+        <span class="fa fa-plus"></span>
+    </button>
+{{/hide-away}}

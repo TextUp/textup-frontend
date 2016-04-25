@@ -1,0 +1,104 @@
+// colors
+$brand-color: #3399cc;
+$danger-color: #c9302c;
+$success-color: #56a556;
+
+// elements
+$bg-dark-color: #222222;
+$bg-color: #f3f3f3;
+$bg-light-color: #f8f8f8;
+$bg-lightest-color: #fff;
+$border-color: #d3d3d3;
+$incoming-color: $border-color;
+$outgoing-color: $brand-color;
+
+// font
+$font-size: 14px;
+$title-color: #505050;
+$font-color: #737373;
+$font-light-color: #fff;
+$font-weight-std: 400;
+$font-weight-bold: 700;
+
+// measurements
+$border-radius: 3px;
+$spacing-scaling: (
+	1: 'default',
+	0.5: 'half',
+	2: 'double',
+    3: 'triple'
+);
+$directions-with-abbr: (
+    left: 'l',
+    right: 'r',
+    top: 't',
+    bottom: 'b'
+);
+$padding: 1em;
+$button-accent-size: 3px;
+$min-control-width: (50px / $font-size * 1em);
+$control-height: 2.5em;
+$form-v-space: 0.5em; // one side
+$badge-height: 1.5em;
+$badge-v-space: 0.2em; // one side
+$badge-h-space: 0.4em; // one side
+$contacts-h-space: 50px;
+
+// sizes
+$record-item-triangle: 1em;
+$record-item-space: 1.5em;
+$header-height: 5rem;
+$split-sidebar-width: 20em;
+$slideout-width: 30em;
+$collapsed-menu-width: $split-sidebar-width;
+$exposed-menu-width: 4em;
+$drawer-width: $collapsed-menu-width;
+
+// layers
+$menu-z-index: 10;
+$body-z-index: 30;
+$contents-z-index: 10; // within body
+$details-z-index: 20; // within body
+$hide-away-z-index: 40;
+$slideout-z-index: 50;
+
+// grid
+$grid-splits: 2, 3, 10, 20;
+$breakpoint-abbrs: ( // must be from smallest to largest
+	mobile: "xs",
+	mobileLandscape: "s",
+    tablet: "m",
+    desktop: "l"
+);
+
+// mq configuration
+$mq-breakpoints: (
+    mobile: 320px,
+    mobileLandscape: 480px,
+    tablet: 740px,
+    desktop: 980px
+);
+// $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
+
+// importing modules
+@import 'mq';
+@import 'modules/utilities';
+@import 'modules/grid';
+@import 'modules/color';
+
+// importing components
+@import 'components/_drawer';
+@import 'components/_hide-away';
+@import 'components/_preview-badge';
+@import 'components/_slideout-pane';
+@import 'components/_tooltipster';
+@import 'components/_multi-select';
+@import 'components/_single-select';
+@import 'components/_tab';
+@import 'components/_multi-range';
+@import 'components/_multi-toggle';
+@import 'components/_color-input';
+@import 'components/_audio-control';
+@import 'components/_location-control';
+@import 'components/_infinite-scroll';
+@import 'components/_maxlength';

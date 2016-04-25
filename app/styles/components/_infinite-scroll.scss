@@ -1,0 +1,47 @@
+.infinite-scroll {
+	@extend %vertical-scroll;
+	height: 500px;
+
+	.infinite-items {
+		@extend %clearfix;
+	}
+	.infinite-control {
+		@extend %border-box;
+		width: 100%;
+		display: none;
+	}
+	&.scroll-up {
+		position: relative;
+
+		.infinite-items {
+			position: relative;
+			top: $padding * 2;
+		}
+		.infinite-control {
+			position: absolute;
+			top: 0;
+			transform: translateY(50%);
+		}
+		&.done:not(.loading) {
+			.infinite-items {
+				top: 0;
+			}
+		}
+	}
+	&.scroll-down {
+		.infinite-control {
+			padding: $padding 0;
+		}
+	}
+	&.loading {
+		.infinite-control {
+			display: block;
+		}
+	}
+
+	.infinite-control {
+		@extend .text-center;
+		font-weight: $font-weight-bold;
+	}
+
+}

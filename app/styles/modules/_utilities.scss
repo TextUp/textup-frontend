@@ -1,0 +1,175 @@
+// Positioning
+// -----------
+
+@mixin neighbors($parent, $children, $widths) {
+    #{$parent} {
+        @extend %clearfix;
+        @include split(width, $children, $widths);
+        @each $child in $children {
+            #{$child} {
+                float: left;
+            }
+        }
+    }
+}
+@mixin split($property, $items, $measurementsExceptOne) {
+    $num-items: length($items);
+    @for $i from 1 to $num-items {
+        #{nth($items, $i)} {
+            #{$property}: #{nth($measurementsExceptOne, $i)};
+        }
+    }
+    #{nth($items, $num-items)} {
+        @include remaining(#{$property}, $measurementsExceptOne);
+    }
+}
+@mixin remaining($property, $amounts) {
+    $difference: "100%";
+    @each $amount in $amounts {
+        $difference: "#{$difference} - #{$amount}"
+    }
+    #{$property}: calc(#{$difference});
+}
+@mixin v-center($direction: none, $amount: 0, $adjust-back: false) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    @if $direction == left {
+        left: $amount;
+        @if $adjust-back {
+            transform: translate(-50%, -50%);
+        }
+    }
+    @else if $direction == right {
+        right: $amount;
+        @if $adjust-back {
+            transform: translate(50%, -50%);
+        }
+    }
+}
+@mixin h-center($direction: none, $amount: 0, $adjust-back: false) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    @if $direction == top {
+        top: $amount;
+        @if $adjust-back {
+            transform: translate(-50%, -50%);
+        }
+    }
+    @else if $direction == bottom {
+        bottom: $amount;
+        @if $adjust-back {
+            transform: translate(-50%, 50%);
+        }
+    }
+}
+
+// Triangles
+// ---------
+
+@mixin triangle($position, $size, $color) {
+    position: relative;
+
+    &:after {
+        position: absolute;
+        #{$position}: -$size * 0.95;
+        content: '';
+        height: 0;
+        width: 0;
+        border: $size solid transparent;
+        border-#{$position}-width: 0;
+        border-#{opposite-direction($position)}-color: $color;
+
+        @if $position == "top" or $position == "bottom" {
+            @include h-center;
+        }
+        @else {
+            @include v-center;
+        }
+
+        @content;
+    }
+}
+@function opposite-direction($direction) {
+    @if $direction == "top" {
+        @return "bottom";
+    }
+    @else if $direction == "bottom" {
+        @return "top";
+    }
+    @else if $direction == "right" {
+        @return "left";
+    }
+    @else if $direction == "left" {
+        @return "right";
+    }
+    @else {
+        @return "";
+    }
+}
+
+// Unit conversion
+// ---------------
+
+@function em($px, $base: $font-size) {
+    @return ($px / $base) * 1em;
+}
+
+// Utility classes
+// ---------------
+
+%vertical-scroll {
+    overflow-x: hidden;
+    overflow-y: scroll; // overflow scroll MUCH smoother on mobile safari
+    -webkit-overflow-scrolling: touch;
+
+    @include mq($from: desktop) {
+        overflow-y: auto;
+
+        // only desktop browser show wide scrollbars
+        // mobile browsers usually only show the scrollbars when scrolling
+        &::-webkit-scrollbar {
+            width: 5px;
+            height: 1px;
+            border-left: 0;
+            background: $border-color;
+        }
+        &::-webkit-scrollbar-track {
+            background: none;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: darken($border-color, 40%);
+            border-radius: 0;
+        }
+    }
+}
+%border-box {
+    box-sizing: border-box;
+}
+%clearfix:after {
+    clear: both;
+    display: table;
+    content: " ";
+}
+%liquid-fire-full-height {
+    height: 100%;
+    height: 100vh;
+}
+%inline-item {
+    &:not(:first-child):not(:last-child) {
+        border-radius: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+    }
+    &:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right-width: 0;
+    }
+    &:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-width: 0;
+    }
+}

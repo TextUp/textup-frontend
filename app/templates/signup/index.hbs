@@ -1,0 +1,32 @@
+<div class="single-body">
+    <div class="single-body-header">
+        <h5 class="text-center pad-b">Welcome to TextUp!</h5>
+        <p class="text-center">Search for your organization's name below to see if your organization has already signed up.</p>
+    </div>
+    <div class="single-body-content">
+        {{#single-select
+            selected=selected
+            filterProperty='name'
+            displayProperty='name'
+            identityProperty='id'
+            allowCreate=false
+            searchPlaceholder='Search existing organizations'
+            noResultsMessage='Could not find anything. Why not create a new organization?'
+            doSearch=(action 'search')
+            onInsert=(action 'select')
+            onRemove=(action 'deselect') as |org select|}}
+            <div class="text-ellipsis">
+                <span class="text-bold pad-r">{{org.name}}</span>
+                <span class="text-normal">{{org.address}}</span>
+            </div>
+        {{/single-select}}
+    </div>
+    <div class="single-body-footer text-center">
+        {{link-to "Next" "signup.account" tagName="button" classNames="btn btn-default"}}
+        {{!-- <button class='btn btn-default'>Next</button> --}}
+    </div>
+</div>
+<div class="single-footer">
+    <p class="emphasize text-darken">Can't find your organization?</p>
+    <h4>{{link-to "Create a new organization" "signup.new" classNames="text-darken"}}</h4>
+</div>

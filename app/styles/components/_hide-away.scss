@@ -1,0 +1,30 @@
+.hide-away {
+	.hide-away-trigger.no-select {
+		@extend .no-select;
+	}
+	.hide-away-body--hide-in-place {
+		display: none;
+	}
+}
+
+.hide-away-body {
+	visibility: hidden;
+
+	&.floating {
+		position: absolute;
+		z-index: $hide-away-z-index;
+
+		&.overflow {
+			@extend %vertical-scroll;
+			&.hide-away-body--bottom {
+				border-bottom: $button-accent-size solid $brand-color;
+			}
+			&.hide-away-body--top {
+				border-top: $button-accent-size solid $brand-color;
+			}
+		}
+	}
+}
+.hide-away-wormhole {
+	z-index: $hide-away-z-index;
+}

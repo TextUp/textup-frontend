@@ -1,0 +1,32 @@
+@mixin button-colors($color, $include-states:true) {
+    $accent: shade($color);
+    color: contrast-color($color);
+    background-color: $color;
+    border-color: $accent;
+
+    @if $include-states {
+        &:hover, &:focus, &:active, &.active {
+            color: lighten($color, 50%);
+            background-color: shade($color, 2);
+            border-color: shade($accent, 2);
+        }
+    }
+}
+
+// Functions
+// ---------
+
+@function contrast-color($color, $threshold:60, $contrast:60%) {
+    @if lightness($color) > $threshold {
+        @return darken($color, $contrast);
+    }
+    @else {
+        @return lighten($color, $contrast);
+    }
+}
+@function shade($color, $multiplier:1) {
+    @return darken($color, 10% * $multiplier);
+}
+@function tint($color, $multiplier:1) {
+    @return lighten($color, 10% * $multiplier);
+}

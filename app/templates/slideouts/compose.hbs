@@ -1,0 +1,43 @@
+{{#slideout-pane title='Compose'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout'}}
+	<button class="btn btn-default btn-span" type='button'>
+        Send
+    </button>
+	<form action="" class="pad-t pad-l pad-r">
+		<div class="form-element">
+			{{#multi-select data=tags
+		    	selected=selectedRecipients
+		    	displayProperty='identifier'
+		    	identityProperty='identifier'
+		    	doSearch=(action 'doSearch')
+		    	doCreate=(action 'createRecipient')
+		    	onInsert=(action 'insertRecipientAt')
+				onRemove=(action 'deselectRecipient') as |recipient select|}}
+				<span class="horizontal-items">
+					<span class="clear-badge">
+						{{#if (eq recipient.type 'tag')}}
+							<span class="fa fa-tag"></span>
+						{{else if (eq recipient.type 'contact')}}
+							<span class="fa fa-user"></span>
+						{{else}}
+							<span class="fa fa-asterisk"></span>
+						{{/if}}
+					</span>
+					<span class="clear-badge">
+						<span class="text-bold">{{recipient.identifier}}</span>
+					</span>
+				</span>
+			{{/multi-select}}
+		</div>
+		<div class="form-element">
+			{{textarea rows="3"
+				autoresize=true
+				class="form-control"
+				maxlength="320"
+				remaining='bottom'
+				value=composeMessage
+				placeholder="Type your message here"}}
+		</div>
+	</form>
+{{/slideout-pane}}

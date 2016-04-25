@@ -1,0 +1,15 @@
+.preview-badge {
+    @extend %border-box;
+
+    vertical-align: middle;
+	display: inline-block;
+    cursor: default;
+
+    font-weight: $font-weight-bold;
+    color: $font-color;
+    padding: 0 $badge-h-space;
+    margin-right: $badge-h-space;
+    min-height: $badge-height;
+    line-height: $badge-height;
+    border-radius: $border-radius;
+}

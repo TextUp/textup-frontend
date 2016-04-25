@@ -1,0 +1,11 @@
+<div class="form-element pad-l pad-r">
+    <label for="Your Name">Organization Name</label>
+    {{input value=org.name type="text" placeholder="Organization Name" class="form-control"}}
+</div>
+<div class="form-element">
+    <label for="Your Name" class='pad-l pad-r'>Location</label>
+    {{location-control/mutable
+        hideSidebar=true
+        location=(mut org.latLng)
+        description=(mut org.address)}}
+</div>

@@ -1,0 +1,13 @@
+<div class="single-body">
+    <div class="single-body-header">
+        <h5 class="text-center pad-b">Welcome to TextUp!</h5>
+        <p class="text-center"><b>Welcome Kiki Bai!</b> First, please pick a TextUp phone number.</p>
+    </div>
+    <div class="single-body-content">
+        {{single-select/mutable-phone-number data=numbers selected=(mut selected)}}
+    </div>
+    <div class="single-body-footer text-center">
+        {{link-to "Next" "setup.connect" tagName="button" classNames="btn btn-default"}}
+        {{!-- <button class='btn btn-default'>Next</button> --}}
+    </div>
+</div>

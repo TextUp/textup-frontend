@@ -1,0 +1,176 @@
+{{#sliding-drawer contentsId='menu'
+    closeOnContentsClick=true
+    allowCloseContentsSelector='.menu-item'
+    ignoreCloseContentsSelector='.menu-slideout, .header-slideout, .menu-header'
+    bodyId='body'
+    as |drawer|}}
+    <span class="display-xs display-s display-m menu-toggle">
+        <button class="btn btn-plain"
+            onclick={{drawer.actions.toggle}}>
+            <span class="fa fa-bars"></span>
+        </button>
+    </span>
+    {{#liquid-if showSlideout class='animate-slide-from-right animated-overflow'}}
+        {{outlet 'details-slideout'}}
+    {{/liquid-if}}
+    {{outlet}}
+{{else}}
+    <li class="header-slideout display-xs display-s display-m">
+        {{#hide-away tabindex=false
+            triggerClass='header-toggle'
+            allowedTriggerSelectors='.toggle-control'
+            bodyClickClose=true}}
+            <ul class="reset-list">
+                {{#link-to 'main.contacts' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Kiki Bai</p>
+                        <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
+                    </div>
+                {{/link-to}}
+                <li class="menu-item">
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Housing First</p>
+                        <p class="text-bold text-ellipsis">(223) 290 - 1239</p>
+                    </div>
+                    <span class="indicator" style="background-color:#943;"></span>
+                </li>
+                {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Admin</p>
+                    </div>
+                {{/link-to}}
+                <li class="menu-divider"></li>
+                {{#link-to 'index' tagName='li' classNames='menu-item'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-lighten text-ellipsis">Log Out</p>
+                    </div>
+                {{/link-to}}
+            </ul>
+        {{else}}
+            <div class="toggle-control xs-8-row-10">
+                <div class="offset-xs-row-10 xs-7-row-10 v-center-left text-left">
+                    <h4 class="text-lighten text-ellipsis">Kiki Bai</h4>
+                    <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
+                </div>
+                <div class="xs-2-row-10 v-center-right">
+                    <buton class="btn btn-expand btn-plain">
+                        <span class="fa fa-caret-down"></span>
+                    </buton>
+                </div>
+            </div>
+            <div class="xs-2-row-10 header-settings"
+                {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
+                <button class="btn btn-expand settings-btn">
+                    <span class="fa fa-cog"></span>
+                </button>
+            </div>
+        {{/hide-away}}
+    </li>
+    <li class='menu-item menu-header display-l'
+        {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Account'
+            classNames='btn-expand'}}
+            <span class="fa fa-bars"></span>
+        {{/tool-tipster}}
+    </li>
+    <li class='menu-item menu-slideout success'
+        {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Availability'
+            classNames='btn-expand display-l'}}
+            <span class="fa fa-calendar-o"></span>
+        {{/tool-tipster}}
+        <div class="btn-expand display-xs display-s display-m">
+            <span class="text-bold">Availability</span>
+        </div>
+    </li>
+    <li class="menu-divider display-l"></li>
+    <li class='menu-item menu-slideout'
+        {{action 'toggleSlideout' 'slideouts/compose' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Compose'
+            classNames='btn-expand display-l'}}
+            <span class="fa fa-comments"></span>
+        {{/tool-tipster}}
+        <div class="btn-expand display-xs display-s display-m">
+            <span class="text-bold">Compose</span>
+        </div>
+    </li>
+
+    {{!-- contacts --}}
+
+    <li class='menu-item menu-slideout display-l'
+        {{action 'toggleSlideout' 'slideouts/contact' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Add Contact'
+            classNames='btn-expand'}}
+            <span class="fa fa-user-plus"></span>
+        {{/tool-tipster}}
+    </li>
+    {{#link-to 'main.contacts' tagName='li' classNames='menu-item display-l'}}
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Contacts'
+            classNames='btn-expand'}}
+            <span class="fa fa-user"></span>
+        {{/tool-tipster}}
+    {{/link-to}}
+    <li class="menu-divider display-xs display-s display-m">
+        Contacts
+        <button class="btn btn-plain v-center-right"
+            {{action 'toggleSlideout' 'slideouts/contact' 'main'}}>
+            <span class="fa fa-plus"></span>
+        </button >
+    </li>
+    {{#link-to 'main.contacts' tagName='li'
+        classNames='menu-item display-xs display-s display-m'}}
+        <span class="text-bold">All</span>
+    {{/link-to}}
+    <li class='menu-item display-xs display-s display-m'>
+        <span class="text-bold">Unread</span>
+    </li>
+    <li class='menu-item display-xs display-s display-m'>
+        <span class="text-bold">Archived</span>
+    </li>
+    <li class='menu-item display-xs display-s display-m'>
+        <span class="text-bold">Blocked</span>
+    </li>
+
+    {{!-- tags --}}
+
+    <li class='menu-item menu-slideout display-l'
+        {{action 'toggleSlideout' 'slideouts/tags/list' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Tags'
+            classNames='btn-expand'}}
+            <span class="fa fa-tags"></span>
+        {{/tool-tipster}}
+    </li>
+    <li class="menu-divider display-xs display-s display-m">
+        Tags
+        <button class="btn btn-plain v-center-right"
+            {{action 'toggleSlideout' 'slideouts/tags/create' 'main'}}>
+            <span class="fa fa-plus"></span>
+        </button >
+    </li>
+    {{#each tags as |tag|}}
+        {{#link-to 'main.tag' tagName='li'
+            classNames='menu-item display-xs display-s display-m'}}
+            <span class="text-bold">{{tag.name}}</span>
+            <span class="badge dark">{{tag.numMembers}}</span>
+            <span class="indicator" style="background-color:{{tag.color}};"></span>
+        {{/link-to}}
+    {{else}}
+        <li class='pad-t text-bold display-xs display-s display-m'>No tags yet.</li>
+    {{/each}}
+
+    <li class='menu-footer display-l'>
+        <img class="brand" src='assets/images/logo.png' />
+    </li>
+{{/sliding-drawer}}

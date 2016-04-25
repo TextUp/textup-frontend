@@ -1,0 +1,26 @@
+<div class="single-body">
+    <div class="single-body-header">
+        <h5 class="text-center pad-b">Create a new organization</h5>
+        <p class="text-center">If you can't find your organization, create a new organization with name and location.</p>
+    </div>
+    <div class='single-body-content border-b'>
+        <div class="form-element no-space">
+            <label for='Organization Name'>Organization Name</label>
+            {{input value=orgName type='text' placeholder='Organization Name' class='form-control' autocorrect='off' autocapitalize='off'}}
+        </div>
+    </div>
+    {{location-control/mutable
+        hideSidebar=true
+        location=(mut location)
+        description=(mut address)
+        onError=(action 'mapError')}}
+
+	<div class="single-body-footer text-center">
+		{{link-to "Next" "signup.account" tagName="button" classNames="btn btn-default"}}
+        {{!-- <button class='btn btn-default'>Next</button> --}}
+    </div>
+</div>
+<div class="single-footer">
+    <p class="emphasize text-darken">Want to pick an existing organization?</p>
+    <h4>{{link-to "Choose existing organization" "signup.index" classNames="text-darken"}}</h4>
+</div>

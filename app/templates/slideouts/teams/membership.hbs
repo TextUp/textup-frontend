@@ -1,0 +1,26 @@
+{{#slideout-pane title=(if people
+        (concat 'Teams (' people.length ' selected)')
+        (concat person.name ' Teams'))
+    direction='right'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    <div class="input-group">
+        <div class="input-group-addon">
+            <button class="btn btn-span" type='button'>
+                Cancel
+            </button>
+        </div>
+        <div class="input-group-addon">
+            <button class="btn btn-default btn-span" type='button'>
+                Update
+            </button>
+        </div>
+    </div>
+    {{#multi-toggle/group-by-bucket itemBucketProperty='teams'
+        items=(if people people person)
+        buckets=teams as |team|}}
+            {{preview-badge color=team.color onlyShowFull=true content=team.name}}
+    {{else}}
+        <li class="no-results">No teams yet.</li>
+    {{/multi-toggle/group-by-bucket}}
+{{/slideout-pane}}

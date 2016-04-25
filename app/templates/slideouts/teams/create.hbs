@@ -1,0 +1,22 @@
+{{#slideout-pane title='New Team'
+    direction='left'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    <div class="input-group">
+        <span class="input-addon">
+            <button class="btn btn-span" type='button'
+                onclick={{hideAway.actions.close}}>
+                Cancel
+            </button>
+        </span>
+        <span class="input-addon">
+            <button class="btn btn-default btn-span" type='button'
+                onclick={{hideAway.actions.close}}>
+                Create
+            </button>
+        </span>
+    </div>
+    <div class="pad-t pad-b">
+        {{partial 'partials/create-edit-team'}}
+    </div>
+{{/slideout-pane}}

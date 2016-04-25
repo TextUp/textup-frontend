@@ -1,3 +1,10 @@
-<h2 id="title">Welcome to Ember</h2>
+{{#liquid-if showSlideout class='animate-slide-from-left animated-overflow'}}
+	{{outlet 'slideout'}}
+{{/liquid-if}}
+{{notification-container notifications=notifications}}
 
-{{outlet}}
+<div id="container">
+	{{liquid-outlet class='main-outlet'}}
+</div>
+
+{{loading-slider isLoading=loading}}

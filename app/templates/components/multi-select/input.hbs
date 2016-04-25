@@ -1,0 +1,26 @@
+{{#each data as |item i|}}
+	<div class="multi-select-input-item {{itemClass}}" tabindex='-1' data-index={{i}}>
+		<div class="display-multi-select-input-item">
+			{{#if hasBlock}}
+				{{yield item publicAPI}}
+			{{else}}
+				<span class="text-bold">
+					{{if displayProperty (get item displayProperty) item}}
+				</span>
+			{{/if}}
+			<button class="btn btn-plain"
+				type='button'
+				tabindex='-1'
+				onclick={{action 'removeViaButton'}}>
+				<span class="fa fa-times"></span>
+			</button>
+		</div>
+		<input type="text" class='edit-multi-select-input-item' tabindex='-1'
+			onkeyup={{action 'handleUpdateInput'}}
+			value={{if displayProperty (get item displayProperty) item}}>
+	</div>
+{{/each}}
+
+<input type="text" class="multi-select-input-item"
+	placeholder={{placeholder}}
+	onkeyup={{action 'handleNewInput'}}>

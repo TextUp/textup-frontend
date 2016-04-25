@@ -1,0 +1,13 @@
+{{#hide-away doRegister=(action (mut _hideAway))
+	tabindex=false
+	animation='none'
+	bodyClass='text-ellipsis'
+	hideTriggerOnOpen=true}}
+    {{#if hasBlock}}
+		{{yield}}
+	{{else}}
+		{{content}}
+	{{/if}}
+{{else}}
+    {{abbreviated}}
+{{/hide-away}}

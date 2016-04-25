@@ -1,0 +1,27 @@
+<div class="slideout-header {{this.elementId}}-header" tabindex='-1'>
+	{{#if
+		(or
+			(not (hasBlock 'inverse'))
+			(and (hasBlock 'inverse') includeDefaultHeader)
+		)
+	}}
+		<div class="default-slideout-header {{defaultHeaderClass}}">
+			<div class='pull-left'>
+				<span class='clear-badge'>
+					<h5 class='text-ellipsis'>{{title}}</h5>
+				</span>
+			</div>
+			<div class='pull-right'>
+				<button class="btn btn-plain" {{action 'close'}}>
+					<span class="fa fa-times"></span>
+				</button>
+			</div>
+		</div>
+	{{/if}}
+	{{#if (hasBlock 'inverse')}}
+		{{yield to='inverse'}}
+	{{/if}}
+</div>
+<div class="slideout-body {{this.elementId}}-body">
+    {{yield publicAPI}}
+</div>

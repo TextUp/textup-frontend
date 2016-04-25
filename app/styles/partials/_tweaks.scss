@@ -1,0 +1,158 @@
+// when we want element of an animated div to overflow
+// when absolute positioned, such as for slideouts
+.animated-overflow {
+	overflow: visible;
+	z-index: $slideout-z-index;
+
+	& > * {
+		overflow: visible;
+	}
+}
+.loading-slider > span {
+    background-color: $brand-color;
+}
+
+// main menu
+// ---------
+
+.header-slideout {
+	position: relative;
+	min-height: $header-height;
+	width: 100%;
+
+	.header-settings {
+		position: absolute;
+		height: $header-height;
+		top: 0;
+		right: 0;
+		z-index: 20;
+	}
+	.toggle-control, .settings-btn {
+		@include button-colors(shade($brand-color, 1));
+	}
+	.header-toggle {
+		@extend .row;
+		height: $header-height;
+
+		&:focus {
+			opacity:0.9;
+		}
+		.toggle-control {
+			@extend .clickable;
+			@extend .full-height;
+			@extend %border-box;
+			position: relative;
+			transition: all 0.5s;
+			border-bottom-style: solid;
+			border-bottom-width: $button-accent-size;
+		}
+		.settings-btn {
+			@extend .btn.btn-expand;
+			border-radius: 0;
+		}
+	}
+	.hide-away-body {
+		font-size: 0.8em;
+	}
+}
+
+// main/contacts
+// -------------
+
+.menu-toggle {
+	position: absolute;
+	top: $header-height / 2;
+	left: $contacts-h-space / 2;
+	transform: translate(-50%, -50%);
+	z-index: $details-z-index - 1;
+}
+.tag-title {
+	@include v-center(left, $contacts-h-space);
+	width: calc(100% - #{$padding * 6});
+	@include mq($from: desktop) {
+		left: $padding * 2;
+		width: calc(100% - #{$padding * 4});
+	}
+}
+.contacts-title {
+	@include v-center(left, $contacts-h-space);
+	width: calc(100% - #{$padding * 4});
+	@include mq($from: desktop) {
+		left: $padding;
+	}
+}
+.contacts-control {
+	@include v-center(left, $contacts-h-space / 2, true);
+}
+.contacts-info {
+	margin-left: $contacts-h-space;
+}
+.contacts-tags {
+	@extend .row;
+	@extend .horizontal-items;
+	margin-top: 0.8em;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	background-color: $bg-light-color;
+
+	// can't directly use preview-badge because badge
+	// inherits from preview-badge
+	:not(.badge) {
+		max-width: 90px;
+	}
+}
+
+// main/contacts/contact
+// ---------------------
+
+@include split(height, ".contact-tags" ".contact-details", $badge-height + $badge-v-space * 2);
+.contact-details {
+	@extend .row;
+	position: relative;
+	border-bottom: 1px solid $border-color;
+}
+.contact-tags {
+	@extend .row;
+	@extend .horizontal-items;
+	padding: $badge-v-space 0;
+
+	.clear-badge .fa {
+		margin-top: -3px;
+	}
+	.preview-badge {
+		height: $badge-height;
+	}
+}
+@include split(height, ".contact-controls" ".contact-record", $control-height + $form-v-space * 2);
+.contact-record {
+	@extend .reset-list;
+}
+.contact-controls {
+	@extend .section-footer;
+	padding: $form-v-space $padding;
+	width: 100%;
+
+	&.floating {
+		position: absolute;
+		height: auto;
+		bottom: 0;
+		padding-right: 0.5 * $padding;
+		padding-bottom: 0.3 * $padding;
+
+		.btn, .send-text-field {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.send-text-field {
+			width: calc(100% - #{$min-control-width} - #{$padding});
+			margin-right: $padding * 0.5;
+		}
+		.btn {
+			position: relative;
+			top: -2px;
+			width: $min-control-width;
+		}
+	}
+}
+
+

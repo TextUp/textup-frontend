@@ -1,0 +1,57 @@
+{{#slideout-pane title=(if teams 'Team' 'New Team')
+    direction='left'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    {{#hide-away clickOutToClose=false
+        animation='fade'
+        ignoreTriggerSelectors='.result-list'
+        startOpen=(if teams false true)
+        tabindex='-1'
+        hideTriggerOnOpen=true as |hideAway|}}
+        <div class="input-group">
+            <span class="input-addon">
+                <button class="btn btn-span" type='button'
+                    onclick={{hideAway.actions.close}}>
+                    Cancel
+                </button>
+            </span>
+            <span class="input-addon">
+                <button class="btn btn-default btn-span" type='button'
+                    onclick={{hideAway.actions.close}}>
+                    Create
+                </button>
+            </span>
+        </div>
+        <div class="pad-t pad-b">
+            {{partial 'partials/create-edit-team'}}
+        </div>
+    {{else}}
+         <ul class="result-list">
+            {{#each teams as |team|}}
+                <li class="result-item">
+                    <div class="row pad-all clickable">
+                        {{#link-to 'admin.team' tagName='div' classNames='control-text'}}
+                            <div class="horizontal-items">
+                                {{preview-badge color=team.color
+                                    onlyShowFull=true
+                                    content=team.name}}
+                                <span class="badge">
+                                    {{team.numMembers}}
+                                    <span class="fa fa-user"></span>
+                                </span>
+                            </div>
+                        {{/link-to}}
+                        <div class="pull-right">
+                            <button class="btn btn-plain" type='button'>
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            {{/each}}
+        </ul>
+        <button class="btn btn-span" type='button'>
+            <span class="fa fa-plus"></span>
+        </button>
+    {{/hide-away}}
+{{/slideout-pane}}

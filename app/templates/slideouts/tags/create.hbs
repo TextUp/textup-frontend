@@ -1,0 +1,22 @@
+{{#slideout-pane title='New Tag'
+    direction='left'
+    closeActionName='closeSlideout'
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    <div class="input-group">
+        <span class="input-addon">
+            <button class="btn btn-span" type='button'
+                onclick={{slideout.actions.close}}>
+                Cancel
+            </button>
+        </span>
+        <span class="input-addon">
+            <button class="btn btn-default btn-span" type='button'
+                onclick={{slideout.actions.close}}>
+                Create
+            </button>
+        </span>
+    </div>
+    <div class="pad-all">
+        {{partial 'partials/create-edit-tag'}}
+    </div>
+{{/slideout-pane}}

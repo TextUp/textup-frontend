@@ -1,0 +1,15 @@
+.color-input {
+	.form-control {
+		border-bottom-width: 0;
+	}
+}
+.colpick {
+	border-width: 0;
+    border-radius: 0;
+	background-color: $bg-color;
+	height: 171px;
+
+	.colpick_new_color, .colpick_current_color, .colpick_hex_field {
+		display: none;
+	}
+}

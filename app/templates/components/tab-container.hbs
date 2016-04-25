@@ -1,0 +1,49 @@
+{{#if hasMultipleTabs}}
+	<div class="tab-container-nav">
+		<ul class="tab-container-nav-list">
+			{{#each _items as |item index|}}
+				<li class="tab-container-nav-item {{if (eq _currentIndex index) 'active'}}"
+					{{action 'switchTo' index}}>
+					{{item.title}}
+				</li>
+			{{/each}}
+		</ul>
+		<div class="tab-container-nav-controls">
+			{{#hide-away doRegister=(action (mut _hideAway))
+				triggerClass='input-group'
+				bodyClickClose=true
+				ignoreTriggerSelectors='.input-group-addon.blend-in'
+				onClosed=(action 'switchIfSelected')}}
+	            <ul class="dropdown">
+	                {{#each _items as |item index|}}
+						<li tabindex='0'
+							class="dropdown-item {{if (eq _currentIndex index) 'active'}}"
+							{{action 'storeSwitchToIndex' index}}>
+							{{item.title}}
+						</li>
+					{{/each}}
+	            </ul>
+	        {{else}}
+	    		<span class="input-group-addon expand">
+	    			<button class="tab-container-nav-display" type='button'>
+	    				{{_currentItem.title}}
+						<span class="fa fa-caret-down pull-right"></span>
+	    			</button>
+				</span>
+				<span class="input-group-addon blend-in">
+					<button class="btn" type='button' {{action 'prev'}}>
+						<span class="fa fa-chevron-left"></span>
+					</button>
+				</span>
+				<span class="input-group-addon blend-in">
+					<button class="btn" type='button' {{action 'next'}}>
+						<span class="fa fa-chevron-right"></span>
+					</button>
+				</span>
+	        {{/hide-away}}
+		</div>
+	</div>
+{{/if}}
+<div class="tab-container-body">
+	{{yield publicAPI (action 'registerItem')}}
+</div>
