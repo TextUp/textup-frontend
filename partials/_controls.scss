@@ -1,0 +1,277 @@
+.control-text {
+    @extend .text-ellipsis;
+    line-height: $control-height;
+}
+
+%input-disabled {
+    &:disabled, &.disabled {
+        @extend .no-select;
+        background-color: $bg-lightest-color;
+        color: $font-color;
+        border-bottom-color: $border-color;
+        opacity: 1; // mobile safari makes disabled items translucent
+
+        &.btn {
+            border-color: tint($border-color);
+            border-bottom-color: $border-color;
+        }
+    }
+}
+%input-decoration {
+    @extend %input-disabled;
+    @extend %border-box;
+    box-shadow: none;
+    border-radius: $border-radius;
+    background-color: $bg-lightest-color;
+    border: 1px solid tint($border-color);
+    border-bottom: $button-accent-size solid tint($brand-color);
+    // for removing top inset shadow on mobile browsers
+    appearance: none;
+
+    &:hover {
+        border-color: $border-color;
+        border-bottom-color: $brand-color;
+    }
+    &:active, &:focus, &.focus {
+        outline: 0;
+        border-color: shade($border-color);
+        border-bottom-color: shade($brand-color);
+    }
+    &.silent {
+        border-color: transparent;
+        &:hover {
+            border-color: transparent;
+        }
+        &:active, &:focus, &.focus {
+            outline: 0;
+            border-color: transparent;
+        }
+    }
+}
+.form-error %input-decoration {
+    border-bottom-color: tint($danger-color);
+
+    &:hover {
+        border-bottom-color: $danger-color;
+    }
+    &:active, &:focus {
+        border-bottom-color: shade($danger-color);
+    }
+}
+.form-disabled %input-decoration {
+    border-bottom-color: $border-color;
+
+    &:hover, &:active, &:focus {
+        border-bottom-color: $border-color;
+    }
+}
+
+// Buttons
+// -------
+
+.btn {
+    @extend %input-disabled;
+    @include button-colors($bg-color);
+    @extend %border-box;
+    min-width: $min-control-width;
+    padding: ($padding * 0.5) ($padding * 0.8);
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    border-radius: $border-radius;
+    height: $control-height;
+    border-width: 1px;
+    border-style: solid;
+    transition: all 0.5s;
+    border-bottom-width: $button-accent-size;
+    border-bottom-style: solid;
+
+    &.btn-plain {
+        @extend %input-disabled;
+        border-color: transparent;
+        background-color: transparent;
+        color: inherit;
+
+        &.btn-danger {
+            color: $danger-color;
+        }
+        &.btn-success {
+            color: $success-color;
+        }
+        &.btn-default {
+            color: $brand-color;
+        }
+    }
+    &:not(.btn-plain) {
+        &.btn-danger {
+            @extend %input-disabled;
+            @include button-colors($danger-color);
+        }
+        &.btn-success {
+            @extend %input-disabled;
+            @include button-colors($success-color);
+        }
+        &.btn-default {
+            @extend %input-disabled;
+            @include button-colors($brand-color);
+        }
+    }
+    &.btn-expand {
+        @extend %input-disabled;
+        width: 100%;
+        height: 100%;
+    }
+    &.btn-span {
+        @extend %input-disabled;
+        width: 100%;
+        border-radius: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+    }
+    .horizontal-items {
+        position: relative;
+        top: -0.2em;
+    }
+}
+
+// disable input-number spinner
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+// Checkbox hack
+// -------------
+
+input[type="checkbox"] {
+    position: relative;
+    transform: translateY(1px);
+}
+
+input[type="checkbox"]:checked:after,
+input[type="checkbox"]:before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+}
+
+input[type="checkbox"]:before {
+    border: 3px solid $brand-color;
+    border-radius: $border-radius;
+    background-color: $bg-light-color;
+}
+
+input[type="checkbox"]:checked:after {
+    content: "\25AA";
+    color: #737373;
+    font-size: 34px;
+    line-height: 15px;
+    font-weight: 700;
+    margin-left: 3px;
+}
+
+// Form
+// ----
+
+.form-element {
+    margin-bottom: $form-v-space * 2;
+    label {
+        font-weight: $font-weight-bold;
+        display: block;
+        margin-bottom: 0.3em;
+    }
+}
+.form-control {
+    @extend %input-decoration;
+    height: $control-height;
+    width: 100%;
+    padding: 0 $padding;
+    transition: border-color 0.5s;
+}
+textarea.form-control {
+    height: auto;
+    line-height: normal;
+    resize: none;
+    overflow: auto;
+    padding: ($padding * 0.5) $padding;
+}
+
+// Input-group
+// -----------
+
+.input-group {
+    display: table;
+    width: 100%;
+
+    .input-group { // all nested have auto width
+        width: auto;
+    }
+    & > .input-group-element .input-group {
+        width: 100%;
+    }
+    & > :not(.input-group) { // first level children are table cells
+        display: table-cell;
+    }
+    & > .input-group-element, & > .form-control {
+        @extend %inline-item;
+    }
+    & > .input-group-text {
+        @extend %inline-item;
+        line-height: $control-height - em(2px);
+        padding: 0 ($padding * 0.7);
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+
+    }
+    & > .input-group-text-display {
+        @extend %input-decoration;
+        @extend %inline-item;
+        font-weight: $font-weight-bold;
+        width: 1%;
+
+        // changing font size induces scaling issues on mobile
+        @include mq($from: desktop) {
+            font-size: 1.5em;
+        }
+        &:first-child {
+            padding-left: 1em;
+        }
+    }
+    & > .input-group-addon {
+        min-width: $min-control-width;
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
+
+        &.expand {
+            width: auto;
+        }
+        &.blend-in .btn {
+            @extend %input-decoration;
+            color: $font-color;
+
+            &:hover {
+                background-color: $bg-color;
+            }
+        }
+        &:not(:first-child):not(:last-child) .btn {
+            border-radius: 0;
+            border-left-width: 0;
+            border-right-width: 0;
+        }
+        &:first-child .btn {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right-width: 0;
+        }
+        &:last-child .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left-width: 0;
+        }
+    }
+}
