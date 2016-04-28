@@ -1,13 +1,27 @@
-// reset
-@import 'normalize';
+$mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
 
-// modules and variables
-@import '_base';
+// import core textup styles library
+@import 'core/main';
 
-// partials
+// import component styles
+@import 'components/_drawer';
+@import 'components/_hide-away';
+@import 'components/_slideout-pane';
+@import 'components/_tooltipster';
+@import 'components/_multi-select';
+@import 'components/_single-select';
+@import 'components/_tab';
+@import 'components/_multi-range';
+@import 'components/_multi-toggle';
+@import 'components/_color-input';
+@import 'components/_audio-control';
+@import 'components/_location-control';
+@import 'components/_infinite-scroll';
+@import 'components/_maxlength';
+
+// import app-specific styles
+// put this last so these styles take precendence over all
+// styles specified in earlier files in the event of a conflict
 @import 'partials/structure';
-@import 'partials/typography';
-@import 'partials/controls';
 @import 'partials/display';
-@import 'partials/grid';
 @import 'partials/tweaks';

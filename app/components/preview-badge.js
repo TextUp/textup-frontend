@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 	onlyShowFull: defaultIfAbsent(false),
 
 	attributeBindings: ['style'],
-	classNames: 'preview-badge',
+	classNames: 'badge',
 
 	_hideAway: null,
 

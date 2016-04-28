@@ -3,12 +3,6 @@ body {
 	height: 100%;
 	width: 100%;
 }
-hr {
-	margin: $padding 0;
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), $border-color, rgba(0, 0, 0, 0));
-}
 #container {
 	@extend %vertical-scroll;
 	width: 100%;
