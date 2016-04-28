@@ -32,6 +32,14 @@ hr {
 .bg-color {
     background-color: $bg-color;
 
+    &.bg-brand {
+        background-color: $brand-color;
+        color: contrast-color($brand-color);
+    }
+    &.bg-brand-dark {
+        background-color: shade($brand-color);
+        color: contrast-color(shade($brand-color));
+    }
     &.bg-dark {
         background-color: shade($bg-color);
     }
@@ -55,6 +63,10 @@ hr {
 // Centering
 // ---------
 
+.margin-center {
+    float: none !important;
+    margin: 0 auto;
+}
 .v-center {
     position: absolute;
     top: 50%;
@@ -85,6 +97,11 @@ hr {
 // Badges
 // ------
 
+.halo {
+    border-radius: 100%;
+    display: inline-block;
+    padding: (0.5 * $padding) (1 * $padding);
+}
 .badge {
     @extend %border-box;
     max-width: initial;
