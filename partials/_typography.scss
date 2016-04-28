@@ -1,0 +1,95 @@
+@font-face {
+  font-family: 'Bitter';
+  src: url('fonts/Bitter.woff2') format('woff2'),
+       url('fonts/Bitter.woff') format('woff'),
+       url('fonts/Bitter.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    font-family: helvetica, arial, sans-serif;
+    font-style: normal;
+    font-weight: $font-weight-std;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: $font-size;
+    color: $font-color;
+}
+a {
+    color: $font-color;
+    transition: color 0.5s;
+    &:hover, &:active, &:active {
+        color: darken($font-color, 20%);
+    }
+}
+p {
+    color: inherit;
+    margin: 0;
+}
+
+// Headers
+// -------
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Bitter', helvetica, arial, sans-serif;
+    text-transform: uppercase;
+    margin: 0;
+    color: $title-color;
+}
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.8em;
+}
+h3 {
+    font-size: 1.6em;
+}
+h4 {
+    font-size: 1.4em;
+}
+h5 {
+    font-size: 1.2em;
+}
+
+// Modifier classes
+// ----------------
+
+.text-center {
+    text-align: center;
+}
+.text-justify {
+    text-align: justify;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.text-darken {
+    color: $title-color;
+}
+.text-bold {
+    font-weight: $font-weight-bold;
+}
+.text-normal {
+    font-weight: $font-weight-std;
+}
+.text-lighten {
+    color: $font-light-color;
+}
+.text-ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.small {
+    font-size: 0.9em;
+}
+.emphasize {
+    @extend .text-darken;
+    @extend .text-bold;
+    margin-bottom: 0.3em;
+}
+

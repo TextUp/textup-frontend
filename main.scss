@@ -1,0 +1,18 @@
+// importing variables -- vars must come first
+// for example, vendor/mq requires breakpoints to be specified
+@import 'vars';
+
+// external sass
+@import 'vendor/normalize';
+@import 'vendor/mq';
+
+// importing modules
+@import 'modules/utilities';
+@import 'modules/grid';
+@import 'modules/color';
+
+// partials
+@import 'partials/typography';
+@import 'partials/controls';
+@import 'partials/display';
+@import 'partials/grid';
