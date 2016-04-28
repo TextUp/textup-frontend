@@ -14,11 +14,11 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* Clone the repository. Since this repository uses [`git subtree`]() to share core styles with other repositories, this repository and its subtree can be cloned in one of the two following ways.
+* Clone the repository. Since this repository uses [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) to share core styles with other repositories, this repository and its subtree can be cloned in one of the two following ways.
  1. `git clone --recursive <repository-url>`
  2. `git fetch` + `git submodule sync --recursive` + `git submodule update --init --recursive`
 * Change into the new directory
-* For ease of use, create a remote to the core styles repository with `git remote add styles git@github.com:TextUp/textup-site.git`
+* For ease of use, create a remote to the core styles repository with `git remote add styles git@github.com:TextUp/textup-styles.git`
 * `npm install`
 * `bower install`
 
@@ -30,7 +30,7 @@ Separate changes to the subtree application from changes to the [core styles](ht
 
 When you need to backport any changes to the core styles repository, the simplest way to do so is by using this command
 
-* git subtree push  --prefix=app/styles/core --squash styles master
+* `git subtree push  --prefix=app/styles/core --squash styles master`
 
 However, the main drawback of this command is that all commits that touched the subtree and used. If we need more control, we can cherry pick the commits we want to push to the subtree.
 
@@ -57,7 +57,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Deploying
 
-Specify what it takes to deploy your app.
+Details coming soon when the docs go up.
 
 ## Further Reading / Useful Links
 
