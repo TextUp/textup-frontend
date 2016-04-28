@@ -1,0 +1,43 @@
+// rows and row items for distributing items horizontally
+// stack items for distributing items vertically
+.row {
+	@extend %clearfix;
+	@extend %border-box;
+	display: block;
+	width: 100%;
+	position: relative;
+}
+.full-height {
+	height: 100%;
+}
+// remainder breakpoints with appropriate media query
+// in order of smallest breakpoint to largest
+$abbrs: map-values($breakpoint-abbrs);
+@for $i from 1 through length($breakpoint-abbrs) {
+	$breakpoint-abbr: nth($breakpoint-abbrs, $i);
+	$breakpoint: nth($breakpoint-abbr, 1);
+	$abbr: nth($breakpoint-abbr, 2);
+	// mobile first: smallest breakpoint has no media query
+	@if $i == 1 {
+		.#{$abbr}-full-row {
+			width: 100%;
+		}
+		@include responsive-grid('row', $abbr, width, $grid-splits) {
+			float: left;
+		}
+		@include responsive-display("display", $abbr, $abbrs);
+		@include responsive-clear("new-row", $abbr, $abbrs);
+	}
+	@else {
+		@include mq($from: $breakpoint) {
+			.#{$abbr}-full-row {
+				width: 100%;
+			}
+			@include responsive-grid('row', $abbr, width, $grid-splits) {
+				float: left;
+			}
+			@include responsive-display("display", $abbr, $abbrs);
+			@include responsive-clear("new-row", $abbr, $abbrs);
+		}
+	}
+}
