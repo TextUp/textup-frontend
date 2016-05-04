@@ -15,56 +15,24 @@
     {{/liquid-if}}
     {{outlet}}
 {{else}}
-    <li class="header-slideout display-xs display-s display-m">
-        {{#hide-away tabindex=false
-            triggerClass='header-toggle'
-            allowedTriggerSelectors='.toggle-control'
-            bodyClickClose=true}}
-            <ul class="reset-list">
-            	{{#link-to 'main.contacts' tagName='li' classNames='menu-item'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-lighten text-ellipsis">Kiki Bai</p>
-                        <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
-                    </div>
-                {{/link-to}}
-                <li class="menu-item">
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-lighten text-ellipsis">Housing First</p>
-                        <p class="text-bold text-ellipsis">(223) 290 - 1239</p>
-                    </div>
-                    <span class="indicator" style="background-color:#943;"></span>
-                </li>
-                {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-lighten text-ellipsis">Admin</p>
-                    </div>
-                {{/link-to}}
-                <li class="menu-divider"></li>
-                {{#link-to 'index' tagName='li' classNames='menu-item'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-lighten text-ellipsis">Log Out</p>
-                    </div>
-                {{/link-to}}
-            </ul>
-        {{else}}
-            <div class="toggle-control xs-8-row-10">
-                <div class="offset-xs-row-10 xs-7-row-10 v-center-left text-left">
-                    <h4 class="text-lighten text-ellipsis">Admin</h4>
-                </div>
-                <div class="xs-2-row-10 v-center-right">
-                    <buton class="btn btn-expand btn-plain">
-                        <span class="fa fa-caret-down"></span>
-                    </buton>
-                </div>
-            </div>
-            <div class="xs-2-row-10 header-settings"
-                {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
-                <button class="btn btn-expand settings-btn">
-                    <span class="fa fa-cog"></span>
-                </button>
-            </div>
-        {{/hide-away}}
-    </li>
+    {{#hide-away tagName='li'
+        classNames='header-slideout display-xs display-s display-m'
+        tabindex=false
+        triggerClass='header-toggle'
+        allowedTriggerSelectors='.toggle-control'
+        bodyClickClose=true}}
+        {{partial 'partials/account-switcher'}}
+    {{else}}
+        <div class="xs-8-row-10 toggle-control">
+            {{partial 'partials/account-display'}}
+        </div>
+        <div class="xs-2-row-10 header-settings"
+            {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
+            <button class="btn btn-expand settings-btn">
+                <span class="fa fa-cog"></span>
+            </button>
+        </div>
+    {{/hide-away}}
     <li class='menu-item menu-header display-l'
         {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
         {{#tool-tipster position='right'

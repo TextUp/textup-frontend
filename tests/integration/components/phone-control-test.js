@@ -1,23 +1,23 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('phone-number', 'Integration | Component | phone number', {
+moduleForComponent('phone-control', 'Integration | Component | phone control', {
   integration: true
 });
 
 test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });"
+  // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{phone-number}}`);
+  this.render(hbs`{{phone-control}}`);
 
   assert.equal(this.$().text().trim(), '');
 
-  // Template block usage:"
+  // Template block usage:
   this.render(hbs`
-    {{#phone-number}}
+    {{#phone-control}}
       template block text
-    {{/phone-number}}
+    {{/phone-control}}
   `);
 
   assert.equal(this.$().text().trim(), 'template block text');

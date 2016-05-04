@@ -1,0 +1,36 @@
+
+{{!-- pass identifiers and not resolved models to allow the logic
+in the model hook to run --}}
+
+<ul class="reset-list">
+    {{#link-to 'main' authManager.authUser.urlIdentifier tagName='li' classNames='menu-item'}}
+        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+            <p class="text-bold text-ellipsis">{{authManager.authUser.name}}</p>
+            <p class="text-bold text-ellipsis">{{phone-number authManager.authUser.phone}}</p>
+        </div>
+    {{/link-to}}
+    {{#if authManager.authUser.teamsWithPhones.isFulfilled}}
+        {{#each authManager.authUser.teamsWithPhones.content as |team|}}
+            {{#link-to 'main' team.urlIdentifier tagName='li' classNames='menu-item'}}
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">{{team.name}}</p>
+                    <p class="text-bold text-ellipsis">{{phone-number team.phone}}</p>
+                </div>
+                <span class="indicator" style="background-color:{{team.hexColor}};"></span>
+            {{/link-to}}
+        {{/each}}
+    {{/if}}
+    {{#if authManager.authUser.isAdmin}}
+        {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+            <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                <p class="text-bold text-ellipsis">Admin</p>
+            </div>
+        {{/link-to}}
+    {{/if}}
+    <li class="menu-divider"></li>
+    <li class="menu-item" {{action 'logout'}}>
+        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+            <p class="text-bold text-ellipsis">Log Out</p>
+        </div>
+    </li>
+</ul>

@@ -2,24 +2,16 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-	// Account
-	// -----
+	// Highlight menu items
+	// --------------------
 
-	personalNumber: '213 483 0923',
-	newPersonalNumber: '',
-	textupNumber: '222 333 2819',
-	team: {
-		id: 8,
-		name: "Housing First",
-		phone: '888 999 2019',
-		numMembers: 9,
-		color: "orange",
-		latLng: {
-			lat: 34.0522,
-			lng: -118.2437
-		},
-		address: '888 Miracle Mile, Los Angeles, CA 91745'
-	},
+	filter: 'all',
+	appController: Ember.computed(function() {
+		return Ember.getOwner(this).lookup('controller:application');
+	}),
+	viewingTag: Ember.computed('appController.currentPath', function() {
+		return /main.tag/.test(this.get('appController.currentPath'));
+	}),
 
 	// New contact
 	// -----------
@@ -29,47 +21,6 @@ export default Ember.Controller.extend({
 	// Compose
 	// -------
 
-	tags: [{
-		id: 1,
-		color: "#493",
-		numMembers: 2,
-		identifier: "Housing First",
-		type: 'tag',
-		name: "Housing First",
-		actions: []
-	}, {
-		id: 2,
-		color: "#1BA5E0",
-		numMembers: 0,
-		identifier: "Rapid Rehousing",
-		type: 'tag',
-		name: "Rapid Rehousing",
-		actions: []
-	}, {
-		id: 3,
-		color: "#d3d3d3",
-		numMembers: 2,
-		identifier: "WO",
-		type: 'tag',
-		name: "WO",
-		actions: []
-	}, {
-		id: 4,
-		color: "#dd3",
-		numMembers: 4,
-		identifier: "Woman's Collective Interest Group",
-		type: 'tag',
-		name: "Woman's Collective Interest Group",
-		actions: []
-	}, {
-		id: 5,
-		color: "#f8f",
-		numMembers: 1,
-		identifier: "Monday Group",
-		type: 'tag',
-		name: "Monday Group",
-		actions: []
-	}],
 	selectedRecipients: [{
 		identifier: '111 222 3333',
 		type: 'contact'

@@ -1,11 +1,11 @@
 <form class='pad-b'>
     <div class='form-element'>
         <label for='Your Name' class='control-label'>Your Name</label>
-        {{input value=staff.name type='text' placeholder='Your Name' class='form-control' focus-out='updateStaff' enter='updateStaff'}}
+        {{input value=authManager.authUser.name type='text' placeholder='Your Name' class='form-control' focus-out='updateStaff' enter='updateStaff'}}
     </div>
     <div class='form-element'>
         <label for='Email' class='control-label'>Email</label>
-        {{input value=staff.email type='email' placeholder='Email' class='form-control' focus-out='updateStaff' enter='updateStaff'}}
+        {{input value=authManager.authUser.email type='email' placeholder='Email' class='form-control' focus-out='updateStaff' enter='updateStaff'}}
     </div>
     <div class='form-element'>
         <label for='Personal Phone' class='control-label'>Personal Phone</label>
@@ -23,7 +23,7 @@
                         <span class="fa fa-times"></span>
                     </button>
                 </span>
-                {{#phone-number number=newPersonalNumber
+                {{#phone-control number=authManager.authUser.newPersonalNumber
                     controlClass='blend-in'
                     onChange=(action 'storeNewPersonalNumber')
                     onClick=(action 'updatePersonalNumber')
@@ -31,20 +31,20 @@
                     onValidate=(action 'validatePersonalNumber' hideAway.actions.close)}}
                 {{else}}
                     <span class='fa fa-arrow-right'></span>
-                {{/phone-number}}
+                {{/phone-control}}
             </div>
         {{else}}
-            {{#phone-number number=personalNumber
+            {{#phone-control number=authManager.authUser.personalPhoneNumber
                 showControl=true
                 controlClass='blend-in edit-personal-phone'}}
             {{else}}
                 <span class='fa fa-pencil'></span>
-            {{/phone-number}}
+            {{/phone-control}}
         {{/hide-away}}
     </div>
     <div class='form-element'>
         <label for='TextUp Phone' class='control-label'>TextUp Phone</label>
-        {{phone-number number=textupNumber}}
+        {{phone-control number=authManager.authUser.phone}}
     </div>
 </form>
 {{#hide-away tabindex=false

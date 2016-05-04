@@ -77,6 +77,9 @@ export default Ember.Component.extend({
 		// initialize to specified starting state
 		// fill in with map after done rendering
 		const callback = function() {
+			if (this.isDestroying || this.isDestroyed) {
+				return;
+			}
 			this.set('_isEditing', Ember.isPresent(this.get('location')));
 			this._setupMapbox();
 		}.bind(this);
@@ -87,7 +90,8 @@ export default Ember.Component.extend({
 		}
 	},
 	willDestroyElement: function() {
-		this.get('_map').off();
+		const map = this.get('_map');
+		if (map) map.off();
 		this.$().off(`.${this.elementId}`);
 		this._stopObserveChanges();
 	},
@@ -210,6 +214,9 @@ export default Ember.Component.extend({
 		$sidebar.animate({
 			left: -width
 		}, function() {
+			if (this.isDestroying || this.isDestroyed) {
+				return;
+			}
 			this.set('_isOpen', false);
 			this._startObserveChanges(function() {
 				$sidebar.css('left', -$contents.width());

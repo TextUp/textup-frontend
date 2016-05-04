@@ -4,16 +4,16 @@
 </div>
 <div class="form-element pad-l pad-r">
     <label for="Your Name">Team Color</label>
-    {{color-input color=team.color}}
+    {{color-control color=team.hexColor}}
 </div>
 <div class='form-element pad-l pad-r'>
     <label for='TextUp Phone'>TextUp Phone</label>
-    {{phone-number number=team.phone}}
+    {{phone-control number=team.phone}}
 </div>
 <div class="form-element">
     <label for="Your Name" class='pad-l pad-r'>Location</label>
     {{location-control/mutable
         hideSidebar=true
-        location=(mut team.latLng)
-        description=(mut team.address)}}
+        location=(mut team.location.latLng)
+        description=(mut team.location.address)}}
 </div>

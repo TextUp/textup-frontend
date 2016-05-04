@@ -11,13 +11,15 @@
                     {{partial 'partials/org-settings'}}
                 </div>
             {{/tab-container/item}}
-        {{else if team}}
-            {{#tab-container/item doRegister=doRegister
-                title=team.name}}
-                <div class="pad-t pad-b">
-                    {{partial 'partials/team-settings'}}
-                </div>
-            {{/tab-container/item}}
+        {{else if (eq model.constructor.modelName 'team')}}
+            {{#with model as |team|}}
+                {{#tab-container/item doRegister=doRegister
+                    title=team.name}}
+                    <div class="pad-t pad-b">
+                        {{partial 'partials/team-settings'}}
+                    </div>
+                {{/tab-container/item}}
+            {{/with}}
         {{/if}}
         {{#tab-container/item doRegister=doRegister
             title="My Account"}}
@@ -27,56 +29,13 @@
         {{/tab-container/item}}
     {{/tab-container}}
 {{else}}
-    <div class="header-slideout display-l">
-        {{#hide-away triggerClass='header-toggle'
-            bodyClickClose=true}}
-            <ul class="reset-list">
-                {{#link-to 'main.contacts' tagName='li' classNames='menu-item'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Kiki Bai</p>
-                        <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
-                    </div>
-                {{/link-to}}
-                <li class="menu-item">
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Housing First</p>
-                        <p class="text-bold text-ellipsis">(223) 290 - 1239</p>
-                    </div>
-                    <span class="indicator" style="background-color:#943;"></span>
-                </li>
-                {{#link-to 'admin.people' tagName='li' classNames='menu-item'
-                    current-when='admin.team admin.pending'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Admin</p>
-                    </div>
-                {{/link-to}}
-                <li class="menu-divider"></li>
-                {{#link-to 'index' tagName='li'
-                    classNames='menu-item'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Log Out</p>
-                    </div>
-                {{/link-to}}
-            </ul>
-        {{else}}
-            <div class="toggle-control">
-                <div class="offset-xs-row-10 xs-7-row-10 v-center-left text-left">
-                    {{#if org}}
-                        <h4 class="text-lighten text-ellipsis">Admin</h4>
-                    {{else if team}}
-                        <h4 class="text-lighten text-ellipsis">Housing First</h4>
-                        <p class="text-bold text-ellipsis">(223) 290 - 1239</p>
-                    {{else}}
-                        <h4 class="text-lighten text-ellipsis">Kiki Bai</h4>
-                        <p class="text-bold text-ellipsis">(223) 234 - 1239</p>
-                    {{/if}}
-                </div>
-                <div class="xs-2-row-10 v-center-right">
-                    <buton class="btn btn-expand btn-plain">
-                        <span class="fa fa-caret-down"></span>
-                    </buton>
-                </div>
-            </div>
-        {{/hide-away}}
-    </div>
+    {{#hide-away classNames='header-slideout display-l'
+        triggerClass='header-toggle'
+        bodyClickClose=true}}
+        {{partial 'partials/account-switcher'}}
+    {{else}}
+        <div class="toggle-control">
+            {{partial 'partials/account-display'}}
+        </div>
+    {{/hide-away}}
 {{/slideout-pane}}

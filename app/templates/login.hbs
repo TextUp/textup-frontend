@@ -4,26 +4,58 @@
         <h3>Log in</h3>
     </div>
     <div class="single-body">
-        <div class="single-body-header">
-            <h5 class='text-center'>Welcome back!</h5>
-        </div>
-        <div class="single-body-content">
-            <div class="form-element">
-                <label for="Username">Username</label>
-                {{input value=username type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+        {{#hide-away tabindex=false
+            animation='fade'
+            hideTriggerOnOpen=true
+            clickOutToClose=false
+            bodyClickClose=false
+            allowedTriggerSelectors='.forgot-password' as |hideAway|}}
+            <div class="single-body-header">
+                <h5 class='text-center pad-b'>Forgot password?</h5>
+                <p class="text-justify">Don't worry! Happens to all of us. Just type in your username and we'll send a reset email to the email address associated with your account.</p>
             </div>
-            <div class="form-element">
-                <label for="Password">Password</label>
-                {{input value=password type="password" placeholder="Password" class="form-control"}}
+            <div class="single-body-content">
+                <form class="input-group" {{action 'resetPassword' resetUsername on='submit'}}>
+                    {{input value=resetUsername type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+                    <div class="input-group-addon">
+                        <button class="btn" type='submit'>Send</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-element">
-                <a href="#" class="emphasize" tabindex="-1">Forgot Password?</a>
+            <div class="single-body-footer text-center">
+                <button class='btn btn-default' onclick={{hideAway.actions.close}}>
+                    Back
+                </button>
             </div>
-        </div>
-        <div class="single-body-footer text-center">
-			{{link-to "Log In" "main.contacts" tagName="button" classNames="btn btn-default"}}
-        	{{!-- <button type="submit" class="btn btn-default">Log in</button> --}}
-        </div>
+        {{else}}
+            <div class="single-body-header">
+                <h5 class='text-center'>Welcome back!</h5>
+            </div>
+            <form {{action 'login' username password storeCredentials on='submit'}}>
+                <div class="single-body-content">
+                    <div class="form-element">
+                        <label for="Username">Username</label>
+                        {{input value=username type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+                    </div>
+                    <div class="form-element">
+                        <label for="Password">Password</label>
+                        {{input value=password type="password" placeholder="Password" class="form-control"}}
+                    </div>
+                    <div class="row form-element">
+                        <div class="xs-row-2">
+                            {{input type="checkbox" checked=storeCredentials}}
+                            <span class="emphasize pad-l-half">Remember Me</span>
+                        </div>
+                        <div class="xs-row-2 forgot-password text-right">
+                            <a href="#" class="emphasize" tabindex="-1">Forgot Password?</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="single-body-footer text-center">
+                    <button type="submit" class="btn btn-default">Log in</button>
+                </div>
+            </form>
+        {{/hide-away}}
     </div>
     <div class="single-footer">
         <p class="emphasize text-darken">Don't have an account?</p>

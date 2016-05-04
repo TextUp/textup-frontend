@@ -35,11 +35,15 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
-	publicAPI: Ember.computed('total', 'direction', '_isLoading', '_hasError',
+	_total: Ember.computed('total', function() {
+		const total = this.get('total');
+		return isNaN(total) ? 10 : parseInt(total);
+	}),
+	publicAPI: Ember.computed('_total', 'direction', '_isLoading', '_hasError',
 		'_version',
 		function() {
 			return {
-				total: this.get('total'),
+				total: this.get('_total'),
 				direction: this.get('direction'),
 				isLoading: this.get('_isLoading'),
 				_hasError: this.get('_hasError'),
@@ -50,9 +54,9 @@ export default Ember.Component.extend({
 			};
 		}),
 	_isUp: Ember.computed.equal('direction', 'up'),
-	_isDone: Ember.computed('total', 'data.[]', 'doLoad', '_hasError', function() {
-		return this.get('doLoad') && !this.get('_hasError') ?
-			this.get('data.length') >= this.get('total') :
+	_isDone: Ember.computed('_total', 'data.[]', 'doLoad', '_hasError', function() {
+		return (this.get('doLoad') && !this.get('_hasError')) ?
+			this.get('data.length') >= this.get('_total') :
 			true;
 	}),
 
@@ -208,7 +212,12 @@ export default Ember.Component.extend({
 			// can't set isDone directly because destroys computed property
 			// instead, set has error because, after loading, no additional
 			// items were added to the data array
-			this.set('_hasError', true);
+			// CANNOT error when setting up because we might have
+			// passed in an empty data array, expecting the component to load
+			// the initial data through a doLoad call
+			if (!isSettingUp) {
+				this.set('_hasError', true);
+			}
 			callIfPresent(callback);
 		}
 	},

@@ -1,7 +1,7 @@
 <div class="single-container">
     <div class="single-header">
         <img class="brand" src='assets/images/logo.png' />
-        <h3>Account Pending</h3>
+        <h3>Hello, {{authManager.authUser.name}}!</h3>
         <div class="subtitle">
             {{#link-to "index"}}Done editing info? <b>Log out.</b>{{/link-to}}
         </div>
@@ -12,10 +12,12 @@
                 <h5>One more thing...</h5>
             </div>
             <p class="text-justify">
-                {{#if isPendingStaff}}
+                {{#if authManager.authUser.isPending}}
                     <span>Your account is waiting for an administrator's approval. You will be emailed when you receive confirmation.</span>
-                {{else}}
+                {{else if authManager.authUser.org.isPending}}
                     <span>Your account's organization is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
+                {{else}}
+                    <span>Your administrator hasn't assigned approved you for a TextUp phone or assigned you to a team with a TextUp phone.</span>
                 {{/if}}
                 <span>If you have any questions, feel free to contact us at <span class='text-bold'>connect@textup.org</span></span>
             </p>

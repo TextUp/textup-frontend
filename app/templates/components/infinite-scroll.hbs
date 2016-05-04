@@ -2,7 +2,10 @@
 	{{#each _items as |item index|}}
 		{{yield item index publicAPI}}
 	{{else}}
-		{{yield to='inverse'}}
+		{{!-- don't show if loading more and empty --}}
+		{{#if (not _isLoading)}}
+			{{yield to='inverse'}}
+		{{/if}}
 	{{/each}}
 </div>
 <div class="infinite-control {{controlClass}}">

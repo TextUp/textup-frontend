@@ -23,7 +23,7 @@
                         <span class="fa fa-times"></span>
                     </button>
                 </span>
-                {{#phone-number number=newPersonalNumber
+                {{#phone-control number=newPersonalNumber
                     controlClass='blend-in'
                     onChange=(action 'storeNewPersonalNumber')
                     onClick=(action 'updatePersonalNumber')
@@ -31,15 +31,15 @@
                     onValidate=(action 'validatePersonalNumber' hideAway.actions.close)}}
                 {{else}}
                     <span class='fa fa-arrow-right'></span>
-                {{/phone-number}}
+                {{/phone-control}}
             </div>
         {{else}}
-            {{#phone-number number=personalNumber
+            {{#phone-control number=personalNumber
                 showControl=true
                 controlClass='blend-in edit-personal-phone'}}
             {{else}}
                 <span class='fa fa-pencil'></span>
-            {{/phone-number}}
+            {{/phone-control}}
         {{/hide-away}}
     </div>
 	{{#with staff as |owner|}}

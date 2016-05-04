@@ -1,11 +1,11 @@
-{{#slideout-pane title=(if tags 'Tags' 'New Tag')
+{{#slideout-pane title=(if model.tags 'Tags' 'New Tag')
     direction='left'
     closeActionName='closeSlideout'
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
-        startOpen=(if tags false true)
+        startOpen=(if model.tags false true)
         tabindex='-1'
         hideTriggerOnOpen=true as |hideAway|}}
         <div class="input-group">
@@ -27,7 +27,7 @@
         </div>
     {{else}}
          <ul class="result-list">
-            {{#each tags as |tag|}}
+            {{#each model.tags as |tag|}}
                 {{#hide-away animation='slide'
                     clickOutToClose=false
                     hideTriggerOnOpen=true
@@ -67,9 +67,9 @@
                 {{else}}
                     <li class="result-item">
                         <div class="row pad-all clickable">
-                            {{#link-to 'main.tag' tagName='div' classNames='control-text'}}
+                            {{#link-to 'main.tag' tag tagName='div' classNames='control-text'}}
                                 <div class="horizontal-items">
-                                    {{preview-badge color=tag.color
+                                    {{preview-badge color=tag.hexColor
                                         onlyShowFull=true
                                         content=tag.name}}
                                     <span class="badge">

@@ -1,4 +1,4 @@
-// $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
+$mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
 
 // import core textup styles library
 @import 'core/main';
@@ -13,7 +13,7 @@
 @import 'components/_tab';
 @import 'components/_multi-range';
 @import 'components/_multi-toggle';
-@import 'components/_color-input';
+@import 'components/_color-control';
 @import 'components/_audio-control';
 @import 'components/_location-control';
 @import 'components/_infinite-scroll';

@@ -8,14 +8,14 @@
                     <span class="fa fa-trash"></span>
                 </button>
             </div>
-            {{#phone-number number=(readonly num.number)
+            {{#phone-control number=(readonly num.number)
                 controlClass='blend-in handle'
                 controlButtonClass='btn-default'
                 onChange=(action 'updateNumber' num)
                 showControl=true}}
             {{else}}
                 <span class='fa fa-bars'></span>
-            {{/phone-number}}
+            {{/phone-control}}
         {{/sortable-item}}
     {{/each}}
 {{/sortable-group}}
@@ -34,7 +34,7 @@
                 </button>
             </span>
         {{/if}}
-        {{phone-number number=newNumber
+        {{phone-control number=newNumber
             controlButtonClass='btn-success'
             onChange=(action 'storeNewNumber')
             onClick=(action 'addNewNumber')}}

@@ -8,7 +8,7 @@ module.exports = function(environment) {
             mapbox: 'pk.eyJ1IjoiZXJpY2JhaSIsImEiOiJjaWdwMXdhMWwwMGhxc3hrbm44dzdwaGFzIn0.MI2T3IHOtoE3s7ABwbDXfw'
         },
         baseURL: '/',
-        locationType: 'auto',
+        locationType: 'hash',
         EmberENV: {
             FEATURES: {
                 // Here you can enable experimental features on an ember canary build
@@ -31,6 +31,7 @@ module.exports = function(environment) {
 
 
     if (environment === 'development') {
+        ENV.host = "https://f5aa7aa3.ngrok.io";
         // ENV.APP.LOG_RESOLVER = true;
         // ENV.APP.LOG_ACTIVE_GENERATION = true;
         // ENV.APP.LOG_TRANSITIONS = true;

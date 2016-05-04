@@ -6,6 +6,10 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+
+    // Public
+    // ------
+
     this.route('login');
     this.route('signup', function() {
         this.route('new');
@@ -14,14 +18,26 @@ Router.map(function() {
     this.route('setup', function() {
         this.route('connect');
     });
+
+    // Auth
+    // ----
+
     this.route('none');
-    this.route('main', function() {
+    this.route('main', {
+        path: '/main/:main_identifier'
+    }, function() {
         this.route('contacts', function() {
-            this.route('contact');
+            this.route('contact', {
+                path: '/contact/:id'
+            });
             this.route('many');
         });
-        this.route('tag', function() {
-            this.route('contact');
+        this.route('tag', {
+            path: 'tag/:tag_identifier'
+        }, function() {
+            this.route('contact', {
+                path: '/contact/:id'
+            });
             this.route('many');
         });
     });
@@ -32,9 +48,9 @@ Router.map(function() {
             this.route('many');
         });
         this.route('team', function() {
-          this.route('person');
-          this.route('many');
-          this.route('edit');
+            this.route('person');
+            this.route('many');
+            this.route('edit');
         });
     });
 });
