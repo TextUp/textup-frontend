@@ -307,7 +307,7 @@ body {
 		&:hover {
 			background-color: $bg-light-color;
 		}
-		&.active:after, &.unread:after {
+		.active:after, .unread:after {
 			@extend %border-box;
 			position: absolute;
 		    content: ' ';
@@ -318,11 +318,11 @@ body {
 		    width: $padding;
 		    border-right: ($padding * 0.5) solid $border-color;
 		}
-		&.active:after {
+		.active:after {
 		    background-color: $border-color;
 		    border-right-color: shade($border-color);
 		}
-		&.unread:after {
+		.unread:after {
 			background-color: $brand-color;
 			border-right-color: shade($brand-color);
 		}

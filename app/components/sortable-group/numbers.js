@@ -1,5 +1,9 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../../utils/default-if-absent';
+import {
+	validate as validateNumber,
+	clean as cleanNumber
+} from '../../utils/phone-number';
 
 export default Ember.Component.extend({
 
@@ -13,29 +17,50 @@ export default Ember.Component.extend({
 
 	hasNumbers: Ember.computed.notEmpty('numbers'),
 
+	// Events
+	// ------
+
+	didInsertElement: function() {
+		this._super(...arguments);
+		// need to do this to trigger changedAttributes for numbers
+		Ember.run.scheduleOnce('afterRender', this, function() {
+			// true passed to copy for DEEP COPY so that before and after
+			// in changed attributes does not return the same mutated version
+			this.set('numbers', Ember.copy(this.get('numbers'), true));
+		});
+	},
+
 	// Actions
 	// -------
 
 	actions: {
 		storeNewNumber: function(val) {
 			this.set('newNumber', val);
-			return false;
 		},
 		clearNew: function(event) {
 			this.set('newNumber', '');
-			return false;
 		},
 		addNewNumber: function(val, isValid) {
-			this.set('newNumber', '');
-			return false;
+			if (isValid) {
+				this.get('numbers').pushObject({
+					number: val
+				});
+				this.set('newNumber', '');
+			}
 		},
-		updateNumber: function(numObj, newVal) {
+		removeNumber: function(index) {
+			this.get('numbers').removeAt(index);
+		},
+		removeIfEmpty: function(index, val) {
+			if (Ember.isBlank(val)) {
+				this.get('numbers').removeAt(index);
+			}
+		},
+		updateNumber: function(numObj, index, newVal) {
 			Ember.set(numObj, 'number', newVal);
-			return false;
 		},
 		reorderNumbers: function(itemModels) {
 			this.set('numbers', itemModels);
-			return false;
 		},
 	}
 });

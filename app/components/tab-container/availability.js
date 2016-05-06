@@ -4,8 +4,13 @@ import moment from 'moment';
 
 export default Ember.Component.extend({
 
-	singleStaffData: defaultIfAbsent({}),
-	otherStaffData: defaultIfAbsent([]),
+	schedule: defaultIfAbsent({}),
+	otherStaffs: defaultIfAbsent([]),
+
+	_daysOfWeek: [
+		'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
+		'saturday', 'sunday'
+	],
 
 	// Computed properties
 	// -------------------
@@ -40,7 +45,7 @@ export default Ember.Component.extend({
 			return moment().format('LT');
 		},
 		updateTime: function(array, index, data) {
-			array.replace(index, 1, [data]);
+			Ember.set(array, String(index), data);
 		},
 		insertTime: function(array, data) {
 			array.pushObject(data);

@@ -82,21 +82,33 @@
 	}
 }
 .contacts-control {
-	@include v-center(left, $contacts-h-space / 2, true);
+	@extend .clickable;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: $contacts-h-space;
+	height: 100%;
+	background-color: $bg-color;
+	color: shade($bg-color);
+
+	&.selected {
+		$selected-color: tint($brand-color);
+		background-color: $selected-color;
+		color: shade($selected-color, 2);
+	}
 }
 .contacts-info {
+	@extend .clickable;
 	margin-left: $contacts-h-space;
+	padding: $padding;
+	padding-right: 0;
 }
 .contacts-tags {
 	@extend .row;
 	@extend .horizontal-items;
-	margin-top: 0.8em;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-	background-color: $bg-light-color;
+	padding: ($padding * 0.5) 0;
+	background-color: shade($bg-light-color, 0.5);
 
-	// can't directly use preview-badge because badge
-	// inherits from preview-badge
 	:not(.badge) {
 		max-width: 90px;
 	}

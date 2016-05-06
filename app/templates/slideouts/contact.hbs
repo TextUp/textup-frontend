@@ -1,32 +1,60 @@
-{{#slideout-pane title=(if testNumbers 'John Doe' 'New Contact')
-    direction=(if testNumbers 'right' 'left')
-    closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout'}}
-    <div class="input-group">
-        <div class="input-group-addon">
-            <button class="btn btn-span" type='button'>
-                Cancel
-            </button>
-        </div>
-        <div class="input-group-addon">
-            <button class="btn btn-default btn-span" type='button'>
-                {{if testNumbers 'Update' 'Create'}}
-            </button>
-        </div>
-    </div>
+{{#slideout-pane title=(if contact (phone-number contact.identifier) 'New Contact')
+    direction=(if contact 'right' 'left')
+    closeActionName=(if contact 'revertAndClose' 'closeSlideout')
+    closeActionParameters=contact
+    ignoreCloseSelectors='.header-slideout'
+    focusSelector='.start-focus' as |slideout|}}
     <form class="pad-t pad-l pad-r">
         <div class="form-element">
             <label for="Name">Name</label>
-            {{input value=c1.name type="text" placeholder="Name" class="form-control"
-                autocorrect="off" autocapitalize="off"}}
+            {{#if contact}}
+                {{input value=contact.name
+                    type="text" placeholder="Name" class="start-focus form-control"
+                    autocorrect="off" autocapitalize="off"}}
+            {{else}}
+                {{input value=newContact.name
+                    type="text" placeholder="Name" class="start-focus form-control"
+                    autocorrect="off" autocapitalize="off"}}
+            {{/if}}
         </div>
         <div class="form-element">
             <label for="Note">Note</label>
-            {{textarea rows="3" class="form-control" maxlength="1000" value=c1.note}}
+            {{#if contact}}
+                {{textarea rows="3" class="form-control" maxlength="1000"
+                    value=contact.note}}
+            {{else}}
+                {{textarea rows="3" class="form-control" maxlength="1000"
+                    value=newContact.note}}
+            {{/if}}
         </div>
         <div class="form-element">
             <label for="Note">Numbers</label>
-            {{sortable-group/numbers numbers=(mut testNumbers)}}
+            {{#if contact}}
+                {{sortable-group/numbers numbers=contact.numbers}}
+            {{else}}
+                {{sortable-group/numbers numbers=newContact.numbers}}
+            {{/if}}
         </div>
     </form>
+    <div class="horizontal-items text-center margin-t-double margin-b">
+        <div class="clear-badge no-space">
+            <button class="btn" type='button'
+                onclick={{slideout.actions.close}}>
+                Cancel
+            </button>
+        </div>
+        <div class="clear-badge no-space">
+            {{#if contact}}
+                <button class="btn btn-default" type='button'
+                    {{action 'closeIfSuccess' contact}}>
+                    Update
+                </button>
+            {{else}}
+                <button class="btn btn-default" type='button'
+                    {{action 'createContact' newContact}}>
+                    Create
+                </button>
+            {{/if}}
+        </div>
+    </div>
 {{/slideout-pane}}

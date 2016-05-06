@@ -1,15 +1,17 @@
 import Ember from 'ember';
+import defaultIfAbsent from '../utils/default-if-absent';
 
 export default Ember.Component.extend({
-	title: '',
-	closeActionName: null,
-	direction: 'left',
-	ignoreCloseSelectors: '',
-	autoClose: true,
-	focusDelay: 500, // in ms
-	focusSelector: '.slideout-header',
+	title: defaultIfAbsent(''),
+	closeActionName: defaultIfAbsent(null),
+	closeActionParameters: defaultIfAbsent([]),
+	direction: defaultIfAbsent('left'),
+	ignoreCloseSelectors: defaultIfAbsent(''),
+	autoClose: defaultIfAbsent(true),
+	focusDelay: defaultIfAbsent(500), // in ms
+	focusSelector: defaultIfAbsent('.slideout-header'),
 	// must explicitly include default header if has inverse
-	includeDefaultHeader: null,
+	includeDefaultHeader: defaultIfAbsent(false),
 
 	classNames: 'slideout-pane',
 	classNameBindings: ['directionClass'],
@@ -87,6 +89,15 @@ export default Ember.Component.extend({
 
 	_close: function() {
 		this.firstTime = true;
-		this.sendAction('closeActionName');
+		const params = this.get('closeActionParameters');
+		if (Ember.isPresent(params)) {
+			if (Ember.isArray(params)) {
+				this.sendAction('closeActionName', ...params);
+			} else {
+				this.sendAction('closeActionName', params);
+			}
+		} else {
+			this.sendAction('closeActionName');
+		}
 	}
 });

@@ -4,8 +4,15 @@ export default Ember.Route.extend({
 	controllerName: 'main/contacts/many',
 	templateName: 'main/contacts/many',
 
-	setupController: function(controller) {
-		this._super(...arguments);
-		controller.set('tag', this.controllerFor('main.tag').get('tag'));
-	},
+	actions: {
+		willTransition: function() {
+			this.controller._deselectAll();
+		},
+		didTransition: function() {
+			if (this.controller.get('selected').length === 0) {
+				this.transitionTo('main.tag');
+			}
+			return true; // for closing slideouts
+		},
+	}
 });

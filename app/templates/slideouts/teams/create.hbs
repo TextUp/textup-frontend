@@ -2,21 +2,21 @@
     direction='left'
     closeActionName='closeSlideout'
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
-    <div class="input-group">
-        <span class="input-addon">
-            <button class="btn btn-span" type='button'
-                onclick={{hideAway.actions.close}}>
+    <div class="pad-t">
+        {{partial 'partials/create-edit-team'}}
+    </div>
+    <div class="horizontal-items text-center margin-t-double margin-b">
+        <div class="clear-badge no-space">
+            <button class="btn" type='button'
+                onclick={{slideout.actions.close}}>
                 Cancel
             </button>
-        </span>
-        <span class="input-addon">
-            <button class="btn btn-default btn-span" type='button'
-                onclick={{hideAway.actions.close}}>
+        </div>
+        <div class="clear-badge no-space">
+            <button class="btn btn-default" type='button'
+                onclick={{slideout.actions.close}}>
                 Create
             </button>
-        </span>
-    </div>
-    <div class="pad-t pad-b">
-        {{partial 'partials/create-edit-team'}}
+        </div>
     </div>
 {{/slideout-pane}}

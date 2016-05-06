@@ -13,6 +13,7 @@ const {
 export default DS.Model.extend({
 	whenCreated: DS.attr('date'),
 	outgoing: DS.attr('boolean'),
+	hasAwayMessage: DS.attr('boolean'),
 	type: DS.attr('string'), // call | text
 
 	authorName: DS.attr('string'),
@@ -45,6 +46,22 @@ export default DS.Model.extend({
 	isText: eq('type', 'TEXT'),
 	isCall: eq('type', 'CALL'),
 
-	numReceipts: alias('receipts.length'),
-	hasAnySuccess: filterBy('receipts', 'status', 'SUCCESS'),
+	successes: Ember.computed('receipts', function() {
+		return DS.PromiseArray.create({
+			promise: new Ember.RSVP.Promise((resolve, reject) => {
+				this.get('receipts').then((receipts) => {
+					resolve(receipts.filterBy('status', 'SUCCESS'));
+				}, reject);
+			})
+		});
+	}),
+	numSuccesses: Ember.computed('successes', function() {
+		return DS.PromiseObject.create({
+			promise: new Ember.RSVP.Promise((resolve, reject) => {
+				this.get('successes').then((successes) => {
+					resolve(0);
+				}, reject);
+			})
+		});
+	}),
 });

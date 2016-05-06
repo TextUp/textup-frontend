@@ -17,8 +17,8 @@ export default DS.Model.extend({
 	status: DS.attr('string', {
 		defaultValue: 'ACTIVE'
 	}),
+	numbers: DS.attr('collection'),
 
-	numbers: DS.hasMany('contactNumber'),
 	records: DS.hasMany('record'),
 
 	// Contact
@@ -38,6 +38,7 @@ export default DS.Model.extend({
 	// Not attributes
 	// --------------
 
+	type: 'contact', // for compose menu
 	isSelected: false,
 
 	// Computed properties
@@ -46,16 +47,15 @@ export default DS.Model.extend({
 	identifier: Ember.computed('name', 'numbers', function() {
 		const name = this.get('name'),
 			firstNum = this.get('numbers').objectAt(0);
-		return name ? name : (firstNum ? firstNum.get('number') : 'No Name');
+		return name ? name : (firstNum ? Ember.get(firstNum, 'number') : 'No Name');
 	}),
 	isShared: notEmpty('sharedBy'),
+
+	isSharedDelegate: eq('permission', 'DELEGATE'),
+	isSharedView: eq('permission', 'VIEW'),
 
 	isArchived: eq('status', 'ARCHIVED'),
 	isBlocked: eq('status', 'BLOCKED'),
 	isActive: eq('status', 'ACTIVE'),
 	isUnread: eq('status', 'UNREAD'),
-
-	numNumbers: alias('numbers.length'),
-	numbersSort: ['preference'],
-	sortedNumbers: sort('numbers', 'numbersSort')
 });

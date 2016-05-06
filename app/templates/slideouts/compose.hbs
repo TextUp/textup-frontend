@@ -1,12 +1,9 @@
 {{#slideout-pane title='Compose'
     closeActionName='closeSlideout'
     ignoreCloseSelectors='.header-slideout'}}
-	<button class="btn btn-default btn-span" type='button'>
-        Send
-    </button>
-	<form action="" class="pad-t pad-l pad-r">
+	<div class="pad-t pad-l pad-r">
 		<div class="form-element">
-			{{#multi-select data=tags
+			{{#multi-select data=model.tags
 		    	selected=selectedRecipients
 		    	displayProperty='identifier'
 		    	identityProperty='identifier'
@@ -19,13 +16,25 @@
 						{{#if (eq recipient.type 'tag')}}
 							<span class="fa fa-tag"></span>
 						{{else if (eq recipient.type 'contact')}}
-							<span class="fa fa-user"></span>
+							{{#if recipient.isShared}}
+								{{#tool-tipster theme='tooltipster-clean'
+						            title=(concat 'Shared by ' recipient.sharedBy)}}
+						            <span class="fa fa-share"></span>
+						        {{/tool-tipster}}
+							{{else}}
+								<span class="fa fa-user"></span>
+							{{/if}}
 						{{else}}
 							<span class="fa fa-asterisk"></span>
 						{{/if}}
 					</span>
-					<span class="clear-badge">
-						<span class="text-bold">{{recipient.identifier}}</span>
+					<span class="clear-badge text-bold">
+						{{phone-number recipient.identifier}}
+						{{#if (eq recipient.type 'tag')}}
+							<span class="margin-l-half halo halo-sm bg-color bg-dark">
+								{{recipient.numMembers}}
+							</span>
+						{{/if}}
 					</span>
 				</span>
 			{{/multi-select}}
@@ -39,5 +48,11 @@
 				value=composeMessage
 				placeholder="Type your message here"}}
 		</div>
-	</form>
+	</div>
+	<div class="form-element text-center">
+		<button class="btn btn-default" type='button'
+			{{action 'sendMessage'}}>
+	        Send
+	    </button>
+	</div>
 {{/slideout-pane}}

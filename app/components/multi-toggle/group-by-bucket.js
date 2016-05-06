@@ -12,6 +12,10 @@ export default Ember.Component.extend({
 	itemBucketCommandProperty: null,
 	items: defaultIfAbsent([]),
 
+	// the property name must match in the item list and on the bucket
+	// ex: if staff is bucket and contact is item, then this property name
+	// must be the same on the staff as it is on the sharedWith list
+	// on the contact
 	bucketIdentityProperty: defaultIfAbsent('name'),
 	buckets: defaultIfAbsent([]),
 

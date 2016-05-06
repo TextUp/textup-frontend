@@ -2,21 +2,7 @@
     direction='left'
     closeActionName='closeSlideout'
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
-    <div class="input-group">
-        <span class="input-addon">
-            <button class="btn btn-span" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </span>
-        <span class="input-addon">
-            <button class="btn btn-default btn-span" type='button'
-                onclick={{slideout.actions.close}}>
-                Create
-            </button>
-        </span>
-    </div>
-    <div class="pad-all">
+    <div class="pad-t pad-l pad-r">
         <div class="form-element">
             <label for="Staff Name">Staff Name</label>
             {{input value=staff.name type="text" placeholder="Staff Name" class="form-control"}}
@@ -37,6 +23,20 @@
             </div>
             {{multi-toggle/mutable-toggle classNames='xs-row-3'
                 value=allowNewTeamPhone}}
+        </div>
+    </div>
+    <div class="horizontal-items text-center margin-t-double margin-b">
+        <div class="clear-badge no-space">
+            <button class="btn" type='button'
+                onclick={{slideout.actions.close}}>
+                Cancel
+            </button>
+        </div>
+        <div class="clear-badge no-space">
+            <button class="btn btn-default" type='button'
+                onclick={{slideout.actions.close}}>
+                Create
+            </button>
         </div>
     </div>
 {{/slideout-pane}}

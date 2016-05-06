@@ -91,7 +91,9 @@ export default Ember.Component.extend({
 	},
 	willDestroyElement: function() {
 		const map = this.get('_map');
-		if (map) map.off();
+		if (map) {
+			map.off();
+		}
 		this.$().off(`.${this.elementId}`);
 		this._stopObserveChanges();
 	},
@@ -324,6 +326,9 @@ export default Ember.Component.extend({
 		Ember.run.next(this, this._doRefresh);
 	},
 	_doRefresh: function() {
+		if (this.isDestroying || this.isDestroyed) {
+			return;
+		}
 		const map = this.get('_map'),
 			latLng = this.get('location');
 		if (Ember.isPresent(latLng)) { // open popup if location is present

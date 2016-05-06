@@ -21,13 +21,21 @@ export default Ember.Route.extend({
 	},
 	setupController: function(controller, tag) {
 		this._super(...arguments);
+		this.set('tag', tag);
 		controller.set('tag', tag);
-		controller.set('contacts', []);
-		controller.set('numContacts', tag.get('numMembers'));
-
+		this._resetController(tag);
 	},
 
 	actions: {
+		didTransition: function() {
+			const currentPath = this.controllerFor('application').get('currentPath');
+			// only reset if not within main.tag
+			if (!(/main.tag/.test(currentPath))) {
+				this._resetController(this.get('tag'));
+			}
+			// return true to allow bubbling to close slideout handler
+			return true;
+		},
 		changeFilter: function(filter) {
 			this.transitionTo('main.contacts', {
 				queryParams: {
@@ -35,5 +43,10 @@ export default Ember.Route.extend({
 				}
 			});
 		},
-	}
+	},
+
+	_resetController: function(tag) {
+		this.controller.set('contacts', []);
+		this.controller.set('numContacts', tag.get('numMembers'));
+	},
 });

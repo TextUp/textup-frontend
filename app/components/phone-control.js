@@ -1,16 +1,26 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
 import callIfPresent from '../utils/call-if-present';
+import {
+	validate as validateNumber,
+	clean as cleanNumber
+} from '../utils/phone-number';
 
 export default Ember.Component.extend({
+	disabled: defaultIfAbsent(false),
+	tabindex: defaultIfAbsent('0'),
 	number: defaultIfAbsent(''),
 	forceAllowChanges: defaultIfAbsent(false),
 	onChange: defaultIfAbsent(null),
 	onClick: defaultIfAbsent(null),
 	onValidate: defaultIfAbsent(null),
+	onFocusEnter: defaultIfAbsent(null),
+	onFocusLeave: defaultIfAbsent(null),
 	forceDefaultValidate: defaultIfAbsent(false),
 	showControl: defaultIfAbsent(false),
 	throttleThreshold: defaultIfAbsent(300),
+
+	attributeBindings: ['tabindex:tabIndex'],
 
 	_cleanedAndSplit: null,
 	_isValid: true,
@@ -24,6 +34,9 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
+	tabIndex: Ember.computed('disabled', 'tabindex', function() {
+		return this.get('disabled') ? '-1' : this.get('tabindex');
+	}),
 	someNumberPresent: Ember.computed.notEmpty('number'),
 	allowChanges: Ember.computed.or('onChange', 'forceAllowChanges'),
 	publicAPI: Ember.computed(function() {
@@ -52,6 +65,49 @@ export default Ember.Component.extend({
 
 	didInsertElement: function() {
 		Ember.run.scheduleOnce('afterRender', this, this._cleanAndSplitNumber);
+		const $el = this.$();
+		$el.on(`focus.${this.elementId}`, function(event) {
+			const $related = Ember.$(event.relatedTarget);
+			// only trigger focus on when element that was focused BEFORE
+			// is not within this element. By restricting to only external
+			// DOM nodes, we prevent situation where we trap the focus in this
+			// element since shift+tabbing from inside this element also
+			// fires this focus event
+			if (!$related.closest($el).length) {
+				if (this.get('_isValidating')) {
+					this._focusValidate();
+				} else {
+					this._focusEntry();
+				}
+			}
+		}.bind(this));
+		this.$('input, button').on(`focusout.${this.elementId}`, function(event) {
+			const $related = event.relatedTarget && Ember.$(event.relatedTarget);
+			// only trigger onFocusLeave hook when the related target IS NOT
+			// within this component. This condition is fulfilled
+			// when the focus is actually leaving this element altogether
+			if (!$related || !$related.closest($el).length) {
+				const newNum = this._buildNewNumber(),
+					isValid = this._validateEntry(newNum);
+				callIfPresent(this.get('onFocusLeave'), newNum, isValid);
+			}
+		}.bind(this));
+		this.$('input').on(`focusin.${this.elementId}`, function(event) {
+			const $related = event.relatedTarget && Ember.$(event.relatedTarget);
+			// only trigger onFocusEnter hook when the related target IS NOT
+			// within this component. This condition is fulfilled
+			// when the focus is actually leaving this element altogether
+			if (!$related || !$related.closest($el).length) {
+				const newNum = this._buildNewNumber(),
+					isValid = this._validateEntry(newNum);
+				callIfPresent(this.get('onFocusEnter'), newNum, isValid);
+			}
+		}.bind(this));
+	},
+	willDestroyElement: function() {
+		this.$().off(`.${this.elementId}`);
+		this.$('input, button').off(`.${this.elementId}`);
+		this.$('input').off(`.${this.elementId}`);
 	},
 	didUpdateAttrs: function() {
 		this._cleanAndSplitNumber();
@@ -107,9 +163,9 @@ export default Ember.Component.extend({
 			}
 			// decide on if we need to focus for the next step.
 			if (onClick && !onValidate) {
-				Ember.run.scheduleOnce('afterRender', this, this._focusEntry);
+				Ember.run.next(this, this._focusEntry);
 			} else if (onValidate) {
-				Ember.run.scheduleOnce('afterRender', this, this._focusValidate);
+				Ember.run.next(this, this._focusValidate);
 			}
 		},
 		revert: function() {
@@ -199,7 +255,9 @@ export default Ember.Component.extend({
 		if (Ember.isBlank(newNum)) { // should not error class when no input
 			$el.removeClass(errorClass);
 		}
-		this.set('_newNum', newNum);
+		if (!this.isDestroying && !this.isDestroyed) {
+			this.set('_newNum', newNum);
+		}
 		return newNum;
 	},
 
@@ -233,10 +291,11 @@ export default Ember.Component.extend({
 
 	_cleanAndSplitNumber: function() {
 		const number = this.get('number');
-		if (!this._validateEntry(number)) {
+		// only validate if number is not blank
+		if (!Ember.isBlank(number) && !this._validateEntry(number)) {
 			this._revert(true);
 		}
-		const cleaned = this._cleanNumber(number).slice(0, 10);
+		const cleaned = cleanNumber(number);
 		this.set('_cleanedAndSplit', {
 			first: cleaned.slice(0, 3),
 			second: cleaned.slice(3, 6),
@@ -245,7 +304,7 @@ export default Ember.Component.extend({
 	},
 	_cleanAndUpdateField: function($input) {
 		const rawVal = $input.val(),
-			cleanedVal = this._cleanNumber(rawVal);
+			cleanedVal = cleanNumber(rawVal);
 		if (rawVal !== cleanedVal) {
 			$input.val(cleanedVal);
 		}
@@ -258,11 +317,8 @@ export default Ember.Component.extend({
 		return ($first.val() || '   ') + ($second.val() || '   ') + $third.val();
 	},
 	_validateEntry: function(number) {
-		const isValid = this._cleanNumber(number).length === 10;
+		const isValid = validateNumber(number);
 		this.set('_isValid', isValid);
 		return isValid;
-	},
-	_cleanNumber: function(number) {
-		return number ? number.replace(/\D+/g, '') : '';
-	},
+	}
 });

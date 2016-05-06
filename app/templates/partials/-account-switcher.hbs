@@ -9,17 +9,15 @@ in the model hook to run --}}
             <p class="text-bold text-ellipsis">{{phone-number authManager.authUser.phone}}</p>
         </div>
     {{/link-to}}
-    {{#if authManager.authUser.teamsWithPhones.isFulfilled}}
-        {{#each authManager.authUser.teamsWithPhones.content as |team|}}
-            {{#link-to 'main' team.urlIdentifier tagName='li' classNames='menu-item'}}
-                <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                    <p class="text-bold text-ellipsis">{{team.name}}</p>
-                    <p class="text-bold text-ellipsis">{{phone-number team.phone}}</p>
-                </div>
-                <span class="indicator" style="background-color:{{team.hexColor}};"></span>
-            {{/link-to}}
-        {{/each}}
-    {{/if}}
+    {{#each authManager.authUser.teamsWithPhones as |team|}}
+        {{#link-to 'main' team.urlIdentifier tagName='li' classNames='menu-item'}}
+            <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                <p class="text-bold text-ellipsis">{{team.name}}</p>
+                <p class="text-bold text-ellipsis">{{phone-number team.phone}}</p>
+            </div>
+            <span class="indicator" style="background-color:{{team.hexColor}};"></span>
+        {{/link-to}}
+    {{/each}}
     {{#if authManager.authUser.isAdmin}}
         {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
             <div class="offset-xs-row-10 xs-8-row-10 text-left">

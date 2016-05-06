@@ -6,6 +6,7 @@
 		    {{!-- text type so that the up/down arrows don't show up on desktop --}}
 		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
 		    	placeholder="###"
+		    	tabindex='-1'
 		    	class="form-control text-center"
 		    	value=_cleanedAndSplit.first
 		    	focus-out=(action 'handleChange')
@@ -13,6 +14,7 @@
 		    	disabled=(not allowChanges)}}
 		    <span class="input-group-text-display">)</span>
 		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    	tabindex='-1'
 		    	placeholder="###"
 		    	class="form-control text-center"
 		    	value=_cleanedAndSplit.second
@@ -21,6 +23,7 @@
 		    	disabled=(not allowChanges)}}
 		    <span class="input-group-text-display">-</span>
 		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    	tabindex='-1'
 		    	placeholder="####"
 		    	class="form-control text-center"
 		    	value=_cleanedAndSplit.third
@@ -33,7 +36,7 @@
 	{{#if (or showControl (or onClick onValidate))}}
 		<span class="input-group-addon {{controlClass}}">
 			<button class='btn {{controlButtonClass}}' type='button'
-				disabled={{and (not _isValid) someNumberPresent}}
+				disabled={{or (not _isValid) (not someNumberPresent)}}
 				{{action 'clickControl' bubbles=false}}>
 				{{#if (hasBlock 'inverse')}}
 					{{yield to='inverse'}}
@@ -53,7 +56,9 @@
 	        	<span class='fa fa-undo'></span>
 	    	</button>
 	    </span>
-	    {{input class='phone-number-validate form-control' placeholder='Verify number'
+	    {{input tabindex='-1'
+	    	class='phone-number-validate form-control'
+	    	placeholder='Verify number'
 	    	value=_validationCode enter='handleValidate'}}
 		<span class="input-group-addon blend-in">
 	    	<button class='btn btn-default' type='button'

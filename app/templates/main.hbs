@@ -51,7 +51,7 @@
             <span class="fa fa-calendar-o"></span>
         {{/tool-tipster}}
         <div class="btn-expand display-xs display-s display-m">
-            <span class="text-bold">Availability</span>
+            <span>Availability</span>
         </div>
     </li>
     <li class="menu-divider display-l"></li>
@@ -64,7 +64,7 @@
             <span class="fa fa-comments"></span>
         {{/tool-tipster}}
         <div class="btn-expand display-xs display-s display-m">
-            <span class="text-bold">Compose</span>
+            <span>Compose</span>
         </div>
     </li>
 
@@ -97,22 +97,22 @@
     <li class="menu-item display-xs display-s display-m
         {{if (and (not viewingTag) (eq filter 'all')) 'active'}}"
         {{action 'changeFilter' 'all'}}>
-        <span class="text-bold">All</span>
+        <span>All</span>
     </li>
     <li class="menu-item display-xs display-s display-m
         {{if (and (not viewingTag) (eq filter 'unread')) 'active'}}"
         {{action 'changeFilter' 'unread'}}>
-        <span class="text-bold">Unread</span>
+        <span>Unread</span>
     </li>
     <li class="menu-item display-xs display-s display-m
         {{if (and (not viewingTag) (eq filter 'archived')) 'active'}}"
         {{action 'changeFilter' 'archived'}}>
-        <span class="text-bold">Archived</span>
+        <span>Archived</span>
     </li>
     <li class="menu-item display-xs display-s display-m
         {{if (and (not viewingTag) (eq filter 'blocked')) 'active'}}"
         {{action 'changeFilter' 'blocked'}}>
-        <span class="text-bold">Blocked</span>
+        <span>Blocked</span>
     </li>
 
     {{!-- tags --}}
@@ -136,7 +136,7 @@
     {{#each model.tags as |tag|}}
         {{#link-to 'main.tag' tag tagName='li'
             classNames='menu-item display-xs display-s display-m'}}
-            <span class="text-bold">{{tag.name}}</span>
+            <span>{{tag.name}}</span>
             <span class="badge dark">{{tag.numMembers}}</span>
             <span class="indicator" style="background-color:{{tag.hexColor}};"></span>
         {{/link-to}}

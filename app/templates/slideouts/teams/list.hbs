@@ -8,22 +8,22 @@
         startOpen=(if teams false true)
         tabindex='-1'
         hideTriggerOnOpen=true as |hideAway|}}
-        <div class="input-group">
-            <span class="input-addon">
-                <button class="btn btn-span" type='button'
+        <div class="pad-t">
+            {{partial 'partials/create-edit-team'}}
+        </div>
+        <div class="horizontal-items text-center margin-t-double margin-b">
+            <div class="clear-badge no-space">
+                <button class="btn" type='button'
                     onclick={{hideAway.actions.close}}>
                     Cancel
                 </button>
-            </span>
-            <span class="input-addon">
-                <button class="btn btn-default btn-span" type='button'
+            </div>
+            <div class="clear-badge no-space">
+                <button class="btn btn-default" type='button'
                     onclick={{hideAway.actions.close}}>
                     Create
                 </button>
-            </span>
-        </div>
-        <div class="pad-t pad-b">
-            {{partial 'partials/create-edit-team'}}
+            </div>
         </div>
     {{else}}
          <ul class="result-list">

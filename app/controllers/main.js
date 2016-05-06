@@ -1,6 +1,14 @@
 import Ember from 'ember';
+import {
+	validate as validateNumber,
+	clean as cleanNumber
+} from '../utils/phone-number';
 
 export default Ember.Controller.extend({
+
+	shareCandidates: null,
+	teamMembers: null,
+	contacts: [],
 
 	// Highlight menu items
 	// --------------------
@@ -16,82 +24,13 @@ export default Ember.Controller.extend({
 	// New contact
 	// -----------
 
-	testNumbers: [],
+	newContact: null,
 
 	// Compose
 	// -------
 
-	selectedRecipients: [{
-		identifier: '111 222 3333',
-		type: 'contact'
-	}, {
-		identifier: 'Kiki Bai',
-		type: 'contact'
-	}, {
-		identifier: 'Housing First',
-		type: 'tag'
-	}, {
-		identifier: 'Monday Group',
-		type: 'tag'
-	}, {
-		identifier: '555 222 3333',
-	}],
+	selectedRecipients: [],
 	composeMessage: '',
-
-	// Availability
-	// ------------
-
-	singleStaffData: {
-		monday: [
-			['0000', '0300'],
-			['0500', '0600']
-		],
-		tuesday: [
-			['0000', '0300'],
-			['0500', '0600']
-		],
-		wednesday: [],
-		thursday: [],
-		friday: [
-			['0000', '0300'],
-			['0500', '0600']
-		],
-		saturday: [],
-		sunday: []
-	},
-	otherStaffData: [{
-		name: "Joe Schmo",
-		schedule: {
-			wednesday: [
-				['0000', '0300'],
-				['0500', '0600']
-			],
-			saturday: [
-				['0000', '0300'],
-				['0500', '0600']
-			],
-			friday: [
-				['0000', '0300'],
-				['0500', '0600']
-			]
-		}
-	}, {
-		name: "Cindy Ruiz",
-		schedule: {
-			monday: [
-				['0000', '0300'],
-				['0500', '0600']
-			],
-			thursday: [
-				['0000', '0300'],
-				['0500', '0600']
-			],
-			friday: [
-				['0000', '0300'],
-				['0500', '0600']
-			]
-		}
-	}],
 
 	actions: {
 
@@ -123,44 +62,31 @@ export default Ember.Controller.extend({
 		// -------
 
 		createRecipient: function(val) {
-			console.log("createRecipient for val: " + val);
-
-			return {
-				identifier: val,
-			};
+			if (validateNumber(val)) {
+				return {
+					identifier: cleanNumber(val),
+				};
+			}
 		},
 		insertRecipientAt: function(index, recipient, event) {
-			console.log('insertRecipientAt: index: ' + index);
-			console.log(recipient);
-
 			return new Ember.RSVP.Promise((resolve, reject) => {
-				const recipients = this.get('selectedRecipients');
-				recipients.replace(index, 1, [recipient]);
+				this.get('selectedRecipients').replace(index, 1, [recipient]);
 				resolve();
 			});
 		},
 		deselectRecipient: function(recipient) {
-			console.log('deselectRecipient');
-			console.log(recipient);
-
-			const recipients = this.get('selectedRecipients');
-			recipients.removeObject(recipient);
+			this.get('selectedRecipients').removeObject(recipient);
 		},
-		doSearch: function() {
+		doSearch: function(searchString) {
 			return new Ember.RSVP.Promise((resolve, reject) => {
-				const recipients = [{
-					identifier: '222 888 8888',
-					type: 'contact'
-				}, {
-					identifier: '333 888 8888',
-					type: 'contact'
-				}, {
-					identifier: '555 888 8888',
-					type: 'contact'
-				}];
-				setTimeout(function() {
-					resolve(recipients);
-				}, 2000);
+				if (Ember.isBlank(searchString)) {
+					return resolve([]);
+				}
+				this.store.query('contact', {
+					search: searchString
+				}).then((searchResults) => {
+					resolve(searchResults.toArray());
+				}, resolve);
 			});
 		},
 	}

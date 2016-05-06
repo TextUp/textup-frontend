@@ -1,5 +1,5 @@
-{{#slideout-pane title=(if contacts
-        (concat 'Tags (' contacts.length ' selected)')
+{{#slideout-pane title=(if selected
+        (concat 'Tags (' selected.length ' selected)')
         (concat contact.name ' Tags'))
     direction='right'
     closeActionName='closeSlideout'
@@ -17,9 +17,9 @@
         </div>
     </div>
     {{#multi-toggle/group-by-bucket itemBucketProperty='tags'
-        items=(if contacts contacts contact)
-        buckets=tags as |tag|}}
-            {{preview-badge color=tag.color onlyShowFull=true content=tag.name}}
+        items=(if selected selected contact)
+        buckets=mainModel.tags as |tag|}}
+            {{preview-badge color=tag.hexColor onlyShowFull=true content=tag.name}}
     {{else}}
         <li class="no-results">No tags yet.</li>
     {{/multi-toggle/group-by-bucket}}

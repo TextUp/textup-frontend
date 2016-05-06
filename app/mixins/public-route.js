@@ -5,7 +5,7 @@ export default Ember.Mixin.create(Loading, {
 	beforeModel: function() {
 		this._super(...arguments);
 		if (this.get('authManager.isLoggedIn')) {
-			this.transitionTo("main");
+			this.transitionTo("main", this.get('authManager.authUser'));
 		}
 	}
 });

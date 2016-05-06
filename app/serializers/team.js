@@ -13,7 +13,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 			deserialize: 'records',
 			serialize: false //any changes happen with tagActions on the individual tags
 		},
-		numContacts: {
+		phoneId: {
 			serialize: false
 		}
 	},

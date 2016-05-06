@@ -4,7 +4,7 @@ import Ember from 'ember';
 export default DS.Model.extend({
 	name: DS.attr('string'),
 	hexColor: DS.attr('string'),
-	numContacts: DS.attr('number'),
+	awayMessage: DS.attr('string'),
 
 	org: DS.belongsTo('organization'),
 	location: DS.belongsTo('location'),
@@ -13,7 +13,7 @@ export default DS.Model.extend({
 	// if has phone, string phone number
 	phone: DS.attr('string'),
 	// Id of the phone number to provision as the TextUp number
-	phoneId: DS.attr('string'),
+	newPhoneApiId: DS.attr('string'),
 
 	// Computed properties
 	// -------------------

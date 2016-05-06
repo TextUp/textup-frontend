@@ -18,7 +18,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 			deserialize: 'records',
 			serialize: false //any changes happen with teamActions on the individual tags
 		},
-		numContacts: {
+		phoneId: {
 			serialize: false
 		}
 	},

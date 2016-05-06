@@ -14,6 +14,9 @@ export default Ember.Mixin.create({
 		}
 	},
 	_openSlideout: function(name, context) {
+		if (name === this.get('currentSlideoutName')) {
+			return;
+		}
 		this.set('currentSlideoutName', name);
 		this.render(name, {
 			into: this.routeName,

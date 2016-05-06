@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 const {
 	equal: eq,
-	filter
+	alias
 } = Ember.computed;
 
 export default DS.Model.extend({
@@ -16,12 +16,13 @@ export default DS.Model.extend({
 	awayMessage: DS.attr('string', {
 		defaultValue: ''
 	}),
-	numContacts: DS.attr('number'),
 
+	// for building share actions
+	phoneId: DS.attr('number'),
 	// if has phone, string phone number
 	phone: DS.attr('string'),
 	// Id of the phone number to provision as the TextUp number
-	phoneId: DS.attr('string'),
+	newPhoneApiId: DS.attr('string'),
 
 	org: DS.belongsTo('organization'),
 	schedule: DS.belongsTo('schedule'),
@@ -34,6 +35,7 @@ export default DS.Model.extend({
 	urlIdentifier: Ember.computed('username', function() {
 		return Ember.String.dasherize(this.get('username'));
 	}),
+	sharingId: alias('id'),
 
 	isBlocked: eq('status', 'BLOCKED'),
 	isPending: eq('status', 'PENDING'),
@@ -41,7 +43,7 @@ export default DS.Model.extend({
 	isAdmin: eq('status', 'ADMIN'),
 
 	teamsWithPhones: Ember.computed('teams.@each', function() {
-		return DS.PromiseObject.create({
+		return DS.PromiseArray.create({
 			promise: new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('teams').then((teams) => {
 					resolve(teams.filter((team) => Ember.isPresent(team.get('phone'))));

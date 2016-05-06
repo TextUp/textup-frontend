@@ -76,5 +76,26 @@ export default Ember.Route.extend(Slideout, Loading, {
 		closeSlideout: function() {
 			this._closeSlideout();
 		},
+
+		// Errors
+		// ------
+
+		error: function(reason, transition) {
+			const dataHandler = this.get('dataHandler');
+			if (reason.status === 0) {
+				this.notifications.error(`Sorry, but we\'re having trouble
+					connecting to the server. This problem is usually the
+					result of a broken Internet connection. You can try
+					refreshing this page.`);
+			} else if (dataHandler.checkForStatus(reason, 401)) {
+				this.set("attemptedTransition", transition);
+				transition.send('logout');
+			} else if (transition.targetName === 'main.index' &&
+				dataHandler.checkForStatus(reason, 404)) {
+				transition.send('logout');
+			} else {
+				console.log("ERROR: " + JSON.stringify(reason));
+			}
+		}
 	}
 });

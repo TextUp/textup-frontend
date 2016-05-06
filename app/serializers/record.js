@@ -11,6 +11,9 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		outgoing: {
 			serialize: false
 		},
+		hasAwayMessage: {
+			serialize: false
+		},
 
 		authorName: {
 			serialize: false

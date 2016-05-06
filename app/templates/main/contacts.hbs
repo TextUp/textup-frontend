@@ -112,39 +112,35 @@
         data=contacts
         total=numContacts
         doLoad=(action 'loadMore') as |contact index|}}
-        <div class="result-item pad-t
-            {{if contact.isUnread 'unread'}}
-            {{if (eq index 2) 'active'}}
-         ">
+        <div class="result-item">
             <div class="row">
-                <div class="contacts-control">
-                    {{#link-to (if tag
-                            'main.tag.many'
-                            'main.contacts.many')
-                        bubbles=false}}
-                        {{input type="checkbox" checked=contact.isSelected}}
-                    {{/link-to}}
+                <div class="contacts-control {{if contact.isSelected 'selected'}}"
+                    {{action 'toggleSelected' contact preventDefault=false}}>
+                    <span class="fa fa-check center"></span>
                 </div>
                 {{#link-to (if tag
                         'main.tag.contact'
                         'main.contacts.contact')
-                    classNames="contacts-info clickable"
+                        contact.id
+                    classNames="contacts-info {{if contact.isUnread 'unread'}}"
                     tagName="div"}}
-                    <p class="emphasize">{{contact.identifier}}</p>
+                    <p class="emphasize">{{phone-number contact.identifier}}</p>
                     <p>{{moment-from-now contact.lastRecordActivity interval=1000}}</p>
                 {{/link-to}}
             </div>
-            <div class="contacts-tags">
-                {{#if contact.isShared}}
-                    <span class="badge">
-                        Shared by <span class="text-darken">{{contact.sharedBy}}</span>
-                    </span>
-                {{else}}
-                    {{#each contact.tags as |tag|}}
-                        {{preview-badge color=tag.hexColor content=tag.name}}
-                    {{/each}}
-                {{/if}}
-            </div>
+            {{#if (or contact.isShared contact.tags)}}
+                <div class="contacts-tags">
+                    {{#if contact.isShared}}
+                        <span class="badge">
+                            Shared by <span class="text-darken">{{contact.sharedBy}}</span>
+                        </span>
+                    {{else}}
+                        {{#each contact.tags as |tag|}}
+                            {{preview-badge color=tag.hexColor content=tag.name}}
+                        {{/each}}
+                    {{/if}}
+                </div>
+            {{/if}}
         </div>
     {{else}}
         <div class="no-results">No contacts match this criteria.</div>

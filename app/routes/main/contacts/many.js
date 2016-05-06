@@ -1,8 +1,15 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-	setupController: function(controller) {
-		this._super(...arguments);
-		controller.set('tag', null);
-	},
+	actions: {
+		willTransition: function() {
+			this.controller._deselectAll();
+		},
+		didTransition: function() {
+			if (this.controller.get('selected').length === 0) {
+				this.transitionTo('main.contacts');
+			}
+			return true; // for closing slideouts
+		},
+	}
 });

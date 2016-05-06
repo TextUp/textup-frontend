@@ -8,6 +8,9 @@ export default Ember.Component.extend({
 	filterProperty: null,
 	inputComponent: 'multi-select/input',
 
+	// pass the search term to create a new entry, to avoid creating
+	// a new entry, return a falsy value, otherwise returning the created
+	// object will trigger the onInsert action
 	doCreate: null,
 	onInsert: null,
 	onReplace: null,
@@ -70,7 +73,7 @@ export default Ember.Component.extend({
 			const selectedIds = this.get('selectedIds'),
 				prop = this.get('identityProperty');
 			return results.filter((item) => {
-				return !selectedIds[item[prop]];
+				return !Ember.get(selectedIds, Ember.get(item, prop));
 			});
 		} else {
 			return results;
@@ -199,14 +202,16 @@ export default Ember.Component.extend({
 	},
 	_doCreateAndInsert: function(val, index, event) {
 		const created = callIfPresent(this.get('doCreate'), val, event);
-		return this._doInsert(index, event, created);
+		if (created) {
+			return this._doInsert(index, event, created);
+		}
 	},
 	_doInsert: function(index, event, toBeInserted) {
 		return callIfPresent(this.get('onInsert'), index, toBeInserted, event);
 	},
 	getDataAt: function(index) {
 		return {
-			object: this.get('_remainingResults')[index],
+			object: Ember.get(this.get('_remainingResults'), String(index)),
 			node: this.$().find('.multi-select-item').eq(index)
 		};
 	},
@@ -362,6 +367,8 @@ export default Ember.Component.extend({
 				this._objectMergeInto(this.get('_resultIds'), newIds);
 				Ember.run.scheduleOnce('afterRender', this,
 					this.maintainOrHighlightFirst);
+			} else {
+				this.set('isSearching', false);
 			}
 		});
 	},
@@ -377,8 +384,8 @@ export default Ember.Component.extend({
 		const ids = Object.create(null);
 		if (this.get('checkIdentity')) {
 			data.mapBy(this.get('identityProperty')).forEach((matchId) => {
-				if (!existingIds[matchId]) {
-					ids[matchId] = true;
+				if (!Ember.get(existingIds, matchId)) {
+					Ember.set(ids, matchId, true);
 				}
 			});
 		}
@@ -390,7 +397,8 @@ export default Ember.Component.extend({
 		if (this.get('checkIdentity')) {
 			const prop = this.get('identityProperty');
 			return array.filter((item) => {
-				return doFilter(searchString, item) && !resultIds[item[prop]];
+				return doFilter(searchString, item) &&
+					!Ember.get(resultIds, Ember.get(item, prop));
 			});
 		} else {
 			return array.filter(doFilter.bind(this, searchString));
@@ -403,7 +411,7 @@ export default Ember.Component.extend({
 			iProp = this.get('identityProperty'),
 			prop = here(fProp) ? fProp : (here(dProp) ? dProp : iProp),
 			matchExp = new RegExp(searchString, 'i'),
-			matchString = ((item && prop) ? item[prop] : item).toString();
+			matchString = ((item && prop) ? Ember.get(item, prop) : item).toString();
 		return matchString.search(matchExp) !== -1;
 	},
 

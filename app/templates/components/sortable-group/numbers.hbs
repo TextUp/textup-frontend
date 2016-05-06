@@ -4,14 +4,15 @@
         {{#sortable-item classNames='input-group'
             model=num group=group handle=".handle"}}
             <div class="input-group-addon blend-in">
-                <button class="btn">
+                <button class="btn" type='button' {{action 'removeNumber' i}}>
                     <span class="fa fa-trash"></span>
                 </button>
             </div>
             {{#phone-control number=(readonly num.number)
                 controlClass='blend-in handle'
                 controlButtonClass='btn-default'
-                onChange=(action 'updateNumber' num)
+                onChange=(action 'updateNumber' num i)
+                onFocusLeave=(action 'removeIfEmpty' i)
                 showControl=true}}
             {{else}}
                 <span class='fa fa-bars'></span>
@@ -37,7 +38,8 @@
         {{phone-control number=newNumber
             controlButtonClass='btn-success'
             onChange=(action 'storeNewNumber')
-            onClick=(action 'addNewNumber')}}
+            onClick=(action 'addNewNumber')
+            onFocusLeave=(action 'addNewNumber')}}
     </div>
 {{else}}
     <button class="btn btn-span" type='button'>

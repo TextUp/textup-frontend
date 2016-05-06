@@ -46,24 +46,25 @@
 			display: block;
 		}
 		.elessar-handle {
-		    width: 10px;
+		    width: $padding;
 
 	    	&:after {
 	    		z-index: 10;
 	    		opacity: 0.3;
 				position: absolute;
 				content: ' ';
+				top: $padding * -2;
 				left: 50%;
 				bottom: 75%;
 				transform: translateX(-50%);
 
 				width: 0;
 				height: 0;
-				border: ($padding * 2) solid transparent;
-		        border-bottom-width: 0;
-		        border-top-width: ($padding * 3);
-		        border-top-color: shade($brand-color);
-		        border-radius: 100%;
+	            border-style: solid;
+			    border-width: $padding ($padding * 0.5);
+			    border-color: shade($brand-color);
+			    border-top-left-radius: 50%;
+    			border-top-right-radius: 50%;
 	    	}
 		}
     }

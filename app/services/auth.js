@@ -9,7 +9,7 @@ const {
 
 export default Ember.Service.extend({
 
-	store: Ember.inject.service('store'),
+	store: Ember.inject.service(),
 	hasToken: notEmpty('token'),
 	hasAuthUser: notEmpty('authUser'),
 	isLoggedIn: and('hasToken', 'hasAuthUser'),

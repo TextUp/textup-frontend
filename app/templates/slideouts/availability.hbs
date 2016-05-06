@@ -1,18 +1,6 @@
 {{#slideout-pane title='Availability'
     closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout'}}
-    <div class="input-group">
-        <div class="input-group-addon">
-            <button class="btn btn-span" type='button'>
-                Cancel
-            </button>
-        </div>
-        <div class="input-group-addon">
-        	<button class="btn btn-default btn-span" type='button'>
-		        Update
-		    </button>
-        </div>
-    </div>
+    ignoreCloseSelectors='.header-slideout' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
 		<div class="form-element">
 			<label for='Your Name' class='control-label'>Phone Away Message</label>
@@ -21,14 +9,29 @@
             	class="form-control"
         		maxlength="160"
         		remaining='top'
-        		value='I am currently out of the office. I will get back to you as soon as I get back.'}}
+        		value=model.awayMessage}}
 		</div>
 		<div class="form-element">
 			Double click to delete a range. Blue ranges are when you are available and the gray area is when you are not available.
 		</div>
 	</div>
 	<div class="form-element">
-		{{tab-container/availability singleStaffData=(mut singleStaffData)
-			otherStaffData=(mut otherStaffData)}}
+		{{tab-container/availability
+            schedule=(mut authManager.authUser.schedule)
+            otherStaffs=teamMembers}}
 	</div>
+    <div class="horizontal-items text-center margin-t margin-b">
+        <div class="clear-badge no-space">
+            <button class="btn" type='button'
+                onclick={{slideout.actions.close}}>
+                Cancel
+            </button>
+        </div>
+        <div class="clear-badge no-space">
+            <button class="btn btn-default" type='button'
+                onclick={{slideout.actions.close}}>
+                Update
+            </button>
+        </div>
+    </div>
 {{/slideout-pane}}

@@ -28,12 +28,12 @@ Router.map(function() {
     }, function() {
         this.route('contacts', function() {
             this.route('contact', {
-                path: '/contact/:id'
+                path: '/:id'
             });
             this.route('many');
         });
         this.route('tag', {
-            path: 'tag/:tag_identifier'
+            path: '/tag/:tag_identifier'
         }, function() {
             this.route('contact', {
                 path: '/contact/:id'

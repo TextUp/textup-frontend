@@ -2,7 +2,7 @@
 	{{#tab-container/item doRegister=doRegister
 		title="Me"
 		classNames='pad-t'}}
-		{{#each-in singleStaffData as |day data|}}
+		{{#each _daysOfWeek as |day|}}
 			{{!-- spacer for the handles for smartphones and tablets --}}
 			<div class="display-xs display-s display-m">
 				<div class="xs-full-row pad-t"></div>
@@ -17,7 +17,7 @@
 					</span>
 				</div>
 				<div class="xs-full-row l-17-row-20">
-					{{multi-range data=data
+					{{multi-range data=(get schedule day)
 						min='0000'
 						max='2359'
 						doRawToValid=(action 'doRawToValid')
@@ -26,16 +26,16 @@
 						doNumToValid=(action 'doNumToValid')
 						doValidRangeToDisplay=(action 'doValidRangeToDisplay')
 						doIndicator=(if (eq dayToday day) (action 'doIndicator'))
-						onUpdate=(action 'updateTime' data)
-						onInsert=(action 'insertTime' data)
-						onRemove=(action 'removeTime' data)}}
+						onUpdate=(action 'updateTime' (get schedule day))
+						onInsert=(action 'insertTime' (get schedule day))
+						onRemove=(action 'removeTime' (get schedule day))}}
 				</div>
 			</div>
-		{{/each-in}}
+		{{/each}}
 	{{/tab-container/item}}
 
-	{{#if otherStaffData}}
-		{{#each-in singleStaffData as |day myData|}}
+	{{#if otherStaffs}}
+		{{#each _daysOfWeek as |day|}}
 			{{#tab-container/item doRegister=doRegister
 				title=(capitalize day)
 				classNames='pad-t'}}
@@ -53,7 +53,7 @@
 						</span>
 					</div>
 					<div class="xs-full-row l-17-row-20">
-						{{multi-range data=myData
+						{{multi-range data=(get schedule day)
 							min='0000'
 							max='2359'
 							doRawToValid=(action 'doRawToValid')
@@ -62,12 +62,12 @@
 							doNumToValid=(action 'doNumToValid')
 							doValidRangeToDisplay=(action 'doValidRangeToDisplay')
 							doIndicator=(if (eq dayToday day) (action 'doIndicator'))
-							onUpdate=(action 'updateTime' myData)
-							onInsert=(action 'insertTime' myData)
-							onRemove=(action 'removeTime' myData)}}
+							onUpdate=(action 'updateTime' (get schedule day))
+							onInsert=(action 'insertTime' (get schedule day))
+							onRemove=(action 'removeTime' (get schedule day))}}
 					</div>
 				</div>
-				{{#each otherStaffData as |otherStaff|}}
+				{{#each otherStaffs as |otherStaff|}}
 					<div class="row pad-b pad-l pad-r">
 						<div class="xs-full-row l-3-row-20 text-bold">
 							<span class="display-xs display-s display-m">
@@ -91,6 +91,6 @@
 					</div>
 				{{/each}}
 			{{/tab-container/item}}
-		{{/each-in}}
+		{{/each}}
 	{{/if}}
 {{/tab-container}}
