@@ -4,7 +4,7 @@ import moment from 'moment';
 
 export default Ember.Component.extend({
 
-	schedule: defaultIfAbsent({}),
+	staff: defaultIfAbsent({}),
 	otherStaffs: defaultIfAbsent([]),
 
 	_daysOfWeek: [
@@ -44,14 +44,29 @@ export default Ember.Component.extend({
 			}
 			return moment().format('LT');
 		},
-		updateTime: function(array, index, data) {
+		updateTime: function(day, index, data) {
+			const array = this._copyRangesIfOriginal(this.get('staff'), day);
 			Ember.set(array, String(index), data);
 		},
-		insertTime: function(array, data) {
+		insertTime: function(day, data) {
+			const array = this._copyRangesIfOriginal(this.get('staff'), day);
 			array.pushObject(data);
 		},
-		removeTime: function(array, index) {
+		removeTime: function(day, index) {
+			const array = this._copyRangesIfOriginal(this.get('staff'), day);
 			array.removeAt(index);
 		},
+	},
+
+	// need to do this to use ember data's dirty tracking
+	_copyRangesIfOriginal: function(model, day) {
+		const ranges = model.get(day);
+		if (Ember.get(model.changedAttributes(), day)) {
+			return ranges;
+		} else {
+			const newRanges = Ember.copy(ranges, true); // deep copy
+			model.set(day, newRanges);
+			return newRanges;
+		}
 	}
 });

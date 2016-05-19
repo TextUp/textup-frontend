@@ -1,74 +1,56 @@
 {{#slideout-pane title=(if model.tags 'Tags' 'New Tag')
     direction='left'
-    closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    doClose=(if (and newTag (not newTag.isDeleted))
+        (route-action 'revert' newTag (route-action 'closeAllSlideouts'))
+        (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout'
+    focusSelector='.start-focus, .slideout-header' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
+        bodyFocusOnOpenSelector='.start-focus'
         startOpen=(if model.tags false true)
-        tabindex='-1'
+        onOpen=(route-action 'initializeNewTag')
+        onClosed=(route-action 'revert' newTag)
+        tabindex=false
         hideTriggerOnOpen=true as |hideAway|}}
-        <div class="input-group">
-            <span class="input-addon">
-                <button class="btn btn-span" type='button'
-                    onclick={{hideAway.actions.close}}>
-                    Cancel
-                </button>
-            </span>
-            <span class="input-addon">
-                <button class="btn btn-default btn-span" type='button'
-                    onclick={{hideAway.actions.close}}>
+        <div class="pad-t pad-l pad-r">
+            {{partial 'partials/tag/create-edit'}}
+        </div>
+        <div class="horizontal-items text-center margin-t-double margin-b">
+            {{#if model.tags}}
+                <div class="clear-badge no-space">
+                    <button class="btn" type='button'
+                        onclick={{hideAway.actions.close}}>
+                        Cancel
+                    </button>
+                </div>
+            {{/if}}
+            <div class="clear-badge no-space">
+                <button class="btn btn-default" type='button'
+                    disabled={{not (v-get newTag 'isValid')}}
+                    {{action 'createTag' newTag hideAway.actions.close}}>
                     Create
                 </button>
-            </span>
-        </div>
-        <div class="pad-all">
-            {{partial 'partials/create-edit-tag'}}
+            </div>
         </div>
     {{else}}
          <ul class="result-list">
             {{#each model.tags as |tag|}}
                 {{#hide-away animation='slide'
+                    tabindex=false
                     clickOutToClose=false
-                    hideTriggerOnOpen=true
-                    ignoreTriggerSelectors='.horizontal-items' as |dropdown|}}
-                    <li class="result-item">
-                        <div class="row pad-t pad-b pad-l pad-r clickable">
-                            <div class="control-text">
-                                <div class="horizontal-items xs-13-row-20 text-ellipsis">
-                                    {{preview-badge color=tag.color
-                                        onlyShowFull=true
-                                        content=tag.name}}
-                                    <span class="badge">
-                                        {{tag.numMembers}}
-                                        <span class="fa fa-user"></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="pull-right">
-                                <button class="btn btn-plain btn-danger" type='button'
-                                    onclick={{dropdown.actions.close}}>
-                                    <span class="fa fa-trash"></span>
-                                </button>
-                                <button class="btn btn-plain" type='button'
-                                    onclick={{dropdown.actions.close}}>
-                                    <span class="fa fa-undo"></span>
-                                </button>
-                                <button class="btn btn-plain" type='button'
-                                    onclick={{dropdown.actions.close}}>
-                                    <span class="fa fa-save"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                    <div class="pad-all bg-color border-b">
-                        {{partial 'partials/create-edit-tag'}}
-                    </div>
+                    bodyFocusOnOpenSelector='.start-focus'
+                    allowedTriggerSelectors='.pull-right' as |dropdown|}}
+                    {{partial 'partials/tag/edit-with-controls'}}
                 {{else}}
                     <li class="result-item">
-                        <div class="row pad-all clickable">
-                            {{#link-to 'main.tag' tag tagName='div' classNames='control-text'}}
-                                <div class="horizontal-items">
+                        <div class="row">
+                            {{#link-to 'main.tag' tag
+                                tagName='div'
+                                classNames='control-text'
+                                tabindex='0'}}
+                                <div class="horizontal-items clickable pad-all">
                                     {{preview-badge color=tag.hexColor
                                         onlyShowFull=true
                                         content=tag.name}}
@@ -78,11 +60,13 @@
                                     </span>
                                 </div>
                             {{/link-to}}
-                            <div class="pull-right">
-                                <button class="btn btn-plain" type='button'>
-                                    <span class="fa fa-pencil"></span>
-                                </button>
-                            </div>
+                            {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
+                                <div class="pull-right">
+                                    <button class="btn btn-plain" type='button'>
+                                        <span class="fa fa-pencil"></span>
+                                    </button>
+                                </div>
+                            {{/if}}
                         </div>
                     </li>
                 {{/hide-away}}

@@ -24,6 +24,9 @@ hr {
 }
 @include spacing-tweaks(margin, 'margin');
 @include spacing-tweaks(padding, 'pad');
+.border-all {
+    border: 1px solid $border-color;
+}
 @each $direction, $abbr in $directions-with-abbr {
     .border-#{$abbr} {
         border-#{$direction}: 1px solid $border-color;

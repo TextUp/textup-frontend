@@ -1,89 +1,50 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
+const {
+	alias
+} = Ember.computed;
 
-	people: [],
-	numPeople: 25,
+export default Ember.Controller.extend({
+	adminController: Ember.inject.controller('admin'),
+
+	queryParams: ['filter'],
+	filter: alias('adminController.filter'),
+
+	people: alias('adminController.people'),
+	numPeople: '--',
+	team: null,
 
 	actions: {
 		loadMore: function() {
-			this.get('people').pushObjects(this.loadMore());
-			return new Ember.RSVP.Promise(function(resolve, reject) {
-				Ember.run.later(this, resolve, 2000);
+			return new Ember.RSVP.Promise((resolve, reject) => {
+				const query = Object.create(null),
+					org = this.get('stateManager.ownerAsOrg'),
+					team = this.get('team'),
+					people = this.get('people');
+				query.status = this._translateFilter(this.get('filter'));
+				if (people.length) {
+					query.offset = people.length;
+				}
+				if (team) {
+					query.teamId = team.get('id');
+				} else if (org) {
+					query.organizationId = org.get('id');
+				}
+				this.store.query('staff', query).then((result) => {
+					people.pushObjects(result.toArray());
+					this.set('numPeople', result.get('meta.total'));
+					resolve();
+				}, this.get('dataHandler').buildErrorHandler(reject));
 			});
 		},
 	},
 
-	loadInitial: function() {
-		this.set('people', [{
-			name: 'Kiki Bai',
-			username: 'kbai888',
-			status: 'STAFF',
-			teams: [{
-				name: "Rapid Rehousing",
-				color: "purple"
-			}, {
-				name: "Housing First",
-				color: "orange"
-			}]
-		}, {
-			name: 'Cho Chang',
-			username: 'domoarigato',
-			status: 'ADMIN',
-			teams: [{
-				name: "Housing First",
-				color: "orange"
-			}]
-		}, {
-			name: 'What Cheer',
-			username: 'cheerful123',
-			status: 'STAFF',
-			teams: [{
-				name: "Rapid Rehousing",
-				color: "purple"
-			}]
-		}, {
-			name: 'Jack Kornfield',
-			username: 'pathWithHeart',
-			status: 'ADMIN',
-			teams: [{
-				name: "Outreach",
-				color: "yellow"
-			}]
-		}]);
-		this.get('people').pushObjects(this.loadMore());
-	},
-	loadMore: function() {
-		const toBeAdded = [],
-			numToAdd = 10;
-
-		while (toBeAdded.length < numToAdd) {
-			const rand = Math.random(),
-				rand2 = Math.random();
-			let teams = [{
-				name: "Rapid Rehousing",
-				color: "purple"
-			}, {
-				name: "Housing First",
-				color: "orange"
-			}];
-			if (rand2 > 0.5) {
-				teams = [];
-			} else if (rand > 0.5) {
-				teams = [{
-					name: "Outreach",
-					color: "yellow"
-				}];
-			}
-			toBeAdded.pushObject({
-				name: Math.round(rand * 100) + ' NAME!',
-				username: Math.round(rand2 * 10) + ' username',
-				email: Math.round(rand2 * 10) + '@textup.org',
-				status: (rand > 0.5) ? 'STAFF' : 'ADMIN',
-				teams: teams
-			});
-		}
-
-		return toBeAdded;
+	_translateFilter: function(filter) {
+		const options = {
+			active: ['staff', 'admin'],
+			admins: ['admin'],
+			blocked: ['blocked']
+		};
+		return filter ? options[filter.toLowerCase()] : options['active'];
 	}
 });

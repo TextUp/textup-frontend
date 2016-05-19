@@ -1,0 +1,14 @@
+<div class="form-element">
+    <label for="Your Name">Tag Name</label>
+    {{input class="start-focus form-control"
+    	value=newTag.name
+    	type="text"
+    	placeholder="Tag Name"
+    	validateObj=newTag
+    	validateField='name'
+    	validate='bottom'}}
+</div>
+<div class="form-element">
+    <label for="Your Name">Tag Color</label>
+    {{color-control color=newTag.hexColor}}
+</div>

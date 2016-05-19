@@ -28,9 +28,7 @@ export default Ember.Route.extend({
 
 	actions: {
 		didTransition: function() {
-			const currentPath = this.controllerFor('application').get('currentPath');
-			// only reset if not within main.tag
-			if (!(/main.tag/.test(currentPath))) {
+			if (!this.get('stateManager.viewingTag')) {
 				this._resetController(this.get('tag'));
 			}
 			// return true to allow bubbling to close slideout handler

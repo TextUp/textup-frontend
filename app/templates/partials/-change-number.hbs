@@ -1,0 +1,47 @@
+{{#if (not owner.phone)}}
+    <div class="form-element row">
+        <div class="xs-2-row-3 control-text">
+            <label for="TextUp phone" class='text-ellipsis'>
+                Set up a TextUp phone?
+            </label>
+        </div>
+        {{multi-toggle/mutable-toggle classNames='xs-row-3'
+            value=owner.addNewPhone}}
+    </div>
+    {{#liquid-if owner.addNewPhone class='animate-slide-from-top'}}
+        {{single-select/mutable-phone-number data=stateManager.numbers
+            selected=(mut owner.newPhone)
+            classNames='form-element pad-l pad-r'}}
+    {{/liquid-if}}
+{{else}}
+    <div class='form-element'>
+        <label for='TextUp Phone'>TextUp Phone</label>
+        {{phone-control number=owner.phone}}
+    </div>
+    <div class="form-element row">
+        <div class="xs-2-row-3 control-text">
+            <label for="TextUp phone" class='text-ellipsis'>
+                Change existing TextUp phone?
+            </label>
+        </div>
+        {{#multi-toggle classNames='xs-row-3'
+            selectIndex=(if (eq owner.forExistingPhone 'change') 1 0)
+            wrapAround=true as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#d3d3d3'
+                onSelect=(action (mut owner.forExistingPhone) null)}}
+                No Change
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#76c9ec'
+                onSelect=(action (mut owner.forExistingPhone) 'change')}}
+                Change Number
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
+    </div>
+    <div class='{{if (not (eq owner.forExistingPhone 'change')) 'hidden'}}'>
+        {{single-select/mutable-phone-number data=stateManager.numbers
+            selected=(mut owner.newPhone)
+            classNames='form-element pad-l pad-r'}}
+    </div>
+{{/if}}

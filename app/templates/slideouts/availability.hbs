@@ -1,37 +1,51 @@
 {{#slideout-pane title='Availability'
-    closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout' as |slideout|}}
-	<div class="pad-t pad-l pad-r">
-		<div class="form-element">
-			<label for='Your Name' class='control-label'>Phone Away Message</label>
-            {{textarea rows="3"
-            	autoresize=true
-            	class="form-control"
-        		maxlength="160"
-        		remaining='top'
-        		value=model.awayMessage}}
-		</div>
-		<div class="form-element">
-			Double click to delete a range. Blue ranges are when you are available and the gray area is when you are not available.
-		</div>
+    doClose=(route-action 'revert' model
+        (route-action 'revert' authManager.authUser
+            (route-action 'closeAllSlideouts')))
+    ignoreCloseSelectors='.header-slideout'
+    focusSelector='.start-focus' as |slideout|}}
+	<div class="form-element pad-t pad-l pad-r">
+		<label for='Your Name' class='control-label'>Phone Away Message</label>
+        {{textarea rows="3"
+        	autoresize=true
+        	class="form-control start-focus"
+    		maxlength="160"
+    		remaining='top'
+    		value=model.awayMessage}}
 	</div>
-	<div class="form-element">
-		{{tab-container/availability
-            schedule=(mut authManager.authUser.schedule)
-            otherStaffs=teamMembers}}
+    <hr>
+	<div class="margin-b pad-l pad-r">
+        <label for='Your Name' class='control-label text-bold'>
+            My Available Times
+            {{#tool-tipster tagName='span'
+                maxWidth=300
+                theme='tooltipster-help'
+                title="Double click or tap to delete a range. Blue ranges are when you are available and the gray area is when you are not available."}}
+                <span class="fa fa-question-circle"></span>
+            {{/tool-tipster}}
+        </label>
 	</div>
-    <div class="horizontal-items text-center margin-t margin-b">
-        <div class="clear-badge no-space">
-            <button class="btn" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </div>
-        <div class="clear-badge no-space">
-            <button class="btn btn-default" type='button'
-                onclick={{slideout.actions.close}}>
-                Update
-            </button>
-        </div>
+    <div class="form-element">
+        {{tab-container/availability
+            staff=(mut authManager.authUser)
+            otherStaffs=stateManager.teamMembers}}
     </div>
+    {{#if (or model.hasDirtyAttributes authManager.authUser.hasDirtyAttributes)}}
+        <div class="horizontal-items text-center margin-t margin-b">
+            <div class="clear-badge no-space">
+                <button class="btn" type='button'
+                    onclick={{slideout.actions.close}}>
+                    Cancel
+                </button>
+            </div>
+            <div class="clear-badge no-space">
+                <button class="btn btn-default" type='button'
+                    onclick={{route-action 'persist' model
+                        (route-action 'persist' authManager.authUser
+                        (route-action 'closeAllSlideouts'))}}>
+                    Update
+                </button>
+            </div>
+        </div>
+    {{/if}}
 {{/slideout-pane}}

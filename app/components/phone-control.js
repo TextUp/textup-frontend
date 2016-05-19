@@ -20,7 +20,7 @@ export default Ember.Component.extend({
 	showControl: defaultIfAbsent(false),
 	throttleThreshold: defaultIfAbsent(300),
 
-	attributeBindings: ['tabindex:tabIndex'],
+	attributeBindings: ['tabIndex:tabindex'],
 
 	_cleanedAndSplit: null,
 	_isValid: true,
@@ -35,10 +35,13 @@ export default Ember.Component.extend({
 	// -------------------
 
 	tabIndex: Ember.computed('disabled', 'tabindex', function() {
-		return this.get('disabled') ? '-1' : this.get('tabindex');
+		return this.get('disabled') ? '' : this.get('tabindex');
 	}),
 	someNumberPresent: Ember.computed.notEmpty('number'),
-	allowChanges: Ember.computed.or('onChange', 'forceAllowChanges'),
+	allowChanges: Ember.computed('onChange', 'forceAllowChanges', function() {
+		return !this.get('disabled') &&
+			(this.get('onChange') || this.get('forceAllowChanges'));
+	}),
 	publicAPI: Ember.computed(function() {
 		return {
 			actions: {

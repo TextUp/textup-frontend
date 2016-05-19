@@ -3,7 +3,9 @@
         <img class="brand" src='assets/images/logo.png' />
         <h3>Hello, {{authManager.authUser.name}}!</h3>
         <div class="subtitle">
-            {{#link-to "index"}}Done editing info? <b>Log out.</b>{{/link-to}}
+            <a class='text-white' href="#" {{action 'logout'}}>
+                Done editing info? <b>Log out.</b>
+            </a>
         </div>
     </div>
     <div class="single-body">
@@ -23,7 +25,18 @@
             </p>
         </div>
         <div class="single-body-content">
-            {{partial 'partials/staff-settings'}}
+            {{partial 'partials/staff/settings'}}
+            <div class="pad-t text-center">
+                <button class="btn" type='button'>
+                    Cancel
+                </button>
+                <button class="btn btn-default" type='button'>
+                    Update
+                </button>
+            </div>
+            <hr>
+            {{partial 'partials/staff/username-with-confirm'}}
+            {{partial 'partials/staff/password-with-confirm'}}
         </div>
     </div>
     <div class="single-footer"></div>

@@ -1,0 +1,30 @@
+<div class='form-element'>
+    <label for='Your Name' class='control-label'>Your Name</label>
+    {{input value=authManager.authUser.name
+        type='text'
+        placeholder='Your Name'
+        class='form-control'
+        validateObj=authManager.authUser
+        validateField='name'
+        validate='bottom'}}
+</div>
+<div class='form-element'>
+    <label for='Email' class='control-label'>Email</label>
+    {{input value=authManager.authUser.email
+        type='email'
+        placeholder='Email'
+        class='form-control'
+        validateObj=authManager.authUser
+        validateField='email'
+        validate='bottom'}}
+</div>
+<div class='form-element'>
+    <label for='Personal Phone' class='control-label'>Personal Phone</label>
+    {{#with authManager.authUser as |staff|}}
+        {{partial 'partials/staff/personal-number'}}
+    {{/with}}
+</div>
+<div class='form-element'>
+    <label for='TextUp Phone' class='control-label'>TextUp Phone</label>
+    {{phone-control number=authManager.authUser.phone}}
+</div>

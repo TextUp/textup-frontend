@@ -5,34 +5,20 @@ import {
 } from '../utils/phone-number';
 
 export default Ember.Controller.extend({
-
-	shareCandidates: null,
-	teamMembers: null,
 	contacts: [],
-
-	// Highlight menu items
-	// --------------------
-
 	filter: 'all',
-	appController: Ember.computed(function() {
-		return Ember.getOwner(this).lookup('controller:application');
-	}),
-	viewingTag: Ember.computed('appController.currentPath', function() {
-		return /main.tag/.test(this.get('appController.currentPath'));
-	}),
-
-	// New contact
-	// -----------
 
 	newContact: null,
-
-	// Compose
-	// -------
+	newTag: null,
 
 	selectedRecipients: [],
 	composeMessage: '',
 
 	actions: {
+
+		logout: function() {
+			this.get('authManager').logout();
+		},
 
 		// Update staff
 		// ------------
@@ -82,11 +68,15 @@ export default Ember.Controller.extend({
 				if (Ember.isBlank(searchString)) {
 					return resolve([]);
 				}
-				this.store.query('contact', {
-					search: searchString
-				}).then((searchResults) => {
-					resolve(searchResults.toArray());
-				}, resolve);
+				const query = Object.create(null),
+					team = this.get('stateManager.ownerAsTeam');
+				query.search = searchString;
+				if (team) {
+					query.teamId = team.get('id');
+				}
+				this.store.query('contact', query).then((results) => {
+					resolve(results.toArray());
+				}, reject);
 			});
 		},
 	}

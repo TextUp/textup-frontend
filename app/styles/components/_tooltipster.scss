@@ -1,4 +1,4 @@
-.tooltipster-clean {
+.tooltipster-clean, .tooltipster-help {
     border-radius: 5px;
     border-width: 0;
     background: $bg-dark-color;
@@ -10,6 +10,15 @@
     line-height: $font-size + 2;
     text-transform: uppercase;
     font-weight: $font-weight-bold;
+    opacity: 0.8;
+    padding: 8px 10px;
+}
+.tooltipster-help .tooltipster-content {
+    font-family: Arial, sans-serif;
+    font-size: $font-size;
+    line-height: $font-size + 2;
+    text-transform: none;
+    font-weight: $font-weight-std;
     opacity: 0.8;
     padding: 8px 10px;
 }

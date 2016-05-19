@@ -9,7 +9,7 @@ const {
 export default DS.Model.extend({
 	whenCreated: DS.attr('date'),
 	permission: DS.attr('string'),
-	sharedWith: DS.attr('number'),
+	sharedWith: DS.attr('number'), // this is the PHONE's id
 
 	// Computed properties
 	// -------------------

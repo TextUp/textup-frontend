@@ -3,11 +3,8 @@ import Ember from 'ember';
 
 // Cannot create polymorphic subclasses because
 // we load records from the 'records' endpoint
-
 const {
-	alias,
 	equal: eq,
-	filterBy
 } = Ember.computed;
 
 export default DS.Model.extend({
@@ -59,7 +56,7 @@ export default DS.Model.extend({
 		return DS.PromiseObject.create({
 			promise: new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('successes').then((successes) => {
-					resolve(0);
+					resolve(successes.length);
 				}, reject);
 			})
 		});

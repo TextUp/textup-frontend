@@ -7,7 +7,7 @@
 				</div>
 				<div class="badge {{if selectedPending 'hidden'}}">
 					{{#tool-tipster theme='tooltipster-clean'
-	                    title=(concat pendingStaff.length ' selected')
+	                    title=(concat pendingStaff.length ' pending')
 	                    classNames='btn-expand'}}
 	                    <span class='text-bold'>
 	                    	{{pendingStaff.length}}
@@ -15,61 +15,8 @@
 						<span class="fa fa-user"></span>
 	                {{/tool-tipster}}
 				</div>
-				<span class="clear-badge display-m display-l
-					{{if (not selectedPending) 'hidden'}}">
-					{{#hide-away/dropdown horizontal='left'}}
-	                    <li tabindex='0' class='dropdown-item'
-	                    	{{action 'selectAllShown'}}>
-	                    	All Shown
-	                    </li>
-	                    <li tabindex='0' class='dropdown-item'
-	                    	{{action 'selectNone'}}>
-                    		None
-                		</li>
-		            {{else}}
-		                <button class='btn' type='button'>
-		                    {{selectedPending.length}} of {{pendingStaff.length}} selected
-		                    <span class='fa fa-caret-down'></span>
-		                </button>
-		            {{/hide-away/dropdown}}
-				</span>
-
 			</div>
 		</span>
-		{{#if selectedPending}}
-			<span class="pull-right">
-				<div class="horizontal-items">
-					<span class="clear-badge display-xs display-s">
-						{{#hide-away/dropdown}}
-							<li class='dropdown-divider'>Selection</li>
-							<li tabindex='0' class='dropdown-item'
-		                    	{{action 'selectAllShown'}}>
-		                    	All Shown
-		                    </li>
-		                    <li tabindex='0' class='dropdown-item'
-		                    	{{action 'selectNone'}}>
-	                    		None
-	                		</li>
-							<li class='dropdown-divider'>Status</li>
-							<li tabindex='0' class='dropdown-item'>Reject</li>
-							<li tabindex='0' class='dropdown-item'>Approve</li>
-		                {{else}}
-		                    <button class='btn' type='button'>
-		                        {{selectedPending.length}} of {{pendingStaff.length}}
-		                        <span class='fa fa-user'></span>
-		                        <span class='pad-l-half fa fa-caret-down'></span>
-		                    </button>
-		                {{/hide-away/dropdown}}
-					</span>
-					<span class="clear-badge display-m display-l">
-						<button class="btn btn-plain">Reject</button>
-					</span>
-					<span class="clear-badge display-m display-l">
-						<button class="btn btn-plain">Approve</button>
-					</span>
-				</div>
-			</span>
-		{{/if}}
     </div>
 	{{#infinite-scroll classNames='section-body'
         containerClass='tile-list'
@@ -77,19 +24,102 @@
         data=pendingStaff
         total=numPending
         doLoad=(action 'loadMore') as |selected|}}
-		<div class='xs-full-row m-row-2 l-row-3'>
-			<div class="tile-list-item">
-				<span class="pull-left">
-					{{input type="checkbox" checked=selected.isSelected}}
-				</span>
-				<span class="text-bold pad-r">
+        {{#hide-away classNames='xs-full-row'
+        	triggerClass='bg-color bg-lightest pad-all border-all row'
+        	tabindex=false
+        	clickOutToClose=false
+			focusOutClose=false
+			bodyClickClose=false
+			allowedTriggerSelectors='.add-phone-button'}}
+			<div class="bg-color bg-dark pad-all border-l border-r border-b row
+				{{if (eq selected.pendingAction 'reject') 'hidden'}}">
+				<div class="display-m display-l m-row-3 text-center">
+					<div class="control-text text-bold">
+						Add a TextUp Phone
+					</div>
+				</div>
+				<div class="xs-full-row m-2-row-3">
+					<div class="input-group">
+						<div class="input-group-element">
+							{{single-select/mutable-phone-number
+								data=stateManager.numbers
+			            		selected=(mut selected.newPhone)}}
+						</div>
+						{{#if selected.newPhone}}
+							<div class="input-group-addon">
+								<button class="btn" type='button'
+									onclick={{action (mut selected.newPhone) null}}>
+									Remove
+								</button>
+							</div>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+		{{else}}
+        	<div class="xs-full-row s-row-2 l-2-row-3 text-ellipsis">
+				<span class="text-bold control-text pad-r">
 					{{selected.name}}
 				</span>
-				<span class="text-normal">
+				<span class="text-normal control-text pad-r">
 					{{selected.email}}
 				</span>
+				{{#if (and selected.newPhone
+					(not (eq selected.pendingAction 'reject')))}}
+					<span class="text-bold control-text">
+						<span class="fa fa-phone pad-r-half"></span>
+						{{phone-number selected.newPhone.phoneNumber}}
+					</span>
+				{{/if}}
 			</div>
-		</div>
+			<div class="display-xs">
+				<div class="margin-t"></div>
+			</div>
+			<div class="xs-full-row s-row-2 l-row-3">
+				<div class="input-group">
+					{{#if selected.pendingAction}}
+						<div class="input-group-addon">
+							<button class="btn btn-plain btn-span" type='button'
+								onclick={{action (mut selected.pendingAction) null}}>
+								Undo
+							</button>
+						</div>
+						<div class="input-group-addon">
+							<button class="btn btn-plain btn-span
+								{{if (eq selected.pendingAction 'approve')
+									'btn-success'
+									'btn-danger'}}"
+								type='button'
+								{{action selected.pendingAction selected}}>
+								Confirm {{selected.pendingAction}}
+							</button>
+						</div>
+					{{else}}
+						{{#if (not selected.newPhone)}}
+							<div class="input-group-addon">
+								<button class="btn btn-plain add-phone-button" type='button'>
+									<span class="fa fa-plus"></span> Phone
+								</button>
+							</div>
+						{{/if}}
+						<div class="input-group-addon action-button">
+							<button class="btn btn-plain btn-span btn-success"
+								type='button'
+								onclick={{action (mut selected.pendingAction) 'approve'}}>
+								<span class="fa fa-check"></span>
+							</button>
+						</div>
+						<div class="input-group-addon action-button">
+							<button class="btn btn-plain btn-span btn-danger"
+								type='button'
+								onclick={{action (mut selected.pendingAction) 'reject'}}>
+								<span class="fa fa-times"></span>
+							</button>
+						</div>
+					{{/if}}
+				</div>
+			</div>
+        {{/hide-away}}
     {{else}}
         <div class="no-results">No pending staff members right now.</div>
     {{/infinite-scroll}}

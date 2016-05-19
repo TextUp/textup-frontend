@@ -4,8 +4,9 @@ import Loading from '../mixins/loading-slider';
 export default Ember.Mixin.create(Loading, {
 	beforeModel: function(transition) {
 		this._super(...arguments);
-		if (!this.get('authManager.isLoggedIn')) {
-			transition.send("storeAttemptedTransition", transition);
+		const auth = this.get('authManager');
+		if (!auth.get('isLoggedIn')) {
+			auth.set('attemptedTransition', transition);
 			this.notifications.info('Please log in first.');
 			this.transitionTo("login");
 		}

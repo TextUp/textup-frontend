@@ -1,28 +1,26 @@
 import Ember from 'ember';
 
 const {
-	alias,
-	readOnly
+	alias
 } = Ember.computed;
 
 export default Ember.Controller.extend({
 	mainController: Ember.inject.controller('main'),
 
-	mainModel: readOnly('mainController.model'),
-
 	queryParams: ['filter'],
 	// alias the filter property of main for displaying active menu items
 	filter: alias('mainController.filter'),
+	// store contacts on mainController so we can add new contacts for display
+	contacts: alias('mainController.contacts'),
 
 	numContacts: '--',
-	contacts: alias('mainController.contacts'),
 	tag: null,
 
 	actions: {
 		loadMore: function() {
 			return new Ember.RSVP.Promise((resolve, reject) => {
 				const query = Object.create(null),
-					main = this.get('mainModel'),
+					team = this.get('stateManager.ownerAsTeam'),
 					tag = this.get('tag'),
 					contacts = this.get('contacts');
 				// build query
@@ -32,15 +30,15 @@ export default Ember.Controller.extend({
 				}
 				if (tag) { // one or the other, can't be both
 					query.tagId = tag.get('id');
-				} else if (main.get('constructor.modelName') === 'team') {
-					query.teamId = main.get('id');
+				} else if (team) {
+					query.teamId = team.get('id');
 				}
 				// execute query
 				this.store.query('contact', query).then((results) => {
 					contacts.pushObjects(results.toArray());
 					this.set('numContacts', results.get('meta.total'));
 					resolve();
-				}, reject);
+				}, this.get('dataHandler').buildErrorHandler(reject));
 			});
 		},
 	},

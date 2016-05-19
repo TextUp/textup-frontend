@@ -33,7 +33,7 @@
                                     (eq
                                         (if itemBucketCommandProperty option.command true)
                                         (get firstItemBucketMemberships
-                                            (get bucket bucketIdentityProperty))))
+                                            (concat '' (get bucket bucketIdentityProperty)))))
 	                            onSelect=(action 'doActions' bucket option.command)}}
 	                            {{option.display}}
 	                        {{/multi-toggle/item}}

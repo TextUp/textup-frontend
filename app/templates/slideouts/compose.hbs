@@ -1,6 +1,8 @@
 {{#slideout-pane title='Compose'
-    closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout'}}
+	onOpen=(route-action 'initializeCompose')
+    doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
+    ignoreCloseSelectors='.header-slideout'
+    focusSelector='.multi-select-new-input'}}
 	<div class="pad-t pad-l pad-r">
 		<div class="form-element">
 			{{#multi-select data=model.tags

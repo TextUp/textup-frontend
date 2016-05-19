@@ -6,12 +6,13 @@ export default Ember.Mixin.create({
 
 	_toggleSlideout: function(name, context) {
 		const currentName = this.get('currentSlideoutName');
-		if (this.controller.get('showSlideout')) {
-			this._closeSlideout();
-		}
+		// important that this is an else if
 		if (name && context && currentName !== name) {
 			this._openSlideout(name, context);
+		} else if (this.controller.get('showSlideout')) {
+			this._closeSlideout();
 		}
+
 	},
 	_openSlideout: function(name, context) {
 		if (name === this.get('currentSlideoutName')) {

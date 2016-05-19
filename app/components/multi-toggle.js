@@ -4,6 +4,7 @@ import defaultIfAbsent from '../utils/default-if-absent';
 export default Ember.Component.extend({
 
 	tabindex: defaultIfAbsent(0),
+	selectIndex: null,
 	disabled: defaultIfAbsent(false),
 	wrapAround: defaultIfAbsent(true),
 
@@ -12,14 +13,16 @@ export default Ember.Component.extend({
 	canLeft: true,
 	canRight: true,
 
+	indicatorClass: 'toggle-indicator',
 	attributeBindings: ['style', 'tabIndex:tabindex'],
 	_items: defaultIfAbsent([]),
+	$indicators: null,
 
 	// Computed properties
 	// -------------------
 
 	tabIndex: Ember.computed('tabindex', 'disabled', function() {
-		return this.get('disabled') ? -1 : this.get('tabindex');
+		return this.get('disabled') ? '' : this.get('tabindex');
 	}),
 	style: Ember.computed('_selectedIndex', function() {
 		let style = '';
@@ -49,9 +52,20 @@ export default Ember.Component.extend({
 	didInsertElement: function() {
 		this._super(...arguments);
 		Ember.run.next(this, function() {
-			const items = this.get('_items');
-			if (items.length > 0) {
-				const selected = items.filterBy('isSelected');
+			this.build$Indicators(this.get('_items'));
+			this._setup();
+		});
+	},
+	didUpdateAttrs: function() {
+		this._super(...arguments);
+		Ember.run.next(this, this._setup.bind(this));
+	},
+	_setup: function() {
+		const items = this.get('_items');
+		if (items.length > 0) {
+			let selectIndex = this.get('selectIndex');
+			if (!selectIndex) { // defer to the items if null on parent
+				const selected = items.filterBy('isSelected', true);
 				let selectedItem = selected.get('firstObject');
 				if (selected.length > 1) { // ensure only one selected
 					selected.slice(1).forEach(function(item) {
@@ -62,10 +76,15 @@ export default Ember.Component.extend({
 					selectedItem = firstItem;
 					firstItem.actions.select(true);
 				}
-				this.slideToAndSetIndex(items.indexOf(selectedItem), true);
+				selectIndex = items.indexOf(selectedItem);
 			}
-		});
+			this.slideToAndSetIndex(selectIndex, true);
+		}
 	},
+
+	// Handlers
+	// --------
+
 	click: function(event) {
 		const $t = Ember.$(event.target);
 		if ($t.hasClass('left-toggle') || $t.closest('.left-toggle').length) {
@@ -93,6 +112,24 @@ export default Ember.Component.extend({
 		}
 	},
 
+	// Indicator bar
+	// -------------
+
+	build$Indicators: function(items) {
+		const numItems = items.length,
+			$indicators = items.map(this._buildIndicator.bind(this, numItems));
+		this.$('.multi-toggle-indicators').append($indicators);
+		this.set('$indicators', $indicators);
+		return $indicators;
+	},
+	_buildIndicator: function(numItems, item) {
+		const indClass = this.get('indicatorClass'),
+			color = Ember.get(item, 'complement');
+		return Ember.$(`<div class='${indClass}'
+			style='background-color:${color};
+				width:${100 / numItems}%;'></div>`);
+	},
+
 	// Helpers
 	// -------
 
@@ -111,14 +148,17 @@ export default Ember.Component.extend({
 			return;
 		}
 		const items = this.get('_items'),
+			$indicators = this.get('$indicators'),
 			normalized = this._normalizeIndex(index),
 			prevIndex = this.get('_selectedIndex'),
 			prev = Ember.isPresent(prevIndex) ? items.objectAt(prevIndex) : null,
 			next = items.objectAt(normalized);
 		// update selection
 		if (prev) {
+			$indicators.objectAt(prevIndex).removeClass('selected');
 			prev.actions.deselect();
 		}
+		$indicators.objectAt(normalized).addClass('selected');
 		next.actions.select(skipNotify);
 		// update stored index
 		this.setProperties({

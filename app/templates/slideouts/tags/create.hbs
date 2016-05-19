@@ -1,9 +1,11 @@
 {{#slideout-pane title='New Tag'
     direction='left'
-    closeActionName='closeSlideout'
-    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    onOpen=(route-action 'initializeNewTag')
+    doClose=(route-action 'revert' newTag (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout'
+    focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t pad-l pad-r">
-        {{partial 'partials/create-edit-tag'}}
+        {{partial 'partials/tag/create-edit'}}
     </div>
     <div class="horizontal-items text-center margin-t-double margin-b">
         <div class="clear-badge no-space">
@@ -14,7 +16,8 @@
         </div>
         <div class="clear-badge no-space">
             <button class="btn btn-default" type='button'
-                onclick={{slideout.actions.close}}>
+                disabled={{not (v-get newTag 'isValid')}}
+                {{action 'createTag' newTag (route-action 'closeAllSlideouts')}}>
                 Create
             </button>
         </div>

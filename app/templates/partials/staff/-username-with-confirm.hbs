@@ -1,0 +1,27 @@
+{{#hide-away tabindex=false
+    classNames='form-element'
+    bodyClass='pad-t pad-r pad-b pad-l'}}
+    <form {{action 'updateUsernameAndLogout' on='submit'}}>
+        <div class='form-element'>
+            Changing username will require logging back in.
+        </div>
+        <div class='form-element'>
+            <label for='Your Password' class='control-label'>Your Password</label>
+            {{input type='password' class='form-control' placeholder='Your Password' value=newUPassword}}
+        </div>
+        <div class='form-element'>
+            <label for='New Username' class='control-label'>New Username</label>
+            <div class='input-group'>
+                {{input type='text' class='form-control' placeholder='New Username' value=newUsername}}
+                <span class='input-group-addon'>
+                    <button class='btn btn-default' type='submit'>Update</button>
+                </span>
+            </div>
+        </div>
+    </form>
+{{else}}
+    <button class="btn btn-span" type='button'>
+        Update username
+        <span class="fa fa-caret-down"></span>
+    </button>
+{{/hide-away}}

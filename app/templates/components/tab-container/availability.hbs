@@ -17,7 +17,7 @@
 					</span>
 				</div>
 				<div class="xs-full-row l-17-row-20">
-					{{multi-range data=(get schedule day)
+					{{multi-range data=(get staff day)
 						min='0000'
 						max='2359'
 						doRawToValid=(action 'doRawToValid')
@@ -26,9 +26,9 @@
 						doNumToValid=(action 'doNumToValid')
 						doValidRangeToDisplay=(action 'doValidRangeToDisplay')
 						doIndicator=(if (eq dayToday day) (action 'doIndicator'))
-						onUpdate=(action 'updateTime' (get schedule day))
-						onInsert=(action 'insertTime' (get schedule day))
-						onRemove=(action 'removeTime' (get schedule day))}}
+						onUpdate=(action 'updateTime' day)
+						onInsert=(action 'insertTime' day)
+						onRemove=(action 'removeTime' day)}}
 				</div>
 			</div>
 		{{/each}}
@@ -53,7 +53,7 @@
 						</span>
 					</div>
 					<div class="xs-full-row l-17-row-20">
-						{{multi-range data=(get schedule day)
+						{{multi-range data=(get staff day)
 							min='0000'
 							max='2359'
 							doRawToValid=(action 'doRawToValid')
@@ -62,9 +62,9 @@
 							doNumToValid=(action 'doNumToValid')
 							doValidRangeToDisplay=(action 'doValidRangeToDisplay')
 							doIndicator=(if (eq dayToday day) (action 'doIndicator'))
-							onUpdate=(action 'updateTime' (get schedule day))
-							onInsert=(action 'insertTime' (get schedule day))
-							onRemove=(action 'removeTime' (get schedule day))}}
+							onUpdate=(action 'updateTime' day)
+							onInsert=(action 'insertTime' day)
+							onRemove=(action 'removeTime' day)}}
 					</div>
 				</div>
 				{{#each otherStaffs as |otherStaff|}}
@@ -78,7 +78,7 @@
 							</span>
 						</div>
 						<div class="xs-full-row l-17-row-20">
-							{{multi-range data=(get otherStaff.schedule day)
+							{{multi-range data=(get otherStaff day)
 								min='0000'
 								max='2359'
 								doRawToValid=(action 'doRawToValid')

@@ -1,6 +1,7 @@
 import Auth from '../mixins/auth-route';
 import Ember from 'ember';
 import Slideout from '../mixins/slideout-route';
+import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Route.extend(Slideout, Auth, {
 	slideoutOutlet: 'details-slideout',
@@ -14,22 +15,25 @@ export default Ember.Route.extend(Slideout, Auth, {
 
 		console.log("MAIN BEFORE MODEL HOOK!");
 
-		if (user.get('isAdmin')) {
-			this.transitionTo('admin');
-		} else {
-			return user.get('isNone').then((isNone) => {
-				if (isNone) {
+		return user.get('isNone').then((isNone) => {
+			if (isNone) {
+				if (user.get('isAdmin')) {
+					this.transitionTo('admin');
+				} else {
 					this.transitionTo('none');
 				}
-			});
-		}
+			}
+		});
 	},
 	serialize: function(model) {
+		console.log('main route serialize: model');
+		console.log(model);
+
 		return {
 			main_identifier: model.get('urlIdentifier')
 		};
 	},
-	model: function(params, transition) {
+	model: function(params) {
 		console.log("MAIN MODEL HOOK!");
 
 		const id = params.main_identifier,
@@ -56,13 +60,19 @@ export default Ember.Route.extend(Slideout, Auth, {
 
 					console.log("main model branch 4");
 
-					transition.send('logout');
+					this.get('authManager').logout();
 				}
 			});
 		}
 	},
+	afterModel: function(model) {
+		this.get('stateManager').set('owner', model);
+	},
 	setupController: function(controller, model) {
 		this._super(...arguments);
+		// unload contacts that might duplicate between different phones
+		// because of sharing arrangements
+		this.store.unloadAll('contact');
 		// load list of staff members available to share with
 		this._loadOtherStaff(model);
 	},
@@ -77,24 +87,14 @@ export default Ember.Route.extend(Slideout, Auth, {
 
 	actions: {
 		toggleSelected: function(contact) {
-			const appController = this.controllerFor('application'),
-				currentPath = appController.get('currentPath');
-			if (currentPath !== 'main.contacts.many' &&
-				currentPath !== 'main.tag.many') {
-				if (this.controller.get('viewingTag')) {
+			if (!this.get('stateManager.viewingMany')) {
+				if (this.get('stateManager.viewingTag')) {
 					this.transitionTo('main.tag.many');
 				} else {
 					this.transitionTo('main.contacts.many');
 				}
 			}
 			contact.toggleProperty('isSelected');
-		},
-		willTransition: function() {
-			this.controller.setProperties({
-				newContact: null,
-				selectedRecipients: [],
-				composeMessage: ''
-			});
 		},
 
 		// Slideout
@@ -110,111 +110,108 @@ export default Ember.Route.extend(Slideout, Auth, {
 		openDetailSlideout: function(name, context) {
 			this._openSlideout(name, context);
 		},
-		toggleSlideout: function() {
-			this._doSlideoutSetup(...arguments);
-			return true;
-		},
-		openSlideout: function() {
-			this._doSlideoutSetup(...arguments);
-			return true;
-		},
 		closeSlideout: function() {
 			this._closeSlideout();
-			this.controller.setProperties({
-				selectedRecipients: [],
-				composeMessage: ''
-			});
 			return true;
 		},
-		revertAndClose: function(model) {
-			model.rollbackAttributes();
+		closeAllSlideouts: function(then) {
 			this.send('closeSlideout');
-		},
-		closeIfSuccess: function(model) {
-			const changed = model.changedAttributes();
-			if (changed) {
-				this.get('dataHandler')
-					.persist(model)
-					.then(this.send.bind(this, 'closeSlideout'));
-			} else {
-				this.send('closeSlideout');
-			}
+			callIfPresent(then);
 		},
 
-		// Account
+		// Contact
 		// -------
 
-		updateStaff: function() {
-			console.log('updateStaff');
-			return false;
+		initializeNewContact: function() {
+			this.controller.set('newContact', this.store.createRecord('contact'));
+		},
+		cleanNewContact: function() {
+			// nullify newContact to avoid sortable numbers component setting
+			// a copied version of the numbers array after the newContact is
+			// rolled back (thus deleted) which triggers an error from ember data
+			this.controller.set('newContact', null);
+		},
+		createContact: function(contact, then) {
+			this.get('dataHandler')
+				.persist(contact)
+				.then(() => {
+					const contacts = this.controller.get('contacts');
+					if (contacts) {
+						contacts.unshiftObject(contact);
+						// have to copy to trigger re-render on infinite scroll
+						this.controller.set('contacts', Ember.copy(contacts));
+					}
+					callIfPresent(then);
+				});
 		},
 
-		// Create contact
-		// --------------
+		// Tag
+		// ---
 
-		createContact: function(data) {
-			const numbers = Ember.get(data, 'numbers');
-			if (numbers && numbers.length > 0) {
-				const contact = this.store.createRecord('contact', data);
-				this.get('dataHandler')
-					.persist(contact)
-					.then(() => {
-						const contacts = this.controller.get('contacts');
-						if (contacts) {
-							contacts.unshiftObject(contact);
-							// have to copy to trigger re-render on infinite scroll
-							this.controller.set('contacts', Ember.copy(contacts));
-						}
-						this.send('closeSlideout');
-					}, contact.rollbackAttributes.bind(contact));
-			} else {
-				this.notifications.error('Contact must have at least 1 number');
-			}
+		initializeNewTag: function() {
+			this.controller.set('newTag', this.store.createRecord('tag'));
+		},
+		createTag: function(tag, then = undefined) {
+			this.get('dataHandler')
+				.persist(tag)
+				.then(() => {
+					const model = this.get('currentModel');
+					model.get('tags').then((tags) => tags.pushObject(tag));
+					callIfPresent(then);
+				});
+		},
+		updateTagMemberships: function(tags, contact, then = undefined) {
+			const contacts = Ember.isArray(contact) ? contact : [contact];
+			this.get('dataHandler')
+				.persist(tags)
+				.then(() => {
+					const promises = contacts.map((contact) => contact.reload());
+					Ember.RSVP.all(promises).then(() => {
+						callIfPresent(then);
+					}, this.get('dataHandler').buildErrorHandler());
+				});
 		},
 
 		// Compose
 		// -------
 
+		composeWithRecipients: function(data) {
+			this.controller.set('selectedRecipients', Ember.copy(data));
+			this.send('openSlideout', 'slideouts/compose', 'main');
+		},
+		initializeCompose: function() {
+			console.log('initializeCompose');
+
+			const recipients = this.controller.get('selectedRecipients');
+			if (!recipients) {
+				console.log("OVERWRITING selectedRecipients");
+				this.controller.set('selectedRecipients', []);
+			}
+			this.controller.set('composeMessage', '');
+		},
+		cleanCompose: function() {
+			console.log('cleanCompose');
+
+			this.controller.set('selectedRecipients', []);
+		},
 		sendMessage: function() {
 			console.log("SEND MESSAGE!");
 		},
 	},
 
-	// Methods
+	// Helpers
 	// -------
 
-	_doSlideoutSetup: function(name, context, data = undefined) {
-		if (name === 'slideouts/contact' && context === 'main') {
-			this.controller.set('newContact', {
-				numbers: [] // need to initialize the array
-			});
-		} else if (name === 'slideouts/compose' && context === 'main' &&
-			Ember.isPresent(data)) {
-			this.controller.set('selectedRecipients', Ember.copy(Ember.A(data)));
-		}
-	},
 	_loadOtherStaff: function(model) {
-		const shareQuery = Object.create(null),
-			isTeam = model.get('constructor.modelName') === 'team',
-			user = this.get('authManager.authUser');
+		const shareQuery = Object.create(null);
 		shareQuery.max = 100;
-		if (isTeam) {
+		if (model.get('constructor.modelName') === 'team') {
 			shareQuery.teamId = model.get('id');
 		} else {
 			shareQuery.canShareStaffId = model.get('id');
 		}
 		this.store.query('staff', shareQuery).then((result) => {
-			const staffs = result.toArray().filter((staff) => {
-				return staff.get('id') !== user.get('id');
-			});
-			// team members might not have a phone!
-			if (isTeam) {
-				this.controller.set('teamMembers', staffs);
-			}
-			// share candidates must have a phone!
-			this.controller.set('shareCandidates',
-				staffs.filter((staff) => staff.get('phone')));
-
-		});
+			this.get('stateManager').set('relevantStaffs', result.toArray());
+		}, this.get('dataHandler').buildErrorHandler());
 	},
 });

@@ -5,24 +5,21 @@
 				<span class="clear-badge no-space">
 					<h5>{{phone-number contact.identifier}}</h5>
 				</span>
-                {{#if (or (not contact.isShared)
-                    (and contact.isShared contact.isSharedDelegate))}}
-                    <span class="clear-badge no-space">
-                        <a class="btn btn-plain display-m display-l" href='#'
-                            {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                            <span class="pad-all display-m">
-                                <span class="fa fa-user"></span>
-                            </span>
-                            <span class="fa fa-user display-l"></span>
-                        </a>
-                    </span>
-                    <span class="clear-badge display-l">
-                        <span class='badge'>
-                            <b>{{contact.numbers.length}}</b>
-                            {{pluralize 'numbers' contact.numbers.length}}
+                <span class="clear-badge no-space">
+                    <a class="btn btn-plain display-m display-l" href='#'
+                        {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
+                        <span class="pad-all display-m">
+                            <span class="fa fa-user"></span>
                         </span>
+                        <span class="fa fa-user display-l"></span>
+                    </a>
+                </span>
+                <span class="clear-badge display-l">
+                    <span class='badge'>
+                        <b>{{contact.numbers.length}}</b>
+                        {{pluralize 'numbers' contact.numbers.length}}
                     </span>
-                {{/if}}
+                </span>
 			</div>
 			<div class="horizontal-items xs-2-row-3 s-row-2 m-2-row-3 l-row-2 pull-right">
                 {{#if (not contact.isShared)}}
@@ -97,7 +94,7 @@
             {{/if}}
         </div>
     </div>
-    <div class="section-body">
+    <div class="section-body {{if (not contact.allowEdits) 'readonly'}}">
         {{#infinite-scroll classNames='contact-record'
             direction='up'
             data=records

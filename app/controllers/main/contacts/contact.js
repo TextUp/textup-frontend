@@ -1,15 +1,6 @@
 import Ember from 'ember';
 
-const {
-	readOnly
-} = Ember.computed;
-
 export default Ember.Controller.extend({
-	mainController: Ember.inject.controller('main'),
-
-	mainModel: readOnly('mainController.model'),
-	shareCandidates: readOnly('mainController.shareCandidates'),
-
 	records: [],
 	totalNumRecords: '--',
 	contact: null,
@@ -30,7 +21,7 @@ export default Ember.Controller.extend({
 					records.pushObjects(results.toArray());
 					this.set('totalNumRecords', results.get('meta.total'));
 					resolve();
-				}, reject);
+				}, this.get('dataHandler').buildErrorHandler(reject));
 			});
 		},
 	},

@@ -1,11 +1,24 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import {
+	validator,
+	buildValidations
+} from 'ember-cp-validations';
 
 const {
-	alias
-} = Ember.computed;
+	alias,
+	notEmpty
+} = Ember.computed,
+	Validations = buildValidations({
+		name: {
+			description: 'Name',
+			validators: [
+				validator('presence', true)
+			]
+		}
+	});
 
-export default DS.Model.extend({
+export default DS.Model.extend(Validations, {
 	init: function() {
 		this._super(...arguments);
 		this.set('actions', []);
@@ -25,8 +38,9 @@ export default DS.Model.extend({
 	// Computed properties
 	// -------------------
 
+	hasManualChanges: notEmpty('actions'),
 	identifier: alias('name'),
 	urlIdentifier: Ember.computed('name', function() {
-		return Ember.String.dasherize(this.get('name'));
+		return Ember.String.dasherize(this.get('name') || '');
 	}),
 });

@@ -15,9 +15,7 @@ Router.map(function() {
         this.route('new');
         this.route('account');
     });
-    this.route('setup', function() {
-        this.route('connect');
-    });
+    this.route('setup', function() {});
 
     // Auth
     // ----
@@ -44,11 +42,17 @@ Router.map(function() {
     this.route('admin', function() {
         this.route('pending');
         this.route('people', function() {
-            this.route('person');
+            this.route('person', {
+                path: '/:id'
+            });
             this.route('many');
         });
-        this.route('team', function() {
-            this.route('person');
+        this.route('team', {
+            path: '/team/:team_identifier'
+        }, function() {
+            this.route('person', {
+                path: '/person/:id'
+            });
             this.route('many');
             this.route('edit');
         });

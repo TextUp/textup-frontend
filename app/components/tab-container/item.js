@@ -64,7 +64,7 @@ export default Ember.Component.extend({
 		const $el = this.$();
 		return new Ember.RSVP.Promise((resolve) => {
 			if (animation === 'fade') {
-				$el.fadeIn(resolve);
+				$el.fadeIn().promise().done(resolve);
 			} else if (animation === 'slide') {
 				$el.css('height', this.get('_height'));
 				$el.animate({
@@ -76,7 +76,7 @@ export default Ember.Component.extend({
 					}
 				});
 			} else {
-				$el.show(0, '', resolve);
+				$el.show(0, '').promise().done(resolve);
 			}
 		});
 	},
@@ -84,7 +84,7 @@ export default Ember.Component.extend({
 		const $el = this.$();
 		return new Ember.RSVP.Promise((resolve) => {
 			if (animation === 'fade') {
-				$el.fadeOut(resolve);
+				$el.fadeOut().promise().done(resolve);
 			} else if (animation === 'slide') {
 				const height = $el.height();
 				$el.css('height', height);
@@ -101,7 +101,7 @@ export default Ember.Component.extend({
 					});
 				});
 			} else {
-				$el.hide(0, '', resolve);
+				$el.hide(0, '').promise().done(resolve);
 			}
 		});
 	},

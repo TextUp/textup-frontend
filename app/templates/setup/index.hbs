@@ -1,13 +1,17 @@
 <div class="single-body">
     <div class="single-body-header">
-        <h5 class="text-center pad-b">Welcome to TextUp!</h5>
-        <p class="text-center"><b>Welcome Kiki Bai!</b> First, please pick a TextUp phone number.</p>
+        <h5 class="text-center pad-b">Welcome to TextUp, {{authManager.authUser.name}}!</h5>
+        <p class='text-justify'>Harness the power of TextUp by <b>connecting your personal cell phone to your account.</b> Please enter your personal cell phone below to get started. We'll send you a text message with a verification code after you submit your number.</p>
     </div>
     <div class="single-body-content">
-        {{single-select/mutable-phone-number data=numbers selected=(mut selected)}}
+        {{phone-control number=personalNumber
+            controlButtonClass='blend-in'
+            controlButtonClass='btn-default'
+            forceAllowChanges=true
+            onClick=(action 'updateNumber')
+            onValidate=(action 'validateNumber')}}
     </div>
     <div class="single-body-footer text-center">
-        {{link-to "Next" "setup.connect" tagName="button" classNames="btn btn-default"}}
-        {{!-- <button class='btn btn-default'>Next</button> --}}
+        {{link-to "Finish" "index" tagName="button" classNames="btn btn-default"}}
     </div>
 </div>

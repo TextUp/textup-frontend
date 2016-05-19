@@ -1,15 +1,49 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import {
+	validator,
+	buildValidations
+} from 'ember-cp-validations';
 
 const {
 	equal: eq,
-	alias
-} = Ember.computed;
+	alias,
+	notEmpty
+} = Ember.computed,
+	Validations = buildValidations({
+		name: {
+			description: 'Name',
+			validators: [
+				validator('presence', true)
+			]
+		},
+		username: {
+			description: 'Username',
+			validators: [
+				validator('presence', true)
+			]
+		},
+		email: {
+			description: 'Email',
+			validators: [
+				validator('format', {
+					type: 'email'
+				})
+			]
+		},
+		status: validator('inclusion', { in : [
+				'BLOCKED', 'PENDING', 'STAFF', 'ADMIN'
+			]
+		})
+	});
 
-export default DS.Model.extend({
+export default DS.Model.extend(Validations, {
 	username: DS.attr('string'),
 	name: DS.attr('string'),
-	password: DS.attr('string'), // usually null, for account creation or password change
+	// usually blank, for account creation or password change
+	password: DS.attr('string', {
+		defaultValue: ''
+	}),
 	email: DS.attr('string'),
 	status: DS.attr('string'),
 	personalPhoneNumber: DS.attr('string'),
@@ -20,22 +54,41 @@ export default DS.Model.extend({
 	// for building share actions
 	phoneId: DS.attr('number'),
 	// if has phone, string phone number
-	phone: DS.attr('string'),
-	// Id of the phone number to provision as the TextUp number
-	newPhoneApiId: DS.attr('string'),
+	phone: DS.attr('phone-number'),
 
 	org: DS.belongsTo('organization'),
-	schedule: DS.belongsTo('schedule'),
 	tags: DS.hasMany('tag'),
 	teams: DS.hasMany('team'),
+
+	// Schedule
+	// --------
+
+	isAvailableNow: DS.attr('boolean'),
+	nextAvailable: DS.attr('date'),
+	nextUnavailable: DS.attr('date'),
+
+	sunday: DS.attr('collection'),
+	monday: DS.attr('collection'),
+	tuesday: DS.attr('collection'),
+	wednesday: DS.attr('collection'),
+	thursday: DS.attr('collection'),
+	friday: DS.attr('collection'),
+	saturday: DS.attr('collection'),
+
+	// Not attributes
+	// --------------
+
+	newPhone: null,
+	isSelected: false,
 
 	// Computed properties
 	// -------------------
 
+	hasManualChanges: notEmpty('newPhone'),
 	urlIdentifier: Ember.computed('username', function() {
-		return Ember.String.dasherize(this.get('username'));
+		return Ember.String.dasherize(this.get('username') || '');
 	}),
-	sharingId: alias('id'),
+	sharingId: alias('phoneId'),
 
 	isBlocked: eq('status', 'BLOCKED'),
 	isPending: eq('status', 'PENDING'),

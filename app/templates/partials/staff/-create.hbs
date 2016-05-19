@@ -1,0 +1,35 @@
+<div class="form-element">
+    <label for="Staff Name">Staff Name</label>
+    {{input value=newStaff.name
+        type="text"
+        placeholder="Staff Name"
+        class="form-control start-focus"
+        validateObj=newStaff
+        validateField='name'
+        validate='bottom'}}
+</div>
+<div class="form-element">
+    <label for="Username">Username</label>
+    {{input value=newStaff.username
+        type="text"
+        placeholder="Username"
+        class="form-control"
+        autocorrect="off"
+        autocapitalize="off"
+        validateObj=newStaff
+        validateField='username'
+        validate='bottom'}}
+</div>
+<div class="form-element">
+    <label for="Staff Email">Staff Email</label>
+    {{input value=newStaff.email
+        type="email"
+        placeholder="Staff Email"
+        class="form-control"
+        validateObj=newStaff
+        validateField='email'
+        validate='bottom'}}
+</div>
+{{#with newStaff as |owner|}}
+    {{partial 'partials/change-number'}}
+{{/with}}

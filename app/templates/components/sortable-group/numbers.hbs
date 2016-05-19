@@ -1,14 +1,17 @@
-{{#sortable-group classNames='form-element'
+{{#sortable-group classNames='existing-numbers'
     onChange="reorderNumbers" as |group|}}
     {{#each numbers as |num i|}}
         {{#sortable-item classNames='input-group'
             model=num group=group handle=".handle"}}
-            <div class="input-group-addon blend-in">
-                <button class="btn" type='button' {{action 'removeNumber' i}}>
-                    <span class="fa fa-trash"></span>
-                </button>
-            </div>
+            {{#if (not readonly)}}
+                <div class="input-group-addon blend-in">
+                    <button class="btn" type='button' {{action 'removeNumber' i}}>
+                        <span class="fa fa-trash"></span>
+                    </button>
+                </div>
+            {{/if}}
             {{#phone-control number=(readonly num.number)
+                disabled=readonly
                 controlClass='blend-in handle'
                 controlButtonClass='btn-default'
                 onChange=(action 'updateNumber' num i)
@@ -20,29 +23,32 @@
         {{/sortable-item}}
     {{/each}}
 {{/sortable-group}}
-{{#hide-away tabindex=false
-    clickOutToClose=false
-    animation='fade'
-    startOpen=(if numbers false true)
-    onClose=(action 'clearNew')
-    hideTriggerOnOpen=true as |hideAway|}}
-    <div class='input-group'>
-        {{#if hasNumbers}}
-            <span class="input-group-addon">
-                <button class='btn' type='button'
-                    onclick={{hideAway.actions.close}}>
-                    <span class="fa fa-times"></span>
-                </button>
-            </span>
-        {{/if}}
-        {{phone-control number=newNumber
-            controlButtonClass='btn-success'
-            onChange=(action 'storeNewNumber')
-            onClick=(action 'addNewNumber')
-            onFocusLeave=(action 'addNewNumber')}}
-    </div>
-{{else}}
-    <button class="btn btn-span" type='button'>
-        <span class="fa fa-plus"></span>
-    </button>
-{{/hide-away}}
+{{#if (not readonly)}}
+    {{#hide-away classNames='margin-t'
+        tabindex=false
+        clickOutToClose=false
+        animation='fade'
+        startOpen=(if numbers false true)
+        onClose=(action 'clearNew')
+        hideTriggerOnOpen=true as |hideAway|}}
+        <div class='input-group'>
+            {{#if hasNumbers}}
+                <span class="input-group-addon">
+                    <button class='btn' type='button'
+                        onclick={{hideAway.actions.close}}>
+                        <span class="fa fa-times"></span>
+                    </button>
+                </span>
+            {{/if}}
+            {{phone-control number=newNumber
+                controlButtonClass='btn-success'
+                onChange=(action 'storeNewNumber')
+                onClick=(action 'addNewNumber')
+                onFocusLeave=(action 'addNewNumber')}}
+        </div>
+    {{else}}
+        <button class="btn btn-span" type='button'>
+            <span class="fa fa-plus"></span>
+        </button>
+    {{/hide-away}}
+{{/if}}

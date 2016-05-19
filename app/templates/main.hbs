@@ -21,10 +21,10 @@
         triggerClass='header-toggle'
         allowedTriggerSelectors='.toggle-control'
         bodyClickClose=true}}
-        {{partial 'partials/account-switcher'}}
+        {{partial 'partials/account/switcher'}}
     {{else}}
         <div class="xs-8-row-10 toggle-control">
-            {{partial 'partials/account-display'}}
+            {{partial 'partials/account/display'}}
         </div>
         <div class="xs-2-row-10 header-settings"
             {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
@@ -37,7 +37,7 @@
         {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
         {{#tool-tipster position='right'
             theme='tooltipster-clean'
-            title='Account'
+            title=(concat 'Account (' stateManager.owner.name ')')
             classNames='btn-expand'}}
             <span class="fa fa-bars"></span>
         {{/tool-tipster}}
@@ -95,22 +95,22 @@
         </button >
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not viewingTag) (eq filter 'all')) 'active'}}"
+        {{if (and (not stateManager.viewingTag) (eq filter 'all')) 'active'}}"
         {{action 'changeFilter' 'all'}}>
         <span>All</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not viewingTag) (eq filter 'unread')) 'active'}}"
+        {{if (and (not stateManager.viewingTag) (eq filter 'unread')) 'active'}}"
         {{action 'changeFilter' 'unread'}}>
         <span>Unread</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not viewingTag) (eq filter 'archived')) 'active'}}"
+        {{if (and (not stateManager.viewingTag) (eq filter 'archived')) 'active'}}"
         {{action 'changeFilter' 'archived'}}>
         <span>Archived</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not viewingTag) (eq filter 'blocked')) 'active'}}"
+        {{if (and (not stateManager.viewingTag) (eq filter 'blocked')) 'active'}}"
         {{action 'changeFilter' 'blocked'}}>
         <span>Blocked</span>
     </li>

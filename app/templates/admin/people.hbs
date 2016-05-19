@@ -5,17 +5,20 @@
         animation='slide'
         allowedTriggerSelectors='.staff-filter' as |hideAway|}}
         <ul class="reset-list">
-            {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+            <li class="menu-item {{if (eq filter 'active') 'active'}}"
+                    {{action 'changeFilter' 'active'}}>
                 <div class="offset-xs-row-10 xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">Active</p>
                 </div>
-            {{/link-to}}
-            <li class="menu-item">
+            </li>
+            <li class="menu-item {{if (eq filter 'admins') 'active'}}"
+                    {{action 'changeFilter' 'admins'}}>
                 <div class="offset-xs-row-10 xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">Admins</p>
                 </div>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{if (eq filter 'blocked') 'active'}}"
+                    {{action 'changeFilter' 'blocked'}}>
                 <div class="offset-xs-row-10 xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">Blocked</p>
                 </div>
@@ -25,12 +28,15 @@
         <div class="section-header">
         	{{#if team}}
 				<span class="indicator pull-left display-l"
-                    style='background-color:{{team.color}};'></span>
+                    style='background-color:{{team.hexColor}};'></span>
                 <div class="tag-title">
                     <h4 class="text-ellipsis">
                         {{team.name}}
                     </h4>
-                    <p>{{team.numMembers}} {{if (eq team.numMembers 1) 'person' 'people'}}</p>
+                    <p>
+                        {{numPeople}}
+                        {{pluralize 'person' numPeople}}
+                    </p>
                 </div>
 				{{#link-to 'admin.team.edit' classNames='pull-right' tagName='div'}}
                     <button class="btn btn-plain" type='button'>
@@ -39,8 +45,11 @@
                 {{/link-to}}
         	{{else}}
         		<div class="contacts-title">
-	                <h4 class="text-ellipsis">Active</h4>
-	                <p>5 {{if (eq team.numMembers 1) 'person' 'people'}}</p>
+	                <h4 class="text-ellipsis">{{capitalize filter}}</h4>
+	                <p>
+                        {{numPeople}}
+                        {{pluralize 'person' numPeople}}
+                    </p>
 	            </div>
 	            <div class="staff-filter pull-right display-l">
 	                <button class="btn btn-plain" type='button'>
@@ -55,35 +64,37 @@
         direction='down'
         data=people
         total=numPeople
-        doLoad=(action 'loadMore') as |person index|}}
-        <div class="result-item pad-t
-            {{if (eq index 2) 'active'}}">
+        doLoad=(action 'loadMore') as |person|}}
+        <div class="result-item">
             <div class="row">
-                <div class="contacts-control">
-                    {{#link-to (if team
-                            'admin.team.many'
-                            'admin.people.many')
-                        bubbles=false}}
-                        {{input type="checkbox" checked=person.isSelected}}
-                    {{/link-to}}
+                <div class="contacts-control {{if person.isSelected 'selected'}}"
+                    {{action 'toggleSelected' person preventDefault=false}}>
+                    <span class="fa fa-check center"></span>
                 </div>
                 {{#link-to (if team
                         'admin.team.person'
                         'admin.people.person')
-                    classNames="contacts-info clickable"
+                    person.id
+                    classNames="contacts-info"
                     tagName="div"}}
-                    <p class="emphasize">{{person.name}}</p>
+                    <p class="emphasize">
+                        <span class="margin-r-half">
+                            {{person.name}}
+                        </span>
+                        <span class="clear-badge no-space">
+                            {{partial 'partials/staff/indicators'}}
+                        </span>
+                    </p>
                     <p>{{person.username}}</p>
                 {{/link-to}}
             </div>
-            <div class="contacts-tags">
-                {{#if (eq person.status 'ADMIN')}}
-                    <span class="badge">Admin</span>
-                {{/if}}
-                {{#each person.teams as |team|}}
-                    {{preview-badge color=team.color content=team.name}}
-                {{/each}}
-            </div>
+            {{#if person.teams}}
+                <div class="contacts-tags">
+                    {{#each person.teams as |team|}}
+                        {{preview-badge color=team.hexColor content=team.name}}
+                    {{/each}}
+                </div>
+            {{/if}}
         </div>
     {{else}}
         <div class="no-results">No people match this criteria.</div>

@@ -2,24 +2,32 @@
         (concat 'Teams (' people.length ' selected)')
         (concat person.name ' Teams'))
     direction='right'
-    closeActionName='closeSlideout'
+    doClose=(route-action 'clearList' stateManager.owner.teams 'actions'
+        (route-action 'closeAllSlideouts'))
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
-    <div class="input-group">
-        <div class="input-group-addon">
-            <button class="btn btn-span" type='button'>
-                Cancel
-            </button>
+    {{#if teamsHaveActions}}
+        <div class="horizontal-items text-center pad-all bg-color border-b">
+            <div class="clear-badge no-space">
+                <button class="btn" type='button'
+                    onclick={{slideout.actions.close}}>
+                    Cancel
+                </button>
+            </div>
+            <div class="clear-badge no-space">
+                <button class="btn btn-default" type='button'
+                    {{action 'updateTeamMemberships' stateManager.owner.teams
+                        (if people people person)
+                        (route-action 'closeAllSlideouts')}}>
+                    Update
+                </button>
+            </div>
         </div>
-        <div class="input-group-addon">
-            <button class="btn btn-default btn-span" type='button'>
-                Update
-            </button>
-        </div>
-    </div>
-    {{#multi-toggle/group-by-bucket itemBucketProperty='teams'
+    {{/if}}
+    {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)
+        itemBucketProperty='teams'
         items=(if people people person)
-        buckets=teams as |team|}}
-            {{preview-badge color=team.color onlyShowFull=true content=team.name}}
+        buckets=stateManager.owner.teams as |team|}}
+            {{preview-badge color=team.hexColor onlyShowFull=true content=team.name}}
     {{else}}
         <li class="no-results">No teams yet.</li>
     {{/multi-toggle/group-by-bucket}}

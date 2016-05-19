@@ -5,16 +5,29 @@
 				<span class="clear-badge">
 					<h5>{{person.name}}</h5>
 				</span>
-				{{#if (eq person.status 'ADMIN')}}
-					<span class="badge display-s display-m display-l">Admin</span>
+				{{#if person.isAdmin}}
+					<span class="display-s display-m display-l">
+						<span class="badge">Admin</span>
+					</span>
 				{{/if}}
-				<span class="badge display-s display-m display-l">Available</span>
+				{{#if (and person.isAvailableNow
+					(if (not person.nextUnavailable) true
+						(date/is-after person.nextUnavailable now)))}}
+					<span class="display-s display-m display-l">
+						<span class="badge">
+							Available
+							{{#if person.nextUnavailable}}
+								for {{moment-from-now person.nextUnavailable hideSuffix=true}}
+							{{/if}}
+						</span>
+					</span>
+				{{/if}}
 			</div>
 			<div class="horizontal-items xs-2-row-3 s-row-2 pull-right">
 	            <span class='clear-badge'>
 	            	{{#hide-away/dropdown}}
 	                    <li class='dropdown-divider'>Status</li>
-                        {{#if (eq person.status 'ADMIN')}}
+                        {{#if person.isAdmin}}
                         	<li tabindex='0' class='dropdown-item'>Demote to staff</li>
                         {{else}}
 							<li tabindex='0' class='dropdown-item'>Promote to admin</li>
@@ -45,7 +58,9 @@
             </span>
             <span class="badge-divider"></span>
             {{#each person.teams as |team|}}
-                {{preview-badge color=team.color content=team.name}}
+                {{preview-badge color=team.hexColor content=team.name}}
+            {{else}}
+            	<span class="badge">Member of no teams.</span>
             {{/each}}
         </div>
     </div>
@@ -54,22 +69,43 @@
 			{{#tab-container/item doRegister=doRegister
 				title="Details"}}
 				{{#with person as |staff|}}
-				    <div class="pad-all">
-						{{partial 'partials/edit-staff'}}
+					<div class='pad-all'>
+						{{partial 'partials/staff/edit'}}
+						<div class="pad-t text-center">
+					        <button class="btn" type='button'>
+					            Cancel
+					        </button>
+					        <button class="btn btn-default" type='button'>
+					            Update
+					        </button>
+						</div>
+					</div>
+					<hr>
+					<div class="pad-l pad-r pad-b">
+						{{partial 'partials/staff/username-with-confirm'}}
+						{{partial 'partials/staff/password-with-confirm'}}
 					</div>
 				{{/with}}
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
 				title="Availability"}}
-				{{tab-container/availability singleStaffData=(mut person.schedule)}}
-				<div class="text-center pad-b-double">
-		            <button class="btn" type='button'>
-		                Cancel
-		            </button>
-		            <button class="btn btn-default" type='button'>
-		                Update
-		            </button>
-				</div>
+				{{tab-container/availability staff=(mut person)}}
+				{{#if person.hasDirtyAttributes}}
+			        <div class="horizontal-items text-center margin-t margin-b">
+			            <div class="clear-badge no-space">
+			                <button class="btn" type='button'
+			                    onclick={{route-action 'revert' person}}>
+			                    Cancel
+			                </button>
+			            </div>
+			            <div class="clear-badge no-space">
+			                <button class="btn btn-default" type='button'
+			                    onclick={{route-action 'persist' person}}>
+			                    Update
+			                </button>
+			            </div>
+			        </div>
+			    {{/if}}
 			{{/tab-container/item}}
     	{{/tab-container}}
     </div>

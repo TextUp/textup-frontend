@@ -58,6 +58,16 @@ h5 {
 .match-color {
     color: inherit;
 }
+.text-darken {
+    color: $title-color;
+}
+.text-lighten {
+    color: tint($font-color, 3.5);
+}
+.text-white {
+    color: $font-light-color;
+}
+
 .text-center {
     text-align: center;
 }
@@ -70,26 +80,30 @@ h5 {
 .text-right {
     text-align: right;
 }
-.text-darken {
-    color: $title-color;
-}
+
 .text-bold {
     font-weight: $font-weight-bold;
 }
 .text-normal {
     font-weight: $font-weight-std;
 }
-.text-lighten {
-    color: $font-light-color;
-}
+
 .text-ellipsis {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.small {
+
+.text-small {
     font-size: 0.9em;
 }
+.text-smaller {
+    font-size: 0.7em;
+}
+.text-smallest {
+    font-size: 0.5em;
+}
+
 .emphasize {
     @extend .text-darken;
     @extend .text-bold;

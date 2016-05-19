@@ -102,6 +102,11 @@
 	margin-left: $contacts-h-space;
 	padding: $padding;
 	padding-right: 0;
+
+	.emphasize .clear-badge .fa-stack {
+		position: relative;
+		bottom: 3px;
+	}
 }
 .contacts-tags {
 	@extend .row;
@@ -133,6 +138,14 @@
 	}
 	.preview-badge {
 		height: $badge-height;
+	}
+}
+.section-body.readonly {
+	.contact-record {
+		height: 100%;
+	}
+	.contact-controls {
+		display: none;
 	}
 }
 @include split(height, ".contact-controls" ".contact-record", $control-height + $form-v-space * 2);

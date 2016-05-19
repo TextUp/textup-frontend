@@ -1,4 +1,5 @@
 .multi-toggle {
+	$indicators-height: $button-accent-size;
 	overflow: hidden;
 	white-space: nowrap;
 	position: relative;
@@ -7,6 +8,7 @@
 	.multi-toggle-items {
 		position: relative;
 		transition: left 0.5s;
+		height: 100%;
 	}
 	.multi-toggle-item {
 		@extend .no-select;
@@ -20,6 +22,32 @@
 		font-weight: $font-weight-bold;
 		padding: 0 $padding;
 		text-align: center;
+	}
+	.multi-toggle-indicators {
+		@extend %clearfix;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: $indicators-height;
+		border-bottom-left-radius: $border-radius;
+		border-bottom-right-radius: $border-radius;
+		opacity: 0.6;
+
+		.toggle-indicator {
+			float: left;
+			height: 100%;
+			visibility: hidden;
+
+			&.selected {
+				visibility: visible;
+			}
+			&:first-child {
+				border-bottom-left-radius: $border-radius;
+			}
+			&:last-child {
+				border-bottom-right-radius: $border-radius;
+			}
+		}
 	}
 }
 

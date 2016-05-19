@@ -1,29 +1,21 @@
-import Ember from 'ember';
+import MainContactsContactRoute from '../contacts/contact';
 
-export default Ember.Route.extend({
+export default MainContactsContactRoute.extend({
 	controllerName: 'main/contacts/contact',
 	templateName: 'main/contacts/contact',
 
 	model: function(params) {
 		const id = params.id;
 		if (id) {
-			return this.store.find('contact', id);
+			this.set('_id', id);
+			const found = this.store.peekRecord('contact', id);
+			return found ? found : this.store.findRecord('contact', id);
 		} else {
 			this.transitionTo('main.tag');
 		}
 	},
-	setupController: function(controller, model) {
+	setupController: function(controller) {
 		this._super(...arguments);
-		this.controller.set('contact', model);
-		this.controller.set('tag', this.controllerFor('main.tag').get('tag'));
+		controller.set('tag', this.controllerFor('main.tag').get('tag'));
 	},
-
-	actions: {
-		didTransition: function() {
-			this.controller.set('records', []);
-			// don't know until loaded
-			this.controller.set('totalNumRecords', '--');
-			return true;
-		},
-	}
 });

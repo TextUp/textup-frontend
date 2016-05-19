@@ -1,15 +1,37 @@
-{{#single-select data=data
-    selected=selected
-    displayProperty='number'
-    identityProperty='number'
-    allowCreate=false
-    searchPlaceholder='Pick your TextUp number'
-    onInsert=(action 'select')
-    onRemove=(action 'deselect') as |item select|}}
-    <div class="text-ellipsis">
-        <span class="text-bold {{if item.region 'pad-r'}}">{{item.number}}</span>
-        {{#if item.region}}
-            <span class="text-normal">{{item.region}}</span>
+{{#if (and dataIsPromise data.isFulfilled)}}
+    {{#single-select data=(if dataIsPromise data.content data)
+        selected=selected
+        displayProperty='phoneNumber'
+        identityProperty='phoneNumber'
+        allowCreate=false
+        searchPlaceholder='Pick your TextUp number'
+        onInsert=(action 'select')
+        onRemove=(action 'deselect')
+        floating=floating
+        floatHeightMax=floatHeightMax
+        floatMode=floatMode
+        horizontal=horizontal
+        vertical=vertical as |item select|}}
+        {{#if hasBlock}}
+            {{yield item select}}
+        {{else}}
+            <div class="text-ellipsis">
+                <span class="text-bold">
+                    {{phone-number item.phoneNumber}}
+                </span>
+                {{#if item.region}}
+                    <span class="pad-l text-normal">{{item.region}}</span>
+                {{/if}}
+            </div>
         {{/if}}
-    </div>
-{{/single-select}}
+    {{/single-select}}
+{{else}}
+    {{#if (hasBlock 'inverse')}}
+        {{yield to='inverse'}}
+    {{else}}
+        <div class="text-center margin-t margin-b">
+            Loading numbers
+            <span class="fa fa-circle-o-notch fa-spin"></span>
+        </div>
+    {{/if}}
+{{/if}}

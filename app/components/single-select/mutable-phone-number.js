@@ -5,14 +5,21 @@ export default Ember.Component.extend({
 	data: defaultIfAbsent([]),
 	selected: null,
 
+	// Computed properties
+	// -------------------
+
+	dataIsPromise: Ember.computed('data', function() {
+		return Ember.isPresent(this.get('data.then'));
+	}),
+
 	actions: {
-		select: function(number, event) {
+		select: function(numObj, event) {
 			return new Ember.RSVP.Promise((resolve, reject) => {
-				this.set('selected', number);
+				this.set('selected', numObj);
 				resolve();
 			});
 		},
-		deselect: function(number) {
+		deselect: function() {
 			this.set('selected', null);
 		},
 	}

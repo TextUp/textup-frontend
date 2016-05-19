@@ -14,6 +14,17 @@
 // Dropdown
 // --------
 
+$dropdown-shadow-size: 3px;
+&.overflow {
+    .dropdown {
+        &.hide-away-body--left {
+            margin-left: $dropdown-shadow-size * 2;
+        }
+        &.hide-away-body--right {
+            margin-right: $dropdown-shadow-size * 2;
+        }
+    }
+}
 .dropdown {
     @extend .reset-list;
     background-color: $bg-lightest-color;
@@ -29,11 +40,13 @@
 
         &.hide-away-body--left {
             border-bottom-left-radius: 0;
-            box-shadow: -8px -8px 15px 0 $border-color;
+            box-shadow: -$dropdown-shadow-size -$dropdown-shadow-size
+                6px 0 shade($border-color);
         }
         &.hide-away-body--right {
             border-bottom-right-radius: 0;
-            box-shadow: 8px -8px 15px 0 $border-color;
+            box-shadow: $dropdown-shadow-size -$dropdown-shadow-size
+                6px 0 shade($border-color);
         }
     }
     &.hide-away-body--bottom {
@@ -44,11 +57,13 @@
             &:after {
                 transform: translateX(50%);
             }
-            box-shadow: -8px 8px 15px 0 $border-color;
+            box-shadow: -$dropdown-shadow-size $dropdown-shadow-size
+                6px 0 shade($border-color);
             border-top-left-radius: 0;
         }
         &.hide-away-body--right {
-            box-shadow: 8px 8px 15px 0 $border-color;
+            box-shadow: $dropdown-shadow-size $dropdown-shadow-size
+                6px 0 shade($border-color);
             border-top-right-radius: 0;
         }
     }
@@ -156,7 +171,7 @@
     }
 
     %decoration {
-        @extend .small;
+        font-size: 0.9em;
         position: absolute;
         height: $record-item-space * 0.9;
         line-height: $record-item-space * 0.9;

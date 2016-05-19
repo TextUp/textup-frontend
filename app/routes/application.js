@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Slideout from '../mixins/slideout-route';
 import Loading from '../mixins/loading-slider';
+import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Route.extend(Slideout, Loading, {
 
@@ -13,6 +14,9 @@ export default Ember.Route.extend(Slideout, Loading, {
 		this._super(...arguments);
 		this.notifications.setDefaultClearNotification(5000);
 		this.notifications.setDefaultAutoClear(true);
+	},
+	setupController: function() {
+		this._super(...arguments);
 	},
 
 	// Hooks
@@ -31,36 +35,6 @@ export default Ember.Route.extend(Slideout, Loading, {
 
 	actions: {
 
-		doTransitionAfterLogin: function() {
-			const transition = this.get('attemptedTransition'),
-				user = this.get('authManager.authUser');
-
-			console.log("APP ROUTE doTransitionAfterLogin: user is");
-			console.log(user);
-
-			if (transition) {
-				this.set('attemptedTransition', null);
-				// avoid crashing if don't provide enough parameters to transition
-				try {
-					console.log('branch 1');
-					transition.retry();
-				} catch (err) {
-					console.log('branch 2');
-					this.transitionTo('main', user);
-				}
-			} else {
-				console.log('branch 3');
-				this.transitionTo('main', user);
-			}
-		},
-		storeAttemptedTransition: function(transition) {
-			this.set('attemptedTransition', transition);
-		},
-		logout: function() {
-			this.get('authManager').logout();
-			this.transitionTo('index');
-		},
-
 		// Slideout
 		// --------
 
@@ -77,25 +51,44 @@ export default Ember.Route.extend(Slideout, Loading, {
 			this._closeSlideout();
 		},
 
+		// Slideout utilities
+		// ------------------
+
+		clearList: function(models, propName, then) {
+			this._doForOneOrMany(models, (model) => model.get(propName).clear());
+			callIfPresent(then);
+		},
+		revert: function(models, then) {
+			this._doForOneOrMany(models, (model) => model.rollbackAttributes());
+			callIfPresent(then);
+		},
+		persist: function(models, then) {
+			this.get('dataHandler')
+				.persist(models)
+				.then(() => callIfPresent(then));
+		},
+		markForDelete: function(models, then) {
+			this.get('dataHandler').markForDelete(models);
+			callIfPresent(then);
+		},
+
 		// Errors
 		// ------
 
 		error: function(reason, transition) {
-			const dataHandler = this.get('dataHandler');
-			if (reason.status === 0) {
-				this.notifications.error(`Sorry, but we\'re having trouble
-					connecting to the server. This problem is usually the
-					result of a broken Internet connection. You can try
-					refreshing this page.`);
-			} else if (dataHandler.checkForStatus(reason, 401)) {
-				this.set("attemptedTransition", transition);
-				transition.send('logout');
-			} else if (transition.targetName === 'main.index' &&
-				dataHandler.checkForStatus(reason, 404)) {
-				transition.send('logout');
-			} else {
-				console.log("ERROR: " + JSON.stringify(reason));
-			}
+			this.get('authManager').set("attemptedTransition", transition);
+			this.get('dataHandler').handleError(reason);
 		}
-	}
+	},
+
+	// Helpers
+	// -------
+
+	_doForOneOrMany: function(data, doAction) {
+		if (Ember.isArray(data)) {
+			return data.forEach(doAction);
+		} else {
+			return doAction(data);
+		}
+	},
 });

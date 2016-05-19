@@ -21,10 +21,10 @@
         triggerClass='header-toggle'
         allowedTriggerSelectors='.toggle-control'
         bodyClickClose=true}}
-        {{partial 'partials/account-switcher'}}
+        {{partial 'partials/account/switcher'}}
     {{else}}
         <div class="xs-8-row-10 toggle-control">
-            {{partial 'partials/account-display'}}
+            {{partial 'partials/account/display'}}
         </div>
         <div class="xs-2-row-10 header-settings"
             {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
@@ -37,23 +37,25 @@
         {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
         {{#tool-tipster position='right'
             theme='tooltipster-clean'
-            title='Account'
+            title=(concat 'Admin (' stateManager.owner.name ')')
             classNames='btn-expand'}}
             <span class="fa fa-bars"></span>
         {{/tool-tipster}}
     </li>
-    {{#link-to 'admin.pending' tagName='li' classNames='menu-item'}}
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title=(concat 'Pending (' '2' ')')
-            classNames='btn-expand display-l'}}
-            <span class="fa fa-clock-o"></span>
-        {{/tool-tipster}}
-        <div class="btn-expand display-xs display-s display-m">
-            <span class="text-bold">Pending</span>
-            <span class="badge dark">2</span>
-        </div>
-    {{/link-to}}
+    {{#if numPending}}
+        {{#link-to 'admin.pending' tagName='li' classNames='menu-item'}}
+            {{#tool-tipster position='right'
+                theme='tooltipster-clean'
+                title=(concat 'Pending (' numPending ')')
+                classNames='btn-expand display-l'}}
+                <span class="fa fa-clock-o"></span>
+            {{/tool-tipster}}
+            <div class="btn-expand display-xs display-s display-m">
+                <span class="text-bold">Pending</span>
+                <span class="badge dark">{{numPending}}</span>
+            </div>
+        {{/link-to}}
+    {{/if}}
     <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
         {{action 'toggleSlideout' 'slideouts/new-staff' 'admin'}}>
@@ -92,14 +94,19 @@
             <span class="fa fa-plus"></span>
         </button >
     </li>
-    {{#link-to 'admin.people' tagName='li'
-        classNames='menu-item display-xs display-s display-m'}}
+    <li class="menu-item display-xs display-s display-m
+        {{if (and (not stateManager.viewingTeam) (eq filter 'active')) 'active'}}"
+        {{action 'changeFilter' 'active'}}>
         <span class="text-bold">Active</span>
-    {{/link-to}}
-    <li class='menu-item display-xs display-s display-m'>
+    </li>
+    <li class='menu-item display-xs display-s display-m
+        {{if (and (not stateManager.viewingTeam) (eq filter 'admins')) 'active'}}'
+        {{action 'changeFilter' 'admins'}}>
         <span class="text-bold">Admins</span>
     </li>
-    <li class='menu-item display-xs display-s display-m'>
+    <li class='menu-item display-xs display-s display-m
+        {{if (and (not stateManager.viewingTeam) (eq filter 'blocked')) 'active'}}'
+        {{action 'changeFilter' 'blocked'}}>
         <span class="text-bold">Blocked</span>
     </li>
 
@@ -117,7 +124,7 @@
             classNames='menu-item display-xs display-s display-m'}}
             <span class="text-bold">{{team.name}}</span>
             <span class="badge dark">{{team.numMembers}}</span>
-            <span class="indicator" style="background-color:{{team.color}};"></span>
+            <span class="indicator" style="background-color:{{team.hexColor}};"></span>
         {{/link-to}}
     {{else}}
         <li class='pad-t text-bold display-xs display-s display-m'>No teams yet.</li>

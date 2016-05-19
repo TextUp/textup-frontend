@@ -37,12 +37,34 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 	serialize: function(snapshot) {
 		const json = this._super(...arguments),
 			changed = snapshot.changedAttributes(),
-			numChange = Ember.get(changed, 'numbers');
+			numChange = Ember.get(changed, 'numbers'),
+			actions = snapshot.record.get('actions');
 		if (numChange) {
 			json.doNumberActions = this._buildNumberActions(numChange[0] || [],
 				numChange[1]);
 		}
+		if (actions) {
+			json.doShareActions = actions.map(this._convertToShareAction);
+			actions.clear();
+		}
 		return json;
+	},
+
+	// Sharing
+	// -------
+
+	_convertToShareAction: function(action) {
+		if (!action) {
+			return action;
+		}
+		if (action.action && action.action.toUpperCase() !== 'STOP') {
+			action.permission = action.action;
+			action.action = 'MERGE';
+		}
+		action.id = action.bucketId;
+		delete action.bucketId;
+		delete action.itemId;
+		return action;
 	},
 
 	// Numbers

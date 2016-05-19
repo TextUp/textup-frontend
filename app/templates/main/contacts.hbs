@@ -4,37 +4,8 @@
             clickOutToClose=false
             bodyClickClose=false
             animation='slide'
-            allowedTriggerSelectors='.pull-right' as |hideAway|}}
-            <div class="input-group text-center">
-                <div class="input-group-addon">
-                    <button class="btn btn-plain btn-danger" type='button'
-                    onclick={{hideAway.actions.close}}>
-                        <span class="fa fa-trash"></span>
-                    </button>
-                </div>
-                <div class="input-group-addon">
-                    <button class="btn btn-plain" type='button'
-                    onclick={{hideAway.actions.close}}>
-                        <span class="fa fa-undo"></span>
-                    </button>
-                </div>
-                <div class="input-group-addon">
-                    <button class="btn btn-plain" type='button'
-                    onclick={{hideAway.actions.close}}>
-                        <span class="fa fa-save"></span>
-                    </button>
-                </div>
-            </div>
-            <div class="pad-all bg-color border-b">
-                <div class="form-element">
-                    <label for="Your Name">Tag Name</label>
-                    {{input value=tag.name type="text" placeholder="Tag Name" class="form-control"}}
-                </div>
-                <div class="form-element">
-                    <label for="Your Name">Tag Color</label>
-                    {{color-control color=tag.hexColor}}
-                </div>
-            </div>
+            allowedTriggerSelectors='.pull-right' as |dropdown|}}
+            {{partial 'partials/tag/edit-with-controls'}}
         {{else}}
             <div class="section-header">
                 <span class="display-l">
@@ -45,16 +16,20 @@
                     <h4 class="text-ellipsis">
                         {{tag.name}}
                     </h4>
-                    <p>
-                        {{numContacts}}
-                        {{if (eq numContacts 1) 'contact' 'contacts'}}
-                    </p>
+                    {{#if (not tag.isDeleted)}}
+                        <p>
+                            {{numContacts}}
+                            {{pluralize 'contact' numContacts}}
+                        </p>
+                    {{/if}}
                 </div>
-                <div class="pull-right">
-                    <button class="btn btn-plain" type='button'>
-                        <span class="fa fa-pencil"></span>
-                    </button>
-                </div>
+                {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
+                    <div class="pull-right">
+                        <button class="btn btn-plain" type='button'>
+                            <span class="fa fa-pencil"></span>
+                        </button>
+                    </div>
+                {{/if}}
             </div>
         {{/hide-away}}
     {{else}}
@@ -65,25 +40,25 @@
             allowedTriggerSelectors='.pull-right' as |hideAway|}}
             <ul class="reset-list">
                 <li class="menu-item {{if (eq filter 'all') 'active'}}"
-                    onclick={{action (mut filter) 'all'}}>
+                    {{action 'changeFilter' 'all'}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">All</p>
                     </div>
                 </li>
                 <li class="menu-item {{if (eq filter 'unread') 'active'}}"
-                    onclick={{action (mut filter) 'unread'}}>
+                    {{action 'changeFilter' 'unread'}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Unread</p>
                     </div>
                 </li>
                 <li class="menu-item {{if (eq filter 'archived') 'active'}}"
-                    onclick={{action (mut filter) 'archived'}}>
+                    {{action 'changeFilter' 'archived'}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Archived</p>
                     </div>
                 </li>
                 <li class="menu-item {{if (eq filter 'blocked') 'active'}}"
-                    onclick={{action (mut filter) 'blocked'}}>
+                    {{action 'changeFilter' 'blocked'}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Blocked</p>
                     </div>
@@ -111,7 +86,7 @@
         direction='down'
         data=contacts
         total=numContacts
-        doLoad=(action 'loadMore') as |contact index|}}
+        doLoad=(action 'loadMore') as |contact|}}
         <div class="result-item">
             <div class="row">
                 <div class="contacts-control {{if contact.isSelected 'selected'}}"
@@ -124,21 +99,24 @@
                         contact.id
                     classNames="contacts-info {{if contact.isUnread 'unread'}}"
                     tagName="div"}}
-                    <p class="emphasize">{{phone-number contact.identifier}}</p>
-                    <p>{{moment-from-now contact.lastRecordActivity interval=1000}}</p>
+                    <p class="emphasize">
+                        <span class="margin-r-half">
+                            {{phone-number contact.identifier}}
+                        </span>
+                        <span class="clear-badge no-space">
+                            {{partial 'partials/contact/indicators'}}
+                        </span>
+                    </p>
+                    <p>
+                        {{moment-from-now contact.lastRecordActivity interval=1000}}
+                    </p>
                 {{/link-to}}
             </div>
-            {{#if (or contact.isShared contact.tags)}}
+            {{#if (and (not contact.isShared) contact.tags)}}
                 <div class="contacts-tags">
-                    {{#if contact.isShared}}
-                        <span class="badge">
-                            Shared by <span class="text-darken">{{contact.sharedBy}}</span>
-                        </span>
-                    {{else}}
-                        {{#each contact.tags as |tag|}}
-                            {{preview-badge color=tag.hexColor content=tag.name}}
-                        {{/each}}
-                    {{/if}}
+                    {{#each contact.tags as |tag|}}
+                        {{preview-badge color=tag.hexColor content=tag.name}}
+                    {{/each}}
                 </div>
             {{/if}}
         </div>

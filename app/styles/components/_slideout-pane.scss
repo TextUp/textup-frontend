@@ -1,5 +1,15 @@
 // styles also overriden in _structure.scss
 
+.slideout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    z-index: $slideout-z-index - 1;
+}
+
 .slideout-pane {
     @extend %liquid-fire-full-height;
     position: absolute;

@@ -4,7 +4,7 @@ import GroupByBucket from './group-by-bucket';
 export default GroupByBucket.extend({
 	layoutName: 'components/multi-toggle/group-by-bucket',
 
-	clearActions: function(bucket) {
+	clearActions: function(bucket, determineChanges = true) {
 		const items = this.get('itemList'),
 			actionProperty = this.get('actionProperty'),
 			bucketIdProp = this.get('bucketIdentityProperty'),
@@ -21,9 +21,12 @@ export default GroupByBucket.extend({
 			}
 			Ember.set(item, actionProperty, actions);
 		});
+		if (determineChanges) {
+			this._determineAnyChanges();
+		}
 	},
 	doActions: function(bucket, command) {
-		this.clearActions(bucket);
+		this.clearActions(bucket, false);
 		const items = this.get('itemList'),
 			actionProperty = this.get('actionProperty');
 		items.forEach(function(item) {
@@ -31,5 +34,15 @@ export default GroupByBucket.extend({
 			actions.pushObject(this._makeAction(bucket, item, command));
 			Ember.set(item, actionProperty, actions);
 		}.bind(this));
-	}
+		this.set('anyChanges', true);
+	},
+	_determineAnyChanges: function() {
+		const prop = this.get('actionProperty'),
+			anyChanges = this.get('itemList').any((item) => {
+				const actions = Ember.get(item, prop);
+				return actions && actions.length > 0;
+			});
+		this.set('anyChanges', anyChanges);
+		return anyChanges;
+	},
 });

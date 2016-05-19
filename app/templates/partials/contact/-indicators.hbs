@@ -1,0 +1,33 @@
+{{#if contact.isShared}}
+    {{#if contact.isSharedDelegate}}
+        {{#tool-tipster tagName='span'
+        theme='tooltipster-clean'
+            title=(concat 'Full permissions from ' contact.sharedBy)}}
+            <span class="fa-stack text-smaller">
+                <i class="fa fa-square fa-stack-2x"></i>
+                <i class="fa fa-share fa-flip-horizontal fa-stack-1x fa-inverse"></i>
+            </span>
+        {{/tool-tipster}}
+    {{else}}
+        {{#tool-tipster tagName='span'
+        theme='tooltipster-clean'
+            title=(concat 'View only from ' contact.sharedBy)}}
+            <span class="fa-stack text-smaller">
+                <i class="fa fa-square-o fa-stack-2x"></i>
+                <i class="fa fa-share fa-flip-horizontal fa-stack-1x"></i>
+            </span>
+        {{/tool-tipster}}
+    {{/if}}
+{{else if contact.sharedWith}}
+    {{#tool-tipster class='text-lighten'
+        tagName='span'
+        theme='tooltipster-clean'
+        title=(concat 'Shared with '
+            contact.sharedWith.length ' '
+            (pluralize 'other' contact.sharedWith.length))}}
+        <span class="fa-stack text-smaller">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa fa-share fa-stack-1x fa-inverse"></i>
+        </span>
+    {{/tool-tipster}}
+{{/if}}

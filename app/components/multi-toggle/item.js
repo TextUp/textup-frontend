@@ -28,17 +28,18 @@ export default Ember.Component.extend({
 			complement = this.get('complement');
 		return Ember.String.htmlSafe(`background-color: ${color}; color:${complement}`);
 	}),
-	publicAPI: Ember.computed(function() {
-		return {
-			isSelected: this.get('isSelected'),
-			color: this.get('color'),
-			complement: this.get('complement'),
-			actions: {
-				select: this.select.bind(this),
-				deselect: this.deselect.bind(this),
-			}
-		};
-	}),
+	publicAPI: Ember.computed('isSelected', 'color', 'complement',
+		function() {
+			return {
+				isSelected: this.get('isSelected'),
+				color: this.get('color'),
+				complement: this.get('complement'),
+				actions: {
+					select: this.select.bind(this),
+					deselect: this.deselect.bind(this),
+				}
+			};
+		}),
 
 	// Events
 	// ------
@@ -52,18 +53,12 @@ export default Ember.Component.extend({
 	// -------
 
 	select: function(skipNotify = false) {
-		this.setProperties({
-			isSelected: true,
-			'publicAPI.isSelected': true
-		});
+		this.set('isSelected', true);
 		if (!skipNotify) {
 			callIfPresent(this.get('onSelect'));
 		}
 	},
 	deselect: function() {
-		this.setProperties({
-			isSelected: false,
-			'publicAPI.isSelected': false
-		});
+		this.set('isSelected', false);
 	}
 });

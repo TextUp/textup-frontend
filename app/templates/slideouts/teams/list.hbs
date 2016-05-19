@@ -1,23 +1,25 @@
-{{#slideout-pane title=(if teams 'Team' 'New Team')
+{{#slideout-pane title=(if model.teams 'Team' 'New Team')
     direction='left'
-    closeActionName='closeSlideout'
+    doClose=(route-action 'closeAllSlideouts')
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
-        startOpen=(if teams false true)
-        tabindex='-1'
+        startOpen=(if model.teams false true)
+        tabindex=false
         hideTriggerOnOpen=true as |hideAway|}}
         <div class="pad-t">
-            {{partial 'partials/create-edit-team'}}
+            {{partial 'partials/team/create-edit'}}
         </div>
         <div class="horizontal-items text-center margin-t-double margin-b">
-            <div class="clear-badge no-space">
-                <button class="btn" type='button'
-                    onclick={{hideAway.actions.close}}>
-                    Cancel
-                </button>
-            </div>
+            {{#if model.teams}}
+                <div class="clear-badge no-space">
+                    <button class="btn" type='button'
+                        onclick={{hideAway.actions.close}}>
+                        Cancel
+                    </button>
+                </div>
+            {{/if}}
             <div class="clear-badge no-space">
                 <button class="btn btn-default" type='button'
                     onclick={{hideAway.actions.close}}>
@@ -27,12 +29,15 @@
         </div>
     {{else}}
          <ul class="result-list">
-            {{#each teams as |team|}}
+            {{#each model.teams as |team|}}
                 <li class="result-item">
-                    <div class="row pad-all clickable">
-                        {{#link-to 'admin.team' tagName='div' classNames='control-text'}}
-                            <div class="horizontal-items">
-                                {{preview-badge color=team.color
+                    <div class="row">
+                        {{#link-to 'admin.team' team
+                            tagName='div'
+                            classNames='control-text'
+                            tabindex='0'}}
+                            <div class="horizontal-items pad-all clickable">
+                                {{preview-badge color=team.hexColor
                                     onlyShowFull=true
                                     content=team.name}}
                                 <span class="badge">

@@ -11,7 +11,7 @@
 		    	value=_cleanedAndSplit.first
 		    	focus-out=(action 'handleChange')
 		    	key-up=(action 'validateInputAndAdjustFocus' 'first')
-		    	disabled=(not allowChanges)}}
+		    	disabled=(if (not allowChanges) 'disabled')}}
 		    <span class="input-group-text-display">)</span>
 		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
 		    	tabindex='-1'
@@ -20,7 +20,7 @@
 		    	value=_cleanedAndSplit.second
 		    	focus-out=(action 'handleChange')
 		    	key-up=(action 'validateInputAndAdjustFocus' 'second')
-		    	disabled=(not allowChanges)}}
+		    	disabled=(if (not allowChanges) 'disabled')}}
 		    <span class="input-group-text-display">-</span>
 		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
 		    	tabindex='-1'
@@ -30,10 +30,10 @@
 		    	key-up=(action 'handleLastInput')
 		    	focus-out=(action 'handleChange')
 		    	enter=(action 'lastInputDidEnter')
-		    	disabled=(not allowChanges)}}
+		    	disabled=(if (not allowChanges) 'disabled')}}
 		</span>
 	</span>
-	{{#if (or showControl (or onClick onValidate))}}
+	{{#if (and (not disabled) (or showControl (or onClick onValidate)))}}
 		<span class="input-group-addon {{controlClass}}">
 			<button class='btn {{controlButtonClass}}' type='button'
 				disabled={{or (not _isValid) (not someNumberPresent)}}

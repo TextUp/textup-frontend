@@ -25,6 +25,7 @@ export default Component.extend({
 	autoOpen: defaultIfAbsent(true),
 	startOpen: defaultIfAbsent(false),
 	clickOutToClose: defaultIfAbsent(true),
+	focusOutClose: defaultIfAbsent(false),
 	bodyClickClose: defaultIfAbsent(false),
 	bodyFocusOnOpenSelector: defaultIfAbsent(''),
 	allowedTriggerSelectors: defaultIfAbsent(''),
@@ -203,7 +204,8 @@ export default Component.extend({
 		}
 		this.set('_bodyHasListeners', true);
 
-		const throttle = this.get('throttleThreshold'),
+		const $el = this.$(),
+			throttle = this.get('throttleThreshold'),
 			scrollSelector = this.get('scrollSelector'),
 			doReposition = function() {
 				Ember.run.throttle(this, this.positionBody, $body, true, throttle, true);
@@ -214,6 +216,20 @@ export default Component.extend({
 				this.close(event, true);
 			}.bind(this));
 		}
+
+		$body.on(`focusout.${this.elementId}`, function(event) {
+			if (!this.get('focusOutClose')) {
+				return;
+			}
+			const $related = event.relatedTarget && Ember.$(event.relatedTarget);
+			// only trigger close when the related target IS NOT
+			// within this component. This condition is fulfilled
+			// when the focus is actually leaving this element altogether
+			if (!$related || !$related.closest($el).length) {
+				this.close(event, true);
+			}
+		}.bind(this));
+
 		$(document).on(`click.${this.elementId} touchend.${this.elementId}`,
 			this.checkAndDoCloseOnClick.bind(this, $body));
 		// Reposition on resize, scroll and orientation change
@@ -279,21 +295,16 @@ export default Component.extend({
 		}
 	},
 	open: function(event, skipFocus = false, callback = undefined) {
-		if (this.get('disabled') || this.get('publicAPI.isOpen')) {
+		if (this.get('disabled') || this.get('publicAPI.isOpen') ||
+			(event && this._shouldStopEvent(event))) {
 			return;
 		}
-		callIfPresent(this.get('onOpen'), event);
-		if (event && this._shouldStopEvent(event)) {
-			return;
-		}
+
 		this.doOpen(skipFocus, callback);
 	},
 	close: function(event, skipFocus = false, callback = undefined) {
-		if (this.get('disabled') || !this.get('publicAPI.isOpen')) {
-			return;
-		}
-		callIfPresent(this.get('onClose'), event);
-		if (event && this._shouldStopEvent(event)) {
+		if (this.get('disabled') || !this.get('publicAPI.isOpen') ||
+			(event && this._shouldStopEvent(event))) {
 			return;
 		}
 		this.doClose(skipFocus, callback);
@@ -309,6 +320,7 @@ export default Component.extend({
 			_isOpen: true
 		});
 		const openTimer = run.scheduleOnce('afterRender', this, function() {
+			callIfPresent(this.get('onOpen'));
 			// need to wait until after render for body to appear
 			if (this.get('hideTriggerOnOpen')) {
 				this.get('$trigger').hide();
@@ -318,11 +330,11 @@ export default Component.extend({
 			this.positionBody($body);
 			$body.css('visibility', 'visible').hide();
 			if (this.get('animation') === 'fade') {
-				$body.fadeIn(after);
+				$body.fadeIn().promise().done(after);
 			} else if (this.get('animation') === 'slide') {
-				$body.slideDown(after);
+				$body.slideDown().promise().done(after);
 			} else {
-				$body.show(0, '', after);
+				$body.show(0, '').promise().done(after);
 			}
 		});
 		this.set('_openTimer', openTimer);
@@ -367,24 +379,25 @@ export default Component.extend({
 		if (Ember.isNone($body[0])) {
 			return;
 		}
+		callIfPresent(this.get('onClose'));
 		if (this.get('hideTriggerOnOpen')) {
 			if (animation === 'fade') {
 				$body.hide(0, '');
-				$trigger.fadeIn(after);
+				$trigger.fadeIn().promise().done(after);
 			} else if (animation === 'slide') {
 				$body.slideUp(function() {
-					$trigger.slideDown(after);
+					$trigger.slideDown().promise().done(after);
 				});
 			} else {
 				$body.hide(0, '');
-				$trigger.show(0, '', after);
+				$trigger.show(0, '').promise().done(after);
 			}
 		} else if (animation === 'slide') {
-			$body.slideUp(after);
+			$body.slideUp().promise().done(after);
 		} else if (animation === 'fade') {
-			$body.fadeOut(after);
+			$body.fadeOut().promise().done(after);
 		} else {
-			$body.hide(0, '', after);
+			$body.hide(0, '').promise().done(after);
 		}
 	},
 	_afterClose: function($body, skipFocus, callback) {
@@ -392,7 +405,6 @@ export default Component.extend({
 			return;
 		}
 		this.set('_isOpen', false);
-
 		const closeTimer = run.scheduleOnce('afterRender', this, function() {
 			this.set('publicAPI.isOpen', false);
 			callIfPresent(this.get('onClosed'));

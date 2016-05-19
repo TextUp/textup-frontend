@@ -39,7 +39,7 @@
                     title=(concat sharedWithMeSelected.length ' ' 'shared with me selected')
                     classNames='btn-expand'}}
                     <span class='text-bold'>{{sharedWithMeSelected.length}}</span>
-                    <span class="fa fa-share"></span>
+                    <span class="fa fa-share fa-flip-horizontal"></span>
                 {{/tool-tipster}}
             </span>
 		</div>
@@ -48,7 +48,7 @@
                 <span class='clear-badge no-space display-xs display-m'>
                     {{#hide-away/dropdown}}
                         <li tabindex='0' class='dropdown-item'
-                            {{action 'openSlideout' 'slideouts/compose' 'main' selected}}>
+                            {{action 'composeWithRecipients' selected}}>
                             Compose
                         </li>
                         <li tabindex='0' class='dropdown-item'
@@ -87,7 +87,7 @@
                 <span class="display-s clear-badge no-space">
                     {{#hide-away/dropdown}}
                         <li tabindex='0' class='dropdown-item'
-                            {{action 'openSlideout' 'slideouts/compose' 'main' selected}}>
+                            {{action 'composeWithRecipients' selected}}>
                             Compose
                         </li>
                         <li tabindex='0' class='dropdown-item'
@@ -107,7 +107,7 @@
                 </span>
                 <span class="display-l clear-badge no-space">
                     <button class="btn btn-default"
-                        {{action 'openSlideout' 'slideouts/compose' 'main' selected}}>
+                        {{action 'composeWithRecipients' selected}}>
                         Compose
                     </button>
                 </span>
@@ -126,7 +126,7 @@
             {{else if selectedCanMessage}}
                 <span class="clear-badge no-space">
                     <button class="btn btn-default"
-                        {{action 'openSlideout' 'slideouts/compose' 'main' selected}}>
+                        {{action 'composeWithRecipients' selected}}>
                         Compose
                     </button>
                 </span>
@@ -143,15 +143,10 @@
 		<ul class="tile-list">
 			{{#each selected as |contact|}}
 				<li class='m-row-2 l-row-3'>
-					<div class="tile-list-item">
-						{{#if contact.isShared}}
-							<span class="pull-left">
-                                {{#tool-tipster theme='tooltipster-clean'
-                                    title=(concat 'Shared by ' contact.sharedBy)}}
-                                    <span class="fa fa-share"></span>
-                                {{/tool-tipster}}
-                            </span>
-						{{/if}}
+					<div class="tile-list-item text-center">
+                        <span class="pull-left">
+                            {{partial 'partials/contact/indicators'}}
+                        </span>
 						{{phone-number contact.identifier}}
 						<span class="pull-right">
                             <button class="btn btn-plain" type='button'

@@ -6,22 +6,24 @@ export default Ember.Route.extend({
 			refreshModel: true
 		},
 	},
-	setupController: function(controller) {
+
+	setupController: function() {
 		this._super(...arguments);
 		this._resetController();
 	},
 
 	actions: {
 		didTransition: function() {
-			const currentPath = this.controllerFor('application').get('currentPath');
-			// only reset if not within main.contacts
-			if (!(/main.contacts/.test(currentPath))) {
+			if (!this.get('stateManager.viewingContacts') ||
+				this.get('_changedFilter')) {
 				this._resetController();
 			}
+			this.set('_changedFilter', false);
 			// return true to allow bubbling to close slideout handler
 			return true;
 		},
 		changeFilter: function(filter) {
+			this.set('_changedFilter', true);
 			this.transitionTo({
 				queryParams: {
 					filter: filter

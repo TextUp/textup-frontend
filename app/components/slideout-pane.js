@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import callIfPresent from '../utils/call-if-present';
 import defaultIfAbsent from '../utils/default-if-absent';
+import Ember from 'ember';
 
 export default Ember.Component.extend({
 	title: defaultIfAbsent(''),
-	closeActionName: defaultIfAbsent(null),
-	closeActionParameters: defaultIfAbsent([]),
 	direction: defaultIfAbsent('left'),
 	ignoreCloseSelectors: defaultIfAbsent(''),
 	autoClose: defaultIfAbsent(true),
@@ -12,6 +11,9 @@ export default Ember.Component.extend({
 	focusSelector: defaultIfAbsent('.slideout-header'),
 	// must explicitly include default header if has inverse
 	includeDefaultHeader: defaultIfAbsent(false),
+
+	onOpen: null,
+	doClose: null,
 
 	classNames: 'slideout-pane',
 	classNameBindings: ['directionClass'],
@@ -45,6 +47,14 @@ export default Ember.Component.extend({
 			Ember.run.scheduleOnce('afterRender', this, function() {
 				// ignore on first time to allow for click to open
 				this.set('firstTime', true);
+				const $el = this.$(),
+					$appRoot = this.get('$appRoot'),
+					$overlay = this._build$Overlay();
+				// overlay
+				this.set('$overlay', $overlay);
+				$el.after($overlay);
+				// events
+				callIfPresent(this.get('onOpen'), this.get('publicAPI'));
 				Ember.$(document).on(`click.${this.elementId}`, function(event) {
 					if (this.get('firstTime')) {
 						this.set('firstTime', false);
@@ -52,11 +62,13 @@ export default Ember.Component.extend({
 					}
 					const ignoreCloseSelectors = this.get('ignoreCloseSelectors'),
 						$target = Ember.$(event.target),
-						targetStillInDOM = this.get('$appRoot').find($target).length > 0;
+						targetStillInDOM = $appRoot.find($target).length > 0;
 					if (!targetStillInDOM) {
 						return;
 					}
-					if (!$target.closest(`#${this.elementId}`).length &&
+					if ($target.is($overlay)) {
+						this._close();
+					} else if (!$target.closest(`#${this.elementId}`).length &&
 						!$target.closest(ignoreCloseSelectors).length) {
 						this._close();
 					}
@@ -74,13 +86,18 @@ export default Ember.Component.extend({
 		}, this.get('focusDelay'));
 	},
 	willDestroyElement: function() {
+		this._super(...arguments);
 		Ember.$(document).off(`.${this.elementId}`);
+		const $overlay = this.get('$overlay');
+		if ($overlay) {
+			$overlay.remove();
+		}
+
 	},
 
 	actions: {
 		close: function() {
 			this._close();
-			return false;
 		}
 	},
 
@@ -88,16 +105,11 @@ export default Ember.Component.extend({
 	// ---------------
 
 	_close: function() {
-		this.firstTime = true;
-		const params = this.get('closeActionParameters');
-		if (Ember.isPresent(params)) {
-			if (Ember.isArray(params)) {
-				this.sendAction('closeActionName', ...params);
-			} else {
-				this.sendAction('closeActionName', params);
-			}
-		} else {
-			this.sendAction('closeActionName');
-		}
-	}
+		this.set('firstTime', true);
+		callIfPresent(this.get('doClose'), this.get('publicAPI'));
+	},
+	_build$Overlay: function() {
+		const directionClass = this.get('directionClass');
+		return Ember.$(`<div class='slideout-overlay ${directionClass}'></div>`);
+	},
 });

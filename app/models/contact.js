@@ -1,23 +1,87 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import {
+	validator,
+	buildValidations
+} from 'ember-cp-validations';
+import {
+	validate as validateNumber
+} from '../utils/phone-number';
 
 const {
 	notEmpty,
-	equal: eq,
-	alias,
-	sort
-} = Ember.computed;
+	equal: eq
+} = Ember.computed,
+	Validations = buildValidations({
+		name: {
+			description: 'Name',
+			validators: [
+				validator('presence', true)
+			]
+		},
+		note: {
+			description: 'Note',
+			validators: [
+				validator('length', {
+					max: 1000
+				}),
+			]
+		},
+		status: validator('inclusion', { in : [
+				'UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED'
+			]
+		}),
+		numbers: {
+			description: 'Numbers',
+			validators: [
+				validator('collection', {
+					collection: true,
+					dependentKeys: ['numbers.@each.number'],
+					message: 'All phone numbers must be valid, with area code',
+					for: 'every',
+					test: function(numObj) {
+						return validateNumber(Ember.get(numObj, 'number'));
+					}
+				}),
+				validator('length', {
+					min: 1,
+					message: 'Contact must have at least {min} phone number.'
+				}),
+			]
+		}
+	});
 
-export default DS.Model.extend({
+export default DS.Model.extend(Validations, {
+	init: function() {
+		this._super(...arguments);
+		this.set('actions', []);
+	},
+	becameInvalid: function() {
+		console.log('contact became invalid!');
+	},
+	becameError: function() {
+		console.log('contact became Error!');
+	},
+	didDelete: function() {
+		console.log('contact was deleted!');
+	},
+
+	// Attributes
+	// ----------
+
 	lastRecordActivity: DS.attr('date'),
-	name: DS.attr('string'),
+	name: DS.attr('string', {
+		defaultValue: ''
+	}),
 	note: DS.attr('string', {
 		defaultValue: ''
 	}),
 	status: DS.attr('string', {
 		defaultValue: 'ACTIVE'
 	}),
-	numbers: DS.attr('collection'),
+	numbers: DS.attr('collection', {
+		defaultValue: () => []
+	}),
 
 	records: DS.hasMany('record'),
 
@@ -40,10 +104,12 @@ export default DS.Model.extend({
 
 	type: 'contact', // for compose menu
 	isSelected: false,
+	actions: null,
 
 	// Computed properties
 	// -------------------
 
+	hasManualChanges: notEmpty('actions'),
 	identifier: Ember.computed('name', 'numbers', function() {
 		const name = this.get('name'),
 			firstNum = this.get('numbers').objectAt(0);
@@ -53,6 +119,12 @@ export default DS.Model.extend({
 
 	isSharedDelegate: eq('permission', 'DELEGATE'),
 	isSharedView: eq('permission', 'VIEW'),
+
+	allowEdits: Ember.computed('isShared', 'isSharedDelegate', function() {
+		const shared = this.get('isShared'),
+			delegate = this.get('isSharedDelegate');
+		return !shared || (shared && delegate);
+	}),
 
 	isArchived: eq('status', 'ARCHIVED'),
 	isBlocked: eq('status', 'BLOCKED'),

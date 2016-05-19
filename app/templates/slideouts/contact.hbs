@@ -1,7 +1,10 @@
 {{#slideout-pane title=(if contact (phone-number contact.identifier) 'New Contact')
     direction=(if contact 'right' 'left')
-    closeActionName=(if contact 'revertAndClose' 'closeSlideout')
-    closeActionParameters=contact
+    onOpen=(if (not contact) (route-action 'initializeNewContact'))
+    doClose=(route-action 'revert'
+        (if contact contact newContact)
+        (route-action 'closeAllSlideouts'
+            (route-action 'cleanNewContact')))
     ignoreCloseSelectors='.header-slideout'
     focusSelector='.start-focus' as |slideout|}}
     <form class="pad-t pad-l pad-r">
@@ -9,10 +12,17 @@
             <label for="Name">Name</label>
             {{#if contact}}
                 {{input value=contact.name
+                    validateObj=contact
+                    validateField='name'
+                    validate='bottom'
+                    readonly=(if (not contact.allowEdits) 'readonly')
                     type="text" placeholder="Name" class="start-focus form-control"
                     autocorrect="off" autocapitalize="off"}}
             {{else}}
                 {{input value=newContact.name
+                    validateObj=newContact
+                    validateField='name'
+                    validate='bottom'
                     type="text" placeholder="Name" class="start-focus form-control"
                     autocorrect="off" autocapitalize="off"}}
             {{/if}}
@@ -20,19 +30,41 @@
         <div class="form-element">
             <label for="Note">Note</label>
             {{#if contact}}
-                {{textarea rows="3" class="form-control" maxlength="1000"
+                {{textarea rows="3"
+                    readonly=(if (not contact.allowEdits) 'readonly')
+                    autoresize=true
+                    remaining='bottom'
+                    class="form-control"
+                    maxlength="1000"
+                    validateObj=contact
+                    validateField='note'
+                    validate='bottom'
                     value=contact.note}}
             {{else}}
-                {{textarea rows="3" class="form-control" maxlength="1000"
+                {{textarea rows="3"
+                    autoresize=true
+                    remaining='bottom'
+                    class="form-control"
+                    maxlength="1000"
+                    validateObj=newContact
+                    validateField='note'
+                    validate='bottom'
                     value=newContact.note}}
             {{/if}}
         </div>
         <div class="form-element">
             <label for="Note">Numbers</label>
             {{#if contact}}
-                {{sortable-group/numbers numbers=contact.numbers}}
+                {{sortable-group/numbers numbers=contact.numbers
+                    readonly=(not contact.allowEdits)
+                    validateObj=contact
+                    validateField='numbers'
+                    validate='bottom'}}
             {{else}}
-                {{sortable-group/numbers numbers=newContact.numbers}}
+                {{sortable-group/numbers numbers=newContact.numbers
+                    validateObj=newContact
+                    validateField='numbers'
+                    validate='bottom'}}
             {{/if}}
         </div>
     </form>
@@ -45,13 +77,18 @@
         </div>
         <div class="clear-badge no-space">
             {{#if contact}}
-                <button class="btn btn-default" type='button'
-                    {{action 'closeIfSuccess' contact}}>
-                    Update
-                </button>
+                {{#if contact.allowEdits}}
+                    <button class="btn btn-default" type='button'
+                        disabled={{not (v-get contact 'isValid')}}
+                        {{action 'persist' contact (route-action 'closeAllSlideouts')}}>
+                        Update
+                    </button>
+                {{/if}}
             {{else}}
                 <button class="btn btn-default" type='button'
-                    {{action 'createContact' newContact}}>
+                    disabled={{not (v-get newContact 'isValid')}}
+                    {{action 'createContact' newContact
+                        (route-action 'closeAllSlideouts')}}>
                     Create
                 </button>
             {{/if}}

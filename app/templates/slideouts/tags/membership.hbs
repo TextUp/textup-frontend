@@ -2,23 +2,31 @@
         (concat 'Tags (' selected.length ' selected)')
         (concat contact.name ' Tags'))
     direction='right'
-    closeActionName='closeSlideout'
+    doClose=(route-action 'clearList' stateManager.owner.tags 'actions'
+        (route-action 'closeAllSlideouts'))
     ignoreCloseSelectors='.header-slideout' as |slideout|}}
-    <div class="input-group">
-        <div class="input-group-addon">
-            <button class="btn btn-span" type='button'>
-                Cancel
-            </button>
+    {{#if tagsHaveActions}}
+        <div class="horizontal-items text-center pad-all bg-color border-b">
+            <div class="clear-badge no-space">
+                <button class="btn" type='button'
+                    onclick={{slideout.actions.close}}>
+                    Cancel
+                </button>
+            </div>
+            <div class="clear-badge no-space">
+                <button class="btn btn-default" type='button'
+                    {{action 'updateTagMemberships' stateManager.owner.tags
+                        (if selected selected contact)
+                        (route-action 'closeAllSlideouts')}}>
+                    Update
+                </button>
+            </div>
         </div>
-        <div class="input-group-addon">
-            <button class="btn btn-default btn-span" type='button'>
-                Update
-            </button>
-        </div>
-    </div>
-    {{#multi-toggle/group-by-bucket itemBucketProperty='tags'
+    {{/if}}
+    {{#multi-toggle/group-by-bucket anyChanges=(mut tagsHaveActions)
+        itemBucketProperty='tags'
         items=(if selected selected contact)
-        buckets=mainModel.tags as |tag|}}
+        buckets=stateManager.owner.tags as |tag|}}
             {{preview-badge color=tag.hexColor onlyShowFull=true content=tag.name}}
     {{else}}
         <li class="no-results">No tags yet.</li>
