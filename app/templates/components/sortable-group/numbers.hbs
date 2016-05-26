@@ -29,7 +29,7 @@
         clickOutToClose=false
         animation='fade'
         startOpen=(if numbers false true)
-        onClose=(action 'clearNew')
+        onClose=(action (mut newNumber) '')
         hideTriggerOnOpen=true as |hideAway|}}
         <div class='input-group'>
             {{#if hasNumbers}}

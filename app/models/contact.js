@@ -56,14 +56,10 @@ export default DS.Model.extend(Validations, {
 		this._super(...arguments);
 		this.set('actions', []);
 	},
-	becameInvalid: function() {
-		console.log('contact became invalid!');
-	},
-	becameError: function() {
-		console.log('contact became Error!');
-	},
-	didDelete: function() {
-		console.log('contact was deleted!');
+	rollbackAttributes: function() {
+		this._super(...arguments);
+		this.get('actions').clear();
+		this.set('isSelected', false);
 	},
 
 	// Attributes

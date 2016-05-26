@@ -1,3 +1,5 @@
+{{title "New org"}}
+
 <div class="single-body">
     <div class="single-body-header">
         <h5 class="text-center pad-b">Create a new organization</h5>
@@ -6,17 +8,27 @@
     <div class='single-body-content border-b'>
         <div class="form-element no-space">
             <label for='Organization Name'>Organization Name</label>
-            {{input value=orgName type='text' placeholder='Organization Name' class='form-control' autocorrect='off' autocapitalize='off'}}
+            {{input value=org.name
+                type='text'
+                placeholder='Organization Name'
+                class='form-control'
+                autocorrect='off'
+                autocapitalize='off'
+                validateObj=org
+                validateField='name'
+                validate='bottom'}}
         </div>
     </div>
     {{location-control/mutable
-        location=(mut location)
-        description=(mut address)
-        onError=(action 'mapError')}}
+        location=(mut org.location.content.latLng)
+        description=(mut org.location.content.address)
+        onError=(route-action 'mapError')}}
 
 	<div class="single-body-footer text-center">
-		{{link-to "Next" "signup.account" tagName="button" classNames="btn btn-default"}}
-        {{!-- <button class='btn btn-default'>Next</button> --}}
+		{{link-to "Next" "signup.account"
+            tagName="button"
+            classNames="btn btn-default"
+            disabledWhen=(not (v-get org 'isValid'))}}
     </div>
 </div>
 <div class="single-footer">

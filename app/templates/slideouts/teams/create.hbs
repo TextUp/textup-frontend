@@ -1,13 +1,15 @@
 {{#slideout-pane title='New Team'
     direction='left'
     onOpen=(route-action 'initializeNewTeam')
-    doClose=(route-action 'revert' newTeam (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout'
+    doClose=(route-action 'revert' newTeam
+        (route-action 'revert' newTeam.location.content)
+        (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t">
         {{partial 'partials/team/create-edit'}}
     </div>
-    <div class="horizontal-items text-center margin-t-double margin-b">
+    <div class="form-element horizontal-items text-center">
         <div class="clear-badge no-space">
             <button class="btn" type='button'
                 onclick={{slideout.actions.close}}>
@@ -15,11 +17,15 @@
             </button>
         </div>
         <div class="clear-badge no-space">
-            <button class="btn btn-default" type='button'
-                disabled={{not (v-get newTeam 'isValid')}}
-                {{action 'createTeam' newTeam (route-action 'closeAllSlideouts')}}>
-                Create
-            </button>
+            {{async-button classNames='btn btn-default'
+                disableWhen=(not (v-get newTeam 'isValid'))
+                action=(route-action 'createTeam' newTeam
+                    slideout.actions.close)
+                default='Create'
+                pending='Creating...'}}
         </div>
     </div>
+    {{#with newTeam as |owner|}}
+        {{partial 'partials/location'}}
+    {{/with}}
 {{/slideout-pane}}

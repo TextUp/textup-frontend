@@ -1,3 +1,5 @@
+{{title 'Edit'}}
+
 <div class="details full-height">
 	<div class="section-header">
 		<span class="pull-left">
@@ -19,21 +21,63 @@
         	{{/link-to}}
 		</span>
     </div>
-    <div class="section-body bg-color bg-lightest">
-    	<div class="input-group">
-	        <div class="input-group-addon">
-	            <button class="btn btn-span" type='button'>
-	                Cancel
-	            </button>
-	        </div>
-	        <div class="input-group-addon">
-	            <button class="btn btn-default btn-span" type='button'>
-	                Update
-	            </button>
-	        </div>
+    {{#if (and team.isDeleted team.hasDirtyAttributes)}}
+		<div class="section-body bg-color">
+			<div class="center">
+				<p>{{team.name}} is about to be deleted.</p>
+				<div class="horizontal-items text-center margin-t-double margin-b">
+			        <div class="clear-badge no-space">
+			            <button class="btn btn-plain" type='button'
+			                onclick={{route-action 'revert' team}}>
+			                Undo
+			            </button>
+			        </div>
+			        <div class="clear-badge no-space">
+			        	{{async-button classNames='btn btn-plain btn-danger'
+		                    disableWhen=(not (v-get newContact 'isValid'))
+		                    action=(route-action 'deleteTeam' team)
+		                    default='Delete'
+		                    pending='Deleting...'}}
+			        </div>
+			    </div>
+			</div>
+		</div>
+	{{else if team.isDeleted}}
+		<div class="section-body bg-color">
+			<div class="center">
+				<p>{{team.name}} has been deleted.</p>
+			</div>
+		</div>
+    {{else}}
+    	<div class="section-body bg-color bg-lightest">
+		    <div class="pad-t">
+		    	{{#with team as |newTeam|}}
+		    		{{partial 'partials/team/create-edit'}}
+		    	{{/with}}
+		    </div>
+		    <div>
+		    	{{v-get team 'messages'}}
+		    </div>
+	    	{{#if (or team.hasDirtyAttributes team.hasManualChanges)}}
+	    		<div class="form-element horizontal-items text-center">
+			        <div class="clear-badge no-space">
+			            <button class="btn" type='button'
+			                onclick={{route-action 'revert' team}}>
+			                Cancel
+			            </button>
+			        </div>
+			        <div class="clear-badge no-space">
+			            {{async-button classNames='btn btn-default'
+	                        disableWhen=(not (v-get team 'isValid'))
+	                        action=(route-action 'persist' team)
+	                        default='Update'
+	                        pending='Updating...'}}
+			        </div>
+			    </div>
+	    	{{/if}}
+	    	{{#with team as |owner|}}
+	    		{{partial 'partials/location'}}
+	    	{{/with}}
 	    </div>
-    	<div class="pad-t pad-b">
-    		{{partial 'partials/team/create-edit'}}
-    	</div>
-    </div>
+    {{/if}}
 </div>

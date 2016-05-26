@@ -3,11 +3,9 @@
 	animation='none'
 	bodyClass='text-ellipsis'
 	hideTriggerOnOpen=true}}
-    {{#if hasBlock}}
-		{{yield}}
-	{{else}}
-		{{content}}
-	{{/if}}
+	{{content}}
+	{{yield}}
 {{else}}
     {{abbreviated}}
+    {{yield to='inverse'}}
 {{/hide-away}}

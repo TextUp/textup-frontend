@@ -3,8 +3,7 @@
     doClose=(if (and newTag (not newTag.isDeleted))
         (route-action 'revert' newTag (route-action 'closeAllSlideouts'))
         (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout'
-    focusSelector='.start-focus, .slideout-header' as |slideout|}}
+    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
@@ -27,11 +26,12 @@
                 </div>
             {{/if}}
             <div class="clear-badge no-space">
-                <button class="btn btn-default" type='button'
-                    disabled={{not (v-get newTag 'isValid')}}
-                    {{action 'createTag' newTag hideAway.actions.close}}>
-                    Create
-                </button>
+                {{async-button classNames='btn btn-default'
+                    disableWhen=(not (v-get newTag 'isValid'))
+                    action=(route-action 'createTag' newTag
+                        hideAway.actions.close)
+                    default='Create'
+                    pending='Creating...'}}
             </div>
         </div>
     {{else}}

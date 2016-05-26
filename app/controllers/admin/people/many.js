@@ -1,49 +1,62 @@
 import Ember from 'ember';
 
+const {
+	filterBy
+} = Ember.computed;
+
 export default Ember.Controller.extend({
-	people: [{
-		name: 'Kiki Bai',
-		username: 'kbai888',
-		status: 'STAFF',
-		teams: [{
-			name: "Rapid Rehousing",
-			color: "purple"
-		}, {
-			name: "Housing First",
-			color: "orange"
-		}]
-	}, {
-		name: 'Cho Chang',
-		username: 'domoarigato',
-		status: 'ADMIN',
-		teams: [{
-			name: "Housing First",
-			color: "orange"
-		}]
-	}, {
-		name: 'What Cheer',
-		username: 'cheerful123',
-		status: 'STAFF',
-		teams: [{
-			name: "Rapid Rehousing",
-			color: "purple"
-		}]
-	}],
-	teams: [{
-		name: "Rapid Rehousing",
-		numMembers: 23,
-		color: "purple"
-	}, {
-		name: "Housing First",
-		numMembers: 9,
-		color: "orange"
-	}, {
-		name: "Outreach",
-		numMembers: 2,
-		color: "yellow"
-	}, {
-		name: "Cleanup Crew",
-		numMembers: 5,
-		color: "pink"
-	}],
+	peopleController: Ember.inject.controller('admin.people'),
+
+	selected: filterBy('peopleController.people', 'isSelected', true),
+	selectedAdmins: filterBy('selected', 'isAdmin', true),
+
+	selectedMe: Ember.computed('selected.[]', function() {
+		const myUsername = this.get('authManager.authUser.username');
+		return this.get('selected').any((person) => {
+			return person.get('username') === myUsername;
+		});
+	}),
+
+	actions: {
+		selectAll: function() {
+			this.get('peopleController.people').forEach((person) => {
+				person.set('isSelected', true);
+			});
+		},
+		selectAllStaff: function() {
+			this.get('peopleController.people').forEach((person) => {
+				if (person.get('isStaff')) {
+					person.set('isSelected', true);
+				} else {
+					person.set('isSelected', false);
+				}
+			});
+		},
+		deselect: function(person) {
+			person.set('isSelected', false);
+			Ember.run.next(this, function() {
+				if (this.get('selected.length') === 0) {
+					this._exitMany();
+				}
+			});
+		},
+		leave: function() {
+			this._deselectAll();
+			this._exitMany();
+		}
+	},
+
+	// Helpers
+	// -------
+
+	_deselectAll: function() {
+		this.get('selected').forEach((person) => person.set('isSelected', false));
+	},
+	_exitMany: function() {
+		if (this.get('stateManager.viewingTeam')) {
+			this.transitionToRoute('admin.team');
+		} else {
+			this.transitionToRoute('admin.people');
+		}
+	},
 });

@@ -1,0 +1,9 @@
+{{#if owner.location.isFulfilled}}
+    <div class="form-element">
+        <label for="Your Name" class='pad-l pad-r'>Location</label>
+        {{location-control/mutable hideSidebar=true
+            location=(mut owner.location.content.latLng)
+            description=(mut owner.location.content.address)
+            onError=(route-action 'mapError')}}
+    </div>
+{{/if}}

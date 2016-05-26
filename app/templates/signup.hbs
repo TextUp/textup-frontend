@@ -1,9 +1,13 @@
+{{title "Sign Up" prepend=true}}
+
 <div class="single-container">
     <div class="single-header">
     	<img class="brand" src='assets/images/logo.png' />
         <h3>Sign Up</h3>
         <div class="subtitle">
-            {{#link-to "login"}}Already signed up? <b>Log in.</b>{{/link-to}}
+            {{#link-to "login" classNames='text-white'}}
+            	Already signed up? <b>Log in.</b>
+        	{{/link-to}}
         </div>
     </div>
     {{liquid-outlet}}

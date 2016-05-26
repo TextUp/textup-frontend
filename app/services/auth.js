@@ -1,16 +1,17 @@
-import Ember from 'ember';
 import config from '../config/environment';
+import Ember from 'ember';
 import tz from 'npm:jstz';
 
 const {
 	notEmpty,
-	alias,
 	and
 } = Ember.computed;
 
 export default Ember.Service.extend({
 	store: Ember.inject.service(),
 	routing: Ember.inject.service('-routing'),
+	storage: Ember.inject.service(),
+	socket: Ember.inject.service(),
 
 	hasToken: notEmpty('token'),
 	hasAuthUser: notEmpty('authUser'),
@@ -24,53 +25,42 @@ export default Ember.Service.extend({
 		return tz.determine().name();
 	}),
 
+	// Events
+	// ------
+
+	willDestroy: function() {
+		this.get('storage').off('updated', this);
+	},
+
 	// Methods
 	// -------
 
 	setupFromStorage: function() {
-		return new Ember.RSVP.Promise((resolve, reject) => {
-			const token = this._getItem('token'),
-				userId = this._getItem('userId'),
-				onFail = function() {
-					this._doClear();
-					reject();
-				}.bind(this);
 
-			console.log('auth manager setup from storage! userId: ' + userId);
-			console.log(`token: ${token}`);
 
-			if (token && userId) {
-				// set token so application adapter can help make our request
-				this.set('token', token);
-				this.get('store').findRecord('staff', userId).then((staff) => {
-					this._doStore(token, staff);
-					resolve();
-				}, onFail);
-			} else {
-				onFail();
-			}
-		});
+		this.get('socket').configure();
+
+
+		return this.get('storage').sync().then(this._doSetup.bind(this));
 	},
-	validate: alias('login'),
-	login: function(username, password, storeCredentials = false) {
-		console.log(`auth manager LOGIN with storeCredentials: ${storeCredentials}, username: ${username}, password: ${password}`);
-
+	validate: function(username, password) {
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			if (!username || !password) {
 				return reject();
 			}
-			Ember.$.ajax({
-				type: 'POST',
-				url: `${config.host}/login?timezone=${this.get('timezone')}`,
-				contentType: 'application/json',
-				data: JSON.stringify({
-					username: username,
-					password: password
-				})
-			}).then((data) => {
+			this._sendCredentials(username, password).then(resolve, reject);
+		});
+	},
+	login: function(username, password, storeCredentials = false) {
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			if (!username || !password) {
+				return reject();
+			}
+			this._sendCredentials(username, password).then((data) => {
+				this.get('storage').set('persist', storeCredentials);
 				const store = this.get('store'),
 					staff = store.push(store.normalize('staff', data.staff));
-				this._doStore(data.access_token, staff, storeCredentials);
+				this._doStore(data.access_token, staff);
 				resolve(data);
 			}, reject);
 		});
@@ -109,46 +99,94 @@ export default Ember.Service.extend({
 		}
 	},
 
+	// Utility methods
+	// ---------------
+
+	authRequest: function(options = {}) {
+		return Ember.$.ajax(Ember.merge({
+			contentType: 'application/json',
+			beforeSend: (request) => {
+				if (this.get('hasToken')) {
+					request.setRequestHeader("Authorization",
+						`Bearer ${this.get('token')}`);
+				}
+			}
+		}, options));
+	},
+
 	// Helper methods
 	// --------------
 
-	_doStore: function(token, staff, storeCredentials = false) {
-
-		console.log(`auth manager store for storeCredentials: ${storeCredentials}, staff: ${staff}`);
-		this._setItem(storeCredentials, 'token', token);
-		this._setItem(storeCredentials, 'userId', staff.get('id'));
+	_handleStorageChange: function() {
+		const storage = this.get('storage');
+		if (storage.getItem('token') === this.get('token')) {
+			return;
+		}
+		const cachedIsLoggedIn = this.get('isLoggedIn');
+		if (storage.getItem('token')) {
+			this._doSetup().then(() => {
+				if (!cachedIsLoggedIn) {
+					this.get('routing')
+						.transitionTo('main', [this.get('authUser')]);
+				}
+			}, this.logout.bind(this));
+		} else {
+			this.logout();
+		}
+	},
+	_sendCredentials: function(username, password) {
+		return Ember.$.ajax({
+			type: 'POST',
+			url: `${config.host}/login?timezone=${this.get('timezone')}`,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				username: username,
+				password: password
+			})
+		});
+	},
+	_doSetup: function() {
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			const storage = this.get('storage'),
+				token = storage.getItem('token'),
+				userId = storage.getItem('userId'),
+				onFail = function() {
+					this._doClear();
+					reject();
+				}.bind(this);
+			if (token && userId) {
+				// set token so application adapter can help make our request
+				this.set('token', token);
+				this.get('store').findRecord('staff', userId).then((staff) => {
+					this._doStore(token, staff);
+					storage.on('updated', this, function() {
+						this._handleStorageChange();
+					}.bind(this));
+					resolve();
+				}, onFail);
+			} else {
+				onFail();
+			}
+		});
+	},
+	_doStore: function(token, staff) {
+		const storage = this.get('storage');
+		storage.setItem('token', token);
+		storage.setItem('userId', staff.get('id'));
+		storage.sendStorage();
 		this.setProperties({
 			token: token,
 			authUser: staff
 		});
 	},
 	_doClear: function() {
-
-		console.log('auth manager clear');
-
-		this._removeItem('token');
-		this._removeItem('userId');
+		const storage = this.get('storage');
+		storage.removeItem('token');
+		storage.removeItem('userId');
+		storage.sendStorage();
 		this.setProperties({
 			token: null,
 			authUser: null
 		});
 	},
-
-	// Storage
-	// -------
-
-	_setItem: function(persist, key, value) {
-		try {
-			(persist ? localStorage : sessionStorage).setItem(key, value);
-		} catch (e) {
-			Ember.debug('auth._setItem: web storage not available: ' + e);
-		}
-	},
-	_removeItem: function(key) {
-		localStorage.removeItem(key);
-		sessionStorage.removeItem(key);
-	},
-	_getItem: function(key) {
-		return localStorage.getItem(key) || sessionStorage.getItem(key);
-	}
 });

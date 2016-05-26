@@ -85,9 +85,11 @@ export default Ember.Mixin.create({
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
-		model.validate({
-			on: [field]
-		}, true).then(this._processValidate.bind(this, model, field, $errors));
+		if (model && model.validate) {
+			model.validate({
+				on: [field]
+			}, true).then(this._processValidate.bind(this, model, field, $errors));
+		}
 	},
 	_processValidate: function(model, field, $errors) {
 		const $errorNeighbor = this.get('$errorNeighbor'),

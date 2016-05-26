@@ -19,10 +19,18 @@ const {
 	});
 
 export default DS.Model.extend(Validations, {
+
 	init: function() {
 		this._super(...arguments);
 		this.set('actions', []);
 	},
+	rollbackAttributes: function() {
+		this._super(...arguments);
+		this.get('actions').clear();
+	},
+
+	// Attributes
+	// ----------
 
 	name: DS.attr('string'),
 	hexColor: DS.attr('string'),

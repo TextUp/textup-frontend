@@ -1,0 +1,61 @@
+{{#if hasBlock}}
+	{{#phone-control disabled=disabled
+		tabindex=tabindex
+		number=_newNumber
+		forceAllowChanges=forceAllowChanges
+		forceDefaultValidate=forceDefaultValidate
+		showControl=showControl
+		throttleThreshold=throttleThreshold
+		onChange=onChange
+		onClick=onClick
+		onValidate=onValidate
+		onFocusEnter=onFocusEnter
+		onFocusLeave=onFocusLeave
+		controlClass=controlClass
+		controlButtonClass=controlButtonClass
+		onChange=(action 'updateNew')
+	    onClick=(action 'verifyNew')
+	    onValidate=(action 'completeVerify') as |publicAPI|}}
+		{{yield publicAPI}}
+	{{/phone-control}}
+{{else if (hasBlock 'inverse')}}
+	{{#phone-control disabled=disabled
+		tabindex=tabindex
+		number=_newNumber
+		forceAllowChanges=forceAllowChanges
+		forceDefaultValidate=forceDefaultValidate
+		showControl=showControl
+		throttleThreshold=throttleThreshold
+		onChange=onChange
+		onClick=onClick
+		onValidate=onValidate
+		onFocusEnter=onFocusEnter
+		onFocusLeave=onFocusLeave
+		controlClass=controlClass
+		controlButtonClass=controlButtonClass
+		onChange=(action 'updateNew')
+	    onClick=(action 'verifyNew')
+	    onValidate=(action 'completeVerify') as |publicAPI|}}
+		{{yield publicAPI}}
+	{{else}}
+		{{yield to='inverse'}}
+	{{/phone-control}}
+{{else}}
+	{{phone-control disabled=disabled
+		tabindex=tabindex
+		number=_newNumber
+		forceAllowChanges=forceAllowChanges
+		forceDefaultValidate=forceDefaultValidate
+		showControl=showControl
+		throttleThreshold=throttleThreshold
+		onChange=onChange
+		onClick=onClick
+		onValidate=onValidate
+		onFocusEnter=onFocusEnter
+		onFocusLeave=onFocusLeave
+		controlClass=controlClass
+		controlButtonClass=controlButtonClass
+		onChange=(action 'updateNew')
+	    onClick=(action 'verifyNew')
+	    onValidate=(action 'completeVerify')}}
+{{/if}}

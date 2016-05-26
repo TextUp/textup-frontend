@@ -1,3 +1,5 @@
+{{title (phone-number contact.identifier)}}
+
 <div class="details full-height">
 	<div class="section-header">
 		<div class="contact-details">
@@ -94,7 +96,25 @@
             {{/if}}
         </div>
     </div>
-    <div class="section-body {{if (not contact.allowEdits) 'readonly'}}">
+    <div class="section-body
+        {{if (not contact.allowEdits) 'readonly'}}">
+        {{#if isMakingCall}}
+            <div class="section-overlay text-big">
+                <div class="center text-center xs-9-row-10">
+                    <h5 class='text-white'>Call in progress...</h5>
+                    <p class='text-lighten'>Connecting to your personal phone at</p>
+                    <p class="text-bold text-lighten">
+                        {{phone-number authManager.authUser.personalPhoneNumber}}
+                    </p>
+                    <div class="margin-t text-white">
+                        <button class="btn btn-plain" type='button'
+                            onclick={{action (mut isMakingCall) false}}>
+                            Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
         {{#infinite-scroll classNames='contact-record'
             direction='up'
             data=records
@@ -229,7 +249,7 @@
             hideTriggerOnOpen=true
             triggerClass='contact-controls'
             bodyClass='contact-controls floating'
-            bodyFocusOnOpenSelector='textarea'}}
+            bodyFocusOnOpenSelector='textarea' as |hideAway|}}
             {{textarea containerClass='send-text-field'
                 class='form-control'
                 maxlength='320'
@@ -237,22 +257,48 @@
                 autoresize=true
                 rows='1'
                 value=textContents}}
-            <button class='btn btn-default'>
-                <span class='fa fa-paper-plane-o'></span>
+            <button type='button'
+                class="btn {{if isSendingTextError 'btn-danger' 'btn-default'}}"
+                disabled={{or (not textContents) isSendingText}}
+                onclick={{action 'sendMessage' hideAway.actions.close}}>
+                {{#if isSendingText}}
+                    <span class="fa fa-spin fa-circle-o-notch"></span>
+                {{else if isSendingTextError}}
+                    <span class="fa fa-exclamation-triangle"></span>
+                {{else}}
+                    <span class='fa fa-paper-plane-o'></span>
+                {{/if}}
             </button>
         {{else}}
             <div class='input-group'>
                 <span class="input-group-addon">
-                    <button class='btn'>
-                        <span class='fa fa-phone'></span>
-                    </button>
+                    {{#async-button classNames='btn'
+                        action=(route-action 'makeCall' contact
+                            (action (mut isMakingCall) true)) as |btn|}}
+                        {{#if (eq btn.textState 'pending')}}
+                            <span class="fa fa-spin fa-circle-o-notch"></span>
+                        {{else if (eq btn.textState 'rejected')}}
+                            <span class="fa fa-exclamation-triangle"></span>
+                        {{else}}
+                            <span class='fa fa-phone'></span>
+                        {{/if}}
+                    {{/async-button}}
                 </span>
                 {{input class='form-control text-ellipsis'
                     readonly=true
                     value=textContents}}
                 <span class="input-group-addon">
-                    <button class='btn btn-default'>
-                        <span class='fa fa-paper-plane-o'></span>
+                    <button type='button'
+                        class="btn {{if isSendingTextError 'btn-danger' 'btn-default'}}"
+                        disabled={{or (not textContents) isSendingText}}
+                        onclick={{action 'sendMessage'}}>
+                        {{#if isSendingText}}
+                            <span class="fa fa-spin fa-circle-o-notch"></span>
+                        {{else if isSendingTextError}}
+                            <span class="fa fa-exclamation-triangle"></span>
+                        {{else}}
+                            <span class='fa fa-paper-plane-o'></span>
+                        {{/if}}
                     </button>
                 </span>
             </div>

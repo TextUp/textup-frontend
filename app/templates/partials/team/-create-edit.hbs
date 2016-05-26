@@ -1,6 +1,12 @@
 <div class="pad-l pad-r form-element">
     <label for="Your Name">Team Name</label>
-    {{input value=newTeam.name type="text" placeholder="Team Name" class="form-control"}}
+    {{input value=newTeam.name
+        type="text"
+        placeholder="Team Name"
+        class="form-control start-focus"
+        validateObj=newTeam
+        validateField='name'
+        validate='bottom'}}
 </div>
 <div class="pad-l pad-r form-element">
     <label for="Your Name">Team Color</label>
@@ -11,9 +17,3 @@
         {{partial 'partials/change-number'}}
     </div>
 {{/with}}
-<div class="form-element">
-    <label for="Your Name" class='pad-l pad-r'>Location</label>
-    {{location-control/mutable hideSidebar=true
-        location=(mut newTeam.location.latLng)
-        description=(mut newTeam.location.address)}}
-</div>

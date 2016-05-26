@@ -44,9 +44,6 @@ export default Ember.Service.extend({
 		}.bind(this);
 	},
 	handleError: function(failure) {
-		console.log("DATA HANDLER handleError");
-		console.log(failure);
-
 		// log out if unauthorized
 		if (this.checkForStatus(failure, 401)) {
 			this.get('authManager').logout();
@@ -67,6 +64,33 @@ export default Ember.Service.extend({
 		}
 	},
 
+	// Communications
+	// --------------
+
+	sendMessage: function(msg, recipients) {
+		const record = this.get('store').createRecord('record', {
+			type: 'TEXT',
+			contents: msg
+		});
+
+		record.get('recipients')
+			.pushObjects(Ember.isArray(recipients) ? recipients : [recipients]);
+		return this.persist(record)
+			.then(() => {
+				this.notifications.success('Message successfully sent.');
+			}, record.rollbackAttributes.bind(record));
+	},
+	makeCall: function(recipient) {
+		const record = this.get('store').createRecord('record', {
+			type: 'CALL'
+		});
+		record.get('recipients').pushObject(recipient);
+		return this.persist(record)
+			.then(() => {
+				this.notifications.success('Successfully started call.');
+			}, record.rollbackAttributes.bind(record));
+	},
+
 	// Utility methods
 	// ---------------
 
@@ -84,7 +108,7 @@ export default Ember.Service.extend({
 		return numMessages;
 	},
 	checkForStatus: function(failure, status) {
-		return failure && failure.errors &&
-			failure.errors[0] && failure.errors[0].status === `${status}`;
+		return failure === status || (failure && failure.errors &&
+			failure.errors[0] && failure.errors[0].status === `${status}`);
 	},
 });

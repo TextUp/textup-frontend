@@ -31,6 +31,7 @@ export default Ember.Route.extend({
 			if (!this.get('stateManager.viewingTeam')) {
 				this._resetController(this.get('team'));
 			}
+			this.get('team').rollbackAttributes();
 			// return true to allow bubbling to close slideout handler
 			return true;
 		},

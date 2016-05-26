@@ -24,6 +24,7 @@ export default Ember.Route.extend({
 		this.controller.set('contact', model);
 		this.controller.set('tag', null);
 		this.controller.set('records', []);
+		this.controller.set('isMakingCall', false);
 		// don't know until loaded
 		this.controller.set('totalNumRecords', '--');
 	},

@@ -25,13 +25,17 @@ module.exports = function(environment) {
         },
         moment: {
             includeTimezone: '2010-2020'
+        },
+        storage: {
+            namespace: 'textup'
+        },
+        socket: {
+            authKey: '931ddcc6c5780a68022f'
         }
     };
 
-
-
     if (environment === 'development') {
-        ENV.host = "https://f5aa7aa3.ngrok.io";
+        ENV.host = "http://localhost:8080";
         // ENV.APP.LOG_RESOLVER = true;
         // ENV.APP.LOG_ACTIVE_GENERATION = true;
         // ENV.APP.LOG_TRANSITIONS = true;

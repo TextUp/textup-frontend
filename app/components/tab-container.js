@@ -1,11 +1,15 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
+import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend({
 
 	startIndex: defaultIfAbsent(0),
 	animation: defaultIfAbsent('slide'), // none | slide | fade
 	throttleThreshold: defaultIfAbsent(60),
+
+	onChange: null,
+	onChanged: null,
 
 	classNames: 'tab-container',
 
@@ -101,7 +105,8 @@ export default Ember.Component.extend({
 		if (this.get('_currentIndex') === itemIndex) {
 			return;
 		}
-		const dropdown = this.get('_hideAway'),
+		const publicAPI = this.get('publicAPI'),
+			dropdown = this.get('_hideAway'),
 			items = this.get("_items"),
 			current = items.objectAt(this.get('_currentIndex')),
 			target = items.objectAt(itemIndex),
@@ -110,9 +115,12 @@ export default Ember.Component.extend({
 				current.actions.hide(animation).then(() => {
 					target.actions.show(animation).then(() => {
 						this.set('_currentIndex', itemIndex);
+						callIfPresent(this.get('onChanged'),
+							current, target, publicAPI);
 					});
 				});
 			}.bind(this);
+		callIfPresent(this.get('onChange'), current, target, publicAPI);
 		if (dropdown.isOpen) {
 			dropdown.actions.close(null, true, doSwitch);
 		} else {

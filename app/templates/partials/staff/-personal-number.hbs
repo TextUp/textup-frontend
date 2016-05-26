@@ -2,25 +2,22 @@
     classNames='input-group-element'
     clickOutToClose=false
     animation='fade'
-    onClose=(action 'clearNew')
+    bodyFocusOnOpenSelector='.phone-control'
     allowedTriggerSelectors='.edit-personal-phone'
     hideTriggerOnOpen=true as |hideAway|}}
     <div class="input-group">
         <span class="input-group-addon">
-            <button class='btn' type='button'
-                onclick={{hideAway.actions.close}}>
+            <button class='btn' type='button' onclick={{hideAway.actions.close}}>
                 <span class="fa fa-times"></span>
             </button>
         </span>
-        {{#phone-control number=staff.newPersonalNumber
+        {{#phone-control/mutable-validated number=staff.personalPhoneNumber
             controlClass='blend-in'
-            onChange=(action 'storeNewPersonalNumber')
-            onClick=(action 'updatePersonalNumber')
             forceDefaultValidate=true
-            onValidate=(action 'validatePersonalNumber' hideAway.actions.close)}}
+            onValidateSuccess=hideAway.actions.close}}
         {{else}}
             <span class='fa fa-arrow-right'></span>
-        {{/phone-control}}
+        {{/phone-control/mutable-validated}}
     </div>
 {{else}}
     {{#phone-control number=staff.personalPhoneNumber

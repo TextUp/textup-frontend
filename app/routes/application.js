@@ -23,17 +23,27 @@ export default Ember.Route.extend(Slideout, Loading, {
 	// -----
 
 	beforeModel: function() {
-		console.log("APPLICATION BEFORE MODEL HOOK!");
-		console.log(this.get('authManager'));
 		// validate stored token for staff, if any
-		// if credential invalid or missing, clear and go to login
-		return this.get('authManager').setupFromStorage().catch(() => {
-			console.log("APP ROUTE BEFORE MODEL NOT LOGGED IN!");
-			this.transitionTo('login');
-		});
+		// return promise so that resolver blocks until promise completes
+		// catch any error to avoid default error handler if promise
+		// rejects when the staff is not logged in
+		return this.get('authManager').setupFromStorage().catch(() => {});
 	},
 
 	actions: {
+
+		validate: function(un, pwd, then = undefined) {
+			return this.get('authManager').validate(un, pwd).then(() => {
+				callIfPresent(then);
+			}, (failure) => {
+				if (this.get('dataHandler').displayErrors(failure) === 0) {
+					this.notifications.error('Could not validate credentials');
+				}
+			});
+		},
+		logout: function() {
+			this.get('authManager').logout();
+		},
 
 		// Slideout
 		// --------
@@ -54,27 +64,31 @@ export default Ember.Route.extend(Slideout, Loading, {
 		// Slideout utilities
 		// ------------------
 
-		clearList: function(models, propName, then) {
+		clearList: function(models, propName, ...then) {
 			this._doForOneOrMany(models, (model) => model.get(propName).clear());
-			callIfPresent(then);
+			then.forEach(callIfPresent);
 		},
-		revert: function(models, then) {
-			this._doForOneOrMany(models, (model) => model.rollbackAttributes());
-			callIfPresent(then);
+		revert: function(models, ...then) {
+			this._doForOneOrMany(models, (model) => model && model.rollbackAttributes());
+			then.forEach(callIfPresent);
 		},
-		persist: function(models, then) {
-			this.get('dataHandler')
+		persist: function(models, ...then) {
+			return this.get('dataHandler')
 				.persist(models)
-				.then(() => callIfPresent(then));
+				.then(() => then.forEach(callIfPresent));
 		},
-		markForDelete: function(models, then) {
+		markForDelete: function(models, ...then) {
 			this.get('dataHandler').markForDelete(models);
-			callIfPresent(then);
+			then.forEach(callIfPresent);
 		},
 
 		// Errors
 		// ------
 
+		mapError: function() {
+			this.notifications.error(`Sorry! We are having trouble loading
+				the map. Please try again.`);
+		},
 		error: function(reason, transition) {
 			this.get('authManager').set("attemptedTransition", transition);
 			this.get('dataHandler').handleError(reason);

@@ -4,8 +4,15 @@ export default Ember.Route.extend({
 	controllerName: 'admin/people/many',
 	templateName: 'admin/people/many',
 
-	setupController: function(controller) {
-		this._super(...arguments);
-		controller.set('team', this.controllerFor('admin.people').get('team'));
-	},
+	actions: {
+		willTransition: function() {
+			this.controller._deselectAll();
+		},
+		didTransition: function() {
+			if (this.controller.get('selected').length === 0) {
+				this.transitionTo('admin.team');
+			}
+			return true; // for closing slideouts
+		},
+	}
 });

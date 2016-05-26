@@ -40,7 +40,7 @@ export default function() {
 		this.reverse('toRight')
 	);
 	this.transition(
-	this.hasClass('animate-slide-from-top'),
+		this.hasClass('animate-slide-from-top'),
 		this.toValue(true),
 		this.use('toDown'),
 		this.reverse('toUp')

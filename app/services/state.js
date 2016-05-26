@@ -14,7 +14,7 @@ const {
 export default Ember.Service.extend({
 
 	authManager: Ember.inject.service('auth'),
-	dataManager: Ember.inject.service('data'),
+	dataHandler: Ember.inject.service('data'),
 	routing: Ember.inject.service('-routing'),
 	store: Ember.inject.service(),
 
@@ -85,16 +85,9 @@ export default Ember.Service.extend({
 				cachedNums = this._getUniqueCachedNums();
 			if (!cachedNums || cachedNums.length < 5 || cacheExpired) {
 				const auth = this.get('authManager');
-				Ember.$.ajax({
-					contentType: 'application/json',
+				auth.authRequest({
 					type: 'GET',
-					url: `${config.host}/v1/numbers`,
-					beforeSend: function(request) {
-						if (auth.get('hasToken')) {
-							request.setRequestHeader("Authorization",
-								`Bearer ${auth.get('token')}`);
-						}
-					}
+					url: `${config.host}/v1/numbers`
 				}).then((numbers) => {
 					numbers.forEach((num) => {
 						num.phoneNumber = cleanNumber(num.phoneNumber);
@@ -102,7 +95,7 @@ export default Ember.Service.extend({
 					this.set('_lastRetrievedNumbers', new Date());
 					this.set('_cachedNumbers', numbers);
 					resolve(numbers);
-				}, this.get('dataManager').buildErrorHandler(reject));
+				}, this.get('dataHandler').buildErrorHandler(reject));
 			} else {
 				resolve(cachedNums);
 			}

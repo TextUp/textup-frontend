@@ -25,21 +25,29 @@
         </div>
         <div class="input-group-addon">
             {{#if tag.isDeleted}}
-                <button class="btn-span btn btn-plain btn-danger" type='button'
-                    onclick={{route-action 'persist' tag
-                        dropdown.actions.close}}>
-                    Confirm delete
-                </button>
+                {{async-button classNames='btn-span btn btn-plain btn-danger'
+                    action=(route-action 'persist' tag
+                        dropdown.actions.close)
+                    default='Confirm delete'
+                    pending='Deleting...'}}
             {{else}}
                 {{#tool-tipster tagName='span'
                     theme='tooltipster-clean'
                     title='Update'}}
-                    <button class="btn-span btn btn-plain" type='button'
-                        disabled={{not (v-get tag 'isValid')}}
-                        onclick={{route-action 'persist' tag
-                            dropdown.actions.close}}>
-                        <span class="fa fa-save"></span>
-                    </button>
+                    {{#async-button classNames='btn-span btn btn-plain'
+                        disableWhen=(not (v-get tag 'isValid'))
+                        action=(route-action 'persist' tag
+                            dropdown.actions.close)
+                        default='Create'
+                        pending='Creating...' as |btn|}}
+                        {{#if (eq btn.textState 'pending')}}
+                            <span class="fa fa-spin fa-circle-o-notch"></span>
+                        {{else if (eq btn.textState 'rejected')}}
+                            <span class="fa fa-exclamation-triangle"></span>
+                        {{else}}
+                            <span class="fa fa-save"></span>
+                        {{/if}}
+                    {{/async-button}}
                 {{/tool-tipster}}
             {{/if}}
         </div>

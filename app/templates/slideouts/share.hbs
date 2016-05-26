@@ -1,6 +1,7 @@
 {{#slideout-pane title=(if selected
         (concat 'Share (' selected.length ' selected)')
         (concat 'Sharing ' contact.name))
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     direction='right'
     doClose=(route-action 'clearList' (if selected selected contact) 'actions'
         (route-action 'closeAllSlideouts')) as |slideout|}}
@@ -13,11 +14,12 @@
                 </button>
             </div>
             <div class="clear-badge no-space">
-                <button class="btn btn-default" type='button'
-                    {{action 'persist' (if selected selected contact)
-                        (route-action 'closeAllSlideouts')}}>
-                    Update
-                </button>
+                {{async-button classNames='btn btn-default'
+                    action=(route-action 'persist'
+                        (if selected selected contact)
+                        slideout.actions.close)
+                    default='Update'
+                    pending='Updating...'}}
             </div>
         </div>
     {{/if}}

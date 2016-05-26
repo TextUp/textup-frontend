@@ -1,9 +1,10 @@
 import Auth from '../mixins/auth-route';
-import Ember from 'ember';
-import Slideout from '../mixins/slideout-route';
 import callIfPresent from '../utils/call-if-present';
+import Ember from 'ember';
+import Setup from '../mixins/setup-route';
+import Slideout from '../mixins/slideout-route';
 
-export default Ember.Route.extend(Slideout, Auth, {
+export default Ember.Route.extend(Slideout, Auth, Setup, {
 	slideoutOutlet: 'details-slideout',
 
 	// Events
@@ -12,54 +13,33 @@ export default Ember.Route.extend(Slideout, Auth, {
 	beforeModel: function() {
 		this._super(...arguments);
 		const user = this.get('authManager.authUser');
-
-		console.log("MAIN BEFORE MODEL HOOK!");
-
 		return user.get('isNone').then((isNone) => {
-			if (isNone) {
-				if (user.get('isAdmin')) {
-					this.transitionTo('admin');
-				} else {
-					this.transitionTo('none');
-				}
+			const orgIsApproved = user.get('org.content.isApproved');
+			if (isNone && orgIsApproved && user.get('isAdmin')) {
+				this.transitionTo('admin');
+			} else if (isNone || !orgIsApproved) {
+				this.transitionTo('none');
 			}
 		});
 	},
 	serialize: function(model) {
-		console.log('main route serialize: model');
-		console.log(model);
-
 		return {
 			main_identifier: model.get('urlIdentifier')
 		};
 	},
 	model: function(params) {
-		console.log("MAIN MODEL HOOK!");
-
 		const id = params.main_identifier,
 			user = this.get('authManager.authUser');
 		if (id === user.get('urlIdentifier')) {
-
-			console.log("main model branch 1");
-
 			return user;
 		} else {
 			return user.get('teamsWithPhones').then((teams) => {
 				const team = teams.findBy('urlIdentifier', id);
 				if (team) {
-
-					console.log("main model branch 2");
-
 					return team;
 				} else if (user.get('isAdmin')) {
-
-					console.log("main model branch 3");
-
 					this.transitionTo('admin');
 				} else {
-
-					console.log("main model branch 4");
-
 					this.get('authManager').logout();
 				}
 			});
@@ -77,6 +57,7 @@ export default Ember.Route.extend(Slideout, Auth, {
 		this._loadOtherStaff(model);
 	},
 	redirect: function(model, transition) {
+		this._super(...arguments);
 		if (transition.targetName === 'main.index') {
 			this.transitionTo('main.contacts');
 		}
@@ -132,7 +113,7 @@ export default Ember.Route.extend(Slideout, Auth, {
 			this.controller.set('newContact', null);
 		},
 		createContact: function(contact, then) {
-			this.get('dataHandler')
+			return this.get('dataHandler')
 				.persist(contact)
 				.then(() => {
 					const contacts = this.controller.get('contacts');
@@ -152,7 +133,7 @@ export default Ember.Route.extend(Slideout, Auth, {
 			this.controller.set('newTag', this.store.createRecord('tag'));
 		},
 		createTag: function(tag, then = undefined) {
-			this.get('dataHandler')
+			return this.get('dataHandler')
 				.persist(tag)
 				.then(() => {
 					const model = this.get('currentModel');
@@ -162,7 +143,7 @@ export default Ember.Route.extend(Slideout, Auth, {
 		},
 		updateTagMemberships: function(tags, contact, then = undefined) {
 			const contacts = Ember.isArray(contact) ? contact : [contact];
-			this.get('dataHandler')
+			return this.get('dataHandler')
 				.persist(tags)
 				.then(() => {
 					const promises = contacts.map((contact) => contact.reload());
@@ -180,22 +161,29 @@ export default Ember.Route.extend(Slideout, Auth, {
 			this.send('openSlideout', 'slideouts/compose', 'main');
 		},
 		initializeCompose: function() {
-			console.log('initializeCompose');
-
 			const recipients = this.controller.get('selectedRecipients');
 			if (!recipients) {
-				console.log("OVERWRITING selectedRecipients");
 				this.controller.set('selectedRecipients', []);
 			}
 			this.controller.set('composeMessage', '');
 		},
 		cleanCompose: function() {
-			console.log('cleanCompose');
-
+			this.controller.set('composeMessage', null);
 			this.controller.set('selectedRecipients', []);
 		},
-		sendMessage: function() {
-			console.log("SEND MESSAGE!");
+
+		// Communications
+		// --------------
+
+		sendMessage: function(msg, recipients, then = undefined) {
+			return this.get('dataHandler')
+				.sendMessage(msg, recipients)
+				.then(() => callIfPresent(then));
+		},
+		makeCall: function(recipient, then = undefined) {
+			return this.get('dataHandler')
+				.makeCall(recipient)
+				.then(() => callIfPresent(then));
 		},
 	},
 

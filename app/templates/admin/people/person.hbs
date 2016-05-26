@@ -1,3 +1,5 @@
+{{title person.name}}
+
 <div class="details full-height">
 	<div class="section-header">
 		<div class="contact-details">
@@ -27,11 +29,19 @@
 	            <span class='clear-badge'>
 	            	{{#hide-away/dropdown}}
 	                    <li class='dropdown-divider'>Status</li>
-                        {{#if person.isAdmin}}
-                        	<li tabindex='0' class='dropdown-item'>Demote to staff</li>
-                        {{else}}
-							<li tabindex='0' class='dropdown-item'>Promote to admin</li>
-                        {{/if}}
+	                    {{#if (not (eq
+	                    	(unbound authManager.authUser.username)
+	                    	(unbound person.username)))}}
+	                    	{{#if person.isAdmin}}
+	                        	<li tabindex='0' class='dropdown-item'>
+	                        		Demote to staff
+                        		</li>
+	                        {{else}}
+								<li tabindex='0' class='dropdown-item'>
+									Promote to admin
+								</li>
+	                        {{/if}}
+	                    {{/if}}
                         <li tabindex='0' class='dropdown-item'>Block</li>
 		            {{else}}
 		                <button class='btn' type='button'>
@@ -65,27 +75,39 @@
         </div>
     </div>
     <div class="section-body bg-color bg-lightest">
-    	{{#tab-container animation='fade' as |tabContainer doRegister|}}
+    	{{#tab-container onChange=(route-action 'revert' person)
+    		animation='fade' as |tabContainer doRegister|}}
 			{{#tab-container/item doRegister=doRegister
 				title="Details"}}
-				{{#with person as |staff|}}
-					<div class='pad-all'>
+				<div class='pad-all'>
+					{{#with person as |staff|}}
 						{{partial 'partials/staff/edit'}}
+					{{/with}}
+					{{#if (and (or person.hasDirtyAttributes
+						person.hasManualChanges)
+						(not usernameDropdown.isOpen)
+                        (not passwordDropdown.isOpen))}}
 						<div class="pad-t text-center">
-					        <button class="btn" type='button'>
+					        <button class="btn" type='button'
+					        	onclick={{route-action 'revert' person
+					        		(action (mut person.forExistingPhone) null)}}>
 					            Cancel
 					        </button>
-					        <button class="btn btn-default" type='button'>
-					            Update
-					        </button>
+					        {{async-button classNames='btn btn-default'
+			                    disableWhen=(not (v-get person 'isValid'))
+			                    action=(route-action 'persist' person)
+			                    default='Update'
+			                    pending='Updating...'}}
 						</div>
-					</div>
-					<hr>
-					<div class="pad-l pad-r pad-b">
+					{{/if}}
+				</div>
+				<hr>
+				<div class="pad-l pad-r pad-b">
+					{{#with person as |staff|}}
 						{{partial 'partials/staff/username-with-confirm'}}
 						{{partial 'partials/staff/password-with-confirm'}}
-					</div>
-				{{/with}}
+					{{/with}}
+				</div>
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
 				title="Availability"}}
@@ -99,10 +121,10 @@
 			                </button>
 			            </div>
 			            <div class="clear-badge no-space">
-			                <button class="btn btn-default" type='button'
-			                    onclick={{route-action 'persist' person}}>
-			                    Update
-			                </button>
+			            	{{async-button classNames='btn btn-default'
+			                    action=(route-action 'persist' person)
+			                    default='Update'
+			                    pending='Updating...'}}
 			            </div>
 			        </div>
 			    {{/if}}

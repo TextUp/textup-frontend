@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import callIfPresent from '../../../utils/call-if-present';
 
 export default Ember.Controller.extend({
 	records: [],
@@ -23,6 +24,23 @@ export default Ember.Controller.extend({
 					resolve();
 				}, this.get('dataHandler').buildErrorHandler(reject));
 			});
+		},
+
+		sendMessage: function(then = undefined) {
+			this.set('isSendingText', true);
+			this.set('isSendingTextError', false);
+			this.get('dataHandler')
+				.sendMessage(this.get('textContents'), this.get('contact'))
+				.then(() => {
+					this.set('isSendingTextError', false);
+					this.set('textContents', null);
+					callIfPresent(then);
+				}, () => {
+					this.set('isSendingTextError', true);
+				})
+				.finally(() => {
+					this.set('isSendingText', false);
+				});
 		},
 	},
 });

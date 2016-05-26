@@ -41,6 +41,10 @@ body {
 		left: 0;
 	}
 }
+.full-viewport-height {
+	@extend %liquid-fire-full-height;
+	@extend %border-box;
+}
 
 // Menu
 // ----
@@ -188,16 +192,15 @@ body {
 // single container structure
 // --------------------------
 
+.brand {
+	width: 125px;
+}
 .single-container {
 	@extend %vertical-scroll;
 
 	.single-header, .single-footer {
 		position: relative;
 		text-align: center;
-
-		.brand {
-			width: 125px;
-		}
 	}
 	.single-body {
 		background-color: $bg-light-color;
@@ -395,4 +398,11 @@ body {
 .section-footer {
 	position: relative;
 	border-top: 1px solid $border-color;
+}
+.section-overlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 100%;
+    z-index: 99;
 }

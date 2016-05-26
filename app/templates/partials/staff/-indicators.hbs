@@ -18,3 +18,13 @@
         </span>
     {{/tool-tipster}}
 {{/if}}
+{{#if (eq authManager.authUser.username person.username)}}
+    {{#tool-tipster tagName='span'
+        theme='tooltipster-clean'
+        title='This is me!'}}
+        <span class="fa-stack text-smaller">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+        </span>
+    {{/tool-tipster}}
+{{/if}}

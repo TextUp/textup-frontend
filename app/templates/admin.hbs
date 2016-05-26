@@ -1,3 +1,5 @@
+{{title 'Admin ' stateManager.owner.name prepend=false separator=" - "}}
+
 {{#sliding-drawer contentsId='menu'
     closeOnContentsClick=true
     allowCloseContentsSelector='.menu-item'
@@ -119,7 +121,7 @@
             <span class="fa fa-plus"></span>
         </button >
     </li>
-    {{#each teams as |team|}}
+    {{#each model.teams as |team|}}
         {{#link-to 'admin.team' tagName='li'
             classNames='menu-item display-xs display-s display-m'}}
             <span class="text-bold">{{team.name}}</span>

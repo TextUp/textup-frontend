@@ -5,9 +5,19 @@ import Ember from 'ember';
 // we load records from the 'records' endpoint
 const {
 	equal: eq,
+	notEmpty
 } = Ember.computed;
 
 export default DS.Model.extend({
+
+	init: function() {
+		this._super(...arguments);
+		this.set('recipients', []);
+	},
+
+	// Attributes
+	// ----------
+
 	whenCreated: DS.attr('date'),
 	outgoing: DS.attr('boolean'),
 	hasAwayMessage: DS.attr('boolean'),
@@ -32,6 +42,11 @@ export default DS.Model.extend({
 	voicemailUrl: DS.attr('string'),
 	voicemailInSeconds: DS.attr('number'),
 
+	// Not attributes
+	// --------------
+
+	recipients: null,
+
 	// Text
 	// ----
 
@@ -40,6 +55,7 @@ export default DS.Model.extend({
 	// Computed properties
 	// -------------------
 
+	hasManualChanges: notEmpty('recipients'),
 	isText: eq('type', 'TEXT'),
 	isCall: eq('type', 'CALL'),
 

@@ -13,8 +13,8 @@ export default Ember.Component.extend({
 	}),
 
 	actions: {
-		select: function(numObj, event) {
-			return new Ember.RSVP.Promise((resolve, reject) => {
+		select: function(numObj) {
+			return new Ember.RSVP.Promise((resolve) => {
 				this.set('selected', numObj);
 				resolve();
 			});

@@ -157,6 +157,9 @@
 	padding: $form-v-space $padding;
 	width: 100%;
 
+	.input-group-addon {
+		vertical-align: top;
+	}
 	&.floating {
 		position: absolute;
 		height: auto;

@@ -30,14 +30,20 @@ const {
 					type: 'email'
 				})
 			]
-		},
-		status: validator('inclusion', { in : [
-				'BLOCKED', 'PENDING', 'STAFF', 'ADMIN'
-			]
-		})
+		}
 	});
 
 export default DS.Model.extend(Validations, {
+
+	rollbackAttributes: function() {
+		this._super(...arguments);
+		this.set('newPhone', null);
+		this.set('isSelected', false);
+	},
+
+	// Attributes
+	// ----------
+
 	username: DS.attr('string'),
 	name: DS.attr('string'),
 	// usually blank, for account creation or password change
@@ -123,9 +129,4 @@ export default DS.Model.extend(Validations, {
 				}, reject);
 			});
 		}),
-
-	// Not attributes
-	// --------------
-
-	newPersonalNumber: null,
 });

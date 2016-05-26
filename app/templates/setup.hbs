@@ -1,8 +1,33 @@
+{{title "Set Up"}}
+
 <div class="single-container">
     <div class="single-header">
     	<img class="brand" src='assets/images/logo.png' />
         <h3>Set Up Account</h3>
+        <div class="subtitle">
+        	<a href="" class='text-bold text-white'
+        		{{action 'logout'}}>
+        		Log out
+    		</a>
+        </div>
     </div>
-    {{liquid-outlet}}
+    <div class="single-body">
+	    <div class="single-body-header">
+	        <h5 class="text-center pad-b">Welcome to TextUp, {{authManager.authUser.name}}!</h5>
+	        <p class='text-justify'>Harness the power of TextUp by <b>connecting your personal cell phone to your account.</b> Please enter your personal cell phone below to get started. We'll send you a text message with a verification code after you submit your number.</p>
+	    </div>
+	    <div class="single-body-content">
+	        {{phone-control/mutable-validated
+	            number=authManager.authUser.personalPhoneNumber
+	            controlButtonClass='blend-in btn-default'}}
+	    </div>
+	    <div class="single-body-footer text-center">
+	    	<button class="btn btn-default" type='button'
+	    		disabled={{not authManager.authUser.personalPhoneNumber}}
+	    		onclick={{route-action 'addPersonalPhone' authManager.authUser}}>
+	    		Finish
+	    	</button>
+	    </div>
+	</div>
 </div>
 

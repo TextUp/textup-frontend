@@ -1,7 +1,38 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import {
+	validator,
+	buildValidations
+} from 'ember-cp-validations';
 
-export default DS.Model.extend({
+const Validations = buildValidations({
+	address: {
+		description: 'Address',
+		validators: [
+			validator('presence', true)
+		]
+	},
+	lat: {
+		description: 'Latitude',
+		validators: [
+			validator('number', {
+				gt: -90,
+				lt: 90
+			})
+		]
+	},
+	lon: {
+		description: 'Longitude',
+		validators: [
+			validator('number', {
+				gt: -180,
+				lt: 180
+			})
+		]
+	}
+});
+
+export default DS.Model.extend(Validations, {
 	address: DS.attr('string'),
 	lat: DS.attr('number'),
 	lon: DS.attr('number'),
@@ -11,10 +42,12 @@ export default DS.Model.extend({
 
 	latLng: Ember.computed('lat', 'lon', {
 		get: function() {
-			return {
+			const lat = this.get('lat'),
+				lng = this.get('lon');
+			return (Ember.isPresent(lat) && Ember.isPresent(lng)) ? {
 				lat: this.get('lat'),
 				lng: this.get('lon')
-			};
+			} : null;
 		},
 		set: function(key, value) {
 			this.setProperties({

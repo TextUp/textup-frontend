@@ -1,8 +1,8 @@
 {{#slideout-pane title='Compose'
 	onOpen=(route-action 'initializeCompose')
     doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
-    ignoreCloseSelectors='.header-slideout'
-    focusSelector='.multi-select-new-input'}}
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
 		<div class="form-element">
 			{{#multi-select data=model.tags
@@ -52,9 +52,13 @@
 		</div>
 	</div>
 	<div class="form-element text-center">
-		<button class="btn btn-default" type='button'
-			{{action 'sendMessage'}}>
-	        Send
-	    </button>
+	    {{async-button classNames='btn btn-default'
+	    	action=(route-action "sendMessage" composeMessage selectedRecipients
+	    		slideout.actions.close)
+	    	disableWhen=(or (not composeMessage) (not hasRecipients))
+	    	default='Send'
+	    	pending='Sending...'
+	    	fulfilled='Sent!'
+	    	rejected='Send Error'}}
 	</div>
 {{/slideout-pane}}

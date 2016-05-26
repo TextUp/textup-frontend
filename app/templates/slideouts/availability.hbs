@@ -2,7 +2,7 @@
     doClose=(route-action 'revert' model
         (route-action 'revert' authManager.authUser
             (route-action 'closeAllSlideouts')))
-    ignoreCloseSelectors='.header-slideout'
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     focusSelector='.start-focus' as |slideout|}}
 	<div class="form-element pad-t pad-l pad-r">
 		<label for='Your Name' class='control-label'>Phone Away Message</label>
@@ -39,12 +39,12 @@
                 </button>
             </div>
             <div class="clear-badge no-space">
-                <button class="btn btn-default" type='button'
-                    onclick={{route-action 'persist' model
+                {{async-button classNames='btn btn-default'
+                    action=(route-action 'persist' model
                         (route-action 'persist' authManager.authUser
-                        (route-action 'closeAllSlideouts'))}}>
-                    Update
-                </button>
+                        (route-action 'closeAllSlideouts')))
+                    default='Update'
+                    pending='Updating...'}}
             </div>
         </div>
     {{/if}}

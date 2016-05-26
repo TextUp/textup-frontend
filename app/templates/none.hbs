@@ -1,9 +1,11 @@
+{{title "Pending"}}
+
 <div class="single-container">
     <div class="single-header">
         <img class="brand" src='assets/images/logo.png' />
         <h3>Hello, {{authManager.authUser.name}}!</h3>
         <div class="subtitle">
-            <a class='text-white' href="#" {{action 'logout'}}>
+            <a class='text-white' href="#" onclick={{route-action 'logout'}}>
                 Done editing info? <b>Log out.</b>
             </a>
         </div>
@@ -16,8 +18,8 @@
             <p class="text-justify">
                 {{#if authManager.authUser.isPending}}
                     <span>Your account is waiting for an administrator's approval. You will be emailed when you receive confirmation.</span>
-                {{else if authManager.authUser.org.isPending}}
-                    <span>Your account's organization is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
+                {{else if authManager.authUser.org.content.isPending}}
+                    <span>Your organization, <span class="text-bold">{{authManager.authUser.org.content.name}}</span>, is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
                 {{else}}
                     <span>Your administrator hasn't assigned approved you for a TextUp phone or assigned you to a team with a TextUp phone.</span>
                 {{/if}}
@@ -25,18 +27,28 @@
             </p>
         </div>
         <div class="single-body-content">
-            {{partial 'partials/staff/settings'}}
-            <div class="pad-t text-center">
-                <button class="btn" type='button'>
-                    Cancel
-                </button>
-                <button class="btn btn-default" type='button'>
-                    Update
-                </button>
-            </div>
-            <hr>
-            {{partial 'partials/staff/username-with-confirm'}}
-            {{partial 'partials/staff/password-with-confirm'}}
+            {{#with authManager.authUser as |staff|}}
+                {{partial 'partials/staff/settings'}}
+                {{#if staff.hasDirtyAttributes}}
+                    {{#if (and (not usernameDropdown.isOpen)
+                        (not passwordDropdown.isOpen))}}
+                        <div class="pad-t text-center">
+                            <button class="btn" type='button'
+                                onclick={{route-action 'revert' staff}}>
+                                Cancel
+                            </button>
+                            {{async-button classNames='btn btn-default'
+                                disableWhen=(not (v-get staff 'isValid'))
+                                action=(route-action 'persist' staff)
+                                default='Update'
+                                pending='Updating...'}}
+                        </div>
+                    {{/if}}
+                {{/if}}
+                <hr>
+                {{partial 'partials/staff/username-with-confirm'}}
+                {{partial 'partials/staff/password-with-confirm'}}
+            {{/with}}
         </div>
     </div>
     <div class="single-footer"></div>

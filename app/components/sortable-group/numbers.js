@@ -52,9 +52,6 @@ export default Ember.Component.extend(Validated, {
 		storeNewNumber: function(val) {
 			this.set('newNumber', val);
 		},
-		clearNew: function() {
-			this.set('newNumber', '');
-		},
 		addNewNumber: function(val, isValid) {
 			if (isValid) {
 				this.get('numbers').pushObject({

@@ -7,6 +7,10 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
 
+    this.route('error', {
+        path: '/*wildcard'
+    });
+
     // Public
     // ------
 
@@ -15,7 +19,7 @@ Router.map(function() {
         this.route('new');
         this.route('account');
     });
-    this.route('setup', function() {});
+    this.route('setup');
 
     // Auth
     // ----

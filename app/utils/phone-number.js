@@ -4,7 +4,7 @@ function clean(input) {
 	if (!Ember.isPresent(input)) {
 		return input;
 	}
-	const cleaned = input.replace(/\D+/g, '');
+	const cleaned = String(input).replace(/\D+/g, '');
 	return (cleaned.length === 11 && cleaned[0] === '1') ? cleaned.slice(1) : cleaned;
 }
 

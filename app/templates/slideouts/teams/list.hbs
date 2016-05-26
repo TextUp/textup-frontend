@@ -1,17 +1,24 @@
-{{#slideout-pane title=(if model.teams 'Team' 'New Team')
+{{#slideout-pane title=(if model.teams 'Teams' 'New Team')
     direction='left'
-    doClose=(route-action 'closeAllSlideouts')
-    ignoreCloseSelectors='.header-slideout' as |slideout|}}
+    doClose=(if (and newTeam (not newTeam.isDeleted))
+        (route-action 'revert' newTeam (route-action 'closeAllSlideouts'))
+        (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    focusSelector='.start-focus' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
+        bodyFocusOnOpenSelector='.start-focus'
         startOpen=(if model.teams false true)
+        onOpen=(route-action 'initializeNewTeam')
+        onClosed=(route-action 'revert' newTeam
+            (route-action 'revert' newTeam.location.content))
         tabindex=false
         hideTriggerOnOpen=true as |hideAway|}}
         <div class="pad-t">
             {{partial 'partials/team/create-edit'}}
         </div>
-        <div class="horizontal-items text-center margin-t-double margin-b">
+        <div class="form-element horizontal-items text-center">
             {{#if model.teams}}
                 <div class="clear-badge no-space">
                     <button class="btn" type='button'
@@ -21,13 +28,21 @@
                 </div>
             {{/if}}
             <div class="clear-badge no-space">
-                <button class="btn btn-default" type='button'
-                    onclick={{hideAway.actions.close}}>
-                    Create
-                </button>
+                {{async-button classNames='btn btn-default'
+                    disableWhen=(not (v-get newTeam 'isValid'))
+                    action=(route-action 'createTeam' newTeam
+                        hideAway.actions.close)
+                    default='Create'
+                    pending='Creating...'}}
             </div>
         </div>
+        {{#with newTeam as |owner|}}
+            {{partial 'partials/location'}}
+        {{/with}}
     {{else}}
+        <button class="btn btn-span start-focus" type='button'>
+            <span class="fa fa-plus"></span>
+        </button>
          <ul class="result-list">
             {{#each model.teams as |team|}}
                 <li class="result-item">
@@ -40,6 +55,17 @@
                                 {{preview-badge color=team.hexColor
                                     onlyShowFull=true
                                     content=team.name}}
+                                {{#if team.phone}}
+                                    <span class="badge">
+                                        {{#tool-tipster tagName='span'
+                                            position='right'
+                                            theme='tooltipster-clean'
+                                            title=(concat 'TextUp Phone '
+                                                (phone-number team.phone))}}
+                                            <span class="fa fa-phone"></span>
+                                        {{/tool-tipster}}
+                                    </span>
+                                {{/if}}
                                 <span class="badge">
                                     {{team.numMembers}}
                                     <span class="fa fa-user"></span>
@@ -47,16 +73,25 @@
                             </div>
                         {{/link-to}}
                         <div class="pull-right">
-                            <button class="btn btn-plain" type='button'>
-                                <span class="fa fa-trash"></span>
-                            </button>
+                            {{#if (not team.isDeleted)}}
+                                <button class="btn btn-plain" type='button'
+                                    onclick={{route-action 'markForDelete' team}}>
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                            {{else}}
+                                <button class="btn btn-plain" type='button'
+                                    onclick={{route-action 'revert' team}}>
+                                    Undo
+                                </button>
+                                {{async-button classNames='btn btn-plain btn-danger'
+                                    action=(route-action 'deleteTeam' team)
+                                    default='Delete'
+                                    pending='Deleting...'}}
+                            {{/if}}
                         </div>
                     </div>
                 </li>
             {{/each}}
         </ul>
-        <button class="btn btn-span" type='button'>
-            <span class="fa fa-plus"></span>
-        </button>
     {{/hide-away}}
 {{/slideout-pane}}

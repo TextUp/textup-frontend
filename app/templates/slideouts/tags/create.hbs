@@ -2,7 +2,7 @@
     direction='left'
     onOpen=(route-action 'initializeNewTag')
     doClose=(route-action 'revert' newTag (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout'
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t pad-l pad-r">
         {{partial 'partials/tag/create-edit'}}
@@ -15,11 +15,12 @@
             </button>
         </div>
         <div class="clear-badge no-space">
-            <button class="btn btn-default" type='button'
-                disabled={{not (v-get newTag 'isValid')}}
-                {{action 'createTag' newTag (route-action 'closeAllSlideouts')}}>
-                Create
-            </button>
+            {{async-button classNames='btn btn-default'
+                disableWhen=(not (v-get newTag 'isValid'))
+                action=(route-action 'createTag' newTag
+                    slideout.actions.close)
+                default='Create'
+                pending='Creating...'}}
         </div>
     </div>
 {{/slideout-pane}}

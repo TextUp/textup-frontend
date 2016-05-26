@@ -140,6 +140,7 @@
     &.btn-span {
         @extend %input-disabled;
         width: 100%;
+        border-radius: 0;
     }
     .horizontal-items {
         position: relative;

@@ -1,15 +1,38 @@
 {{#slideout-pane title='Your Account'
-    doClose=(route-action 'closeAllSlideouts')
-    ignoreCloseSelectors='.header-slideout'
+    doClose=(route-action 'revert' stateManager.owner
+        (route-action 'revert' authManager.authUser)
+        (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     includeDefaultHeader=true
     defaultHeaderClass='display-xs display-s display-m'
     focusSelector='.hide-away-trigger, .slideout-header'}}
-    {{#tab-container animation='fade' as |tabContainer doRegister|}}
+    {{#tab-container onChange=(route-action 'revert' stateManger.owner
+        (route-action 'revert' authManager.authUser))
+        animation='fade' as |tabContainer doRegister|}}
         {{#with stateManager.ownerAsOrg as |org|}}
             {{#tab-container/item doRegister=doRegister
                 title=org.name}}
                 <div class="pad-t pad-b">
-                    {{partial 'partials/org/settings'}}
+                    <div class="form-element pad-l pad-r">
+                        <label for="Your Name">Organization Name</label>
+                        {{input value=org.name type="text" placeholder="Organization Name" class="form-control"}}
+                    </div>
+                    {{#if org.hasDirtyAttributes}}
+                        <div class="form-element text-center">
+                            <button class="btn" type='button'
+                                onclick={{route-action 'revert' org}}>
+                                Cancel
+                            </button>
+                            {{async-button classNames='btn btn-default'
+                                disableWhen=(not (v-get org 'isValid'))
+                                action=(route-action 'persist' org)
+                                default='Update'
+                                pending='Updating...'}}
+                        </div>
+                    {{/if}}
+                    {{#with org as |owner|}}
+                        {{partial 'partials/location'}}
+                    {{/with}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
@@ -17,25 +40,63 @@
             {{#tab-container/item doRegister=doRegister
                 title=team.name}}
                 <div class="pad-t pad-b">
-                    {{partial 'partials/team/settings'}}
+                    <div class="form-element pad-l pad-r">
+                        <label for="Your Name">Team Name</label>
+                        {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
+                    </div>
+                    <div class="form-element pad-l pad-r">
+                        <label for="Your Name">Team Color</label>
+                        {{color-control color=team.hexColor}}
+                    </div>
+                    <div class='form-element pad-l pad-r'>
+                        <label for='TextUp Phone'>TextUp Phone</label>
+                        {{phone-control number=team.phone}}
+                    </div>
+                    {{#if (or team.hasDirtyAttributes
+                        team.hasManualChanges)}}
+                        <div class="form-element text-center">
+                            <button class="btn" type='button'
+                                onclick={{route-action 'revert' team}}>
+                                Cancel
+                            </button>
+                            {{async-button classNames='btn btn-default'
+                                disableWhen=(not (v-get team 'isValid'))
+                                action=(route-action 'persist' team)
+                                default='Update'
+                                pending='Updating...'}}
+                        </div>
+                    {{/if}}
+                    {{#with team as |owner|}}
+                        {{partial 'partials/location'}}
+                    {{/with}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
         {{#tab-container/item doRegister=doRegister
             title="My Account"}}
             <div class="pad-all">
-                {{partial 'partials/staff/settings'}}
-                <div class="pad-t text-center">
-                    <button class="btn" type='button'>
-                        Cancel
-                    </button>
-                    <button class="btn btn-default" type='button'>
-                        Update
-                    </button>
-                </div>
-                <hr>
-                {{partial 'partials/staff/username-with-confirm'}}
-                {{partial 'partials/staff/password-with-confirm'}}
+                {{#with authManager.authUser as |staff|}}
+                    {{partial 'partials/staff/settings'}}
+                    {{#if staff.hasDirtyAttributes}}
+                        {{#if (and (not usernameDropdown.isOpen)
+                            (not passwordDropdown.isOpen))}}
+                            <div class="form-element text-center">
+                                <button class="btn" type='button'
+                                    onclick={{route-action 'revert' staff}}>
+                                    Cancel
+                                </button>
+                                {{async-button classNames='btn btn-default'
+                                    disableWhen=(not (v-get staff 'isValid'))
+                                    action=(route-action 'persist' staff)
+                                    default='Update'
+                                    pending='Updating...'}}
+                            </div>
+                        {{/if}}
+                    {{/if}}
+                    <hr>
+                    {{partial 'partials/staff/username-with-confirm'}}
+                    {{partial 'partials/staff/password-with-confirm'}}
+                {{/with}}
             </div>
         {{/tab-container/item}}
     {{/tab-container}}

@@ -21,12 +21,12 @@ export default Ember.Controller.extend({
 
 	actions: {
 		selectAll: function() {
-			this.get('contactsController.contacts').map((contact) => {
+			this.get('contactsController.contacts').forEach((contact) => {
 				contact.set('isSelected', true);
 			});
 		},
 		selectAllMyContacts: function() {
-			this.get('contactsController.contacts').map((contact) => {
+			this.get('contactsController.contacts').forEach((contact) => {
 				if (contact.get('isShared')) {
 					contact.set('isSelected', false);
 				} else {
@@ -52,7 +52,7 @@ export default Ember.Controller.extend({
 	// -------
 
 	_deselectAll: function() {
-		this.get('selected').map((contact) => {
+		this.get('selected').forEach((contact) => {
 			contact.set('isSelected', false);
 		});
 	},

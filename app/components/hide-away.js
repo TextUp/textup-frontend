@@ -1,6 +1,9 @@
 import Ember from 'ember';
 import callIfPresent from '../utils/call-if-present';
 import defaultIfAbsent from '../utils/default-if-absent';
+import {
+	distance
+} from '../utils/coordinate';
 
 const {
 	Component,
@@ -50,6 +53,7 @@ export default Component.extend({
 	classNames: 'hide-away',
 	wormholeClass: 'hide-away-wormhole',
 
+	_touchStartCoords: Ember.computed(() => Object.create(null)),
 	_willFloatOver: false,
 
 	// Computed properties
@@ -230,8 +234,35 @@ export default Component.extend({
 			}
 		}.bind(this));
 
-		$(document).on(`click.${this.elementId} touchend.${this.elementId}`,
+		$(document).on(`click.${this.elementId}`,
 			this.checkAndDoCloseOnClick.bind(this, $body));
+		// only trigger check to close on touch if touchstart follows touchend
+		$(document)
+			.on(`touchstart.${this.elementId}`, function(event) {
+				const touches = event.originalEvent.changedTouches,
+					coords = this.get('_touchStartCoords');
+				for (let i = 0; i < touches.length; i++) {
+					const touch = touches[i];
+					coords[touch.identifier] = [touch.screenX, touch.screenY];
+				}
+			}.bind(this))
+			.on(`touchend.${this.elementId}`, function(event) {
+				const touches = event.originalEvent.changedTouches,
+					coords = this.get('_touchStartCoords');
+				let shouldTryClose = false;
+				for (let i = 0; i < touches.length; i++) {
+					const touch = touches[i],
+						oldCoords = coords[touch.identifier];
+					if (!shouldTryClose && oldCoords) {
+						const dist = distance(oldCoords, [touch.screenX, touch.screenY]);
+						shouldTryClose = (dist < 20);
+					}
+					delete coords[touch.identifier];
+				}
+				if (shouldTryClose) {
+					this.checkAndDoCloseOnClick($body, event);
+				}
+			}.bind(this));
 		// Reposition on resize, scroll and orientation change
 		$(window).on(`resize.${this.elementId} orientationchange.${this.elementId}`, doReposition);
 		if (Ember.isPresent(scrollSelector)) {
@@ -456,7 +487,7 @@ export default Component.extend({
 				spaceIfBottom = parentHeight - elBox.top - elBox.height;
 			if (spaceIfBottom > bodyBox.height) {
 				this._doPositionVertical($body, 'bottom', offsetFromTopRelToTop, parentHeight);
-			} else if (spaceIfTop > bodyBox.height) {
+			} else if (spaceIfTop > bodyBox.heightb) {
 				this._doPositionVertical($body, 'top', offsetFromTopRelToBottom, parentHeight);
 			} else if (spaceIfBottom > spaceIfTop) {
 				this._doPositionVertical($body, 'bottom', offsetFromTopRelToTop, parentHeight);

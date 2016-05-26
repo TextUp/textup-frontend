@@ -1,3 +1,7 @@
+{{#if tag}}
+    {{title tag.name separator=' - '}}
+{{/if}}
+
 <div class="content">
     {{#if tag}}
         {{#hide-away tabindex=false

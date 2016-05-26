@@ -4,7 +4,7 @@ import PhoneNumber from '../mixins/phone-number-serializer';
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, PhoneNumber, {
 	attrs: {
 		org: {
-			serialize: false
+			serialize: 'ids'
 		},
 		location: {
 			deserialize: 'records',

@@ -12,21 +12,17 @@ export default Ember.Route.extend(Public, {
 	actions: {
 		login: function(un, pwd, doStore) {
 			const auth = this.get('authManager');
-			auth.login(un, pwd, doStore).then((data) => {
+			return auth.login(un, pwd, doStore).then((data) => {
 				this.notifications.success(`Welcome back ${data.staff.name}!`);
-
-				const user = auth.get('authUser');
-
-				console.log('login success!: user: ');
-				console.log(user);
-
-				auth.retryAttemptedTransition(() => this.transitionTo('main', user));
+				auth.retryAttemptedTransition(() => {
+					this.transitionTo('main', auth.get('authUser'));
+				});
 			}, () => {
 				this.notifications.error('Incorrect or blank username or password');
 			});
 		},
 		resetPassword: function(un) {
-			this.get('authManager').resetPassword(un).then(() => {
+			return this.get('authManager').resetPassword(un).then(() => {
 				this.notifications.success(`All good! The password reset
 					should be in your inbox in a few minutes.`);
 			}, () => {
