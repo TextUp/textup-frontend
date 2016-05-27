@@ -6,48 +6,60 @@ export default Ember.Service.extend({
 
 	_socket: null,
 
-	// Channels
-	// -------
+	// Events
+	// ------
 
-	subscribe: function(channelName, options = undefined) {
-		return new Ember.RSVP.Promise((resolve, reject) => {
-			const socket = this._getOrCreateSocket(options),
-				existing = socket.channel(channelName);
-			if (existing) {
-				resolve();
-			} else {
-				socket.subscribe(channelName)
-					.bind('pusher:subscription_succeeded', resolve)
-					.bind('pusher:subscription_error', reject);
-			}
-		});
+	willDestroy: function() {
+		this._super(...arguments);
+		this.disconnect();
 	},
-	unsubscribe: function(channelName) {
+
+	// Socket
+	// ------
+
+	connect: function(options = undefined) {
+		return this._getOrCreateSocket(options);
+	},
+	disconnect: function() {
 		const socket = this.get('_socket');
 		if (socket) {
-			socket.unsubscribe(channelName);
+			this.unbind();
+			socket.disconnect();
 		}
 	},
 
 	// Channel events
 	// --------------
 
-	bind: function(channelName, event, handler, options = undefined) {
+	bind: function(channelName, eventName, handler, options = undefined) {
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			const socket = this._getOrCreateSocket(options);
 			this._getOrCreateChannel(socket, channelName).then((channel) => {
-				channel
+				channel.bind(eventName, handler);
+				resolve();
 			}, reject);
 		});
 	},
-	unbind: function(channel, event) {
-		if (arguments.length === 0) {
-
-		} else if (arguments.length === 1) {
-
-		} else { // take first two arguments
-
+	unbind: function() {
+		const socket = this.get('_socket'),
+			[channelName, eventName] = arguments;
+		if (!socket) {
+			return;
 		}
+		if (arguments.length === 0) { // unbind all events on all channels
+			Ember.A(socket.allChannels()).forEach((ch) => ch.unbind());
+		} else {
+			const channel = socket.channel(channelName);
+			if (!channel) {
+				return;
+			}
+			if (arguments.length === 1) { // unbind all events on a channel
+				channel.unbind();
+			} else { // unbind specific event on a channel
+				channel.unbind(eventName);
+			}
+		}
+		return this; // for fluent syntax
 	},
 
 	// Helpers
@@ -72,7 +84,7 @@ export default Ember.Service.extend({
 			if (existing) {
 				resolve();
 			} else {
-				const channel = socket.subscribe(channelName)
+				const channel = socket.subscribe(channelName);
 				channel.bind('pusher:subscription_error', reject)
 					.bind('pusher:subscription_succeeded', resolve.bind(this, channel));
 			}

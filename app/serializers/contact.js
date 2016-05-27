@@ -18,6 +18,9 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		numbers: {
 			serialize: false //any changes happen with numberActions
 		},
+		phoneId: {
+			serialize: false
+		},
 		lastRecordActivity: {
 			serialize: false
 		},

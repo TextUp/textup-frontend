@@ -54,10 +54,10 @@ export default Ember.Service.extend(Ember.Evented, {
 			this._trySet(_l, this.get('requestKey'), Date.now());
 			// resolve promise
 			const timeoutTimer = Ember.run.later(this, function() {
-				this.off('updated', this);
+				this.off(config.events.storage.updated, this);
 				resolve();
 			}, this.get('syncTimeout'));
-			this.one('updated', this, function() {
+			this.one(config.events.storage.updated, this, function() {
 				Ember.run.cancel(timeoutTimer);
 				resolve();
 			});
@@ -111,6 +111,6 @@ export default Ember.Service.extend(Ember.Evented, {
 		for (let key in data) {
 			this._trySet(_s, key, data[key]);
 		}
-		this.trigger('updated');
+		this.trigger(config.events.storage.updated);
 	}
 });

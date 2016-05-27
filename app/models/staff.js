@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import HasPhone from '../mixins/phone-model';
 import {
 	validator,
 	buildValidations
@@ -7,8 +8,7 @@ import {
 
 const {
 	equal: eq,
-	alias,
-	notEmpty
+	alias
 } = Ember.computed,
 	Validations = buildValidations({
 		name: {
@@ -33,11 +33,10 @@ const {
 		}
 	});
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Validations, HasPhone, {
 
 	rollbackAttributes: function() {
 		this._super(...arguments);
-		this.set('newPhone', null);
 		this.set('isSelected', false);
 	},
 
@@ -53,14 +52,6 @@ export default DS.Model.extend(Validations, {
 	email: DS.attr('string'),
 	status: DS.attr('string'),
 	personalPhoneNumber: DS.attr('string'),
-	awayMessage: DS.attr('string', {
-		defaultValue: ''
-	}),
-
-	// for building share actions
-	phoneId: DS.attr('number'),
-	// if has phone, string phone number
-	phone: DS.attr('phone-number'),
 
 	org: DS.belongsTo('organization'),
 	tags: DS.hasMany('tag'),
@@ -84,17 +75,15 @@ export default DS.Model.extend(Validations, {
 	// Not attributes
 	// --------------
 
-	newPhone: null,
 	isSelected: false,
 
 	// Computed properties
 	// -------------------
 
-	hasManualChanges: notEmpty('newPhone'),
 	urlIdentifier: Ember.computed('username', function() {
 		return Ember.String.dasherize(this.get('username') || '');
 	}),
-	sharingId: alias('phoneId'),
+	sharingId: alias('phoneId'), // for building share actions
 
 	isBlocked: eq('status', 'BLOCKED'),
 	isPending: eq('status', 'PENDING'),

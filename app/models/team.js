@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import HasPhone from '../mixins/phone-model';
 import {
 	validator,
 	buildValidations
@@ -32,14 +33,13 @@ const {
 		}
 	});
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Validations, HasPhone, {
 	init: function() {
 		this._super(...arguments);
 		this.set('actions', []);
 	},
 	rollbackAttributes: function() {
 		this._super(...arguments);
-		this.set('newPhone', null);
 		this.get('actions').clear();
 	},
 
@@ -50,22 +50,16 @@ export default DS.Model.extend(Validations, {
 	hexColor: DS.attr('string', {
 		defaultValue: '#3399cc'
 	}),
-	awayMessage: DS.attr('string', {
-		defaultValue: ''
-	}),
 	numMembers: DS.attr('number'),
 
 	org: DS.belongsTo('organization'),
 	location: DS.belongsTo('location'),
 	tags: DS.hasMany('tag'),
 
-	// if has phone, string phone number
-	phone: DS.attr('phone-number'),
 
 	// Not attributes
 	// --------------
 
-	newPhone: null,
 	actions: null,
 
 	// Computed properties
@@ -73,8 +67,7 @@ export default DS.Model.extend(Validations, {
 
 	locationIsDirty: alias('location.hasDirtyAttributes'),
 	hasActions: notEmpty('actions'),
-	hasNewPhone: notEmpty('newPhone'),
-	hasManualChanges: or('hasActions', 'hasNewPhone', 'locationIsDirty'),
+	hasManualChanges: or('hasActions', 'hasNewPhone', 'locationIsDirty'), // @override
 	urlIdentifier: Ember.computed('name', function() {
 		return Ember.String.dasherize(this.get('name') || '');
 	}),

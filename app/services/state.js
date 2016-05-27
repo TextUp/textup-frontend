@@ -8,7 +8,8 @@ import {
 
 const {
 	equal: eq,
-	match
+	match,
+	or
 } = Ember.computed;
 
 export default Ember.Service.extend({
@@ -17,6 +18,23 @@ export default Ember.Service.extend({
 	dataHandler: Ember.inject.service('data'),
 	routing: Ember.inject.service('-routing'),
 	store: Ember.inject.service(),
+	socket: Ember.inject.service(),
+
+	// Events
+	// ------
+
+	init: function() {
+		this._super(...arguments);
+		this.get('authManager')
+			.on(config.events.auth.success, this._bindSocketEvents.bind(this))
+			.on(config.events.auth.clear, this._unbindSocketEvents.bind(this));
+	},
+	willDestroy: function() {
+		this._super(...arguments);
+		this.get('authManager')
+			.off(config.events.auth.success)
+			.off(config.events.auth.clear);
+	},
 
 	// Viewing
 	// -------
@@ -129,4 +147,48 @@ export default Ember.Service.extend({
 			});
 		return numsMap;
 	},
+
+	// Socket handlers
+	// ---------------
+
+	_bindSocketEvents: function() {
+		const socket = this.get('socket'),
+			channelName = this.get('authManager.channelName');
+		Ember.RSVP.all([
+			socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
+			socket.bind(channelName, 'recordStatuses', this._handleSocketRecords.bind(this)),
+			socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this))
+		]).catch(this.get('dataHandler').buildErrorHandler());
+	},
+	_unbindSocketEvents: function() {
+		this.get('socket').disconnect();
+	},
+	_handleSocketRecords: function(data) {
+		const state = this.get('stateManager'),
+			store = this.get('store');
+		if (state.get('ownerHasPhone')) {
+			const contacts = state.get('owner.contacts');
+			(data.records || []).forEach((record) => {
+				const record = store.push(store.normalize('record', record));
+				contacts.unshift
+			});
+
+		}
+	},
+	_handleSocketContacts: function(data) {
+		const state = this.get('stateManager');
+		if (state.get('ownerHasPhone')) {
+			const store = this.get('store'),
+				contacts = state.get('owner.contacts');
+			((data && data.contacts) || []).forEach((contact) => {
+				const existing = store.hasRecordForId('contact', contact.id),
+					model = store.push(store.normalize('contact', contact)),
+					phone = this._getByPhoneId(contact.id); // actually, staff or team member with phone
+				if (!existing && owner) {
+					phone.
+					contacts.unshift(model);
+				}
+			});
+		}
+	}
 });

@@ -16,7 +16,10 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, PhoneNumber, {
 		},
 		numMembers: {
 			serialize: false
-		}
+		},
+		phoneId: {
+			serialize: false
+		},
 	},
 
 	serialize: function(snapshot) {

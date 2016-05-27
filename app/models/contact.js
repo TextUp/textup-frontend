@@ -79,6 +79,7 @@ export default DS.Model.extend(Validations, {
 		defaultValue: () => []
 	}),
 
+	phoneId: DS.attr('number'),
 	records: DS.hasMany('record'),
 
 	// Contact

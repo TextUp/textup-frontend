@@ -31,6 +31,15 @@ module.exports = function(environment) {
         },
         socket: {
             authKey: '931ddcc6c5780a68022f'
+        },
+        events: {
+            auth: {
+                success: 'authSuccess',
+                clear: 'authClear'
+            },
+            storage: {
+                updated: 'storageUpdated'
+            }
         }
     };
 

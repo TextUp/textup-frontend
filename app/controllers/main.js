@@ -4,8 +4,12 @@ import {
 	clean as cleanNumber
 } from '../utils/phone-number';
 
+const {
+	alias
+} = Ember.computed;
+
 export default Ember.Controller.extend({
-	contacts: [],
+	contacts: alias('stateManager.owner.contacts'),
 	filter: 'all',
 
 	newContact: null,
