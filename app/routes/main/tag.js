@@ -11,13 +11,16 @@ export default Ember.Route.extend({
 	},
 	model: function(params) {
 		const id = params.tag_identifier,
-			tags = this.modelFor('main').get('tags'),
-			tag = tags.findBy('urlIdentifier', id);
-		if (tag) {
-			return tag;
-		} else {
-			this.transitionTo('main.contacts');
-		}
+			owner = this.modelFor('main');
+		return owner.get('phone').then((phone) => {
+			const tags = phone.get('tags'),
+				tag = tags.findBy('urlIdentifier', id);
+			if (tag) {
+				return tag;
+			} else {
+				this.transitionTo('main.contacts');
+			}
+		});
 	},
 	setupController: function(controller, tag) {
 		this._super(...arguments);

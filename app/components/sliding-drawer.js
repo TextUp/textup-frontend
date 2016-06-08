@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
+import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend({
 
@@ -7,6 +8,8 @@ export default Ember.Component.extend({
 	closeOnContentsClick: defaultIfAbsent(false),
 	allowCloseContentsSelector: defaultIfAbsent(''),
 	ignoreCloseContentsSelector: defaultIfAbsent(''),
+
+	doRegister: null,
 
 	classNames: "sliding-drawer",
 	_bodyClass: 'sliding-drawer-body',
@@ -32,6 +35,14 @@ export default Ember.Component.extend({
 		};
 	}),
 
+	// Events
+	// ------
+
+	didInitAttrs: function() {
+		this._super(...arguments);
+		callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+	},
+
 	// Private methods
 	// ---------------
 
@@ -43,6 +54,9 @@ export default Ember.Component.extend({
 		}
 	},
 	_open: function() {
+		if (this.isDestroying || this.isDestroyed) {
+			return;
+		}
 		this.$().addClass('drawer-opened');
 		if (this.get("closeOnBodyClick")) {
 			this.$().addClass('auto-close');
@@ -56,6 +70,9 @@ export default Ember.Component.extend({
 		this.set('publicAPI.isOpen', true);
 	},
 	_close: function() {
+		if (this.isDestroying || this.isDestroyed) {
+			return;
+		}
 		this.$().removeClass('drawer-opened')
 			.removeClass('auto-close');
 		this.set('publicAPI.isOpen', false);

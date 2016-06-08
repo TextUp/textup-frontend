@@ -6,6 +6,7 @@ import callIfPresent from '../utils/call-if-present';
 export default Ember.Route.extend(Slideout, Loading, {
 
 	attemptedTransition: null,
+	storage: Ember.inject.service(),
 
 	// Events
 	// ------
@@ -29,9 +30,16 @@ export default Ember.Route.extend(Slideout, Loading, {
 		// rejects when the staff is not logged in
 		return this.get('authManager').setupFromStorage().catch(() => {});
 	},
+	redirect: function() {
+		const url = this.get('storage').getItem('currentUrl');
+		// initialize the observer after retrieving the previous currentUrl
+		this.get('stateManager').trackLocation();
+		if (url) {
+			this.transitionTo(url);
+		}
+	},
 
 	actions: {
-
 		validate: function(un, pwd, then = undefined) {
 			return this.get('authManager').validate(un, pwd).then(() => {
 				callIfPresent(then);
@@ -49,6 +57,15 @@ export default Ember.Route.extend(Slideout, Loading, {
 		// --------
 
 		didTransition: function() {
+			if (!this.get('_initialized')) {
+				Ember.run.next(this, function() {
+					const $initializer = Ember.$('#initializer');
+					$initializer.fadeOut('fast', () => {
+						$initializer.remove();
+						this.set('_initialized', true);
+					});
+				});
+			}
 			this._closeSlideout();
 		},
 		toggleSlideout: function(name, context) {

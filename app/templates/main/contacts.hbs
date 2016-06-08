@@ -85,12 +85,14 @@
             </div>
         {{/hide-away}}
     {{/if}}
-    {{#infinite-scroll classNames='section-body'
-        containerClass='result-list'
+    {{#infinite-scroll classNames='section-body bg-color bg-dark'
+        containerClass='bg-color bg-lightest'
+        itemsClass='result-list'
         direction='down'
         data=contacts
         total=numContacts
-        doLoad=(action 'loadMore') as |contact|}}
+        doLoad=(action 'loadMore')
+        doRefresh=(action 'refresh') as |contact|}}
         <div class="result-item">
             <div class="row">
                 <div class="contacts-control {{if contact.isSelected 'selected'}}"
@@ -101,19 +103,20 @@
                         'main.tag.contact'
                         'main.contacts.contact')
                         contact.id
-                    classNames="contacts-info {{if contact.isUnread 'unread'}}"
                     tagName="div"}}
-                    <p class="emphasize">
-                        <span class="margin-r-half">
-                            {{phone-number contact.identifier}}
-                        </span>
-                        <span class="clear-badge no-space">
-                            {{partial 'partials/contact/indicators'}}
-                        </span>
-                    </p>
-                    <p>
-                        {{moment-from-now contact.lastRecordActivity interval=1000}}
-                    </p>
+                    <div class='contacts-info {{if contact.isUnread "unread"}}'>
+                        <p class="emphasize">
+                            <span class="margin-r-half">
+                                {{phone-number contact.identifier}}
+                            </span>
+                            <span class="clear-badge no-space">
+                                {{partial 'partials/contact/indicators'}}
+                            </span>
+                        </p>
+                        <p>
+                            {{moment-from-now contact.lastRecordActivity interval=1000}}
+                        </p>
+                    </div>
                 {{/link-to}}
             </div>
             {{#if (and (not contact.isShared) contact.tags)}}

@@ -21,7 +21,7 @@
 		</span>
     </div>
 	{{#infinite-scroll classNames='section-body'
-        containerClass='tile-list'
+        itemsClass='tile-list'
         direction='down'
         data=pendingStaff
         total=numPending
@@ -32,6 +32,7 @@
         	clickOutToClose=false
 			focusOutClose=false
 			bodyClickClose=false
+			startOpen=selected.newPhone
 			allowedTriggerSelectors='.add-phone-button'}}
 			<div class="bg-color bg-dark pad-all border-l border-r border-b row
 				{{if (eq selected.pendingAction 'reject') 'hidden'}}">
@@ -40,7 +41,7 @@
 						Add a TextUp Phone
 					</div>
 				</div>
-				<div class="xs-full-row m-2-row-3">
+				<div class="xs-full-row m-2-row-3 horizontal-items">
 					<div class="input-group">
 						<div class="input-group-element">
 							{{single-select/mutable-phone-number
@@ -59,7 +60,7 @@
 				</div>
 			</div>
 		{{else}}
-        	<div class="xs-full-row s-row-2 l-2-row-3 text-ellipsis">
+        	<div class="xs-full-row s-row-2 l-2-row-3 text-ellipsis horizontal-items">
 				<span class="text-bold control-text pad-r">
 					{{selected.name}}
 				</span>

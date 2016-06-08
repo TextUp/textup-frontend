@@ -3,23 +3,34 @@
 in the model hook to run --}}
 
 <ul class="reset-list">
-    {{#link-to 'main' authManager.authUser.urlIdentifier tagName='li' classNames='menu-item'}}
+    {{#link-to 'main.contacts' authManager.authUser.urlIdentifier
+        tagName='li'
+        classNames='menu-item'}}
         <div class="offset-xs-row-10 xs-8-row-10 text-left">
             <p class="text-bold text-ellipsis">{{authManager.authUser.name}}</p>
-            <p class="text-bold text-ellipsis">{{phone-number authManager.authUser.phone}}</p>
+            <p class="text-bold text-ellipsis">
+                {{phone-number authManager.authUser.phone.content.number}}
+            </p>
         </div>
     {{/link-to}}
     {{#each authManager.authUser.teamsWithPhones as |team|}}
-        {{#link-to 'main' team.urlIdentifier tagName='li' classNames='menu-item'}}
+        {{#link-to 'main.contacts' team.urlIdentifier
+            tagName='li'
+            classNames='menu-item'}}
             <div class="offset-xs-row-10 xs-8-row-10 text-left">
                 <p class="text-bold text-ellipsis">{{team.name}}</p>
-                <p class="text-bold text-ellipsis">{{phone-number team.phone}}</p>
+                <p class="text-bold text-ellipsis">
+                    {{phone-number team.phone.content.number}}
+                </p>
             </div>
             <span class="indicator" style="background-color:{{team.hexColor}};"></span>
         {{/link-to}}
     {{/each}}
     {{#if authManager.authUser.isAdmin}}
-        {{#link-to 'admin.people' tagName='li' classNames='menu-item'}}
+        {{#link-to 'admin.people'
+            tagName='li'
+            classNames='menu-item'
+            current-when='admin'}}
             <div class="offset-xs-row-10 xs-8-row-10 text-left">
                 <p class="text-bold text-ellipsis">Admin</p>
             </div>

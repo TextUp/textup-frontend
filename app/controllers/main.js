@@ -9,7 +9,9 @@ const {
 } = Ember.computed;
 
 export default Ember.Controller.extend({
-	contacts: alias('stateManager.owner.contacts'),
+	contacts: alias('stateManager.owner.phone.content.contacts'),
+	// see main.contacts controller for explanation of _transitioning
+	_transitioning: false,
 	filter: 'all',
 
 	newContact: null,

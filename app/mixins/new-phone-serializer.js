@@ -7,15 +7,20 @@ export default Ember.Mixin.create({
 		if (newPhone) {
 			this._buildNewPhone(json, newPhone);
 			snapshot.record.set('newPhone', null);
+			snapshot.record.set('addNewPhone', false);
+			snapshot.record.set('forExistingPhone', null);
 		}
 		return json;
 	},
 
 	_buildNewPhone: function(json, phoneObj) {
+		const phoneJson = json.phone ? json.phone : Object.create(null);
 		if (phoneObj.sid) {
-			json.newPhoneApiId = phoneObj.sid;
+			phoneJson.newApiId = phoneObj.sid;
+			delete phoneJson.number;
 		} else {
-			json.phone = phoneObj.phoneNumber;
+			phoneJson.number = phoneObj.phoneNumber;
 		}
+		json.phone = phoneJson;
 	}
 });

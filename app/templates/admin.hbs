@@ -22,7 +22,7 @@
         tabindex=false
         triggerClass='header-toggle'
         allowedTriggerSelectors='.toggle-control'
-        bodyClickClose=true}}
+        bodyClickClose=false}}
         {{partial 'partials/account/switcher'}}
     {{else}}
         <div class="xs-8-row-10 toggle-control">
@@ -53,7 +53,7 @@
                 <span class="fa fa-clock-o"></span>
             {{/tool-tipster}}
             <div class="btn-expand display-xs display-s display-m">
-                <span class="text-bold">Pending</span>
+                <span>Pending</span>
                 <span class="badge dark">{{numPending}}</span>
             </div>
         {{/link-to}}
@@ -99,17 +99,17 @@
     <li class="menu-item display-xs display-s display-m
         {{if (and (not stateManager.viewingTeam) (eq filter 'active')) 'active'}}"
         {{action 'changeFilter' 'active'}}>
-        <span class="text-bold">Active</span>
+        <span>Active</span>
     </li>
     <li class='menu-item display-xs display-s display-m
         {{if (and (not stateManager.viewingTeam) (eq filter 'admins')) 'active'}}'
         {{action 'changeFilter' 'admins'}}>
-        <span class="text-bold">Admins</span>
+        <span>Admins</span>
     </li>
     <li class='menu-item display-xs display-s display-m
         {{if (and (not stateManager.viewingTeam) (eq filter 'blocked')) 'active'}}'
         {{action 'changeFilter' 'blocked'}}>
-        <span class="text-bold">Blocked</span>
+        <span>Blocked</span>
     </li>
 
     {{!-- teams --}}
@@ -122,14 +122,14 @@
         </button >
     </li>
     {{#each model.teams as |team|}}
-        {{#link-to 'admin.team' tagName='li'
+        {{#link-to 'admin.team' team tagName='li'
             classNames='menu-item display-xs display-s display-m'}}
-            <span class="text-bold">{{team.name}}</span>
+            <span>{{team.name}}</span>
             <span class="badge dark">{{team.numMembers}}</span>
             <span class="indicator" style="background-color:{{team.hexColor}};"></span>
         {{/link-to}}
     {{else}}
-        <li class='pad-t text-bold display-xs display-s display-m'>No teams yet.</li>
+        <li class='display-xs display-s display-m'>No teams yet.</li>
     {{/each}}
 
     <li class='menu-footer display-l'>

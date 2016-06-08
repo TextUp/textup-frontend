@@ -185,6 +185,7 @@ $dropdown-shadow-size: 3px;
     }
     .decoration-right {
         @extend %decoration;
+        @extend .text-right;
         bottom: -$record-item-space * 0.9;
         right: 0;
     }

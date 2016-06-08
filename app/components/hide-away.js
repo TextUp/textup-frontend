@@ -327,7 +327,8 @@ export default Component.extend({
 	},
 	open: function(event, skipFocus = false, callback = undefined) {
 		if (this.get('disabled') || this.get('publicAPI.isOpen') ||
-			(event && this._shouldStopEvent(event))) {
+			(event && this._shouldStopEvent(event)) ||
+			this.isDestroying || this.isDestroyed) {
 			return;
 		}
 
@@ -335,7 +336,8 @@ export default Component.extend({
 	},
 	close: function(event, skipFocus = false, callback = undefined) {
 		if (this.get('disabled') || !this.get('publicAPI.isOpen') ||
-			(event && this._shouldStopEvent(event))) {
+			(event && this._shouldStopEvent(event)) ||
+			this.isDestroying || this.isDestroyed) {
 			return;
 		}
 		this.doClose(skipFocus, callback);

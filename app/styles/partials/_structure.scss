@@ -198,6 +198,9 @@ body {
 .single-container {
 	@extend %vertical-scroll;
 
+	.brand {
+		margin-bottom: 1em;
+	}
 	.single-header, .single-footer {
 		position: relative;
 		text-align: center;
@@ -264,7 +267,7 @@ body {
 		width: 50em;
 
 		&.single-container-small {
-			width: 25em;
+			width: 28em;
 		}
 	    .single-header {
 			margin-top: 8vh;
@@ -399,9 +402,11 @@ body {
 	position: relative;
 	border-top: 1px solid $border-color;
 }
-.section-overlay {
+.overlay {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     z-index: 99;

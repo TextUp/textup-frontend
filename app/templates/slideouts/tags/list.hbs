@@ -1,4 +1,5 @@
-{{#slideout-pane title=(if model.tags 'Tags' 'New Tag')
+{{#slideout-pane title=(if (and model.phone.isFulfilled model.phone.content.tags)
+        'Tags' 'New Tag')
     direction='left'
     doClose=(if (and newTag (not newTag.isDeleted))
         (route-action 'revert' newTag (route-action 'closeAllSlideouts'))
@@ -8,7 +9,8 @@
         animation='fade'
         ignoreTriggerSelectors='.result-list'
         bodyFocusOnOpenSelector='.start-focus'
-        startOpen=(if model.tags false true)
+        startOpen=(if (and model.phone.isFulfilled model.phone.content.tags)
+            false true)
         onOpen=(route-action 'initializeNewTag')
         onClosed=(route-action 'revert' newTag)
         tabindex=false
@@ -17,7 +19,7 @@
             {{partial 'partials/tag/create-edit'}}
         </div>
         <div class="horizontal-items text-center margin-t-double margin-b">
-            {{#if model.tags}}
+            {{#if (and model.phone.isFulfilled model.phone.content.tags)}}
                 <div class="clear-badge no-space">
                     <button class="btn" type='button'
                         onclick={{hideAway.actions.close}}>
@@ -36,41 +38,43 @@
         </div>
     {{else}}
          <ul class="result-list">
-            {{#each model.tags as |tag|}}
-                {{#hide-away animation='slide'
-                    tabindex=false
-                    clickOutToClose=false
-                    bodyFocusOnOpenSelector='.start-focus'
-                    allowedTriggerSelectors='.pull-right' as |dropdown|}}
-                    {{partial 'partials/tag/edit-with-controls'}}
-                {{else}}
-                    <li class="result-item">
-                        <div class="row">
-                            {{#link-to 'main.tag' tag
-                                tagName='div'
-                                classNames='control-text'
-                                tabindex='0'}}
-                                <div class="horizontal-items clickable pad-all">
-                                    {{preview-badge color=tag.hexColor
-                                        onlyShowFull=true
-                                        content=tag.name}}
-                                    <span class="badge">
-                                        {{tag.numMembers}}
-                                        <span class="fa fa-user"></span>
-                                    </span>
-                                </div>
-                            {{/link-to}}
-                            {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
-                                <div class="pull-right">
-                                    <button class="btn btn-plain" type='button'>
-                                        <span class="fa fa-pencil"></span>
-                                    </button>
-                                </div>
-                            {{/if}}
-                        </div>
-                    </li>
-                {{/hide-away}}
-            {{/each}}
+            {{#if model.phone.isFulfilled}}
+                {{#each model.phone.content.tags as |tag|}}
+                    {{#hide-away animation='slide'
+                        tabindex=false
+                        clickOutToClose=false
+                        bodyFocusOnOpenSelector='.start-focus'
+                        allowedTriggerSelectors='.pull-right' as |dropdown|}}
+                        {{partial 'partials/tag/edit-with-controls'}}
+                    {{else}}
+                        <li class="result-item">
+                            <div class="row">
+                                {{#link-to 'main.tag' tag
+                                    tagName='div'
+                                    classNames='control-text'
+                                    tabindex='0'}}
+                                    <div class="horizontal-items clickable pad-all">
+                                        {{preview-badge color=tag.hexColor
+                                            onlyShowFull=true
+                                            content=tag.name}}
+                                        <span class="badge">
+                                            {{tag.numMembers}}
+                                            <span class="fa fa-user"></span>
+                                        </span>
+                                    </div>
+                                {{/link-to}}
+                                {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
+                                    <div class="pull-right">
+                                        <button class="btn btn-plain" type='button'>
+                                            <span class="fa fa-pencil"></span>
+                                        </button>
+                                    </div>
+                                {{/if}}
+                            </div>
+                        </li>
+                    {{/hide-away}}
+                {{/each}}
+            {{/if}}
         </ul>
         <button class="btn btn-span" type='button'>
             <span class="fa fa-plus"></span>

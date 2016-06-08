@@ -1,6 +1,5 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import HasPhone from '../mixins/phone-model';
 import {
 	validator,
 	buildValidations
@@ -8,7 +7,9 @@ import {
 
 const {
 	equal: eq,
-	alias
+	alias,
+	or,
+	notEmpty
 } = Ember.computed,
 	Validations = buildValidations({
 		name: {
@@ -30,14 +31,25 @@ const {
 					type: 'email'
 				})
 			]
+		},
+		phone: {
+			description: 'Phone',
+			validators: [
+				validator('belongs-to')
+			]
 		}
 	});
 
-export default DS.Model.extend(Validations, HasPhone, {
+export default DS.Model.extend(Validations, {
+
+	authManager: Ember.inject.service('auth'),
 
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.set('isSelected', false);
+		this.set('newPhone', null);
+		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
+		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
 	},
 
 	// Attributes
@@ -51,50 +63,51 @@ export default DS.Model.extend(Validations, HasPhone, {
 	}),
 	email: DS.attr('string'),
 	status: DS.attr('string'),
-	personalPhoneNumber: DS.attr('string'),
+	personalPhoneNumber: DS.attr('phone-number'),
 
 	org: DS.belongsTo('organization'),
-	tags: DS.hasMany('tag'),
+	phone: DS.belongsTo('phone'),
+	schedule: DS.belongsTo('schedule'),
+
 	teams: DS.hasMany('team'),
-
-	// Schedule
-	// --------
-
-	isAvailableNow: DS.attr('boolean'),
-	nextAvailable: DS.attr('date'),
-	nextUnavailable: DS.attr('date'),
-
-	sunday: DS.attr('collection'),
-	monday: DS.attr('collection'),
-	tuesday: DS.attr('collection'),
-	wednesday: DS.attr('collection'),
-	thursday: DS.attr('collection'),
-	friday: DS.attr('collection'),
-	saturday: DS.attr('collection'),
 
 	// Not attributes
 	// --------------
 
+	newPhone: null,
 	isSelected: false,
 
 	// Computed properties
 	// -------------------
 
+	phoneIsDirty: alias('phone.isDirty'),
+	scheduleIsDirty: alias('schedule.isDirty'),
+	hasNewPhone: notEmpty('newPhone'),
+	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'newPhone'),
+
 	urlIdentifier: Ember.computed('username', function() {
 		return Ember.String.dasherize(this.get('username') || '');
 	}),
-	sharingId: alias('phoneId'), // for building share actions
+	sharingId: alias('phone.content.id'), // for building share actions
 
 	isBlocked: eq('status', 'BLOCKED'),
 	isPending: eq('status', 'PENDING'),
 	isStaff: eq('status', 'STAFF'),
 	isAdmin: eq('status', 'ADMIN'),
 
-	teamsWithPhones: Ember.computed('teams.@each', function() {
+	teamsWithPhones: Ember.computed('teams.[]', function() {
 		return DS.PromiseArray.create({
 			promise: new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('teams').then((teams) => {
-					resolve(teams.filter((team) => Ember.isPresent(team.get('phone'))));
+					Ember.RSVP.all(teams.mapBy('phone.content')).then((phones) => {
+						const teamsWithPhones = [];
+						phones.forEach((phone, index) => {
+							if (Ember.isPresent(phone)) {
+								teamsWithPhones.pushObject(teams.objectAt(index));
+							}
+						});
+						resolve(teamsWithPhones);
+					});
 				}, reject);
 			})
 		});
@@ -104,18 +117,47 @@ export default DS.Model.extend(Validations, HasPhone, {
 		function() {
 			return new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('teamsWithPhones').then((teams) => {
-					const isBlocked = this.get('isBlocked'),
-						isPending = this.get('isPending'),
-						isAdmin = this.get('isAdmin'),
-						hasPhone = Ember.isPresent(this.get('phone'));
-					// isNone is true when user is blocked OR pending OR
-					// if the user is active, but
-					// 		(1) does not have phone,
-					// 		(2) is not part of team that has a phone,
-					// 		(3) is not an admin
-					resolve(isBlocked || isPending ||
-						(!hasPhone && !teams.length && !isAdmin));
+					this.get('phone').then((phone) => {
+						const isBlocked = this.get('isBlocked'),
+							isPending = this.get('isPending'),
+							isAdmin = this.get('isAdmin'),
+							hasPhone = Ember.isPresent(phone);
+						// isNone is true when user is blocked OR pending OR
+						// if the user is active, but
+						// 		(1) does not have phone,
+						// 		(2) is not part of team that has a phone,
+						// 		(3) is not an admin
+						resolve(isBlocked || isPending ||
+							(!hasPhone && !teams.length && !isAdmin));
+					});
 				}, reject);
 			});
 		}),
+	isAuthUser: Ember.computed('authManager.authUser', function() {
+		return this.get('authManager.authUser.id') === this.get('id');
+	}),
+
+	// Helper methods
+	// --------------
+
+	isAnyStatus: function(raw) {
+		return (Ember.isArray(raw) ? raw : [raw])
+			.map((stat) => String(stat).toLowerCase())
+			.contains(String(this.get('status')).toLowerCase());
+	},
+	makeStaff: function() {
+		if (!this.get('isAuthUser')) {
+			this.set('status', 'STAFF');
+		}
+	},
+	makeAdmin: function() {
+		if (!this.get('isAuthUser')) {
+			this.set('status', 'ADMIN');
+		}
+	},
+	block: function() {
+		if (!this.get('isAuthUser')) {
+			this.set('status', 'BLOCKED');
+		}
+	}
 });

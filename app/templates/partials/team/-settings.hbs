@@ -1,0 +1,14 @@
+<div class="form-element pad-l pad-r">
+    <label for="Your Name">Team Name</label>
+    {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
+</div>
+<div class="form-element pad-l pad-r">
+    <label for="Your Name">Team Color</label>
+    {{color-control color=team.hexColor}}
+</div>
+{{#if team.phone.isFulfilled}}
+    <div class='form-element pad-l pad-r'>
+        <label for='TextUp Phone'>TextUp Phone</label>
+        {{phone-control number=team.phone.content.number}}
+    </div>
+{{/if}}

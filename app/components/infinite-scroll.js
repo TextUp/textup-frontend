@@ -7,6 +7,7 @@ export default Ember.Component.extend({
 	data: defaultIfAbsent([]),
 	total: defaultIfAbsent(0),
 	direction: defaultIfAbsent('down'), // up | down
+
 	loadingText: defaultIfAbsent('Loading'),
 	// how to close to edge before loading triggered
 	loadProximity: defaultIfAbsent(100), // in pixels
@@ -14,17 +15,33 @@ export default Ember.Component.extend({
 	// not return a Promise
 	loadTimeout: defaultIfAbsent(1000), // in milliseconds
 
+	refreshingText: defaultIfAbsent('Refreshing'),
+	// how to close to edge before loading triggered
+	refreshThreshold: defaultIfAbsent(50), // in pixels
+	// how long to wait to check the data array if doLoad does
+	// not return a Promise
+	refreshTimeout: defaultIfAbsent(1000), // in milliseconds
+
+	doRefresh: null,
 	// passed nothing
 	// return Promise indicating that loading is done
 	// method modifies 'data' and 'total' properties
 	doLoad: null,
 
 	containerClass: defaultIfAbsent(''),
+	itemsClass: defaultIfAbsent(''),
 	controlClass: defaultIfAbsent(''),
-	classNameBindings: ['_isUp:scroll-up:scroll-down', '_isLoading:loading', '_isDone:done'],
+	refreshClass: defaultIfAbsent(''),
+	classNameBindings: [
+		'_isUp:scroll-up:scroll-down',
+		'_isLoading:loading',
+		'_isDone:done',
+		'_isRefreshing:refreshing'
+	],
 	classNames: 'infinite-scroll',
 
 	_isLoading: false,
+	_isRefreshing: false,
 	_hasError: false,
 	// manually keep track of data items to be rendered
 	_items: null,
@@ -35,6 +52,12 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
+	_$container: Ember.computed(function() {
+		return this.$('.infinite-container');
+	}),
+	_$refreshing: Ember.computed(function() {
+		return this.$('.infinite-scroll-refreshing');
+	}),
 	_total: Ember.computed('total', function() {
 		const total = this.get('total');
 		return isNaN(total) ? 10 : parseInt(total);
@@ -59,6 +82,19 @@ export default Ember.Component.extend({
 			this.get('data.length') >= this.get('_total') :
 			true;
 	}),
+	_pullLength: Ember.computed('_pullStart', '_pullNow', function() {
+		const start = this.get('_pullStart'),
+			current = this.get('_pullNow');
+		return (start && current) ? Math.abs(start - current) : null;
+	}),
+	_pullIsWrongDirection: Ember.computed('_pullStart', '_pullNow', '_isUp', function() {
+		const start = this.get('_pullStart'),
+			current = this.get('_pullNow');
+		// if direction is up, then wrong direction is if current is greater than
+		// or BELOW the starting position, vice versa for down
+		// start and current use pageY so are relative to top edge of document
+		return this.get('_isUp') ? (current > start) : (start > current);
+	}),
 
 	// Events
 	// ------
@@ -68,12 +104,20 @@ export default Ember.Component.extend({
 			this._setup();
 			// bind event handlers
 			const elId = this.elementId;
-			this.$().on(`scroll.${elId}`, function() {
-				this.storePercentFromTop();
-				this.loadMoreIfNeeded();
-			}.bind(this));
 			Ember.$(window).on(`orientationchange.${elId} resize.${elId}`,
 				this.restorePercentFromTop.bind(this));
+			this.$()
+				.on(`scroll.${elId}`, function() {
+					this.storePercentFromTop();
+					this.loadMoreIfNeeded();
+				}.bind(this))
+				.on(`touchstart.${elId}`, this.startTouch.bind(this))
+				.on(`touchmove.${elId}`, this.moveTouch.bind(this))
+				.on(`touchend.${elId}`, this.endPull.bind(this))
+				.on(`mousedown.${elId}`, this.startMouse.bind(this))
+				.on(`mousemove.${elId}`, this.moveMouse.bind(this))
+				.on(`mouseup.${elId}`, this.endPull.bind(this))
+				.on(`mouseleave.${elId}`, this.endPull.bind(this));
 		});
 	},
 	willDestroyElement: function() {
@@ -97,6 +141,7 @@ export default Ember.Component.extend({
 			_items: [],
 			_prevData: this.get('data'),
 		});
+		this._resetPull();
 		this.incrementProperty('_version');
 		Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this), true);
 	},
@@ -108,17 +153,112 @@ export default Ember.Component.extend({
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
-		const component = this.$()[0],
-			percentFromTop = component.scrollTop / component.scrollHeight;
+		const container = this.get('_$container')[0],
+			percentFromTop = container.scrollTop / container.scrollHeight;
 		this.set('_percentFromTop', percentFromTop);
 		return percentFromTop;
 	},
 	restorePercentFromTop: function() {
-		const component = this.$()[0],
+		const container = this.get('_$container')[0],
 			percentFromTop = this.get('_percentFromTop');
 		if (Ember.isPresent(percentFromTop)) {
-			component.scrollTop = component.scrollHeight * percentFromTop;
+			container.scrollTop = container.scrollHeight * percentFromTop;
 		}
+	},
+
+	// Refreshing
+	// ----------
+
+	startTouch: function(event) {
+		this._startPull(event.originalEvent.targetTouches[0].pageY);
+	},
+	startMouse: function(event) {
+		this._startPull(event.pageY);
+	},
+	moveTouch: function(event) {
+		Ember.run.throttle(this, this._continuePull,
+			event.originalEvent.targetTouches[0].pageY, 100);
+	},
+	moveMouse: function(event) {
+		Ember.run.throttle(this, this._continuePull,
+			event.pageY, 100);
+	},
+
+	_startPull: function(position) {
+		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+			!this._isAtStart()) {
+			return;
+		}
+		this.set('_pullStart', position);
+	},
+	_continuePull: function(position) {
+		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+			!this.get('_pullStart')) {
+			return;
+		}
+		this.set('_pullNow', position);
+		this._doOverscroll(this.get('_pullLength'));
+	},
+	endPull: function() {
+		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+			!this.get('_pullStart')) {
+			return;
+		}
+		const shouldRefresh = this.get('_pullLength') >= this.get('refreshThreshold');
+		this.set('_isRefreshing', shouldRefresh);
+		if (shouldRefresh && !this.get('_pullIsWrongDirection')) {
+			this._doOverscroll(this.get('refreshThreshold'));
+			this._showRefreshingMessage();
+
+			const result = this.get('doRefresh')();
+			if (result && result.then) {
+				result.then(this._setup.bind(this));
+			} else {
+				Ember.run.later(this, this._setup, this.get('refreshTimeout'));
+			}
+		} else {
+			this._resetPull();
+		}
+	},
+	_showRefreshingMessage: function() {
+		const $refreshing = this.get('_$refreshing'),
+			position = this.get('refreshThreshold') / 2;
+		if (this.get('_isUp')) {
+			$refreshing.css({
+				top: '',
+				bottom: `${position}px`
+			});
+		} else {
+			$refreshing.css({
+				bottom: '',
+				top: `${position}px`
+			});
+		}
+		$refreshing.fadeIn();
+	},
+	_doOverscroll: function(length) {
+		if (!Ember.isPresent(length) || this.get('_pullIsWrongDirection')) {
+			return;
+		}
+		const $container = this.get('_$container'),
+			threshold = this.get('refreshThreshold'),
+			direction = this.get('_isUp') ? -1 : 1,
+			overscroll = Math.min(length, threshold * 2),
+			prop = `translateY(${overscroll * direction}px)`;
+		$container.css({
+			'transform': prop,
+			'-webkit-transform': prop
+		});
+	},
+	_resetPull: function() {
+		this.set('_isRefreshing', false);
+		this.set('_pullStart', null);
+		this.set('_pullNow', null);
+		this.get('_$container').css({
+			'transform': '',
+			'-webkit-transform': ''
+		});
+		this.get('_$refreshing').hide();
 	},
 
 	// Loading
@@ -144,6 +284,9 @@ export default Ember.Component.extend({
 				Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this));
 			}
 		}.bind(this), function() {
+			if (this.isDestroying || this.isDestroyed) {
+				return;
+			}
 			// setting hasError makes isDone true
 			this.setProperties({
 				_isLoading: false,
@@ -163,18 +306,30 @@ export default Ember.Component.extend({
 		}.bind(this));
 	},
 	_isNearEdge: function() {
-		const component = this.$()[0],
-			sTop = component.scrollTop,
-			sHeight = component.scrollHeight,
-			cHeight = component.clientHeight,
+		const container = this.get('_$container')[0],
+			sTop = container.scrollTop,
+			sHeight = container.scrollHeight,
+			cHeight = container.clientHeight,
 			proximity = this.get('loadProximity');
 		return this.get('_isUp') ?
 			(sTop < proximity) :
 			(sTop + cHeight + proximity > sHeight);
 	},
+	_isAtStart: function() {
+		if (!this._canScroll()) {
+			return true;
+		}
+		const container = this.get('_$container')[0],
+			sTop = container.scrollTop,
+			sHeight = container.scrollHeight,
+			cHeight = container.clientHeight;
+		return this.get('_isUp') ?
+			(sTop + cHeight >= sHeight) :
+			(sTop === 0);
+	},
 	_canScroll: function() {
-		const component = this.$()[0];
-		return component.scrollHeight > component.clientHeight;
+		const container = this.get('_$container')[0];
+		return container.scrollHeight > container.clientHeight;
 	},
 
 	// Managing items
@@ -222,23 +377,23 @@ export default Ember.Component.extend({
 		}
 	},
 	_beforeAdd: function() {
-		const component = this.$()[0];
-		this.set('_prevHeightLeft', component.scrollHeight - component.scrollTop);
+		const container = this.get('_$container')[0];
+		this.set('_prevHeightLeft', container.scrollHeight - container.scrollTop);
 	},
 	_afterAdd: function(isSettingUp = false) {
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
-		const component = this.$()[0];
+		const container = this.get('_$container')[0];
 		if (isSettingUp) {
 			if (this.get('_isUp')) {
-				component.scrollTop = component.scrollHeight - component.clientHeight;
+				container.scrollTop = container.scrollHeight - container.clientHeight;
 			} else {
-				component.scrollTop = 0;
+				container.scrollTop = 0;
 			}
 		} else if (this.get('_isUp')) {
 			const prevHeightLeft = this.get('_prevHeightLeft');
-			component.scrollTop = component.scrollHeight - prevHeightLeft;
+			container.scrollTop = container.scrollHeight - prevHeightLeft;
 		}
-	}
+	},
 });

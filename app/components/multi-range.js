@@ -56,7 +56,11 @@ export default Ember.Component.extend({
 		return funcs.any((present) => present) && !this.get('readonly');
 	}),
 	_validInput: Ember.computed('data.[]', function() {
-		return this.get('data').map(function(items) {
+		const data = this.get('data');
+		if (!Ember.isArray(data)) {
+			return data;
+		}
+		return data.map(function(items) {
 			if (Ember.isArray(items) && items.length === 2) {
 				return items.map(function(item) {
 					return this.callWithFallback(this.get('doRawToValid'), item);

@@ -1,7 +1,7 @@
 import DS from 'ember-data';
-import PhoneNumber from '../mixins/phone-number-serializer';
+import NewPhone from '../mixins/new-phone-serializer';
 
-export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, PhoneNumber, {
+export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, NewPhone, {
 	attrs: {
 		org: {
 			serialize: 'ids'
@@ -10,14 +10,11 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, PhoneNumber, {
 			deserialize: 'records',
 			serialize: 'records'
 		},
-		tags: {
+		phone: {
 			deserialize: 'records',
-			serialize: false //any changes happen with tagActions on the individual tags
+			serialize: 'records'
 		},
 		numMembers: {
-			serialize: false
-		},
-		phoneId: {
 			serialize: false
 		},
 	},

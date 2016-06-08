@@ -77,12 +77,26 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 			}
 			contact.toggleProperty('isSelected');
 		},
+		willTransition: function() {
+			this.controller.set('_transitioning', true);
+		},
 
 		// Slideout
 		// --------
 
 		didTransition: function() {
 			this._closeSlideout();
+			// close account slideout and drawer after transition
+			const accountSwitcher = this.controller.get('accountSwitcher'),
+				slidingMenu = this.controller.get('slidingMenu');
+			if (accountSwitcher) {
+				accountSwitcher.actions.close();
+			}
+			if (slidingMenu) {
+				slidingMenu.actions.close();
+			}
+			// see main.contacts controller for explanation
+			this.controller.set('_transitioning', false);
 			return true;
 		},
 		toggleDetailSlideout: function(name, context) {
@@ -125,6 +139,26 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					callIfPresent(then);
 				});
 		},
+		markUnread: function(data) {
+			const contacts = Ember.isArray(data) ? data : [data];
+			contacts.forEach((contact) => contact.markUnread());
+			this._changeContactStatus(contacts);
+		},
+		markActive: function(data) {
+			const contacts = Ember.isArray(data) ? data : [data];
+			contacts.forEach((contact) => contact.markActive());
+			this._changeContactStatus(contacts);
+		},
+		markArchived: function(data) {
+			const contacts = Ember.isArray(data) ? data : [data];
+			contacts.forEach((contact) => contact.markArchived());
+			this._changeContactStatus(contacts);
+		},
+		markBlocked: function(data) {
+			const contacts = Ember.isArray(data) ? data : [data];
+			contacts.forEach((contact) => contact.markBlocked());
+			this._changeContactStatus(contacts);
+		},
 
 		// Tag
 		// ---
@@ -137,7 +171,9 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 				.persist(tag)
 				.then(() => {
 					const model = this.get('currentModel');
-					model.get('tags').then((tags) => tags.pushObject(tag));
+					model.get('phone').then((phone) => {
+						phone.get('tags').then((tags) => tags.pushObject(tag));
+					});
 					callIfPresent(then);
 				});
 		},
@@ -190,6 +226,14 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	// Helpers
 	// -------
 
+	_changeContactStatus: function(contacts) {
+		this.get('dataHandler')
+			.persist(contacts)
+			.then((updatedContacts) => {
+				this.controller.notifyPropertyChange('contacts');
+				updatedContacts.forEach((cont) => cont.set('isSelected', false));
+			});
+	},
 	_loadOtherStaff: function(model) {
 		const shareQuery = Object.create(null);
 		shareQuery.max = 100;

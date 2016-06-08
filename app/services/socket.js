@@ -67,12 +67,12 @@ export default Ember.Service.extend({
 
 	_getOrCreateSocket: function(options = undefined) {
 		const existing = this.get('_socket');
-		if (options) {
+		if (!existing || options) {
 			if (existing) {
 				existing.disconnect();
 			}
 			const socket = new Pusher(config.socket.authKey, options || Object.create(null));
-			this.set('socket', socket);
+			this.set('_socket', socket);
 			return socket;
 		} else {
 			return existing;
@@ -82,7 +82,7 @@ export default Ember.Service.extend({
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			const existing = socket.channel(channelName);
 			if (existing) {
-				resolve();
+				resolve(existing);
 			} else {
 				const channel = socket.subscribe(channelName);
 				channel.bind('pusher:subscription_error', reject)

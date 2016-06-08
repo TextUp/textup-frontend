@@ -4,16 +4,23 @@
 	<div class="section-header">
 		<span class="pull-left">
 			<div class="horizontal-items">
-				<div class="clear-badge">
+				<div class="clear-badge display-xs display-s no-space">
+					{{#link-to 'admin.team'}}
+						<span class="pad-all">
+							<span class="fa fa-chevron-left"></span>
+						</span>
+		        	{{/link-to}}
+				</div>
+				<div class="clear-badge no-space">
 					<h5>{{team.name}}</h5>
 				</div>
-				<div class="badge">
+				<div class="badge margin-l">
 					{{team.numMembers}}
 					<span class="fa fa-user"></span>
 				</div>
 			</div>
 		</span>
-		<span class="pull-right pad-r">
+		<span class="pull-right pad-r display-m display-l">
 			{{#link-to 'admin.team'}}
 				<span class="pad-all">
 					<span class="fa fa-times"></span>

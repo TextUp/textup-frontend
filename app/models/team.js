@@ -1,6 +1,5 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import HasPhone from '../mixins/phone-model';
 import {
 	validator,
 	buildValidations
@@ -24,6 +23,12 @@ const {
 				validator('presence', true)
 			]
 		},
+		phone: {
+			description: 'Phone',
+			validators: [
+				validator('belongs-to')
+			]
+		},
 		location: {
 			description: 'Location',
 			validators: [
@@ -33,7 +38,7 @@ const {
 		}
 	});
 
-export default DS.Model.extend(Validations, HasPhone, {
+export default DS.Model.extend(Validations, {
 	init: function() {
 		this._super(...arguments);
 		this.set('actions', []);
@@ -41,6 +46,9 @@ export default DS.Model.extend(Validations, HasPhone, {
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.get('actions').clear();
+		this.set('newPhone', null);
+		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
+		this.get('location').then((loc) => loc && loc.rollbackAttributes());
 	},
 
 	// Attributes
@@ -53,21 +61,25 @@ export default DS.Model.extend(Validations, HasPhone, {
 	numMembers: DS.attr('number'),
 
 	org: DS.belongsTo('organization'),
+	phone: DS.belongsTo('phone'),
 	location: DS.belongsTo('location'),
-	tags: DS.hasMany('tag'),
-
 
 	// Not attributes
 	// --------------
 
+	newPhone: null,
 	actions: null,
 
 	// Computed properties
 	// -------------------
 
-	locationIsDirty: alias('location.hasDirtyAttributes'),
+	locationIsDirty: alias('location.isDirty'),
+	phoneIsDirty: alias('phone.isDirty'),
+	hasNewPhone: notEmpty('newPhone'),
 	hasActions: notEmpty('actions'),
-	hasManualChanges: or('hasActions', 'hasNewPhone', 'locationIsDirty'), // @override
+	hasManualChanges: or('hasActions', 'phoneIsDirty', 'hasNewPhone',
+		'locationIsDirty'),
+
 	urlIdentifier: Ember.computed('name', function() {
 		return Ember.String.dasherize(this.get('name') || '');
 	}),

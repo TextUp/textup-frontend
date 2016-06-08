@@ -15,18 +15,18 @@ export default Ember.Route.extend({
 	},
 	setupController: function(controller, model) {
 		this._super(...arguments);
+		this.controller.set('_isReady', false);
 		// workaround because ember data invalidates (deletes) the model
 		// when it is finalizing the transition when the page is refreshed
 		if (model.get('isDeleted')) {
 			Ember.run.later(this, this._reloadContact,
 				controller, this.get('_id'), 1000);
+		} else {
+			this._contactIsReady(model);
 		}
 		this.controller.set('contact', model);
 		this.controller.set('tag', null);
-		this.controller.set('records', []);
 		this.controller.set('isMakingCall', false);
-		// don't know until loaded
-		this.controller.set('totalNumRecords', '--');
 	},
 
 	_reloadContact: function(controller, id) {
@@ -34,11 +34,20 @@ export default Ember.Route.extend({
 			setContact = function(contact) {
 				controller.set('model', contact);
 				controller.set('contact', contact);
-			};
+				this._contactIsReady(contact);
+			}.bind(this);
 		if (found) {
 			setContact(found);
 		} else {
 			this.store.find('contact', id).then(setContact);
+		}
+	},
+	_contactIsReady: function(contact) {
+		this.controller.set('_isReady', true);
+		this.set('currentModel', contact);
+		if (contact.get('isUnread')) {
+			contact.markActive();
+			this.get('dataHandler').persist(contact);
 		}
 	},
 });

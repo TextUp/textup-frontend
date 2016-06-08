@@ -6,15 +6,31 @@
 		)
 	}}
 		<div class="default-slideout-header {{defaultHeaderClass}}">
-			<div class='pull-left'>
-				<span class='clear-badge'>
-					<h5 class='text-ellipsis'>{{title}}</h5>
-				</span>
+			<div class="display-xs display-s">
+				<div class="pull-left horizontal-items">
+					<span class="clear-badge no-space">
+						<a href="" {{action 'close'}}>
+							<span class="pad-all">
+	                            <span class="fa fa-chevron-left"></span>
+	                        </span>
+						</a>
+		            </span>
+					<span class='clear-badge no-space'>
+						<h5 class='text-ellipsis'>{{title}}</h5>
+					</span>
+				</div>
 			</div>
-			<div class='pull-right'>
-				<button class="btn btn-plain" {{action 'close'}}>
-					<span class="fa fa-times"></span>
-				</button>
+			<div class="display-m display-l">
+				<div class='pull-left'>
+					<span class='clear-badge'>
+						<h5 class='text-ellipsis'>{{title}}</h5>
+					</span>
+				</div>
+				<div class='pull-right'>
+					<button class="btn btn-plain" {{action 'close'}}>
+						<span class="fa fa-times"></span>
+					</button>
+				</div>
 			</div>
 		</div>
 	{{/if}}

@@ -4,43 +4,45 @@
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
     focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
-		<div class="form-element">
-			{{#multi-select data=model.tags
-		    	selected=selectedRecipients
-		    	displayProperty='identifier'
-		    	identityProperty='identifier'
-		    	doSearch=(action 'doSearch')
-		    	doCreate=(action 'createRecipient')
-		    	onInsert=(action 'insertRecipientAt')
-				onRemove=(action 'deselectRecipient') as |recipient select|}}
-				<span class="horizontal-items">
-					<span class="clear-badge">
-						{{#if (eq recipient.type 'tag')}}
-							<span class="fa fa-tag"></span>
-						{{else if (eq recipient.type 'contact')}}
-							{{#if recipient.isShared}}
-								{{#tool-tipster theme='tooltipster-clean'
-						            title=(concat 'Shared by ' recipient.sharedBy)}}
-						            <span class="fa fa-share"></span>
-						        {{/tool-tipster}}
+		{{#if model.phone.isFulfilled}}
+			<div class="form-element">
+				{{#multi-select data=model.phone.content.tags
+			    	selected=selectedRecipients
+			    	displayProperty='identifier'
+			    	identityProperty='identifier'
+			    	doSearch=(action 'doSearch')
+			    	doCreate=(action 'createRecipient')
+			    	onInsert=(action 'insertRecipientAt')
+					onRemove=(action 'deselectRecipient') as |recipient select|}}
+					<span class="horizontal-items">
+						<span class="clear-badge">
+							{{#if (eq recipient.type 'tag')}}
+								<span class="fa fa-tag"></span>
+							{{else if (eq recipient.type 'contact')}}
+								{{#if recipient.isShared}}
+									{{#tool-tipster theme='tooltipster-clean'
+							            title=(concat 'Shared by ' recipient.sharedBy)}}
+							            <span class="fa fa-share"></span>
+							        {{/tool-tipster}}
+								{{else}}
+									<span class="fa fa-user"></span>
+								{{/if}}
 							{{else}}
-								<span class="fa fa-user"></span>
+								<span class="fa fa-asterisk"></span>
 							{{/if}}
-						{{else}}
-							<span class="fa fa-asterisk"></span>
-						{{/if}}
+						</span>
+						<span class="clear-badge text-bold">
+							{{phone-number recipient.identifier}}
+							{{#if (eq recipient.type 'tag')}}
+								<span class="margin-l-half halo halo-sm bg-color bg-dark">
+									{{recipient.numMembers}}
+								</span>
+							{{/if}}
+						</span>
 					</span>
-					<span class="clear-badge text-bold">
-						{{phone-number recipient.identifier}}
-						{{#if (eq recipient.type 'tag')}}
-							<span class="margin-l-half halo halo-sm bg-color bg-dark">
-								{{recipient.numMembers}}
-							</span>
-						{{/if}}
-					</span>
-				</span>
-			{{/multi-select}}
-		</div>
+				{{/multi-select}}
+			</div>
+		{{/if}}
 		<div class="form-element">
 			{{textarea rows="3"
 				autoresize=true

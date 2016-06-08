@@ -23,7 +23,9 @@
             </div>
         </div>
     {{/if}}
-    {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
-        contacts=(if selected selected contact)
-        staffs=stateManager.shareCandidates}}
+    {{#if stateManager.shareCandidates.isFulfilled}}
+        {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
+            contacts=(if selected selected contact)
+            staffs=stateManager.shareCandidates.content}}
+    {{/if}}
 {{/slideout-pane}}

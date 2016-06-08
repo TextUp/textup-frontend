@@ -1,12 +1,36 @@
 import Ember from 'ember';
 import callIfPresent from '../../../utils/call-if-present';
 
+const {
+	alias
+} = Ember.computed;
+
 export default Ember.Controller.extend({
-	records: [],
-	totalNumRecords: '--',
+	records: alias('contact.records'),
+	totalNumRecords: Ember.computed('contact.totalNumRecords', {
+		get: function() {
+			return this.get('_isReady') ? this.get('contact.totalNumRecords') : '--';
+		},
+		set: function(key, value) {
+			if (this.get('_isReady')) {
+				this.set('contact.totalNumRecords', value);
+			}
+			return value;
+		}
+	}),
 	contact: null,
 
 	actions: {
+		refresh: function() {
+			return new Ember.RSVP.Promise((resolve, reject) => {
+				this.store.query('record', {
+					contactId: this.get('contact.id')
+				}).then((results) => {
+					this.set('totalNumRecords', results.get('meta.total'));
+					resolve();
+				}, this.get('dataHandler').buildErrorHandler(reject));
+			});
+		},
 		loadMore: function() {
 			return new Ember.RSVP.Promise((resolve, reject) => {
 				const query = Object.create(null),
@@ -19,7 +43,6 @@ export default Ember.Controller.extend({
 				}
 				// execute query
 				this.store.query('record', query).then((results) => {
-					records.pushObjects(results.toArray());
 					this.set('totalNumRecords', results.get('meta.total'));
 					resolve();
 				}, this.get('dataHandler').buildErrorHandler(reject));

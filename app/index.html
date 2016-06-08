@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html manifest="manifest.appcache">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script type='text/javascript'>window.addEventListener('load',function(e){window.applicationCache.addEventListener('updateready',function(e){if (window.applicationCache.status==window.applicationCache.UPDATEREADY){window.applicationCache.swapCache();window.location.reload();}},false);},false);</script>
 
     <!-- CONFIGURATION -->
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -51,74 +53,6 @@
     <link rel="apple-touch-icon-precomposed"
         href="assets/images/apple-touch-icon-precomposed.png"><!-- 57×57px -->
 
-    <!-- STARTUP IMAGES -->
-
-    <!-- iPad retina portrait startup image -->
-    <link href="assets/images/textup-splash_1536x2008.png"
-          media="(device-width: 768px) and (device-height: 1024px)
-                 and (-webkit-device-pixel-ratio: 2)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPad retina landscape startup image -->
-    <link href="assets/images/textup-splash_1496x2048.png"
-          media="(device-width: 768px) and (device-height: 1024px)
-                 and (-webkit-device-pixel-ratio: 2)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPad non-retina portrait startup image -->
-    <link href="assets/images/textup-splash_768x1004.png"
-          media="(device-width: 768px) and (device-height: 1024px)
-                 and (-webkit-device-pixel-ratio: 1)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPad non-retina landscape startup image -->
-    <link href="assets/images/textup-splash_748x1024.png"
-          media="(device-width: 768px) and (device-height: 1024px)
-                 and (-webkit-device-pixel-ratio: 1)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone 6 Plus portrait startup image -->
-    <link href="assets/images/textup-splash_1242x2148.png"
-          media="(device-width: 414px) and (device-height: 736px)
-                 and (-webkit-device-pixel-ratio: 3)
-                 and (orientation: portrait)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone 6 Plus landscape startup image -->
-    <link href="assets/images/textup-splash_1182x2208.png"
-          media="(device-width: 414px) and (device-height: 736px)
-                 and (-webkit-device-pixel-ratio: 3)
-                 and (orientation: landscape)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone 6 startup image -->
-    <link href="assets/images/textup-splash_750x1294.png"
-          media="(device-width: 375px) and (device-height: 667px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone 5 startup image -->
-    <link href="assets/images/textup-splash_640x1096.png"
-          media="(device-width: 320px) and (device-height: 568px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone < 5 retina startup image -->
-    <link href="assets/images/textup-splash_640x920.png"
-          media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 2)"
-          rel="apple-touch-startup-image">
-
-    <!-- iPhone < 5 non-retina startup image -->
-    <link href="assets/images/textup-splash_320x460.png"
-          media="(device-width: 320px) and (device-height: 480px)
-                 and (-webkit-device-pixel-ratio: 1)"
-          rel="apple-touch-startup-image">
-
     {{content-for "head"}}
 
     <link rel="stylesheet" href="assets/vendor.css">
@@ -127,6 +61,13 @@
     {{content-for "head-footer"}}
   </head>
   <body>
+
+    <div id="initializer" class='overlay bg-color bg-brand'>
+      <div class="center xs-full-row text-center">
+        <img class="brand" src='assets/images/logo.png' />
+      </div>
+    </div>
+
     {{content-for "body"}}
 
     <script src="assets/vendor.js"></script>

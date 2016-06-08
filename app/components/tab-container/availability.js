@@ -1,16 +1,16 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../../utils/default-if-absent';
 import moment from 'moment';
+import {
+	daysOfWeek
+} from '../../utils/schedule';
 
 export default Ember.Component.extend({
 
-	staff: defaultIfAbsent({}),
+	schedule: defaultIfAbsent({}),
 	otherStaffs: defaultIfAbsent([]),
 
-	_daysOfWeek: [
-		'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
-		'saturday', 'sunday'
-	],
+	_daysOfWeek: daysOfWeek,
 
 	// Computed properties
 	// -------------------
@@ -44,29 +44,14 @@ export default Ember.Component.extend({
 			}
 			return moment().format('LT');
 		},
-		updateTime: function(day, index, data) {
-			const array = this._copyRangesIfOriginal(this.get('staff'), day);
-			Ember.set(array, String(index), data);
-		},
 		insertTime: function(day, data) {
-			const array = this._copyRangesIfOriginal(this.get('staff'), day);
-			array.pushObject(data);
+			this.get('schedule').add(day, data);
 		},
 		removeTime: function(day, index) {
-			const array = this._copyRangesIfOriginal(this.get('staff'), day);
-			array.removeAt(index);
+			this.get('schedule').remove(day, index);
+		},
+		updateTime: function(day, index, data) {
+			this.get('schedule').replace(day, index, data);
 		},
 	},
-
-	// need to do this to use ember data's dirty tracking
-	_copyRangesIfOriginal: function(model, day) {
-		const ranges = model.get(day);
-		if (Ember.get(model.changedAttributes(), day)) {
-			return ranges;
-		} else {
-			const newRanges = Ember.copy(ranges, true); // deep copy
-			model.set(day, newRanges);
-			return newRanges;
-		}
-	}
 });

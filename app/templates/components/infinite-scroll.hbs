@@ -1,16 +1,26 @@
-<div class="infinite-items {{containerClass}}">
-	{{#each _items as |item index|}}
-		{{yield item index publicAPI}}
-	{{else}}
-		{{!-- don't show if loading more and empty --}}
-		{{#if (not _isLoading)}}
-			{{yield to='inverse'}}
-		{{/if}}
-	{{/each}}
+<div class="infinite-container {{containerClass}}">
+	<div class="infinite-items {{itemsClass}}">
+		{{#each _items as |item index|}}
+			{{yield item index publicAPI}}
+		{{else}}
+			{{!-- don't show if loading more and empty --}}
+			{{#if (not _isLoading)}}
+				{{yield to='inverse'}}
+			{{/if}}
+		{{/each}}
+	</div>
+	<div class="infinite-control {{controlClass}}">
+		<div class="horizontal-items">
+			<span class='clear-badge'>{{loadingText}}</span>
+			<span class="clear-badge">
+				<span class="fa fa-circle-o-notch fa-spin"></span>
+			</span>
+		</div>
+	</div>
 </div>
-<div class="infinite-control {{controlClass}}">
+<div class="infinite-scroll-refreshing {{refreshClass}}">
 	<div class="horizontal-items">
-		<span class='clear-badge'>{{loadingText}}</span>
+		<span class='clear-badge'>{{refreshingText}}</span>
 		<span class="clear-badge">
 			<span class="fa fa-circle-o-notch fa-spin"></span>
 		</span>

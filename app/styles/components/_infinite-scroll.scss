@@ -1,14 +1,31 @@
 .infinite-scroll {
-	@extend %vertical-scroll;
 	height: 500px;
+	overflow: hidden;
+	position: relative;
 
-	.infinite-items {
-		@extend %clearfix;
+	.infinite-container {
+		@extend %vertical-scroll;
+		height: 100%;
+		transition: transform 0.5s;
+		position: relative;
+
+		.infinite-items {
+			@extend %clearfix;
+		}
+		.infinite-control {
+			@extend %border-box;
+			width: 100%;
+			display: none;
+		}
+		.infinite-control {
+			@extend .text-center;
+			font-weight: $font-weight-bold;
+		}
 	}
-	.infinite-control {
-		@extend %border-box;
-		width: 100%;
-		display: none;
+	.infinite-scroll-refreshing {
+		position: absolute;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
 	}
 	&.scroll-up {
 		position: relative;
@@ -21,6 +38,9 @@
 			position: absolute;
 			top: 0;
 			transform: translateY(50%);
+		}
+		.infinite-scroll-refreshing {
+		    transform: translate(-50%, 50%);
 		}
 		&.done:not(.loading) {
 			.infinite-items {
@@ -38,10 +58,16 @@
 			display: block;
 		}
 	}
-
-	.infinite-control {
-		@extend .text-center;
-		font-weight: $font-weight-bold;
+	&.refreshing {
+		.infinite-container:after {
+			position: absolute;
+		    top: 0;
+		    left: 0;
+		    height: 100%;
+		    width: 100%;
+		    z-index: 99;
+			content: '';
+		}
 	}
-
 }
+

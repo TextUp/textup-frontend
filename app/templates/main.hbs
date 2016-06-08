@@ -5,6 +5,7 @@
     allowCloseContentsSelector='.menu-item'
     ignoreCloseContentsSelector='.menu-slideout, .header-slideout, .menu-header'
     bodyId='body'
+    doRegister=(action (mut slidingMenu))
     as |drawer|}}
     <span class="display-xs display-s display-m menu-toggle">
         <button class="btn btn-plain"
@@ -22,7 +23,8 @@
         tabindex=false
         triggerClass='header-toggle'
         allowedTriggerSelectors='.toggle-control'
-        bodyClickClose=true}}
+        doRegister=(action (mut accountSwitcher))
+        bodyClickClose=false}}
         {{partial 'partials/account/switcher'}}
     {{else}}
         <div class="xs-8-row-10 toggle-control">
@@ -44,18 +46,21 @@
             <span class="fa fa-bars"></span>
         {{/tool-tipster}}
     </li>
-    <li class='menu-item menu-slideout success'
-        {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title='Availability'
-            classNames='btn-expand display-l'}}
-            <span class="fa fa-calendar-o"></span>
-        {{/tool-tipster}}
-        <div class="btn-expand display-xs display-s display-m">
-            <span>Availability</span>
-        </div>
-    </li>
+    {{#if authManager.authUser.schedule.isFulfilled}}
+        <li class='menu-item menu-slideout
+            {{if authManager.authUser.schedule.content.isAvailableNow "success"}}'
+            {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
+            {{#tool-tipster position='right'
+                theme='tooltipster-clean'
+                title='Availability'
+                classNames='btn-expand display-l'}}
+                <span class="fa fa-calendar-o"></span>
+            {{/tool-tipster}}
+            <div class="btn-expand display-xs display-s display-m">
+                <span>Availability</span>
+            </div>
+        </li>
+    {{/if}}
     <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout'
         {{action 'toggleSlideout' 'slideouts/compose' 'main'}}>
@@ -135,16 +140,19 @@
             <span class="fa fa-plus"></span>
         </button >
     </li>
-    {{#each model.tags as |tag|}}
-        {{#link-to 'main.tag' tag tagName='li'
-            classNames='menu-item display-xs display-s display-m'}}
-            <span>{{tag.name}}</span>
-            <span class="badge dark">{{tag.numMembers}}</span>
-            <span class="indicator" style="background-color:{{tag.hexColor}};"></span>
-        {{/link-to}}
-    {{else}}
-        <li class='pad-t text-bold display-xs display-s display-m'>No tags yet.</li>
-    {{/each}}
+    {{#if model.phone.isFulfilled}}
+        {{#each model.phone.content.tags as |tag|}}
+            {{#link-to 'main.tag' tag tagName='li'
+                classNames='menu-item display-xs display-s display-m'}}
+                <span>{{tag.name}}</span>
+                <span class="badge dark">{{tag.numMembers}}</span>
+                <span class="indicator"
+                    style="background-color:{{tag.hexColor}};"></span>
+            {{/link-to}}
+        {{else}}
+            <li class='pad-t text-bold display-xs display-s display-m'>No tags yet.</li>
+        {{/each}}
+    {{/if}}
 
     <li class='menu-footer display-l'>
         <img class="brand" src='assets/images/logo.png' />

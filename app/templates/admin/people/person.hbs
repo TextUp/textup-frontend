@@ -3,8 +3,15 @@
 <div class="details full-height">
 	<div class="section-header">
 		<div class="contact-details">
-			<div class="horizontal-items xs-row-3 s-row-2 pull-left">
-				<span class="clear-badge">
+			<div class="horizontal-items xs-2-row-3 s-row-2 pull-left">
+				<span class="clear-badge display-xs display-s no-space">
+                    {{#link-to (if team 'admin.team' 'admin.people')}}
+						<span class="pad-all">
+							<span class="fa fa-chevron-left"></span>
+						</span>
+	            	{{/link-to}}
+                </span>
+				<span class="clear-badge no-space">
 					<h5>{{person.name}}</h5>
 				</span>
 				{{#if person.isAdmin}}
@@ -25,32 +32,21 @@
 					</span>
 				{{/if}}
 			</div>
-			<div class="horizontal-items xs-2-row-3 s-row-2 pull-right">
-	            <span class='clear-badge'>
-	            	{{#hide-away/dropdown}}
-	                    <li class='dropdown-divider'>Status</li>
-	                    {{#if (not (eq
-	                    	(unbound authManager.authUser.username)
-	                    	(unbound person.username)))}}
-	                    	{{#if person.isAdmin}}
-	                        	<li tabindex='0' class='dropdown-item'>
-	                        		Demote to staff
-                        		</li>
-	                        {{else}}
-								<li tabindex='0' class='dropdown-item'>
-									Promote to admin
-								</li>
-	                        {{/if}}
-	                    {{/if}}
-                        <li tabindex='0' class='dropdown-item'>Block</li>
-		            {{else}}
-		                <button class='btn' type='button'>
-                            Actions
-                            <span class='fa fa-caret-down'></span>
-                        </button>
-		            {{/hide-away/dropdown}}
-	            </span>
-	            <span class="clear-badge">
+			<div class="horizontal-items xs-row-3 s-row-2 pull-right">
+				{{#if (not person.isAuthUser)}}
+					<span class='clear-badge'>
+		            	{{#hide-away/dropdown}}
+		                    <li class='dropdown-divider'>Status</li>
+		                    {{partial 'partials/staff/status'}}
+			            {{else}}
+			                <button class='btn' type='button'>
+	                            Actions
+	                            <span class='fa fa-caret-down'></span>
+	                        </button>
+			            {{/hide-away/dropdown}}
+		            </span>
+				{{/if}}
+	            <span class="clear-badge display-m display-l">
 	            	{{#link-to (if team 'admin.team' 'admin.people')}}
 						<span class="pad-all">
 							<span class="fa fa-times"></span>
@@ -83,22 +79,22 @@
 					{{#with person as |staff|}}
 						{{partial 'partials/staff/edit'}}
 					{{/with}}
-					{{#if (and (or person.hasDirtyAttributes
-						person.hasManualChanges)
-						(not usernameDropdown.isOpen)
-                        (not passwordDropdown.isOpen))}}
-						<div class="pad-t text-center">
-					        <button class="btn" type='button'
-					        	onclick={{route-action 'revert' person
-					        		(action (mut person.forExistingPhone) null)}}>
-					            Cancel
-					        </button>
-					        {{async-button classNames='btn btn-default'
-			                    disableWhen=(not (v-get person 'isValid'))
-			                    action=(route-action 'persist' person)
-			                    default='Update'
-			                    pending='Updating...'}}
-						</div>
+					{{#if person.isDirty}}
+                        {{#if (and (not usernameDropdown.isOpen)
+                        	(not passwordDropdown.isOpen))}}
+							<div class="pad-t text-center">
+						        <button class="btn" type='button'
+						        	onclick={{route-action 'revert' person
+						        		(action (mut person.forExistingPhone) null)}}>
+						            Cancel
+						        </button>
+						        {{async-button classNames='btn btn-default'
+				                    disableWhen=(not (v-get person 'isValid'))
+				                    action=(route-action 'persist' person)
+				                    default='Update'
+				                    pending='Updating...'}}
+							</div>
+                        {{/if}}
 					{{/if}}
 				</div>
 				<hr>
@@ -111,8 +107,13 @@
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
 				title="Availability"}}
-				{{tab-container/availability staff=(mut person)}}
-				{{#if person.hasDirtyAttributes}}
+				{{#if person.schedule.isFulfilled}}
+			        <div class="form-element">
+			            {{tab-container/availability
+			                schedule=(mut person.schedule.content)}}
+			        </div>
+			    {{/if}}
+				{{#if person.isDirty}}
 			        <div class="horizontal-items text-center margin-t margin-b">
 			            <div class="clear-badge no-space">
 			                <button class="btn" type='button'

@@ -3,7 +3,9 @@
         <h4 class="text-white text-ellipsis">Admin</h4>
     {{else}}
         <h4 class="text-white text-ellipsis">{{model.name}}</h4>
-        <p class="text-bold text-ellipsis">{{phone-number model.phone}}</p>
+        <p class="text-bold text-ellipsis">
+        	{{phone-number model.phone.content.number}}
+        </p>
     {{/if}}
 </div>
 <div class="xs-2-row-10 v-center-right">

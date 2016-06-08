@@ -40,18 +40,7 @@
             {{#tab-container/item doRegister=doRegister
                 title=team.name}}
                 <div class="pad-t pad-b">
-                    <div class="form-element pad-l pad-r">
-                        <label for="Your Name">Team Name</label>
-                        {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
-                    </div>
-                    <div class="form-element pad-l pad-r">
-                        <label for="Your Name">Team Color</label>
-                        {{color-control color=team.hexColor}}
-                    </div>
-                    <div class='form-element pad-l pad-r'>
-                        <label for='TextUp Phone'>TextUp Phone</label>
-                        {{phone-control number=team.phone}}
-                    </div>
+                    {{partial 'partials/team/settings'}}
                     {{#if (or team.hasDirtyAttributes
                         team.hasManualChanges)}}
                         <div class="form-element text-center">

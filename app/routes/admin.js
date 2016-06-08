@@ -103,6 +103,21 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					callIfPresent(then);
 				});
 		},
+		markStaff: function(data) {
+			const people = Ember.isArray(data) ? data : [data];
+			people.forEach((person) => person.makeStaff());
+			this._changeStaffStatus(people);
+		},
+		markAdmin: function(data) {
+			const people = Ember.isArray(data) ? data : [data];
+			people.forEach((person) => person.makeAdmin());
+			this._changeStaffStatus(people);
+		},
+		markBlocked: function(data) {
+			const people = Ember.isArray(data) ? data : [data];
+			people.forEach((person) => person.block());
+			this._changeStaffStatus(people);
+		},
 
 		// Team
 		// ----
@@ -150,6 +165,14 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	// Helpers
 	// -------
 
+	_changeStaffStatus: function(people) {
+		this.get('dataHandler')
+			.persist(people)
+			.then((updatedPeople) => {
+				this.controller.notifyPropertyChange('people');
+				updatedPeople.forEach((per) => per.set('isSelected', false));
+			});
+	},
 	_loadPending: function(org) {
 		this.store.query('staff', {
 			organizationId: org.get('id'),

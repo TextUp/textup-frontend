@@ -11,14 +11,13 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 			deserialize: 'records',
 			serialize: false //any changes happen in tag's tagActions
 		},
-		records: {
-			deserialize: 'records',
+		unsortedRecords: {
 			serialize: false //any changes happen at records endpoint
 		},
 		numbers: {
 			serialize: false //any changes happen with numberActions
 		},
-		phoneId: {
+		phone: {
 			serialize: false
 		},
 		lastRecordActivity: {

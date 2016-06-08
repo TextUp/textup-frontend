@@ -44,7 +44,10 @@ module.exports = function(environment) {
     };
 
     if (environment === 'development') {
-        ENV.host = "http://localhost:8080";
+        ENV.host = "https://5e6aa46b.ngrok.io";
+        ENV.manifest = {
+            enabled: true
+        };
         // ENV.APP.LOG_RESOLVER = true;
         // ENV.APP.LOG_ACTIVE_GENERATION = true;
         // ENV.APP.LOG_TRANSITIONS = true;
@@ -65,7 +68,7 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-
+        ENV.host = "https://5e6aa46b.ngrok.io";
     }
 
     return ENV;

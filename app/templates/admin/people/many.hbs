@@ -2,8 +2,14 @@
 
 <div class="details">
 	<div class="section-header">
-		<div class="horizontal-items xs-row-2 l-4-row-10 pull-left">
-			<span class='clear-badge'>
+		<div class="horizontal-items xs-2-row-3 l-4-row-10 pull-left">
+			<span class="clear-badge display-xs display-s no-space">
+                <button class="btn btn-plain" type='button'
+                    {{action 'leave'}}>
+                    <span class="fa fa-chevron-left"></span>
+                </button>
+            </span>
+            <span class='clear-badge no-space'>
                 {{#hide-away/dropdown horizontal='left'}}
                     <li tabindex='0' class='dropdown-item'
                         {{action 'selectAll'}}>
@@ -44,55 +50,53 @@
                 {{/tool-tipster}}
             </span>
 		</div>
-		<div class="horizontal-items xs-row-2 l-6-row-10 pull-right">
-            <span class='clear-badge no-space display-xs display-s display-m'>
-                {{#hide-away/dropdown}}
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'toggleDetailSlideout'
-                            'slideouts/teams/membership' 'admin/people/many'}}>
-                        Edit teams
-                    </li>
-                    {{#if (not selectedMe)}}
-                        <li class='dropdown-divider'>Status</li>
-                        <li tabindex='0' class='dropdown-item'>Demote to staff</li>
-                        <li tabindex='0' class='dropdown-item'>Promote to admin</li>
-                        <li tabindex='0' class='dropdown-item'>Block</li>
-                    {{/if}}
-                {{else}}
-                    <button class='btn' type='button'>
-                        Actions
-                        <span class='fa fa-caret-down'></span>
-                    </button>
-                {{/hide-away/dropdown}}
-            </span>
-            {{#if (not selectedMe)}}
-                <span class='clear-badge no-space display-l'>
+        {{#if selected}}
+            <div class="horizontal-items xs-row-3 l-6-row-10 pull-right">
+                <span class='clear-badge no-space display-xs display-s display-m'>
                     {{#hide-away/dropdown}}
-                        <li tabindex='0' class='dropdown-item'>Demote to staff</li>
-                        <li tabindex='0' class='dropdown-item'>Promote to admin</li>
-                        <li tabindex='0' class='dropdown-item'>Block</li>
+                        <li tabindex='0' class='dropdown-item'
+                            {{action 'toggleDetailSlideout'
+                                'slideouts/teams/membership' 'admin/people/many'}}>
+                            Edit teams
+                        </li>
+                        {{#if (not selectedMe)}}
+                            <li class='dropdown-divider'>Status</li>
+                            {{partial 'partials/staff/status'}}
+                        {{/if}}
                     {{else}}
                         <button class='btn' type='button'>
-                            Status
+                            Actions
                             <span class='fa fa-caret-down'></span>
                         </button>
                     {{/hide-away/dropdown}}
                 </span>
-            {{/if}}
-            <span class='clear-badge display-l'>
-                <button class='btn' type='button'
-                	{{action 'toggleDetailSlideout'
-                        'slideouts/teams/membership' 'admin/people/many'}}>
-                    Teams
-                </button>
-            </span>
-            <span class="clear-badge">
-                <button class="btn btn-plain" type='button'
-                    {{action 'leave'}}>
-                    <span class="fa fa-times"></span>
-                </button>
-            </span>
-		</div>
+                {{#if (not selectedMe)}}
+                    <span class='clear-badge no-space display-l'>
+                        {{#hide-away/dropdown}}
+                            {{partial 'partials/staff/status'}}
+                        {{else}}
+                            <button class='btn' type='button'>
+                                Status
+                                <span class='fa fa-caret-down'></span>
+                            </button>
+                        {{/hide-away/dropdown}}
+                    </span>
+                {{/if}}
+                <span class='clear-badge display-l'>
+                    <button class='btn' type='button'
+                        {{action 'toggleDetailSlideout'
+                            'slideouts/teams/membership' 'admin/people/many'}}>
+                        Teams
+                    </button>
+                </span>
+                <span class="clear-badge display-m display-l">
+                    <button class="btn btn-plain" type='button'
+                        {{action 'leave'}}>
+                        <span class="fa fa-times"></span>
+                    </button>
+                </span>
+            </div>
+        {{/if}}
     </div>
     <div class="section-body display-m display-l">
 		<ul class="tile-list">

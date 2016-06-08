@@ -3,7 +3,14 @@
 <div class="details full-height">
 	<div class="section-header">
 		<div class="contact-details">
-			<div class="horizontal-items xs-row-3 s-row-2 m-row-3 l-row-2 pull-left">
+			<div class="horizontal-items xs-2-row-3 s-row-2 pull-left">
+                <span class="clear-badge display-xs display-s no-space">
+                    {{#link-to (if tag 'main.tag' 'main.contacts')}}
+                        <span class="pad-all">
+                            <span class="fa fa-chevron-left"></span>
+                        </span>
+                    {{/link-to}}
+                </span>
 				<span class="clear-badge no-space">
 					<h5>{{phone-number contact.identifier}}</h5>
 				</span>
@@ -23,7 +30,7 @@
                     </span>
                 </span>
 			</div>
-			<div class="horizontal-items xs-2-row-3 s-row-2 m-2-row-3 l-row-2 pull-right">
+			<div class="horizontal-items xs-row-3 s-row-2 pull-right">
                 {{#if (not contact.isShared)}}
                     <span class='clear-badge no-space'>
                         <span class="display-m display-l">
@@ -36,39 +43,46 @@
                             </button>
                         </span>
                     </span>
-                {{/if}}
-	            <span class='clear-badge no-space'>
-                    {{#hide-away/dropdown}}
-                        <li tabindex='0' class='dropdown-item display-xs display-s'
+                    <span class='clear-badge no-space'>
+                        {{#hide-away/dropdown}}
+                            <li tabindex='0' class='dropdown-item display-xs display-s'
+                                {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
+                                Edit Info
+                            </li>
+                            <li tabindex='0' class='dropdown-item display-xs display-s'
+                                {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/contact'}}>
+                                Share
+                                <span class="badge">
+                                    {{contact.sharedWith.length}}
+                                </span>
+                            </li>
+                            <li class='dropdown-divider'>Status</li>
+                            {{partial 'partials/contact/status'}}
+                        {{else}}
+                            <button class='btn' type='button'>
+                                Actions
+                                <span class='fa fa-caret-down'></span>
+                            </button>
+                        {{/hide-away/dropdown}}
+                    </span>
+                {{else}}
+                    <span class='clear-badge no-space'>
+                        <button class='btn'
                             {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                            Edit Contact
-                        </li>
-                        <li tabindex='0' class='dropdown-item display-xs display-s'
-                            {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/contact'}}>
-                            Share
-                            <span class="badge">
-                                {{contact.sharedWith.length}}
-                            </span>
-                        </li>
-                        <li class='dropdown-divider'>Status</li>
-                        <li tabindex='0' class='dropdown-item'>Mark as unread</li>
-                        <li tabindex='0' class='dropdown-item'>Archive</li>
-                        <li tabindex='0' class='dropdown-item'>Block</li>
-                    {{else}}
-                        <button class='btn' type='button'>
-                            Actions
-                            <span class='fa fa-caret-down'></span>
+                            {{if contact.isSharedDelegate
+                                'Edit Info'
+                                'View Info'}}
                         </button>
-                    {{/hide-away/dropdown}}
-	            </span>
-	            <span class="clear-badge">
-	            	{{#link-to (if tag 'main.tag' 'main.contacts')}}
-						<span class="pad-all">
+                    </span>
+                {{/if}}
+                <span class="clear-badge display-m display-l">
+                    {{#link-to (if tag 'main.tag' 'main.contacts')}}
+                        <span class="pad-all">
                             <span class="fa fa-times"></span>
                         </span>
-	            	{{/link-to}}
-	            </span>
-			</div>
+                    {{/link-to}}
+                </span>
+            </div>
 		</div>
         <div class="contact-tags">
             {{#if contact.isShared}}
@@ -99,7 +113,7 @@
     <div class="section-body
         {{if (not contact.allowEdits) 'readonly'}}">
         {{#if isMakingCall}}
-            <div class="section-overlay text-big">
+            <div class="overlay text-big">
                 <div class="center text-center xs-9-row-10">
                     <h5 class='text-white'>Call in progress...</h5>
                     <p class='text-lighten'>Connecting to your personal phone at</p>
@@ -115,129 +129,24 @@
                 </div>
             </div>
         {{/if}}
-        {{#infinite-scroll classNames='contact-record'
+        {{#infinite-scroll classNames='contact-record bg-color bg-dark'
+            containerClass='bg-color'
             direction='up'
             data=records
             total=totalNumRecords
-            doLoad=(action 'loadMore') as |record|}}
+            doLoad=(action 'loadMore')
+            doRefresh=(action 'refresh') as |record|}}
             <div class="record-item
                 {{if record.outgoing 'outgoing' 'incoming'}}
                 {{if record.hasVoicemail 'voicemail'}}">
-
                 {{#if record.outgoing}}
-                    {{#hide-away tabindex=false
-                        clickOutToClose=true
-                        bodyClickClose=false
-                        disabled=(not record.receipts)
-                        bodyClass='bg-color bg-light
-                            border-l border-r border-b text-center'}}
-                        <div class="horizontal-items border-b pad-all-half">
-                            <span class="badge">
-                                <div class="indicator success"></div>
-                                <span class="pad-l-half">Success</span>
-                            </span>
-                            <span class="badge">
-                                <div class="indicator"></div>
-                                <span class="pad-l-half">Pending</span>
-                            </span>
-                            <span class="badge">
-                                <div class="indicator failed"></div>
-                                <span class="pad-l-half">Failed</span>
-                            </span>
-                        </div>
-                        <div class="pad-l-half pad-r-half pad-b-half">
-                            {{#each record.receipts as |r|}}
-                                <span class="badge margin-t-half
-                                    {{if r.isSuccess
-                                        'success'
-                                        (if (or r.isFailed r.isBusy)
-                                            'failed')}}">
-                                    {{phone-number r.receivedBy}}
-                                </span>
-                            {{/each}}
-                        </div>
+                    {{#if record.isText}}
+                        {{partial 'partials/record/outgoing-text'}}
                     {{else}}
-                        <span class='decoration-left display-s display-m display-l'
-                            tabindex='0'>
-                            {{#if record.numSuccesses.isFulfilled}}
-                                {{record.numSuccesses.content}}
-                                {{pluralize 'recipient' record.numSuccesses.content}}
-                            {{/if}}
-                        </span>
-                        <span class='decoration-right'>
-                            {{moment-from-now record.whenCreated interval=1000}} by
-                            <span class="text-bold">
-                                {{if record.authorName record.authorName 'Unknown'}}
-                            </span>
-                        </span>
-                        <div class="contents">
-                            <div class="decoration-center-left">
-                                {{#if record.numSuccesses.isFulfilled}}
-                                    {{#if (gt record.numSuccesses.content 0)}}
-                                        {{#tool-tipster theme='tooltipster-clean'
-                                            title='At least one number succeeded'}}
-                                            <span class="indicator success"></span>
-                                        {{/tool-tipster}}
-                                    {{else}}
-                                        {{#tool-tipster theme='tooltipster-clean'
-                                            title='No numbers succeeded'}}
-                                            <span class="indicator failed"></span>
-                                        {{/tool-tipster}}
-                                    {{/if}}
-                                {{/if}}
-                            </div>
-                            {{#if record.isCall}}
-                                <span class="fa fa-phone"></span>
-                                <span class='pad-l duration'>
-                                    {{moment-duration record.durationInSeconds}}
-                                </span>
-                            {{else}}
-                                <b>{{record.contents}}</b>
-                            {{/if}}
-                        </div>
-                    {{/hide-away}}
+                        {{partial 'partials/record/outgoing-call'}}
+                    {{/if}}
                 {{else}}
-                    {{#hide-away tabindex=false
-                        clickOutToClose=false
-                        bodyClickClose=false
-                        disabled=(not record.hasVoicemail)
-                        bodyClass='pad-all-half bg-color bg-light
-                            border-l border-r border-b'}}
-                        {{audio-control source=record.voicemailUrl}}
-                    {{else}}
-                        <span class='decoration-left'>
-                            {{moment-from-now record.whenCreated interval=1000}} by
-                            <span class="text-bold">
-                                {{if record.authorName record.authorName 'Unknown'}}
-                            </span>
-                        </span>
-                        <div class="contents">
-                            {{#if record.isCall}}
-                                {{#if record.hasVoicemail}}
-                                    <span class="fa fa-microphone"></span>
-                                    <span class='pad-l duration'>
-                                        {{moment-duration r.voicemailInSeconds}}
-                                    </span>
-                                    <span class='pull-right fa fa-caret-down'></span>
-                                {{else}}
-                                    <span class="fa fa-phone"></span>
-                                    <span class='pad-l duration'>
-                                        {{moment-duration r.durationInSeconds}}
-                                    </span>
-                                {{/if}}
-                            {{else}}
-                                {{#if record.hasAwayMessage}}
-                                    <div class="decoration-center-right">
-                                        {{#tool-tipster theme='tooltipster-clean'
-                                            title='Received away message'}}
-                                            <span class="fa fa-clock-o"></span>
-                                        {{/tool-tipster}}
-                                    </div>
-                                {{/if}}
-                                <b>{{record.contents}}</b>
-                            {{/if}}
-                        </div>
-                    {{/hide-away}}
+                    {{partial 'partials/record/incoming'}}
                 {{/if}}
             </div>
         {{/infinite-scroll}}

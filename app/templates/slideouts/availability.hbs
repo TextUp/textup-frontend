@@ -2,18 +2,22 @@
     doClose=(route-action 'revert' model
         (route-action 'revert' authManager.authUser
             (route-action 'closeAllSlideouts')))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
-    focusSelector='.start-focus' as |slideout|}}
-	<div class="form-element pad-t pad-l pad-r">
-		<label for='Your Name' class='control-label'>Phone Away Message</label>
-        {{textarea rows="3"
-        	autoresize=true
-        	class="form-control start-focus"
-    		maxlength="160"
-    		remaining='top'
-    		value=model.awayMessage}}
-	</div>
-    <hr>
+    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
+    {{#if model.phone.isFulfilled}}
+        <div class="form-element pad-t pad-l pad-r">
+            <label for='Your Name' class='control-label'>Phone Away Message</label>
+            {{textarea rows="3"
+                autoresize=true
+                class="form-control"
+                maxlength="160"
+                remaining='top'
+                value=model.phone.content.awayMessage
+                validateObj=model.phone.content
+                validateField='awayMessage'
+                validate='bottom'}}
+        </div>
+        <hr>
+    {{/if}}
 	<div class="margin-b pad-l pad-r">
         <label for='Your Name' class='control-label text-bold'>
             My Available Times
@@ -25,12 +29,14 @@
             {{/tool-tipster}}
         </label>
 	</div>
-    <div class="form-element">
-        {{tab-container/availability
-            staff=(mut authManager.authUser)
-            otherStaffs=stateManager.teamMembers}}
-    </div>
-    {{#if (or model.hasDirtyAttributes authManager.authUser.hasDirtyAttributes)}}
+    {{#if authManager.authUser.schedule.isFulfilled}}
+        <div class="form-element">
+            {{tab-container/availability
+                schedule=(mut authManager.authUser.schedule.content)
+                otherStaffs=stateManager.teamMembers}}
+        </div>
+    {{/if}}
+    {{#if (or model.isDirty authManager.authUser.isDirty)}}
         <div class="horizontal-items text-center margin-t margin-b">
             <div class="clear-badge no-space">
                 <button class="btn" type='button'
@@ -43,6 +49,9 @@
                     action=(route-action 'persist' model
                         (route-action 'persist' authManager.authUser
                         (route-action 'closeAllSlideouts')))
+                    disableWhen=(or
+                        (not (v-get model 'isValid'))
+                        (not (v-get authManager.authUser 'isValid')))
                     default='Update'
                     pending='Updating...'}}
             </div>

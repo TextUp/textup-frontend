@@ -2,7 +2,10 @@
         (concat 'Tags (' selected.length ' selected)')
         (concat contact.name ' Tags'))
     direction='right'
-    doClose=(route-action 'clearList' stateManager.owner.tags 'actions'
+    doClose=(route-action 'clearList'
+        (and stateManager.owner.phone.isFulfilled
+            stateManager.owner.phone.content.tags)
+        'actions'
         (route-action 'closeAllSlideouts'))
     ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#if tagsHaveActions}}
@@ -16,7 +19,8 @@
             <div class="clear-badge no-space">
                 {{async-button classNames='btn btn-default'
                     action=(route-action 'updateTagMemberships'
-                        stateManager.owner.tags
+                        (and stateManager.owner.phone.isFulfilled
+                            stateManager.owner.phone.content.tags)
                         (if selected selected contact)
                         slideout.actions.close)
                     default='Update'
@@ -27,7 +31,8 @@
     {{#multi-toggle/group-by-bucket anyChanges=(mut tagsHaveActions)
         itemBucketProperty='tags'
         items=(if selected selected contact)
-        buckets=stateManager.owner.tags as |tag|}}
+        buckets=(and stateManager.owner.phone.isFulfilled
+            stateManager.owner.phone.content.tags)  as |tag|}}
             {{preview-badge color=tag.hexColor onlyShowFull=true content=tag.name}}
     {{else}}
         <li class="no-results">No tags yet.</li>

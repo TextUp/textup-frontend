@@ -31,8 +31,10 @@
     {{else}}
         <div class="section-header">
         	{{#if team}}
-				<span class="indicator pull-left display-l"
-                    style='background-color:{{team.hexColor}};'></span>
+                <span class="display-l">
+                    <span class="indicator pull-left"
+                        style='background-color:{{team.hexColor}};'></span>
+                </span>
                 <div class="tag-title">
                     <h4 class="text-ellipsis">
                         {{team.name}}
@@ -65,12 +67,14 @@
         	{{/if}}
         </div>
     {{/hide-away}}
-    {{#infinite-scroll classNames='section-body'
-        containerClass='result-list'
+    {{#infinite-scroll classNames='section-body bg-color bg-dark'
+        containerClass='bg-color bg-lightest'
+        itemsClass='result-list'
         direction='down'
         data=people
         total=numPeople
-        doLoad=(action 'loadMore') as |person|}}
+        doLoad=(action 'loadMore')
+        doRefresh=(action 'refresh') as |person|}}
         <div class="result-item">
             <div class="row">
                 <div class="contacts-control {{if person.isSelected 'selected'}}"

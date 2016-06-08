@@ -195,6 +195,7 @@ input[type="checkbox"]:checked:after {
 .form-element {
     margin-bottom: $form-v-space * 2;
     label {
+        font-size: 1.1em;
         font-weight: $font-weight-bold;
         display: block;
         margin-bottom: 0.3em;
@@ -233,6 +234,7 @@ textarea.form-control {
     }
     & > .input-group-element, & > .form-control {
         @extend %inline-item;
+        vertical-align: middle;
     }
     & > .input-group-text {
         @extend %inline-item;

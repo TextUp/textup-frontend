@@ -1,0 +1,30 @@
+{{#if selected}}
+	<li tabindex='0' class='dropdown-item'
+		onclick={{route-action 'markStaff' selected}}>
+		Make staff
+	</li>
+    <li tabindex='0' class='dropdown-item'
+    	onclick={{route-action 'markAdmin' selected}}>
+    	Make admin
+	</li>
+    <li tabindex='0' class='dropdown-item'
+    	onclick={{route-action 'markBlocked' selected}}>
+    	Block
+	</li>
+{{else if (and person (not person.isAuthUser))}}
+	{{#if person.isAdmin}}
+    	<li tabindex='0' class='dropdown-item'
+    		onclick={{route-action 'markStaff' person}}>
+    		Make staff
+		</li>
+    {{else}}
+		<li tabindex='0' class='dropdown-item'
+			onclick={{route-action 'markAdmin' person}}>
+			Make admin
+		</li>
+    {{/if}}
+    <li tabindex='0' class='dropdown-item'
+		onclick={{route-action 'markBlocked' person}}>
+		Block
+	</li>
+{{/if}}

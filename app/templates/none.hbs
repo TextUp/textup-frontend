@@ -4,7 +4,7 @@
     <div class="single-header">
         <img class="brand" src='assets/images/logo.png' />
         <h3>Hello, {{authManager.authUser.name}}!</h3>
-        <div class="subtitle">
+        <div class="subtitle display-m display-l">
             <a class='text-white' href="#" onclick={{route-action 'logout'}}>
                 Done editing info? <b>Log out.</b>
             </a>
@@ -51,7 +51,13 @@
             {{/with}}
         </div>
     </div>
-    <div class="single-footer"></div>
+    <div class="single-footer">
+        <div class="display-xs display-s text-bold margin-t margin-b">
+            <a class='text-white' href="#" onclick={{route-action 'logout'}}>
+                Done editing info? <b>Log out.</b>
+            </a>
+        </div>
+    </div>
 </div>
 
 

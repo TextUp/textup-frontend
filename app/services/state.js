@@ -2,14 +2,14 @@ import config from '../config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
 import moment from 'moment';
+import Inflector from 'ember-inflector';
 import {
 	clean as cleanNumber
 } from '../utils/phone-number';
 
 const {
 	equal: eq,
-	match,
-	or
+	match
 } = Ember.computed;
 
 export default Ember.Service.extend({
@@ -19,6 +19,7 @@ export default Ember.Service.extend({
 	routing: Ember.inject.service('-routing'),
 	store: Ember.inject.service(),
 	socket: Ember.inject.service(),
+	storage: Ember.inject.service(),
 
 	// Events
 	// ------
@@ -36,7 +37,7 @@ export default Ember.Service.extend({
 			.off(config.events.auth.clear);
 	},
 
-	// Viewing
+	// Routing
 	// -------
 
 	viewingContacts: match('routing.currentPath', /main.contacts/),
@@ -44,6 +45,19 @@ export default Ember.Service.extend({
 	viewingMany: match('routing.currentPath', /many/),
 	viewingPeople: match('routing.currentPath', /admin.people/),
 	viewingTeam: match('routing.currentPath', /admin.team/),
+
+	currentRoute: Ember.computed('routing.currentRouteName', function() {
+		const routeName = this.get('routing.currentRouteName');
+		return routeName ?
+			Ember.getOwner(this).lookup(`route:${routeName}`) :
+			null;
+	}),
+	trackLocation: Ember.observer('routing.router.url', function() {
+		Ember.run.next(this, function() {
+			this.get('storage').trySet(localStorage,
+				'currentUrl', this.get('routing.router.url'));
+		});
+	}),
 
 	// Owner
 	// -----
@@ -77,7 +91,17 @@ export default Ember.Service.extend({
 		function() {
 			const candidates = this.get('ownerIsTeam') ? this.get('relevantStaffs') :
 				this.get('staffsExceptMe');
-			return candidates.filter((staff) => staff.get('phone'));
+			return DS.PromiseArray.create({
+				promise: Ember.RSVP.all(candidates.mapBy('phone')).then((phones) => {
+					const staffsWithPhones = [];
+					phones.forEach((phone, index) => {
+						if (Ember.isPresent(phone)) {
+							staffsWithPhones.pushObject(candidates.objectAt(index));
+						}
+					});
+					return staffsWithPhones;
+				})
+			});
 		}),
 
 	// Numbers
@@ -134,7 +158,7 @@ export default Ember.Service.extend({
 	},
 	_makeNumsMap: function(models) {
 		const numsMap = Object.create(null),
-			keys = ['newPhone.phoneNumber', 'phone'];
+			keys = ['newPhone.phoneNumber', 'phone.content.number'];
 		models
 			.filter((model) => keys.any((key) => Ember.isPresent(model.get(key))))
 			.forEach((model) => {
@@ -154,6 +178,15 @@ export default Ember.Service.extend({
 	_bindSocketEvents: function() {
 		const socket = this.get('socket'),
 			channelName = this.get('authManager.channelName');
+		socket.connect({
+			encrypted: true,
+			authEndpoint: `${config.host}/v1/sockets`,
+			auth: {
+				headers: {
+					Authorization: `Bearer ${this.get('authManager.token')}`
+				}
+			}
+		});
 		Ember.RSVP.all([
 			socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
 			socket.bind(channelName, 'recordStatuses', this._handleSocketRecords.bind(this)),
@@ -163,32 +196,45 @@ export default Ember.Service.extend({
 	_unbindSocketEvents: function() {
 		this.get('socket').disconnect();
 	},
-	_handleSocketRecords: function(data) {
-		const state = this.get('stateManager'),
-			store = this.get('store');
-		if (state.get('ownerHasPhone')) {
-			const contacts = state.get('owner.contacts');
-			(data.records || []).forEach((record) => {
-				const record = store.push(store.normalize('record', record));
-				contacts.unshift
-			});
 
-		}
+	_handleSocketRecords: function(data) {
+		this._addNewForComputedArray('record', data);
 	},
 	_handleSocketContacts: function(data) {
-		const state = this.get('stateManager');
-		if (state.get('ownerHasPhone')) {
-			const store = this.get('store'),
-				contacts = state.get('owner.contacts');
-			((data && data.contacts) || []).forEach((contact) => {
-				const existing = store.hasRecordForId('contact', contact.id),
-					model = store.push(store.normalize('contact', contact)),
-					phone = this._getByPhoneId(contact.id); // actually, staff or team member with phone
-				if (!existing && owner) {
-					phone.
-					contacts.unshift(model);
-				}
-			});
+		if (!Ember.isArray(data)) {
+			return;
 		}
-	}
+		// Prevent updating of the contact that we are currently viewing
+		const rte = this.get('currentRoute');
+		if (rte && (rte.get('routeName') === 'main.contacts.contact' ||
+				rte.get('routeName') === 'main.tag.contact')) {
+			const contactId = String(rte.get('currentModel.id'));
+			data.removeObject(data.find((item) => String(item.id) === contactId));
+		}
+		this._addNewForManualArray('phone', 'contact', data);
+	},
+	_addNewForComputedArray: function(modelName, data) {
+		if (!Ember.isArray(data)) {
+			return;
+		}
+		const store = this.get('store');
+		data.forEach((item) => store.push(store.normalize(modelName, item)));
+	},
+	_addNewForManualArray: function(ownerName, itemName, data) {
+		if (!data) {
+			return;
+		}
+		const store = this.get('store');
+		data.forEach((item) => {
+			const existingBefore = store.hasRecordForId(itemName, item.id),
+				model = store.push(store.normalize(itemName, item)),
+				owner = store.peekRecord(ownerName, item[ownerName]);
+			if (!existingBefore && owner) {
+				const array = owner.get(Inflector.inflector.pluralize(itemName));
+				if (Ember.isArray(array)) {
+					array.unshiftObject(model);
+				}
+			}
+		});
+	},
 });

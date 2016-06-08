@@ -10,7 +10,8 @@ import {
 
 const {
 	notEmpty,
-	equal: eq
+	equal: eq,
+	sort
 } = Ember.computed,
 	Validations = buildValidations({
 		name: {
@@ -79,8 +80,11 @@ export default DS.Model.extend(Validations, {
 		defaultValue: () => []
 	}),
 
-	phoneId: DS.attr('number'),
-	records: DS.hasMany('record'),
+	phone: DS.belongsTo('phone'),
+
+	unsortedRecords: DS.hasMany('record'),
+	recordsSorting: ['whenCreated:desc'],
+	records: sort('unsortedRecords', 'recordsSorting'),
 
 	// Contact
 	// -------
@@ -102,6 +106,7 @@ export default DS.Model.extend(Validations, {
 	type: 'contact', // for compose menu
 	isSelected: false,
 	actions: null,
+	totalNumRecords: '--',
 
 	// Computed properties
 	// -------------------
@@ -127,4 +132,25 @@ export default DS.Model.extend(Validations, {
 	isBlocked: eq('status', 'BLOCKED'),
 	isActive: eq('status', 'ACTIVE'),
 	isUnread: eq('status', 'UNREAD'),
+
+	// Helper methods
+	// --------------
+
+	isAnyStatus: function(raw) {
+		return (Ember.isArray(raw) ? raw : [raw])
+			.map((stat) => String(stat).toLowerCase())
+			.contains(String(this.get('status')).toLowerCase());
+	},
+	markUnread: function() {
+		this.set('status', 'UNREAD');
+	},
+	markActive: function() {
+		this.set('status', 'ACTIVE');
+	},
+	markArchived: function() {
+		this.set('status', 'ARCHIVED');
+	},
+	markBlocked: function() {
+		this.set('status', 'BLOCKED');
+	}
 });

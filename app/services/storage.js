@@ -51,7 +51,7 @@ export default Ember.Service.extend(Ember.Evented, {
 	sync: function() {
 		return new Ember.RSVP.Promise((resolve) => {
 			// set request key to trigger storage event
-			this._trySet(_l, this.get('requestKey'), Date.now());
+			this.trySet(_l, this.get('requestKey'), Date.now());
 			// resolve promise
 			const timeoutTimer = Ember.run.later(this, function() {
 				this.off(config.events.storage.updated, this);
@@ -67,9 +67,9 @@ export default Ember.Service.extend(Ember.Evented, {
 		return _s.getItem(key) || _l.getItem(key);
 	},
 	setItem: function(key, value) {
-		this._trySet(_s, key, value);
+		this.trySet(_s, key, value);
 		if (this.get('persist')) {
-			this._trySet(_l, key, value);
+			this.trySet(_l, key, value);
 		}
 	},
 	removeItem: function(key) {
@@ -78,7 +78,7 @@ export default Ember.Service.extend(Ember.Evented, {
 	},
 	sendStorage: function() {
 		const ns = this.get('namespace');
-		this._trySet(_l, ns, JSON.stringify(_s));
+		this.trySet(_l, ns, JSON.stringify(_s));
 		// if not persisting in local storage, then immediately remove
 		// despite this immediate removal, storage event is still sent
 		_l.removeItem(ns);
@@ -87,11 +87,11 @@ export default Ember.Service.extend(Ember.Evented, {
 	// Helpers
 	// -------
 
-	_trySet: function(storageObj, key, value) {
+	trySet: function(storageObj, key, value) {
 		try {
 			storageObj.setItem(key, value);
 		} catch (e) {
-			Ember.debug('storage._trySet: web storage not available: ' + e);
+			Ember.debug('storage.trySet: web storage not available: ' + e);
 		}
 	},
 	_doSync: function(event) {
@@ -109,7 +109,7 @@ export default Ember.Service.extend(Ember.Evented, {
 	_receiveStorage: function(data) {
 		_s.clear();
 		for (let key in data) {
-			this._trySet(_s, key, data[key]);
+			this.trySet(_s, key, data[key]);
 		}
 		this.trigger(config.events.storage.updated);
 	}

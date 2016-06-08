@@ -12,10 +12,7 @@ export default Ember.Service.extend({
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			const isArray = Ember.isArray(data),
 				models = isArray ? data : [data],
-				changedModels = models.filter((model) => {
-					return model.get('hasDirtyAttributes') ||
-						!!model.get('hasManualChanges');
-				});
+				changedModels = models.filterBy('isDirty');
 			if (Ember.isEmpty(changedModels)) {
 				return resolve(data);
 			}
@@ -72,7 +69,6 @@ export default Ember.Service.extend({
 			type: 'TEXT',
 			contents: msg
 		});
-
 		record.get('recipients')
 			.pushObjects(Ember.isArray(recipients) ? recipients : [recipients]);
 		return this.persist(record)

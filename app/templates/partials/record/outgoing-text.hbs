@@ -1,0 +1,64 @@
+{{#hide-away tabindex=false
+    clickOutToClose=true
+    bodyClickClose=false
+    disabled=(not record.receipts)
+    bodyClass='bg-color bg-light
+        border-l border-r border-b text-center'}}
+    <div class="horizontal-items border-b pad-all-half">
+        <span class="badge">
+            <div class="indicator success"></div>
+            <span class="pad-l-half">Success</span>
+        </span>
+        <span class="badge">
+            <div class="indicator"></div>
+            <span class="pad-l-half">Pending</span>
+        </span>
+        <span class="badge">
+            <div class="indicator failed"></div>
+            <span class="pad-l-half">Failed</span>
+        </span>
+    </div>
+    <div class="pad-l-half pad-r-half pad-b-half">
+        {{#each record.receipts as |r|}}
+            <span class="badge margin-t-half
+                {{if r.isSuccess
+                    'success'
+                    (if (or r.isFailed r.isBusy)
+                        'failed')}}">
+                {{phone-number r.receivedBy}}
+            </span>
+        {{/each}}
+    </div>
+{{else}}
+    <span class='decoration-left display-s display-m display-l'
+        tabindex='0'>
+        {{#if record.numSuccesses.isFulfilled}}
+            {{record.numSuccesses.content}}
+            {{pluralize 'recipient' record.numSuccesses.content}}
+        {{/if}}
+    </span>
+    <span class='decoration-right'>
+        {{moment-from-now record.whenCreated interval=1000}} by
+        <span class="text-bold">
+            {{if record.authorName record.authorName 'Unknown'}}
+        </span>
+    </span>
+    <div class="contents">
+        <div class="decoration-center-left">
+            {{#if record.numSuccesses.isFulfilled}}
+                {{#if (gt record.numSuccesses.content 0)}}
+                    {{#tool-tipster theme='tooltipster-clean'
+                        title='At least one number succeeded'}}
+                        <span class="indicator success"></span>
+                    {{/tool-tipster}}
+                {{else}}
+                    {{#tool-tipster theme='tooltipster-clean'
+                        title='No numbers succeeded'}}
+                        <span class="indicator failed"></span>
+                    {{/tool-tipster}}
+                {{/if}}
+            {{/if}}
+        </div>
+        <b>{{record.contents}}</b>
+    </div>
+{{/hide-away}}

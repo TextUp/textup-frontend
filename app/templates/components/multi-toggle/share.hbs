@@ -7,7 +7,7 @@
     items=contacts
     buckets=staffs as |staff|}}
         <span class="text-bold">{{staff.name}}</span>
-        <span class="pad-l-half">{{phone-number staff.phone}}</span>
+        <span class="pad-l-half">{{phone-number staff.phone.content.number}}</span>
 {{else}}
     <li class="no-results">No staff members available to share with.</li>
 {{/multi-toggle/group-by-item}}

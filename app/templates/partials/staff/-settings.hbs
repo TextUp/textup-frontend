@@ -22,9 +22,9 @@
     <label for='Personal Phone' class='control-label'>Personal Phone</label>
     {{partial 'partials/staff/personal-number'}}
 </div>
-{{#if staff.phone}}
+{{#if (and staff.phone.isFulfilled staff.phone.content.number)}}
     <div class='form-element'>
         <label for='TextUp Phone' class='control-label'>TextUp Phone</label>
-        {{phone-control number=staff.phone}}
+        {{phone-control number=staff.phone.content.number}}
     </div>
 {{/if}}
