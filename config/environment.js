@@ -20,9 +20,6 @@ module.exports = function(environment) {
             // Here you can pass flags/options to your application instance
             // when it is created
         },
-        'ember-cli-notifications': {
-            includeFontAwesome: true
-        },
         moment: {
             includeTimezone: '2010-2020'
         },
@@ -68,7 +65,7 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-        ENV.host = "https://5e6aa46b.ngrok.io";
+        ENV.host = "https://v2.textup.org";
     }
 
     return ENV;
