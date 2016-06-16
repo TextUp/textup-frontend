@@ -63,6 +63,9 @@ export default Ember.Service.extend(Ember.Evented, {
 			});
 		});
 	},
+	isItemPersistent: function(key) {
+		return Ember.isPresent(_l.getItem(key));
+	},
 	getItem: function(key) {
 		return _s.getItem(key) || _l.getItem(key);
 	},

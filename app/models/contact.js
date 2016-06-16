@@ -9,48 +9,52 @@ import {
 } from '../utils/phone-number';
 
 const {
-	notEmpty,
-	equal: eq,
-	sort
-} = Ember.computed,
-	Validations = buildValidations({
-		name: {
-			description: 'Name',
-			validators: [
-				validator('presence', true)
-			]
-		},
-		note: {
-			description: 'Note',
-			validators: [
-				validator('length', {
-					max: 1000
-				}),
-			]
-		},
-		status: validator('inclusion', { in : [
-				'UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED'
-			]
-		}),
-		numbers: {
-			description: 'Numbers',
-			validators: [
-				validator('collection', {
-					collection: true,
-					dependentKeys: ['numbers.@each.number'],
-					message: 'All phone numbers must be valid, with area code',
-					for: 'every',
-					test: function(numObj) {
-						return validateNumber(Ember.get(numObj, 'number'));
-					}
-				}),
-				validator('length', {
-					min: 1,
-					message: 'Contact must have at least {min} phone number.'
-				}),
-			]
-		}
-	});
+	get,
+	set,
+	computed: {
+		notEmpty,
+		equal: eq,
+		sort
+	}
+} = Ember,
+Validations = buildValidations({
+	name: {
+		description: 'Name',
+		validators: [
+			validator('presence', true)
+		]
+	},
+	note: {
+		description: 'Note',
+		validators: [
+			validator('length', {
+				max: 1000
+			}),
+		]
+	},
+	status: validator('inclusion', { in : [
+			'UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED'
+		]
+	}),
+	numbers: {
+		description: 'Numbers',
+		validators: [
+			validator('collection', {
+				collection: true,
+				dependentKeys: ['numbers.@each.number'],
+				message: 'All phone numbers must be valid, with area code',
+				for: 'every',
+				test: function(numObj) {
+					return validateNumber(Ember.get(numObj, 'number'));
+				}
+			}),
+			validator('length', {
+				min: 1,
+				message: 'Contact must have at least {min} phone number.'
+			}),
+		]
+	}
+});
 
 export default DS.Model.extend(Validations, {
 	init: function() {
@@ -83,8 +87,26 @@ export default DS.Model.extend(Validations, {
 	phone: DS.belongsTo('phone'),
 
 	unsortedRecords: DS.hasMany('record'),
+	uniqueRecords: Ember.computed('unsortedRecords.[]', function() {
+		return DS.PromiseArray.create({
+			promise: new Ember.RSVP.Promise((resolve, reject) => {
+				this.get('unsortedRecords').then((records) => {
+					const idMap = Object.create(null),
+						uniqueRecords = [];
+					records.forEach((record) => {
+						const id = String(get(record, 'id'));
+						if (!get(idMap, id)) {
+							set(idMap, id, true);
+							uniqueRecords.pushObject(record);
+						}
+					});
+					resolve(uniqueRecords);
+				}, reject);
+			})
+		});
+	}),
 	recordsSorting: ['whenCreated:desc'],
-	records: sort('unsortedRecords', 'recordsSorting'),
+	records: sort('uniqueRecords', 'recordsSorting'),
 
 	// Contact
 	// -------

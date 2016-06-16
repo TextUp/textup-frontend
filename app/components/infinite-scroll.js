@@ -359,8 +359,10 @@ export default Ember.Component.extend({
 				}
 				Ember.run.next(this, function() {
 					this._afterAdd(isSettingUp);
-					Ember.run.scheduleOnce('afterRender', this, this.storePercentFromTop);
-					callIfPresent(callback);
+					Ember.run.scheduleOnce('afterRender', this, function() {
+						this.storePercentFromTop();
+						callIfPresent(callback);
+					});
 				});
 			}.bind(this));
 		} else {
@@ -373,7 +375,9 @@ export default Ember.Component.extend({
 			if (!isSettingUp) {
 				this.set('_hasError', true);
 			}
-			callIfPresent(callback);
+			Ember.run.scheduleOnce('afterRender', this, function() {
+				callIfPresent(callback);
+			});
 		}
 	},
 	_beforeAdd: function() {

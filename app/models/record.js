@@ -59,7 +59,7 @@ export default DS.Model.extend({
 	isText: eq('type', 'TEXT'),
 	isCall: eq('type', 'CALL'),
 
-	successes: Ember.computed('receipts', function() {
+	successes: Ember.computed('receipts.@each.status', function() {
 		return DS.PromiseArray.create({
 			promise: new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('receipts').then((receipts) => {
@@ -68,7 +68,7 @@ export default DS.Model.extend({
 			})
 		});
 	}),
-	numSuccesses: Ember.computed('successes', function() {
+	numSuccesses: Ember.computed('successes.[]', function() {
 		return DS.PromiseObject.create({
 			promise: new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('successes').then((successes) => {
