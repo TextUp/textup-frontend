@@ -6,7 +6,6 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-
     this.route('error', {
         path: '/*wildcard'
     });
@@ -15,6 +14,7 @@ Router.map(function() {
     // ------
 
     this.route('login');
+    this.route('reset');
     this.route('signup', function() {
         this.route('new');
         this.route('account');

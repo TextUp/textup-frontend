@@ -86,6 +86,7 @@
         {{/hide-away}}
     {{/if}}
     {{#infinite-scroll classNames='section-body bg-color bg-dark'
+        doRegister=(action (mut _contactsList))
         containerClass='bg-color bg-lightest'
         itemsClass='result-list'
         direction='down'

@@ -95,6 +95,22 @@ export default Ember.Service.extend(Ember.Evented, {
 			}).then(resolve, reject);
 		});
 	},
+	completeResetPassword: function(token, password) {
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			if (!token || !password) {
+				return reject();
+			}
+			Ember.$.ajax({
+				type: 'PUT',
+				url: `${config.host}/reset`,
+				contentType: 'application/json',
+				data: JSON.stringify({
+					token,
+					password
+				})
+			}).then(resolve, reject);
+		});
+	},
 	retryAttemptedTransition: function(fallback) {
 		const transition = this.get('attemptedTransition');
 		if (transition) {
@@ -173,7 +189,7 @@ export default Ember.Service.extend(Ember.Evented, {
 				// set storage to also update localstorage only if
 				// current information is already persisted there
 				storage.set('persist', storage.isItemPersistent('token'));
-				// once all of the pertinent values in the authmanager are configured
+				// once all of the pertinent values in the authManager are configured
 				// then make the initial call to the backend to retrieve the staff
 				this.get('store').findRecord('staff', userId).then((staff) => {
 					// we re-get the token and refresh token values because

@@ -90,7 +90,8 @@ export default Ember.Service.extend({
 	// Utility methods
 	// ---------------
 
-	displayErrors: function(failure) {
+	displayErrors: function(json) {
+		const failure = json.responseJSON || json;
 		let numMessages = 0;
 		if (failure && failure.errors) {
 			failure.errors.forEach((error) => {

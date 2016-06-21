@@ -29,6 +29,22 @@ export default Ember.Route.extend({
 		this.controller.set('isMakingCall', false);
 	},
 
+	// Actions
+	// -------
+
+	actions: {
+		didTransition: function() {
+			const recordsList = this.controller.get('_recordsList');
+			if (recordsList) {
+				recordsList.actions.resetPosition();
+			}
+			return true;
+		},
+	},
+
+	// Helper methods
+	// --------------
+
 	_reloadContact: function(controller, id) {
 		const found = this.store.peekRecord('contact', id),
 			setContact = function(contact) {

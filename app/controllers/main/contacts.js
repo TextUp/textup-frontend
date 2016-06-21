@@ -68,6 +68,7 @@ export default Ember.Controller.extend({
 			}
 			if (tag) { // one or the other, can't be both
 				query.tagId = tag.get('id');
+				delete query.status;
 			} else if (team) {
 				query.teamId = team.get('id');
 			}

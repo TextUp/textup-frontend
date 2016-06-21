@@ -22,6 +22,7 @@ export default Ember.Component.extend({
 	// not return a Promise
 	refreshTimeout: defaultIfAbsent(1000), // in milliseconds
 
+	doRegister: null,
 	doRefresh: null,
 	// passed nothing
 	// return Promise indicating that loading is done
@@ -72,7 +73,10 @@ export default Ember.Component.extend({
 				_hasError: this.get('_hasError'),
 				_version: this.get('_version'),
 				actions: {
-					loadMore: this.loadMoreIfNeeded.bind(this, true)
+					loadMore: this.loadMoreIfNeeded.bind(this, true),
+					resetPosition: function() {
+						Ember.run.scheduleOnce('afterRender', this, this._afterAdd, true);
+					}.bind(this)
 				}
 			};
 		}),
@@ -99,14 +103,18 @@ export default Ember.Component.extend({
 	// Events
 	// ------
 
+	didInitAttrs: function() {
+		this._super(...arguments);
+		callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+	},
 	didInsertElement: function() {
 		Ember.run.scheduleOnce('afterRender', this, function() {
-			this._setup();
+			this._setup(true);
 			// bind event handlers
 			const elId = this.elementId;
 			Ember.$(window).on(`orientationchange.${elId} resize.${elId}`,
 				this.restorePercentFromTop.bind(this));
-			this.$()
+			this.get('_$container')
 				.on(`scroll.${elId}`, function() {
 					this.storePercentFromTop();
 					this.loadMoreIfNeeded();
@@ -121,16 +129,16 @@ export default Ember.Component.extend({
 		});
 	},
 	willDestroyElement: function() {
-		this.$().off(`.${this.elementId}`);
+		this.get('_$container').off(`.${this.elementId}`);
 		Ember.$(window).off(`.${this.elementId}`);
 	},
 	didUpdateAttrs: function() {
 		// only rerun setup if the data array has been changed to another array
 		if (this.get('_prevData') !== this.get('data')) {
-			Ember.run.scheduleOnce('afterRender', this, this._setup);
+			Ember.run.scheduleOnce('afterRender', this, this._setup, false);
 		}
 	},
-	_setup: function() {
+	_setup: function(shouldReset = false) {
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
@@ -143,7 +151,7 @@ export default Ember.Component.extend({
 		});
 		this._resetPull();
 		this.incrementProperty('_version');
-		Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this), true);
+		Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this), true, shouldReset);
 	},
 
 	// Preserve location
@@ -335,7 +343,7 @@ export default Ember.Component.extend({
 	// Managing items
 	// --------------
 
-	displayItems: function(callback, isSettingUp = false) {
+	displayItems: function(callback, isSettingUp = false, shouldReset = false) {
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
@@ -358,7 +366,7 @@ export default Ember.Component.extend({
 					renderedItems.pushObjects(newItems);
 				}
 				Ember.run.next(this, function() {
-					this._afterAdd(isSettingUp);
+					this._afterAdd(shouldReset);
 					Ember.run.scheduleOnce('afterRender', this, function() {
 						this.storePercentFromTop();
 						callIfPresent(callback);

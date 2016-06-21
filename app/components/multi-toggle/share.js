@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 		command: 'VIEW',
 		color: '#76c9ec'
 	}, {
-		display: 'Delegate',
+		display: 'Collaborate',
 		command: 'DELEGATE',
 		color: '#1BA5E0'
 	}]),
@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 		command: 'VIEW',
 		color: '#76c9ec'
 	}, {
-		display: 'Delegate',
+		display: 'Collaborate',
 		command: 'DELEGATE',
 		color: '#1BA5E0'
 	}]),

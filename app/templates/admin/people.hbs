@@ -68,6 +68,7 @@
         </div>
     {{/hide-away}}
     {{#infinite-scroll classNames='section-body bg-color bg-dark'
+        doRegister=(action (mut _peopleList))
         containerClass='bg-color bg-lightest'
         itemsClass='result-list'
         direction='down'

@@ -19,6 +19,10 @@ export default Ember.Route.extend({
 				this._resetController();
 			}
 			this.set('_changedFilter', false);
+			const peopleList = this.controller.get('_peopleList');
+			if (peopleList) {
+				peopleList.actions.resetPosition();
+			}
 			// return true to allow bubbling to close slideout handler
 			return true;
 		},

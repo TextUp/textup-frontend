@@ -21,7 +21,8 @@
                 <div class="input-group">
                     {{input value=resetUsername type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
                     <div class="input-group-addon">
-                        {{async-button classNames='btn'
+                        {{async-button classNames='btn btn-default'
+                            disableWhen=(not resetUsername)
                             action=(route-action 'resetPassword' resetUsername)
                             default='Send'
                             pending='Sending...'}}

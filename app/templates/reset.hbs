@@ -1,0 +1,38 @@
+{{title "Reset Password"}}
+
+<div class="single-container single-container-small">
+	<div class="single-header">
+		<img class="brand" src="assets/images/logo.png">
+		<h3>Reset password</h3>
+	</div>
+	<div class="single-body">
+		<div class="single-body-header">
+			<h5 class="text-center pad-b">Almost done!</h5>
+			<p class="text-justify">Your account is waiting. Pick a new password for your account and then you'll be all set.</p>
+		</div>
+		<div class="single-body-content">
+			<div class="form-element">
+				<label for="Username">New Password</label>
+				{{input value=newPassword type='password' placeholder='New Password' class='form-control'}}
+			</div>
+			<div class="form-element">
+				<label for="Username">Confirm Password</label>
+				<div class="input-group">
+					{{input value=confirmNewPassword type='password' placeholder='Confirm Password' class='form-control'}}
+					<div class="input-group-addon">
+						{{async-button classNames='btn btn-default'
+							disableWhen=(or (not newPassword) (not (eq newPassword confirmNewPassword)))
+							action=(route-action 'completeReset' newPassword)
+							default='Reset'
+							pending='Resetting...'}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="single-body-footer text-center">
+			{{#link-to 'login' tagName='button' classNames='btn btn-default'}}
+				Back
+			{{/link-to}}
+		</div>
+	</div>
+</div>

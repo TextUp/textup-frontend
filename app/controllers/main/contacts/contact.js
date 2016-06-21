@@ -6,6 +6,11 @@ const {
 } = Ember.computed;
 
 export default Ember.Controller.extend({
+	contact: null,
+
+	// Computed properties
+	// -------------------
+
 	records: alias('contact.records'),
 	totalNumRecords: Ember.computed('contact.totalNumRecords', {
 		get: function() {
@@ -18,7 +23,6 @@ export default Ember.Controller.extend({
 			return value;
 		}
 	}),
-	contact: null,
 
 	actions: {
 		refresh: function() {
@@ -33,22 +37,9 @@ export default Ember.Controller.extend({
 		},
 		loadMore: function() {
 			return new Ember.RSVP.Promise((resolve, reject) => {
-				const query = Object.create(null),
-					contact = this.get('contact'),
-					records = this.get('records');
-				// build query
-				query.contactId = contact.get('id');
-				if (records.length) {
-					query.offset = records.length;
-				}
-				// execute query
-				this.store.query('record', query).then((results) => {
-					this.set('totalNumRecords', results.get('meta.total'));
-					resolve();
-				}, this.get('dataHandler').buildErrorHandler(reject));
+				this._loadMoreWhenReady(resolve, reject);
 			});
 		},
-
 		sendMessage: function(then = undefined) {
 			this.set('isSendingText', true);
 			this.set('isSendingTextError', false);
@@ -66,4 +57,25 @@ export default Ember.Controller.extend({
 				});
 		},
 	},
+
+	_loadMoreWhenReady: function(doResolve, doReject, tryNumber = 0) {
+		if (!this.get('_isReady') && tryNumber < 3) {
+			return Ember.run.later(this, this._loadMoreWhenReady,
+				doResolve, doReject, tryNumber + 1, 500);
+		}
+		const query = Object.create(null),
+			contact = this.get('contact'),
+			records = this.get('records');
+		// build query
+		query.max = 20;
+		query.contactId = contact.get('id');
+		if (records.length) {
+			query.offset = records.length;
+		}
+		// execute query
+		this.store.query('record', query).then((results) => {
+			this.set('totalNumRecords', results.get('meta.total'));
+			doResolve();
+		}, this.get('dataHandler').buildErrorHandler(doReject));
+	}
 });

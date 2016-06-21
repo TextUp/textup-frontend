@@ -130,6 +130,7 @@
             </div>
         {{/if}}
         {{#infinite-scroll classNames='contact-record bg-color bg-dark'
+            doRegister=(action (mut _recordsList))
             containerClass='bg-color'
             direction='up'
             data=records
