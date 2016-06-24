@@ -47,23 +47,40 @@
             border-color: transparent;
         }
     }
+    &.form-error {
+        @extend %form-error;
+    }
+    &.form-disabled {
+        @extend %form-disabled;
+    }
 }
-.form-error %input-decoration {
+%form-error {
+    color: tint($danger-color);
     border-bottom-color: tint($danger-color);
 
     &:hover {
+        color: $danger-color;
         border-bottom-color: $danger-color;
     }
     &:active, &:focus {
+        color: shade($danger-color);
         border-bottom-color: shade($danger-color);
     }
 }
-.form-disabled %input-decoration {
+%form-disabled {
+    color: shade($border-color, 2);
     border-bottom-color: $border-color;
 
     &:hover, &:active, &:focus {
+        color: shade($border-color, 2);
         border-bottom-color: $border-color;
     }
+}
+.form-error, .form-error %input-decoration {
+    @extend %form-error;
+}
+.form-disabled, .form-disabled %input-decoration {
+    @extend %form-disabled;
 }
 
 // Buttons
@@ -124,8 +141,6 @@
         @extend %input-disabled;
         width: 100%;
         border-radius: 0;
-        border-left-width: 0;
-        border-right-width: 0;
     }
     .horizontal-items {
         position: relative;
@@ -180,6 +195,7 @@ input[type="checkbox"]:checked:after {
 .form-element {
     margin-bottom: $form-v-space * 2;
     label {
+        font-size: 1.1em;
         font-weight: $font-weight-bold;
         display: block;
         margin-bottom: 0.3em;
@@ -218,6 +234,7 @@ textarea.form-control {
     }
     & > .input-group-element, & > .form-control {
         @extend %inline-item;
+        vertical-align: middle;
     }
     & > .input-group-text {
         @extend %inline-item;
@@ -245,7 +262,6 @@ textarea.form-control {
         min-width: $min-control-width;
         width: 1%;
         white-space: nowrap;
-        vertical-align: middle;
 
         &.expand {
             width: auto;

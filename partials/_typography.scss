@@ -1,13 +1,29 @@
 @font-face {
-  font-family: 'Bitter';
-  src: url('fonts/Bitter.woff2') format('woff2'),
-       url('fonts/Bitter.woff') format('woff'),
-       url('fonts/Bitter.ttf') format('truetype');
+    font-family: 'Bitter';
+    src: url('fonts/Bitter.woff2') format('woff2'),
+        url('fonts/Bitter.woff') format('woff'),
+        url('fonts/Bitter.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('fonts/Lato-Regular.woff2') format('woff2'),
+        url('fonts/Lato-Regular.woff') format('woff'),
+        url('fonts/Lato-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: $font-weight-std;
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('fonts/Lato-Bold.woff2') format('woff2'),
+        url('fonts/Lato-Bold.woff') format('woff'),
+        url('fonts/Lato-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: $font-weight-bold;
 }
 
 body {
     margin: 0;
-    font-family: helvetica, arial, sans-serif;
+    font-family: 'Lato', helvetica, arial, sans-serif;
     font-style: normal;
     font-weight: $font-weight-std;
     -webkit-font-smoothing: antialiased;
@@ -58,6 +74,15 @@ h5 {
 .match-color {
     color: inherit;
 }
+.text-darken {
+    color: $title-color;
+}
+.text-lighten {
+    color: tint($font-color, 3.5);
+}
+.text-white {
+    color: $font-light-color;
+}
 .text-center {
     text-align: center;
 }
@@ -70,26 +95,39 @@ h5 {
 .text-right {
     text-align: right;
 }
-.text-darken {
-    color: $title-color;
-}
+
 .text-bold {
     font-weight: $font-weight-bold;
 }
 .text-normal {
     font-weight: $font-weight-std;
 }
-.text-lighten {
-    color: $font-light-color;
-}
+
 .text-ellipsis {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.small {
+
+.text-biggest {
+    font-size: 1.5em;
+}
+.text-bigger {
+    font-size: 1.3em;
+}
+.text-big {
+    font-size: 1.1em;
+}
+.text-small {
     font-size: 0.9em;
 }
+.text-smaller {
+    font-size: 0.7em;
+}
+.text-smallest {
+    font-size: 0.5em;
+}
+
 .emphasize {
     @extend .text-darken;
     @extend .text-bold;
