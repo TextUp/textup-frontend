@@ -47,7 +47,8 @@ export default DS.Model.extend(Validations, {
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.set('isSelected', false);
-		this.set('newPhone', null);
+		this.set('phoneAction', null);
+		this.set('phoneActionData', null);
 		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
 		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
 	},
@@ -67,6 +68,7 @@ export default DS.Model.extend(Validations, {
 
 	org: DS.belongsTo('organization'),
 	phone: DS.belongsTo('phone'),
+	hasInactivePhone: DS.attr('boolean'),
 	schedule: DS.belongsTo('schedule'),
 
 	teams: DS.hasMany('team'),
@@ -74,21 +76,33 @@ export default DS.Model.extend(Validations, {
 	// Not attributes
 	// --------------
 
-	newPhone: null,
+	type: 'staff',
 	isSelected: false,
+	phoneAction: null, // one of number, transfer, deactivate
+	phoneActionData: null,
 
 	// Computed properties
 	// -------------------
 
 	phoneIsDirty: alias('phone.isDirty'),
 	scheduleIsDirty: alias('schedule.isDirty'),
-	hasNewPhone: notEmpty('newPhone'),
-	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'newPhone'),
+	hasPhoneAction: notEmpty('phoneAction'),
+	hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
+	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'hasPhoneAction'),
 
 	urlIdentifier: Ember.computed('username', function() {
 		return Ember.String.dasherize(this.get('username') || '');
 	}),
 	sharingId: alias('phone.content.id'), // for building share actions
+	transferId: Ember.computed('id', function() {
+		return `staff-${this.get('id')}`;
+	}),
+	transferFilter: Ember.computed('name', 'username', 'email', function() {
+		const name = this.get('name'),
+			username = this.get('username'),
+			email = this.get('email');
+		return `${name},${username},${email}`;
+	}),
 
 	isBlocked: eq('status', 'BLOCKED'),
 	isPending: eq('status', 'PENDING'),

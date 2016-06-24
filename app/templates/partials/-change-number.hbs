@@ -2,17 +2,33 @@
     <div class="form-element row">
         <div class="xs-2-row-3 control-text">
             <label for="TextUp phone" class='text-ellipsis'>
-                Set up a TextUp phone?
+                {{#if owner.hasInactivePhone}}
+                    Reactivate TextUp phone?
+                {{else}}
+                    Set up a TextUp phone?
+                {{/if}}
             </label>
         </div>
-        {{multi-toggle/mutable-toggle classNames='xs-row-3'
-            value=owner.addNewPhone}}
+        {{#multi-toggle classNames='xs-row-3'
+            selectIndex=(if (eq owner.phoneAction null) 0 1)
+            wrapAround=true as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#d3d3d3'
+                onSelect=(action (mut owner.phoneAction) null)}}
+                No
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#76c9ec'
+                onSelect=(action (mut owner.phoneAction) 'number')}}
+                Yes
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
     </div>
-    {{#liquid-if owner.addNewPhone class='animate-slide-from-top'}}
+    <div class="{{if (not (eq owner.phoneAction 'number')) 'hidden'}}">
         {{single-select/mutable-phone-number data=stateManager.numbers
-            selected=(mut owner.newPhone)
+            selected=(mut owner.phoneActionData)
             classNames='form-element pad-l pad-r'}}
-    {{/liquid-if}}
+    </div>
 {{else}}
     <div class='form-element'>
         <label for='TextUp Phone'>TextUp Phone</label>
@@ -21,27 +37,68 @@
     <div class="form-element row">
         <div class="xs-2-row-3 control-text">
             <label for="TextUp phone" class='text-ellipsis'>
-                Change existing TextUp phone?
+                Modify TextUp phone?
             </label>
         </div>
         {{#multi-toggle classNames='xs-row-3'
-            selectIndex=(if (eq owner.forExistingPhone 'change') 1 0)
+            selectIndex=
+                (if (eq owner.phoneAction null) 0
+                    (if (eq owner.phoneAction 'number') 1
+                        (if (eq owner.phoneAction 'transfer') 2 3)))
             wrapAround=true as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
                 color='#d3d3d3'
-                onSelect=(action (mut owner.forExistingPhone) null)}}
+                onSelect=(action (mut owner.phoneAction) null)}}
                 No Change
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color='#76c9ec'
-                onSelect=(action (mut owner.forExistingPhone) 'change')}}
+                onSelect=(action (mut owner.phoneAction) 'number')}}
                 Change Number
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#1BA5E0'
+                onSelect=(action (mut owner.phoneAction) 'transfer')}}
+                Transfer
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color='#c9302c'
+                onSelect=(action (mut owner.phoneAction) 'deactivateBeforeConfirm')}}
+                Deactivate
             {{/multi-toggle/item}}
         {{/multi-toggle}}
     </div>
-    <div class='{{if (not (eq owner.forExistingPhone 'change')) 'hidden'}}'>
+    <div class="{{if (not (eq owner.phoneAction 'number')) 'hidden'}}">
         {{single-select/mutable-phone-number data=stateManager.numbers
-            selected=(mut owner.newPhone)
+            selected=(mut owner.phoneActionData)
             classNames='form-element pad-l pad-r'}}
+    </div>
+    <div class="{{if (not (eq owner.phoneAction 'transfer')) 'hidden'}}">
+        {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
+            phoneOwner=owner
+            selected=(mut owner.phoneActionData)
+            classNames='form-element pad-l pad-r'}}
+    </div>
+    <div class="{{if (and
+            (not (eq owner.phoneAction 'deactivateBeforeConfirm'))
+            (not (eq owner.phoneAction 'deactivate'))
+        ) 'hidden'}} pad-l pad-r">
+        <div class="text-justify form-element">
+            Deactivating a TextUp phone preserves information, but <span class="text-bold">you will lose the TextUp phone's number</span>. Are you sure you want to deactivate?
+        </div>
+        <div class="form-element">
+            {{#multi-toggle wrapAround=true as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color='#d3d3d3'
+                    onSelect=(action (mut owner.phoneAction) 'deactivateBeforeConfirm')}}
+                    No
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color='#76c9ec'
+                    onSelect=(action (mut owner.phoneAction) 'deactivate')}}
+                    Yes
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
     </div>
 {{/if}}

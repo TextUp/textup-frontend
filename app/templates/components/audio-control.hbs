@@ -1,10 +1,6 @@
 <div class="input-group">
 	<div class="input-group-addon">
-		{{#if _isReady}}
-			<button tabindex='0' type="button" class="btn btn-plain" disabled='true'>
-				<span class="fa fa-circle-o-notch fa-spin"></span>
-			</button>
-		{{else if _isPlaying}}
+		{{#if _isPlaying}}
 			<button tabindex='0' type="button" class="btn btn-plain"
 				{{action 'pause'}}>
 				{{#if _isLoading}}

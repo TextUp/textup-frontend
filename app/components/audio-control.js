@@ -62,7 +62,6 @@ export default Ember.Component.extend({
 	_volumePercentage: Ember.computed('_volume', function() {
 		return this.get('_volume') + '%';
 	}),
-	_isReady: Ember.computed.empty('_audio'),
 
 	// Events
 	// ------
@@ -70,6 +69,8 @@ export default Ember.Component.extend({
 	didInsertElement: function() {
 		Ember.run.scheduleOnce('afterRender', this, function() {
 			const audio = new Audio(this.get('source'));
+
+			this.set('_audio', audio);
 
 			audio.onloadedmetadata = this.setup.bind(this, audio);
 			audio.onended = this.reset.bind(this, audio);
@@ -151,7 +152,6 @@ export default Ember.Component.extend({
 		}
 		// so that setup is only called once
 		audio.onloadedmetadata = null;
-		this.set('_audio', audio);
 		this.updateDuration(audio);
 		this.updateTimeAndPercent(audio);
 		this.setVolume(audio, this.get('_volume'));

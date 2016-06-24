@@ -46,7 +46,8 @@ export default DS.Model.extend(Validations, {
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.get('actions').clear();
-		this.set('newPhone', null);
+		this.set('phoneAction', null);
+		this.set('phoneActionData', null);
 		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
 		this.get('location').then((loc) => loc && loc.rollbackAttributes());
 	},
@@ -61,26 +62,38 @@ export default DS.Model.extend(Validations, {
 	numMembers: DS.attr('number'),
 
 	org: DS.belongsTo('organization'),
+	hasInactivePhone: DS.attr('boolean'),
 	phone: DS.belongsTo('phone'),
 	location: DS.belongsTo('location'),
 
 	// Not attributes
 	// --------------
 
-	newPhone: null,
+	type: 'team',
 	actions: null,
+	phoneAction: null, // one of number, transfer, deactivate
+	phoneActionData: null,
 
 	// Computed properties
 	// -------------------
 
 	locationIsDirty: alias('location.isDirty'),
 	phoneIsDirty: alias('phone.isDirty'),
-	hasNewPhone: notEmpty('newPhone'),
+	hasPhoneAction: notEmpty('phoneAction'),
+	hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
 	hasActions: notEmpty('actions'),
-	hasManualChanges: or('hasActions', 'phoneIsDirty', 'hasNewPhone',
+	hasManualChanges: or('hasActions', 'phoneIsDirty', 'hasPhoneAction',
 		'locationIsDirty'),
 
 	urlIdentifier: Ember.computed('name', function() {
 		return Ember.String.dasherize(this.get('name') || '');
 	}),
+	transferId: Ember.computed('id', function() {
+		return `team-${this.get('id')}`;
+	}),
+	transferFilter: Ember.computed('name', 'location.content.address', function() {
+		const name = this.get('name'),
+			address = this.get('location.content.address');
+		return `${name},${address}`;
+	})
 });

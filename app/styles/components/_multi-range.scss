@@ -50,10 +50,10 @@
 
 	    	&:after {
 	    		z-index: 10;
-	    		opacity: 0.3;
+	    		opacity: 0.8;
 				position: absolute;
 				content: ' ';
-				top: $padding * -2;
+				top: auto;
 				left: 50%;
 				bottom: 75%;
 				transform: translateX(-50%);
@@ -61,10 +61,12 @@
 				width: 0;
 				height: 0;
 	            border-style: solid;
-			    border-width: $padding ($padding * 0.5);
 			    border-color: shade($brand-color);
+    			border-width: (1.2 * $padding) (1.4 * $padding);
 			    border-top-left-radius: 50%;
-    			border-top-right-radius: 50%;
+			    border-top-right-radius: 50%;
+			    border-bottom-left-radius: 30%;
+			    border-bottom-right-radius: 30%;
 	    	}
 		}
     }

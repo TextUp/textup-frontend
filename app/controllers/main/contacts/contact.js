@@ -69,7 +69,7 @@ export default Ember.Controller.extend({
 		// build query
 		query.max = 20;
 		query.contactId = contact.get('id');
-		if (records.length) {
+		if (records && records.length) {
 			query.offset = records.length;
 		}
 		// execute query

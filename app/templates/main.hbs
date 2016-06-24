@@ -48,7 +48,7 @@
     </li>
     {{#if authManager.authUser.schedule.isFulfilled}}
         <li class='menu-item menu-slideout
-            {{if authManager.authUser.schedule.content.isAvailableNow "success"}}'
+            {{if stateManager.isPhoneAvailable "success"}}'
             {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
             {{#tool-tipster position='right'
                 theme='tooltipster-clean'

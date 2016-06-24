@@ -55,21 +55,7 @@
                                 {{preview-badge color=team.hexColor
                                     onlyShowFull=true
                                     content=team.name}}
-                                {{#if team.phone}}
-                                    <span class="badge">
-                                        {{#tool-tipster tagName='span'
-                                            position='right'
-                                            theme='tooltipster-clean'
-                                            title=(concat 'TextUp Phone '
-                                                (phone-number team.phone))}}
-                                            <span class="fa fa-phone"></span>
-                                        {{/tool-tipster}}
-                                    </span>
-                                {{/if}}
-                                <span class="badge">
-                                    {{team.numMembers}}
-                                    <span class="fa fa-user"></span>
-                                </span>
+                                {{partial 'partials/team/indicators'}}
                             </div>
                         {{/link-to}}
                         <div class="pull-right">

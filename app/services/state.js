@@ -74,6 +74,19 @@ export default Ember.Service.extend({
 		return this.get('ownerIsOrg') ? this.get('owner') : null;
 	}),
 
+	// Availability
+	// ------------
+
+	isPhoneAvailable: Ember.computed('staffsExceptMe.[]', 'ownerIsTeam',
+		'authManager.authUser.schedule.content.isAvailableNow',
+		function() {
+			const staffs = [this.get('authManager.authUser')];
+			if (this.get('ownerIsTeam')) {
+				staffs.pushObjects(this.get('staffsExceptMe'));
+			}
+			return staffs.any((st) => st.get('schedule.content.isAvailableNow'));
+		}),
+
 	// Sharing staff
 	// -------------
 
@@ -158,7 +171,7 @@ export default Ember.Service.extend({
 	},
 	_makeNumsMap: function(models) {
 		const numsMap = Object.create(null),
-			keys = ['newPhone.phoneNumber', 'phone.content.number'];
+			keys = ['phoneActionData.phoneNumber', 'phone.content.number'];
 		models
 			.filter((model) => keys.any((key) => Ember.isPresent(model.get(key))))
 			.forEach((model) => {

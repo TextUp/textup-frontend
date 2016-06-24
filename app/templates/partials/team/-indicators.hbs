@@ -1,0 +1,27 @@
+{{#if (and (not team.hasInactivePhone)
+    team.phone.isFulfilled
+    team.phone.content)}}
+    <span class="badge">
+        {{#tool-tipster tagName='span'
+            position='right'
+            theme='tooltipster-clean'
+            title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
+            <span class="fa fa-phone"></span>
+        {{/tool-tipster}}
+    </span>
+{{/if}}
+{{#if team.hasInactivePhone}}
+    <span class="badge">
+        {{#tool-tipster tagName='span'
+            class='text-lighten'
+            position='right'
+            theme='tooltipster-clean'
+            title='Has inactive phone'}}
+            <span class="fa fa-phone"></span>
+        {{/tool-tipster}}
+    </span>
+{{/if}}
+<span class="badge">
+    {{team.numMembers}}
+    <span class="fa fa-user"></span>
+</span>

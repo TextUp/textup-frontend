@@ -1,0 +1,48 @@
+{{#single-select data=dataExcludingSelf
+    selected=selected
+    displayProperty='name'
+    identityProperty='transferId'
+    allowCreate=false
+    searchPlaceholder='Pick who to transfer to'
+    noResultsMessage='Could not find anything.'
+    filterProperty='transferFilter'
+    doSearch=(action 'search')
+    onInsert=(action 'select')
+    onRemove=(action 'deselect')
+    floating=floating
+    floatHeightMax=floatHeightMax
+    floatMode=floatMode
+    horizontal=horizontal
+    vertical=vertical as |item select|}}
+    {{#if hasBlock}}
+        {{yield item select}}
+    {{else}}
+        <div class="text-ellipsis">
+            <span class="text-bold">{{item.name}}</span>
+            {{#if (eq item.type 'team')}}
+				{{#tool-tipster class='pad-l'
+			        tagName='span'
+			        theme='tooltipster-clean'
+			        title=(concat 'Team of ' item.numMembers)}}
+			        <span class="fa fa-users"></span>
+			    {{/tool-tipster}}
+            {{/if}}
+            {{#if (and (not item.hasInactivePhone) item.phone.content)}}
+            	{{#tool-tipster class='pad-l'
+			        tagName='span'
+			        theme='tooltipster-clean'
+			        title=(concat 'TextUp Phone ' (phone-number item.phone.content.number))}}
+			        <span class="fa fa-phone"></span>
+			    {{/tool-tipster}}
+            {{/if}}
+            {{#if item.hasInactivePhone}}
+            	{{#tool-tipster class='pad-l text-lighten'
+			        tagName='span'
+			        theme='tooltipster-clean'
+			        title='Has inactive phone'}}
+			        <span class="fa fa-phone"></span>
+			    {{/tool-tipster}}
+            {{/if}}
+        </div>
+    {{/if}}
+{{/single-select}}

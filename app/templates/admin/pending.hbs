@@ -32,7 +32,7 @@
         	clickOutToClose=false
 			focusOutClose=false
 			bodyClickClose=false
-			startOpen=selected.newPhone
+			startOpen=selected.hasPhoneActionData
 			allowedTriggerSelectors='.add-phone-button'}}
 			<div class="bg-color bg-dark pad-all border-l border-r border-b row
 				{{if (eq selected.pendingAction 'reject') 'hidden'}}">
@@ -46,12 +46,12 @@
 						<div class="input-group-element">
 							{{single-select/mutable-phone-number
 								data=stateManager.numbers
-			            		selected=(mut selected.newPhone)}}
+			            		selected=(mut selected.phoneActionData)}}
 						</div>
-						{{#if selected.newPhone}}
+						{{#if selected.phoneActionData}}
 							<div class="input-group-addon">
 								<button class="btn" type='button'
-									onclick={{action (mut selected.newPhone) null}}>
+									onclick={{action (mut selected.phoneActionData) null}}>
 									Remove
 								</button>
 							</div>
@@ -67,11 +67,11 @@
 				<span class="text-normal control-text pad-r">
 					{{selected.email}}
 				</span>
-				{{#if (and selected.newPhone
+				{{#if (and selected.phoneActionData
 					(not (eq selected.pendingAction 'reject')))}}
 					<span class="text-bold control-text">
 						<span class="fa fa-phone pad-r-half"></span>
-						{{phone-number selected.newPhone.phoneNumber}}
+						{{phone-number selected.phoneActionData.phoneNumber}}
 					</span>
 				{{/if}}
 			</div>
@@ -98,7 +98,7 @@
 							</button>
 						</div>
 					{{else}}
-						{{#if (not selected.newPhone)}}
+						{{#if (not selected.phoneActionData)}}
 							<div class="input-group-addon">
 								<button class="btn btn-plain add-phone-button" type='button'>
 									<span class="fa fa-plus"></span> Phone

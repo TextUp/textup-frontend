@@ -8,10 +8,23 @@
         </span>
     {{/tool-tipster}}
 {{/if}}
-{{#if (and person.phone.isFulfilled person.phone.content)}}
+{{#if (and (not person.hasInactivePhone)
+    person.phone.isFulfilled
+    person.phone.content)}}
 	{{#tool-tipster tagName='span'
         theme='tooltipster-clean'
         title=(concat 'TextUp Phone ' (phone-number person.phone.content.number))}}
+        <span class="fa-stack text-smaller">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa fa-phone fa-stack-1x fa-inverse"></i>
+        </span>
+    {{/tool-tipster}}
+{{/if}}
+{{#if person.hasInactivePhone}}
+    {{#tool-tipster class='text-lighten'
+        tagName='span'
+        theme='tooltipster-clean'
+        title='Has inactive phone'}}
         <span class="fa-stack text-smaller">
             <i class="fa fa-square fa-stack-2x"></i>
             <i class="fa fa-phone fa-stack-1x fa-inverse"></i>

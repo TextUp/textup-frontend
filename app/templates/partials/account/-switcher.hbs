@@ -3,28 +3,32 @@
 in the model hook to run --}}
 
 <ul class="reset-list">
-    {{#link-to 'main.contacts' authManager.authUser.urlIdentifier
-        tagName='li'
-        classNames='menu-item'}}
-        <div class="offset-xs-row-10 xs-8-row-10 text-left">
-            <p class="text-bold text-ellipsis">{{authManager.authUser.name}}</p>
-            <p class="text-bold text-ellipsis">
-                {{phone-number authManager.authUser.phone.content.number}}
-            </p>
-        </div>
-    {{/link-to}}
-    {{#each authManager.authUser.teamsWithPhones as |team|}}
-        {{#link-to 'main.contacts' team.urlIdentifier
+    {{#if (not authManager.authUser.hasInactivePhone)}}
+        {{#link-to 'main.contacts' authManager.authUser.urlIdentifier
             tagName='li'
             classNames='menu-item'}}
             <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                <p class="text-bold text-ellipsis">{{team.name}}</p>
+                <p class="text-bold text-ellipsis">{{authManager.authUser.name}}</p>
                 <p class="text-bold text-ellipsis">
-                    {{phone-number team.phone.content.number}}
+                    {{phone-number authManager.authUser.phone.content.number}}
                 </p>
             </div>
-            <span class="indicator" style="background-color:{{team.hexColor}};"></span>
         {{/link-to}}
+    {{/if}}
+    {{#each authManager.authUser.teamsWithPhones as |team|}}
+        {{#if (not team.hasInactivePhone)}}
+            {{#link-to 'main.contacts' team.urlIdentifier
+                tagName='li'
+                classNames='menu-item'}}
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">{{team.name}}</p>
+                    <p class="text-bold text-ellipsis">
+                        {{phone-number team.phone.content.number}}
+                    </p>
+                </div>
+                <span class="indicator" style="background-color:{{team.hexColor}};"></span>
+            {{/link-to}}
+        {{/if}}
     {{/each}}
     {{#if authManager.authUser.isAdmin}}
         {{#link-to 'admin.people'

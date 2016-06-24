@@ -21,13 +21,15 @@
 	<div class="margin-b pad-l pad-r">
         <label for='Your Name' class='control-label text-bold'>
             My Available Times
-            {{#tool-tipster tagName='span'
-                maxWidth=300
-                theme='tooltipster-help'
-                title="Double click or tap to delete a range. Blue ranges are when you are available and the gray area is when you are not available."}}
-                <span class="fa fa-question-circle"></span>
-            {{/tool-tipster}}
         </label>
+        <div class="margin-t">
+            <span class='display-xs display-s display-m'>
+                Double tap to delete a range. Tap once then tap the plus button to add a range. Blue ranges are when you are available. The gray area is when you are not available.
+            </span>
+            <span class='display-l'>
+                Double click to delete a range. Click and drag to add a range. Blue ranges are when you are available. The gray area is when you are not available.
+            </span>
+        </div>
 	</div>
     {{#if authManager.authUser.schedule.isFulfilled}}
         <div class="form-element">

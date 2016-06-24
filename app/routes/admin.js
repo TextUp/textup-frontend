@@ -5,6 +5,10 @@ import randomstring from 'npm:randomstring';
 import Setup from '../mixins/setup-route';
 import Slideout from '../mixins/slideout-route';
 
+const {
+	get
+} = Ember;
+
 export default Ember.Route.extend(Slideout, Auth, Setup, {
 	slideoutOutlet: 'details-slideout',
 
@@ -87,8 +91,8 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		cleanNewStaff: function(staff, then = undefined) {
 			// set to false to prevent adding new phone toggle
 			// from showing true when reinitializing this slideout
-			// after it is closed with with addNewPhone set to true
-			staff.set('addNewPhone', false);
+			// after it is closed with with phoneAction set to true
+			staff.set('phoneAction', null);
 			callIfPresent(then);
 		},
 		createStaff: function(staff, then = undefined) {
@@ -159,12 +163,37 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 				this.store.unloadRecord(loc);
 				callIfPresent(then);
 			});
+		},
+
+		// Phone
+		// -----
+
+		persistWithPhone: function(withPhone, then) {
+			const isTransfer = (withPhone.get('phoneAction') === 'transfer'),
+				data = withPhone.get('phoneActionData'),
+				targetId = isTransfer ? get(data, 'id') : null;
+			const targetClass = isTransfer ?
+				this._getModelNameFromType(get(data, 'type')) : null;
+			return this.get('dataHandler')
+				.persist(withPhone)
+				.then(() => {
+					if (targetId && targetClass) {
+						return this.store.findRecord(targetClass, targetId, {
+							reload: true
+						}).then(() => callIfPresent(then));
+					} else {
+						callIfPresent(then);
+					}
+				});
 		}
 	},
 
 	// Helpers
 	// -------
 
+	_getModelNameFromType: function(type) {
+		return String(type).toLowerCase() === 'group' ? 'team' : 'staff';
+	},
 	_changeStaffStatus: function(people) {
 		this.get('dataHandler')
 			.persist(people)

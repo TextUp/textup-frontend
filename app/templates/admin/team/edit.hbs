@@ -62,11 +62,8 @@
 		    		{{partial 'partials/team/create-edit'}}
 		    	{{/with}}
 		    </div>
-		    <div>
-		    	{{v-get team 'messages'}}
-		    </div>
 	    	{{#if (or team.hasDirtyAttributes team.hasManualChanges)}}
-	    		<div class="form-element horizontal-items text-center">
+	    		<div class="pad-t form-element horizontal-items text-center">
 			        <div class="clear-badge no-space">
 			            <button class="btn" type='button'
 			                onclick={{route-action 'revert' team}}>
@@ -76,7 +73,7 @@
 			        <div class="clear-badge no-space">
 			            {{async-button classNames='btn btn-default'
 	                        disableWhen=(not (v-get team 'isValid'))
-	                        action=(route-action 'persist' team)
+	                        action=(route-action 'persistWithPhone' team)
 	                        default='Update'
 	                        pending='Updating...'}}
 			        </div>

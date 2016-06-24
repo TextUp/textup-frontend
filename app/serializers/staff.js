@@ -1,7 +1,7 @@
 import DS from 'ember-data';
-import NewPhone from '../mixins/new-phone-serializer';
+import Phone from '../mixins/phone-serializer';
 
-export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, NewPhone, {
+export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, Phone, {
 	attrs: {
 		org: {
 			deserialize: 'records',

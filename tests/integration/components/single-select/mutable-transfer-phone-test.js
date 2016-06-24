@@ -1,23 +1,23 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('multi-toggle/mutable-toggle', 'Integration | Component | multi toggle/mutable toggle', {
+moduleForComponent('single-select/mutable-transfer-phone', 'Integration | Component | single select/mutable transfer phone', {
   integration: true
 });
 
 test('it renders', function(assert) {
   // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });"
+  // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{multi-toggle/mutable-toggle}}`);
+  this.render(hbs`{{single-select/mutable-transfer-phone}}`);
 
   assert.equal(this.$().text().trim(), '');
 
-  // Template block usage:"
+  // Template block usage:
   this.render(hbs`
-    {{#multi-toggle/mutable-toggle}}
+    {{#single-select/mutable-transfer-phone}}
       template block text
-    {{/multi-toggle/mutable-toggle}}
+    {{/single-select/mutable-transfer-phone}}
   `);
 
   assert.equal(this.$().text().trim(), 'template block text');

@@ -15,7 +15,7 @@
 					<h5>{{person.name}}</h5>
 				</span>
 				{{#if person.isAdmin}}
-					<span class="display-s display-m display-l">
+					<span class="pad-l display-s display-m display-l">
 						<span class="badge">Admin</span>
 					</span>
 				{{/if}}
@@ -85,12 +85,12 @@
 							<div class="pad-t text-center">
 						        <button class="btn" type='button'
 						        	onclick={{route-action 'revert' person
-						        		(action (mut person.forExistingPhone) null)}}>
+						        		(action (mut person.phoneAction) null)}}>
 						            Cancel
 						        </button>
 						        {{async-button classNames='btn btn-default'
 				                    disableWhen=(not (v-get person 'isValid'))
-				                    action=(route-action 'persist' person)
+				                    action=(route-action 'persistWithPhone' person)
 				                    default='Update'
 				                    pending='Updating...'}}
 							</div>

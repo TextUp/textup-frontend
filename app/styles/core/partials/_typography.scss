@@ -109,6 +109,12 @@ h5 {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.text-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
 
 .text-biggest {
     font-size: 1.5em;

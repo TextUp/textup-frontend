@@ -13,10 +13,13 @@ export default Ember.Controller.extend({
 	actions: {
 		approve: function(staff) {
 			staff.set('status', 'STAFF');
+			if (staff.get('hasPhoneActionData')) {
+				staff.set('phoneAction', 'number');
+			}
 			this._handlePending(staff);
 		},
 		reject: function(staff) {
-			staff.set('newPhone', null);
+			staff.set('phoneAction', null);
 			staff.set('status', 'BLOCKED');
 			this._handlePending(staff);
 		},
