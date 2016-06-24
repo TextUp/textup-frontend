@@ -1,13 +1,15 @@
 {{#each data as |item i|}}
 	<div class="multi-select-input-item {{itemClass}}" tabindex='-1' data-index={{i}}>
 		<div class="display-multi-select-input-item">
-			{{#if hasBlock}}
-				{{yield item publicAPI}}
-			{{else}}
-				<span class="text-bold">
-					{{if displayProperty (get item displayProperty) item}}
-				</span>
-			{{/if}}
+			<span class="display-label" tabindex='-1'>
+				{{#if hasBlock}}
+					{{yield item publicAPI}}
+				{{else}}
+					<span class="text-bold">
+						{{if displayProperty (get item displayProperty) item}}
+					</span>
+				{{/if}}
+			</span>
 			<button class="btn btn-plain"
 				type='button'
 				tabindex='-1'
@@ -23,4 +25,5 @@
 
 <input type="text" class="multi-select-new-input multi-select-input-item"
 	placeholder={{placeholder}}
+	onblur={{action 'leaveNewInput'}}
 	onkeyup={{action 'handleNewInput'}}>

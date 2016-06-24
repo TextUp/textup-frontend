@@ -25,6 +25,10 @@ export default Ember.Component.extend({
 	// passed input value
 	// returns nothing
 	onInput: null, // input can be either creating new or editing
+	// passed input value, event
+	// returns Promise, updates tag array, success clears input, failure preserves input
+	// returning not Promise defaults to preserving input
+	onInputEnd: null,
 	// passed publicAPI
 	// returns nothing
 	doRegister: null,
@@ -85,7 +89,8 @@ export default Ember.Component.extend({
 				this._suppressBack.bind(this))
 			.on('keyup.${this.elementId}', '.multi-select-input-item:not(input)',
 				this._handleNonInputKeyUp.bind(this))
-			.on('dblclick.${this.elementId}', '.multi-select-input-item:not(input)',
+			.on('dblclick.${this.elementId} touchend.${this.elementId}',
+				'.multi-select-input-item .display-label',
 				this._startEditing.bind(this))
 			// notify that we are starting creating or updating
 			.on('focusin.${this.elementId}', 'input', this._inputStart.bind(this));
@@ -169,6 +174,12 @@ export default Ember.Component.extend({
 			} else {
 				this._inputChange(inputVal, event);
 			}
+		},
+		leaveNewInput: function(event) {
+			const $input = this.get('inputObj');
+			if (!Ember.isEmpty($input.val())) {
+				this.inputEnd(event);
+			}
 		}
 	},
 
@@ -179,9 +190,14 @@ export default Ember.Component.extend({
 		const $input = this.get('inputObj'),
 			result = callIfPresent(this.get('onInsert'), $input.val(), event);
 		if (result && result.then) {
-			result.then(() => {
-				this.clearInput($input);
-			});
+			result.then(() => this.clearInput($input));
+		}
+	},
+	inputEnd: function(event) {
+		const $input = this.get('inputObj'),
+			result = callIfPresent(this.get('onInputEnd'), $input.val(), event);
+		if (result && result.then) {
+			result.then(() => this.clearInput($input));
 		}
 	},
 	update: function(object, $input, $node, event) {

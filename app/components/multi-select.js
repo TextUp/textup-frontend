@@ -153,17 +153,21 @@ export default Ember.Component.extend({
 			this.clearHighlight();
 			this.get('_input.actions.stopEditing')();
 		},
+		inputEnd: function(val, event) {
+			return this.insertOrUpdate(true, val, this.get('selected.length'), event);
+		},
 
 		// Input hooks
 		// -----------
 
 		update: function(item, val, event) {
-			const promise = this.insertOrUpdate(val, this.get('selected').indexOf(item), event);
+			const promise = this.insertOrUpdate(false, val,
+				this.get('selected').indexOf(item), event);
 			this.get('_input.actions.stopEditing')();
 			return promise;
 		},
 		insert: function(val, event) {
-			return this.insertOrUpdate(val, this.get('selected.length'), event);
+			return this.insertOrUpdate(false, val, this.get('selected.length'), event);
 		},
 		remove: function(item) {
 			callIfPresent(this.get('onRemove'), item);
@@ -174,13 +178,13 @@ export default Ember.Component.extend({
 	// Tag manipulation
 	// ----------------
 
-	insertOrUpdate: function(val, index, event) {
+	insertOrUpdate: function(skipFocus, val, index, event) {
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			let promise;
 			const $highlight = this.get('_currentHighlight');
 			const object = ($highlight && $highlight.length) ?
 				this.getDataAt($highlight.attr('data-index')).object : null;
-			Ember.run.next(this, this.setupResults);
+			Ember.run.next(this, this.setupResults, skipFocus);
 			if (this.get('anyRemainingResults') && object) {
 				promise = this._doInsert(index, event, object);
 			} else if (this.get('allowCreate')) {
@@ -215,8 +219,10 @@ export default Ember.Component.extend({
 			node: this.$().find('.multi-select-item').eq(index)
 		};
 	},
-	setupResults: function() {
-		this.get('_input.actions.focus')();
+	setupResults: function(skipFocus = false) {
+		if (!skipFocus) {
+			this.get('_input.actions.focus')();
+		}
 		// after ensuring focus is one of the few times where
 		// the input field in tag input might be focused and so
 		// isCreating will be true.
