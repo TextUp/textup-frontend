@@ -30,11 +30,16 @@ export default Ember.Route.extend(Slideout, Loading, {
 		// rejects when the staff is not logged in
 		return this.get('authManager').setupFromStorage().catch(() => {});
 	},
-	redirect: function() {
-		const url = this.get('storage').getItem('currentUrl');
+	redirect: function(model, transition) {
+		const storage = this.get('storage'),
+			url = storage.getItem('currentUrl');
 		// initialize the observer after retrieving the previous currentUrl
 		this.get('stateManager').trackLocation();
-		if (url) {
+		// redirect only if previous url present and the target
+		// route is not '/reset' or '/setup'
+		const targetName = transition.targetName;
+		if (targetName.indexOf('reset') === -1 &&
+			targetName.indexOf('setup') === -1 && url) {
 			this.transitionTo(url);
 		}
 	},
