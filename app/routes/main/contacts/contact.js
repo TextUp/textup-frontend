@@ -34,12 +34,9 @@ export default Ember.Route.extend({
 
 	actions: {
 		didTransition: function() {
-			const recordsList = this.controller.get('_recordsList');
-			if (recordsList) {
-				recordsList.actions.resetPosition();
-			}
+			this.controller._resetPosition();
 			return true;
-		},
+		}
 	},
 
 	// Helper methods

@@ -20,9 +20,10 @@
         {{/phone-control/mutable-validated}}
     </div>
 {{else}}
-    {{#phone-control number=staff.personalPhoneNumber
+    {{#phone-control classNames='edit-personal-phone'
+        number=staff.personalPhoneNumber
         showControl=true
-        controlClass='blend-in edit-personal-phone'}}
+        controlClass='blend-in'}}
     {{else}}
         <span class='fa fa-pencil'></span>
     {{/phone-control}}

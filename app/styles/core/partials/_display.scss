@@ -66,6 +66,15 @@ hr {
 // Centering
 // ---------
 
+.align-top {
+    vertical-align: top;
+}
+.align-middle {
+    vertical-align: middle;
+}
+.align-bottom {
+    vertical-align: bottom;
+}
 .margin-center {
     float: none !important;
     margin: 0 auto;

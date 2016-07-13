@@ -214,12 +214,18 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		sendMessage: function(msg, recipients, then = undefined) {
 			return this.get('dataHandler')
 				.sendMessage(msg, recipients)
-				.then(() => callIfPresent(then));
+				.then(() => {
+					this.notifications.success('Message successfully sent.');
+					callIfPresent(then);
+				});
 		},
 		makeCall: function(recipient, then = undefined) {
 			return this.get('dataHandler')
 				.makeCall(recipient)
-				.then(() => callIfPresent(then));
+				.then(() => {
+					this.notifications.success('Successfully started call.');
+					callIfPresent(then);
+				});
 		},
 	},
 

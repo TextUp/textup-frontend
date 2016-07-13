@@ -80,7 +80,7 @@ export default Ember.Component.extend({
 			if (this.isDestroying || this.isDestroyed) {
 				return;
 			}
-			this.set('_isEditing', Ember.isPresent(this.get('location')));
+			this.set('_isEditing', !Ember.isPresent(this.get('location')));
 			this._setupMapbox();
 		}.bind(this);
 		if (this.get('startSidebarOpen') && !this.get('hideSidebar')) {
@@ -139,9 +139,6 @@ export default Ember.Component.extend({
 	// -------
 
 	actions: {
-		startEditing: function() {
-			this.set('_isEditing', true);
-		},
 		toggleSidebar: function() {
 			if (this.get('_isOpen')) {
 				this.closeSidebar();

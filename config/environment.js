@@ -42,6 +42,8 @@ module.exports = function(environment) {
 
     if (environment === 'development') {
         ENV.host = "https://5e6aa46b.ngrok.io";
+        // ENV.host = "https://dev.textup.org";
+        // ENV.host = "https://v2.textup.org";
         ENV.manifest = {
             enabled: true
         };
@@ -65,6 +67,7 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
+        // ENV.host = "https://dev.textup.org";
         ENV.host = "https://v2.textup.org";
     }
 

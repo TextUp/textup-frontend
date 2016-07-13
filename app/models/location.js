@@ -50,10 +50,17 @@ export default DS.Model.extend(Validations, {
 			} : null;
 		},
 		set: function(key, value) {
-			this.setProperties({
-				lat: value.lat,
-				lon: value.lng
-			});
+			if (value) {
+				this.setProperties({
+					lat: value.lat,
+					lon: value.lng
+				});
+			} else {
+				this.setProperties({
+					lat: null,
+					lon: null
+				});
+			}
 			return value;
 		}
 	})

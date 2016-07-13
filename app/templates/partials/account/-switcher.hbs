@@ -3,7 +3,8 @@
 in the model hook to run --}}
 
 <ul class="reset-list">
-    {{#if (not authManager.authUser.hasInactivePhone)}}
+    {{#if (and (not authManager.authUser.hasInactivePhone)
+        authManager.authUser.phone.content)}}
         {{#link-to 'main.contacts' authManager.authUser.urlIdentifier
             tagName='li'
             classNames='menu-item'}}
@@ -16,7 +17,7 @@ in the model hook to run --}}
         {{/link-to}}
     {{/if}}
     {{#each authManager.authUser.teamsWithPhones as |team|}}
-        {{#if (not team.hasInactivePhone)}}
+        {{#if (and (not team.hasInactivePhone) team.phone.content)}}
             {{#link-to 'main.contacts' team.urlIdentifier
                 tagName='li'
                 classNames='menu-item'}}

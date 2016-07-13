@@ -22,7 +22,7 @@
 			value={{if hasSelected (if displayProperty (get selected displayProperty) selected)}}
 			placeholder={{placeholder}}>
 		<span class="input-group-addon blend-in">
-        	<button class='btn' type='button' disabled={{not canClear}}
+        	<button class='btn' type='button' disabled={{if (not canClear) 'disabled'}}
         		{{action 'removeAndClearInput'}}>
             	<span class='fa fa-times'></span>
         	</button>

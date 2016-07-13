@@ -3,7 +3,7 @@
 <div class="single-container single-container-small">
     <div class="single-header">
     	<img class="brand" src='assets/images/logo.png' />
-        <h3>Log in</h3>
+        <h3 class='text-white'>Log in</h3>
     </div>
     <div class="single-body">
         {{#hide-away tabindex=false
@@ -11,6 +11,7 @@
             hideTriggerOnOpen=true
             clickOutToClose=false
             bodyClickClose=false
+            bodyFocusOnOpenSelector='.start-focus'
             onClose=(action (mut resetUsername) null)
             allowedTriggerSelectors='.forgot-password' as |hideAway|}}
             <div class="single-body-header">
@@ -19,7 +20,13 @@
             </div>
             <div class="single-body-content">
                 <div class="input-group">
-                    {{input value=resetUsername type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+                    {{input value=resetUsername
+                        type="text"
+                        placeholder="Username"
+                        class="form-control start-focus"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        enter=(route-action 'resetPassword' resetUsername)}}
                     <div class="input-group-addon">
                         {{async-button classNames='btn btn-default'
                             disableWhen=(not resetUsername)
@@ -41,11 +48,20 @@
             <div class="single-body-content">
                 <div class="form-element">
                     <label for="Username">Username</label>
-                    {{input value=username type="text" placeholder="Username" class="form-control" autocorrect="off" autocapitalize="off"}}
+                    {{input value=username
+                        type="text"
+                        placeholder="Username"
+                        class="form-control"
+                        autocorrect="off"
+                        autocapitalize="off"}}
                 </div>
                 <div class="form-element">
                     <label for="Password">Password</label>
-                    {{input value=password type="password" placeholder="Password" class="form-control"}}
+                    {{input value=password
+                        type="password"
+                        placeholder="Password"
+                        class="form-control"
+                        enter=(route-action 'login' username password storeCredentials)}}
                 </div>
                 <div class="row form-element">
                     <div class="xs-row-2">
@@ -66,8 +82,8 @@
         {{/hide-away}}
     </div>
     <div class="single-footer">
-        <p class="emphasize text-darken">Don't have an account?</p>
-        <h4>{{link-to "Sign Up" "signup" classNames="text-darken"}}</h4>
+        <p class="emphasize text-white">Don't have an account?</p>
+        <h4>{{link-to "Sign Up" "signup" classNames="text-white"}}</h4>
     </div>
 </div>
 

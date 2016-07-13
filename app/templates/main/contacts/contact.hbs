@@ -110,7 +110,7 @@
             {{/if}}
         </div>
     </div>
-    <div class="section-body
+    <div class="section-body row
         {{if (not contact.allowEdits) 'readonly'}}">
         {{#if isMakingCall}}
             <div class="overlay text-big">
@@ -152,6 +152,7 @@
             </div>
         {{/infinite-scroll}}
         {{#hide-away tabindex=false
+            onOpen=_recordsList.actions.resetPosition
             allowedTriggerSelectors='.form-control'
             clickOutToClose=true
             bodyClickClose=false
@@ -169,7 +170,7 @@
                 value=textContents}}
             <button type='button'
                 class="btn {{if isSendingTextError 'btn-danger' 'btn-default'}}"
-                disabled={{or (not textContents) isSendingText}}
+                disabled={{if (or (not textContents) isSendingText) 'disabled'}}
                 onclick={{action 'sendMessage' hideAway.actions.close}}>
                 {{#if isSendingText}}
                     <span class="fa fa-spin fa-circle-o-notch"></span>
@@ -181,36 +182,53 @@
             </button>
         {{else}}
             <div class='input-group'>
-                <span class="input-group-addon">
-                    {{#async-button classNames='btn'
-                        action=(route-action 'makeCall' contact
-                            (action (mut isMakingCall) true)) as |btn|}}
-                        {{#if (eq btn.textState 'pending')}}
-                            <span class="fa fa-spin fa-circle-o-notch"></span>
-                        {{else if (eq btn.textState 'rejected')}}
-                            <span class="fa fa-exclamation-triangle"></span>
+                {{#if textContents}}
+                    <span class="input-group-addon align-top blend-in">
+                        <button class="btn" type='button'
+                            onclick={{action (mut textContents) null}}>
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </span>
+                {{else}}
+                    <span class="input-group-addon align-top">
+                        {{#hide-away/dropdown horizontal='left'}}
+                            <li class='dropdown-divider'>Outgoing</li>
+                            {{!-- <li tabindex='0' class='dropdown-item'
+                                {{action 'toggleDetailSlideout'
+                                    'slideouts/future-messages/create'
+                                    'main/contacts/contact'}}>
+                                Schedule Message
+                            </li> --}}
+                            <li tabindex='0' class='dropdown-item'
+                                onclick={{action 'makeCall' contact}}>
+                                Make Call
+                            </li>
                         {{else}}
-                            <span class='fa fa-phone'></span>
-                        {{/if}}
-                    {{/async-button}}
-                </span>
+                            <button class='btn' type='button'>
+                                <span class='fa fa-plus'></span>
+                            </button>
+                        {{/hide-away/dropdown}}
+                    </span>
+                {{/if}}
                 {{input class='form-control text-ellipsis'
                     readonly=true
                     value=textContents}}
-                <span class="input-group-addon">
-                    <button type='button'
-                        class="btn {{if isSendingTextError 'btn-danger' 'btn-default'}}"
-                        disabled={{or (not textContents) isSendingText}}
-                        onclick={{action 'sendMessage'}}>
-                        {{#if isSendingText}}
-                            <span class="fa fa-spin fa-circle-o-notch"></span>
-                        {{else if isSendingTextError}}
-                            <span class="fa fa-exclamation-triangle"></span>
-                        {{else}}
-                            <span class='fa fa-paper-plane-o'></span>
-                        {{/if}}
-                    </button>
-                </span>
+                {{#if textContents}}
+                    <span class="input-group-addon align-top">
+                        <button type='button'
+                            class="btn {{if isSendingTextError 'btn-danger' 'btn-default'}}"
+                            disabled={{if (or (not textContents) isSendingText) 'disabled'}}
+                            onclick={{action 'sendMessage'}}>
+                            {{#if isSendingText}}
+                                <span class="fa fa-spin fa-circle-o-notch"></span>
+                            {{else if isSendingTextError}}
+                                <span class="fa fa-exclamation-triangle"></span>
+                            {{else}}
+                                <span class='fa fa-paper-plane-o'></span>
+                            {{/if}}
+                        </button>
+                    </span>
+                {{/if}}
             </div>
         {{/hide-away}}
     </div>

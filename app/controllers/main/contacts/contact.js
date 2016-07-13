@@ -48,6 +48,7 @@ export default Ember.Controller.extend({
 				.then(() => {
 					this.set('isSendingTextError', false);
 					this.set('textContents', null);
+					this._resetPosition();
 					callIfPresent(then);
 				}, () => {
 					this.set('isSendingTextError', true);
@@ -56,8 +57,23 @@ export default Ember.Controller.extend({
 					this.set('isSendingText', false);
 				});
 		},
+		makeCall: function(recipient, then = undefined) {
+			return this.get('dataHandler')
+				.makeCall(recipient)
+				.then(() => {
+					this.set('isMakingCall', true);
+					this._resetPosition();
+					callIfPresent(then);
+				});
+		},
 	},
 
+	_resetPosition: function() {
+		const recordsList = this.get('_recordsList');
+		if (recordsList) {
+			recordsList.actions.resetPosition();
+		}
+	},
 	_loadMoreWhenReady: function(doResolve, doReject, tryNumber = 0) {
 		if (!this.get('_isReady') && tryNumber < 3) {
 			return Ember.run.later(this, this._loadMoreWhenReady,

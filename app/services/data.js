@@ -72,9 +72,7 @@ export default Ember.Service.extend({
 		record.get('recipients')
 			.pushObjects(Ember.isArray(recipients) ? recipients : [recipients]);
 		return this.persist(record)
-			.then(() => {
-				this.notifications.success('Message successfully sent.');
-			}, record.rollbackAttributes.bind(record));
+			.catch(record.rollbackAttributes.bind(record));
 	},
 	makeCall: function(recipient) {
 		const record = this.get('store').createRecord('record', {
@@ -82,9 +80,7 @@ export default Ember.Service.extend({
 		});
 		record.get('recipients').pushObject(recipient);
 		return this.persist(record)
-			.then(() => {
-				this.notifications.success('Successfully started call.');
-			}, record.rollbackAttributes.bind(record));
+			.catch(record.rollbackAttributes.bind(record));
 	},
 
 	// Utility methods

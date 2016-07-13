@@ -16,7 +16,8 @@
 			</div>
 		</form>
 	{{else}}
-		<button class="map-editing btn btn-default" type='button' {{action 'startEditing'}}>
+		<button class="map-editing btn btn-default" type='button'
+			onclick={{action (mut __isEditing) true}}>
 			<span class="fa fa-search"></span>
 		</button>
 	{{/if}}

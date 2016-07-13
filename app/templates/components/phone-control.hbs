@@ -1,5 +1,5 @@
 <div class="input-group {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
-	<span class="input-group-element {{if allowChanges '' 'form-disabled'}}">
+	<span class="input-group-element {{if (not allowChanges) 'form-disabled'}}">
 		<span class="phone-number-input input-group">
 		    <span class="input-group-text-display">(</span>
 		    {{!-- numeric input mode allows for number keyboard on mobile  --}}
@@ -36,7 +36,7 @@
 	{{#if (and (not disabled) (or showControl (or onClick onValidate)))}}
 		<span class="input-group-addon {{controlClass}}">
 			<button class='btn {{controlButtonClass}}' type='button'
-				disabled={{or (not _isValid) (not someNumberPresent)}}
+				disabled={{if (or (not someNumberPresent) (not _isValid)) 'disabled'}}
 				{{action 'clickControl' bubbles=false}}>
 				{{#if (hasBlock 'inverse')}}
 					{{yield to='inverse'}}
@@ -62,7 +62,7 @@
 	    	value=_validationCode enter='handleValidate'}}
 		<span class="input-group-addon blend-in">
 	    	<button class='btn btn-default' type='button'
-	    		disabled={{_isValidationCodeEmpty}}
+	    		disabled={{if _isValidationCodeEmpty 'disabled'}}
 	    		{{action 'handleValidate' bubbles=false}}>
 	        	<span class='fa fa-check'></span>
 	    	</button>

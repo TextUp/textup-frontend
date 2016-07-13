@@ -20,6 +20,7 @@
         </div>
     </div>
     {{location-control/mutable
+        searchPlaceholder="Search for your organization's location here"
         location=(mut org.location.content.latLng)
         description=(mut org.location.content.address)
         onError=(route-action 'mapError')}}
@@ -32,6 +33,6 @@
     </div>
 </div>
 <div class="single-footer">
-    <p class="emphasize text-darken">Want to pick an existing organization?</p>
-    <h4>{{link-to "Choose existing organization" "signup.index" classNames="text-darken"}}</h4>
+    <p class="emphasize text-white">Want to pick an existing organization?</p>
+    <h4>{{link-to "Choose existing organization" "signup.index" classNames="text-white"}}</h4>
 </div>

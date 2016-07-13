@@ -10,11 +10,11 @@ export default Ember.Route.extend(Auth, Setup, {
 		const user = this.get('authManager.authUser');
 		return user.get('isNone').then((isNone) => {
 			const orgIsApproved = user.get('org.content.isApproved');
-			if (!isNone && orgIsApproved) {
-				if (user.get('isAdmin')) {
-					this.transitionTo('admin');
-				} else {
+			if (orgIsApproved) {
+				if (!isNone) {
 					this.transitionTo('main', user);
+				} else if (user.get('isAdmin')) {
+					this.transitionTo('admin');
 				}
 			}
 		});

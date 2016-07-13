@@ -53,6 +53,13 @@ export default DS.Model.extend(Validations, {
 		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
 	},
 
+	// Events
+	// ------
+
+	didUpdate: function() {
+		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
+	},
+
 	// Attributes
 	// ----------
 
@@ -126,23 +133,20 @@ export default DS.Model.extend(Validations, {
 			})
 		});
 	}),
-	isNone: Ember.computed('isBlocked', 'isPending', 'isAdmin',
-		'teamsWithPhones', 'phone',
+	isNone: Ember.computed('isBlocked', 'isPending', 'teamsWithPhones', 'phone',
 		function() {
 			return new Ember.RSVP.Promise((resolve, reject) => {
 				this.get('teamsWithPhones').then((teams) => {
 					this.get('phone').then((phone) => {
 						const isBlocked = this.get('isBlocked'),
 							isPending = this.get('isPending'),
-							isAdmin = this.get('isAdmin'),
 							hasPhone = Ember.isPresent(phone);
 						// isNone is true when user is blocked OR pending OR
 						// if the user is active, but
 						// 		(1) does not have phone,
 						// 		(2) is not part of team that has a phone,
-						// 		(3) is not an admin
 						resolve(isBlocked || isPending ||
-							(!hasPhone && !teams.length && !isAdmin));
+							(!hasPhone && !teams.length));
 					});
 				}, reject);
 			});
