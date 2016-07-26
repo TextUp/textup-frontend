@@ -1,217 +1,14 @@
 {{#slideout-pane title='Schedule Message'
     direction='right'
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole'
     focusSelector='.start-focus'
-    doClose=(route-action 'closeAllSlideouts') as |slideout|}}
-
-    {{!-- onOpen=(route-action 'initializeScheduleMessage')
-    doClose=(route-action 'revert' newSchedule (route-action 'closeAllSlideouts')) --}}
-
+    onOpen=(route-action 'initializeFutureMsg')
+    doClose=(route-action 'revert' newFutureMsg
+        (route-action 'closeAllSlideouts')) as |slideout|}}
     <div class="pad-t">
-        <div class="form-element pad-l pad-r">
-            <label for="Scheduled Message">Message</label>
-            {{textarea class='form-control start-focus'
-                maxlength='320'
-                remaining='top'
-                autoresize=true
-                rows='1'
-                value=futureMessageContents}}
-        </div>
-        <div class="form-element pad-l pad-r">
-            <label for="Start Date">Start Date</label>
-            <div class="row">
-                <div class="xs-row-2 pad-r-half">
-                    <div class="input-group">
-                        <span class="input-group-addon blend-in align-top">
-                            <button class="btn" type='button'>
-                                <span class="fa fa-calendar-o"></span>
-                            </button>
-                        </span>
-                        {{input class='form-control'
-                            type='text'
-                            value=randomContents}}
-                    </div>
-                </div>
-                <div class="xs-row-2 pad-l-half">
-                    <div class="input-group">
-                        <span class="input-group-addon blend-in align-top">
-                            <button class="btn" type='button'>
-                                <span class="fa fa-clock-o"></span>
-                            </button>
-                        </span>
-                        {{input class='form-control'
-                            type='text'
-                            value=randomContents}}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="form-element row pad-l pad-r">
-            <div class="xs-2-row-3 control-text">
-                <label for="Type" class='text-ellipsis'>
-                    Send As
-                </label>
-            </div>
-            {{!-- selectIndex=(if (eq owner.phoneAction null) 0 1) --}}
-            {{#multi-toggle classNames='xs-row-3'
-                wrapAround=true as |toggle doRegister|}}
-                {{!-- onSelect=(action (mut owner.phoneAction) null) --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#76c9ec'}}
-                    Text
-                {{/multi-toggle/item}}
-                {{!-- onSelect=(action (mut owner.phoneAction) 'number') --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#1BA5E0'}}
-                    Call
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
-        </div>
-        <div class="form-element row pad-l pad-r">
-            <div class="xs-2-row-3 control-text">
-                <label for="Notify Self" class='text-ellipsis'>
-                    Notify me also?
-                </label>
-            </div>
-            {{!-- selectIndex=(if (eq owner.phoneAction null) 0 1) --}}
-            {{#multi-toggle classNames='xs-row-3'
-                wrapAround=true as |toggle doRegister|}}
-                {{!-- onSelect=(action (mut owner.phoneAction) null) --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#d3d3d3'}}
-                    No
-                {{/multi-toggle/item}}
-                {{!-- onSelect=(action (mut owner.phoneAction) 'number') --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#76c9ec'}}
-                    Yes
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
-        </div>
-
-        <div class="form-element row pad-l pad-r">
-            <div class="xs-2-row-3 control-text">
-                <label for="Repeat" class='text-ellipsis'>
-                    Repeat?
-                </label>
-            </div>
-            {{!-- selectIndex=(if (eq owner.phoneAction null) 0 1) --}}
-            {{#multi-toggle classNames='xs-row-3'
-                selectIndex=(if shouldRepeat 1 0)
-                wrapAround=true as |toggle doRegister|}}
-                {{!-- onSelect=(action (mut owner.phoneAction) null) --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#d3d3d3'
-                    onSelect=(action (mut shouldRepeat) false)}}
-                    No
-                {{/multi-toggle/item}}
-                {{!-- onSelect=(action (mut owner.phoneAction) 'number') --}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#76c9ec'
-                    onSelect=(action (mut shouldRepeat) true)}}
-                    Yes
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
-        </div>
-        {{#if shouldRepeat}}
-            <div class="pad-t-double pad-b bg-color">
-                <div class="form-element row pad-l-double pad-r-double">
-                    <div class="xs-row-3 control-text">
-                        <label for="Repeat" class='text-ellipsis'>
-                            Repeat Every
-                        </label>
-                    </div>
-                    {{input class='form-control xs-row-3'
-                        type='number'
-                        value=randomContents}}
-                    {{!-- selectIndex=(if (eq owner.phoneAction null) 0 1) --}}
-                    {{#multi-toggle classNames='xs-row-3'
-                        wrapAround=true as |toggle doRegister|}}
-                        {{!-- onSelect=(action (mut owner.phoneAction) null) --}}
-                        {{#multi-toggle/item doRegister=doRegister
-                            color='#76c9ec'}}
-                            Days
-                        {{/multi-toggle/item}}
-                        {{!-- onSelect=(action (mut owner.phoneAction) 'number') --}}
-                        {{#multi-toggle/item doRegister=doRegister
-                            color='#1BA5E0'}}
-                            Weeks
-                        {{/multi-toggle/item}}
-                    {{/multi-toggle}}
-                </div>
-                <div class="form-element row pad-l-double pad-r-double">
-                    <div class="xs-2-row-3 control-text">
-                        <label for="Repeat" class='text-ellipsis'>
-                            Stop After
-                        </label>
-                    </div>
-                    {{!-- selectIndex=(if (eq owner.phoneAction null) 0 1) --}}
-                    {{#multi-toggle classNames='xs-row-3'
-                        selectIndex=(if (eq repeatType 'date') 0 1)
-                        wrapAround=true as |toggle doRegister|}}
-                        {{!-- onSelect=(action (mut owner.phoneAction) null) --}}
-                        {{#multi-toggle/item doRegister=doRegister
-                            color='#76c9ec'
-                            onSelect=(action (mut repeatType) 'date')}}
-                            Date
-                        {{/multi-toggle/item}}
-                        {{!-- onSelect=(action (mut owner.phoneAction) 'number') --}}
-                        {{#multi-toggle/item doRegister=doRegister
-                            color='#1BA5E0'
-                            onSelect=(action (mut repeatType) 'number')}}
-                            Number
-                        {{/multi-toggle/item}}
-                    {{/multi-toggle}}
-                </div>
-                {{#if (eq repeatType 'date')}}
-                    <div class="form-element pad-b pad-t pad-l-double pad-r-double
-                    bg-color bg-dark">
-                        <label for="End Date">End Date</label>
-                        <div class="row">
-                            <div class="xs-row-2 pad-r-half">
-                                <div class="input-group">
-                                    <span class="input-group-addon blend-in align-top">
-                                        <button class="btn" type='button'>
-                                            <span class="fa fa-calendar-o"></span>
-                                        </button>
-                                    </span>
-                                    {{input class='form-control'
-                                        type='text'
-                                        value=randomContents}}
-                                </div>
-                            </div>
-                            <div class="xs-row-2 pad-l-half">
-                                <div class="input-group">
-                                    <span class="input-group-addon blend-in align-top">
-                                        <button class="btn" type='button'>
-                                            <span class="fa fa-clock-o"></span>
-                                        </button>
-                                    </span>
-                                    {{input class='form-control'
-                                        type='text'
-                                        value=randomContents}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {{/if}}
-                {{#if (eq repeatType 'number')}}
-                    <div class="form-element pad-b pad-t pad-l-double pad-r-double
-                    bg-color bg-dark">
-                        <div class="row">
-                            <div class="xs-row-2 control-text">
-                                <label for="Repeat Count">Repeat # Times</label>
-                            </div>
-                            <div class="xs-row-2">
-                                {{input class='form-control'
-                                    type='number'
-                                    value=randomContents}}
-                            </div>
-                        </div>
-                    </div>
-                {{/if}}
-            </div>
-        {{/if}}
+        {{#with newFutureMsg as |futureMsg|}}
+            {{partial 'partials/future-message/create-edit'}}
+        {{/with}}
     </div>
     <div class="horizontal-items text-center margin-t-double margin-b">
         <div class="clear-badge no-space">
@@ -221,16 +18,12 @@
             </button>
         </div>
         <div class="clear-badge no-space">
-            <button class="btn btn-default" type='button'
-                onclick={{slideout.actions.close}}>
-                Schedule
-            </button>
-            {{!-- {{async-button classNames='btn btn-default'
-                disableWhen=(not (v-get newSchedule 'isValid'))
-                action=(route-action 'createTag' newSchedule
+            {{async-button classNames='btn btn-default'
+                disableWhen=(not (v-get newFutureMsg 'isValid'))
+                action=(route-action 'createFutureMsg' newFutureMsg
                     slideout.actions.close)
-                default='Create'
-                pending='Creating...'}} --}}
+                default='Schedule'
+                pending='Scheduling...'}}
         </div>
     </div>
 {{/slideout-pane}}

@@ -21,7 +21,11 @@ const {
 		username: {
 			description: 'Username',
 			validators: [
-				validator('presence', true)
+				validator('presence', true),
+				validator('format', {
+					regex: /^[-_=@.,;A-Za-z0-9]+$/,
+					message: 'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;'
+				})
 			]
 		},
 		email: {

@@ -10,6 +10,7 @@
     "colpick": "2.0.2",
     "mapbox.js": "^2.4.0",
     "dom-ruler": "0.1.13",
-    "font-awesome": "^4.6.1"
+    "font-awesome": "^4.6.1",
+    "pickadate": "^3.5.6"
   }
 }

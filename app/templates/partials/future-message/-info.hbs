@@ -1,0 +1,53 @@
+<div class="row text-center">
+    <div class="xs-6-row-20 s-4-row-20 control-text border-r">
+        <span class="badge bg-color bg-dark">
+            {{#if futureMsg.isText}}
+                {{#tool-tipster theme='tooltipster-clean'
+                    title='Send message via text'}}
+                    <span class="fa fa-paper-plane-o"></span>
+                {{/tool-tipster}}
+            {{else}}
+                {{#tool-tipster theme='tooltipster-clean'
+                    title='Send message via phone call'}}
+                    <span class="fa fa-phone"></span>
+                {{/tool-tipster}}
+            {{/if}}
+        </span>
+        <span class="badge {{if futureMsg.notifySelf 'bg-color bg-dark'}}">
+            {{#tool-tipster theme='tooltipster-clean'
+                title=(if futureMsg.notifySelf
+                    'Notify myself via text' 'Do not notify me')}}
+                <span class="fa fa-user
+                    {{if (not futureMsg.notifySelf) 'fa-inverse'}}"></span>
+            {{/tool-tipster}}
+        </span>
+    </div>
+    {{#if futureMsg.isDone}}
+        <div class="xs-4-row-20 s-8-row-20 control-text border-r text-ellipsis">
+            <span class="text-bold">Done</span>
+        </div>
+        <div class="xs-10-row-20 s-8-row-20 control-text text-ellipsis">
+            <span class="text-bold">Started</span>
+            {{moment-format futureMsg.startDate 'MMM D, Y'}}
+        </div>
+    {{else}}
+        <div class="xs-14-row-20 s-8-row-20 control-text border-r text-ellipsis">
+            <span class="text-bold">Next</span>
+            {{moment-format futureMsg.nextFireDate 'MMM D h:mm A'}}
+        </div>
+        <div class="display-s display-m display-l s-8-row-20 control-text text-ellipsis">
+            {{#if futureMsg.isRepeating}}
+                <span class="text-bold">Stop</span>
+                {{#if futureMsg.hasEndDate}}
+                    {{moment-format futureMsg.endDate 'MMM D, Y'}}
+                {{else}}
+                    after {{futureMsg.repeatCount}}
+                    {{pluralize 'times' futureMsg.repeatCount}}
+                {{/if}}
+            {{else}}
+                <span class="text-bold">Created</span>
+                {{moment-format futureMsg.whenCreated 'MMM D, Y'}}
+            {{/if}}
+        </div>
+    {{/if}}
+</div>

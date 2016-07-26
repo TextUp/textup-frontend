@@ -3,12 +3,8 @@
 		title="Me"
 		classNames='pad-t'}}
 		{{#each _daysOfWeek as |day|}}
-			{{!-- spacer for the handles for smartphones and tablets --}}
-			<div class="display-xs display-s display-m">
-				<div class="xs-full-row pad-t"></div>
-			</div>
-			<div class="row pad-b pad-l pad-r">
-				<div class="xs-full-row l-3-row-20 text-bold">
+			<div class="row pad-all">
+				<div class="xs-full-row l-3-row-20 text-bold text-ellipsis">
 					<span class="display-xs display-s display-m">
 						{{capitalize day}}
 					</span>
@@ -39,12 +35,8 @@
 			{{#tab-container/item doRegister=doRegister
 				title=(capitalize day)
 				classNames='pad-t'}}
-				{{!-- spacer for the handles for smartphones and tablets --}}
-				<div class="display-xs display-s display-m">
-					<div class="xs-full-row pad-t"></div>
-				</div>
-				<div class="row pad-b pad-l pad-r">
-					<div class="xs-full-row l-3-row-20 text-bold">
+				<div class="row pad-all">
+					<div class="xs-full-row l-3-row-20 text-bold text-ellipsis">
 						<span class="display-xs display-s display-m">
 							Me
 						</span>
@@ -69,7 +61,7 @@
 				</div>
 				{{#each otherStaffs as |otherStaff|}}
 					<div class="row pad-b pad-l pad-r">
-						<div class="xs-full-row l-3-row-20 text-bold">
+						<div class="xs-full-row l-3-row-20 text-bold text-ellipsis">
 							<span class="display-xs display-s display-m">
 								{{otherStaff.name}}
 							</span>

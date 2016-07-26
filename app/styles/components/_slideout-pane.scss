@@ -17,7 +17,6 @@
     width: $slideout-width;
     z-index: $slideout-z-index;
     background-color: $bg-lightest-color;
-    overflow: hidden;
 
     .slideout-header, .slideout-body {
         @extend %border-box;

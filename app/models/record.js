@@ -28,7 +28,9 @@ export default DS.Model.extend({
 	authorType: DS.attr('string'),
 
 	receipts: DS.hasMany('receipts'),
+	// belong to either a contact or a tag
 	contact: DS.belongsTo('contact'),
+	tag: DS.belongsTo('tag'),
 
 	// Call
 	// ----

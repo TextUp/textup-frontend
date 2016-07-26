@@ -203,13 +203,17 @@ export default Ember.Service.extend({
 		Ember.RSVP.all([
 			socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
 			socket.bind(channelName, 'recordStatuses', this._handleSocketRecords.bind(this)),
-			socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this))
+			socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
+			socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this))
 		]).catch(this.get('dataHandler').buildErrorHandler());
 	},
 	_unbindSocketEvents: function() {
 		this.get('socket').disconnect();
 	},
 
+	_handleSocketFutureMsgs: function(data) {
+		this._addNewForComputedArray('future-message', data);
+	},
 	_handleSocketRecords: function(data) {
 		this._addNewForComputedArray('record', data);
 	},

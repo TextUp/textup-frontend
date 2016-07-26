@@ -1,32 +1,32 @@
 <div class="input-group text-center">
-    {{#if (not tag.isDeleted)}}
+    {{#if (not object.isDeleted)}}
         <div class="input-group-addon">
             {{#tool-tipster tagName='span'
                 theme='tooltipster-clean'
                 title='Delete'}}
                 <button class="btn-span btn btn-plain btn-danger" type='button'
-                    onclick={{route-action 'markForDelete' tag}}>
+                    onclick={{route-action 'markForDelete' object}}>
                     <span class="fa fa-trash-o"></span>
                 </button>
             {{/tool-tipster}}
         </div>
     {{/if}}
-    {{#if (or tag.hasDirtyAttributes tag.isDeleted)}}
+    {{#if (or object.isDirty object.isDeleted)}}
         <div class="input-group-addon">
             {{#tool-tipster tagName='span'
                 theme='tooltipster-clean'
                 title='Undo'}}
                 <button class="btn-span btn btn-plain" type='button'
-                    onclick={{route-action 'revert' tag
-                        (if (not tag.isDeleted) dropdown.actions.close)}}>
+                    onclick={{route-action 'revert' object
+                        (if (not object.isDeleted) dropdown.actions.close)}}>
                     <span class="fa fa-undo"></span>
                 </button>
             {{/tool-tipster}}
         </div>
         <div class="input-group-addon">
-            {{#if tag.isDeleted}}
+            {{#if object.isDeleted}}
                 {{async-button classNames='btn-span btn btn-plain btn-danger'
-                    action=(route-action 'persist' tag
+                    action=(route-action 'persist' object
                         dropdown.actions.close)
                     default='Confirm delete'
                     pending='Deleting...'}}
@@ -35,11 +35,11 @@
                     theme='tooltipster-clean'
                     title='Update'}}
                     {{#async-button classNames='btn-span btn btn-plain'
-                        disableWhen=(not (v-get tag 'isValid'))
-                        action=(route-action 'persist' tag
+                        disableWhen=(not (v-get object 'isValid'))
+                        action=(route-action 'persist' object
                             dropdown.actions.close)
-                        default='Create'
-                        pending='Creating...' as |btn|}}
+                        default='Update'
+                        pending='Updating...' as |btn|}}
                         {{#if (eq btn.textState 'pending')}}
                             <span class="fa fa-spin fa-circle-o-notch"></span>
                         {{else if (eq btn.textState 'rejected')}}
@@ -53,9 +53,3 @@
         </div>
     {{/if}}
 </div>
-{{!-- to match the variable name in the partial --}}
-{{#with tag as |newTag|}}
-    <div class="pad-all bg-color border-b">
-        {{partial 'partials/tag/create-edit'}}
-    </div>
-{{/with}}

@@ -7,7 +7,8 @@ in the model hook to run --}}
         authManager.authUser.phone.content)}}
         {{#link-to 'main.contacts' authManager.authUser.urlIdentifier
             tagName='li'
-            classNames='menu-item'}}
+            classNames='menu-item'
+            current-when='main'}}
             <div class="offset-xs-row-10 xs-8-row-10 text-left">
                 <p class="text-bold text-ellipsis">{{authManager.authUser.name}}</p>
                 <p class="text-bold text-ellipsis">
@@ -20,7 +21,8 @@ in the model hook to run --}}
         {{#if (and (not team.hasInactivePhone) team.phone.content)}}
             {{#link-to 'main.contacts' team.urlIdentifier
                 tagName='li'
-                classNames='menu-item'}}
+                classNames='menu-item'
+                current-when='main'}}
                 <div class="offset-xs-row-10 xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">{{team.name}}</p>
                     <p class="text-bold text-ellipsis">

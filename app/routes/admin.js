@@ -155,15 +155,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					}, this.get('dataHandler').buildErrorHandler());
 				});
 		},
-		deleteTeam: function(team, then = undefined) {
-			const loc = team.get('location.content'),
-				data = this.get('dataHandler');
-			data.markForDelete(team);
-			return data.persist(team).then(() => {
-				this.store.unloadRecord(loc);
-				callIfPresent(then);
-			});
-		},
 
 		// Phone
 		// -----

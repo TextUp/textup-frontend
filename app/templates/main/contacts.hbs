@@ -4,38 +4,35 @@
 
 <div class="content">
     {{#if tag}}
-        {{#hide-away tabindex=false
-            clickOutToClose=false
-            bodyClickClose=false
-            animation='slide'
-            allowedTriggerSelectors='.pull-right' as |dropdown|}}
-            {{partial 'partials/tag/edit-with-controls'}}
-        {{else}}
-            <div class="section-header">
-                <span class="display-l">
-                    <span class="indicator pull-left"
-                        style='background-color:{{tag.hexColor}};'></span>
-                </span>
-                <div class="tag-title">
-                    <h4 class="text-ellipsis">
-                        {{tag.name}}
-                    </h4>
-                    {{#if (not tag.isDeleted)}}
-                        <p>
-                            {{numContacts}}
-                            {{pluralize 'contact' numContacts}}
-                        </p>
-                    {{/if}}
-                </div>
-                {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
-                    <div class="pull-right">
-                        <button class="btn btn-plain" type='button'>
-                            <span class="fa fa-pencil"></span>
-                        </button>
-                    </div>
+        <div class="section-header">
+            <span class="display-l">
+                <span class="indicator pull-left"
+                    style='background-color:{{tag.hexColor}};'></span>
+            </span>
+            <div class="tag-title">
+                <h4 class="text-ellipsis">
+                    {{tag.name}}
+                </h4>
+                {{#if (not tag.isDeleted)}}
+                    <p>
+                        {{numContacts}}
+                        {{pluralize 'contact' numContacts}}
+                    </p>
                 {{/if}}
             </div>
-        {{/hide-away}}
+            {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
+                {{#link-to 'main.tag.details'
+                    classNames='pull-right-to-edge full-height'
+                    activeClass='bg-color bg-dark'}}
+                    {{#tool-tipster theme='tooltipster-clean'
+                        title='View Tag Details'
+                        tagName='button'
+                        classNames='btn btn-plain btn-expand'}}
+                        <span class="fa fa-sliders"></span>
+                    {{/tool-tipster}}
+                {{/link-to}}
+            {{/if}}
+        </div>
     {{else}}
         {{#hide-away tabindex=false
             clickOutToClose=true
@@ -94,32 +91,30 @@
         total=numContacts
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |contact|}}
-        <div class="result-item">
-            <div class="row">
-                <div class="contacts-control {{if contact.isSelected 'selected'}}"
-                    {{action 'toggleSelected' contact preventDefault=false}}>
-                    <span class="fa fa-check center"></span>
-                </div>
-                {{#link-to (if tag
-                        'main.tag.contact'
-                        'main.contacts.contact')
-                        contact.id
-                    tagName="div"}}
-                    <div class='contacts-info {{if contact.isUnread "unread"}}'>
-                        <p class="emphasize">
-                            <span class="margin-r-half">
-                                {{phone-number contact.identifier}}
-                            </span>
-                            <span class="clear-badge no-space">
-                                {{partial 'partials/contact/indicators'}}
-                            </span>
-                        </p>
-                        <p>
-                            {{moment-from-now contact.lastRecordActivity interval=1000}}
-                        </p>
-                    </div>
-                {{/link-to}}
+        <div class="result-item row">
+            <div class="contacts-control {{if contact.isSelected 'selected'}}"
+                {{action 'toggleSelected' contact preventDefault=false}}>
+                <span class="fa fa-check center"></span>
             </div>
+            {{#link-to (if tag
+                    'main.tag.contact'
+                    'main.contacts.contact')
+                    contact.id
+                tagName="div"}}
+                <div class='contacts-info {{if contact.isUnread "unread"}}'>
+                    <p class="emphasize">
+                        <span class="margin-r-half">
+                            {{phone-number contact.identifier}}
+                        </span>
+                        <span class="clear-badge no-space">
+                            {{partial 'partials/contact/indicators'}}
+                        </span>
+                    </p>
+                    <p>
+                        {{moment-from-now contact.lastRecordActivity interval=1000}}
+                    </p>
+                </div>
+            {{/link-to}}
             {{#if (and (not contact.isShared) contact.tags)}}
                 <div class="contacts-tags">
                     {{#each contact.tags as |tag|}}
@@ -129,7 +124,22 @@
             {{/if}}
         </div>
     {{else}}
-        <div class="no-results">No contacts match this criteria.</div>
+        {{#if (and (eq filter 'all') (not tag))}}
+            <div class="no-results">
+                No contacts yet!
+                <a href='' {{action 'toggleSlideout' 'slideouts/contact' 'main'}}>
+                    Get started by creating a new contact.
+                </a>
+            </div>
+        {{else if tag}}
+            <div class="no-results">
+                No contacts have been added to
+                <span class="text-bold">{{tag.name}}</span>
+                yet.
+            </div>
+        {{else}}
+            <div class="no-results">No contacts match this criteria.</div>
+        {{/if}}
     {{/infinite-scroll}}
 </div>
 {{outlet}}

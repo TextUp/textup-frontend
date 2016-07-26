@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import callIfPresent from '../../../utils/call-if-present';
 
 export default Ember.Route.extend({
 	_id: null,
@@ -34,8 +35,24 @@ export default Ember.Route.extend({
 
 	actions: {
 		didTransition: function() {
-			this.controller._resetPosition();
+			const recordsList = this.controller.get('_recordsList');
+			if (recordsList) {
+				recordsList.actions.resetPosition();
+			}
 			return true;
+		},
+
+		// Future message
+		// --------------
+
+		initializeFutureMsg: function() {
+			this.controller.set('newFutureMsg', this.store.createRecord('future-message'));
+		},
+		createFutureMsg: function(fMsg, then) {
+			fMsg.set('contactId', this.get('currentModel.id'));
+			return this.get('dataHandler')
+				.persist(fMsg)
+				.then(() => callIfPresent(then));
 		}
 	},
 

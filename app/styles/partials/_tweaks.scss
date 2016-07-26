@@ -82,10 +82,10 @@
 }
 .tag-title {
 	@include v-center(left, $contacts-h-space);
-	width: calc(100% - #{$padding * 6});
+	width: calc(100% - #{$padding * 7.2});
 	@include mq($from: desktop) {
 		left: $padding * 2;
-		width: calc(100% - #{$padding * 4});
+		width: calc(100% - #{$padding * 6});
 	}
 }
 .contacts-title {
@@ -125,8 +125,10 @@
 .contacts-tags {
 	@extend .row;
 	@extend .horizontal-items;
+	margin-left: $contacts-h-space;
+	width: calc(100% - #{$contacts-h-space});
 	padding: ($padding * 0.5) 0;
-	background-color: shade($bg-light-color, 0.5);
+	background-color: shade($bg-light-color, 1);
 
 	:not(.badge) {
 		max-width: 90px;
@@ -164,7 +166,38 @@
 }
 @include split(height, ".contact-controls" ".contact-record", $control-height + $form-v-space * 2);
 .contact-record {
-	@extend .reset-list;
+	&.no-future-messages {
+		.record-body {
+			height: 100%;
+		}
+		.future-messages {
+			display: none;
+		}
+	}
+	.record-receipts {
+		@extend %vertical-scroll;
+		max-height: 150px;
+	}
+	@include split(height, ".future-messages" ".record-body", $control-height);
+	.record-body {
+		@extend %no-results;
+	}
+	.future-messages {
+		@extend .clickable;
+		@extend %border-box;
+
+	    position: relative;
+	    text-align: center;
+	    overflow: hidden;
+
+	    border-top: 1px solid $border-color;
+		transition: all 0.5s;
+		background-color: shade($bg-color);
+
+	    &:hover, &:active, &:focus {
+			background-color: shade($bg-color, 1.5);
+	    }
+	}
 }
 .contact-controls {
 	@extend .section-footer;

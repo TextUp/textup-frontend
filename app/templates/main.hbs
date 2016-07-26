@@ -54,7 +54,11 @@
                 theme='tooltipster-clean'
                 title='Availability'
                 classNames='btn-expand display-l'}}
-                <span class="fa fa-calendar-o"></span>
+                {{#if stateManager.isPhoneAvailable}}
+                    <span class="fa fa-calendar-check-o"></span>
+                {{else}}
+                    <span class="fa fa-calendar-times-o"></span>
+                {{/if}}
             {{/tool-tipster}}
             <div class="btn-expand display-xs display-s display-m">
                 <span>Availability</span>
@@ -136,7 +140,7 @@
     <li class="menu-divider display-xs display-s display-m">
         Tags
         <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/tags/create' 'main'}}>
+            {{action 'toggleSlideout' 'slideouts/tags/create-edit' 'main'}}>
             <span class="fa fa-plus"></span>
         </button >
     </li>
@@ -150,7 +154,7 @@
                     style="background-color:{{tag.hexColor}};"></span>
             {{/link-to}}
         {{else}}
-            <li class='pad-t text-bold display-xs display-s display-m'>
+            <li class='text-bold display-xs display-s display-m'>
                 <div class="pad-t pad-b">No tags yet.</div>
             </li>
         {{/each}}

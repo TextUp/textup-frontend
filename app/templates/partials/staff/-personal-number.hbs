@@ -14,7 +14,8 @@
         {{#phone-control/mutable-validated number=staff.personalPhoneNumber
             controlClass='blend-in'
             forceDefaultValidate=true
-            onValidateSuccess=hideAway.actions.close}}
+            onValidateSuccess=(route-action 'persist' staff
+                hideAway.actions.close)}}
         {{else}}
             <span class='fa fa-arrow-right'></span>
         {{/phone-control/mutable-validated}}

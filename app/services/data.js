@@ -71,16 +71,24 @@ export default Ember.Service.extend({
 		});
 		record.get('recipients')
 			.pushObjects(Ember.isArray(recipients) ? recipients : [recipients]);
-		return this.persist(record)
-			.catch(record.rollbackAttributes.bind(record));
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			this.persist(record).then(resolve, (failure) => {
+				record.rollbackAttributes();
+				reject(failure);
+			});
+		});
 	},
 	makeCall: function(recipient) {
 		const record = this.get('store').createRecord('record', {
 			type: 'CALL'
 		});
 		record.get('recipients').pushObject(recipient);
-		return this.persist(record)
-			.catch(record.rollbackAttributes.bind(record));
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			this.persist(record).then(resolve, (failure) => {
+				record.rollbackAttributes();
+				reject(failure);
+			});
+		});
 	},
 
 	// Utility methods

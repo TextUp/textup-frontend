@@ -1,0 +1,73 @@
+{{#slideout-pane title=(if tag (concat 'Edit ' tag.name) 'New Tag')
+    direction=(if tag 'right' 'left')
+    onOpen=(if (not tag) (route-action 'initializeNewTag'))
+    doClose=(route-action 'revert' (if tag tag newTag)
+        (route-action 'closeAllSlideouts'))
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    focusSelector='.start-focus' as |slideout|}}
+    <div class="pad-t pad-l pad-r">
+        {{#if tag}}
+            {{#with tag as |newTag|}}
+                {{partial 'partials/tag/create-edit'}}
+            {{/with}}
+        {{else}}
+            {{partial 'partials/tag/create-edit'}}
+        {{/if}}
+    </div>
+    <div class="horizontal-items text-center margin-t-double margin-b">
+        {{#if tag}}
+            {{#if tag.isDeleted}}
+                <div class="clear-badge no-space">
+                    <button class="btn" type='button'
+                        onclick={{route-action 'revert' tag}}>
+                        Undo
+                    </button>
+                </div>
+                <div class="clear-badge no-space">
+                    {{async-button classNames='btn btn-danger'
+                        disableWhen=(not (v-get tag 'isValid'))
+                        action=(route-action 'persist' tag
+                            slideout.actions.close)
+                        default='Confirm Delete'
+                        pending='Deleting...'}}
+                </div>
+            {{else}}
+                <div class="clear-badge no-space">
+                    <button class="btn btn-danger btn-plain" type='button'
+                        onclick={{route-action 'markForDelete' tag}}>
+                        <span class="fa fa-trash"></span>
+                    </button>
+                </div>
+                <div class="clear-badge no-space">
+                    <button class="btn" type='button'
+                        onclick={{slideout.actions.close}}>
+                        Cancel
+                    </button>
+                </div>
+                <div class="clear-badge no-space">
+                    {{async-button classNames='btn btn-default'
+                        disableWhen=(not (v-get tag 'isValid'))
+                        action=(route-action 'persist' tag
+                            slideout.actions.close)
+                        default='Update'
+                        pending='Updating...'}}
+                </div>
+            {{/if}}
+        {{else}}
+            <div class="clear-badge no-space">
+                <button class="btn" type='button'
+                    onclick={{slideout.actions.close}}>
+                    Cancel
+                </button>
+            </div>
+            <div class="clear-badge no-space">
+                {{async-button classNames='btn btn-default'
+                    disableWhen=(not (v-get newTag 'isValid'))
+                    action=(route-action 'createTag' newTag
+                        slideout.actions.close)
+                    default='Create'
+                    pending='Creating...'}}
+            </div>
+        {{/if}}
+    </div>
+{{/slideout-pane}}

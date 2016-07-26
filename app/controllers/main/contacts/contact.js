@@ -1,18 +1,23 @@
 import Ember from 'ember';
-import callIfPresent from '../../../utils/call-if-present';
 
 const {
-	alias
-} = Ember.computed;
+	computed,
+	computed: {
+		alias
+	}
+} = Ember;
 
 export default Ember.Controller.extend({
+
 	contact: null,
+	newFutureMsg: null,
 
 	// Computed properties
 	// -------------------
 
+	futureMsgs: alias('contact.sortedFutureMessages'),
 	records: alias('contact.records'),
-	totalNumRecords: Ember.computed('contact.totalNumRecords', {
+	totalNumRecords: computed('contact.totalNumRecords', {
 		get: function() {
 			return this.get('_isReady') ? this.get('contact.totalNumRecords') : '--';
 		},
@@ -40,47 +45,18 @@ export default Ember.Controller.extend({
 				this._loadMoreWhenReady(resolve, reject);
 			});
 		},
-		sendMessage: function(then = undefined) {
-			this.set('isSendingText', true);
-			this.set('isSendingTextError', false);
-			this.get('dataHandler')
-				.sendMessage(this.get('textContents'), this.get('contact'))
-				.then(() => {
-					this.set('isSendingTextError', false);
-					this.set('textContents', null);
-					this._resetPosition();
-					callIfPresent(then);
-				}, () => {
-					this.set('isSendingTextError', true);
-				})
-				.finally(() => {
-					this.set('isSendingText', false);
-				});
-		},
-		makeCall: function(recipient, then = undefined) {
-			return this.get('dataHandler')
-				.makeCall(recipient)
-				.then(() => {
-					this.set('isMakingCall', true);
-					this._resetPosition();
-					callIfPresent(then);
-				});
-		},
 	},
 
-	_resetPosition: function() {
-		const recordsList = this.get('_recordsList');
-		if (recordsList) {
-			recordsList.actions.resetPosition();
-		}
-	},
 	_loadMoreWhenReady: function(doResolve, doReject, tryNumber = 0) {
-		if (!this.get('_isReady') && tryNumber < 3) {
+		// wait a bit more before trying to send a request if we are
+		// not yet ready (that is, done reloading the contact that has been
+		// mysteriously invalidated by ember data) or the contact's id is undefined
+		const contact = this.get('contact');
+		if ((!contact.get('id') || !this.get('_isReady')) && tryNumber < 3) {
 			return Ember.run.later(this, this._loadMoreWhenReady,
 				doResolve, doReject, tryNumber + 1, 500);
 		}
 		const query = Object.create(null),
-			contact = this.get('contact'),
 			records = this.get('records');
 		// build query
 		query.max = 20;
@@ -88,10 +64,16 @@ export default Ember.Controller.extend({
 		if (records && records.length) {
 			query.offset = records.length;
 		}
+		// if contact id is null, then we want to silently fail to avoid presenting
+		// a distressing error message to the user. Infinite scroll component should
+		// re-request records anyways so the records will show up regardless so
+		// there's no need to present this error message
+		const onReject = query.contactId ?
+			this.get('dataHandler').buildErrorHandler(doReject) : null;
 		// execute query
 		this.store.query('record', query).then((results) => {
 			this.set('totalNumRecords', results.get('meta.total'));
 			doResolve();
-		}, this.get('dataHandler').buildErrorHandler(doReject));
+		}, onReject);
 	}
 });

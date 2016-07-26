@@ -1,0 +1,65 @@
+{{title tag.name}}
+
+<div class="details full-height">
+	<div class="section-header">
+		<div class="horizontal-items xs-8-row-10 s-row-2 pull-left">
+			<span class="clear-badge display-xs display-s no-space">
+				{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
+					<span class="pad-all">
+						<span class="fa fa-chevron-left"></span>
+					</span>
+				{{/link-to}}
+			</span>
+			<span class="clear-badge no-space">
+				<h5>{{tag.name}}</h5>
+			</span>
+			{{#if (not tag.isDeleted)}}
+				<span class="clear-badge no-space">
+					<button class="btn btn-plain display-m display-l"
+						{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
+						<span class="pad-all display-m">
+							<span class="fa fa-pencil"></span>
+						</span>
+						<span class="fa fa-pencil display-l"></span>
+					</button>
+				</span>
+			{{/if}}
+			<div class="badge">
+				{{tag.numMembers}}
+				<span class="fa fa-user"></span>
+			</div>
+		</div>
+		<div class="horizontal-items xs-2-row-10 s-row-2 pull-right">
+			{{#if (not tag.isDeleted)}}
+				<span class="clear-badge no-space">
+					<span class="display-xs display-s">
+						<button class="btn" type='button'
+							{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
+							Edit
+						</button>
+					</span>
+				</span>
+			{{/if}}
+			<span class="clear-badge display-m display-l">
+				{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
+					<span class="pad-all">
+						<span class="fa fa-times"></span>
+					</span>
+				{{/link-to}}
+			</span>
+		</div>
+	</div>
+	<div class="section-body row">
+		{{#if tag.isDeleted}}
+			<div class="center">
+				{{#if tag.hasDirtyAttributes}}
+					<p>{{tag.name}} is about to be deleted.</p>
+				{{else}}
+					<p>{{tag.name}} has been deleted.</p>
+				{{/if}}
+			</div>
+		{{else}}
+			{{partial 'partials/record/display-with-compose'}}
+		{{/if}}
+	</div>
+</div>

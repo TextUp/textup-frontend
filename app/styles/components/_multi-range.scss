@@ -11,6 +11,7 @@
 		background-color: tint($border-color, 1);
 	}
 	.elessar-range {
+		overflow: initial;
 	    height: 100%;
 	    text-align: center;
 	    background-color: $brand-color;
@@ -19,9 +20,8 @@
 		@extend .text-ellipsis;
 		@extend .text-bold;
 		color: contrast-color($brand-color);
-	}
-	.elessar-handle {
-	    background-color: shade($brand-color);
+		width: 100%;
+		display: block;
 	}
 	.elessar-phantom {
 	    text-align: center;
@@ -30,44 +30,37 @@
 	    background-color: tint($brand-color, 2);
 	}
 	.elessar-indicator {
-		background-color: shade($brand-color, 2);
+		border-radius: $border-radius;
+		background-color: $bg-dark-color;
+		opacity: 0.5;
 	    border-color: transparent;
-	    border-width: 0 1px;
-	    height: 114%;
-	    top: -5%;
+	    border-width: 0 3px;
+	    height: 124%;
+    	top: -10%;
 	}
+	.elessar-handle:not(.disabled) {
+		background-color: shade($brand-color);
+	    width: $padding;
 
-	@include mq($until: desktop) {
-		.elessar-range {
-			overflow: initial;
-		}
-		.elessar-barlabel {
-			width: 100%;
-			display: block;
-		}
-		.elessar-handle {
-		    width: $padding;
+    	&:after {
+    		z-index: 10;
+    		opacity: 0.8;
+			position: absolute;
+			content: ' ';
+			top: auto;
+			left: 50%;
+			bottom: 75%;
+			transform: translateX(-50%);
 
-	    	&:after {
-	    		z-index: 10;
-	    		opacity: 0.8;
-				position: absolute;
-				content: ' ';
-				top: auto;
-				left: 50%;
-				bottom: 75%;
-				transform: translateX(-50%);
-
-				width: 0;
-				height: 0;
-	            border-style: solid;
-			    border-color: shade($brand-color);
-    			border-width: (1.2 * $padding) (1.4 * $padding);
-			    border-top-left-radius: 50%;
-			    border-top-right-radius: 50%;
-			    border-bottom-left-radius: 30%;
-			    border-bottom-right-radius: 30%;
-	    	}
-		}
-    }
+			width: 0;
+			height: 0;
+            border-style: solid;
+		    border-color: shade($brand-color);
+			border-width: (1.2 * $padding) (1.4 * $padding);
+		    border-top-left-radius: 50%;
+		    border-top-right-radius: 50%;
+		    border-bottom-left-radius: 30%;
+		    border-bottom-right-radius: 30%;
+    	}
+	}
 }

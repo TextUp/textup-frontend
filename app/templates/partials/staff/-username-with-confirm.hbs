@@ -24,7 +24,10 @@
         {{input type='text'
             class='form-control'
             placeholder='New Username'
-            value=staff.username}}
+            value=staff.username
+            validateObj=staff
+            validateField='username'
+            validate='bottom'}}
     </div>
     {{#if (and newUPassword staff.hasDirtyAttributes)}}
         <div class="pad-t text-center">

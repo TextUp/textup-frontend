@@ -1,0 +1,140 @@
+<div class="form-element pad-l pad-r">
+    <label for="Scheduled Message">Message</label>
+    {{textarea class='form-control start-focus'
+        disabled=futureMsg.isDeleted
+        maxlength='320'
+        remaining='top'
+        autoresize=true
+        rows='1'
+        value=futureMsg.message
+        validateObj=futureMsg
+        validateField='message'
+        validate='bottom'}}
+</div>
+<div class="form-element pad-l pad-r">
+    <label for="Start Date">Start Date</label>
+    {{#if futureMsg.isNew}}
+        {{datetime-control/mutable value=futureMsg.startDate min=(now)}}
+    {{else}}
+        {{datetime-control/mutable value=futureMsg.startDate disabled=true}}
+    {{/if}}
+</div>
+<div class="form-element row pad-l pad-r">
+    <div class="xs-2-row-3 control-text">
+        <label for="Type" class='text-ellipsis'>
+            Send As
+        </label>
+    </div>
+    {{multi-toggle/binary classNames='xs-row-3'
+        disabled=futureMsg.isDeleted
+        value=(eq futureMsg.type 'CALL')
+        onFalse=(action (mut futureMsg.type) 'TEXT')
+        onTrue=(action (mut futureMsg.type) 'CALL')
+        falseColor='#76c9ec'
+        trueColor='#1BA5E0'
+        falseString='Text'
+        trueString='Call'}}
+</div>
+<div class="form-element row pad-l pad-r">
+    <div class="xs-2-row-3 control-text">
+        <label for="Notify Self" class='text-ellipsis'>
+            Notify me also?
+        </label>
+    </div>
+    {{multi-toggle/binary classNames='xs-row-3'
+        disabled=futureMsg.isDeleted
+        value=futureMsg.notifySelf}}
+</div>
+{{#if futureMsg.isNew}}
+    <div class="form-element row pad-l pad-r">
+        <div class="xs-2-row-3 control-text">
+            <label for="Repeat" class='text-ellipsis'>
+                Repeat?
+            </label>
+        </div>
+        {{multi-toggle/binary classNames='xs-row-3'
+            disabled=futureMsg.isDeleted
+            value=futureMsg.isRepeating}}
+    </div>
+{{/if}}
+{{#if futureMsg.isRepeating}}
+    <div class="pad-t-double bg-color">
+        <div class="form-element row pad-l pad-r">
+            <div class="xs-row-3 control-text">
+                <label for="Repeat" class='text-ellipsis'>
+                    Repeat Every
+                </label>
+            </div>
+            <div class="xs-row-3 pad-r-half">
+                {{input class='form-control'
+                    disabled=futureMsg.isDeleted
+                    type='number'
+                    min='1'
+                    placeholder='#'
+                    value=futureMsg.repeatIntervalInDays
+                    validateObj=futureMsg
+                    validateField='repeatIntervalInDays'
+                    validate='bottom'}}
+            </div>
+            {{multi-toggle/binary classNames='xs-row-3'
+                disabled=futureMsg.isDeleted
+                value=(eq futureMsg.intervalMultiplier 7)
+                onFalse=(action (mut futureMsg.intervalMultiplier) 1)
+                onTrue=(action (mut futureMsg.intervalMultiplier) 7)
+                falseColor='#76c9ec'
+                trueColor='#1BA5E0'
+                falseString=(pluralize 'Day' futureMsg.repeatIntervalInDays)
+                trueString=(pluralize 'Week' futureMsg.repeatIntervalInDays)}}
+        </div>
+        <div class="form-element row pad-l pad-r">
+            <div class="xs-2-row-3 control-text">
+                <label for="Repeat" class='text-ellipsis'>
+                    Stop After
+                </label>
+            </div>
+            {{multi-toggle/binary classNames='xs-row-3'
+                disabled=futureMsg.isDeleted
+                value=futureMsg.hasEndDate
+                falseColor='#76c9ec'
+                trueColor='#1BA5E0'
+                falseString='Number'
+                trueString='Date'}}
+        </div>
+        <div class="pad-b pad-t pad-l pad-r bg-color bg-dark">
+            {{#if futureMsg.hasEndDate}}
+                <div class="form-element row no-space">
+                    <div class="xs-row-3 control-text">
+                        <label for="End Date">End On</label>
+                    </div>
+                    {{datetime-control/mutable classNames='xs-2-row-3'
+                        disabled=futureMsg.isDeleted
+                        value=futureMsg.endDate
+                        min=futureMsg.startDate
+                        showTime=false}}
+                </div>
+            {{else}}
+                <div class="form-element row no-space">
+                    <div class="xs-row-3 control-text">
+                        <label for="Repeat Count">Repeat</label>
+                    </div>
+                    <div class="xs-row-3 pad-r-half">
+                        {{input class='form-control'
+                            disabled=futureMsg.isDeleted
+                            type='number'
+                            min='1'
+                            placeholder='#'
+                            value=futureMsg.repeatCount
+                            validateObj=futureMsg
+                            validateField='repeatCount'
+                            validate='bottom'}}
+                    </div>
+                    <div class="xs-row-3 control-text text-center">
+                        <label for="Repeat Count">
+                            {{pluralize 'Time' futureMsg.repeatCount}}
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+{{/if}}

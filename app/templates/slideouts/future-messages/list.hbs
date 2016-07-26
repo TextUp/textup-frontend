@@ -1,0 +1,53 @@
+{{#slideout-pane title='Scheduled Messages'
+    direction='right'
+    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole'
+    doClose=(route-action 'closeAllSlideouts') as |slideout|}}
+    <ul class="result-list">
+        {{#each futureMsgs as |futureMsg|}}
+            {{#hide-away tagName='li'
+                disabled=futureMsg.isDone
+                animation='slide'
+                tabindex=false
+                clickOutToClose=false
+                allowedTriggerSelectors='.edit-message' as |dropdown|}}
+                {{#with futureMsg as |object|}}
+                    <div class="border-b">
+                        {{partial 'partials/dropdown-edit-controls'}}
+                    </div>
+                {{/with}}
+                <div class="pad-t pad-b-double border-b">
+                    {{partial 'partials/future-message/create-edit'}}
+                </div>
+            {{else}}
+                <div class="row pad-all bg-color">
+                    {{#if futureMsg.isDone}}
+                        <div class="text-bold text-wrap">
+                            {{futureMsg.message}}
+                        </div>
+                    {{else}}
+                        <div class="xs-9-row-10 text-bold text-wrap">
+                            {{futureMsg.message}}
+                        </div>
+                        <div class="xs-row-10">
+                            <button class="edit-message btn-span btn btn-plain" type='button'>
+                                <span class="fa fa-pencil"></span>
+                            </button>
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="border-b">
+                    {{partial 'partials/future-message/info'}}
+                </div>
+            {{/hide-away}}
+        {{else}}
+            <li class="no-results">
+                No scheduled messages yet.
+                <a href='' {{action 'toggleDetailSlideout'
+                    'slideouts/future-messages/create'
+                    (if contact 'main/contacts/contact' 'main/tag/details')}}>
+                    Schedule a message.
+                </a>
+            </li>
+        {{/each}}
+    </ul>
+{{/slideout-pane}}

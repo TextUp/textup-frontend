@@ -4,6 +4,7 @@ import tc from 'npm:tinycolor2';
 
 export default Ember.Component.extend({
 
+	disabled: defaultIfAbsent(false),
 	placeholder: defaultIfAbsent('Pick a color on the right'),
 	color: defaultIfAbsent('#1BA5E0'),
 	contrast: defaultIfAbsent(50),

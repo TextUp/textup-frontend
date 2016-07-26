@@ -5,4 +5,10 @@ export default Ember.Route.extend({
 		this._super(...arguments);
 		controller.set('team', this.controllerFor('admin.people').get('team'));
 	},
+	deactivate: function() {
+		const team = this.controller.get('team');
+		if (team.get('hasDirtyAttributes')) {
+			team.rollbackAttributes();
+		}
+	}
 });

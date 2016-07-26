@@ -161,10 +161,16 @@ body {
 			border-right-width: 5px;
 		}
 		&.success {
-			@include button-colors($success-color);
+			// @include button-colors($success-color);
+			@include button-colors($bg-color);
+			border-right-color: $success-color;
+			color: $success-color;
 		}
 		&.danger {
-			@include button-colors($danger-color);
+			// @include button-colors($danger-color);
+			@include button-colors($bg-color);
+			border-right-color: $danger-color;
+			color: $danger-color;
 		}
 	}
 	.menu-footer {
@@ -174,7 +180,7 @@ body {
 		transform: translateX(-50%);
 		width: 100%;
 		z-index: -1; // position behind items on scroll
-		.brand {
+		img.brand {
 			width: 95%;
 		}
 	}
@@ -192,13 +198,13 @@ body {
 // single container structure
 // --------------------------
 
-.brand {
+img.brand {
 	width: 125px;
 }
 .single-container {
 	@extend %vertical-scroll;
 
-	.brand {
+	img.brand {
 		margin-bottom: 1em;
 	}
 	.single-header, .single-footer {
@@ -304,7 +310,8 @@ body {
 %no-results {
 	.no-results {
 		@extend .text-center;
-    	margin-top: $padding;
+    	margin: $padding;
+    	margin-bottom: 0;
     	color: $font-color;
 	}
 }

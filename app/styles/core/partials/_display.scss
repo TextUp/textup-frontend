@@ -96,8 +96,15 @@ hr {
     @include v-center(right, 3%);
     @extend .text-right;
 }
+.pull-right-to-edge {
+    @include v-center(right, 0);
+    @extend .text-right;
+}
 .pull-left {
     @include v-center(left, 3%);
+}
+.pull-left-to-edge {
+    @include v-center(left, 0);
 }
 .center {
     position: absolute;

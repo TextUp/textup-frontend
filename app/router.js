@@ -37,10 +37,11 @@ Router.map(function() {
         this.route('tag', {
             path: '/tag/:tag_identifier'
         }, function() {
-            this.route('contact', {
-                path: '/contact/:id'
-            });
-            this.route('many');
+          this.route('contact', {
+              path: '/contact/:id'
+          });
+          this.route('many');
+          this.route('details');
         });
     });
     this.route('admin', function() {

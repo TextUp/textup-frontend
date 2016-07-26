@@ -11,6 +11,10 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 			deserialize: 'records',
 			serialize: false //any changes happen in tag's tagActions
 		},
+		futureMessages: {
+			deserialize: 'records',
+			serialize: false //any changes happen in future messages endpoint
+		},
 		unsortedRecords: {
 			serialize: false //any changes happen at records endpoint
 		},

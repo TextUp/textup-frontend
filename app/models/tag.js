@@ -4,10 +4,13 @@ import {
 	validator,
 	buildValidations
 } from 'ember-cp-validations';
+import RecordModel from '../mixins/record-model';
+import FutureMessageModel from '../mixins/future-message-model';
 
 const {
 	alias,
-	notEmpty
+	notEmpty,
+	equal: eq
 } = Ember.computed,
 	Validations = buildValidations({
 		name: {
@@ -18,7 +21,7 @@ const {
 		}
 	});
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 
 	init: function() {
 		this._super(...arguments);
@@ -34,7 +37,7 @@ export default DS.Model.extend(Validations, {
 
 	name: DS.attr('string'),
 	hexColor: DS.attr('string'),
-	lastRecordActivity: DS.attr('date'),
+	phone: DS.belongsTo('phone'),
 	numMembers: DS.attr('number'),
 
 	// Not attributes
@@ -46,6 +49,7 @@ export default DS.Model.extend(Validations, {
 	// Computed properties
 	// -------------------
 
+	isEmpty: eq('numMembers', 0),
 	hasManualChanges: notEmpty('actions'),
 	identifier: alias('name'),
 	urlIdentifier: Ember.computed('name', function() {

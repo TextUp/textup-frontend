@@ -1,0 +1,16 @@
+{{#multi-toggle selectIndex=(if value 1 0)
+    tabindex=tabindex
+	disabled=disabled
+	wrapAround=wrapAround
+	indicatorClass=indicatorClass as |toggle doRegister|}}
+    {{#multi-toggle/item doRegister=doRegister
+        color=falseColor
+        onSelect=(action 'onFalse')}}
+        {{falseString}}
+    {{/multi-toggle/item}}
+    {{#multi-toggle/item doRegister=doRegister
+        color=trueColor
+        onSelect=(action 'onTrue')}}
+        {{trueString}}
+    {{/multi-toggle/item}}
+{{/multi-toggle}}

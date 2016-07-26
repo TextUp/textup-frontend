@@ -45,10 +45,15 @@
                     </p>
                 </div>
                 {{#if (not team.isDeleted)}}
-                    {{#link-to 'admin.team.edit' classNames='pull-right' tagName='div'}}
-                        <button class="btn btn-plain" type='button'>
-                            <span class="fa fa-pencil"></span>
-                        </button>
+                    {{#link-to 'admin.team.edit'
+                        classNames='pull-right-to-edge full-height'
+                        activeClass='bg-color bg-dark'}}
+                        {{#tool-tipster theme='tooltipster-clean'
+                            title='Edit Team'
+                            tagName='button'
+                            classNames='btn btn-plain btn-expand'}}
+                            <span class="fa fa-sliders"></span>
+                        {{/tool-tipster}}
                     {{/link-to}}
                 {{/if}}
         	{{else}}
@@ -76,29 +81,27 @@
         total=numPeople
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |person|}}
-        <div class="result-item">
-            <div class="row">
-                <div class="contacts-control {{if person.isSelected 'selected'}}"
-                    {{action 'toggleSelected' person preventDefault=false}}>
-                    <span class="fa fa-check center"></span>
-                </div>
-                {{#link-to (if team
-                        'admin.team.person'
-                        'admin.people.person')
-                    person.id
-                    classNames="contacts-info"
-                    tagName="div"}}
-                    <p class="emphasize">
-                        <span class="margin-r-half">
-                            {{person.name}}
-                        </span>
-                        <span class="clear-badge no-space">
-                            {{partial 'partials/staff/indicators'}}
-                        </span>
-                    </p>
-                    <p>{{person.username}}</p>
-                {{/link-to}}
+        <div class="result-item row">
+            <div class="contacts-control {{if person.isSelected 'selected'}}"
+                {{action 'toggleSelected' person preventDefault=false}}>
+                <span class="fa fa-check center"></span>
             </div>
+            {{#link-to (if team
+                    'admin.team.person'
+                    'admin.people.person')
+                person.id
+                classNames="contacts-info"
+                tagName="div"}}
+                <p class="emphasize">
+                    <span class="margin-r-half">
+                        {{person.name}}
+                    </span>
+                    <span class="clear-badge no-space">
+                        {{partial 'partials/staff/indicators'}}
+                    </span>
+                </p>
+                <p>{{person.username}}</p>
+            {{/link-to}}
             {{#if person.teams}}
                 <div class="contacts-tags">
                     {{#each person.teams as |team|}}
@@ -114,7 +117,15 @@
             {{/if}}
         </div>
     {{else}}
-        <div class="no-results">No people match this criteria.</div>
+        {{#if team}}
+            <div class="no-results">
+                No people have been added to
+                <span class="text-bold">{{team.name}}</span>
+                yet.
+            </div>
+        {{else}}
+            <div class="no-results">No people match this criteria.</div>
+        {{/if}}
     {{/infinite-scroll}}
 </div>
 {{outlet}}

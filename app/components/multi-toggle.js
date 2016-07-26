@@ -7,13 +7,13 @@ export default Ember.Component.extend({
 	selectIndex: null,
 	disabled: defaultIfAbsent(false),
 	wrapAround: defaultIfAbsent(true),
+	indicatorClass: defaultIfAbsent('toggle-indicator'),
 
 	classNames: 'multi-toggle',
 	classNameBindings: ['canLeft:has-left', 'canRight:has-right'],
 	canLeft: true,
 	canRight: true,
 
-	indicatorClass: 'toggle-indicator',
 	attributeBindings: ['style', 'tabIndex:tabindex'],
 	_items: defaultIfAbsent([]),
 	$indicators: null,

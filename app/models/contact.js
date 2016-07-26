@@ -7,14 +7,13 @@ import {
 import {
 	validate as validateNumber
 } from '../utils/phone-number';
+import RecordModel from '../mixins/record-model';
+import FutureMessageModel from '../mixins/future-message-model';
 
 const {
-	get,
-	set,
 	computed: {
 		notEmpty,
-		equal: eq,
-		sort
+		equal: eq
 	}
 } = Ember,
 Validations = buildValidations({
@@ -56,7 +55,7 @@ Validations = buildValidations({
 	}
 });
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 	init: function() {
 		this._super(...arguments);
 		this.set('actions', []);
@@ -70,7 +69,6 @@ export default DS.Model.extend(Validations, {
 	// Attributes
 	// ----------
 
-	lastRecordActivity: DS.attr('date'),
 	name: DS.attr('string', {
 		defaultValue: ''
 	}),
@@ -83,30 +81,7 @@ export default DS.Model.extend(Validations, {
 	numbers: DS.attr('collection', {
 		defaultValue: () => []
 	}),
-
 	phone: DS.belongsTo('phone'),
-
-	unsortedRecords: DS.hasMany('record'),
-	uniqueRecords: Ember.computed('unsortedRecords.[]', function() {
-		return DS.PromiseArray.create({
-			promise: new Ember.RSVP.Promise((resolve, reject) => {
-				this.get('unsortedRecords').then((records) => {
-					const idMap = Object.create(null),
-						uniqueRecords = [];
-					records.forEach((record) => {
-						const id = String(get(record, 'id'));
-						if (!get(idMap, id)) {
-							set(idMap, id, true);
-							uniqueRecords.pushObject(record);
-						}
-					});
-					resolve(uniqueRecords);
-				}, reject);
-			})
-		});
-	}),
-	recordsSorting: ['whenCreated:desc'],
-	records: sort('uniqueRecords', 'recordsSorting'),
 
 	// Contact
 	// -------
@@ -128,7 +103,6 @@ export default DS.Model.extend(Validations, {
 	type: 'contact', // for compose menu
 	isSelected: false,
 	actions: null,
-	totalNumRecords: '--',
 
 	// Computed properties
 	// -------------------
@@ -139,11 +113,10 @@ export default DS.Model.extend(Validations, {
 			firstNum = this.get('numbers').objectAt(0);
 		return name ? name : (firstNum ? Ember.get(firstNum, 'number') : 'No Name');
 	}),
-	isShared: notEmpty('sharedBy'),
 
+	isShared: notEmpty('sharedBy'),
 	isSharedDelegate: eq('permission', 'DELEGATE'),
 	isSharedView: eq('permission', 'VIEW'),
-
 	allowEdits: Ember.computed('isShared', 'isSharedDelegate', function() {
 		const shared = this.get('isShared'),
 			delegate = this.get('isSharedDelegate');

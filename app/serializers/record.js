@@ -33,6 +33,9 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		contact: {
 			serialize: false
 		},
+		tag: {
+			serialize: false
+		},
 		receipts: {
 			deserialize: 'records',
 			serialize: false

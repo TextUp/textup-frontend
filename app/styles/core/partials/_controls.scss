@@ -103,32 +103,32 @@
     border-bottom-style: solid;
 
     &.btn-plain {
-        @extend %input-disabled;
+        // @extend %input-disabled;
         border-color: transparent;
         background-color: transparent;
         color: inherit;
 
-        &.btn-danger {
+        &.btn-danger:not(:disabled) {
             color: $danger-color;
         }
-        &.btn-success {
+        &.btn-success:not(:disabled) {
             color: $success-color;
         }
-        &.btn-default {
+        &.btn-default:not(:disabled) {
             color: $brand-color;
         }
     }
-    &:not(.btn-plain) {
+    &:not(.btn-plain):not(:disabled) {
         &.btn-danger {
-            @extend %input-disabled;
+            // @extend %input-disabled;
             @include button-colors($danger-color);
         }
         &.btn-success {
-            @extend %input-disabled;
+            // @extend %input-disabled;
             @include button-colors($success-color);
         }
         &.btn-default {
-            @extend %input-disabled;
+            // @extend %input-disabled;
             @include button-colors($brand-color);
         }
     }
@@ -266,7 +266,7 @@ textarea.form-control {
         &.expand {
             width: auto;
         }
-        &.blend-in .btn {
+        &.blend-in .btn:not(:disabled) {
             @extend %input-decoration;
             color: $font-color;
 

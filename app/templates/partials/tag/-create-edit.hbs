@@ -1,6 +1,7 @@
 <div class="form-element">
     <label for="Tag Name">Tag Name</label>
     {{input class="start-focus form-control"
+        disabled=newTag.isDeleted
     	value=newTag.name
     	type="text"
     	placeholder="Tag Name"
@@ -10,5 +11,6 @@
 </div>
 <div class="form-element">
     <label for="Tag Color">Tag Color</label>
-    {{color-control color=newTag.hexColor}}
+    {{color-control color=newTag.hexColor
+        disabled=newTag.isDeleted}}
 </div>

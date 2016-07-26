@@ -1,0 +1,195 @@
+{{#if isMakingCall}}
+    <div class="overlay text-big">
+        <div class="center text-center xs-9-row-10">
+            <h5 class='text-white'>Call in progress...</h5>
+            <p class='text-lighten'>Connecting to your personal phone at</p>
+            <p class="text-bold text-lighten">
+                {{phone-number authManager.authUser.personalPhoneNumber}}
+            </p>
+            <div class="margin-t text-white">
+                <button class="btn btn-plain" type='button'
+                    onclick={{action (mut isMakingCall) false}}>
+                    Dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+{{/if}}
+<div class="contact-record
+    {{if contact (if (not contact.hasFutureMsgs) 'no-future-messages')
+        (if (not tag.hasFutureMsgs) 'no-future-messages')}}">
+    {{#infinite-scroll classNames='record-body bg-color bg-dark'
+        doRegister=(action (mut _recordsList))
+        containerClass='bg-color'
+        direction='up'
+        data=records
+        total=totalNumRecords
+        doLoad=(action 'loadMore')
+        doRefresh=(action 'refresh') as |record|}}
+        <div class="record-item
+            {{if record.outgoing 'outgoing' 'incoming'}}
+            {{if record.hasVoicemail 'voicemail'}}">
+            {{#if record.outgoing}}
+                {{#if record.isText}}
+                    {{partial 'partials/record/outgoing-text'}}
+                {{else}}
+                    {{partial 'partials/record/outgoing-call'}}
+                {{/if}}
+            {{else}}
+                {{partial 'partials/record/incoming'}}
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="no-results">
+            <p>Nothing in the record yet.</p>
+            <p>
+                Connect with
+                <span class="text-bold">
+                    {{phone-number (if tag tag.identifier contact.identifier)}}
+                </span>
+                to see this record fill up.
+            </p>
+        </div>
+    {{/infinite-scroll}}
+    <div class="future-messages" {{action 'toggleDetailSlideout'
+        'slideouts/future-messages/list'
+        (if contact 'main/contacts/contact' 'main/tag/details')}}>
+        <div class="center text-ellipsis">
+            {{#if (and contact.nextFutureFire.isFulfilled
+                contact.nextFutureFire.content)}}
+                Next scheduled message in
+                <span class="text-bold">
+                    {{moment-from-now contact.nextFutureFire.content
+                        interval=1000 hideSuffix=true}}
+                </span>
+                <span class="display-l display-m">
+                    on
+                    <span class="text-bold">
+                        {{moment-format contact.nextFutureFire.content '
+                            ddd MMM D h:mm A'}}
+                    </span>
+                </span>
+            {{else if (and tag.nextFutureFire.isFulfilled
+                tag.nextFutureFire.content)}}
+                Next scheduled message in
+                <span class="text-bold">
+                    {{moment-from-now tag.nextFutureFire.content
+                        interval=1000 hideSuffix=true}}
+                </span>
+                <span class="display-l display-m">
+                    on
+                    <span class="text-bold">
+                        {{moment-format tag.nextFutureFire.content '
+                            ddd MMM D h:mm A'}}
+                    </span>
+                </span>
+            {{else}}
+                Scheduled Messages
+            {{/if}}
+        </div>
+    </div>
+</div>
+{{#hide-away tabindex=false
+    disabled=(and (not contact) tag.isEmpty)
+    onOpen=_recordsList.actions.resetPosition
+    allowedTriggerSelectors='.form-control'
+    clickOutToClose=true
+    bodyClickClose=false
+    animation='fade'
+    hideTriggerOnOpen=true
+    triggerClass='contact-controls'
+    bodyClass='contact-controls floating'
+    bodyFocusOnOpenSelector='textarea' as |hideAway|}}
+    {{textarea containerClass='send-text-field'
+        class='form-control'
+        maxlength='320'
+        remaining='top'
+        autoresize=true
+        rows='1'
+        value=textContents
+        submitOnNewline=true
+        action=(if textContents (route-action 'sendMessage' textContents (if contact contact tag)
+                (action (mut textContents) null)
+                hideAway.actions.close
+                _recordsList.actions.resetPosition))}}
+    {{#async-button classNames='btn btn-default'
+        disableWhen=(not textContents)
+        action=(route-action 'sendMessage' textContents (if contact contact tag)
+            (action (mut textContents) null)
+            hideAway.actions.close
+            _recordsList.actions.resetPosition) as |btn|}}
+        {{#if (eq btn.textState 'pending')}}
+            <span class="fa fa-spin fa-circle-o-notch"></span>
+        {{else if (eq btn.textState 'rejected')}}
+            <span class="fa fa-exclamation-triangle"></span>
+        {{else}}
+            <span class='fa fa-paper-plane-o'></span>
+        {{/if}}
+    {{/async-button}}
+{{else}}
+    <div class='input-group'>
+        {{#if textContents}}
+            <span class="input-group-addon align-top blend-in">
+                <button class="btn" type='button'
+                    onclick={{action (mut textContents) null}}>
+                    <span class="fa fa-times"></span>
+                </button>
+            </span>
+        {{else}}
+            <span class="input-group-addon align-top">
+                {{#hide-away/dropdown horizontal='left'
+                    disabled=(and (not contact) tag.isEmpty)}}
+                    <li class='dropdown-divider'>Outgoing</li>
+                    <li tabindex='0' class='dropdown-item'
+                        {{action 'toggleDetailSlideout'
+                            'slideouts/future-messages/create'
+                            (if contact 'main/contacts/contact' 'main/tag/details')}}>
+                        Schedule Message
+                    </li>
+                    {{#if contact}}
+                        <li tabindex='0' class='dropdown-item'
+                            onclick={{route-action 'makeCall' contact
+                                (action (mut isMakingCall) true)
+                                _recordsList.actions.resetPosition}}>
+                            Make Call
+                        </li>
+                    {{/if}}
+                {{else}}
+                    <button class='btn' type='button'>
+                        <span class='fa fa-plus'></span>
+                    </button>
+                {{/hide-away/dropdown}}
+            </span>
+        {{/if}}
+        {{#if (and (not contact) tag.isEmpty)}}
+            <div class="form-control text-ellipsis form-disabled">
+                Add contacts to
+                <span class="text-bold">
+                    {{tag.name}}
+                </span>
+                to send messages.
+            </div>
+        {{else}}
+            {{input class='form-control text-ellipsis'
+                readonly=true
+                value=textContents}}
+        {{/if}}
+        {{#if textContents}}
+            <span class="input-group-addon align-top">
+                {{#async-button classNames='btn btn-default'
+                    disabledWhen=(and (not contact) tag.isEmpty)
+                    action=(route-action 'sendMessage' textContents (if contact contact tag)
+                        (action (mut textContents) null)
+                        _recordsList.actions.resetPosition) as |btn|}}
+                    {{#if (eq btn.textState 'pending')}}
+                        <span class="fa fa-spin fa-circle-o-notch"></span>
+                    {{else if (eq btn.textState 'rejected')}}
+                        <span class="fa fa-exclamation-triangle"></span>
+                    {{else}}
+                        <span class='fa fa-paper-plane-o'></span>
+                    {{/if}}
+                {{/async-button}}
+            </span>
+        {{/if}}
+    </div>
+{{/hide-away}}

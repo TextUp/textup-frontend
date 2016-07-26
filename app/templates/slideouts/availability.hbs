@@ -32,10 +32,19 @@
         </div>
 	</div>
     {{#if authManager.authUser.schedule.isFulfilled}}
-        <div class="form-element">
-            {{tab-container/availability
-                schedule=(mut authManager.authUser.schedule.content)
-                otherStaffs=stateManager.teamMembers}}
+        <div class="display-xs display-s display-m">
+            <div class="form-element pad-l pad-r">
+                {{tab-container/availability
+                    schedule=(mut authManager.authUser.schedule.content)
+                    otherStaffs=stateManager.teamMembers}}
+            </div>
+        </div>
+        <div class="display-l">
+            <div class="form-element">
+                {{tab-container/availability
+                    schedule=(mut authManager.authUser.schedule.content)
+                    otherStaffs=stateManager.teamMembers}}
+            </div>
         </div>
     {{/if}}
     {{#if (or model.isDirty authManager.authUser.isDirty)}}

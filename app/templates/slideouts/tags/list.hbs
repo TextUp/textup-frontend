@@ -40,39 +40,24 @@
          <ul class="result-list">
             {{#if model.phone.isFulfilled}}
                 {{#each model.phone.content.tags as |tag|}}
-                    {{#hide-away animation='slide'
-                        tabindex=false
-                        clickOutToClose=false
-                        bodyFocusOnOpenSelector='.start-focus'
-                        allowedTriggerSelectors='.pull-right' as |dropdown|}}
-                        {{partial 'partials/tag/edit-with-controls'}}
-                    {{else}}
-                        <li class="result-item">
-                            <div class="row">
-                                {{#link-to 'main.tag' tag
-                                    tagName='div'
-                                    classNames='control-text'
-                                    tabindex='0'}}
-                                    <div class="horizontal-items clickable pad-all">
-                                        {{preview-badge color=tag.hexColor
-                                            onlyShowFull=true
-                                            content=tag.name}}
-                                        <span class="badge">
-                                            {{tag.numMembers}}
-                                            <span class="fa fa-user"></span>
-                                        </span>
-                                    </div>
-                                {{/link-to}}
-                                {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
-                                    <div class="pull-right">
-                                        <button class="btn btn-plain" type='button'>
-                                            <span class="fa fa-pencil"></span>
-                                        </button>
-                                    </div>
-                                {{/if}}
-                            </div>
-                        </li>
-                    {{/hide-away}}
+                    <li class="result-item">
+                        <div class="row">
+                            {{#link-to 'main.tag' tag
+                                tagName='div'
+                                classNames='control-text'
+                                tabindex='0'}}
+                                <div class="horizontal-items clickable pad-all">
+                                    {{preview-badge color=tag.hexColor
+                                        onlyShowFull=true
+                                        content=tag.name}}
+                                    <span class="badge">
+                                        {{tag.numMembers}}
+                                        <span class="fa fa-user"></span>
+                                    </span>
+                                </div>
+                            {{/link-to}}
+                        </div>
+                    </li>
                 {{/each}}
             {{/if}}
         </ul>

@@ -211,21 +211,15 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		// Communications
 		// --------------
 
-		sendMessage: function(msg, recipients, then = undefined) {
+		sendMessage: function(msg, recipients, ...then) {
 			return this.get('dataHandler')
 				.sendMessage(msg, recipients)
-				.then(() => {
-					this.notifications.success('Message successfully sent.');
-					callIfPresent(then);
-				});
+				.then(() => then.forEach(callIfPresent));
 		},
-		makeCall: function(recipient, then = undefined) {
+		makeCall: function(recipient, ...then) {
 			return this.get('dataHandler')
 				.makeCall(recipient)
-				.then(() => {
-					this.notifications.success('Successfully started call.');
-					callIfPresent(then);
-				});
+				.then(() => then.forEach(callIfPresent));
 		},
 	},
 

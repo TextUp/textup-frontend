@@ -2,31 +2,43 @@
 
 <div class="details full-height">
 	<div class="section-header">
-		<span class="pull-left">
-			<div class="horizontal-items">
-				<div class="clear-badge display-xs display-s no-space">
-					{{#link-to 'admin.team'}}
-						<span class="pad-all">
-							<span class="fa fa-chevron-left"></span>
-						</span>
-		        	{{/link-to}}
-				</div>
-				<div class="clear-badge no-space">
-					<h5>{{team.name}}</h5>
-				</div>
-				<div class="badge margin-l">
-					{{team.numMembers}}
-					<span class="fa fa-user"></span>
-				</div>
+		<div class="pull-left horizontal-items s-2-row-3">
+			<div class="clear-badge display-xs display-s no-space">
+				{{#link-to (if team.isDeleted 'admin.people' 'admin.team')}}
+					<span class="pad-all">
+						<span class="fa fa-chevron-left"></span>
+					</span>
+	        	{{/link-to}}
 			</div>
-		</span>
-		<span class="pull-right pad-r display-m display-l">
-			{{#link-to 'admin.team'}}
-				<span class="pad-all">
-					<span class="fa fa-times"></span>
-				</span>
-        	{{/link-to}}
-		</span>
+			<div class="clear-badge no-space">
+				<h5>{{team.name}}</h5>
+			</div>
+			<div class="badge margin-l">
+				{{team.numMembers}}
+				<span class="fa fa-user"></span>
+			</div>
+			<span class="no-space clear-badge display-m display-l">
+                <button class="btn btn-danger btn-plain" type='button'
+                    onclick={{route-action 'markForDelete' team}}>
+                    <span class="fa fa-trash"></span>
+                </button>
+			</span>
+		</div>
+		<div class="pull-right horizontal-items s-row-3">
+			<span class="no-space clear-badge display-xs display-s">
+                <button class="btn btn-danger btn-plain" type='button'
+                    onclick={{route-action 'markForDelete' team}}>
+                    <span class="fa fa-trash"></span>
+                </button>
+			</span>
+			<span class="no-space clear-badge display-m display-l">
+				{{#link-to (if team.isDeleted 'admin.people' 'admin.team')}}
+					<span class="pad-all">
+						<span class="fa fa-times"></span>
+					</span>
+	        	{{/link-to}}
+			</span>
+		</div>
     </div>
     {{#if (and team.isDeleted team.hasDirtyAttributes)}}
 		<div class="section-body bg-color">
@@ -41,9 +53,8 @@
 			        </div>
 			        <div class="clear-badge no-space">
 			        	{{async-button classNames='btn btn-plain btn-danger'
-		                    disableWhen=(not (v-get newContact 'isValid'))
-		                    action=(route-action 'deleteTeam' team)
-		                    default='Delete'
+		                    action=(route-action 'persist' team)
+		                    default='Confirm Delete'
 		                    pending='Deleting...'}}
 			        </div>
 			    </div>

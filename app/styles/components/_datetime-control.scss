@@ -1,0 +1,6 @@
+.datetime-control {
+	@extend .row;
+	.input-group > .input-group-text-display {
+	    font-size: 1em;
+	}
+}

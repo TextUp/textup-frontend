@@ -1,0 +1,30 @@
+{{#if showDate}}
+	<div class="{{if showBoth 'xs-row-2 pad-r-half'}}">
+	    <div class="input-group">
+	        <span class="input-group-text-display {{if disabled 'form-disabled'}}">
+	            <span class="fa fa-calendar-o"></span>
+	        </span>
+	        {{pick-a-date classNames='form-control'
+	        	disabled=(readonly disabled)
+	            date=(readonly _value)
+	            on-selected=(action 'onSelect')
+	            placeholder=datePlaceholder
+	            options=(readonly dateOptions)}}
+	    </div>
+	</div>
+{{/if}}
+{{#if showTime}}
+	<div class="{{if showBoth 'xs-row-2 pad-l-half'}}">
+	    <div class="input-group">
+	        <span class="input-group-text-display {{if disabled 'form-disabled'}}">
+	            <span class="fa fa-clock-o"></span>
+	        </span>
+	        {{pick-a-time classNames='form-control'
+	        	disabled=(readonly disabled)
+	            date=(readonly _value)
+	            on-selected=(action 'onSelect')
+	            placeholder=timePlaceholder
+	            options=(readonly (hash format=timeFormat))}}
+	    </div>
+	</div>
+{{/if}}
