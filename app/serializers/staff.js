@@ -29,6 +29,9 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, Phone, {
 		if (!json.password) {
 			delete json.password;
 		}
+		if (!json.lockCode) {
+			delete json.lockCode;
+		}
 		return json;
 	},
 });

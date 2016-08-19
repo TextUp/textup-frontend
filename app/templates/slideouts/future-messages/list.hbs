@@ -5,7 +5,7 @@
     <ul class="result-list">
         {{#each futureMsgs as |futureMsg|}}
             {{#hide-away tagName='li'
-                disabled=futureMsg.isDone
+                disabled=(or futureMsg.isDone (and contact (not contact.allowEdits)))
                 animation='slide'
                 tabindex=false
                 clickOutToClose=false
@@ -20,7 +20,7 @@
                 </div>
             {{else}}
                 <div class="row pad-all bg-color">
-                    {{#if futureMsg.isDone}}
+                    {{#if (or futureMsg.isDone (and contact (not contact.allowEdits)))}}
                         <div class="text-bold text-wrap">
                             {{futureMsg.message}}
                         </div>

@@ -6,7 +6,7 @@ export default Ember.Route.extend(Public, {
 	model: function() {
 		return Ember.$.ajax({
 			type: 'GET',
-			url: `${config.host}/v1/public/organizations`
+			url: `${config.host}/v1/public/organizations?status[]=approved`
 		}).then((data) => {
 			const orgs = data.organizations;
 			return orgs ? orgs.map((org) => {

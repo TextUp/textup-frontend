@@ -67,8 +67,10 @@
                 {{#with authManager.authUser as |staff|}}
                     {{partial 'partials/staff/settings'}}
                     {{#if staff.hasDirtyAttributes}}
+                        {{!-- separate if loops to prevent multiple-set deprecation --}}
                         {{#if (and (not usernameDropdown.isOpen)
-                            (not passwordDropdown.isOpen))}}
+                            (not passwordDropdown.isOpen)
+                            (not codeDropdown.isOpen))}}
                             <div class="form-element text-center">
                                 <button class="btn" type='button'
                                     onclick={{route-action 'revert' staff}}>
@@ -83,6 +85,7 @@
                         {{/if}}
                     {{/if}}
                     <hr>
+                    {{partial 'partials/staff/code-with-confirm'}}
                     {{partial 'partials/staff/username-with-confirm'}}
                     {{partial 'partials/staff/password-with-confirm'}}
                 {{/with}}

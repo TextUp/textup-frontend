@@ -1,0 +1,123 @@
+// State-specific styles
+// ---------------------
+
+@mixin lock-control-message($namespace) {
+	.dial-pad {
+		.dial-pad-item {
+			visibility: hidden;
+		}
+		.#{$namespace}-message {
+			display: block;
+		}
+	}
+}
+.lock-control.lock-control-success {
+	@include lock-control-message('success');
+}
+.lock-control.lock-control-working {
+	@include lock-control-message('working');
+}
+.lock-control.lock-control-locked {
+	@include lock-control-message('locked');
+}
+.form-error .lock-control, .lock-control.form-error {
+	.indicator {
+		border-color: tint($danger-color, 2);
+		background-color: tint($danger-color, 4);
+		&.active {
+			border-color: $danger-color;
+			background-color: $danger-color;
+		}
+	}
+	.dial-pad .dial-pad-item {
+		color: $font-color;
+	}
+}
+.form-disabled .lock-control, .lock-control.form-disabled {
+	.indicator {
+		border-color: $border-color;
+		background-color: tint($border-color);
+		&.active {
+			border-color: shade($border-color);
+			background-color: shade($border-color);
+		}
+	}
+	.dial-pad .dial-pad-item {
+		cursor: not-allowed;
+
+		&:hover, &:focus, &:active {
+			border-bottom: 1px solid $border-color;
+			background-color: transparent;
+			opacity: 1;
+			color: $font-color;
+		}
+	}
+}
+
+// General styles
+// --------------
+
+.lock-control {
+	text-align: center;
+	padding-top: $padding;
+	padding-bottom: $padding;
+
+	.indicator {
+	    margin: 0 (0.2 * $padding);
+	    height: $padding;
+	    width: $padding;
+	    border: 1px solid $border-color;
+		background-color: shade($bg-color);
+
+		&.active {
+			border-color: $brand-color;
+			background-color: $brand-color;
+		}
+	}
+	.dial-pad {
+		@extend %clearfix;
+		@extend %border-box;
+		position: relative;
+		width: 100%;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		padding-top: $padding;
+
+		.dial-pad-item {
+			@extend .text-ellipsis;
+			@extend .text-center;
+			@extend .text-bold;
+			@extend %border-box;
+			@extend .no-select;
+			@extend .clickable;
+			position: relative;
+			padding: $padding ($padding * 2);
+			margin: $padding * 0.5;
+			background-color: transparent;
+			border-bottom: 1px solid $border-color;
+
+			&:hover, &:focus, &:active {
+				border-radius: $border-radius;
+				border-bottom: 1px solid transparent;
+			}
+			&:hover {
+	            background-color: shade($bg-color, 1.2);
+	            opacity: 0.8;
+	        }
+			&:focus, &:active {
+				color: white;
+				background-color: shade($brand-color, 2);
+				opacity: 0.8;
+			}
+		}
+		.dial-pad-message {
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}

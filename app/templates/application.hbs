@@ -1,12 +1,37 @@
 {{title "TextUp"}}
 
-{{#liquid-if showSlideout class='animate-slide-from-left animated-overflow'}}
-	{{outlet 'slideout'}}
-{{/liquid-if}}
 {{notification-container notifications=notifications}}
-
+{{#liquid-if showSlideout class='animate-slide-from-left animated-overflow'}}
+	<div class="{{if isLocked 'hidden'}}">
+		{{outlet 'slideout'}}
+	</div>
+{{/liquid-if}}
 <div id="container">
-	{{liquid-outlet class='main-outlet'}}
+	{{#if isLocked}}
+		<div class="single-container single-container-small">
+			<div class="single-header">
+				<img class="brand" src='assets/images/logo.png' />
+		        <h3 class='text-white'>Enter lock code</h3>
+			</div>
+			<div class="single-body">
+				{{lock-control val=lockCode
+					lockTarget=authManager.authUser.username
+					numDigits=4
+					doUpdate=(route-action 'updateLockCode')
+					doSubmit=(route-action 'verifyLockCode')}}
+			</div>
+			<div class="single-footer">
+				<p class="emphasize text-white">Not {{authManager.authUser.name}}?</p>
+		        <h4>
+		        	<a href="" onclick={{route-action 'logout'}} class='text-white'>
+		        		Log Out
+		        	</a>
+		    	</h4>
+			</div>
+		</div>
+	{{else}}
+		{{liquid-outlet class='main-outlet'}}
+	{{/if}}
 </div>
 
 {{loading-slider isLoading=loading}}

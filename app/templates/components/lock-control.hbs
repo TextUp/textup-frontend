@@ -1,0 +1,68 @@
+<div class='row text-center pad-l-double pad-r-double'>
+	{{#each _indicators as |isActive|}}
+		<span class="indicator {{if isActive 'active'}}"></span>
+	{{/each}}
+</div>
+<ul class="dial-pad">
+	<li class="dial-pad-message success-message">
+		<div class="center text-bold">
+			{{successText}}
+		</div>
+	</li>
+	<li class="dial-pad-message working-message">
+		<div class="center">
+			<div class="horizontal-items">
+				<span class='clear-badge'>{{workingText}}</span>
+				<span class="clear-badge">
+					<span class="fa fa-circle-o-notch fa-spin"></span>
+				</span>
+			</div>
+		</div>
+	</li>
+	<li class="dial-pad-message locked-message">
+		<div class="center text-bold">
+			{{lockedText}}
+			{{#if _whenUnlock}}
+				Please try again {{moment-from-now _whenUnlock interval=1000}}.
+			{{/if}}
+		</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="1">
+		<div class="dial-pad-item">1</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="2">
+		<div class="dial-pad-item">2</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="3">
+		<div class="dial-pad-item">3</div>
+	</li>
+	<div class="xs-new-row"></div>
+	<li class="xs-row-3 dial-pad-control" data-value="4">
+		<div class="dial-pad-item">4</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="5">
+		<div class="dial-pad-item">5</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="6">
+		<div class="dial-pad-item">6</div>
+	</li>
+	<div class="xs-new-row"></div>
+	<li class="xs-row-3 dial-pad-control" data-value="7">
+		<div class="dial-pad-item">7</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="8">
+		<div class="dial-pad-item">8</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="9">
+		<div class="dial-pad-item">9</div>
+	</li>
+	<div class="xs-new-row"></div>
+	<li class="xs-row-3 dial-pad-remove">
+		<div class="dial-pad-item">
+			<span class="fa fa-undo"></span>
+		</div>
+	</li>
+	<li class="xs-row-3 dial-pad-control" data-value="0">
+		<div class="dial-pad-item">0</div>
+	</li>
+</ul>

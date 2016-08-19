@@ -40,7 +40,7 @@
                 action=(route-action 'validate' storedUsername newUPassword
                     (route-action 'persist' staff
                         hideAway.actions.close
-                        (if (eq storedUsername (unbound staff.username))
+                        (if (not (eq storedUsername (unbound staff.username)))
                             (route-action 'logout'))))
                 default='Update'
                 pending='Updating...'}}

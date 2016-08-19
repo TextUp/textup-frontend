@@ -80,9 +80,11 @@
 						{{partial 'partials/staff/edit'}}
 					{{/with}}
 					{{#if person.isDirty}}
-                        {{#if (and (not usernameDropdown.isOpen)
-                        	(not passwordDropdown.isOpen))}}
-							<div class="pad-t text-center">
+						{{!-- separate if loops to prevent multiple-set deprecation --}}
+                    	{{#if (and (not usernameDropdown.isOpen)
+	                    	(not passwordDropdown.isOpen)
+	                    	(not codeDropdown.isOpen))}}
+                    		<div class="pad-t text-center">
 						        <button class="btn" type='button'
 						        	onclick={{route-action 'revert' person
 						        		(action (mut person.phoneAction) null)}}>
@@ -94,12 +96,13 @@
 				                    default='Update'
 				                    pending='Updating...'}}
 							</div>
-                        {{/if}}
+                    	{{/if}}
 					{{/if}}
 				</div>
 				<hr>
 				<div class="pad-l pad-r pad-b">
 					{{#with person as |staff|}}
+						{{partial 'partials/staff/code-with-confirm'}}
 						{{partial 'partials/staff/username-with-confirm'}}
 						{{partial 'partials/staff/password-with-confirm'}}
 					{{/with}}

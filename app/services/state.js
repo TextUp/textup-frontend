@@ -54,8 +54,8 @@ export default Ember.Service.extend({
 	}),
 	trackLocation: Ember.observer('routing.router.url', function() {
 		Ember.run.next(this, function() {
-			this.get('storage').trySet(localStorage,
-				'currentUrl', this.get('routing.router.url'));
+			this.get('storage').trySet(localStorage, 'currentUrl',
+				this.get('routing.router.url'));
 		});
 	}),
 

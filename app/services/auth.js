@@ -44,7 +44,7 @@ export default Ember.Service.extend(Ember.Evented, {
 	},
 	willDestroy: function() {
 		this._super(...arguments);
-		this.get('storage').off('updated', this);
+		this.get('storage').off(config.events.storage.updated, this);
 	},
 
 	// Methods
@@ -58,7 +58,21 @@ export default Ember.Service.extend(Ember.Evented, {
 			if (!username || !password) {
 				return reject();
 			}
-			this._sendCredentials(username, password).then(resolve, reject);
+			this._sendCredentials('validate', {
+				username: username,
+				password: password
+			}).then(resolve, reject);
+		});
+	},
+	validateLockCode: function(username, code) {
+		return new Ember.RSVP.Promise((resolve, reject) => {
+			if (!username || !code) {
+				return reject();
+			}
+			this._sendCredentials('validate', {
+				username: username,
+				lockCode: code
+			}).then(resolve, reject);
 		});
 	},
 	login: function(username, password, storeCredentials = false) {
@@ -66,7 +80,10 @@ export default Ember.Service.extend(Ember.Evented, {
 			if (!username || !password) {
 				return reject();
 			}
-			this._sendCredentials(username, password).then((data) => {
+			this._sendCredentials(`login?timezone=${this.get('timezone')}`, {
+				username: username,
+				password: password
+			}).then((data) => {
 				this.get('storage').set('persist', storeCredentials);
 				const store = this.get('store'),
 					staff = store.push(store.normalize('staff', data.staff));
@@ -160,15 +177,12 @@ export default Ember.Service.extend(Ember.Evented, {
 			this.logout();
 		}
 	},
-	_sendCredentials: function(username, password) {
+	_sendCredentials: function(endpoint, payload) {
 		return Ember.$.ajax({
 			type: 'POST',
-			url: `${config.host}/login?timezone=${this.get('timezone')}`,
+			url: `${config.host}/${endpoint}`,
 			contentType: 'application/json',
-			data: JSON.stringify({
-				username: username,
-				password: password
-			})
+			data: JSON.stringify(payload)
 		});
 	},
 	_doSetup: function() {
@@ -197,7 +211,7 @@ export default Ember.Service.extend(Ember.Evented, {
 					// the token with an updated authToken. If we didn't update our value
 					// for the token, then we will restore the outdated authToken
 					this._doAuthSuccess(this.get('token'), this.get('refreshToken'), staff);
-					storage.on('updated', this, function() {
+					storage.on(config.events.storage.updated, this, function() {
 						this._handleStorageChange();
 					}.bind(this));
 					resolve();

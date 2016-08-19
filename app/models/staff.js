@@ -28,6 +28,16 @@ const {
 				})
 			]
 		},
+		lockCode: {
+			description: 'Lock Code',
+			validators: [
+				validator('length', {
+					is: 4,
+					allowNone: true,
+					allowBlank: true
+				})
+			]
+		},
 		email: {
 			description: 'Email',
 			validators: [
@@ -71,6 +81,10 @@ export default DS.Model.extend(Validations, {
 	name: DS.attr('string'),
 	// usually blank, for account creation or password change
 	password: DS.attr('string', {
+		defaultValue: ''
+	}),
+	// usually blank, for account creation or lockCode change
+	lockCode: DS.attr('string', {
 		defaultValue: ''
 	}),
 	email: DS.attr('string'),

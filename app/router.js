@@ -21,9 +21,6 @@ Router.map(function() {
     });
     this.route('setup');
 
-    // Auth
-    // ----
-
     this.route('none');
     this.route('main', {
         path: '/main/:main_identifier'
@@ -37,11 +34,11 @@ Router.map(function() {
         this.route('tag', {
             path: '/tag/:tag_identifier'
         }, function() {
-          this.route('contact', {
-              path: '/contact/:id'
-          });
-          this.route('many');
-          this.route('details');
+            this.route('contact', {
+                path: '/contact/:id'
+            });
+            this.route('many');
+            this.route('details');
         });
     });
     this.route('admin', function() {

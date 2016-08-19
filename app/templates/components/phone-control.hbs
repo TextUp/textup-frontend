@@ -4,7 +4,7 @@
 		    <span class="input-group-text-display">(</span>
 		    {{!-- numeric input mode allows for number keyboard on mobile  --}}
 		    {{!-- text type so that the up/down arrows don't show up on desktop --}}
-		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    {{input type="tel" pattern="[0-9]*"
 		    	placeholder="###"
 		    	tabindex='-1'
 		    	class="form-control text-center"
@@ -13,7 +13,7 @@
 		    	key-up=(action 'validateInputAndAdjustFocus' 'first')
 		    	disabled=(if (not allowChanges) 'disabled')}}
 		    <span class="input-group-text-display">)</span>
-		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    {{input type="tel" pattern="[0-9]*"
 		    	tabindex='-1'
 		    	placeholder="###"
 		    	class="form-control text-center"
@@ -22,7 +22,7 @@
 		    	key-up=(action 'validateInputAndAdjustFocus' 'second')
 		    	disabled=(if (not allowChanges) 'disabled')}}
 		    <span class="input-group-text-display">-</span>
-		    {{input type="number" pattern="[0-9]*" inputmode="numeric"
+		    {{input type="tel" pattern="[0-9]*"
 		    	tabindex='-1'
 		    	placeholder="####"
 		    	class="form-control text-center"

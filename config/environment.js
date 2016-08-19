@@ -29,6 +29,9 @@ module.exports = function(environment) {
         socket: {
             authKey: '931ddcc6c5780a68022f'
         },
+        lock: {
+            lockOnHidden: true,
+        },
         events: {
             auth: {
                 success: 'authSuccess',
@@ -36,14 +39,21 @@ module.exports = function(environment) {
             },
             storage: {
                 updated: 'storageUpdated'
+            },
+            visibility: {
+                change: "visibilityChange",
+                visible: "visibilityVisible",
+                hidden: "visibilityHidden"
             }
         }
     };
 
     if (environment === 'development') {
-        ENV.host = "https://5e6aa46b.ngrok.io";
-        // ENV.host = "https://dev.textup.org";
+        // ENV.host = "https://5e6aa46b.ngrok.io";
+        ENV.host = "https://dev.textup.org";
         // ENV.host = "https://v2.textup.org";
+
+        // ENV.lock.lockOnHidden = false;
         ENV.manifest = {
             enabled: true
         };

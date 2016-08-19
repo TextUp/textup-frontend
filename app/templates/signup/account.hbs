@@ -57,6 +57,16 @@
                 <p class="form-error">Passwords must match.</p>
             {{/if}}
         </div>
+        <div class='form-element no-space'>
+            <label for='Lock Code' class='control-label'>Lock Code</label>
+            {{lock-control val=staff.lockCode
+                lockOnMultipleFailure=false
+                numDigits=4
+                doUpdate=(action (mut staff.lockCode))}}
+        </div>
+        {{#if (v-get staff 'lockCode' 'isInvalid')}}
+            <p class="form-error">{{v-get staff 'lockCode' 'message'}}</p>
+        {{/if}}
     </div>
 
     <div class="single-body-footer text-center">

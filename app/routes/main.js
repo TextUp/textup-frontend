@@ -79,6 +79,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		},
 		willTransition: function() {
 			this.controller.set('_transitioning', true);
+			return true;
 		},
 
 		// Slideout
