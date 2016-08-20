@@ -21,7 +21,8 @@ export default Ember.Route.extend({
 				name,
 				username,
 				email,
-				password
+				password,
+				lockCode
 			} = data.toJSON(),
 				org = this.controller.get('selected'),
 				onFail = (failure) => {
@@ -35,7 +36,8 @@ export default Ember.Route.extend({
 						name: name,
 						username: username,
 						password: password,
-						email: email
+						email: email,
+						lockCode: lockCode
 					}
 				};
 			// build org based on if new or existing
