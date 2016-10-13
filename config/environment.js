@@ -5,7 +5,7 @@ module.exports = function(environment) {
         modulePrefix: 'textup-frontend',
         environment: environment,
         apiKeys: {
-            mapbox: 'pk.eyJ1IjoiZXJpY2JhaSIsImEiOiJjaWdwMXdhMWwwMGhxc3hrbm44dzdwaGFzIn0.MI2T3IHOtoE3s7ABwbDXfw'
+            mapbox: 'pk.eyJ1IjoiZXJpY2JhaSIsImEiOiJjaWdwMXdhMWwwMGhxc3hrbm44dzdwaGFzIn0.MI2T3IHOtoE3s7ABwbDXfw',
         },
         baseURL: '/',
         locationType: 'hash',

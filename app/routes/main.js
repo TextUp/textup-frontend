@@ -222,6 +222,13 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 				.makeCall(recipient)
 				.then(() => then.forEach(callIfPresent));
 		},
+
+		// Feedback
+		// --------
+
+		cleanFeedback: function() {
+			this.controller.set('feedbackMessage', null);
+		}
 	},
 
 	// Helpers

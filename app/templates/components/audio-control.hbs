@@ -1,24 +1,30 @@
 <div class="input-group">
 	<div class="input-group-addon">
-		{{#if _isPlaying}}
-			<button tabindex='0' type="button" class="btn btn-plain"
-				{{action 'pause'}}>
-				{{#if _isLoading}}
-					<span class="fa fa-circle-o-notch fa-spin"></span>
-				{{else}}
-					<span class="fa fa-pause"></span>
-				{{/if}}
-			</button>
+		{{#if (and hasSource (not _hasError))}}
+			{{#if _isPlaying}}
+				<button tabindex='0' type="button" class="btn btn-plain"
+					{{action 'pause'}}>
+					{{#if _isLoading}}
+						<span class="fa fa-circle-o-notch fa-spin"></span>
+					{{else}}
+						<span class="fa fa-pause"></span>
+					{{/if}}
+				</button>
+			{{else}}
+				<button tabindex='0' type="button" class="btn btn-plain"
+					{{action 'play'}}>
+					<span class="fa fa-play"></span>
+				</button>
+			{{/if}}
 		{{else}}
-			<button tabindex='0' type="button" class="btn btn-plain"
-				{{action 'play'}}>
-				<span class="fa fa-play"></span>
+			<button tabindex='0' type="button" class="btn btn-plain" disabled='true'>
+				<span class="fa fa-times"></span>
 			</button>
 		{{/if}}
 	</div>
 	<div class="input-group-element">
 		<div class="audio-progress-bar">
-			{{#if (or hasSource (not _hasError))}}
+			{{#if (and hasSource (not _hasError))}}
 				<div class="audio-loaded" style='width:{{_percentBuffered}};'></div>
 				<span class="time-label">{{_durationDisplay}}</span>
 				<div class="audio-progress" style='width:{{_percentComplete}};'>
@@ -27,10 +33,17 @@
 			{{else}}
 				<p class="pad-l control-text text-bold">
 					{{#if hasBlock}}
-						{{yield publicAPI}}
+						{{yield publicAPI _audio.error}}
+					{{else if (eq _audio.error.code 1)}}
+						User canceled loading
+					{{else if (eq _audio.error.code 2)}}
+						Could not download
+					{{else if (eq _audio.error.code 3)}}
+						Could not decode
+					{{else if (eq _audio.error.code 4)}}
+						Unsupported format
 					{{else}}
 						Cannot play audio
-						<span class="fa fa-frown-o"></span>
 					{{/if}}
 				</p>
 			{{/if}}

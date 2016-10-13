@@ -20,6 +20,8 @@ export default Ember.Controller.extend({
 	selectedRecipients: [],
 	composeMessage: '',
 
+	feedbackMessage: '',
+
 	hasRecipients: Ember.computed('selectedRecipients.[]', function() {
 		return Ember.isPresent(this.get('selectedRecipients'));
 	}),

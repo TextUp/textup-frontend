@@ -160,6 +160,22 @@
         {{/each}}
     {{/if}}
 
+    {{!-- feedback --}}
+
+    <li class="menu-divider"></li>
+    <li class='menu-item menu-slideout'
+        {{action 'toggleSlideout' 'slideouts/feedback' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Feedback'
+            classNames='btn-expand display-l'}}
+            <span class="fa fa-question"></span>
+        {{/tool-tipster}}
+        <div class="btn-expand display-xs display-s display-m">
+            <span>Feedback</span>
+        </div>
+    </li>
+
     <li class='menu-footer display-l'>
         <img class="brand" src='assets/images/logo.png' />
     </li>
