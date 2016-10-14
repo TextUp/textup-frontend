@@ -46,7 +46,32 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		}
 	},
 	afterModel: function(model) {
-		this.get('stateManager').set('owner', model);
+		const user = this.get('authManager.authUser');
+		// double check that model has phone
+		return model.get('phone').then((phone) => {
+			if (phone) {
+				this.get('stateManager').set('owner', model);
+			}
+			// if doesn't have personal phone then transition to
+			// first team that has a TextUp phone
+			else {
+				// check to see if has personal phone
+				user.get('phone').then((phone) => {
+					if (!phone) {
+						// transition to first team that has phone
+						user.get('teamsWithPhones').then((teams) => {
+							if (teams[0]) {
+								this.transitionTo('main', teams[0]);
+							} else if (user.get('isAdmin')) {
+								this.transitionTo('admin');
+							} else {
+								this.get('authManager').logout();
+							}
+						});
+					}
+				});
+			}
+		});
 	},
 	setupController: function(controller, model) {
 		this._super(...arguments);

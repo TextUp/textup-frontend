@@ -78,8 +78,8 @@ module.exports = function(environment) {
 
     if (environment === 'production') {
         // ENV.host = "https://5e6aa46b.ngrok.io";
-        // ENV.host = "https://dev.textup.org";
-        ENV.host = "https://v2.textup.org";
+        ENV.host = "https://dev.textup.org";
+        // ENV.host = "https://v2.textup.org";
     }
 
     return ENV;
