@@ -68,15 +68,22 @@
             <p class="form-error">{{v-get staff 'lockCode' 'message'}}</p>
         {{/if}}
     </div>
-
+    <div class="bg-color pad-t pad-b">
+        {{g-recaptcha onSuccess=(action (mut staff.captcha))
+            onExpired=(route-action 'clearCaptcha' staff)
+            ref=(mut gRecaptcha)}}
+    </div>
     <div class="single-body-footer text-center">
         {{async-button classNames='btn btn-default'
             disableWhen=(or (not (v-get staff 'isValid'))
+                (not staff.captcha)
+                (not staff.lockCode)
                 (not staff.password)
                 (not (eq staff.password confirmPassword)))
             action=(route-action 'createStaff' staff)
             default='Finish'
-            pending='Almost...'}}
+            pending='Almost...'
+            reset=staff.captcha}}
     </div>
 </div>
 <div class='single-footer'>

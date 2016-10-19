@@ -20,6 +20,9 @@ module.exports = function(environment) {
             // Here you can pass flags/options to your application instance
             // when it is created
         },
+        gReCaptcha: {
+            siteKey: '6LeXTgkUAAAAAD6AxV0jRU5PDlusBakxwQFNDutq'
+        },
         moment: {
             includeTimezone: '2010-2020'
         },
@@ -49,7 +52,7 @@ module.exports = function(environment) {
     };
 
     if (environment === 'development') {
-        // ENV.host = "https://5e6aa46b.ngrok.io";
+        // ENV.host = "https://9dadcdcd.ngrok.io";
         ENV.host = "https://dev.textup.org";
         // ENV.host = "https://v2.textup.org";
 
@@ -78,8 +81,8 @@ module.exports = function(environment) {
 
     if (environment === 'production') {
         // ENV.host = "https://5e6aa46b.ngrok.io";
-        ENV.host = "https://dev.textup.org";
-        // ENV.host = "https://v2.textup.org";
+        // ENV.host = "https://dev.textup.org";
+        ENV.host = "https://v2.textup.org";
     }
 
     return ENV;

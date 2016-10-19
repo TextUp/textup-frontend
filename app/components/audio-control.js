@@ -88,7 +88,7 @@ export default Ember.Component.extend({
 				this.set('_isLoading', true);
 			}.bind(this);
 
-			audio.onerror = function(e) {
+			audio.onerror = function() {
 				this.set('_hasError', true);
 			}.bind(this);
 		});

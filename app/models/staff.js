@@ -87,6 +87,11 @@ export default DS.Model.extend(Validations, {
 	lockCode: DS.attr('string', {
 		defaultValue: ''
 	}),
+	// usually blank, for account creation
+	captcha: DS.attr('string', {
+		defaultValue: ''
+	}),
+
 	email: DS.attr('string'),
 	status: DS.attr('string'),
 	personalPhoneNumber: DS.attr('phone-number'),
