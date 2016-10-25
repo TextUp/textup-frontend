@@ -56,7 +56,9 @@ export default Ember.Service.extend({
 			});
 		} else if (this.displayErrors(failure) === 0) {
 			this.notifications.error(`Could not perform action.
-				Please try again later.`);
+				Please try again later. The error is: ${failure}`, {
+				clearDuration: 10000
+			});
 			Ember.debug('data.handleError: unspecified error: ' + failure);
 		}
 	},

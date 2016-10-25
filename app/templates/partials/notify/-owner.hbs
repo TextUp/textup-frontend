@@ -1,0 +1,13 @@
+<div class="text-center">
+	<div class="halo margin-b {{if model.outgoing 'bg-color bg-brand-dark' 'border-all'}}">
+		{{#if model.isOwnerTeam}}
+			<span class="fa fa-users"></span>
+		{{else}}
+			<span class="fa fa-user"></span>
+		{{/if}}
+	</div>
+	<h4 class="text-ellipsis notify-constrain-label">
+		{{model.ownerName}}
+	</h4>
+	{{phone-number model.ownerNumber}}
+</div>

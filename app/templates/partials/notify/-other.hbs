@@ -1,0 +1,12 @@
+<div class="text-center">
+	<div class="halo margin-b {{if model.outgoing 'border-all' 'bg-color bg-dark'}}">
+		{{#if model.isOtherTag}}
+			<span class="fa fa-tag"></span>
+		{{else}}
+			<span class="fa fa-hashtag"></span>
+		{{/if}}
+	</div>
+	<h4 class="text-ellipsis notify-constrain-label">
+		{{phone-number model.otherName}}
+	</h4>
+</div>

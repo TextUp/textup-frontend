@@ -6,7 +6,8 @@ export default Ember.Route.extend(Public, {
 		this._super(...arguments);
 		this.controller.setProperties({
 			username: null,
-			password: null
+			password: null,
+			resetUsername: null
 		});
 	},
 	actions: {

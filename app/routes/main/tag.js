@@ -18,6 +18,8 @@ export default Ember.Route.extend({
 			if (tag) {
 				return tag;
 			} else {
+				this.notifications.error(`You do not have permission to access
+					tag ${id} or the tag could not be found.`);
 				this.transitionTo('main.contacts');
 			}
 		});

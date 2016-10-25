@@ -8,6 +8,7 @@ export default Ember.Route.extend({
 	redirect: function(model, transition) {
 		const token = Ember.get(transition, 'queryParams.token');
 		if (!token) {
+			this.notifications.error('No authorization token specified.');
 			this.transitionTo('login');
 		}
 	},

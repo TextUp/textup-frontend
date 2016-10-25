@@ -34,13 +34,6 @@ export default Ember.Route.extend(Slideout, Loading, {
 	// Hooks
 	// -----
 
-	setupController: function(controller) {
-		this._super(...arguments);
-		controller.set('lockCode', '');
-		if (this.get('authManager.isLoggedIn')) {
-			this.doLock();
-		}
-	},
 	beforeModel: function() {
 		// validate stored token for staff, if any
 		// return promise so that resolver blocks until promise completes
@@ -50,15 +43,28 @@ export default Ember.Route.extend(Slideout, Loading, {
 	},
 	redirect: function(model, transition) {
 		const storage = this.get('storage'),
-			url = storage.getItem('currentUrl');
+			url = storage.getItem('currentUrl'),
+			targetName = transition.targetName;
 		// initialize the observer after retrieving the previous currentUrl
 		this.get('stateManager').trackLocation();
+		// skip initial locking when setting up controller if in ignore list
+		const ignoreLock = config.state.ignoreLock,
+			doInitialLock = ignoreLock.every((loc) => targetName.indexOf(loc) === -1);
+		this.set('doInitialLock', doInitialLock);
 		// redirect only if previous url present and the target
-		// route is not '/reset' or '/setup'
-		const targetName = transition.targetName;
-		if (targetName.indexOf('reset') === -1 &&
-			targetName.indexOf('setup') === -1 && url) {
+		// route is not one of the routes to be ignored
+		const ignoreTracking = config.state.ignoreTracking,
+			doTracking = ignoreTracking.every((loc) => targetName.indexOf(loc) === -1);
+		if (doTracking && url) {
 			this.transitionTo(url);
+		}
+	},
+	setupController: function(controller) {
+		this._super(...arguments);
+		controller.set('lockCode', '');
+		if (this.get('authManager.isLoggedIn') &&
+			this.get('doInitialLock')) {
+			this.doLock();
 		}
 	},
 
@@ -99,17 +105,36 @@ export default Ember.Route.extend(Slideout, Loading, {
 		// --------
 
 		willTransition: function(transition) {
-			// forbid transitions when locked
+			const targetName = transition.targetName,
+				url = this.get('storage').getItem('currentUrl'),
+				ignoreLock = config.state.ignoreLock;
 			if (this.controller.get('isLocked')) {
-				transition.abort();
-				// Manual fix for the problem of URL getting out of sync
-				// when pressing the back button even though we are aborting
-				// the transition.
-				// http://stackoverflow.com/questions/17738923/
-				// 		url-gets-updated-when-using-transition-
-				// 		abort-on-using-browser-back
-				if (window.history) {
-					window.history.forward();
+				const allowTransition = ignoreLock.any((loc) => {
+					return targetName.indexOf(loc) > -1;
+				});
+				if (allowTransition) {
+					this.doUnlock();
+				} else {
+					transition.abort();
+					// Manual fix for the problem of URL getting out of sync
+					// when pressing the back button even though we are aborting
+					// the transition.
+					// http://stackoverflow.com/questions/17738923/
+					// 		url-gets-updated-when-using-transition-
+					// 		abort-on-using-browser-back
+					if (window.history) {
+						window.history.forward();
+					}
+				}
+			}
+			// otherwise, if logged in and we are coming from one of the ignoreLock
+			// locations, then we need to re-lock
+			else if (this.get('authManager.isLoggedIn')) {
+				const shouldRelock = ignoreLock.any((loc) => {
+					return url.indexOf(loc) > -1;
+				});
+				if (shouldRelock) {
+					this.doLock();
 				}
 			}
 		},

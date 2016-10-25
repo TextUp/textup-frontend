@@ -1,0 +1,46 @@
+{{title "Notification"}}
+
+<div class="bg-color bg-light full-viewport-height">
+	<div class="center xs-full-row text-center">
+		<img class="brand" src='assets/images/logo.png' />
+		{{#each errors as |error|}}
+			<p class="margin-t text-darken text-bold text-biggest">
+				{{error.message}}
+			</p>
+		{{else}}
+			<div class="display-s display-xs">
+				<div class="row margin-t">
+					{{partial 'partials/notify/other'}}
+				</div>
+				<div class="row bg-color bg-lightest margin-t margin-b
+					{{if model.outgoing 'border-t' 'border-b'}}">
+					{{partial 'partials/notify/message'}}
+				</div>
+				<div class="row">
+					{{partial 'partials/notify/owner'}}
+				</div>
+			</div>
+			<div class="display-l display-m">
+				<div class="xs-8-row-10 margin-center">
+					<div class="input-group margin-t-double">
+						<div class="input-group-addon align-middle">
+							{{partial 'partials/notify/other'}}
+						</div>
+						<div class="input-group-element align-middle">
+							{{partial 'partials/notify/message'}}
+						</div>
+						<div class="input-group-addon align-middle">
+							{{partial 'partials/notify/owner'}}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-bigger margin-t-double">
+				<button class="btn btn-plain" {{action 'openInApp' model}}>
+					Open in app
+				</button>
+			</div>
+		{{/each}}
+	</div>
+</div>
+

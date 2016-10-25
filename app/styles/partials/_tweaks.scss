@@ -77,6 +77,16 @@
 	margin: 0 auto;
 }
 
+// notify
+// ------
+
+.notify-constrain-label {
+	@include mq($from:tablet) {
+		min-width: 4em;
+		max-width: 8em;
+	}
+}
+
 // main/contacts
 // -------------
 

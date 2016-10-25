@@ -10,14 +10,23 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	// Events
 	// ------
 
-	beforeModel: function() {
+	beforeModel: function(transition) {
 		this._super(...arguments);
 		const user = this.get('authManager.authUser');
 		return user.get('isNone').then((isNone) => {
 			const orgIsApproved = user.get('org.content.isApproved');
 			if (isNone && orgIsApproved && user.get('isAdmin')) {
+				if (transition.targetName !== "main.index") {
+					this.notifications.info(`You have no active TextUp accounts.
+						You have been redirected to the admin page.`);
+				}
 				this.transitionTo('admin');
 			} else if (isNone || !orgIsApproved) {
+				if (transition.targetName !== "main.index") {
+					this.notifications.info(`You have no active TextUp accounts
+						and are not an administrator. You have been redirected
+						to the settings page.`);
+				}
 				this.transitionTo('none');
 			}
 		});
@@ -30,17 +39,27 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	model: function(params) {
 		const id = params.main_identifier,
 			user = this.get('authManager.authUser');
+		// see if the identifier is the user
 		if (id === user.get('urlIdentifier')) {
 			return user;
-		} else {
+		}
+		// check to see if identifier is a team
+		else {
 			return user.get('teamsWithPhones').then((teams) => {
 				const team = teams.findBy('urlIdentifier', id);
+				// if identifier is indeed a team
 				if (team) {
 					return team;
-				} else if (user.get('isAdmin')) {
-					this.transitionTo('admin');
-				} else {
-					this.get('authManager').logout();
+				}
+				// otherwise, identifier doesn't match anything
+				else {
+					this.notifications.error(`User ${id} could not be found.
+						Perhaps you logged in with the wrong account?`);
+					if (user.get('isAdmin')) {
+						this.transitionTo('admin');
+					} else {
+						this.get('authManager').logout();
+					}
 				}
 			});
 		}
@@ -62,10 +81,13 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 						user.get('teamsWithPhones').then((teams) => {
 							if (teams[0]) {
 								this.transitionTo('main', teams[0]);
-							} else if (user.get('isAdmin')) {
-								this.transitionTo('admin');
 							} else {
-								this.get('authManager').logout();
+								this.notifications.error('No available active TextUp accounts found.');
+								if (user.get('isAdmin')) {
+									this.transitionTo('admin');
+								} else {
+									this.get('authManager').logout();
+								}
 							}
 						});
 					}

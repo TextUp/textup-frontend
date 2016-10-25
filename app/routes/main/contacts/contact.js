@@ -9,7 +9,12 @@ export default Ember.Route.extend({
 		if (id) {
 			this.set('_id', id);
 			const found = this.store.peekRecord('contact', id);
-			return found ? found : this.store.findRecord('contact', id);
+			return found ? found : this.store.findRecord('contact', id)
+				.catch((failure) => {
+					this.notifications.error(`You do not have permission to access
+						contact ${id} or the contact could not be found.`);
+					return Ember.RSVP.reject(failure);
+				});
 		} else {
 			this.transitionTo('main.contacts');
 		}

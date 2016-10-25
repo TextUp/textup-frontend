@@ -20,6 +20,10 @@ Router.map(function() {
         this.route('account');
     });
     this.route('setup');
+    this.route('notify');
+
+    // Auth
+    // ----
 
     this.route('none');
     this.route('main', {
