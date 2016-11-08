@@ -101,6 +101,9 @@ export default DS.Model.extend(Validations, {
 	hasInactivePhone: DS.attr('boolean'),
 	schedule: DS.belongsTo('schedule'),
 
+	manualSchedule: DS.attr('boolean'),
+	isAvailable: DS.attr('boolean'),
+
 	teams: DS.hasMany('team'),
 
 	// Not attributes
@@ -119,6 +122,14 @@ export default DS.Model.extend(Validations, {
 	hasPhoneAction: notEmpty('phoneAction'),
 	hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
 	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'hasPhoneAction'),
+
+	isAvailableNow: Ember.computed('manualSchedule', 'isAvailable',
+		'schedule.content.isAvailableNow',
+		function() {
+			return this.get('manualSchedule') ?
+				this.get('isAvailable') :
+				this.get('schedule.content.isAvailableNow');
+		}),
 
 	urlIdentifier: Ember.computed('username', function() {
 		return Ember.String.dasherize(this.get('username') || '');

@@ -45,7 +45,10 @@
             <p>
                 Connect with
                 <span class="text-bold">
-                    {{phone-number (if tag tag.identifier contact.identifier)}}
+                    {{phone-number
+                        (if (and tag (not contact))
+                            tag.identifier
+                            contact.identifier)}}
                 </span>
                 to see this record fill up.
             </p>

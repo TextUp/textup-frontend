@@ -110,12 +110,41 @@
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
 				title="Availability"}}
-				{{#if person.schedule.isFulfilled}}
-			        <div class="form-element">
-			            {{tab-container/availability
-			                schedule=(mut person.schedule.content)}}
-			        </div>
-			    {{/if}}
+				<div class="form-element row pad-t pad-l pad-r">
+		            <div class="xs-2-row-3 control-text">
+		                <label for="Availability" class='text-ellipsis'>
+		                    {{person.name}} Availability
+		                </label>
+		            </div>
+		            {{multi-toggle/binary classNames='xs-row-3'
+		                value=person.manualSchedule
+		                falseColor='#76c9ec'
+		                trueColor='#1BA5E0'
+		                falseString='Schedule'
+		                trueString='Manual'}}
+		        </div>
+		        <div class="form-element">
+					{{#if person.manualSchedule}}
+						<div class="row pad-r pad-l">
+			                <div class="xs-2-row-3 control-text">
+			                    <label for="Availability" class='text-bold text-ellipsis'>
+			                        Is {{person.name}} available now?
+			                    </label>
+			                </div>
+			                {{multi-toggle/binary classNames='xs-row-3'
+			                    value=person.isAvailable
+			                    falseColor='#d3d3d3'
+			                    trueColor='#76c9ec'
+			                    falseString='No'
+			                    trueString='Yes'}}
+			            </div>
+					{{else}}
+						{{#if person.schedule.isFulfilled}}
+				            {{tab-container/availability
+				                schedule=(mut person.schedule.content)}}
+					    {{/if}}
+					{{/if}}
+				</div>
 				{{#if person.isDirty}}
 			        <div class="horizontal-items text-center margin-t margin-b">
 			            <div class="clear-badge no-space">

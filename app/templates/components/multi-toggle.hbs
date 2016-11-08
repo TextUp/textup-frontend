@@ -1,12 +1,12 @@
 <div class="multi-toggle-items">
 	{{yield publicAPI (action 'registerItem')}}
 </div>
-<div class="left-toggle">
+<div class="left-toggle {{if disabled 'hidden'}}">
 	<span class="fa fa-chevron-left"></span>
 </div>
-<div class="right-toggle">
+<div class="right-toggle {{if disabled 'hidden'}}">
 	<span class="fa fa-chevron-right"></span>
 </div>
 {{!-- dynamically populated by upon registration of item when
 the component is first inserted --}}
-<div class="multi-toggle-indicators"></div>
+<div class="multi-toggle-indicators {{if disabled 'hidden'}}"></div>

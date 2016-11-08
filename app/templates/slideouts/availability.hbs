@@ -19,33 +19,88 @@
         <hr>
     {{/if}}
 	<div class="margin-b pad-l pad-r">
-        <label for='Your Name' class='control-label text-bold'>
-            My Available Times
-        </label>
-        <div class="margin-t">
-            <span class='display-xs display-s display-m'>
-                Double tap to delete a range. Tap once then tap the plus button to add a range. Blue ranges are when you are available. The gray area is when you are not available.
-            </span>
-            <span class='display-l'>
-                Double click to delete a range. Click and drag to add a range. Blue ranges are when you are available. The gray area is when you are not available.
-            </span>
+        <div class="form-element row pad-l pad-r">
+            <div class="xs-2-row-3 control-text">
+                <label for="Availability" class='text-ellipsis'>
+                    My Availability
+                </label>
+            </div>
+            {{multi-toggle/binary classNames='xs-row-3'
+                value=authManager.authUser.manualSchedule
+                falseColor='#76c9ec'
+                trueColor='#1BA5E0'
+                falseString='Schedule'
+                trueString='Manual'}}
         </div>
+        {{#if (not authManager.authUser.manualSchedule)}}
+            <div class="margin-t">
+                <span class='display-xs display-s display-m'>
+                    Double tap to delete a range. Tap once then tap the plus button to add a range. Blue ranges are when you are available. The gray area is when you are not available.
+                </span>
+                <span class='display-l'>
+                    Double click to delete a range. Click and drag to add a range. Blue ranges are when you are available. The gray area is when you are not available.
+                </span>
+            </div>
+        {{/if}}
 	</div>
-    {{#if authManager.authUser.schedule.isFulfilled}}
-        <div class="display-xs display-s display-m">
-            <div class="form-element pad-l pad-r">
-                {{tab-container/availability
-                    schedule=(mut authManager.authUser.schedule.content)
-                    otherStaffs=stateManager.teamMembers}}
+    {{#if authManager.authUser.manualSchedule}}
+        <div class="bg-color pad-t pad-b pad-l-double pad-r-double">
+            <div class="row">
+                <div class="xs-2-row-3 control-text">
+                    <label for="Availability" class='text-bold text-ellipsis'>
+                        Are you available now?
+                    </label>
+                </div>
+                {{multi-toggle/binary classNames='xs-row-3'
+                    value=authManager.authUser.isAvailable
+                    falseColor='#d3d3d3'
+                    trueColor='#76c9ec'
+                    falseString='No'
+                    trueString='Yes'}}
             </div>
         </div>
-        <div class="display-l">
-            <div class="form-element">
-                {{tab-container/availability
-                    schedule=(mut authManager.authUser.schedule.content)
-                    otherStaffs=stateManager.teamMembers}}
+        {{#if stateManager.teamMembers }}
+            <div class="form-element pad-l-double pad-r-double pad-t">
+                <label for="Team Member Availabilities" class='text-ellipsis'>
+                    Team Members
+                </label>
             </div>
-        </div>
+            <div class="bg-color pad-t pad-b pad-l-double pad-r-double">
+                {{#each stateManager.teamMembers as |otherStaff|}}
+                    <div class="row">
+                        <div class="xs-2-row-3 control-text">
+                            <label for="Availability" class='text-bold text-ellipsis'>
+                                {{otherStaff.name}}
+                            </label>
+                        </div>
+                        {{multi-toggle/binary classNames='xs-row-3'
+                            disabled=true
+                            value=otherStaff.isAvailableNow
+                            falseColor='#d3d3d3'
+                            trueColor='#76c9ec'
+                            falseString='Not available'
+                            trueString='Available'}}
+                    </div>
+                {{/each}}
+            </div>
+        {{/if}}
+    {{else}}
+        {{#if authManager.authUser.schedule.isFulfilled}}
+            <div class="display-xs display-s display-m">
+                <div class="form-element pad-l pad-r">
+                    {{tab-container/availability
+                        schedule=(mut authManager.authUser.schedule.content)
+                        otherStaffs=stateManager.teamMembers}}
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="form-element">
+                    {{tab-container/availability
+                        schedule=(mut authManager.authUser.schedule.content)
+                        otherStaffs=stateManager.teamMembers}}
+                </div>
+            </div>
+        {{/if}}
     {{/if}}
     {{#if (or model.isDirty authManager.authUser.isDirty)}}
         <div class="horizontal-items text-center margin-t margin-b">

@@ -144,7 +144,10 @@ export default Ember.Component.extend({
 		}
 	},
 	slideToAndSetIndex: function(index, skipNotify = false) {
-		if (this.get('disabled')) {
+		// short circuit if disabled and NOT skip notify
+		// do NOT short circuit if skip notify because this means that
+		// we are calling this method internally, not from user input
+		if (this.get('disabled') && !skipNotify) {
 			return;
 		}
 		const items = this.get('_items'),

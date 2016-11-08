@@ -79,12 +79,14 @@ export default Ember.Service.extend({
 
 	isPhoneAvailable: Ember.computed('staffsExceptMe.[]', 'ownerIsTeam',
 		'authManager.authUser.schedule.content.isAvailableNow',
+		'authManager.authUser.manualSchedule',
+		'authManager.authUser.isAvailable',
 		function() {
 			const staffs = [this.get('authManager.authUser')];
 			if (this.get('ownerIsTeam')) {
 				staffs.pushObjects(this.get('staffsExceptMe'));
 			}
-			return staffs.any((st) => st.get('schedule.content.isAvailableNow'));
+			return staffs.any((st) => st.get('isAvailableNow'));
 		}),
 
 	// Sharing staff

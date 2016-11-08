@@ -69,19 +69,29 @@
 								{{otherStaff.name}}
 							</span>
 						</div>
-						{{#if otherStaff.schedule.isFulfilled}}
-							<div class="xs-full-row l-17-row-20">
-								{{multi-range
-									data=(get otherStaff.schedule.content day)
-									min='0000'
-									max='2359'
-									doRawToValid=(action 'doRawToValid')
-									doValidToRaw=(action 'doValidToRaw')
-									doValidToNum=(action 'doValidToNum')
-									doNumToValid=(action 'doNumToValid')
-									doValidRangeToDisplay=(action 'doValidRangeToDisplay')
-									doIndicator=(if (eq dayToday day) (action 'doIndicator'))}}
-							</div>
+						{{#if otherStaff.manualSchedule}}
+							{{multi-toggle/binary classNames='xs-full-row l-17-row-20'
+	                            disabled=true
+	                            value=otherStaff.isAvailableNow
+	                            falseColor='#d3d3d3'
+	                            trueColor='#76c9ec'
+	                            falseString='Not available'
+	                            trueString='Available'}}
+						{{else}}
+							{{#if otherStaff.schedule.isFulfilled}}
+								<div class="xs-full-row l-17-row-20">
+									{{multi-range
+										data=(get otherStaff.schedule.content day)
+										min='0000'
+										max='2359'
+										doRawToValid=(action 'doRawToValid')
+										doValidToRaw=(action 'doValidToRaw')
+										doValidToNum=(action 'doValidToNum')
+										doNumToValid=(action 'doNumToValid')
+										doValidRangeToDisplay=(action 'doValidRangeToDisplay')
+										doIndicator=(if (eq dayToday day) (action 'doIndicator'))}}
+								</div>
+							{{/if}}
 						{{/if}}
 					</div>
 				{{/each}}

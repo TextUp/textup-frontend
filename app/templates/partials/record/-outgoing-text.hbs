@@ -33,8 +33,10 @@
     <span class='decoration-left display-s display-m display-l'
         tabindex='0'>
         {{#if record.numSuccesses.isFulfilled}}
-            {{record.numSuccesses.content}}
-            {{pluralize 'recipient' record.numSuccesses.content}}
+            {{#if (gt record.numSuccesses.content 0)}}
+                {{record.numSuccesses.content}}
+                {{pluralize 'recipient' record.numSuccesses.content}}
+            {{/if}}
         {{/if}}
     </span>
     <span class='decoration-right'>
@@ -50,6 +52,11 @@
                     {{#tool-tipster theme='tooltipster-clean'
                         title='At least one number succeeded'}}
                         <span class="indicator success"></span>
+                    {{/tool-tipster}}
+                {{else if (eq record.numSuccesses.content 0)}}
+                    {{#tool-tipster theme='tooltipster-clean'
+                        title='No recipient data'}}
+                        <span class="indicator"></span>
                     {{/tool-tipster}}
                 {{else}}
                     {{#tool-tipster theme='tooltipster-clean'
