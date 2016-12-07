@@ -149,7 +149,8 @@
                             (if contact 'main/contacts/contact' 'main/tag/details')}}>
                         Schedule Message
                     </li>
-                    {{#if contact}}
+                    {{#if (and contact
+                        authManager.authUser.personalPhoneNumber)}}
                         <li tabindex='0' class='dropdown-item'
                             onclick={{route-action 'makeCall' contact
                                 (action (mut isMakingCall) true)

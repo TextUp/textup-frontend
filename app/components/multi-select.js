@@ -415,7 +415,7 @@ export default Ember.Component.extend({
 			fProp = this.get('filterProperty'),
 			dProp = this.get('displayProperty'),
 			iProp = this.get('identityProperty'),
-			prop = here(fProp) ? fProp : (here(dProp) ? dProp : iProp),
+			prop = here(fProp) ? fProp : (here(iProp) ? iProp : dProp),
 			matchExp = new RegExp(searchString, 'i'),
 			matchString = ((item && prop) ? Ember.get(item, prop) : item).toString();
 		return matchString.search(matchExp) !== -1;

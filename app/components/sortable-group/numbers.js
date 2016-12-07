@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import callIfPresent from '../../utils/call-if-present';
 import defaultIfAbsent from '../../utils/default-if-absent';
 import Validated from '../../mixins/validated-component';
 
@@ -8,6 +9,15 @@ export default Ember.Component.extend(Validated, {
 	newNumber: defaultIfAbsent(''),
 	readonly: defaultIfAbsent(false),
 	inPlace: defaultIfAbsent(false),
+
+	// called when a new number is added to the array
+	// passed the number being added
+	// returns nothing
+	onAdd: null,
+	// called when a number is removed from the array
+	// passed the number being removed
+	// returns nothing
+	onRemove: null,
 
 	classNames: 'sortable-group-numbers',
 
@@ -57,12 +67,18 @@ export default Ember.Component.extend(Validated, {
 				this.get('numbers').pushObject({
 					number: val
 				});
+				// call hook after change
+				callIfPresent(this.get('onAdd'), val);
 				this.doValidate();
 				this.set('newNumber', '');
 			}
 		},
 		removeNumber: function(index) {
-			this.get('numbers').removeAt(index);
+			const nums = this.get('numbers'),
+				numToRemove = nums.objectAt(index);
+			nums.removeAt(index);
+			// call hook after change
+			callIfPresent(this.get('onRemove'), numToRemove.number);
 			this.doValidate();
 		},
 		removeIfEmpty: function(index, val) {

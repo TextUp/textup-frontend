@@ -19,10 +19,6 @@ export default Ember.Route.extend({
 				this._resetController();
 			}
 			this.set('_changedFilter', false);
-			const contactsList = this.controller.get('_contactsList');
-			if (contactsList) {
-				contactsList.actions.resetPosition();
-			}
 			// return true to allow bubbling to close slideout handler
 			return true;
 		},
@@ -37,9 +33,14 @@ export default Ember.Route.extend({
 	},
 
 	_resetController: function() {
-		this.controller.set('tag', null);
-		this.controller.set('contacts', []);
+		const controller = this.controller;
+		controller.set('tag', null);
+		controller.set('contacts', []);
 		// don't know total until loaded
-		this.controller.set('numContacts', '--');
+		controller.set('numContacts', '--');
+		const contactsList = controller.get('_contactsList');
+		if (contactsList) {
+			contactsList.actions.resetPosition();
+		}
 	}
 });

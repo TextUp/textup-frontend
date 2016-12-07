@@ -10,7 +10,7 @@ export default Ember.Route.extend({
 		},
 		didTransition: function() {
 			if (this.controller.get('selected').length === 0) {
-				this.transitionTo('main.tag');
+				this.transitionTo('main.search');
 			}
 			return true; // for closing slideouts
 		},

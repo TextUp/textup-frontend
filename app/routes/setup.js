@@ -2,6 +2,7 @@ import Auth from '../mixins/auth-route';
 import Ember from 'ember';
 
 export default Ember.Route.extend(Auth, {
+
 	redirect: function() {
 		this._super(...arguments);
 		const user = this.get('authManager.authUser');
@@ -9,7 +10,6 @@ export default Ember.Route.extend(Auth, {
 			this.transitionTo('main', user);
 		}
 	},
-
 	actions: {
 		addPersonalPhone: function(staff) {
 			this.get('dataHandler')
@@ -18,5 +18,9 @@ export default Ember.Route.extend(Auth, {
 					this.transitionTo('main', staff);
 				});
 		},
+		skipSetup: function(staff) {
+			this.get('stateManager').skipSetup();
+			this.transitionTo('main', staff);
+		}
 	}
 });

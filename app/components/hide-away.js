@@ -148,10 +148,12 @@ export default Component.extend({
 		}
 	},
 	handleMousedown: function(event) {
-		if (this.get('disabled') || this._shouldStopEvent(event)) {
+		if (this._shouldStopEvent(event)) {
 			return false;
 		}
-		if (this._shouldIgnoreOnTrigger(event)) {
+		// return nothing on disabled to allow mouse events such as
+		// selecting text to still happen
+		if (this.get('disabled') || this._shouldIgnoreOnTrigger(event)) {
 			return; // don't return false to allow default to happen
 		}
 		// stop text selection of trigger

@@ -6,53 +6,57 @@ import {
 } from 'ember-cp-validations';
 
 const {
-	equal: eq,
-	alias,
-	or,
-	notEmpty
-} = Ember.computed,
-	Validations = buildValidations({
-		name: {
-			description: 'Name',
-			validators: [
-				validator('presence', true)
-			]
-		},
-		username: {
-			description: 'Username',
-			validators: [
-				validator('presence', true),
-				validator('format', {
-					regex: /^[-_=@.,;A-Za-z0-9]+$/,
-					message: 'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;'
-				})
-			]
-		},
-		lockCode: {
-			description: 'Lock Code',
-			validators: [
-				validator('length', {
-					is: 4,
-					allowNone: true,
-					allowBlank: true
-				})
-			]
-		},
-		email: {
-			description: 'Email',
-			validators: [
-				validator('format', {
-					type: 'email'
-				})
-			]
-		},
-		phone: {
-			description: 'Phone',
-			validators: [
-				validator('belongs-to')
-			]
-		}
-	});
+	isPresent,
+	isArray,
+	computed: {
+		equal: eq,
+		alias,
+		or,
+		notEmpty
+	}
+} = Ember,
+Validations = buildValidations({
+	name: {
+		description: 'Name',
+		validators: [
+			validator('presence', true)
+		]
+	},
+	username: {
+		description: 'Username',
+		validators: [
+			validator('presence', true),
+			validator('format', {
+				regex: /^[-_=@.,;A-Za-z0-9]+$/,
+				message: 'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;'
+			})
+		]
+	},
+	lockCode: {
+		description: 'Lock Code',
+		validators: [
+			validator('length', {
+				is: 4,
+				allowNone: true,
+				allowBlank: true
+			})
+		]
+	},
+	email: {
+		description: 'Email',
+		validators: [
+			validator('format', {
+				type: 'email'
+			})
+		]
+	},
+	phone: {
+		description: 'Phone',
+		validators: [
+			validator('belongs-to')
+		]
+	}
+});
 
 export default DS.Model.extend(Validations, {
 
@@ -63,6 +67,8 @@ export default DS.Model.extend(Validations, {
 		this.set('isSelected', false);
 		this.set('phoneAction', null);
 		this.set('phoneActionData', null);
+		this.set('enableNotifications',
+			isPresent(this.get('personalPhoneNumber')));
 		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
 		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
 	},
@@ -122,6 +128,22 @@ export default DS.Model.extend(Validations, {
 	hasPhoneAction: notEmpty('phoneAction'),
 	hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
 	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'hasPhoneAction'),
+	enableNotifications: Ember.computed('personalPhoneNumber', {
+		get: function() {
+			return isPresent(this.get('personalPhoneNumber'));
+		},
+		set: function(key, value) {
+			if (value === false) {
+				this.set('personalPhoneNumber', '');
+			} else if (value === true) {
+				const changes = this.changedAttributes()['personalPhoneNumber'];
+				if (isArray(changes)) {
+					this.set('personalPhoneNumber', changes[0]);
+				}
+			}
+			return value;
+		}
+	}),
 
 	isAvailableNow: Ember.computed('manualSchedule', 'isAvailable',
 		'schedule.content.isAvailableNow',

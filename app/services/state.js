@@ -42,6 +42,7 @@ export default Ember.Service.extend({
 
 	viewingContacts: match('routing.currentPath', /main.contacts/),
 	viewingTag: match('routing.currentPath', /main.tag/),
+	viewingSearch: match('routing.currentPath', /main.search/),
 	viewingMany: match('routing.currentPath', /many/),
 	viewingPeople: match('routing.currentPath', /admin.people/),
 	viewingTeam: match('routing.currentPath', /admin.team/),
@@ -73,6 +74,22 @@ export default Ember.Service.extend({
 	ownerAsOrg: Ember.computed('owner', 'ownerIsOrg', function() {
 		return this.get('ownerIsOrg') ? this.get('owner') : null;
 	}),
+
+	// Setup
+	// -----
+
+	skippedSetupKey: Ember.computed('authManager.authUser.id', function() {
+		const id = this.get('authManager.authUser.id');
+		return `${id}-skippedSetup`;
+	}),
+	hasSkippedSetup: Ember.computed('skippedSetupKey', function() {
+		const storage = this.get('storage');
+		return storage.isItemPersistent(this.get('skippedSetupKey'));
+	}).volatile(),
+	skipSetup: function() {
+		const storage = this.get('storage');
+		storage.trySet(localStorage, this.get('skippedSetupKey'), 'yes');
+	},
 
 	// Availability
 	// ------------

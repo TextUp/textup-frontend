@@ -1,0 +1,52 @@
+{{title (if searchQuery
+	(concat 'Search ' searchQuery)
+	'New Search') separator=' - '}}
+
+<div class="content">
+	<div class="section-header">
+		<div class="tag-title">
+			{{input type="text"
+				value=_searchQuery
+				classNames='form-control form-control-minimal search-input'
+				placeholder="Search here..."
+				enter=(route-action "triggerSearch" _searchQuery)
+				escape-press=(action (mut _searchQuery) null)}}
+			<div class="margin-t-half">
+				{{#if searchResults}}
+					<span class="text-bold margin-r-half">
+						{{numResults}}
+						{{pluralize 'contact' numResults}}
+					</span>
+				{{/if}}
+				<span>
+					<a href="" {{action 'closeSearch'}}>Close search</a>
+				</span>
+			</div>
+		</div>
+		<button class="v-center-right full-height btn btn-plain"
+			type='button'
+			disabled={{if (not _searchQuery) 'disabled'}}
+			onclick={{route-action "triggerSearch" _searchQuery}}>
+			<span class="fa fa-search"></span>
+		</button>
+	</div>
+	{{#infinite-scroll classNames='section-body bg-color bg-dark'
+        containerClass='bg-color bg-lightest'
+        itemsClass='result-list'
+        direction='down'
+        data=searchResults
+        total=numResults
+        doLoad=(route-action 'loadMore')
+        doRefresh=(route-action 'refresh') as |contact|}}
+        {{partial 'partials/contact/display'}}
+    {{else}}
+		<div class="no-results">
+			{{#if searchQuery}}
+				No results for the search <span class="text-bold">{{searchQuery}}</span>
+			{{else}}
+				Start typing a name or phone number to search through your contacts.
+			{{/if}}
+        </div>
+    {{/infinite-scroll}}
+</div>
+{{outlet}}

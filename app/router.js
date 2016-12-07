@@ -44,6 +44,12 @@ Router.map(function() {
             this.route('many');
             this.route('details');
         });
+        this.route('search', function() {
+            this.route('contact', {
+                path: '/contact/:id'
+            });
+            this.route('many');
+        });
     });
     this.route('admin', function() {
         this.route('pending');

@@ -24,12 +24,15 @@ in the model hook to run --}}
                 classNames='menu-item'
                 current-when='main'}}
                 <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                    <p class="text-bold text-ellipsis">{{team.name}}</p>
+                    <p class="text-bold text-ellipsis">
+                        <span class="indicator margin-r-quarter"
+                            style='background-color:{{team.hexColor}};'></span>
+                        {{team.name}}
+                    </p>
                     <p class="text-bold text-ellipsis">
                         {{phone-number team.phone.content.number}}
                     </p>
                 </div>
-                <span class="indicator" style="background-color:{{team.hexColor}};"></span>
             {{/link-to}}
         {{/if}}
     {{/each}}

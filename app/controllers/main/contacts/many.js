@@ -2,13 +2,18 @@ import Ember from 'ember';
 
 const {
 	filterBy,
-	empty
+	empty,
+	alias
 } = Ember.computed;
 
 export default Ember.Controller.extend({
 	contactsController: Ember.inject.controller('main.contacts'),
 
+	// routes that want to use this controller but do not reuse the
+	// contacts controller can override these properties
 	selected: filterBy('contactsController.contacts', 'isSelected', true),
+	allContacts: alias('contactsController.contacts'),
+
 	// can message when no shared with me select OR all
 	// of the shared with me selected are DELEGATE permission
 	selectedCanMessage: Ember.computed('selected', function() {
@@ -21,12 +26,12 @@ export default Ember.Controller.extend({
 
 	actions: {
 		selectAll: function() {
-			this.get('contactsController.contacts').forEach((contact) => {
+			this.get('allContacts').forEach((contact) => {
 				contact.set('isSelected', true);
 			});
 		},
 		selectAllMyContacts: function() {
-			this.get('contactsController.contacts').forEach((contact) => {
+			this.get('allContacts').forEach((contact) => {
 				if (contact.get('isShared')) {
 					contact.set('isSelected', false);
 				} else {
@@ -57,10 +62,6 @@ export default Ember.Controller.extend({
 		});
 	},
 	_exitMany: function() {
-		if (this.get('stateManager.viewingTag')) {
-			this.transitionToRoute('main.tag');
-		} else {
-			this.transitionToRoute('main.contacts');
-		}
+		this.transitionToRoute('main.contacts');
 	},
 });

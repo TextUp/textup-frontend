@@ -19,10 +19,6 @@ export default Ember.Route.extend({
 				this._resetController();
 			}
 			this.set('_changedFilter', false);
-			const peopleList = this.controller.get('_peopleList');
-			if (peopleList) {
-				peopleList.actions.resetPosition();
-			}
 			// return true to allow bubbling to close slideout handler
 			return true;
 		},
@@ -37,8 +33,13 @@ export default Ember.Route.extend({
 	},
 
 	_resetController: function() {
-		this.controller.set('team', null);
-		this.controller.set('people', []);
-		this.controller.set('numPeople', '--');
+		const controller = this.controller;
+		controller.set('team', null);
+		controller.set('people', []);
+		controller.set('numPeople', '--');
+		const peopleList = controller.get('_peopleList');
+		if (peopleList) {
+			peopleList.actions.resetPosition();
+		}
 	}
 });

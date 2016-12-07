@@ -18,10 +18,6 @@
         validateField='email'
         validate='bottom'}}
 </div>
-<div class='form-element'>
-    <label for='Personal Phone' class='control-label'>Personal Phone</label>
-    {{partial 'partials/staff/personal-number'}}
-</div>
 {{#if (and staff.phone.isFulfilled staff.phone.content.number)}}
     <div class='form-element'>
         <label for='TextUp Phone' class='control-label'>TextUp Phone</label>

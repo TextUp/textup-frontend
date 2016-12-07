@@ -54,14 +54,44 @@
         </div>
         <div class="form-element">
             <label for="Note">Numbers</label>
+            {{#with (if contact contact.numberDuplicates
+                newContact.numberDuplicates) as |dupsList|}}
+                <div class="bg-color margin-b border-radius-all
+                    pad-t pad-l pad-r pad-b-half">
+                    {{#each dupsList as |dupObj|}}
+                        <p class='margin-b-half'>
+                            <span class="text-bold">
+                                {{phone-number dupObj.number}}
+                            </span>
+                            also belongs to
+                            {{#each dupObj.duplicates as |dup|}}
+                                <span class='link'
+                                    onclick={{route-action
+                                        'closeSlideoutAndOpenDuplicate'
+                                        slideout.actions.close dup.id}}>
+                                    {{!-- tildes present to trim whitespace --}}
+                                    {{~phone-number dup.identifier ~}}
+                                </span>
+                                {{~if (eq dup.identifier
+                                    dupObj.duplicates.lastObject.identifier)
+                                    "." ", "}}
+                            {{/each}}
+                        </p>
+                    {{/each}}
+                </div>
+            {{/with}}
             {{#if contact}}
                 {{sortable-group/numbers numbers=contact.numbers
                     readonly=(not contact.allowEdits)
+                    onAdd=(route-action 'checkContactNumberDuplicates' contact)
+                    onRemove=(route-action 'removeFromContactNumberDuplicates' contact)
                     validateObj=contact
                     validateField='numbers'
                     validate='bottom'}}
             {{else}}
                 {{sortable-group/numbers numbers=newContact.numbers
+                    onAdd=(route-action 'checkContactNumberDuplicates' newContact)
+                    onRemove=(route-action 'removeFromContactNumberDuplicates' newContact)
                     validateObj=newContact
                     validateField='numbers'
                     validate='bottom'}}

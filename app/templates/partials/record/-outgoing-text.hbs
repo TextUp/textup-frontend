@@ -2,6 +2,7 @@
     clickOutToClose=true
     bodyClickClose=false
     disabled=(not record.receipts)
+    allowedTriggerSelectors=".receipts-button"
     bodyClass='bg-color bg-light
         border-l border-r border-b text-center'}}
     <div class="horizontal-items border-b pad-all-half">
@@ -66,6 +67,19 @@
                 {{/if}}
             {{/if}}
         </div>
-        <b class='text-wrap'>{{record.contents}}</b>
+        <div class="{{if record.receipts 'margin-r-triple'}}">
+            <b class='text-wrap'>{{record.contents}}</b>
+        </div>
+        {{#if record.receipts}}
+            <div class="pull-right-to-edge receipts-button full-height"
+                tabindex="0">
+                {{#tool-tipster theme='tooltipster-clean'
+                    title='Recipients'
+                    classNames='btn btn-plain btn-expand
+                        text-center clickable text-small'}}
+                    <span class="center fa fa-hashtag"></span>
+                {{/tool-tipster}}
+            </div>
+        {{/if}}
     </div>
 {{/hide-away}}

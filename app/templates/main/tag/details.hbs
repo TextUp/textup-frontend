@@ -2,7 +2,7 @@
 
 <div class="details full-height">
 	<div class="section-header">
-		<div class="horizontal-items xs-8-row-10 s-row-2 pull-left">
+		<div class="horizontal-items xs-7-row-10 s-row-2 pull-left">
 			<span class="clear-badge display-xs display-s no-space">
 				{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
 					<span class="pad-all">
@@ -15,27 +15,34 @@
 			</span>
 			{{#if (not tag.isDeleted)}}
 				<span class="clear-badge no-space">
-					<button class="btn btn-plain display-m display-l"
+					<button class="btn btn-plain display-m display-l link"
 						{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
 						<span class="pad-all display-m">
-							<span class="fa fa-pencil"></span>
+							Details
 						</span>
-						<span class="fa fa-pencil display-l"></span>
+						<span class="display-l">
+							Details
+						</span>
 					</button>
 				</span>
 			{{/if}}
 			<div class="badge">
 				{{tag.numMembers}}
-				<span class="fa fa-user"></span>
+				<span class="display-xs">
+					<span class="fa fa-user"></span>
+				</span>
+				<span class="display-s display-m display-l">
+					{{pluralize 'members' tag.numMembers}}
+				</span>
 			</div>
 		</div>
-		<div class="horizontal-items xs-2-row-10 s-row-2 pull-right">
+		<div class="horizontal-items xs-3-row-10 s-row-2 pull-right">
 			{{#if (not tag.isDeleted)}}
 				<span class="clear-badge no-space">
 					<span class="display-xs display-s">
 						<button class="btn" type='button'
 							{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
-							Edit
+							Details
 						</button>
 					</span>
 				</span>

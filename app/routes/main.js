@@ -118,6 +118,8 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 			if (!this.get('stateManager.viewingMany')) {
 				if (this.get('stateManager.viewingTag')) {
 					this.transitionTo('main.tag.many');
+				} else if (this.get('stateManager.viewingSearch')) {
+					this.transitionTo('main.search.many');
 				} else {
 					this.transitionTo('main.contacts.many');
 				}
@@ -186,6 +188,24 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					}
 					callIfPresent(then);
 				});
+		},
+		removeFromContactNumberDuplicates: function(contact, removedNum) {
+			contact.removeDuplicatesForNumber(removedNum);
+		},
+		checkContactNumberDuplicates: function(contact, addedNum) {
+			const query = Object.create(null),
+				team = this.get('stateManager.ownerAsTeam');
+			query.search = addedNum;
+			if (team) {
+				query.teamId = team.get('id');
+			}
+			this.store.query('contact', query).then((results) => {
+				contact.addDuplicatesForNumber(addedNum, results.toArray());
+			});
+		},
+		closeSlideoutAndOpenDuplicate: function(closeAction, dupId) {
+			closeAction();
+			this.transitionTo('main.contacts.contact', dupId);
 		},
 		markUnread: function(data) {
 			const contacts = Ember.isArray(data) ? data : [data];

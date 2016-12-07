@@ -26,6 +26,7 @@ export default Ember.Component.extend({
 			id: this.elementId,
 			direction: this.get('direction'),
 			actions: {
+				// can past as many closures to execute subsequently as we like
 				close: this._close.bind(this)
 			}
 		};
@@ -104,9 +105,10 @@ export default Ember.Component.extend({
 	// Private methods
 	// ---------------
 
-	_close: function() {
+	_close: function(...then) {
 		this.set('firstTime', true);
 		callIfPresent(this.get('doClose'), this.get('publicAPI'));
+		then.forEach(callIfPresent);
 	},
 	_build$Overlay: function() {
 		const directionClass = this.get('directionClass');

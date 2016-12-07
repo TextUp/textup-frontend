@@ -1,4 +1,4 @@
-<div class='form-element'>
+<div class='form-element pad-l pad-r'>
     <label for='Staff Name' class='control-label'>Staff Name</label>
     {{input value=staff.name
         type='text'
@@ -8,7 +8,7 @@
         validateField='name'
         validate='bottom'}}
 </div>
-<div class='form-element'>
+<div class='form-element pad-l pad-r'>
     <label for='Staff Email' class='control-label'>Staff Email</label>
     {{input value=staff.email
         type='email'
@@ -18,10 +18,10 @@
         validateField='email'
         validate='bottom'}}
 </div>
-<div class='form-element'>
-    <label for='Personal Phone' class='control-label'>Staff Personal Phone</label>
-    {{partial 'partials/staff/personal-number'}}
-</div>
+{{partial 'partials/staff/personal-number'}}
+<hr>
 {{#with staff as |owner|}}
-    {{partial 'partials/change-number'}}
+    <div class="pad-l pad-r">
+        {{partial 'partials/change-number'}}
+    </div>
 {{/with}}

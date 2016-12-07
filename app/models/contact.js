@@ -9,8 +9,10 @@ import {
 } from '../utils/phone-number';
 import RecordModel from '../mixins/record-model';
 import FutureMessageModel from '../mixins/future-message-model';
+import defaultIfAbsent from "../utils/default-if-absent";
 
 const {
+	isEmpty,
 	computed: {
 		notEmpty,
 		equal: eq
@@ -63,6 +65,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.get('actions').clear();
+		this.get('numberDuplicates').clear();
 		this.set('isSelected', false);
 	},
 
@@ -102,6 +105,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 
 	type: 'contact', // for compose menu
 	isSelected: false,
+	numberDuplicates: defaultIfAbsent([]),
 	actions: null,
 
 	// Computed properties
@@ -112,6 +116,11 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 		const name = this.get('name'),
 			firstNum = this.get('numbers').objectAt(0);
 		return name ? name : (firstNum ? Ember.get(firstNum, 'number') : 'No Name');
+	}),
+	uniqueIdentifier: Ember.computed('name', 'numbers', function() {
+		const name = this.get('name'),
+			numbers = this.get('numbers').mapBy('number');
+		return `${name} ${numbers.join(', ')}`;
 	}),
 
 	isShared: notEmpty('sharedBy'),
@@ -130,6 +139,24 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 
 	// Helper methods
 	// --------------
+
+	addDuplicatesForNumber: function(num, dups) {
+		if (isEmpty(dups)) {
+			return;
+		}
+		this.removeDuplicatesForNumber(num);
+		this.get('numberDuplicates').pushObject({
+			number: num,
+			duplicates: dups
+		});
+	},
+	removeDuplicatesForNumber: function(num) {
+		const dupsList = this.get('numberDuplicates'),
+			foundObj = dupsList.findBy('number', num);
+		if (foundObj) {
+			dupsList.removeObject(foundObj);
+		}
+	},
 
 	isAnyStatus: function(raw) {
 		return (Ember.isArray(raw) ? raw : [raw])

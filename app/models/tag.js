@@ -52,6 +52,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 	isEmpty: eq('numMembers', 0),
 	hasManualChanges: notEmpty('actions'),
 	identifier: alias('name'),
+	uniqueIdentifier: alias('name'),
 	urlIdentifier: Ember.computed('name', function() {
 		return Ember.String.dasherize(this.get('name') || '');
 	}),

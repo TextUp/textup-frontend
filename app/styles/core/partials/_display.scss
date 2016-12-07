@@ -10,6 +10,10 @@ hr {
 .clickable {
     cursor: pointer;
 }
+.link {
+    @extend .clickable;
+    text-decoration: underline;
+}
 .no-select {
     cursor: default;
     user-select: none;
@@ -30,6 +34,14 @@ hr {
 @each $direction, $abbr in $directions-with-abbr {
     .border-#{$abbr} {
         border-#{$direction}: 1px solid $border-color;
+    }
+}
+.border-radius-all {
+    border-radius: $border-radius;
+}
+@each $corner, $abbr in $corners-with-abbr {
+    .border-radius-#{$abbr} {
+        border-#{$corner}-radius: $border-radius;
     }
 }
 .bg-color {

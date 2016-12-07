@@ -39,10 +39,19 @@
     <div class="xs-2-row-3 control-text">
         <label for="Notify Self" class='text-ellipsis'>
             Notify me also?
+            {{#if (not authManager.authUser.personalPhoneNumber)}}
+                {{#tool-tipster theme='tooltipster-clean'
+                    title='Notifications disabled'
+                    classNames='margin-l-quarter'
+                    tagName='span'}}
+                    <span class="fa fa-question-circle"></span>
+                {{/tool-tipster}}
+            {{/if}}
         </label>
     </div>
     {{multi-toggle/binary classNames='xs-row-3'
-        disabled=futureMsg.isDeleted
+        disabled=(or futureMsg.isDeleted
+            (not authManager.authUser.personalPhoneNumber))
         value=futureMsg.notifySelf}}
 </div>
 {{#if futureMsg.isNew}}

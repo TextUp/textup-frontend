@@ -47,40 +47,48 @@
         {{/tool-tipster}}
     </li>
     {{#if authManager.authUser.schedule.isFulfilled}}
-        <li class='menu-item menu-slideout
+        <li class='menu-item menu-slideout display-l
             {{if stateManager.isPhoneAvailable "success"}}'
             {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
             {{#tool-tipster position='right'
                 theme='tooltipster-clean'
                 title='Availability'
-                classNames='btn-expand display-l'}}
+                classNames='btn-expand'}}
                 {{#if stateManager.isPhoneAvailable}}
                     <span class="fa fa-calendar-check-o"></span>
                 {{else}}
                     <span class="fa fa-calendar-times-o"></span>
                 {{/if}}
             {{/tool-tipster}}
-            <div class="btn-expand display-xs display-s display-m">
+        </li>
+        <li class='menu-item menu-slideout display-xs display-s display-m
+            {{if stateManager.isPhoneAvailable "success"}}'
+            {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
+            <div class="btn-expand">
                 <span>Availability</span>
             </div>
         </li>
     {{/if}}
     <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout'
+    <li class='menu-item menu-slideout display-l'
         {{action 'toggleSlideout' 'slideouts/compose' 'main'}}>
         {{#tool-tipster position='right'
             theme='tooltipster-clean'
             title='Compose'
-            classNames='btn-expand display-l'}}
+            classNames='btn-expand'}}
             <span class="fa fa-comments"></span>
         {{/tool-tipster}}
-        <div class="btn-expand display-xs display-s display-m">
+    </li>
+    <li class='menu-item menu-slideout display-xs display-s display-m'
+        {{action 'toggleSlideout' 'slideouts/compose' 'main'}}>
+        <div class="btn-expand">
             <span>Compose</span>
         </div>
     </li>
 
     {{!-- contacts --}}
 
+    <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
         {{action 'toggleSlideout' 'slideouts/contact' 'main'}}>
         {{#tool-tipster position='right'
@@ -90,6 +98,14 @@
             <span class="fa fa-user-plus"></span>
         {{/tool-tipster}}
     </li>
+    {{#link-to 'main.search' tagName='li' classNames='menu-item display-l'}}
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Search Contacts'
+            classNames='btn-expand'}}
+            <span class="fa fa-search"></span>
+        {{/tool-tipster}}
+    {{/link-to}}
     {{#link-to 'main.contacts' tagName='li' classNames='menu-item display-l'}}
         {{#tool-tipster position='right'
             theme='tooltipster-clean'
@@ -106,28 +122,29 @@
         </button >
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTag) (eq filter 'all')) 'active'}}"
+        {{if (and stateManager.viewingContacts (eq filter 'all')) 'active'}}"
         {{action 'changeFilter' 'all'}}>
         <span>All</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTag) (eq filter 'unread')) 'active'}}"
+        {{if (and stateManager.viewingContacts (eq filter 'unread')) 'active'}}"
         {{action 'changeFilter' 'unread'}}>
         <span>Unread</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTag) (eq filter 'archived')) 'active'}}"
+        {{if (and stateManager.viewingContacts (eq filter 'archived')) 'active'}}"
         {{action 'changeFilter' 'archived'}}>
         <span>Archived</span>
     </li>
     <li class="menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTag) (eq filter 'blocked')) 'active'}}"
+        {{if (and stateManager.viewingContacts (eq filter 'blocked')) 'active'}}"
         {{action 'changeFilter' 'blocked'}}>
         <span>Blocked</span>
     </li>
 
     {{!-- tags --}}
 
+    <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
         {{action 'toggleSlideout' 'slideouts/tags/list' 'main'}}>
         {{#tool-tipster position='right'
@@ -148,10 +165,12 @@
         {{#each model.phone.content.tags as |tag|}}
             {{#link-to 'main.tag' tag tagName='li'
                 classNames='menu-item display-xs display-s display-m'}}
-                <span>{{tag.name}}</span>
+                <span>
+                    <span class="indicator margin-r-quarter"
+                        style="background-color:{{tag.hexColor}};"></span>
+                    {{tag.name}}
+                </span>
                 <span class="badge dark">{{tag.numMembers}}</span>
-                <span class="indicator"
-                    style="background-color:{{tag.hexColor}};"></span>
             {{/link-to}}
         {{else}}
             <li class='text-bold display-xs display-s display-m'>
@@ -162,21 +181,20 @@
 
     {{!-- feedback --}}
 
-    <li class="menu-divider"></li>
-    <li class='menu-item menu-slideout'
+    <li class="menu-divider display-xs display-s display-m"></li>
+    <li class='menu-item menu-slideout display-xs display-s display-m'
         {{action 'toggleSlideout' 'slideouts/feedback' 'main'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title='Feedback'
-            classNames='btn-expand display-l'}}
-            <span class="fa fa-question"></span>
-        {{/tool-tipster}}
-        <div class="btn-expand display-xs display-s display-m">
-            <span>Feedback</span>
-        </div>
+        <span>Feedback</span>
     </li>
-
     <li class='menu-footer display-l'>
-        <img class="brand" src='assets/images/logo.png' />
+        <li class='border-t menu-item menu-slideout'
+            {{action 'toggleSlideout' 'slideouts/feedback' 'main'}}>
+            {{#tool-tipster position='right'
+                theme='tooltipster-clean'
+                title='Feedback'
+                classNames='btn-expand'}}
+                <span class="fa fa-question-circle"></span>
+            {{/tool-tipster}}
+        </li>
     </li>
 {{/sliding-drawer}}

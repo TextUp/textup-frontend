@@ -71,9 +71,6 @@ body {
 	transition: all 0.5s;
 	position: relative;
 
-	.indicator { // see _display for more details
-		@include v-center(right, 0.25 * $padding);
-	}
 	&.menu-header {
 		@include button-colors(shade($brand-color, 2));
 		height: $header-height;

@@ -63,9 +63,12 @@
         {{/with}}
         {{#tab-container/item doRegister=doRegister
             title="My Account"}}
-            <div class="pad-all">
+            <div class="pad-t pad-b">
                 {{#with authManager.authUser as |staff|}}
-                    {{partial 'partials/staff/settings'}}
+                    <div class="pad-l pad-r">
+                        {{partial 'partials/staff/settings'}}
+                    </div>
+                    {{partial 'partials/staff/personal-number'}}
                     {{#if staff.hasDirtyAttributes}}
                         {{!-- separate if loops to prevent multiple-set deprecation --}}
                         {{#if (and (not usernameDropdown.isOpen)
@@ -85,9 +88,11 @@
                         {{/if}}
                     {{/if}}
                     <hr>
-                    {{partial 'partials/staff/code-with-confirm'}}
-                    {{partial 'partials/staff/username-with-confirm'}}
-                    {{partial 'partials/staff/password-with-confirm'}}
+                    <div class="pad-l pad-r">
+                        {{partial 'partials/staff/code-with-confirm'}}
+                        {{partial 'partials/staff/username-with-confirm'}}
+                        {{partial 'partials/staff/password-with-confirm'}}
+                    </div>
                 {{/with}}
             </div>
         {{/tab-container/item}}

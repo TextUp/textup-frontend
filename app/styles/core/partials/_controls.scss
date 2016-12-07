@@ -103,7 +103,7 @@
     border-bottom-style: solid;
 
     &.btn-plain {
-        // @extend %input-disabled;
+        @extend %input-disabled;
         border-color: transparent;
         background-color: transparent;
         color: inherit;
@@ -117,18 +117,21 @@
         &.btn-default:not(:disabled) {
             color: $brand-color;
         }
+        &:disabled, &.disabled {
+            background-color: $bg-light-color;
+        }
     }
     &:not(.btn-plain):not(:disabled) {
         &.btn-danger {
-            // @extend %input-disabled;
+            @extend %input-disabled;
             @include button-colors($danger-color);
         }
         &.btn-success {
-            // @extend %input-disabled;
+            @extend %input-disabled;
             @include button-colors($success-color);
         }
         &.btn-default {
-            // @extend %input-disabled;
+            @extend %input-disabled;
             @include button-colors($brand-color);
         }
     }
@@ -200,6 +203,12 @@ input[type="checkbox"]:checked:after {
     width: 100%;
     padding: 0 $padding;
     transition: border-color 0.5s;
+
+    &.form-control-minimal {
+        border-top-width: 0;
+        border-left-width: 0;
+        border-right-width: 0;
+    }
 }
 textarea.form-control {
     height: auto;

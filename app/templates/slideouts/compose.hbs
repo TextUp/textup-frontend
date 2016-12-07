@@ -9,7 +9,7 @@
 				{{#multi-select data=model.phone.content.tags
 			    	selected=selectedRecipients
 			    	displayProperty='identifier'
-			    	identityProperty='identifier'
+			    	identityProperty='uniqueIdentifier'
 			    	doSearch=(action 'doSearch')
 			    	doCreate=(action 'createRecipient')
 			    	onInsert=(action 'insertRecipientAt')

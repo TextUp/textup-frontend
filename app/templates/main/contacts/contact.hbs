@@ -5,7 +5,10 @@
 		<div class="contact-details">
 			<div class="horizontal-items xs-2-row-3 s-row-2 pull-left">
                 <span class="clear-badge display-xs display-s no-space">
-                    {{#link-to (if tag 'main.tag' 'main.contacts')}}
+                    {{#link-to (if tag 'main.tag'
+                        (if stateManager.viewingSearch
+                            'main.search'
+                            'main.contacts'))}}
                         <span class="pad-all">
                             <span class="fa fa-chevron-left"></span>
                         </span>
@@ -15,12 +18,10 @@
 					<h5>{{phone-number contact.identifier}}</h5>
 				</span>
                 <span class="clear-badge no-space">
-                    <a class="btn btn-plain display-m display-l" href='#'
+                    <a class="btn btn-plain display-m display-l link"
+                        href='#'
                         {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                        <span class="pad-all display-m">
-                            <span class="fa fa-user"></span>
-                        </span>
-                        <span class="fa fa-user display-l"></span>
+                        Details
                     </a>
                 </span>
                 <span class="clear-badge display-l">
@@ -47,7 +48,7 @@
                         {{#hide-away/dropdown}}
                             <li tabindex='0' class='dropdown-item display-xs display-s'
                                 {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                                Edit Info
+                                Details
                             </li>
                             <li tabindex='0' class='dropdown-item display-xs display-s'
                                 {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/contact'}}>
@@ -69,14 +70,15 @@
                     <span class='clear-badge no-space'>
                         <button class='btn'
                             {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                            {{if contact.isSharedDelegate
-                                'Edit Info'
-                                'View Info'}}
+                            Details
                         </button>
                     </span>
                 {{/if}}
                 <span class="clear-badge display-m display-l">
-                    {{#link-to (if tag 'main.tag' 'main.contacts')}}
+                    {{#link-to (if tag 'main.tag'
+                        (if stateManager.viewingSearch
+                            'main.search'
+                            'main.contacts'))}}
                         <span class="pad-all">
                             <span class="fa fa-times"></span>
                         </span>

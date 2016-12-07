@@ -22,11 +22,19 @@
 	            controlButtonClass='blend-in btn-default'}}
 	    </div>
 	    <div class="single-body-footer text-center">
-	    	<button class="btn btn-default" type='button'
-	    		disabled={{if (not authManager.authUser.personalPhoneNumber) 'disabled'}}
-	    		onclick={{route-action 'addPersonalPhone' authManager.authUser}}>
-	    		Finish
-	    	</button>
+	    	<span>
+	    		<button class="btn" type='button'
+	    			onclick={{route-action 'skipSetup' authManager.authUser}}>
+	    			Skip
+	    		</button>
+	    	</span>
+	    	<span>
+                <button class="btn btn-default" type='button'
+		    		disabled={{if (not authManager.authUser.personalPhoneNumber) 'disabled'}}
+		    		onclick={{route-action 'addPersonalPhone' authManager.authUser}}>
+		    		Finish
+		    	</button>
+            </span>
 	    </div>
 	</div>
 </div>
