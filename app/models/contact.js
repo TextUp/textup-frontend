@@ -13,6 +13,7 @@ import defaultIfAbsent from "../utils/default-if-absent";
 
 const {
 	isEmpty,
+	isPresent,
 	computed: {
 		notEmpty,
 		equal: eq
@@ -115,7 +116,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 	identifier: Ember.computed('name', 'numbers', function() {
 		const name = this.get('name'),
 			firstNum = this.get('numbers').objectAt(0);
-		return name ? name : (firstNum ? Ember.get(firstNum, 'number') : 'No Name');
+		return isPresent(name) ? name : (firstNum ? Ember.get(firstNum, 'number') : 'No Name');
 	}),
 	uniqueIdentifier: Ember.computed('name', 'numbers', function() {
 		const name = this.get('name'),

@@ -4,6 +4,10 @@ import Ember from 'ember';
 import Setup from '../mixins/setup-route';
 import Slideout from '../mixins/slideout-route';
 
+const {
+	isNone
+} = Ember;
+
 export default Ember.Route.extend(Slideout, Auth, Setup, {
 	slideoutOutlet: 'details-slideout',
 
@@ -66,6 +70,18 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	},
 	afterModel: function(model) {
 		const user = this.get('authManager.authUser');
+		// sometimes, strange race condition where the model isn't actually set yet
+		// and the model parameter to this hook is actually hook. In those rare
+		// occassions, transition to admin if available or prompt user to log in again
+		if (isNone(model)) {
+			if (user && user.get('isAdmin')) {
+				this.transitionTo('admin');
+			} else {
+				this.notifications.error(`Sorry. We didn't get that. Your credentials should be 
+					correct. Please try to log in one more time.`);
+				this.get('authManager').logout();
+			}
+		}
 		// double check that model has phone
 		return model.get('phone').then((phone) => {
 			if (phone) {
