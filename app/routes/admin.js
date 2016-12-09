@@ -127,20 +127,25 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		// ----
 
 		initializeNewTeam: function() {
+			const org = this.get('currentModel');
 			this.controller.set('newTeam', this.store.createRecord('team', {
-				org: this.get('currentModel'),
-				location: this.store.createRecord('location')
+				org: org,
+				location: this.store.createRecord('location', {
+					address: org.get('location.address'),
+					lat: org.get('location.lat'),
+					lon: org.get('location.lon')
+				})
 			}));
 		},
 		createTeam: function(team, then = undefined) {
 			return this.get('dataHandler')
 				.persist(team)
-				.then(() => {
+				.then((persistedTeam) => {
 					// there's a zombie location record that persists, but we
 					// are leaving it in the store because unloading the zombie
 					// location also disassociates the team and its location
 					const model = this.get('currentModel');
-					model.get('teams').then((teams) => teams.unshiftObject(team));
+					model.get('teams').then((teams) => teams.unshiftObject(persistedTeam));
 					callIfPresent(then);
 				});
 		},
@@ -162,9 +167,10 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 		persistWithPhone: function(withPhone, then) {
 			const isTransfer = (withPhone.get('phoneAction') === 'transfer'),
 				data = withPhone.get('phoneActionData'),
-				targetId = isTransfer ? get(data, 'id') : null;
-			const targetClass = isTransfer ?
-				this._getModelNameFromType(get(data, 'type')) : null;
+				targetId = isTransfer ? get(data, 'id') : null,
+				// if transfer, one of 'staff' or 'team', see phone-serializer.js mixin for
+				// how this type is transformed into what is accepted by the backend
+				targetClass = isTransfer ? get(data, 'type') : null;
 			return this.get('dataHandler')
 				.persist(withPhone)
 				.then(() => {
@@ -182,9 +188,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	// Helpers
 	// -------
 
-	_getModelNameFromType: function(type) {
-		return String(type).toLowerCase() === 'group' ? 'team' : 'staff';
-	},
 	_changeStaffStatus: function(people) {
 		this.get('dataHandler')
 			.persist(people)
