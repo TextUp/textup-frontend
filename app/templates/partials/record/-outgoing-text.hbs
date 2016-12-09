@@ -31,15 +31,6 @@
         {{/each}}
     </div>
 {{else}}
-    <span class='decoration-left display-s display-m display-l'
-        tabindex='0'>
-        {{#if record.numSuccesses.isFulfilled}}
-            {{#if (gt record.numSuccesses.content 0)}}
-                {{record.numSuccesses.content}}
-                {{pluralize 'recipient' record.numSuccesses.content}}
-            {{/if}}
-        {{/if}}
-    </span>
     <span class='decoration-right'>
         {{moment-from-now record.whenCreated interval=1000}} by
         <span class="text-bold">
@@ -77,7 +68,14 @@
                     title='Recipients'
                     classNames='btn btn-plain btn-expand
                         text-center clickable text-small'}}
-                    <span class="center fa fa-hashtag"></span>
+                    <span class="center bg-color bg-brand-dark halo">
+                        {{#if (and record.numSuccesses.isFulfilled
+                            (gt record.numSuccesses.content 0))}}
+                            {{record.numSuccesses.content}}
+                        {{else}}
+                            <span class="fa fa-hashtag"></span>
+                        {{/if}}
+                    </span>
                 {{/tool-tipster}}
             </div>
         {{/if}}

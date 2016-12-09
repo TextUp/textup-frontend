@@ -107,9 +107,9 @@
         <span>Admins</span>
     </li>
     <li class='menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTeam) (eq filter 'blocked')) 'active'}}'
-        {{action 'changeFilter' 'blocked'}}>
-        <span>Blocked</span>
+        {{if (and (not stateManager.viewingTeam) (eq filter 'deactivated')) 'active'}}'
+        {{action 'changeFilter' 'deactivated'}}>
+        <span>Deactivated</span>
     </li>
 
     {{!-- teams --}}

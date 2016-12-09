@@ -73,7 +73,7 @@ export default Ember.Controller.extend({
 		const options = {
 			active: ['staff', 'admin'],
 			admins: ['admin'],
-			blocked: ['blocked']
+			deactivated: ['blocked']
 		};
 		return filter ? options[filter.toLowerCase()] : options['active'];
 	}
