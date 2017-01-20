@@ -1,9 +1,10 @@
 import Ember from 'ember';
+import {
+    capitalize as doCapitalize
+} from '../utils/text';
 
-export function capitalize(params /*, hash*/ ) {
-	const word = params[0] ? params[0] : '',
-		numToCap = Ember.isPresent(params[1]) && !isNaN(params[1]) ? parseInt(params[1]) : 1;
-	return word.slice(0, numToCap).toUpperCase() + word.slice(numToCap);
+export function capitalize([word, numToCap] /*, hash*/ ) {
+    return doCapitalize(word, numToCap);
 }
 
 export default Ember.Helper.helper(capitalize);

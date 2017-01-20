@@ -1,10 +1,8 @@
 <div class="offset-xs-row-10 xs-7-row-10 v-center-left text-left">
-    {{#if org}}
-        <h4 class="text-white text-ellipsis">Admin</h4>
-    {{else}}
-        <h4 class="text-white text-ellipsis">{{model.name}}</h4>
+    <h4 class="text-white text-ellipsis">{{stateManager.owner.name}}</h4>
+    {{#if (not stateManager.ownerIsOrg)}}
         <p class="text-bold text-ellipsis">
-        	{{phone-number model.phone.content.number}}
+            {{phone-number stateManager.owner.phone.content.number}}
         </p>
     {{/if}}
 </div>

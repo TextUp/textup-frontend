@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Mixin.create({
 
 	remaining: 'none', // top | right | bottom | left
+	maxlength: null,
 
 	indicatorClass: 'remaining-indicator',
 	containerClass: '',
@@ -16,6 +17,10 @@ export default Ember.Mixin.create({
 			maxlength = this.get('maxlength');
 		return allowed.any((p) => position === p) && Ember.isPresent(maxlength);
 	}),
+
+	// Internal properties
+	// -------------------
+
 	$indicator: null,
 
 	// Events
@@ -33,6 +38,8 @@ export default Ember.Mixin.create({
 			doUpdateAfter = function() {
 				Ember.run.scheduleOnce('afterRender', this, doUpdate);
 			};
+		// for cleanup during destruction
+		this.set('$indicator', $indicator);
 		// insert items into the DOM
 		$el.before($container);
 		$container.append($el, $indicator);
@@ -55,7 +62,14 @@ export default Ember.Mixin.create({
 	},
 	willDestroyElement: function() {
 		this._super(...arguments);
-		this.$().off(`.${this.elementId}`);
+		const $el = this.$(),
+			$indicator = this.get('$indicator');
+		$el.off(`.${this.elementId}`);
+		// if indicator is present then we need to clean up
+		if ($indicator && $indicator.length) {
+			$indicator.remove();
+			$el.unwrap();
+		}
 	},
 
 	// DOM construction

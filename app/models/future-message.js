@@ -75,7 +75,7 @@ export default DS.Model.extend(Validations, {
 	nextFireDate: DS.attr('date'),
 	timesTriggered: DS.attr('number'),
 	startDate: DS.attr('date', {
-		defaultValue: () => moment().add(1, 'day').toDate()
+		defaultValue: () => moment().toDate()
 	}),
 
 	type: DS.attr('string', {

@@ -36,7 +36,11 @@
 				{{#if (not person.isAuthUser)}}
 					<span class='clear-badge'>
 		            	{{#hide-away/dropdown}}
-		                    <li class='dropdown-divider'>Status</li>
+		            		<li tabindex='0' class='dropdown-item'
+		            			onclick={{route-action 'resetPassword' person.username}}>
+								Send password reset
+							</li>
+		                    <li class='dropdown-divider'>Change Status</li>
 		                    {{partial 'partials/staff/status'}}
 			            {{else}}
 			                <button class='btn' type='button'>
@@ -113,7 +117,7 @@
 				<div class="form-element row pad-t pad-l pad-r">
 		            <div class="xs-2-row-3 control-text">
 		                <label for="Availability" class='text-ellipsis'>
-		                    {{person.name}} Availability
+		                    {{person.name}}'s Availability
 		                </label>
 		            </div>
 		            {{multi-toggle/binary classNames='xs-row-3'

@@ -64,10 +64,8 @@
         {{#if record.receipts}}
             <div class="pull-right-to-edge receipts-button full-height"
                 tabindex="0">
-                {{#tool-tipster theme='tooltipster-clean'
-                    title='Recipients'
-                    classNames='btn btn-plain btn-expand
-                        text-center clickable text-small'}}
+                <button class="btn btn-plain btn-expand
+                    text-center clickable text-small">
                     <span class="center bg-color bg-brand-dark halo">
                         {{#if (and record.numSuccesses.isFulfilled
                             (gt record.numSuccesses.content 0))}}
@@ -76,7 +74,7 @@
                             <span class="fa fa-hashtag"></span>
                         {{/if}}
                     </span>
-                {{/tool-tipster}}
+                </button>
             </div>
         {{/if}}
     </div>

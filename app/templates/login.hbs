@@ -53,7 +53,8 @@
                         placeholder="Username"
                         class="form-control"
                         autocorrect="off"
-                        autocapitalize="off"}}
+                        autocapitalize="off"
+                        enter=(route-action 'login' username password storeCredentials)}}
                 </div>
                 <div class="form-element">
                     <label for="Password">Password</label>
@@ -61,6 +62,7 @@
                         type="password"
                         placeholder="Password"
                         class="form-control"
+                        allowShowPassword=true
                         enter=(route-action 'login' username password storeCredentials)}}
                 </div>
                 <div class="row form-element">

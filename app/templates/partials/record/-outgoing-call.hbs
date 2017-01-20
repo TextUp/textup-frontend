@@ -7,7 +7,7 @@
 <div class="contents">
     {{#if record.numSuccesses.isFulfilled}}
         {{#if (gt record.numSuccesses.content 0)}}
-            <div class="decoration-center-left">
+             <div class="decoration-center-left">
                 <span class="indicator success"></span>
             </div>
             <span class="fa fa-phone"></span>
@@ -18,10 +18,17 @@
             <div class="decoration-center-left">
                 <span class="indicator"></span>
             </div>
-             <span class="fa fa-circle-o-notch fa-spin"></span>
-            <span class='pad-l duration'>
-                Call in progress
-            </span>
+            {{#if (date/is-same-day record.whenCreated (now))}}
+                <span class="fa fa-circle-o-notch fa-spin"></span>
+                <span class='pad-l duration'>
+                    Call in progress
+                </span>
+            {{else}}
+                <span class="fa fa-times"></span>
+                <span class='pad-l duration'>
+                    Call could not be completed
+                </span>
+            {{/if}}
         {{/if}}
     {{/if}}
 </div>

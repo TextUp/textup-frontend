@@ -13,12 +13,20 @@
 		<div class="single-body-content">
 			<div class="form-element">
 				<label for="Username">New Password</label>
-				{{input value=newPassword type='password' placeholder='New Password' class='form-control'}}
+				{{input value=newPassword
+					type='password'
+					allowShowPassword=true
+					placeholder='New Password'
+					class='form-control'}}
 			</div>
 			<div class="form-element">
 				<label for="Username">Confirm Password</label>
 				<div class="input-group">
-					{{input value=confirmNewPassword type='password' placeholder='Confirm Password' class='form-control'}}
+					{{input value=confirmNewPassword
+						type='password'
+						allowShowPassword=true
+						placeholder='Confirm Password'
+						class='form-control'}}
 					<div class="input-group-addon">
 						{{async-button classNames='btn btn-default'
 							disableWhen=(or (not newPassword) (not (eq newPassword confirmNewPassword)))

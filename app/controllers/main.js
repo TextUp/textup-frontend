@@ -33,8 +33,10 @@ export default Ember.Controller.extend({
 
 		createRecipient: function(val) {
 			if (validateNumber(val)) {
+				const num = cleanNumber(val);
 				return {
-					identifier: cleanNumber(val),
+					uniqueIdentifier: num,
+					identifier: num
 				};
 			}
 		},

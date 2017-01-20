@@ -1,15 +1,10 @@
 import Ember from 'ember';
-import Inflector from 'ember-inflector';
+import {
+    pluralize as doPluralize
+} from '../utils/text';
 
-export function pluralize(params /*, hash*/ ) {
-	const word = params[0],
-		infl = Inflector.inflector;
-	let count = params[1];
-	if (isNaN(count)) {
-		return word;
-	}
-	count = parseInt(count);
-	return count === 1 ? infl.singularize(word) : infl.pluralize(word);
+export function pluralize([word, count] /*, hash*/ ) {
+    return doPluralize(word, count);
 }
 
 export default Ember.Helper.helper(pluralize);

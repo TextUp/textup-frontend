@@ -73,9 +73,14 @@ body {
 
 	&.menu-header {
 		@include button-colors(shade($brand-color, 2));
+
 		height: $header-height;
 		padding: 0;
 		line-height: $header-height;
+
+		&.menu-header-light {
+			@include button-colors(shade($bg-color));
+		}
 	}
 	&.menu-slideout {
 		padding-left: 10px;

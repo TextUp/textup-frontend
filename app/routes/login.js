@@ -28,7 +28,7 @@ export default Ember.Route.extend(Public, {
 					should be in your inbox in a few minutes.`);
 			}, () => {
 				this.notifications.error(`Hmm. We could not find the username
-					your provided. Please try again.`);
+					you provided. Please try again.`);
 			});
 		}
 	}

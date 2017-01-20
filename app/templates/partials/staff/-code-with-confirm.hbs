@@ -7,14 +7,19 @@
         (action (mut newCPassword) null))
     bodyClass='pad-all' as |hideAway|}}
     <div class='form-element'>
-        <label for='Your Password' class='control-label'>Your Password</label>
+        <label for='Your Password' class='control-label'>
+            {{authManager.authUser.name}}'s Password
+        </label>
         {{input type='password'
+            allowShowPassword=true
             class='form-control start-focus'
             placeholder='Your Password'
             value=newCPassword}}
     </div>
     <div class='form-element'>
-        <label for='New Lock Code' class='control-label'>New Lock Code</label>
+        <label for='New Lock Code' class='control-label'>
+            New Lock Code for {{staff.name}}
+        </label>
         {{lock-control val=staff.lockCode
             lockOnMultipleFailure=false
             numDigits=4

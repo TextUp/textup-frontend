@@ -42,6 +42,7 @@
             <label for="Password">Password</label>
             {{input value=staff.password
                 type="password"
+                allowShowPassword=true
                 placeholder="Password"
                 class="form-control"}}
         </div>
@@ -49,6 +50,7 @@
             <label for="Confirm Password">Confirm Password</label>
             {{input value=confirmPassword
                 type="password"
+                allowShowPassword=true
                 placeholder="Confirm Password"
                 class=(concat "form-control "
                     (if (and confirmPassword (not (eq staff.password confirmPassword)))

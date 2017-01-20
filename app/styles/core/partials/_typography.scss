@@ -47,8 +47,8 @@ p {
 // -------
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Bitter', helvetica, arial, sans-serif;
-    text-transform: uppercase;
+    @extend .text-heading;
+
     margin: 0;
     color: $title-color;
 }
@@ -70,6 +70,11 @@ h5 {
 
 // Modifier classes
 // ----------------
+
+.text-heading {
+    font-family: 'Bitter', helvetica, arial, sans-serif;
+    text-transform: uppercase;
+}
 
 .match-color {
     color: inherit;

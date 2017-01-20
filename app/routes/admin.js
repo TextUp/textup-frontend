@@ -107,6 +107,15 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					callIfPresent(then);
 				});
 		},
+		resetPassword: function(username) {
+			return this.get('authManager').resetPassword(username).then(() => {
+				this.notifications.success(`All good! The password reset
+					has been sent to the email address associated with ${username}.`);
+			}, () => {
+				this.notifications.error(`Hmm. We could not find that account.
+					Please try again.`);
+			});
+		},
 		markStaff: function(data) {
 			const people = Ember.isArray(data) ? data : [data];
 			people.forEach((person) => person.makeStaff());

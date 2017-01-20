@@ -1,6 +1,11 @@
 import Ember from 'ember';
-import tc from 'npm:tinycolor2';
 import defaultIfAbsent from '../utils/default-if-absent';
+import {
+	abbreviate
+} from '../utils/text';
+import {
+	complement as findComplement
+} from '../utils/color';
 
 export default Ember.Component.extend({
 	tagName: 'span',
@@ -20,10 +25,7 @@ export default Ember.Component.extend({
 	// -------------------
 
 	complement: Ember.computed('color', function() {
-		const tColor = tc(this.get('color')),
-			ct = this.get('contrast'),
-			complement = tColor.isLight() ? tColor.darken(ct) : tColor.lighten(ct);
-		return complement.toString();
+		return findComplement(this.get('color'), this.get('contrast'));
 	}),
 	style: Ember.computed('color', 'complement', function() {
 		const color = this.get('color'),
@@ -83,8 +85,6 @@ export default Ember.Component.extend({
 		});
 	},
 	doAbbreviate: function(content) {
-		return content.split(/\s+/).map(function(val) {
-			return val[0] ? val[0] : '';
-		}).join('').toUpperCase();
+		return abbreviate(content);
 	}
 });

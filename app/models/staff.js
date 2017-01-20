@@ -108,7 +108,9 @@ export default DS.Model.extend(Validations, {
 	schedule: DS.belongsTo('schedule'),
 
 	manualSchedule: DS.attr('boolean'),
-	isAvailable: DS.attr('boolean'),
+	isAvailable: DS.attr('boolean', {
+		defaultValue: false
+	}),
 
 	teams: DS.hasMany('team'),
 

@@ -9,18 +9,23 @@
     bodyClass='pad-all' as |hideAway|}}
     {{#if (eq storedUsername (unbound staff.username))}}
         <div class='form-element'>
-            Changing username will require logging back in.
+            Changing your own username will require logging back in.
         </div>
     {{/if}}
     <div class='form-element'>
-        <label for='Your Password' class='control-label'>Your Password</label>
+        <label for='Your Password' class='control-label'>
+            {{authManager.authUser.name}}'s Password
+        </label>
         {{input type='password'
+            allowShowPassword=true
             class='form-control start-focus'
             placeholder='Your Password'
             value=newUPassword}}
     </div>
     <div class='form-element'>
-        <label for='New Username' class='control-label'>New Username</label>
+        <label for='New Username' class='control-label'>
+            New Username for {{staff.name}}
+        </label>
         {{input type='text'
             class='form-control'
             placeholder='New Username'

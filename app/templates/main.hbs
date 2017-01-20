@@ -8,9 +8,19 @@
     doRegister=(action (mut slidingMenu))
     as |drawer|}}
     <span class="display-xs display-s display-m menu-toggle">
-        <button class="btn btn-plain"
+        <button class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}}>
-            <span class="fa fa-bars"></span>
+            {{#if stateManager.ownerIsTeam}}
+                <p class='halo halo-sm text-heading'
+                    style='background-color:{{stateManager.owner.hexColor}};
+                        color:{{contrast-color stateManager.owner.hexColor}};'>
+                    {{abbreviate stateManager.owner.name 1}}
+                </p>
+            {{else}}
+                <span class='halo halo-sm bg-color bg-brand text-heading'>
+                    <span class="fa fa-user"></span>
+                </span>
+            {{/if}}
         </button>
     </span>
     {{#liquid-if showSlideout class='animate-slide-from-right animated-overflow'}}
@@ -37,15 +47,29 @@
             </button>
         </div>
     {{/hide-away}}
-    <li class='menu-item menu-header display-l'
-        {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title=(concat 'Account (' stateManager.owner.name ')')
-            classNames='btn-expand'}}
-            <span class="fa fa-bars"></span>
-        {{/tool-tipster}}
-    </li>
+    {{#if stateManager.ownerIsTeam}}
+        <li class='menu-item menu-header display-l'
+            style='background-color:{{stateManager.owner.hexColor}};
+                color:{{contrast-color stateManager.owner.hexColor}};'
+            {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
+            {{#tool-tipster position='right'
+                theme='tooltipster-clean'
+                title=(concat 'Account (' stateManager.owner.name ')')
+                classNames='btn-expand'}}
+                <h4 class='match-color'>{{abbreviate stateManager.owner.name 1}}</h4>
+            {{/tool-tipster}}
+        </li>
+    {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
+        <li class='menu-item menu-header display-l'
+            {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
+            {{#tool-tipster position='right'
+                theme='tooltipster-clean'
+                title=(concat 'Account (' stateManager.owner.name ')')
+                classNames='btn-expand'}}
+                <span class="fa fa-user"></span>
+            {{/tool-tipster}}
+        </li>
+    {{/if}}
     {{#if authManager.authUser.schedule.isFulfilled}}
         <li class='menu-item menu-slideout display-l
             {{if stateManager.isPhoneAvailable "success"}}'

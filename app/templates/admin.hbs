@@ -7,9 +7,11 @@
     bodyId='body'
     as |drawer|}}
     <span class="display-xs display-s display-m menu-toggle">
-        <button class="btn btn-plain"
+        <button class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}}>
-            <span class="fa fa-bars"></span>
+            <span class='halo halo-sm bg-color bg-dark text-heading'>
+                <span class="fa fa-home"></span>
+            </span>
         </button>
     </span>
     {{#liquid-if showSlideout class='animate-slide-from-right animated-overflow'}}
@@ -35,13 +37,13 @@
             </button>
         </div>
     {{/hide-away}}
-    <li class='menu-item menu-header display-l'
+    <li class='menu-item menu-header menu-header-light display-l'
         {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
         {{#tool-tipster position='right'
             theme='tooltipster-clean'
             title=(concat 'Admin (' stateManager.owner.name ')')
             classNames='btn-expand'}}
-            <span class="fa fa-bars"></span>
+            <span class="fa fa-home"></span>
         {{/tool-tipster}}
     </li>
     {{#if numPending}}
