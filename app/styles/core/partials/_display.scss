@@ -48,6 +48,7 @@ hr {
         border-#{$corner}-radius: $border-radius;
     }
 }
+
 $bg-color-states: hover regular;
 @each $state in $bg-color-states {
     $prefix: '';
@@ -128,8 +129,15 @@ $bg-color-states: hover regular;
     @include v-center(right, 0);
     @extend .text-right;
 }
+.pull-right-to-edge {
+    @include v-center(right, 0);
+    @extend .text-right;
+}
 .pull-left {
     @include v-center(left, $padding);
+}
+.pull-left-to-edge {
+    @include v-center(left, 0);
 }
 .pull-left-to-edge {
     @include v-center(left, 0);
