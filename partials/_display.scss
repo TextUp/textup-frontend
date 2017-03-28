@@ -10,6 +10,10 @@ hr {
 .clickable {
     cursor: pointer;
 }
+.link {
+    @extend .clickable;
+    text-decoration: underline;
+}
 .no-select {
     cursor: default;
     user-select: none;
@@ -30,6 +34,14 @@ hr {
 @each $direction, $abbr in $directions-with-abbr {
     .border-#{$abbr} {
         border-#{$direction}: 1px solid $border-color;
+    }
+}
+.border-radius-all {
+    border-radius: $border-radius;
+}
+@each $corner, $abbr in $corners-with-abbr {
+    .border-radius-#{$abbr} {
+        border-#{$corner}-radius: $border-radius;
     }
 }
 .bg-color {
@@ -66,6 +78,15 @@ hr {
 // Centering
 // ---------
 
+.align-top {
+    vertical-align: top;
+}
+.align-middle {
+    vertical-align: middle;
+}
+.align-bottom {
+    vertical-align: bottom;
+}
 .margin-center {
     float: none !important;
     margin: 0 auto;
@@ -87,8 +108,15 @@ hr {
     @include v-center(right, 3%);
     @extend .text-right;
 }
+.pull-right-to-edge {
+    @include v-center(right, 0);
+    @extend .text-right;
+}
 .pull-left {
     @include v-center(left, 3%);
+}
+.pull-left-to-edge {
+    @include v-center(left, 0);
 }
 .center {
     position: absolute;

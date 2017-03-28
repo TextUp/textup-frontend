@@ -25,14 +25,22 @@ $border-radius: 3px;
 $spacing-scaling: (
 	1: 'default',
 	0.5: 'half',
+    0.25: 'quarter',
 	2: 'double',
-    3: 'triple'
+    3: 'triple',
+    4: '4x'
 );
 $directions-with-abbr: (
     left: 'l',
     right: 'r',
     top: 't',
     bottom: 'b'
+);
+$corners-with-abbr: (
+    'top-left': 'tl',
+    'top-right': 'tr',
+    'bottom-left': 'bl',
+    'bottom-right': 'br'
 );
 $padding: 1em;
 $button-accent-size: 3px;

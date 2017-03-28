@@ -20,9 +20,11 @@ $abbrs: map-values($breakpoint-abbrs);
 	// mobile first: smallest breakpoint has no media query
 	@if $i == 1 {
 		.#{$abbr}-full-row {
+			box-sizing: border-box;
 			width: 100%;
 		}
 		@include responsive-grid('row', $abbr, width, $grid-splits) {
+			box-sizing: border-box;
 			float: left;
 		}
 		@include responsive-display("display", $abbr, $abbrs);
@@ -31,9 +33,11 @@ $abbrs: map-values($breakpoint-abbrs);
 	@else {
 		@include mq($from: $breakpoint) {
 			.#{$abbr}-full-row {
+				box-sizing: border-box;
 				width: 100%;
 			}
 			@include responsive-grid('row', $abbr, width, $grid-splits) {
+				box-sizing: border-box;
 				float: left;
 			}
 			@include responsive-display("display", $abbr, $abbrs);
