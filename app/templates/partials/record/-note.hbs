@@ -1,0 +1,40 @@
+<div class="note-item row {{if isAddingNote 'adding-note'}}">
+    {{#if record.toggleNoteDeleteStatus}}
+        <div class="overlay">
+            <div class="v-center-left offset-xs-row-10 xs-9-row-10">
+                <span class="text-big text-white text-ellipsis">
+                    Are you sure you want to delete this note?
+                </span>
+            </div>
+        </div>
+    {{/if}}
+    {{#with record as |rNote|}}
+        {{!-- show static state when editing so we don't load
+            images while they're still changing --}}
+        {{#if rNote.isEditingNote}}
+            {{!-- this display is desktop and tablet only because we don't need
+                the static preview in mobile as the record will be covered by
+                the slideout pane --}}
+            <div class="display-m display-l no-select"
+                {{!-- if we pressed backspace and triggered a backwards move in history
+                then the slideout won't have time to appropriately close out --}}
+                onclick={{route-action 'mutate' (action (mut rNote.isEditingNote)) false}}>
+                {{partial 'partials/record-note/static-large-display'}}
+            </div>
+        {{!-- return to dynamic view when editing is done --}}
+        {{else}}
+            <div class="display-xs display-s">
+                {{partial 'partials/record-note/dynamic-small-display'}}
+            </div>
+            <div class="display-m display-l">
+                {{partial 'partials/record-note/dynamic-large-display'}}
+            </div>
+        {{/if}}
+    {{/with}}
+    <span class='decoration no-select'>
+        {{moment-from-now record.whenChanged interval=1000}} by
+        <span class="text-bold">
+            {{if record.authorName record.authorName 'Unknown'}}
+        </span>
+    </span>
+</div>

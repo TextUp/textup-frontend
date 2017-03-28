@@ -1,21 +1,5 @@
-{{#if isMakingCall}}
-    <div class="overlay text-big">
-        <div class="center text-center xs-9-row-10">
-            <h5 class='text-white'>Call in progress...</h5>
-            <p class='text-lighten'>Connecting to your personal phone at</p>
-            <p class="text-bold text-lighten">
-                {{phone-number authManager.authUser.personalPhoneNumber}}
-            </p>
-            <div class="margin-t text-white">
-                <button class="btn btn-plain" type='button'
-                    onclick={{action (mut isMakingCall) false}}>
-                    Dismiss
-                </button>
-            </div>
-        </div>
-    </div>
-{{/if}}
 <div class="contact-record
+    {{if isAddingNote 'adding-note'}}
     {{if contact (if (not contact.hasFutureMsgs) 'no-future-messages')
         (if (not tag.hasFutureMsgs) 'no-future-messages')}}">
     {{#infinite-scroll classNames='record-body bg-color bg-dark'
@@ -23,38 +7,66 @@
         containerClass='bg-color'
         direction='up'
         data=records
+        dataLength=recordsAdjustedSize
         total=totalNumRecords
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |record|}}
-        <div class="record-item
-            {{if record.outgoing 'outgoing' 'incoming'}}
-            {{if record.hasVoicemail 'voicemail'}}">
-            {{#if record.outgoing}}
-                {{#if record.isText}}
-                    {{partial 'partials/record/outgoing-text'}}
+        {{#if record.isDeletedCluster}}
+            {{#with record as |cluster|}}
+                {{partial 'partials/record/deleted-cluster'}}
+            {{/with}}
+        {{else if record.isNote}}
+            {{partial 'partials/record/note'}}
+        {{else}}
+            <div class="record-item
+                {{if record.outgoing 'outgoing' 'incoming'}}
+                {{if record.hasVoicemail 'voicemail'}}">
+                {{#if record.outgoing}}
+                    {{#if record.isText}}
+                        {{partial 'partials/record/outgoing-text'}}
+                    {{else if record.isCall}}
+                        {{partial 'partials/record/outgoing-call'}}
+                    {{/if}}
                 {{else}}
-                    {{partial 'partials/record/outgoing-call'}}
+                    {{partial 'partials/record/incoming'}}
                 {{/if}}
+            </div>
+        {{/if}}
+        {{!-- so we can properly set the isAddingNoteAfter flag on record item --}}
+        {{#if record.isDeletedCluster}}
+            {{#with record.items.lastObject as |rItem|}}
+                {{partial 'partials/record/add-note-control'}}
+            {{/with}}
+        {{else}}
+            {{#with record as |rItem|}}
+                {{partial 'partials/record/add-note-control'}}
+            {{/with}}
+        {{/if}}
+    {{else}}
+        <div class="no-results no-select">
+            {{#if model.isDeleted}}
+                <div class="horizontal-items">
+                    <span class='clear-badge'>Loading</span>
+                    <span class="clear-badge">
+                        <span class="fa fa-circle-o-notch fa-spin"></span>
+                    </span>
+                </div>
             {{else}}
-                {{partial 'partials/record/incoming'}}
+                <p>Nothing in the record yet.</p>
+                <p>
+                    Connect with
+                    <span class="text-bold">
+                        {{phone-number
+                            (if (and tag (not contact))
+                                tag.identifier
+                                contact.identifier)}}
+                    </span>
+                    to see this record fill up.
+                </p>
             {{/if}}
         </div>
-    {{else}}
-        <div class="no-results">
-            <p>Nothing in the record yet.</p>
-            <p>
-                Connect with
-                <span class="text-bold">
-                    {{phone-number
-                        (if (and tag (not contact))
-                            tag.identifier
-                            contact.identifier)}}
-                </span>
-                to see this record fill up.
-            </p>
-        </div>
     {{/infinite-scroll}}
-    <div class="future-messages" {{action 'toggleDetailSlideout'
+    <div class="future-messages no-select" {{action 'toggleDetailSlideout'
         'slideouts/future-messages/list'
         (if contact 'main/contacts/contact' 'main/tag/details')}}>
         <div class="center text-ellipsis">
@@ -130,6 +142,36 @@
         {{/if}}
     {{/async-button}}
 {{else}}
+    {{#if isMakingCall}}
+        <div class="overlay">
+            <div class="center row">
+                <span class="offset-xs-row-20 xs-15-row-20 text-bold text-white control-text">
+                    Calling you at
+                    {{phone-number authManager.authUser.personalPhoneNumber}}.
+                </span>
+                <span class='xs-2-row-10 text-center'>
+                    <button type='button' class="btn btn-plain"
+                        onclick={{action (mut isMakingCall) false}}>
+                        <span class="text-white">Ok</span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    {{else if isAddingNote}}
+        <div class="overlay">
+            <div class="center row">
+                <span class="offset-xs-row-20 xs-13-row-20 text-bold text-white control-text">
+                    Choose your note's place.
+                </span>
+                <span class='xs-3-row-10 text-center'>
+                    <button type='button' class="btn btn-plain"
+                        onclick={{action (mut isAddingNote) false}}>
+                        <span class="text-white">Cancel</span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    {{/if}}
     <div class='input-group'>
         {{#if textContents}}
             <span class="input-group-addon align-top blend-in">
@@ -142,12 +184,26 @@
             <span class="input-group-addon align-top">
                 {{#hide-away/dropdown horizontal='left'
                     disabled=(and (not contact) tag.isEmpty)}}
+                    <li class='dropdown-divider'>Documentation</li>
+                    {{#if records}}
+                        <li tabindex='0' class='dropdown-item'
+                            onclick={{route-action 'mutate' (action (mut isAddingNote)) true
+                                _recordsList.actions.resetPosition}}>
+                            Add past note
+                        </li>
+                    {{/if}}
+                    <li tabindex='0' class='dropdown-item'
+                        {{action 'toggleDetailSlideout'
+                            'slideouts/record-note/create-edit'
+                            (if contact 'main/contacts/contact' 'main/tag/details')}}>
+                        Add note
+                    </li>
                     <li class='dropdown-divider'>Outgoing</li>
                     <li tabindex='0' class='dropdown-item'
                         {{action 'toggleDetailSlideout'
                             'slideouts/future-messages/create'
                             (if contact 'main/contacts/contact' 'main/tag/details')}}>
-                        Schedule Message
+                        Schedule message
                     </li>
                     {{#if (and contact
                         authManager.authUser.personalPhoneNumber)}}
@@ -155,7 +211,7 @@
                             onclick={{route-action 'makeCall' contact
                                 (action (mut isMakingCall) true)
                                 _recordsList.actions.resetPosition}}>
-                            Make Call
+                            Make call
                         </li>
                     {{/if}}
                 {{else}}

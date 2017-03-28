@@ -1,8 +1,11 @@
 import Ember from 'ember';
 
 const {
-	alias
-} = Ember.computed;
+	computed: {
+		alias
+	},
+	run
+} = Ember;
 
 export default Ember.Controller.extend({
 	adminController: Ember.inject.controller('admin'),
@@ -25,7 +28,7 @@ export default Ember.Controller.extend({
 	// Observers
 	// ---------
 
-	filterPeopleByStatus: Ember.on('init', Ember.observer('people', function() {
+	filterPeopleByStatus: Ember.on('init', Ember.observer('people.[]', function() {
 		const people = this.get('people');
 		if (!people) {
 			return;
@@ -38,34 +41,39 @@ export default Ember.Controller.extend({
 
 	actions: {
 		refresh: function() {
-			this.get('people').clear();
-			return this._loadMore();
+			const people = this.get('people');
+			return this._loadMore()
+				.then((results) => {
+					run(() => {
+						people.clear();
+						people.pushObjects(results.toArray());
+					});
+				});
 		},
 		loadMore: function() {
-			return this._loadMore();
+			const people = this.get('people');
+			return this._loadMore(people.length)
+				.then((results) => {
+					people.pushObjects(results.toArray());
+				});
 		},
 	},
 
-	_loadMore: function() {
+	_loadMore: function(offset = 0) {
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			const query = Object.create(null),
 				org = this.get('stateManager.ownerAsOrg'),
-				team = this.get('team'),
-				people = this.get('people'),
-				unfiltered = this.get('people');
+				team = this.get('team');
 			query.status = this.get('statuses');
-			if (people.length) {
-				query.offset = people.length;
-			}
+			query.offset = offset;
 			if (team) {
 				query.teamId = team.get('id');
 			} else if (org) {
 				query.organizationId = org.get('id');
 			}
-			this.store.query('staff', query).then((result) => {
-				unfiltered.pushObjects(result.toArray());
-				this.set('numPeople', result.get('meta.total'));
-				resolve();
+			this.store.query('staff', query).then((results) => {
+				this.set('numPeople', results.get('meta.total'));
+				resolve(results);
 			}, this.get('dataHandler').buildErrorHandler(reject));
 		});
 	},

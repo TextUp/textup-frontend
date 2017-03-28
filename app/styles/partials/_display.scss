@@ -116,6 +116,222 @@ $dropdown-shadow-size: 3px;
 // Record bubbles
 // --------------
 
+%decoration {
+    font-size: 0.9em;
+    position: absolute;
+    height: $record-item-space * 0.9;
+    line-height: $record-item-space * 0.9;
+    color: $font-color;
+    font-weight: $font-weight-bold;
+}
+$note-item-bg-color: tint($bg-color);
+$max-note-item-height: $padding * 8;
+%note-item {
+
+    position: relative;
+    clear: both;
+    transition: all 0.5s;
+    width: 100%;
+    background-color: $note-item-bg-color;
+
+    .media-container {
+        @extend %clearfix;
+        animation: fadein 1.5s;
+        position: relative;
+        width: 100%;
+
+        .media-item, .media-description {
+            height: $max-note-item-height;
+        }
+        .media-description {
+            position: relative;
+            padding: $padding;
+            box-sizing: border-box;
+            background-color: $bg-color;
+        }
+        &.two-media-items .media-container-item {
+            float: left;
+            width: 50%;
+        }
+    }
+    .contents {
+        @extend %vertical-scroll;
+        width: 100%;
+        box-sizing: border-box;
+        max-height: $max-note-item-height;
+        padding: $padding * 0.75;
+    }
+    .decoration {
+        @extend %decoration;
+        @extend .text-right;
+        bottom: $padding * -1.5;
+        right: $record-item-triangle * 1.7;
+    }
+}
+.note-item {
+    @extend %note-item;
+
+    border: 1px solid $border-color;
+    border-left-width: 0;
+    border-right-width: 0;
+    margin-bottom: $padding * 1.4;
+
+    &:first-child {
+        margin-top: $padding;
+    }
+    &.adding-note {
+        .note-controls {
+            opacity: 0;
+        }
+    }
+
+    @include mq($from: tablet) {
+        $edit-note-controls-width: $padding * 2.5;
+
+        &.adding-note {
+            .contents {
+                padding-left: $padding;
+            }
+        }
+        .contents {
+            padding: $padding;
+            padding-left: calc(#{$edit-note-controls-width} + #{$padding});
+
+            &.has-revisions {
+                min-height: $control-height * 2; // to accommodate stacked controls
+            }
+        }
+        .note-controls {
+            position: absolute;
+            width: $edit-note-controls-width;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+
+            z-index: 10; // to be above location or images if no content present
+            background-color: $note-item-bg-color;
+            border-top-right-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+
+            .btn {
+                min-width: auto;
+            }
+        }
+    }
+}
+.revision-item {
+    @extend %note-item;
+}
+.cluster-item {
+    position: relative;
+    width: 100%;
+    float: left;
+    clear: both;
+
+    &:nth-last-child(2) { // because add-note div will be the last child
+        margin-bottom: 1.5 * $padding;
+    }
+    .cluster-trigger {
+        cursor: pointer;
+        position: relative;
+        text-align: center;
+        height: $padding * 2;
+
+        &:before {
+            content: ' ';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
+            width: calc(100% - #{$padding * 2});
+            border-top: 1px solid $border-color;
+            transition: border-top-color 0.5s;
+        }
+        .cluster-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -55%);
+
+            z-index: 2;
+            background-color: $bg-color;
+            color: shade($border-color, 1.5);
+            padding: 0 $padding;
+            transition: color 0.5s;
+        }
+        &:hover {
+            $cluster-label-active-color: shade($border-color, 2);
+
+            &:before {
+                border-top-color: $cluster-label-active-color;
+            }
+            .cluster-label {
+                color: $cluster-label-active-color;
+            }
+        }
+    }
+    .cluster-body {
+        $cluster-background-color: shade($bg-color, 0.5);
+
+        margin: $padding 0;
+        padding-bottom: $padding;
+        background-color: $cluster-background-color;
+
+        .cluster-trigger {
+            &:before {
+               border-top-color: shade($cluster-background-color, 2);
+            }
+            .cluster-label {
+                background-color: $cluster-background-color;
+                color: shade($cluster-background-color, 2.5);
+            }
+            &:hover {
+                $cluster-label-active-color: shade($border-color, 3);
+
+                &:before {
+                    border-top-color: $cluster-label-active-color;
+                }
+                .cluster-label {
+                    color: $cluster-label-active-color;
+                }
+            }
+        }
+        .cluster-body-container {
+            @extend %pretty-horizontal-scrollbars;
+
+            margin-top: $padding;
+            overflow-y: hidden;
+            overflow-x: auto;
+            white-space: nowrap;
+
+            .cluster-body-item {
+                @extend %note-item;
+
+                width: $slideout-width / 2;
+                vertical-align: middle;
+                display: inline-block;
+                margin-right: $padding;
+                margin-bottom: 1.5 * $padding;
+                border-radius: $border-radius;
+
+                &:first-child {
+                    margin-left: $padding;
+                }
+                .contents.no-media {
+                    height: $max-note-item-height;
+                }
+
+                @include mq($from:mobileLandscape) {
+                    width: $slideout-width * 3/4;
+                }
+                @include mq($from:desktop) {
+                    width: $slideout-width;
+                }
+            }
+        }
+    }
+}
 .record-item {
     position: relative;
     max-width: 60%;
@@ -142,7 +358,7 @@ $dropdown-shadow-size: 3px;
     }
     &.incoming, &.outgoing {
         clear: both;
-        transition: all 0.5s;
+        transition: margin-left 0.5s, width 0.5s;
     }
     &.incoming {
         margin-left: $record-item-triangle * 1.5;
@@ -153,7 +369,7 @@ $dropdown-shadow-size: 3px;
             @include triangle("left", $record-item-triangle, shade($incoming-color));
         }
         &.voicemail {
-            @extend .clickable;
+            cursor: pointer;
             width: 20em;
         }
     }
@@ -167,24 +383,15 @@ $dropdown-shadow-size: 3px;
             @include triangle("right", $record-item-triangle, shade($outgoing-color));
         }
     }
-
-    %decoration {
-        font-size: 0.9em;
-        position: absolute;
-        height: $record-item-space * 0.9;
-        line-height: $record-item-space * 0.9;
-        color: $font-color;
-        font-weight: $font-weight-bold;
-    }
     .decoration-left {
         @extend %decoration;
-        bottom: -$record-item-space * 0.9;
+        bottom: -$record-item-space;
         left: 0;
     }
     .decoration-right {
         @extend %decoration;
         @extend .text-right;
-        bottom: -$record-item-space * 0.9;
+        bottom: -$record-item-space;
         right: 0;
     }
     .decoration-center-left {

@@ -6,10 +6,11 @@ import config from '../config/environment';
 const {
 	$,
 	computed,
-	guidFor
+	guidFor,
+	Evented
 } = Ember;
 
-export default Ember.Service.extend(Ember.Evented, {
+export default Ember.Service.extend(Evented, {
 
 	isVisible: true,
 	state: 'init',

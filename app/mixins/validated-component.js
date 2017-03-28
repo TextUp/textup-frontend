@@ -2,33 +2,49 @@ import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
 
 const {
-	notEmpty,
-	and,
-	match
-} = Ember.computed;
+	isPresent,
+	computed,
+	computed: {
+		notEmpty,
+		and,
+		match
+	},
+	run,
+	run: {
+		scheduleOnce,
+		debounce,
+		next
+	}
+} = Ember;
 
 export default Ember.Mixin.create({
 	validateObj: null,
 	validateField: null,
 	validate: 'none', // top | bottom
+	validateFreq: defaultIfAbsent(500),
 	validateErrorClass: defaultIfAbsent('form-error'),
 
 	$errors: null,
 
+	// Private properties
+	// ------------------
+
+	_observedKey: null,
+
 	// Computed properties
 	// -------------------
 
-	$errorNeighbor: Ember.computed(function() {
+	$errorNeighbor: computed(function() {
 		return this.$();
 	}),
-	$validateFields: Ember.computed(function() {
+	$validateFields: computed(function() {
 		return this.$();
 	}),
 	hasVObj: notEmpty('validateObj'),
 	hasVField: notEmpty('validateField'),
 	hasValidate: match('validate', /^(top|bottom)$/i),
 	canDoValidate: and('hasVObj', 'hasVField', 'hasValidate'),
-	isTop: Ember.computed('canDoValidate', 'validate', function() {
+	isTop: computed('canDoValidate', 'validate', function() {
 		return this.get('canDoValidate') ?
 			/^(top)$/i.test(this.get('validate')) : '';
 	}),
@@ -39,7 +55,7 @@ export default Ember.Mixin.create({
 	didInsertElement: function() {
 		this._super(...arguments);
 
-		Ember.run.scheduleOnce('afterRender', this, function() {
+		scheduleOnce('afterRender', this, function() {
 			// bind event handlers
 			const eventsToBind = `
 					focusout.${this.elementId}
@@ -48,14 +64,30 @@ export default Ember.Mixin.create({
 					cut.${this.elementId}
 				`,
 				fields = this.get('$validateFields'),
+				threshold = this.get('validateFreq'),
 				eventAction = function() {
-					Ember.run.throttle(this, this.doValidate, 500, false);
+					debounce(this, this.doValidate, threshold, false);
 				}.bind(this);
 			if (typeof fields === 'string') {
 				this.$().on(eventsToBind, fields, eventAction);
 			} else {
 				fields.on(eventsToBind, eventAction);
 			}
+			// need to schedule next because we need to wait a little bit
+			// for the validateObj to not be null, if it is present
+			next(this, function() {
+				// observe field validity in case is changed by
+				// dependence on another field
+				if (this.get('canDoValidate')) {
+					const $errors = this.get$Errors(),
+						model = this.get('validateObj'),
+						field = this.get('validateField'),
+						key = `validateObj.validations.attrs.${field}.isValid`;
+					this.addObserver(key, this,
+						this._processValidate.bind(this, model, field, $errors));
+					this.set('_observedKey', key);
+				}
+			});
 		});
 	},
 	willDestroyElement: function() {
@@ -69,6 +101,10 @@ export default Ember.Mixin.create({
 			this.$().off(`.${this.elementId}`);
 		} else {
 			fields.off(`.${this.elementId}`);
+		}
+		const observedKey = this.get('_observedKey');
+		if (isPresent(observedKey)) {
+			this.removeObserver(observedKey, this, this._processValidate);
 		}
 	},
 
@@ -94,13 +130,15 @@ export default Ember.Mixin.create({
 	_processValidate: function(model, field, $errors) {
 		const $errorNeighbor = this.get('$errorNeighbor'),
 			validateErrorClass = this.get('validateErrorClass');
-		if (model.get(`validations.attrs.${field}.isInvalid`)) {
-			$errorNeighbor.addClass(validateErrorClass);
-			$errors.text(model.get(`validations.attrs.${field}.message`));
-		} else {
-			$errorNeighbor.removeClass(validateErrorClass);
-			$errors.text('');
-		}
+		run(() => {
+			if (model.get(`validations.attrs.${field}.isInvalid`)) {
+				$errorNeighbor.addClass(validateErrorClass);
+				$errors.text(model.get(`validations.attrs.${field}.message`));
+			} else {
+				$errorNeighbor.removeClass(validateErrorClass);
+				$errors.text('');
+			}
+		});
 	},
 
 	// DOM construction

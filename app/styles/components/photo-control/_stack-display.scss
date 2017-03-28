@@ -1,0 +1,124 @@
+%stack-ghost {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    height: 100%;
+    width: 100%;
+    background-color: shade($border-color, 2);
+    opacity: 0.8;
+    transition: all 0.5s;
+}
+%stack-item {
+    box-shadow: 2px 2px 5px 0px shade($border-color, 2.5);
+}
+
+.stack-display {
+    $bottom-z-index: 1;
+
+    position: relative;
+    height: $padding * 8;
+    width: 100%;
+    cursor: pointer;
+
+    .preview-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background-color: shade($bg-color);
+        transition: all 0.5s;
+        z-index: 10;
+        overflow: hidden;
+
+        img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            min-height: 110%;
+            min-width: 100%;
+            transform: translate(-50%, -45%);
+
+            transition: all 0.5s;
+            opacity: 0;
+
+            &.loaded {
+                opacity: 1;
+            }
+        }
+        .num-photos-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: $bg-color;
+            color: contrast-color($bg-color);
+            font-weight: $font-weight-bold;
+            padding: (0.5 * $padding) $padding;
+            border-top-left-radius: $border-radius;
+        }
+    }
+    &.readonly .photo-control-remove {
+        display: none !important;
+    }
+    &.loading {
+        .preview-container:before {
+            content: ' ';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+
+            background-color: $bg-color;
+            height: 4px;
+            border-bottom: 1px solid gray;
+            width: 100%;
+        }
+        .preview-container:after {
+            content: ' ';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            width: 20px;
+            background-color: $brand-color;
+            animation: stack-display-move 2s linear alternate infinite;
+        }
+        @keyframes stack-display-move {
+            from {
+                left: 0;
+            }
+            to {
+                left: calc(100% - 20px);
+            }
+        }
+    }
+    // Complexities of z-index and 3d-transforms documented
+    // at http://katydecorah.com/code/z-index-and-transform/
+    &.multiple-pictures {
+        &:after, &:before {
+            @extend %stack-ghost;
+        }
+        &:hover .preview-container, &.active .preview-container {
+            @extend %stack-item;
+            z-index: $bottom-z-index * 3;
+            transform: translate(-10px, -10px);
+        }
+        &:hover:after, &.active:hover:after {
+            @extend %stack-item;
+            transform: translate(-5px, -5px);
+            z-index: $bottom-z-index * 2;
+        }
+        &:hover:before, &.active:hover:before {
+            z-index: $bottom-z-index;
+        }
+    }
+    &.two-pictures {
+        &:hover .preview-container, &.active .preview-container {
+            @extend %stack-item;
+            z-index: $bottom-z-index * 2;
+            transform: translate(-5px, -5px);
+        }
+        &:before {
+            @extend %stack-ghost;
+            z-index: $bottom-z-index;
+        }
+    }
+}

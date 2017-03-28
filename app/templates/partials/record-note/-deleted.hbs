@@ -1,0 +1,36 @@
+<div class="xs-full-row">
+    {{partial 'partials/record-note/dynamic-media'}}
+</div>
+<div class="xs-full-row">
+    {{#if rNote.noteContents}}
+        <div class="contents text-wrap {{if rNote.hasNeitherLocationNorImages 'no-media'}}">
+            {{rNote.noteContents}}
+        </div>
+    {{/if}}
+    <div class="input-group note-controls">
+        {{#if rNote.hasRevisions}}
+            <div class="input-group-addon">
+                <button class="btn btn-plain btn-span" type='button'
+                    onclick={{route-action 'mutate' (action (mut recordNote)) rNote
+                        (route-action 'toggleDetailSlideout'
+                            'slideouts/record-note/revisions'
+                            'main/contacts/contact')}}>
+                    <span class="fa fa-history"></span>
+                </button>
+            </div>
+        {{/if}}
+        <div class="input-group-addon">
+            <button class="btn btn-plain btn-span" type='button'
+                onclick={{route-action 'mutate' (action (mut rNote.toggleNoteDeleteStatus)) true
+                    (route-action 'persist' rNote)}}>
+                Restore
+            </button>
+        </div>
+    </div>
+</div>
+<span class='decoration'>
+    {{moment-from-now rNote.whenChanged interval=1000}} by
+    <span class="text-bold">
+        {{if rNote.authorName rNote.authorName 'Unknown'}}
+    </span>
+</span>

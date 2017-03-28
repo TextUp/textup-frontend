@@ -8,16 +8,43 @@
     height: 100vh;
     width: 100vw;
     z-index: $slideout-z-index - 1;
-}
 
+    background-color: $border-color;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.slideout-pane.force-keep-open + .slideout-overlay {
+    opacity: 0.5;
+}
+.slideout-pane.force-keep-open.is-closing + .slideout-overlay {
+    opacity: 0;
+}
 .slideout-pane {
     @extend %liquid-fire-full-height;
+
     position: absolute;
     top: 0;
     width: $slideout-width;
     z-index: $slideout-z-index;
     background-color: $bg-lightest-color;
 
+    opacity: 0;
+    transition: opacity 0.5s;
+
+    &.is-open {
+        opacity: 1;
+        transition: opacity 0.2s;
+    }
+    &.slideout-pane-left {
+        left: 0;
+        box-shadow: 9px 0 20px -4px $border-color;
+        border-right: 1px solid $border-color;
+    }
+    &.slideout-pane-right {
+        right: 0;
+        box-shadow: -9px 0 20px -4px $border-color;
+        border-left: 1px solid $border-color;
+    }
     .slideout-header, .slideout-body {
         @extend %border-box;
         position: relative;
@@ -30,15 +57,5 @@
     .slideout-body {
         @extend %vertical-scroll;
         height: calc(100% - #{$header-height});
-    }
-    &.slideout-pane-left {
-        left: 0;
-        box-shadow: 9px 0 20px -4px $border-color;
-        border-right: 1px solid $border-color;
-    }
-    &.slideout-pane-right {
-        right: 0;
-        box-shadow: -9px 0 20px -4px $border-color;
-        border-left: 1px solid $border-color;
     }
 }

@@ -11,14 +11,19 @@
         validateField='message'
         validate='bottom'}}
 </div>
-<div class="form-element pad-l pad-r">
-    <label for="Start Date">Start Date</label>
-    {{#if futureMsg.isNew}}
-        {{datetime-control/mutable value=futureMsg.startDate min=(now)}}
-    {{else}}
-        {{datetime-control/mutable value=futureMsg.startDate disabled=true}}
-    {{/if}}
-</div>
+{{#liquid-if futureMsg.message class='animate-slide-from-top'}}
+    <div class="form-element pad-l pad-r">
+        <label for="Start Date">
+            {{if futureMsg.isRepeating 'Start' 'Send'}}
+            Date
+        </label>
+        {{#if futureMsg.isNew}}
+            {{datetime-control/mutable value=futureMsg.startDate min=(now)}}
+        {{else}}
+            {{datetime-control/mutable value=futureMsg.startDate disabled=true}}
+        {{/if}}
+    </div>
+{{/liquid-if}}
 <div class="form-element row pad-l pad-r">
     <div class="xs-2-row-3 control-text">
         <label for="Type" class='text-ellipsis'>

@@ -1,0 +1,12 @@
+{{#with noteOrRevision as |rNote|}}
+    <div class="xs-full-row">
+        {{partial 'partials/record-note/dynamic-media'}}
+    </div>
+{{/with}}
+<div class="xs-full-row">
+    {{#if noteOrRevision.noteContents}}
+        <div class="contents text-wrap">
+            {{noteOrRevision.noteContents}}
+        </div>
+    {{/if}}
+</div>

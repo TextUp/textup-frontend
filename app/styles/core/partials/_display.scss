@@ -11,7 +11,7 @@ hr {
     cursor: pointer;
 }
 .link {
-    @extend .clickable;
+    cursor: pointer;
     text-decoration: underline;
 }
 .no-select {
@@ -21,6 +21,10 @@ hr {
     &.clickable {
         cursor: pointer;
     }
+}
+.yes-select-text {
+    cursor: text;
+    user-select: text;
 }
 .no-space {
     margin: 0 !important;
@@ -44,28 +48,40 @@ hr {
         border-#{$corner}-radius: $border-radius;
     }
 }
-.bg-color {
-    background-color: $bg-color;
+$bg-color-states: hover regular;
+@each $state in $bg-color-states {
+    $prefix: '';
+    $suffix: '';
+    @if ($state != 'regular') {
+        $prefix: "#{$state}-";
+        $suffix: ":#{$state}";
+    }
+    ".#{$prefix}bg-color#{$suffix}" {
+        @if ($state != 'regular') {
+            transition: background-color 0.5s;
+        }
+        background-color: $bg-color;
 
-    &.bg-brand {
-        background-color: $brand-color;
-        color: contrast-color($brand-color);
-    }
-    &.bg-brand-dark {
-        background-color: shade($brand-color);
-        color: contrast-color(shade($brand-color));
-    }
-    &.bg-dark {
-        background-color: shade($bg-color);
-    }
-    &.bg-darkest {
-        background-color: $bg-dark-color;
-    }
-    &.bg-light {
-        background-color: $bg-light-color;
-    }
-    &.bg-lightest {
-        background-color: $bg-lightest-color;
+        "&.#{$prefix}bg-brand#{$suffix}" {
+            background-color: $brand-color;
+            color: contrast-color($brand-color);
+        }
+        "&.#{$prefix}bg-brand-dark#{$suffix}" {
+            background-color: shade($brand-color);
+            color: contrast-color(shade($brand-color));
+        }
+        "&.#{$prefix}bg-dark#{$suffix}" {
+            background-color: shade($bg-color);
+        }
+        "&.#{$prefix}bg-darkest#{$suffix}" {
+            background-color: $bg-dark-color;
+        }
+        "&.#{$prefix}bg-light#{$suffix}" {
+            background-color: $bg-light-color;
+        }
+        "&.#{$prefix}bg-lightest#{$suffix}" {
+            background-color: $bg-lightest-color;
+        }
     }
 }
 .reset-list {
@@ -105,7 +121,7 @@ hr {
     left: 0;
 }
 .pull-right {
-    @include v-center(right, 3%);
+    @include v-center(right, $padding);
     @extend .text-right;
 }
 .pull-right-to-edge {
@@ -113,7 +129,7 @@ hr {
     @extend .text-right;
 }
 .pull-left {
-    @include v-center(left, 3%);
+    @include v-center(left, $padding);
 }
 .pull-left-to-edge {
     @include v-center(left, 0);
@@ -157,6 +173,10 @@ hr {
     padding: 0 $badge-h-space;
     margin-right: $badge-h-space;
 
+    &.tint {
+        background-color: shade($bg-color);
+        color: contrast-color(shade($bg-color));
+    }
     &.dark {
         background-color: shade($bg-dark-color);
         color: contrast-color(shade($bg-dark-color));
@@ -168,6 +188,9 @@ hr {
     &.failed {
         background-color: $danger-color;
         color: contrast-color($danger-color);
+    }
+    &.clickable {
+        cursor: pointer;
     }
     .btn {
         line-height: initial;
@@ -184,5 +207,5 @@ hr {
     background-color: transparent;
     border-radius: 0;
     border-left: 1px solid $border-color;
-    margin-right: $badge-h-space;
+    padding: 0;
 }

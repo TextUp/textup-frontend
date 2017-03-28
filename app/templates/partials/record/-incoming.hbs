@@ -6,7 +6,7 @@
         border-l border-r border-b'}}
     {{audio-control source=record.voicemailUrl}}
 {{else}}
-    <span class='decoration-left'>
+    <span class='decoration-left no-select'>
         {{moment-from-now record.whenCreated interval=1000}} by
         <span class="text-bold">
             {{phone-number (or record.authorName 'Unknown')}}
@@ -14,28 +14,30 @@
     </span>
     <div class="contents">
         {{#if record.isCall}}
-            {{#if record.hasVoicemail}}
-                <span class="fa fa-microphone"></span>
-                <span class='pad-l duration'>
-                    {{moment-duration r.voicemailInSeconds}}
-                </span>
-                <span class='pull-right fa fa-caret-down'></span>
-            {{else}}
-                <span class="fa fa-phone"></span>
-                <span class='pad-l duration'>
-                    {{moment-duration r.durationInSeconds}}
-                </span>
-            {{/if}}
+            <span class="no-select">
+                {{#if record.hasVoicemail}}
+                    <span class="fa fa-microphone"></span>
+                    <span class='pad-l duration'>
+                        {{moment-duration record.voicemailInSeconds}}
+                    </span>
+                    <span class='pull-right fa fa-caret-down'></span>
+                {{else}}
+                    <span class="fa fa-phone"></span>
+                    <span class='pad-l duration'>
+                        {{moment-duration record.durationInSeconds}}
+                    </span>
+                {{/if}}
+            </span>
         {{else}}
             {{#if record.hasAwayMessage}}
-                <div class="decoration-center-right">
+                <div class="decoration-center-right no-select">
                     {{#tool-tipster theme='tooltipster-clean'
                         title='Received away message'}}
                         <span class="fa fa-clock-o"></span>
                     {{/tool-tipster}}
                 </div>
             {{/if}}
-            <b class='text-wrap'>{{record.contents}}</b>
+            <b class='text-wrap yes-select-text'>{{record.contents}}</b>
         {{/if}}
     </div>
 {{/hide-away}}

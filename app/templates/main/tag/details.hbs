@@ -2,58 +2,57 @@
 
 <div class="details full-height">
 	<div class="section-header">
-		<div class="horizontal-items xs-7-row-10 s-row-2 pull-left">
-			<span class="clear-badge display-xs display-s no-space">
-				{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
+		<div class="row full-height">
+			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
+                full-height row ">
+            	{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')
+            		classNames='pull-left'}}
 					<span class="pad-all">
 						<span class="fa fa-chevron-left"></span>
 					</span>
 				{{/link-to}}
-			</span>
-			<span class="clear-badge no-space">
-				<h5>{{tag.name}}</h5>
-			</span>
-			{{#if (not tag.isDeleted)}}
-				<span class="clear-badge no-space">
-					<button class="btn btn-plain display-m display-l link"
-						{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
-						<span class="pad-all display-m">
-							Details
-						</span>
-						<span class="display-l">
-							Details
-						</span>
-					</button>
-				</span>
-			{{/if}}
-			<div class="badge">
-				{{tag.numMembers}}
-				<span class="display-xs">
-					<span class="fa fa-user"></span>
-				</span>
-				<span class="display-s display-m display-l">
-					{{pluralize 'members' tag.numMembers}}
-				</span>
-			</div>
-		</div>
-		<div class="horizontal-items xs-3-row-10 s-row-2 pull-right">
-			{{#if (not tag.isDeleted)}}
-				<span class="clear-badge no-space">
-					<span class="display-xs display-s">
-						<button class="btn" type='button'
-							{{action 'toggleDetailSlideout' 'slideouts/tags/create-edit' 'main/tag/details'}}>
-							Details
-						</button>
-					</span>
-				</span>
-			{{/if}}
-			<span class="clear-badge display-m display-l">
-				{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
-					<span class="pad-all">
-						<span class="fa fa-times"></span>
-					</span>
-				{{/link-to}}
-			</span>
+            </div>
+            <div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
+	            full-height contact-info">
+				<div class='contact-summary'>
+	                <div class="horizontal-items clickable"
+	                	onclick={{route-action 'toggleDetailSlideout'
+	                		'slideouts/tags/create-edit'
+	                		'main/tag/details'}}>
+	                    <span class="clear-badge no-space clickable">
+	                        <h5>{{tag.name}}</h5>
+	                    </span>
+	                    <span class="display-s display-m display-l">
+	                    	<div class="margin-l badge clickable">
+								{{tag.numMembers}}
+								{{pluralize 'members' tag.numMembers}}
+							</div>
+	                    </span>
+	                </div>
+	            </div>
+	        </div>
+			<div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
+	            full-height row">
+	            <div class="horizontal-items pull-right">
+	            	{{#if (not tag.isDeleted)}}
+		            	<span class='clear-badge no-space'>
+			                <button type='button' class='btn'
+			                    {{action 'toggleDetailSlideout'
+			                    	'slideouts/tags/create-edit'
+			                    	'main/tag/details'}}>
+			                    Details
+			                </button>
+			            </span>
+		            {{/if}}
+					<span class="clear-badge display-m display-l">
+	                    {{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
+							<span class="pad-all">
+								<span class="fa fa-times"></span>
+							</span>
+		            	{{/link-to}}
+	                </span>
+	        	</div>
+	        </div>
 		</div>
 	</div>
 	<div class="section-body row">

@@ -1,0 +1,81 @@
+.photo-control {
+    height: 100%;
+    width: 100%;
+
+    &.readonly .photo-control-add-container {
+        display: none;
+    }
+    .photo-control-add-container {
+        width: 100%;
+        text-align: center;
+        position: relative;
+        margin-top: $padding;
+        box-sizing: border-box;
+
+        // Restyling file input adapted from
+        // https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
+        input[type='file'] {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+            overflow: hidden;
+            width: 0.1px;
+            height: 0.1px;
+
+            & + label {
+                cursor: pointer;
+                display: inline-block;
+                overflow: hidden;
+                width: 100%;
+                box-sizing: border-box;
+                padding: $padding;
+
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: center;
+
+                background-color: $bg-color;
+                transition: all 0.5s;
+
+                &:hover, &:active, &:focus {
+                    background-color: shade($bg-color);
+                }
+                & * {
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+    .photo-control-remove {
+        z-index: 10;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: $padding * 1.5;
+        background-color: $border-color;
+        text-align: center;
+        opacity: 0.8;
+        cursor: pointer;
+        transition: all 0.5s;
+
+        &:after {
+            @extend .text-bigger;
+            content: "\f00d";
+            font-family: "FontAwesome";
+            position: absolute;
+            top: $padding * 0.7;
+            left: 0;
+            width: 100%;
+        }
+        &.loading:after {
+            content: "\f1ce";
+            animation: fa-spin 2s infinite linear;
+        }
+        &.error:after {
+            content: "\f12a";
+        }
+        &:hover, &:active, &:focus {
+            background-color: shade($border-color);
+        }
+    }
+}

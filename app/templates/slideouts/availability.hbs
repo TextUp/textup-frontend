@@ -2,6 +2,8 @@
     doClose=(route-action 'revert' model
         (route-action 'revert' authManager.authUser
             (route-action 'closeAllSlideouts')))
+    forceKeepOpen=(or model.isSaving authManager.authUser.isSaving
+        model.isDirty authManager.authUser.isDirty)
     ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#if model.phone.isFulfilled}}
         <div class="form-element pad-t pad-l pad-r">

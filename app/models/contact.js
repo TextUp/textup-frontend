@@ -124,6 +124,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 		return `${name} ${numbers.join(', ')}`;
 	}),
 
+	hasTags: notEmpty('tags'),
 	isShared: notEmpty('sharedBy'),
 	isSharedDelegate: eq('permission', 'DELEGATE'),
 	isSharedView: eq('permission', 'VIEW'),

@@ -2,6 +2,7 @@
 	onOpen=(route-action 'initializeCompose')
     doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
+
     focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
 		{{#if model.phone.isFulfilled}}
@@ -55,8 +56,10 @@
 	</div>
 	<div class="form-element text-center">
 	    {{async-button classNames='btn btn-default'
-	    	action=(route-action "sendMessage" composeMessage selectedRecipients
-	    		slideout.actions.close)
+	    	action=(route-action "mutate" (action (mut _isSendingCompose)) true
+		    	(route-action "sendMessage" composeMessage selectedRecipients
+		    		(route-action "mutate" (action (mut _isSendingCompose)) false
+		    			slideout.actions.close)))
 	    	disableWhen=(or (not composeMessage) (not hasRecipients))
 	    	default='Send'
 	    	pending='Sending...'

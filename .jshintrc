@@ -4,7 +4,9 @@
     "window",
     "-Promise",
     "RangeBar",
-    "L"
+    "L",
+    "PhotoSwipe",
+    "PhotoSwipeUI_Default"
   ],
   "browser": true,
   "boss": true,

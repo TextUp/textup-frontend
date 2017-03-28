@@ -30,6 +30,8 @@ export default Component.extend({
 	clickOutToClose: defaultIfAbsent(true),
 	focusOutClose: defaultIfAbsent(false),
 	bodyClickClose: defaultIfAbsent(false),
+
+	ignoreCloseSelectors: defaultIfAbsent(''),
 	bodyFocusOnOpenSelector: defaultIfAbsent(''),
 	allowedTriggerSelectors: defaultIfAbsent(''),
 	ignoreTriggerSelectors: defaultIfAbsent(''),
@@ -114,6 +116,9 @@ export default Component.extend({
 		}
 		// setup listeners and starting state
 		Ember.run.scheduleOnce('afterRender', this, function() {
+			if (this.isDestroying || this.isDestroyed) {
+				return;
+			}
 			this.addTriggerListeners();
 			if (this.get('startOpen')) {
 				this.doOpen(true);
@@ -154,13 +159,16 @@ export default Component.extend({
 		// return nothing on disabled to allow mouse events such as
 		// selecting text to still happen
 		if (this.get('disabled') || this._shouldIgnoreOnTrigger(event)) {
+			// subsequent click event is not fired so we trigger the click
+			// event here for other components to know that a click was
+			// trigger on this mousedown event. Also fire touchstart for
+			// touch screen support
+			$(event.target).trigger('click touchstart');
 			return; // don't return false to allow default to happen
 		}
 		// stop text selection of trigger
 		this.get('$trigger').addClass('no-select')
-			.one('mouseup', function() {
-				this.get('$trigger').removeClass('no-select');
-			}.bind(this));
+			.one('mouseup', this._resetTrigger.bind(this));
 		this.toggle(event);
 	},
 	_shouldIgnoreOnTrigger: function(event) {
@@ -358,7 +366,10 @@ export default Component.extend({
 			callIfPresent(this.get('onOpen'));
 			// need to wait until after render for body to appear
 			if (this.get('hideTriggerOnOpen')) {
-				this.get('$trigger').hide();
+				this.get('$trigger')
+					.hide()
+					.promise()
+					.done(this._resetTrigger.bind(this));
 			}
 			const $body = this._findBody(),
 				after = this._afterOpen.bind(this, $body, skipFocus, callback);
@@ -568,6 +579,9 @@ export default Component.extend({
 	// Helpers
 	// -------
 
+	_resetTrigger: function() {
+		this.get('$trigger').removeClass('no-select');
+	},
 	_getPositionInfo: function($body) {
 		// bounding client rectangle always relative to the viewport!
 		const wormholeParent = this.get('$wormholeParent')[0],
@@ -606,10 +620,15 @@ export default Component.extend({
 		if (!targetStillInDOM) {
 			return;
 		}
-		const isOutside = !$target.closest(this.$()).length,
+		const ignoreCloseSelectors = this.get('ignoreCloseSelectors'),
+			shouldIgnore = $target.closest(ignoreCloseSelectors).length,
+			isOutside = !$target.closest(this.$()).length,
 			isInBody = !!$body.find($target).length,
 			closeClickedOutside = this.get('clickOutToClose') && isOutside,
 			closeClickedInBody = this.get('bodyClickClose') && isInBody;
+		if (shouldIgnore) {
+			return;
+		}
 		if (this.get('floating')) { // for when floating
 			if ((closeClickedOutside && !isInBody) || closeClickedInBody) {
 				this.close(event, true);

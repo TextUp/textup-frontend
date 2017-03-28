@@ -4,6 +4,7 @@
     doClose=(route-action 'revert' (if tag tag newTag)
         (route-action 'closeAllSlideouts'))
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    forceKeepOpen=(if tag tag.isSaving newTag.isSaving)
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t pad-l pad-r">
         {{#if tag}}
@@ -46,7 +47,8 @@
                 </div>
                 <div class="clear-badge no-space">
                     {{async-button classNames='btn btn-default'
-                        disableWhen=(not (v-get tag 'isValid'))
+                        disableWhen=(or (not (v-get tag 'isValid'))
+                            (not tag.isDirty))
                         action=(route-action 'persist' tag
                             slideout.actions.close)
                         default='Update'

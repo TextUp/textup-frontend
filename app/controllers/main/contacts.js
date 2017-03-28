@@ -1,8 +1,11 @@
 import Ember from 'ember';
 
 const {
-	alias
-} = Ember.computed;
+	computed: {
+		alias
+	},
+	run
+} = Ember;
 
 export default Ember.Controller.extend({
 	mainController: Ember.inject.controller('main'),
@@ -44,28 +47,35 @@ export default Ember.Controller.extend({
 
 	actions: {
 		refresh: function() {
-			this.get('contacts').clear();
-			return this._loadMore();
+			const contacts = this.get('contacts');
+			return this._loadMore()
+				.then((results) => {
+					run(() => {
+						contacts.clear();
+						contacts.pushObjects(results.toArray());
+					});
+				});
 		},
 		loadMore: function() {
-			return this._loadMore();
+			const contacts = this.get('contacts');
+			return this._loadMore(contacts.length)
+				.then((results) => {
+					contacts.pushObjects(results.toArray());
+				});
 		},
 	},
 
-	_loadMore: function() {
+	_loadMore: function(offset = 0) {
 		return new Ember.RSVP.Promise((resolve, reject) => {
 			if (this.get('_transitioning')) {
 				return resolve();
 			}
 			const query = Object.create(null),
 				team = this.get('stateManager.ownerAsTeam'),
-				tag = this.get('tag'),
-				contacts = this.get('contacts');
+				tag = this.get('tag');
 			// build query
 			query.status = this.get('statuses');
-			if (contacts.length) {
-				query.offset = contacts.length;
-			}
+			query.offset = offset;
 			if (tag) { // one or the other, can't be both
 				query.tagId = tag.get('id');
 				delete query.status;
@@ -74,9 +84,8 @@ export default Ember.Controller.extend({
 			}
 			// execute query
 			this.store.query('contact', query).then((results) => {
-				contacts.pushObjects(results.toArray());
 				this.set('numContacts', results.get('meta.total'));
-				resolve();
+				resolve(results);
 			}, this.get('dataHandler').buildErrorHandler(reject));
 		});
 	},

@@ -2,11 +2,37 @@ import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
 import callIfPresent from '../utils/call-if-present';
 
+const {
+	$,
+	computed,
+	isPresent,
+	computed: {
+		equal: eq
+	},
+	run,
+	run: {
+		scheduleOnce,
+		next,
+		once,
+		throttle,
+		later,
+		cancel
+	},
+	RSVP: {
+		Promise
+	}
+} = Ember;
+
 export default Ember.Component.extend({
 
 	data: defaultIfAbsent([]),
 	total: defaultIfAbsent(0),
 	direction: defaultIfAbsent('down'), // up | down
+	// OPTIONAL. use this if need to implement custom data length logic
+	// if this isn't provided, then defaults to callling data.length
+	dataLength: null,
+	observeData: defaultIfAbsent(true),
+	dataObserveProperty: defaultIfAbsent('data.[]'),
 
 	loadingText: defaultIfAbsent('Loading'),
 	// how to close to edge before loading triggered
@@ -14,6 +40,10 @@ export default Ember.Component.extend({
 	// how long to wait to check the data array if doLoad does
 	// not return a Promise
 	loadTimeout: defaultIfAbsent(1000), // in milliseconds
+
+	// how closely to call rapidly fired actions
+	// Lower for more responsiveness. Higher for better performance.
+	throttleThreshold: defaultIfAbsent(100), // in milliseconds
 
 	refreshingText: defaultIfAbsent('Refreshing'),
 	// how to close to edge before loading triggered
@@ -37,12 +67,15 @@ export default Ember.Component.extend({
 		'_isUp:scroll-up:scroll-down',
 		'_isLoading:loading',
 		'_isDone:done',
-		'_isRefreshing:refreshing'
+		'_isRefreshing:refreshing',
+		'_isPulling:pulling'
 	],
 	classNames: 'infinite-scroll',
 
 	_isLoading: false,
+	_isDisplaying: false,
 	_isRefreshing: false,
+	_isPulling: false,
 	_hasError: false,
 	// manually keep track of data items to be rendered
 	_items: null,
@@ -53,18 +86,20 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
-	_$container: Ember.computed(function() {
+	_$container: computed(function() {
 		return this.$('.infinite-container');
 	}),
-	_$refreshing: Ember.computed(function() {
+	_$refreshing: computed(function() {
 		return this.$('.infinite-scroll-refreshing');
 	}),
-	_total: Ember.computed('total', function() {
+	_total: computed('total', function() {
 		const total = this.get('total');
 		return isNaN(total) ? 10 : parseInt(total);
 	}),
-	publicAPI: Ember.computed('_total', 'direction', '_isLoading', '_hasError',
-		'_version',
+	_displayTimers: computed(function() {
+		return [];
+	}),
+	publicAPI: computed('_total', 'direction', '_isLoading', '_hasError', '_version',
 		function() {
 			return {
 				total: this.get('_total'),
@@ -75,23 +110,29 @@ export default Ember.Component.extend({
 				actions: {
 					loadMore: this.loadMoreIfNeeded.bind(this, true),
 					resetPosition: function() {
-						Ember.run.scheduleOnce('afterRender', this, this._afterAdd, true);
+						scheduleOnce('afterRender', this, this._afterAdd, true);
 					}.bind(this)
 				}
 			};
 		}),
-	_isUp: Ember.computed.equal('direction', 'up'),
-	_isDone: Ember.computed('_total', 'data.[]', 'doLoad', '_hasError', function() {
-		return (this.get('doLoad') && !this.get('_hasError')) ?
-			this.get('data.length') >= this.get('_total') :
+	_isUp: eq('direction', 'up'),
+	_dataLength: computed('data.[]', 'dataLength', function() {
+		const customLength = this.get('dataLength');
+		return isPresent(customLength) ? customLength : this.get('data.length');
+	}),
+	_isDone: computed('_total', '_dataLength', 'doLoad', '_hasError', function() {
+		const hasLoadHook = isPresent(this.get('doLoad')),
+			notError = !this.get('_hasError');
+		return (hasLoadHook && notError) ?
+			this.get('_dataLength') >= this.get('_total') :
 			true;
 	}),
-	_pullLength: Ember.computed('_pullStart', '_pullNow', function() {
+	_pullLength: computed('_pullStart', '_pullNow', function() {
 		const start = this.get('_pullStart'),
 			current = this.get('_pullNow');
 		return (start && current) ? Math.abs(start - current) : null;
 	}),
-	_pullIsWrongDirection: Ember.computed('_pullStart', '_pullNow', '_isUp', function() {
+	_pullIsWrongDirection: computed('_pullStart', '_pullNow', '_isUp', function() {
 		const start = this.get('_pullStart'),
 			current = this.get('_pullNow');
 		// if direction is up, then wrong direction is if current is greater than
@@ -108,17 +149,14 @@ export default Ember.Component.extend({
 		callIfPresent(this.get('doRegister'), this.get('publicAPI'));
 	},
 	didInsertElement: function() {
-		Ember.run.scheduleOnce('afterRender', this, function() {
+		scheduleOnce('afterRender', this, function() {
 			this._setup(true);
 			// bind event handlers
 			const elId = this.elementId;
-			Ember.$(window).on(`orientationchange.${elId} resize.${elId}`,
+			$(window).on(`orientationchange.${elId} resize.${elId}`,
 				this.restorePercentFromTop.bind(this));
 			this.get('_$container')
-				.on(`scroll.${elId}`, function() {
-					this.storePercentFromTop();
-					this.loadMoreIfNeeded();
-				}.bind(this))
+				.on(`scroll.${elId}`, this.onScroll.bind(this))
 				.on(`touchstart.${elId}`, this.startTouch.bind(this))
 				.on(`touchmove.${elId}`, this.moveTouch.bind(this))
 				.on(`touchend.${elId}`, this.endPull.bind(this))
@@ -130,13 +168,19 @@ export default Ember.Component.extend({
 	},
 	willDestroyElement: function() {
 		this.get('_$container').off(`.${this.elementId}`);
-		Ember.$(window).off(`.${this.elementId}`);
+		$(window).off(`.${this.elementId}`);
+		this._stopObserve();
 	},
 	didUpdateAttrs: function() {
+		const timers = this.get('_displayTimers');
 		// only rerun setup if the data array has been changed to another array
 		if (this.get('_prevData') !== this.get('data')) {
-			Ember.run.scheduleOnce('afterRender', this, this._setup, false);
+			timers.forEach(cancel);
+			scheduleOnce('afterRender', this, this._setup, false);
+		} else { // re-display items and load more after the data array has changed
+			this._tryDisplayItems();
 		}
+		timers.clear();
 	},
 	_setup: function(shouldReset = false) {
 		if (this.isDestroying || this.isDestroyed) {
@@ -146,12 +190,40 @@ export default Ember.Component.extend({
 		this.setProperties({
 			_isLoading: false,
 			_hasError: false,
+			_isDisplaying: false,
+			_isPulling: false,
 			_items: [],
 			_prevData: this.get('data'),
 		});
 		this._resetPull();
 		this.incrementProperty('_version');
-		Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this), true, shouldReset);
+		this._startObserve();
+		once(this, this.displayItems, shouldReset);
+	},
+
+	// Observe data
+	// ------------
+
+	_startObserve: function() {
+		const shouldObserve = this.get('observeData'),
+			observeProp = this.get('dataObserveProperty');
+		if (shouldObserve) {
+			this.addObserver(observeProp, this, this._tryDisplayItems);
+		}
+	},
+	_stopObserve: function() {
+		const observeProp = this.get('dataObserveProperty');
+		this.removeObserver(observeProp, this, this._tryDisplayItems);
+	},
+	_tryDisplayItems: function() {
+		// add to a timers queue so cancel when we've completely swapped out arrays
+		// and are doing a setup instead of just a re-display
+		const timers = this.get('_displayTimers');
+		// also, do NOT throttle. If you throttle then the spacing of the calls makes it
+		// so that each display items call is in a separate runloop and actually triggers
+		// displayItems each time. If you don't throttle, then the repeated scheduleOnce
+		// calls all happen in the same runloop and only fires displayItems once
+		timers.pushObject(scheduleOnce('afterRender', this, this.displayItems, false));
 	},
 
 	// Preserve location
@@ -169,7 +241,7 @@ export default Ember.Component.extend({
 	restorePercentFromTop: function() {
 		const container = this.get('_$container')[0],
 			percentFromTop = this.get('_percentFromTop');
-		if (Ember.isPresent(percentFromTop)) {
+		if (isPresent(percentFromTop)) {
 			container.scrollTop = container.scrollHeight * percentFromTop;
 		}
 	},
@@ -177,6 +249,15 @@ export default Ember.Component.extend({
 	// Refreshing
 	// ----------
 
+	onScroll: function(event) {
+		if (this.get('_isDisplaying')) {
+			event.preventDefault();
+		}
+		throttle(this, function() {
+			this.storePercentFromTop();
+			this.loadMoreIfNeeded();
+		}, this.get('throttleThreshold'));
+	},
 	startTouch: function(event) {
 		this._startPull(event.originalEvent.targetTouches[0].pageY);
 	},
@@ -184,36 +265,44 @@ export default Ember.Component.extend({
 		this._startPull(event.pageY);
 	},
 	moveTouch: function(event) {
-		Ember.run.throttle(this, this._continuePull,
-			event.originalEvent.targetTouches[0].pageY, 100);
+		if (this.get('_isDisplaying')) {
+			event.preventDefault();
+		}
+		throttle(this, this._continuePull, event.originalEvent.targetTouches[0].pageY,
+			this.get('throttleThreshold'));
 	},
 	moveMouse: function(event) {
-		Ember.run.throttle(this, this._continuePull,
-			event.pageY, 100);
+		if (this.get('_isDisplaying')) {
+			event.preventDefault();
+		}
+		throttle(this, this._continuePull, event.pageY, this.get('throttleThreshold'));
 	},
 
 	_startPull: function(position) {
-		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+		if (!this.get('doRefresh') || this.get('_isRefreshing') || this.get('_isDisplaying') ||
 			!this._isAtStart()) {
 			return;
 		}
 		this.set('_pullStart', position);
+		this.set('_isPulling', true);
 	},
 	_continuePull: function(position) {
-		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+		if (!this.get('doRefresh') || this.get('_isRefreshing') || this.get('_isDisplaying') ||
 			!this.get('_pullStart')) {
 			return;
 		}
 		this.set('_pullNow', position);
+		this.set('_isPulling', true);
 		this._doOverscroll(this.get('_pullLength'));
 	},
 	endPull: function() {
-		if (!this.get('doRefresh') || this.get('_isRefreshing') ||
+		if (!this.get('doRefresh') || this.get('_isRefreshing') || this.get('_isDisplaying') ||
 			!this.get('_pullStart')) {
 			return;
 		}
 		const shouldRefresh = this.get('_pullLength') >= this.get('refreshThreshold');
 		this.set('_isRefreshing', shouldRefresh);
+		this.set('_isPulling', false);
 		if (shouldRefresh && !this.get('_pullIsWrongDirection')) {
 			this._doOverscroll(this.get('refreshThreshold'));
 			this._showRefreshingMessage();
@@ -222,7 +311,7 @@ export default Ember.Component.extend({
 			if (result && result.then) {
 				result.then(this._setup.bind(this));
 			} else {
-				Ember.run.later(this, this._setup, this.get('refreshTimeout'));
+				later(this, this._setup, this.get('refreshTimeout'));
 			}
 		} else {
 			this._resetPull();
@@ -245,7 +334,7 @@ export default Ember.Component.extend({
 		$refreshing.fadeIn();
 	},
 	_doOverscroll: function(length) {
-		if (!Ember.isPresent(length) || this.get('_pullIsWrongDirection')) {
+		if (!isPresent(length) || this.get('_pullIsWrongDirection')) {
 			return;
 		}
 		const $container = this.get('_$container'),
@@ -277,41 +366,30 @@ export default Ember.Component.extend({
 				(this._canScroll() && !this._isNearEdge()))) {
 			return;
 		}
-		const versionWhenCalled = this.get('_version');
-		this._loadMore().then(function() {
-			if (this.isDestroying || this.isDestroyed) {
-				return;
-			}
-			this.setProperties({
-				_isLoading: false,
-				_hasError: false
-			});
-			// only call display if the version matches to prevent
-			// displayItems from being called multiple times
-			if (versionWhenCalled === this.get('_version')) {
-				Ember.run.once(this, this.displayItems, this.loadMoreIfNeeded.bind(this));
-			}
-		}.bind(this), function() {
-			if (this.isDestroying || this.isDestroyed) {
-				return;
-			}
-			// setting hasError makes isDone true
-			this.setProperties({
-				_isLoading: false,
-				_hasError: true
-			});
-		}.bind(this));
+		const versionWhenCalled = this.get('_version'),
+			after = function(isSuccess) {
+				if (this.isDestroying || this.isDestroyed) {
+					return;
+				}
+				if (versionWhenCalled === this.get('_version')) {
+					this.setProperties({
+						_isLoading: false,
+						_hasError: !isSuccess
+					});
+				}
+			};
+		this._loadMore().then(after.bind(this, true), after.bind(this, false));
 	},
 	_loadMore: function() {
 		this.set('_isLoading', true);
-		return new Ember.RSVP.Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			const loadResult = this.get('doLoad')();
 			if (loadResult.then) {
 				loadResult.then(resolve, reject);
 			} else {
-				Ember.run.later(this, resolve, this.get('loadTimeout'));
+				later(this, resolve, this.get('loadTimeout'));
 			}
-		}.bind(this));
+		});
 	},
 	_isNearEdge: function() {
 		const container = this.get('_$container')[0],
@@ -343,69 +421,41 @@ export default Ember.Component.extend({
 	// Managing items
 	// --------------
 
-	displayItems: function(callback, isSettingUp = false, shouldReset = false) {
+	displayItems: function(shouldReset = false) {
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
-		const renderedItems = this.get('_items'),
-			passedInData = this.get('data'),
-			itemsLen = renderedItems.length,
-			dataLen = passedInData.length;
-		if (dataLen > itemsLen) {
-			const numNew = dataLen - itemsLen;
-			let newItems = passedInData.slice(-numNew);
-			// if is up, then we need to reverse items
-			if (this.get('_isUp')) {
-				newItems.reverseObjects(); // in-place reversal
-			}
-			this._beforeAdd();
-			Ember.run(function() {
-				if (this.get('_isUp')) {
-					renderedItems.unshiftObjects(newItems);
-				} else {
-					renderedItems.pushObjects(newItems);
-				}
-				Ember.run.next(this, function() {
-					this._afterAdd(shouldReset);
-					Ember.run.scheduleOnce('afterRender', this, function() {
-						this.storePercentFromTop();
-						callIfPresent(callback);
-					});
+		this._beforeAdd();
+		run(() => {
+			const items = this.get('_items');
+			items.clear();
+			items.pushObjects(this.get('data'));
+			this.set('_isDisplaying', true); // to fade out and lock infinite items
+			next(this, function() {
+				this._afterAdd(shouldReset);
+				scheduleOnce('afterRender', this, function() {
+					this.set('_isDisplaying', false); // to fade in and unlock infinite items
+					this.storePercentFromTop();
+					this.loadMoreIfNeeded();
 				});
-			}.bind(this));
-		} else {
-			// can't set isDone directly because destroys computed property
-			// instead, set has error because, after loading, no additional
-			// items were added to the data array
-			// CANNOT error when setting up because we might have
-			// passed in an empty data array, expecting the component to load
-			// the initial data through a doLoad call
-			if (!isSettingUp) {
-				this.set('_hasError', true);
-			}
-			Ember.run.scheduleOnce('afterRender', this, function() {
-				callIfPresent(callback);
 			});
-		}
+		});
 	},
 	_beforeAdd: function() {
 		const container = this.get('_$container')[0];
 		this.set('_prevHeightLeft', container.scrollHeight - container.scrollTop);
 	},
-	_afterAdd: function(isSettingUp = false) {
+	_afterAdd: function(shouldReset = false) {
 		if (this.isDestroying || this.isDestroyed) {
 			return;
 		}
-		const container = this.get('_$container')[0];
-		if (isSettingUp) {
-			if (this.get('_isUp')) {
-				container.scrollTop = container.scrollHeight - container.clientHeight;
-			} else {
-				container.scrollTop = 0;
-			}
-		} else if (this.get('_isUp')) {
+		const container = this.get('_$container')[0],
+			isUp = this.get('_isUp');
+		if (shouldReset) {
+			container.scrollTop = isUp ? container.scrollHeight - container.clientHeight : 0;
+		} else if (isUp) {
 			const prevHeightLeft = this.get('_prevHeightLeft');
 			container.scrollTop = container.scrollHeight - prevHeightLeft;
 		}
-	},
+	}
 });

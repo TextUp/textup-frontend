@@ -11,24 +11,17 @@
             contact.id
         tagName="div"}}
         <div class='contacts-info {{if contact.isUnread "unread"}}'>
-            <p class="emphasize">
-                <span class="margin-r-half">
-                    {{phone-number contact.identifier}}
-                </span>
+            <div class="emphasize horizontal-items">
                 <span class="clear-badge no-space">
-                    {{partial 'partials/contact/indicators'}}
+                    <span class="margin-r-half">
+                        {{phone-number contact.identifier}}
+                    </span>
                 </span>
-            </p>
+                {{partial 'partials/contact/indicators'}}
+            </div>
             <p>
                 {{moment-from-now contact.lastRecordActivity interval=1000}}
             </p>
         </div>
     {{/link-to}}
-    {{#if (and (not contact.isShared) contact.tags)}}
-        <div class="contacts-tags">
-            {{#each contact.tags as |tag|}}
-                {{preview-badge color=tag.hexColor content=tag.name}}
-            {{/each}}
-        </div>
-    {{/if}}
 </div>

@@ -1,0 +1,32 @@
+<div class="media-container {{if rNote.hasLocationAndImages 'two-media-items'}}">
+    {{#hide-away tabindex=false
+        animation='fade'
+        clickOutToClose=true
+        bodyClickClose=true
+        hideTriggerOnOpen=true
+        triggerClass='no-select'
+        allowedTriggerSelectors=".location-preview"}}
+        <div class="media-description clickable">
+            <div class="center text-bigger text-center text-ellipsis xs-9-row-10 s-8-row-10">
+                <span class="fa fa-map-marker"></span>
+                <span class="margin-l-half">
+                    {{rNote.location.content.address}}
+                </span>
+            </div>
+        </div>
+    {{else}}
+        {{#if rNote.hasImages}}
+            <div class='media-container-item'>
+                {{photo-control classNames='media-item'
+                    imageLinks=rNote.imageLinks
+                    display='stack'}}
+            </div>
+        {{/if}}
+        {{#if rNote.hasLocation}}
+            <div class='media-container-item'>
+                {{location-preview classNames='media-item clickable'
+                    location=rNote.location.content.latLng}}
+            </div>
+        {{/if}}
+    {{/hide-away}}
+</div>

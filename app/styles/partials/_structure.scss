@@ -59,11 +59,11 @@ body {
 }
 .menu-item {
 	@extend %clearfix;
-	@extend .clickable;
 	@extend .text-ellipsis;
 	@extend %border-box;
 	@include button-colors($bg-dark-color);
 	padding: $padding;
+	cursor: pointer;
 	text-align: center;
 	font-size: 1.3em;
 	border-bottom-width: 1px;
@@ -376,12 +376,14 @@ img.brand {
 	}
 }
 .horizontal-items {
+	@extend %pretty-horizontal-scrollbars;
+
 	overflow-y: hidden;
 	overflow-x: auto;
     white-space: nowrap;
 
 	@include mq($from: desktop) {
-		overflow: hidden;
+		overflow-x: auto;
 	}
 
     & > :first-child {

@@ -5,6 +5,7 @@
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
     includeDefaultHeader=true
     defaultHeaderClass='display-xs display-s display-m'
+    forceKeepOpen=(or stateManager.owner.isSaving authManager.authUser.isSaving)
     focusSelector='.hide-away-trigger, .slideout-header'}}
     {{#tab-container onChange=(route-action 'revert' stateManger.owner
         (route-action 'revert' authManager.authUser))
@@ -16,6 +17,41 @@
                     <div class="form-element pad-l pad-r">
                         <label for="Your Name">Organization Name</label>
                         {{input value=org.name type="text" placeholder="Organization Name" class="form-control"}}
+                    </div>
+                    <div class="form-element pad-l pad-r row">
+                        <div class="xs-2-row-3 control-text">
+                            <label for="Lock Timeout" class='text-ellipsis'>
+                                Lock Timeout
+                            </label>
+                        </div>
+                        {{#multi-toggle classNames='xs-row-3'
+                            selectIndex=(if org.isTimeout15 0
+                                (if org.isTimeout30 1
+                                    (if org.isTimeout60 2 3)))
+                            wrapAround=true as |toggle doRegister|}}
+                            {{#multi-toggle/item doRegister=doRegister
+                                color='#76c9ec'
+                                onSelect=(action (mut org.timeoutInSeconds) 15)}}
+                                15 seconds
+                            {{/multi-toggle/item}}
+                            {{#multi-toggle/item doRegister=doRegister
+                                color='#6ab4d4'
+                                onSelect=(action (mut org.timeoutInSeconds) 30)}}
+                                30 seconds
+                            {{/multi-toggle/item}}
+                            {{#multi-toggle/item doRegister=doRegister
+                                color='#1BA5E0'
+                                onSelect=(action (mut org.timeoutInSeconds) 60)}}
+                                1 minute
+                            {{/multi-toggle/item}}
+                            {{#if (not (unbound org.isTimeoutStandard))}}
+                                {{#multi-toggle/item doRegister=doRegister
+                                    color='#d3d3d3'
+                                    onSelect=(route-action 'revertAttribute' org 'timeout')}}
+                                    {{org.timeoutInSeconds}} seconds
+                                {{/multi-toggle/item}}
+                            {{/if}}
+                        {{/multi-toggle}}
                     </div>
                     {{#if org.hasDirtyAttributes}}
                         <div class="form-element text-center">

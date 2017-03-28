@@ -1,0 +1,38 @@
+{{#slideout-pane title='Note History'
+    direction='right'
+    doClose=(route-action 'closeAllSlideouts')
+    ignoreCloseSelectors='.header-slideout, .c-notification__container, .pswp' as |slideout|}}
+    <ul class="result-list">
+        <li class="result-item">
+            <div class="revision-item">
+                <div class="xs-full-row bg-color bg-dark pad-all horizontal-items">
+                    <span class="badge">
+                        Current
+                    </span>
+                    <span class="clear-badge">
+                        {{moment-from-now recordNote.whenChanged interval=1000}} by
+                        {{if recordNote.authorName recordNote.authorName 'Unknown'}}
+                    </span>
+                </div>
+                {{#with recordNote as |noteOrRevision|}}
+                    {{partial 'partials/record-note/revision'}}
+                {{/with}}
+            </div>
+        </li>
+        {{#each recordNote.revisions as |revision|}}
+            <li class="result-item border-t">
+                <div class="revision-item">
+                    <div class="xs-full-row bg-color pad-all">
+                        {{moment-from-now revision.whenChanged interval=1000}} by
+                        <span class="text-bold">
+                            {{if revision.authorName revision.authorName 'Unknown'}}
+                        </span>
+                    </div>
+                    {{#with revision as |noteOrRevision|}}
+                        {{partial 'partials/record-note/revision'}}
+                    {{/with}}
+                </div>
+            </li>
+        {{/each}}
+    </ul>
+{{/slideout-pane}}

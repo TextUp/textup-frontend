@@ -23,6 +23,19 @@ module.exports = function(environment) {
         gReCaptcha: {
             siteKey: '6LeXTgkUAAAAAD6AxV0jRU5PDlusBakxwQFNDutq'
         },
+        locationPreview: {
+            host: 'https://api.mapbox.com/v4/mapbox.streets',
+            maxWidth: 1280,
+            maxHeight: 1280
+        },
+        viewportConfig: {
+            viewportTolerance: {
+                top: 500,
+                left: 500,
+                bottom: 500,
+                right: 500
+            }
+        },
         moment: {
             includeTimezone: '2010-2020'
         },
@@ -34,6 +47,17 @@ module.exports = function(environment) {
         },
         lock: {
             lockOnHidden: true,
+        },
+        photoCompression: {
+            maxSizeInBytes: 750000,
+            maxHeightInPixels: 1024,
+            maxWidthInPixels: 1024,
+            jpegQuality: 1.0,
+            // step size to enable image to fit within size constraint, needs to be between 0 and 1
+            // closer to 1 is a more fine-grained (conservative) scaling down
+            // closer to 0 is a more coarse-grained (extreme) scaling down
+            scalingStep: 0.9,
+            orient: true
         },
         state: {
             ignoreTracking: ['reset', 'setup', 'notify'],
@@ -56,7 +80,7 @@ module.exports = function(environment) {
     };
 
     if (environment === 'development') {
-        // ENV.host = "https://df2e34bc.ngrok.io";
+        // ENV.host = "https://91b011ee.ngrok.io";
         ENV.host = "https://dev.textup.org";
         // ENV.host = "https://v2.textup.org";
 

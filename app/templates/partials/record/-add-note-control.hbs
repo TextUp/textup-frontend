@@ -1,0 +1,11 @@
+<div class="add-note no-select {{if rItem.isAddingNoteAfter 'adding'}}">
+    <div class="add-note-control clickable"
+        onclick={{route-action 'mutate' (action (mut rItem.isAddingNoteAfter)) true
+            (route-action 'mutate' (action (mut recordNote)) null
+                (route-action 'mutate' (action (mut recordItemToInsertAfter)) rItem
+                    (route-action 'toggleDetailSlideout'
+                        'slideouts/record-note/create-edit'
+                        (if contact 'main/contacts/contact' 'main/tag/details'))))}}>
+        <span class="fa fa-plus-square center"></span>
+    </div>
+</div>

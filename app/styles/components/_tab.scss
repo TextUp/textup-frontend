@@ -9,7 +9,7 @@
 		@extend %clearfix;
 		.tab-container-nav-item {
 			@extend .no-select;
-			@extend .clickable;
+			cursor: pointer;
 			float: left;
 		}
 	}
@@ -39,9 +39,10 @@
 	white-space: nowrap;
 
 	.tab-container-nav-item {
-		@extend .clickable;
 		@extend .text-ellipsis;
 		@extend %border-box;
+
+		cursor: pointer;
 		text-align: center;
 		display: inline-block;
 		padding: $padding;

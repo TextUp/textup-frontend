@@ -39,4 +39,16 @@ export default function() {
 		this.use('toLeft'),
 		this.reverse('toRight')
 	);
+	this.transition(
+		this.hasClass('animate-slide-from-top'),
+		this.toValue(true),
+		this.use('toDown'),
+		this.reverse('toUp')
+	);
+	this.transition(
+		this.hasClass('animate-slide-from-bottom'),
+		this.toValue(true),
+		this.use('toUp'),
+		this.reverse('toDown')
+	);
 }

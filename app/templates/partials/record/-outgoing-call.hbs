@@ -1,10 +1,10 @@
-<span class='decoration-right'>
+<span class='decoration-right no-select'>
     {{moment-from-now record.whenCreated interval=1000}} by
     <span class="text-bold">
         {{if record.authorName record.authorName 'Unknown'}}
     </span>
 </span>
-<div class="contents">
+<div class="contents no-select">
     {{#if record.numSuccesses.isFulfilled}}
         {{#if (gt record.numSuccesses.content 0)}}
              <div class="decoration-center-left">

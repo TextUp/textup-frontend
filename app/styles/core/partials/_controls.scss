@@ -177,12 +177,12 @@ input[type="checkbox"]:before {
 }
 
 input[type="checkbox"]:checked:after {
-    content: "\25AA";
-    color: #737373;
-    font-size: 34px;
-    line-height: 15px;
-    font-weight: 700;
-    margin-left: 3px;
+    @extend .center;
+
+    content: " ";
+    background-color: $font-color;
+    height: $padding / 2;
+    width: $padding / 2;
 }
 
 // Form
@@ -225,6 +225,11 @@ textarea.form-control {
     display: table;
     width: 100%;
 
+    @include mq($until: desktop) {
+        input.form-control {
+            padding: 0 (0.2 * $padding);
+        }
+    }
     .input-group { // all nested have auto width
         width: auto;
     }
@@ -252,12 +257,16 @@ textarea.form-control {
         font-weight: $font-weight-bold;
         width: 1%;
 
+        &:first-child {
+            padding-left: $padding / 2;
+        }
         // changing font size induces scaling issues on mobile
         @include mq($from: desktop) {
             font-size: 1.5em;
-        }
-        &:first-child {
-            padding-left: 1em;
+
+            &:first-child {
+                padding-left: $padding;
+            }
         }
     }
     & > .input-group-addon {

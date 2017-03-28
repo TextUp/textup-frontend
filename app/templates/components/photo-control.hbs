@@ -1,0 +1,27 @@
+{{component _displayComponent imageLinks=imageLinks
+    itemClass=itemClass
+    deferred=deferred
+    onOneSuccess=(action 'onOneSuccess')
+    onOneFailure=onOneFailure
+    onAllTried=onAllTried
+    readonly=readonly
+    doRemove=doRemove}}
+
+<div class="photo-control-add-container">
+    <input type="file"
+        id="photo-control-input--{{elementId}}"
+        accept="image/*;capture=camera"
+        multiple='multiple'>
+    <label for="photo-control-input--{{elementId}}">
+        {{#if _isUploading}}
+            <span class="fa fa-upload"></span>
+            <span class="margin-l-quarter">Adding images...</span>
+        {{else if _isUploadError}}
+            <span class="fa fa-exclamation"></span>
+            <span class="margin-l-quarter">Oops. Please try again.</span>
+        {{else}}
+            <span class="fa fa-plus"></span>
+            <span class="margin-l-quarter">Add images</span>
+        {{/if}}
+    </label>
+</div>

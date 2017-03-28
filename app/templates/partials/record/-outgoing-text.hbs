@@ -5,7 +5,7 @@
     allowedTriggerSelectors=".receipts-button"
     bodyClass='bg-color bg-light
         border-l border-r border-b text-center'}}
-    <div class="horizontal-items border-b pad-all-half">
+    <div class="horizontal-items border-b pad-all-half no-select">
         <span class="badge">
             <div class="indicator success"></div>
             <span class="pad-l-half">Success</span>
@@ -21,7 +21,7 @@
     </div>
     <div class="pad-l-half pad-r-half pad-b-half record-receipts">
         {{#each record.receipts as |r|}}
-            <span class="badge margin-t-half
+            <span class="badge margin-t-half yes-select-text
                 {{if r.isSuccess
                     'success'
                     (if (or r.isFailed r.isBusy)
@@ -31,14 +31,14 @@
         {{/each}}
     </div>
 {{else}}
-    <span class='decoration-right'>
+    <span class='decoration-right no-select'>
         {{moment-from-now record.whenCreated interval=1000}} by
         <span class="text-bold">
             {{if record.authorName record.authorName 'Unknown'}}
         </span>
     </span>
     <div class="contents">
-        <div class="decoration-center-left">
+        <div class="decoration-center-left no-select">
             {{#if record.numSuccesses.isFulfilled}}
                 {{#if (gt record.numSuccesses.content 0)}}
                     {{#tool-tipster theme='tooltipster-clean'
@@ -59,10 +59,10 @@
             {{/if}}
         </div>
         <div class="{{if record.receipts 'margin-r-triple'}}">
-            <b class='text-wrap'>{{record.contents}}</b>
+            <b class='text-wrap yes-select-text'>{{record.contents}}</b>
         </div>
         {{#if record.receipts}}
-            <div class="pull-right-to-edge receipts-button full-height"
+            <div class="pull-right-to-edge receipts-button full-height no-select"
                 tabindex="0">
                 <button class="btn btn-plain btn-expand
                     text-center clickable text-small">

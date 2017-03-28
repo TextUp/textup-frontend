@@ -1,19 +1,24 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
+const {
+	$,
+	typeOf
+} = Ember;
+
 export default DS.Transform.extend({
 	deserialize: function(serialized) {
-		return (Ember.typeOf(serialized) === 'array') ? serialized : [];
+		return (typeOf(serialized) === 'array') ? serialized : [];
 	},
 
 	serialize: function(deserialized) {
-		var type = Ember.typeOf(deserialized);
-		if (type === 'array') {
-			return deserialized;
-		} else if (type === 'string') {
-			return deserialized.split(',').map(Ember.$.trim);
-		} else {
-			return [];
+		switch (typeOf(deserialized)) {
+			case 'array':
+				return deserialized;
+			case 'string':
+				return deserialized.split(',').map($.trim);
+			default:
+				return [];
 		}
 	}
 });

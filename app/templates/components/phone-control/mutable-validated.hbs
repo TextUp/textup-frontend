@@ -1,6 +1,5 @@
 {{#if hasBlock}}
 	{{#phone-control disabled=disabled
-		tabindex=tabindex
 		number=_newNumber
 		forceAllowChanges=forceAllowChanges
 		forceDefaultValidate=forceDefaultValidate
@@ -20,7 +19,6 @@
 	{{/phone-control}}
 {{else if (hasBlock 'inverse')}}
 	{{#phone-control disabled=disabled
-		tabindex=tabindex
 		number=_newNumber
 		forceAllowChanges=forceAllowChanges
 		forceDefaultValidate=forceDefaultValidate
@@ -42,7 +40,6 @@
 	{{/phone-control}}
 {{else}}
 	{{phone-control disabled=disabled
-		tabindex=tabindex
 		number=_newNumber
 		forceAllowChanges=forceAllowChanges
 		forceDefaultValidate=forceDefaultValidate

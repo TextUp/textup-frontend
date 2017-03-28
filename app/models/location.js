@@ -50,16 +50,18 @@ export default DS.Model.extend(Validations, {
 			} : null;
 		},
 		set: function(key, value) {
-			if (value) {
-				this.setProperties({
-					lat: value.lat,
-					lon: value.lng
-				});
-			} else {
-				this.setProperties({
-					lat: null,
-					lon: null
-				});
+			if (this.get("isDeleted") === false) {
+				if (value) {
+					this.setProperties({
+						lat: value.lat,
+						lon: value.lng
+					});
+				} else {
+					this.setProperties({
+						lat: null,
+						lon: null
+					});
+				}
 			}
 			return value;
 		}

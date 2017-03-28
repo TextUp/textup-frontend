@@ -4,9 +4,15 @@ import Ember from 'ember';
 import tz from 'npm:jstz';
 
 const {
-	notEmpty,
-	and
-} = Ember.computed;
+	$,
+	computed: {
+		notEmpty,
+		and
+	},
+	RSVP: {
+		Promise
+	}
+} = Ember;
 
 export default Ember.Service.extend(Ember.Evented, {
 	store: Ember.inject.service(),
@@ -146,15 +152,17 @@ export default Ember.Service.extend(Ember.Evented, {
 	// ---------------
 
 	authRequest: function(options = {}) {
-		return Ember.$.ajax(Ember.merge({
-			contentType: 'application/json',
-			beforeSend: (request) => {
-				if (this.get('hasToken')) {
-					request.setRequestHeader("Authorization",
-						`Bearer ${this.get('token')}`);
+		return new Promise((resolve, reject) => {
+			$.ajax(Ember.merge({
+				contentType: 'application/json',
+				beforeSend: (request) => {
+					if (this.get('hasToken')) {
+						request.setRequestHeader("Authorization",
+							`Bearer ${this.get('token')}`);
+					}
 				}
-			}
-		}, options));
+			}, options)).then(resolve, reject);
+		});
 	},
 
 	// Helper methods

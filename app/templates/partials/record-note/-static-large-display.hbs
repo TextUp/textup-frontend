@@ -1,0 +1,38 @@
+<div class="note-controls">
+    {{#if rNote.hasRevisions}}
+        <button class="btn btn-plain btn-span" type='button'>
+            <span class="fa fa-history"></span>
+        </button>
+    {{/if}}
+    {{#if (not contact.isSharedView)}}
+        <button class="btn btn-plain btn-span" type='button'>
+            <span class="fa fa-pencil"></span>
+        </button>
+    {{/if}}
+</div>
+{{#if (unbound rNote.noteContents)}}
+    <div class="{{if (not (unbound rNote.hasNeitherLocationNorImages)) 'm-5-row-10'}}">
+        <div class="contents text-wrap
+            {{if rNote.hasRevisions 'has-revisions'}}">
+            {{unbound rNote.noteContents}}
+        </div>
+    </div>
+{{/if}}
+<div class="xs-full-row {{if (unbound rNote.noteContents) 'm-5-row-10'}}">
+    <div class="media-container
+        {{if (unbound rNote.hasLocationAndImages) 'two-media-items'}}">
+        {{#if (unbound rNote.hasImages)}}
+            <div class='media-container-item'>
+                {{photo-control classNames='media-item'
+                    imageLinks=(unbound rNote.imageLinks)
+                    display='stack'}}
+            </div>
+        {{/if}}
+        {{#if (unbound rNote.hasLocation)}}
+            <div class='media-container-item'>
+                {{location-preview classNames='media-item clickable'
+                    location=(unbound rNote.location.content.latLng)}}
+            </div>
+        {{/if}}
+    </div>
+</div>

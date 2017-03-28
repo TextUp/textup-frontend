@@ -12,11 +12,15 @@ export default Ember.Controller.extend({
 	contact: null,
 	newFutureMsg: null,
 
+	recordItemToInsertAfter: null,
+	recordNote: null,
+
 	// Computed properties
 	// -------------------
 
 	futureMsgs: alias('contact.sortedFutureMessages'),
 	records: alias('contact.records'),
+	recordsAdjustedSize: alias('contact.recordsAdjustedSize'),
 	totalNumRecords: computed('contact.totalNumRecords', {
 		get: function() {
 			return this.get('_isReady') ? this.get('contact.totalNumRecords') : '--';
@@ -57,12 +61,12 @@ export default Ember.Controller.extend({
 				doResolve, doReject, tryNumber + 1, 500);
 		}
 		const query = Object.create(null),
-			records = this.get('records');
+			adjustedSize = this.get('recordsAdjustedSize');
 		// build query
 		query.max = 20;
 		query.contactId = contact.get('id');
-		if (records && records.length) {
-			query.offset = records.length;
+		if (adjustedSize) {
+			query.offset = adjustedSize;
 		}
 		// if contact id is null, then we want to silently fail to avoid presenting
 		// a distressing error message to the user. Infinite scroll component should

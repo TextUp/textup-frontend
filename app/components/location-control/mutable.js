@@ -7,8 +7,17 @@ export default Ember.Component.extend({
 	actions: {
 		onSelect: function(latLng, description) {
 			return new Ember.RSVP.Promise(function(resolve) {
+				const {
+					lat,
+					lng
+				} = latLng;
+				// deconstruct property or else we remove the computed property association
+				// and instead replace the computed property with the Mapbox LatLng object
 				this.setProperties({
-					location: latLng,
+					location: {
+						lat,
+						lng
+					},
 					description: description
 				});
 				resolve();

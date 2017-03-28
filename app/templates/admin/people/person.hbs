@@ -2,77 +2,108 @@
 
 <div class="details full-height">
 	<div class="section-header">
-		<div class="contact-details">
-			<div class="horizontal-items xs-2-row-3 s-row-2 pull-left">
-				<span class="clear-badge display-xs display-s no-space">
-                    {{#link-to (if team 'admin.team' 'admin.people')}}
-						<span class="pad-all">
-							<span class="fa fa-chevron-left"></span>
-						</span>
-	            	{{/link-to}}
-                </span>
-				<span class="clear-badge no-space">
-					<h5>{{person.name}}</h5>
-				</span>
-				{{#if person.isAdmin}}
-					<span class="pad-l display-s display-m display-l">
-						<span class="badge">Admin</span>
+		<div class="row full-height">
+			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
+                full-height row ">
+                {{#link-to (if team 'admin.team' 'admin.people')
+                	classNames='pull-left'}}
+					<span class="pad-all">
+						<span class="fa fa-chevron-left"></span>
 					</span>
-				{{/if}}
-				{{#if (and person.isAvailableNow
-					(if (not person.nextUnavailable) true
-						(date/is-after person.nextUnavailable now)))}}
-					<span class="display-s display-m display-l">
-						<span class="badge">
-							Available
-							{{#if person.nextUnavailable}}
-								for {{moment-from-now person.nextUnavailable hideSuffix=true}}
-							{{/if}}
-						</span>
-					</span>
-				{{/if}}
-			</div>
-			<div class="horizontal-items xs-row-3 s-row-2 pull-right">
-				{{#if (not person.isAuthUser)}}
-					<span class='clear-badge'>
-		            	{{#hide-away/dropdown}}
-		            		<li tabindex='0' class='dropdown-item'
+            	{{/link-to}}
+            </div>
+			<div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
+                full-height contact-info
+                {{if person.hasTeams 'has-details'}}">
+				<div class='contact-summary'>
+                    <div class="horizontal-items">
+                        <span class="clear-badge no-space">
+                            <h5>{{person.name}}</h5>
+                        </span>
+                        {{#if person.isAdmin}}
+							<span class="display-s display-m display-l">
+								<span class="margin-l badge">Admin</span>
+							</span>
+						{{/if}}
+						{{#if (and person.isAvailableNow
+							(if (not person.nextUnavailable) true
+								(date/is-after person.nextUnavailable now)))}}
+							<span class="display-s display-m display-l">
+								<span class="badge">
+									Available
+									{{#if person.nextUnavailable}}
+										for {{moment-from-now person.nextUnavailable hideSuffix=true}}
+									{{/if}}
+								</span>
+							</span>
+						{{/if}}
+                    </div>
+                </div>
+                <div class="contact-details">
+                    <div class="horizontal-items full-height">
+                        <span class='clickable display-l'
+                            onclick={{route-action 'toggleDetailSlideout'
+                            	'slideouts/teams/membership'
+                            	'admin.people.person'}}>
+							{{#each person.teams as |team|}}
+				                {{preview-badge classNames='clickable'
+				                	color=team.hexColor content=team.name}}
+				            {{/each}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+			<div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
+                full-height row">
+                <div class="horizontal-items pull-right">
+					{{#if (not person.isAuthUser)}}
+                        <span class='clear-badge no-space'>
+                            {{#hide-away/dropdown}}
+                                <li tabindex='0' class='dropdown-item'
 		            			onclick={{route-action 'resetPassword' person.username}}>
-								Send password reset
-							</li>
-		                    <li class='dropdown-divider'>Change Status</li>
-		                    {{partial 'partials/staff/status'}}
-			            {{else}}
-			                <button class='btn' type='button'>
-	                            Actions
-	                            <span class='fa fa-caret-down'></span>
-	                        </button>
-			            {{/hide-away/dropdown}}
-		            </span>
-				{{/if}}
-	            <span class="clear-badge display-m display-l">
-	            	{{#link-to (if team 'admin.team' 'admin.people')}}
-						<span class="pad-all">
-							<span class="fa fa-times"></span>
-						</span>
-	            	{{/link-to}}
-	            </span>
-			</div>
+									Send password reset
+								</li>
+								<li tabindex='0' class='dropdown-item'
+                                    {{action 'toggleDetailSlideout'
+		                            	'slideouts/teams/membership'
+		                            	'admin.people.person'}}>
+                                    Teams
+                                    <span class="badge">
+                                        {{person.teams.content.length}}
+                                    </span>
+                                </li>
+			                    <li class='dropdown-divider'>Status</li>
+			                    {{partial 'partials/staff/status'}}
+                            {{else}}
+                                <button class='btn' type='button'>
+                                    More
+                                    <span class='fa fa-caret-down'></span>
+                                </button>
+                            {{/hide-away/dropdown}}
+                        </span>
+                    {{else}}
+                    	<span class='clear-badge no-space'>
+                            <button type='button' class='btn'
+                                {{action 'toggleDetailSlideout'
+	                            	'slideouts/teams/membership'
+	                            	'admin.people.person'}}>
+                                Teams
+                                <span class="badge tint">
+                                    {{person.teams.content.length}}
+                                </span>
+                            </button>
+                        </span>
+                    {{/if}}
+                    <span class="clear-badge display-m display-l">
+                        {{#link-to (if team 'admin.team' 'admin.people')}}
+							<span class="pad-all">
+								<span class="fa fa-times"></span>
+							</span>
+		            	{{/link-to}}
+                    </span>
+				</div>
+            </div>
 		</div>
-        <div class="contact-tags">
-        	<span class='clear-badge'>
-				<a href='#'
-					{{action 'toggleDetailSlideout' 'slideouts/teams/membership' 'admin.people.person'}}>
-                    <span class="fa fa-users"></span>
-                </a>
-            </span>
-            <span class="badge-divider"></span>
-            {{#each person.teams as |team|}}
-                {{preview-badge color=team.hexColor content=team.name}}
-            {{else}}
-            	<span class="badge">Member of no teams.</span>
-            {{/each}}
-        </div>
     </div>
     <div class="section-body bg-color bg-lightest">
     	{{#tab-container onChange=(route-action 'revert' person)

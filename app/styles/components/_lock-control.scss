@@ -90,7 +90,8 @@
 			@extend .text-bold;
 			@extend %border-box;
 			@extend .no-select;
-			@extend .clickable;
+
+			cursor: pointer;
 			position: relative;
 			padding: $padding ($padding * 2);
 			margin: $padding * 0.5;

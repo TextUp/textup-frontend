@@ -5,13 +5,19 @@ const {
 } = Ember.computed;
 
 export default Ember.Controller.extend({
+
 	tag: null,
+	newFutureMsg: null,
+
+	recordItemToInsertAfter: null,
+	recordNote: null,
 
 	// Computed properties
 	// -------------------
 
 	futureMsgs: alias('tag.sortedFutureMessages'),
 	records: alias('tag.records'),
+	recordsAdjustedSize: alias('tag.recordsAdjustedSize'),
 	totalNumRecords: alias('tag.totalNumRecords'),
 
 	actions: {
@@ -35,12 +41,12 @@ export default Ember.Controller.extend({
 	_loadMoreWhenReady: function(doResolve, doReject) {
 		const query = Object.create(null),
 			tag = this.get('tag'),
-			records = this.get('records');
+			adjustedSize = this.get('recordsAdjustedSize');
 		// build query
 		query.max = 20;
 		query.tagId = tag.get('id');
-		if (records && records.length) {
-			query.offset = records.length;
+		if (adjustedSize) {
+			query.offset = adjustedSize;
 		}
 		// execute query
 		this.store.query('record', query).then((results) => {

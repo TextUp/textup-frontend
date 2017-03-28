@@ -1,5 +1,5 @@
 <div class="infinite-container {{containerClass}}">
-	<div class="infinite-items {{itemsClass}}">
+	<div class="infinite-items {{itemsClass}} {{if _isDisplaying 'is-displaying'}}">
 		{{#each _items as |item index|}}
 			{{yield item index publicAPI}}
 		{{else}}

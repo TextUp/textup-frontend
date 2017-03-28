@@ -5,7 +5,14 @@ import callIfPresent from '../utils/call-if-present';
 import config from '../config/environment';
 
 const {
-	$
+	$,
+	isArray,
+	get,
+	isPresent,
+	run: {
+		later,
+		cancel
+	}
 } = Ember;
 
 export default Ember.Route.extend(Slideout, Loading, {
@@ -21,8 +28,8 @@ export default Ember.Route.extend(Slideout, Loading, {
 		this.notifications.setDefaultClearNotification(5000);
 		this.notifications.setDefaultAutoClear(true);
 		this.get('authManager')
-			.on(config.events.auth.success, this, this._bindLockOnHidden)
-			.on(config.events.auth.clear, this, this._clearLockOnHidden);
+			.on(config.events.auth.success, this, this._bindLockEvents)
+			.on(config.events.auth.clear, this, this._clearLockEvents);
 	},
 	willDestroy: function() {
 		this._super(...arguments);
@@ -175,6 +182,17 @@ export default Ember.Route.extend(Slideout, Loading, {
 			this._doForOneOrMany(models, (model) => model && model.rollbackAttributes());
 			then.forEach(callIfPresent);
 		},
+		revertAttribute: function(models, attributeName, ...then) {
+			this._doForOneOrMany(models, (model) => {
+				if (model) {
+					const changes = get(model.changedAttributes(), attributeName);
+					if (isArray(changes)) {
+						model.set(attributeName, changes[0]);
+					}
+				}
+			});
+			then.forEach(callIfPresent);
+		},
 		persist: function(models, ...then) {
 			return this.get('dataHandler')
 				.persist(models)
@@ -182,6 +200,14 @@ export default Ember.Route.extend(Slideout, Loading, {
 		},
 		markForDelete: function(models, ...then) {
 			this.get('dataHandler').markForDelete(models);
+			then.forEach(callIfPresent);
+		},
+
+		// Chaining utilities
+		// ------------------
+
+		mutate: function(propClosure, newValue, ...then) {
+			callIfPresent(propClosure, newValue);
 			then.forEach(callIfPresent);
 		},
 
@@ -213,11 +239,28 @@ export default Ember.Route.extend(Slideout, Loading, {
 	doUnlock: function() {
 		this.controller.set('isLocked', false);
 	},
-	_bindLockOnHidden: function() {
-		this.get('visibility').on(config.events.visibility.hidden, this, this.doLock);
+	_scheduleLock: function() {
+		const org = this.get('authManager.authUser.org.content'),
+			changedAttrs = org.changedAttributes();
+		let timeout = org.get('timeout');
+		if (isArray(get(changedAttrs, 'timeout'))) {
+			timeout = get(changedAttrs, 'timeout')[0];
+		}
+		timeout = isPresent(timeout) ? timeout : 15000;
+		this.set('_lockTimer', later(this, this.doLock, timeout));
 	},
-	_clearLockOnHidden: function() {
-		this.get('visibility').off(config.events.visibility.hidden, this);
+	_unscheduleLock: function() {
+		cancel(this.get('_lockTimer'));
+	},
+	_bindLockEvents: function() {
+		this.get('visibility')
+			.on(config.events.visibility.hidden, this, this._scheduleLock)
+			.on(config.events.visibility.visible, this, this._unscheduleLock);
+	},
+	_clearLockEvents: function() {
+		this.get('visibility')
+			.off(config.events.visibility.hidden, this)
+			.off(config.events.visibility.visible, this);
 	},
 
 	// Helpers

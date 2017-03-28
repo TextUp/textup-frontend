@@ -3,6 +3,7 @@
     doClose=(if (and newTeam (not newTeam.isDeleted))
         (route-action 'revert' newTeam (route-action 'closeAllSlideouts'))
         (route-action 'closeAllSlideouts'))
+    forceKeepOpen=newTeam.isSaving
     ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'

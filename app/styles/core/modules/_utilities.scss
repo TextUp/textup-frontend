@@ -120,19 +120,41 @@
 // ---------------
 
 %vertical-scroll {
+    @extend %pretty-vertical-scrollbars;
+
     overflow-x: hidden;
     overflow-y: scroll; // overflow scroll MUCH smoother on mobile safari
     -webkit-overflow-scrolling: touch;
 
     @include mq($from: desktop) {
         overflow-y: auto;
-
-        // only desktop browser show wide scrollbars
-        // mobile browsers usually only show the scrollbars when scrolling
+    }
+}
+%pretty-vertical-scrollbars {
+    @extend %pretty-scrollbars;
+    @include mq($from: desktop) {
         &::-webkit-scrollbar {
             width: 5px;
             height: 1px;
             border-left: 0;
+        }
+    }
+}
+%pretty-horizontal-scrollbars {
+    @extend %pretty-scrollbars;
+    @include mq($from: desktop) {
+        &::-webkit-scrollbar {
+            width: 1px;
+            height: 5px;
+            border-top: 0;
+        }
+    }
+}
+%pretty-scrollbars {
+    @include mq($from: desktop) {
+        // only desktop browser show wide scrollbars
+        // mobile browsers usually only show the scrollbars when scrolling
+        &::-webkit-scrollbar {
             background: $border-color;
         }
         &::-webkit-scrollbar-track {
@@ -144,6 +166,7 @@
         }
     }
 }
+
 %border-box {
     box-sizing: border-box;
 }

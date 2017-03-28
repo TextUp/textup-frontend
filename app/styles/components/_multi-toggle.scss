@@ -56,10 +56,10 @@
 		display: block;
 	}
 	.left-toggle, .right-toggle {
-		@extend .clickable;
 		@extend .control-text;
 		@extend %border-box;
 
+		cursor: pointer;
 		display: none;
 		z-index: 10;
 		width: 50%;

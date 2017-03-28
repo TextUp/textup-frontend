@@ -3,6 +3,10 @@ import callIfPresent from '../../utils/call-if-present';
 import defaultIfAbsent from '../../utils/default-if-absent';
 import Validated from '../../mixins/validated-component';
 
+const {
+	isPresent
+} = Ember;
+
 export default Ember.Component.extend(Validated, {
 
 	numbers: defaultIfAbsent([]),
@@ -63,7 +67,7 @@ export default Ember.Component.extend(Validated, {
 			this.set('newNumber', val);
 		},
 		addNewNumber: function(val, isValid) {
-			if (isValid) {
+			if (isValid && isPresent(val)) {
 				this.get('numbers').pushObject({
 					number: val
 				});

@@ -47,5 +47,19 @@ module.exports = function(defaults) {
         destDir: '/assets/images'
     });
 
+    app.import(app.bowerDirectory + "/photoswipe/dist/photoswipe.min.js");
+    app.import(app.bowerDirectory + "/photoswipe/dist/photoswipe-ui-default.min.js");
+    app.import(app.bowerDirectory + "/photoswipe/dist/photoswipe.css");
+    app.import(app.bowerDirectory + "/photoswipe/dist/default-skin/default-skin.css");
+    app.import(app.bowerDirectory + "/photoswipe/dist/default-skin/default-skin.png", {
+        destDir: '/assets'
+    });
+    app.import(app.bowerDirectory + "/photoswipe/dist/default-skin/default-skin.svg", {
+        destDir: '/assets'
+    });
+    app.import(app.bowerDirectory + "/photoswipe/dist/default-skin/preloader.gif", {
+        destDir: '/assets'
+    });
+
     return app.toTree();
 };

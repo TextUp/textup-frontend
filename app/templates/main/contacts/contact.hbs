@@ -2,114 +2,152 @@
 
 <div class="details full-height">
 	<div class="section-header">
-		<div class="contact-details">
-			<div class="horizontal-items xs-2-row-3 s-row-2 pull-left">
-                <span class="clear-badge display-xs display-s no-space">
-                    {{#link-to (if tag 'main.tag'
-                        (if stateManager.viewingSearch
-                            'main.search'
-                            'main.contacts'))}}
-                        <span class="pad-all">
-                            <span class="fa fa-chevron-left"></span>
-                        </span>
-                    {{/link-to}}
-                </span>
-				<span class="clear-badge no-space">
-					<h5>{{phone-number contact.identifier}}</h5>
-				</span>
-                <span class="clear-badge no-space">
-                    <a class="btn btn-plain display-m display-l link"
-                        href='#'
-                        {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                        Details
-                    </a>
-                </span>
-                <span class="clear-badge display-l">
-                    <span class='badge'>
-                        <b>{{contact.numbers.length}}</b>
-                        {{pluralize 'numbers' contact.numbers.length}}
+        <div class="row full-height">
+            <div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
+                full-height row ">
+                {{#link-to (if tag 'main.tag'
+                    (if stateManager.viewingSearch
+                        'main.search'
+                        'main.contacts'))
+                    classNames='pull-left'}}
+                    <span class="pad-all">
+                        <span class="fa fa-chevron-left"></span>
                     </span>
-                </span>
-			</div>
-			<div class="horizontal-items xs-row-3 s-row-2 pull-right">
-                {{#if (not contact.isShared)}}
-                    <span class='clear-badge no-space'>
-                        <span class="display-m display-l">
-                            <button class='btn btn-default'
-                                {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/contact'}} type='button'>
-                                Share
-                                <span class="badge">
-                                    {{contact.sharedWith.length}}
-                                </span>
-                            </button>
-                        </span>
-                    </span>
-                    <span class='clear-badge no-space'>
-                        {{#hide-away/dropdown}}
-                            <li tabindex='0' class='dropdown-item display-xs display-s'
-                                {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                                Details
-                            </li>
-                            <li tabindex='0' class='dropdown-item display-xs display-s'
-                                {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/contact'}}>
-                                Share
-                                <span class="badge">
-                                    {{contact.sharedWith.length}}
-                                </span>
-                            </li>
-                            <li class='dropdown-divider'>Status</li>
-                            {{partial 'partials/contact/status'}}
-                        {{else}}
-                            <button class='btn' type='button'>
-                                Actions
-                                <span class='fa fa-caret-down'></span>
-                            </button>
-                        {{/hide-away/dropdown}}
-                    </span>
-                {{else}}
-                    <span class='clear-badge no-space'>
-                        <button class='btn'
-                            {{action 'toggleDetailSlideout' 'slideouts/contact' 'main/contacts/contact'}}>
-                            Details
-                        </button>
-                    </span>
-                {{/if}}
-                <span class="clear-badge display-m display-l">
-                    {{#link-to (if tag 'main.tag'
-                        (if stateManager.viewingSearch
-                            'main.search'
-                            'main.contacts'))}}
-                        <span class="pad-all">
-                            <span class="fa fa-times"></span>
-                        </span>
-                    {{/link-to}}
-                </span>
+                {{/link-to}}
             </div>
-		</div>
-        <div class="contact-tags">
-            {{#if contact.isShared}}
-                <span class="badge">
-                    Shared by <span class="text-darken">{{contact.sharedBy}}</span>
-                </span>
-                {{#if contact.isSharedView}}
-                    <span class="clear-badge">Viewing only</span>
-                {{else if contact.isSharedDelegate}}
-                    <span class="clear-badge">Full permissions</span>
-                {{/if}}
-            {{else}}
-                <span class='clear-badge'>
-                    <a href='#'
-                        {{action 'toggleDetailSlideout' 'slideouts/tags/membership' 'main/contacts/contact'}}>
-                        <span class="fa fa-tags"></span>
-                    </a>
-                </span>
-                <span class="badge-divider"></span>
-                {{#each contact.tags as |tag|}}
-                    {{preview-badge color=tag.hexColor content=tag.name}}
-                {{else}}
-                    <span class="badge">Member of no tags.</span>
-                {{/each}}
-            {{/if}}
+            <div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
+                full-height contact-info
+                {{if contact.isShared 'is-shared'}}
+                {{if (or contact.hasTags contact.isShared) 'has-details'}}">
+                <div class='contact-summary'>
+                    <div class="horizontal-items clickable"
+                        onclick={{route-action 'toggleDetailSlideout'
+                            'slideouts/contact'
+                            'main/contacts/contact'}}>
+                        <span class="clear-badge no-space clickable">
+                            <h5>{{phone-number contact.identifier}}</h5>
+                        </span>
+                        {{#if contact.name}}
+                            <span class="clear-badge no-space clickable
+                                display-s display-m display-l">
+                                <span class="margin-l-half text-big">
+                                    {{phone-number contact.numbers.firstObject.number}}
+                                </span>
+                            </span>
+                        {{/if}}
+                        {{#if (gt contact.numbers.length 1)}}
+                            <span class="display-l">
+                                <span class='margin-l-half badge text-small clickable'>
+                                    <span class="text-small">
+                                        +{{plus contact.numbers.length -1}}
+                                        {{pluralize 'number' (plus contact.numbers.length -1)}}
+                                    </span>
+                                </span>
+                            </span>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="contact-details">
+                    <div class="horizontal-items full-height">
+                        {{#if contact.isShared}}
+                            {{!-- add click to increase click area on small screens --}}
+                            <span class="display-xs">
+                                <span class="badge clickable"
+                                    onclick={{route-action 'toggleDetailSlideout'
+                                        'slideouts/contact'
+                                        'main/contacts/contact'}}>
+                                    Shared
+                                </span>
+                            </span>
+                            <span class="display-s display-m display-l">
+                                <span class="badge">
+                                    {{#if contact.isSharedView}}
+                                        Viewing only from
+                                    {{else if contact.isSharedDelegate}}
+                                        Collaborating with
+                                    {{else}}
+                                        Shared by
+                                    {{/if}}
+                                    <span class="text-darken">{{contact.sharedBy}}</span>
+                                </span>
+                                {{#if contact.hasTags}}
+                                    <span class="badge-divider"></span>
+                                {{/if}}
+                            </span>
+                        {{/if}}
+                        <span class='clickable display-l'
+                            onclick={{route-action 'toggleDetailSlideout'
+                                'slideouts/tags/membership'
+                                'main/contacts/contact'}}>
+                            {{#each contact.tags as |tag|}}
+                                {{preview-badge classNames='clickable'
+                                    color=tag.hexColor content=tag.name}}
+                            {{/each}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
+                full-height row">
+                <div class="horizontal-items pull-right">
+                    {{#if (not contact.isShared)}}
+                        <span class='clear-badge no-space'>
+                            {{#hide-away/dropdown}}
+                                <li tabindex='0' class='dropdown-item'
+                                    {{action 'toggleDetailSlideout'
+                                        'slideouts/contact'
+                                        'main/contacts/contact'}}>
+                                    Details
+                                </li>
+                                <li tabindex='0' class='dropdown-item'
+                                    {{action 'toggleDetailSlideout'
+                                        'slideouts/share'
+                                        'main/contacts/contact'}}>
+                                    Share
+                                    <span class="badge">
+                                        {{contact.sharedWith.length}}
+                                    </span>
+                                </li>
+                                <li tabindex='0' class='dropdown-item'
+                                    {{action 'toggleDetailSlideout'
+                                        'slideouts/tags/membership'
+                                        'main/contacts/contact'}}>
+                                    Tags
+                                    <span class="badge">
+                                        {{contact.tags.content.length}}
+                                    </span>
+                                </li>
+                                <li class='dropdown-divider'>Status</li>
+                                {{partial 'partials/contact/status'}}
+                            {{else}}
+                                <button class='btn' type='button'>
+                                    More
+                                    <span class='fa fa-caret-down'></span>
+                                </button>
+                            {{/hide-away/dropdown}}
+                        </span>
+                    {{else}}
+                        <span class='clear-badge no-space'>
+                            <button type='button' class='btn'
+                                {{action 'toggleDetailSlideout'
+                                    'slideouts/contact'
+                                    'main/contacts/contact'}}>
+                                Details
+                            </button>
+                        </span>
+                    {{/if}}
+                    <span class="clear-badge display-m display-l">
+                        {{#link-to (if tag 'main.tag'
+                            (if stateManager.viewingSearch
+                                'main.search'
+                                'main.contacts'))}}
+                            <span class="pad-all">
+                                <span class="fa fa-times"></span>
+                            </span>
+                        {{/link-to}}
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="section-body row {{if (not contact.allowEdits) 'readonly'}}">

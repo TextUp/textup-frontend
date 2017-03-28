@@ -8,11 +8,20 @@ import {
 const {
 	isPresent,
 	isArray,
+	computed,
 	computed: {
 		equal: eq,
 		alias,
 		or,
 		notEmpty
+	},
+	RSVP,
+	inject,
+	RSVP: {
+		Promise
+	},
+	String: {
+		dasherize
 	}
 } = Ember,
 Validations = buildValidations({
@@ -60,15 +69,14 @@ Validations = buildValidations({
 
 export default DS.Model.extend(Validations, {
 
-	authManager: Ember.inject.service('auth'),
+	authManager: inject.service('auth'),
 
 	rollbackAttributes: function() {
 		this._super(...arguments);
 		this.set('isSelected', false);
 		this.set('phoneAction', null);
 		this.set('phoneActionData', null);
-		this.set('enableNotifications',
-			isPresent(this.get('personalPhoneNumber')));
+		this.set('enableNotifications', isPresent(this.get('personalPhoneNumber')));
 		this.get('phone').then((phone) => phone && phone.rollbackAttributes());
 		this.get('schedule').then((sched) => sched && sched.rollbackAttributes());
 	},
@@ -130,24 +138,26 @@ export default DS.Model.extend(Validations, {
 	hasPhoneAction: notEmpty('phoneAction'),
 	hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
 	hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'hasPhoneAction'),
-	enableNotifications: Ember.computed('personalPhoneNumber', {
+	enableNotifications: computed('personalPhoneNumber', {
 		get: function() {
 			return isPresent(this.get('personalPhoneNumber'));
 		},
 		set: function(key, value) {
-			if (value === false) {
-				this.set('personalPhoneNumber', '');
-			} else if (value === true) {
-				const changes = this.changedAttributes()['personalPhoneNumber'];
-				if (isArray(changes)) {
-					this.set('personalPhoneNumber', changes[0]);
+			if (this.get("isDeleted") === false) {
+				if (value === false) {
+					this.set('personalPhoneNumber', '');
+				} else if (value === true) {
+					const changes = this.changedAttributes()['personalPhoneNumber'];
+					if (isArray(changes)) {
+						this.set('personalPhoneNumber', changes[0]);
+					}
 				}
 			}
 			return value;
 		}
 	}),
 
-	isAvailableNow: Ember.computed('manualSchedule', 'isAvailable',
+	isAvailableNow: computed('manualSchedule', 'isAvailable',
 		'schedule.content.isAvailableNow',
 		function() {
 			return this.get('manualSchedule') ?
@@ -155,14 +165,14 @@ export default DS.Model.extend(Validations, {
 				this.get('schedule.content.isAvailableNow');
 		}),
 
-	urlIdentifier: Ember.computed('username', function() {
-		return Ember.String.dasherize(this.get('username') || '');
+	urlIdentifier: computed('username', function() {
+		return dasherize(this.get('username') || '');
 	}),
 	sharingId: alias('phone.content.id'), // for building share actions
-	transferId: Ember.computed('id', function() {
+	transferId: computed('id', function() {
 		return `staff-${this.get('id')}`;
 	}),
-	transferFilter: Ember.computed('name', 'username', 'email', function() {
+	transferFilter: computed('name', 'username', 'email', function() {
 		const name = this.get('name'),
 			username = this.get('username'),
 			email = this.get('email');
@@ -174,14 +184,15 @@ export default DS.Model.extend(Validations, {
 	isStaff: eq('status', 'STAFF'),
 	isAdmin: eq('status', 'ADMIN'),
 
-	teamsWithPhones: Ember.computed('teams.[]', function() {
+	hasTeams: notEmpty('teams'),
+	teamsWithPhones: computed('teams.[]', function() {
 		return DS.PromiseArray.create({
-			promise: new Ember.RSVP.Promise((resolve, reject) => {
+			promise: new Promise((resolve, reject) => {
 				this.get('teams').then((teams) => {
-					Ember.RSVP.all(teams.mapBy('phone.content')).then((phones) => {
+					RSVP.all(teams.mapBy('phone.content')).then((phones) => {
 						const teamsWithPhones = [];
 						phones.forEach((phone, index) => {
-							if (Ember.isPresent(phone)) {
+							if (isPresent(phone)) {
 								teamsWithPhones.pushObject(teams.objectAt(index));
 							}
 						});
@@ -191,14 +202,14 @@ export default DS.Model.extend(Validations, {
 			})
 		});
 	}),
-	isNone: Ember.computed('isBlocked', 'isPending', 'teamsWithPhones', 'phone',
+	isNone: computed('isBlocked', 'isPending', 'teamsWithPhones', 'phone',
 		function() {
-			return new Ember.RSVP.Promise((resolve, reject) => {
+			return new Promise((resolve, reject) => {
 				this.get('teamsWithPhones').then((teams) => {
 					this.get('phone').then((phone) => {
 						const isBlocked = this.get('isBlocked'),
 							isPending = this.get('isPending'),
-							hasPhone = Ember.isPresent(phone);
+							hasPhone = isPresent(phone);
 						// isNone is true when user is blocked OR pending OR
 						// if the user is active, but
 						// 		(1) does not have phone,
@@ -209,7 +220,7 @@ export default DS.Model.extend(Validations, {
 				}, reject);
 			});
 		}),
-	isAuthUser: Ember.computed('authManager.authUser', function() {
+	isAuthUser: computed('authManager.authUser', function() {
 		return this.get('authManager.authUser.id') === this.get('id');
 	}),
 
@@ -217,7 +228,7 @@ export default DS.Model.extend(Validations, {
 	// --------------
 
 	isAnyStatus: function(raw) {
-		return (Ember.isArray(raw) ? raw : [raw])
+		return (isArray(raw) ? raw : [raw])
 			.map((stat) => String(stat).toLowerCase())
 			.contains(String(this.get('status')).toLowerCase());
 	},

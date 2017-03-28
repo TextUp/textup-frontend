@@ -92,29 +92,16 @@
                 person.id
                 classNames="contacts-info"
                 tagName="div"}}
-                <p class="emphasize">
-                    <span class="margin-r-half">
-                        {{person.name}}
-                    </span>
+                <div class="emphasize horizontal-items">
                     <span class="clear-badge no-space">
-                        {{partial 'partials/staff/indicators'}}
+                        <span class="margin-r-half">
+                            {{person.name}}
+                        </span>
                     </span>
-                </p>
+                    {{partial 'partials/staff/indicators'}}
+                </div>
                 <p>{{person.username}}</p>
             {{/link-to}}
-            {{#if person.teams}}
-                <div class="contacts-tags">
-                    {{#each person.teams as |team|}}
-                        {{#preview-badge color=team.hexColor
-                            content=team.name as |badge|}}
-                        {{else}}
-                            {{#if team.phone}}
-                                <span class="fa fa-phone"></span>
-                            {{/if}}
-                        {{/preview-badge}}
-                    {{/each}}
-                </div>
-            {{/if}}
         </div>
     {{else}}
         {{#if team}}

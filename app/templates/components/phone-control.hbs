@@ -1,43 +1,32 @@
+{{!-- phone number input --}}
 <div class="input-group {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
 	<span class="input-group-element {{if (not allowChanges) 'form-disabled'}}">
 		<span class="phone-number-input input-group">
-		    <span class="input-group-text-display">(</span>
-		    {{!-- numeric input mode allows for number keyboard on mobile  --}}
-		    {{!-- text type so that the up/down arrows don't show up on desktop --}}
-		    {{input type="tel" pattern="[0-9]*"
-		    	placeholder="###"
-		    	tabindex='-1'
-		    	class="form-control text-center"
-		    	value=_cleanedAndSplit.first
-		    	focus-out=(action 'handleChange')
-		    	key-up=(action 'validateInputAndAdjustFocus' 'first')
-		    	disabled=(if (not allowChanges) 'disabled')}}
-		    <span class="input-group-text-display">)</span>
-		    {{input type="tel" pattern="[0-9]*"
-		    	tabindex='-1'
-		    	placeholder="###"
-		    	class="form-control text-center"
-		    	value=_cleanedAndSplit.second
-		    	focus-out=(action 'handleChange')
-		    	key-up=(action 'validateInputAndAdjustFocus' 'second')
-		    	disabled=(if (not allowChanges) 'disabled')}}
-		    <span class="input-group-text-display">-</span>
-		    {{input type="tel" pattern="[0-9]*"
-		    	tabindex='-1'
-		    	placeholder="####"
-		    	class="form-control text-center"
-		    	value=_cleanedAndSplit.third
-		    	key-up=(action 'handleLastInput')
-		    	focus-out=(action 'handleChange')
-		    	enter=(action 'lastInputDidEnter')
-		    	disabled=(if (not allowChanges) 'disabled')}}
+		    <span class="input-group-text-display no-select">(</span>
+		    {{!-- need to nest inputs becuase of selection works with PARENT nodes --}}
+		    <span class="input-group">
+		    	<input type="tel" class="form-control text-center" pattern="[0-9]*" data-index="0"
+		    		tabindex="0" placeholder="###" disabled={{if (not allowChanges) 'disabled'}}>
+		    </span>
+
+		    <span class="input-group-text-display no-select">)</span>
+		    <span class="input-group">
+		    	<input type="tel" class="form-control text-center" pattern="[0-9]*" data-index="1"
+		    		tabindex="0" placeholder="###" disabled={{if (not allowChanges) 'disabled'}}>
+		    </span>
+
+		    <span class="input-group-text-display no-select">-</span>
+		    <span class="input-group">
+		    	<input type="tel" class="form-control text-center" pattern="[0-9]*" data-index="2"
+		    		tabindex="0" placeholder="####" disabled={{if (not allowChanges) 'disabled'}}>
+		    </span>
 		</span>
 	</span>
-	{{#if (and (not disabled) (or showControl (or onClick onValidate)))}}
-		<span class="input-group-addon {{controlClass}}">
-			<button class='btn {{controlButtonClass}}' type='button'
-				disabled={{if (or (not someNumberPresent) (not _isValid)) 'disabled'}}
-				{{action 'clickControl' bubbles=false}}>
+	{{#if (and (not disabled) (or showControl onClick onValidate))}}
+		<span class="input-group-addon {{controlClass}} no-select">
+			<button type='button' class='btn {{controlButtonClass}}' tabindex='0'
+				disabled={{if (or (not someNumberPresent) _hasError) 'disabled'}}
+				onclick={{action 'submitInput' bubbles=false}}>
 				{{#if (hasBlock 'inverse')}}
 					{{yield to='inverse'}}
 				{{else}}
@@ -47,23 +36,27 @@
 		</span>
 	{{/if}}
 </div>
-<div class="input-group {{if (or (not _isValidating) (not onValidate)) 'hidden' ''}}">
+{{!-- external validation --}}
+<div class="input-group no-select
+		{{if (or (not _isValidating) (not onValidate)) 'hidden' ''}}">
 	{{#if (and hasBlock (not forceDefaultValidate))}}
 		{{yield publicAPI}}
 	{{else}}
 		<span class="input-group-addon blend-in">
-	    	<button class='btn btn-default' type='button' {{action 'revert' bubbles=false}}>
+	    	<button type='button' class='btn btn-default' tabindex='0'
+	    		onclick={{action 'revertExternalValidation' bubbles=false}}>
 	        	<span class='fa fa-undo'></span>
 	    	</button>
 	    </span>
-	    {{input tabindex='-1'
+	    {{input tabindex='0'
 	    	class='phone-number-validate form-control'
 	    	placeholder='Verify number'
-	    	value=_validationCode enter='handleValidate'}}
+	    	value=_externalValidationCode
+	    	enter='submitExternalValidation'}}
 		<span class="input-group-addon blend-in">
-	    	<button class='btn btn-default' type='button'
-	    		disabled={{if _isValidationCodeEmpty 'disabled'}}
-	    		{{action 'handleValidate' bubbles=false}}>
+	    	<button class='btn btn-default' type='button' tabindex='0'
+	    		disabled={{if (not _externalValidationCode) 'disabled'}}
+	    		{{action 'submitExternalValidation' bubbles=false}}>
 	        	<span class='fa fa-check'></span>
 	    	</button>
 	    </span>

@@ -11,7 +11,10 @@ export default Ember.Route.extend({
 		controller.set('staff', this.store.createRecord('staff'));
 	},
 	deactivate: function() {
-		this.controller.get('staff').rollbackAttributes();
+		const staff = this.controller.get('staff');
+		if (staff.get('isDeleted') === false) {
+			staff.rollbackAttributes();
+		}
 		this.controller.set('confirmPassword', null);
 	},
 

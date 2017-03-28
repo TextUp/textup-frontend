@@ -22,6 +22,10 @@
 @import 'components/_datetime-control';
 @import 'components/_lock-control';
 @import 'components/_show-password-toggle';
+@import 'components/_location-preview';
+@import 'components/_photo-control';
+@import 'components/photo-control/_stack-display';
+@import 'components/photo-control/_grid-display';
 
 // import app-specific styles
 // put this last so these styles take precendence over all

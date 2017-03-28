@@ -4,7 +4,7 @@
         {{#sortable-item classNames='input-group'
             model=num group=group handle=".handle"}}
             {{#if (not readonly)}}
-                <div class="input-group-addon blend-in">
+                <div class="input-group-addon blend-in no-select">
                     <button class="btn" type='button' {{action 'removeNumber' i}}>
                         <span class="fa fa-trash"></span>
                     </button>
@@ -29,11 +29,12 @@
         clickOutToClose=false
         animation='fade'
         startOpen=(if numbers false true)
+        bodyFocusOnOpenSelector='.form-control[data-index=0]'
         onClose=(action (mut newNumber) '')
         hideTriggerOnOpen=true as |hideAway|}}
         <div class='input-group'>
             {{#if hasNumbers}}
-                <span class="input-group-addon">
+                <span class="input-group-addon no-select">
                     <button class='btn' type='button'
                         onclick={{hideAway.actions.close}}>
                         <span class="fa fa-times"></span>

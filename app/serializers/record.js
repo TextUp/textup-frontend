@@ -2,7 +2,9 @@ import Ember from 'ember';
 import DS from 'ember-data';
 
 const {
-	get
+	get,
+	isEmpty,
+	isPresent
 } = Ember;
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
@@ -53,25 +55,82 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		voicemailInSeconds: {
 			serialize: false
 		},
+
+		location: {
+			deserialize: 'records',
+			serialize: 'records'
+		},
+		_originallyHasLocation: {
+			serialize: false
+		},
+		whenChanged: {
+			serialize: false
+		},
+		hasBeenDeleted: {
+			key: 'isDeleted',
+			serialize: false
+		},
+		unsortedRevisions: {
+			key: 'revisions',
+			deserialize: 'records',
+			serialize: false
+		},
+		images: {
+			serialize: false
+		},
+		uploadErrors: {
+			serialize: false
+		}
 	},
 
 	serialize: function(snapshot) {
 		const json = this._super(...arguments),
-			recipients = snapshot.record.get('recipients');
-		if (snapshot.record.get('isText')) {
+			record = snapshot.record,
+			recipients = record.get('recipients');
+		if (record.get('isText')) {
 			this._buildRecipientsForText(json, recipients);
-		} else {
+		} else if (record.get('isCall')) {
 			this._buildRecipientsForCall(json, recipients);
+		} else { // is a note
+			this._buildRecipientsForNote(json, recipients);
+			const addLocation = record.get('shouldAddLocation'),
+				locIsDirty = record.get('location.content.isDirty'),
+				addAfter = record.get('doAddAfterThis');
+			if (!addLocation && !locIsDirty) {
+				delete json.location;
+			}
+			if (addAfter) {
+				// add one millisecond because we don't we want to be AFTER this item
+				// so we need to submit a time that is AFTER this item's created time
+				// mostly this is because the server implements getSince as ">=" instead of
+				// just ">" so passing the time without a millisecond increment would
+				// bring up the item we want to insert after
+				json.after = new Date(get(addAfter, 'whenCreated').valueOf() + 1);
+			}
+			if (record.get('toggleNoteDeleteStatus')) {
+				json.isDeleted = !record.get('hasBeenDeleted');
+			}
+			json.doImageActions = this._buildImageActionsForNote(record);
 		}
-		snapshot.record.get('recipients').clear();
+		// so we don't create new locations (and therefore revisions) we don't need
+		record.set('shouldAddLocation', false);
+		// set this to null so we don't accidentally send an 'after' anymore
+		record.set('doAddAfterThis', null);
+		// we need to reset these attributes so the record won't be considered dirty anymore!
+		record.set('toggleNoteDeleteStatus', false);
+		record.get('recipients').clear();
 		return json;
 	},
+	normalize: function(model, json) {
+		json['_originallyHasLocation'] = isPresent(json.location);
+		return this._super(...arguments);
+	},
 
-	// Helpers
-	// -------
+	// Receipients
+	// -----------
 
 	_buildRecipientsForText: function(json, recipients) {
-		if (!recipients) {
+		if (isEmpty(recipients)) {
 			return;
 		}
 		json.sendToPhoneNumbers = [];
@@ -91,7 +150,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		});
 	},
 	_buildRecipientsForCall: function(json, recipients) {
-		if (!recipients) {
+		if (isEmpty(recipients)) {
 			return;
 		}
 		const recip = recipients.get('firstObject');
@@ -103,6 +162,19 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 			json.callPhoneNumber = get(recip, 'identifier');
 		}
 	},
+	_buildRecipientsForNote: function(json, recipients) {
+		if (isEmpty(recipients)) {
+			return;
+		}
+		const recip = recipients.get('firstObject');
+		if (this._isContact(recip)) {
+			json.forContact = get(recip, 'id');
+		} else if (this._isShared(recip)) {
+			json.forSharedContact = get(recip, 'id');
+		} else {
+			json.forTag = get(recip, 'id');
+		}
+	},
 	_isTag: function(recipient) {
 		return get(recipient, 'type') === 'tag';
 	},
@@ -111,5 +183,41 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 	},
 	_isContact: function(recipient) {
 		return get(recipient, 'type') === 'contact' && !get(recipient, 'isShared');
+	},
+
+	// Image actions
+	// -------------
+
+	_buildImageActionsForNote: function(recordNote) {
+		const actions = [];
+		if (recordNote.get('hasImagesToAdd')) {
+			recordNote.get('imagesToAdd').forEach(({
+				mimeType,
+				data,
+				checksum
+			}) => {
+				actions.pushObject({
+					action: 'ADD',
+					mimeType,
+					data,
+					checksum
+				});
+			});
+		}
+		if (recordNote.get('hasImagesToRemove')) {
+			recordNote.get('imagesToRemove').forEach(({
+				key
+			}) => {
+				actions.pushObject({
+					action: 'REMOVE',
+					key
+				});
+			});
+		}
+		recordNote.setProperties({
+			imagesToAdd: [],
+			imagesToRemove: []
+		});
+		return actions;
 	}
 });

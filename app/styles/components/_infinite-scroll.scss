@@ -2,6 +2,7 @@
 	height: 500px;
 	overflow: hidden;
 	position: relative;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
 
 	.infinite-container {
 		@extend %vertical-scroll;
@@ -11,6 +12,8 @@
 
 		.infinite-items {
 			@extend %clearfix;
+
+			opacity: 1;
 		}
 		.infinite-control {
 			@extend %border-box;
@@ -33,6 +36,11 @@
 		.infinite-items {
 			position: relative;
 			top: $padding * 2;
+
+			&.is-displaying {
+				opacity: 0;
+				transition: opacity 0.3s;
+			}
 		}
 		.infinite-control {
 			position: absolute;
@@ -68,6 +76,10 @@
 		    z-index: 99;
 			content: '';
 		}
+	}
+	&.pulling {
+		user-select: none;
+		cursor: grabbing;
 	}
 }
 

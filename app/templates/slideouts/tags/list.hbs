@@ -4,6 +4,7 @@
     doClose=(if (and newTag (not newTag.isDeleted))
         (route-action 'revert' newTag (route-action 'closeAllSlideouts'))
         (route-action 'closeAllSlideouts'))
+    forceKeepOpen=newTag.isSaving
     ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'

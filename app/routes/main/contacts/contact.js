@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import callIfPresent from '../../../utils/call-if-present';
+import RecordNote from '../../../mixins/record-note-route';
 
-export default Ember.Route.extend({
+
+export default Ember.Route.extend(RecordNote, {
 	_id: null,
 
 	model: function(params) {
@@ -21,7 +23,7 @@ export default Ember.Route.extend({
 	},
 	setupController: function(controller, model) {
 		this._super(...arguments);
-		this.controller.set('_isReady', false);
+		controller.set('_isReady', false);
 		// workaround because ember data invalidates (deletes) the model
 		// when it is finalizing the transition when the page is refreshed
 		if (model.get('isDeleted')) {
@@ -30,9 +32,9 @@ export default Ember.Route.extend({
 		} else {
 			this._contactIsReady(model);
 		}
-		this.controller.set('contact', model);
-		this.controller.set('tag', null);
-		this.controller.set('isMakingCall', false);
+		controller.set('contact', model);
+		controller.set('tag', null);
+		controller.set('isMakingCall', false);
 	},
 
 	// Actions
@@ -57,8 +59,13 @@ export default Ember.Route.extend({
 			fMsg.set('contactId', this.get('currentModel.id'));
 			return this.get('dataHandler')
 				.persist(fMsg)
-				.then(() => callIfPresent(then));
-		}
+				.then(() => {
+					this.get('currentModel')
+						.findDuplicateFutureMessages()
+						.then((dups) => dups.forEach((dup) => this.store.unloadRecord(dup)))
+						.finally(() => callIfPresent(then));
+				});
+		},
 	},
 
 	// Helper methods

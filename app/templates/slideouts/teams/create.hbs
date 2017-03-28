@@ -5,6 +5,7 @@
         (route-action 'revert' newTeam.location.content)
         (route-action 'closeAllSlideouts'))
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    forceKeepOpen=newTeam.isSaving
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t">
         {{partial 'partials/team/create-edit'}}

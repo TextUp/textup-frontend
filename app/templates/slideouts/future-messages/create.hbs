@@ -2,6 +2,7 @@
     direction='right'
     ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole'
     focusSelector='.start-focus'
+    forceKeepOpen=newFutureMsg.isSaving
     onOpen=(route-action 'initializeFutureMsg')
     doClose=(route-action 'revert' newFutureMsg
         (route-action 'closeAllSlideouts')) as |slideout|}}
