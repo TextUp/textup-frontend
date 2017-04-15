@@ -7,14 +7,13 @@ import {
 } from '../utils/phone-number';
 
 const {
-	$,
 	isBlank,
+	isNone,
 	isPresent,
 	computed,
 	computed: {
 		notEmpty,
 	},
-	run,
 	run: {
 		scheduleOnce,
 		next,
@@ -32,6 +31,7 @@ export default Ember.Component.extend({
 	controlClass: defaultIfAbsent(''),
 	controlButtonClass: defaultIfAbsent(''),
 	errorClass: defaultIfAbsent('form-error'),
+	tabindex: defaultIfAbsent('-1'),
 
 	onChange: null,
 	onClick: null,
@@ -40,14 +40,14 @@ export default Ember.Component.extend({
 	onFocusLeave: null,
 
 	classNames: 'phone-control',
+	attributeBindings: ['tabIndex'],
 
 	// Private properties
 	// ------------------
 
+	_number: null, // internal copy of the number
 	_hasError: false, // true when number is invalid phone number
-	_inputIndex: null, // for re-focusing after updating number
-	_selectionPosition: null, // for re-focusing after updating number
-	_whichKey: null, // for re-focusing after updating number
+	_isEditingInput: false,
 
 	_isValidating: false,
 	_externalValidationCode: null,
@@ -55,13 +55,16 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
+	tabIndex: computed('tabindex', function() {
+		return this.get('allowChanges') ? this.get('tabindex') : null;
+	}),
 	someNumberPresent: notEmpty('number'),
 	_cleanedOriginal: computed('number', function() {
 		return cleanNumber(this.get('number'));
 	}),
 	allowChanges: computed('onChange', 'forceAllowChanges', function() {
 		return !this.get('disabled') &&
-			(this.get('onChange') || this.get('forceAllowChanges'));
+			(isPresent(this.get('onChange')) || this.get('forceAllowChanges'));
 	}),
 	publicAPI: computed(function() {
 		return {
@@ -74,15 +77,15 @@ export default Ember.Component.extend({
 	_$el: computed(function() {
 		return this.$();
 	}),
-	_$inputContainer: computed(function() {
-		return this.$('.phone-number-input');
-	}),
-	_$inputList: computed(function() {
-		const $i = this.$('.phone-number-input').find('.form-control');
+	_$displayList: computed(function() {
+		const $i = this.$('.phone-number-display').find('.form-control');
 		return [$i.eq(0), $i.eq(1), $i.eq(2)];
 	}),
+	_$input: computed(function() {
+		return this.$('.phone-number-input');
+	}),
 	_$validate: computed(function() {
-		return this.$().find('.phone-number-validate');
+		return this.$('.phone-number-validate');
 	}),
 	_valList: computed(function() {
 		return [];
@@ -92,67 +95,57 @@ export default Ember.Component.extend({
 	// ------
 
 	didInsertElement: function() {
-		const $inputList = this.get('_$inputList'),
-			elId = this.elementId;
-		// bind events
-		$inputList.forEach(($input, i) => {
-			$input
-				.on(`focusin.${elId}`, this.handleFocusEnterForInput.bind(this))
-				.on(`focusout.${elId}`, this.handleFocusLeaveForInput.bind(this))
-				.on(`focusout.${elId}`, this.checkErrorForInput.bind(this))
-				.on(`keyup.${elId}`, this.handleKeyUpForInput.bind(this, i))
-				.on(`paste.${elId}`, this.handlePasteForInput.bind(this, i));
-		});
+		const elId = this.elementId;
+		this.get('_$el')
+			.on(`focusout.${elId}`, this.doStopFocusElement.bind(this))
+			.on(`focusin.${elId}`, this.doFocusOnElement.bind(this));
+		this.get('_$input')
+			.on(`keyup.${elId}`, this.handleKeyUpForInput.bind(this))
+			.on(`paste.${elId}`, this.handlePasteForInput.bind(this))
+			.on(`focusout.${elId}`, this.checkErrorForInput.bind(this))
+			.on(`focusout.${elId}`, this.handleFocusLeaveForInput.bind(this))
+			.on(`focusin.${elId}`, this.handleFocusEnterForInput.bind(this));
 		// start displaying number
-		scheduleOnce('afterRender', this, this.updateNumber);
+		scheduleOnce('afterRender', this, this.displayNumber);
 	},
 	willDestroyElement: function() {
-		const elId = this.elementId,
-			namespace = `.${elId}`;
-		this.get('_$inputList').forEach(($input) => $input.off(namespace));
+		const elId = this.elementId;
+		this.get('_$el').off(`.${elId}`);
+		this.get('_$input').off(`.${elId}`);
 	},
 	didUpdateAttrs: function() {
-		scheduleOnce('afterRender', this, this.updateNumber);
+		scheduleOnce('afterRender', this, this.displayNumber);
 	},
 
 	// Event handlers
 	// --------------
 
-	handlePasteForInput: function(index, event) {
-		scheduleOnce('afterRender', this, this.handleKeyUpForInput.bind(this, index, event));
+	handleFocusEnterForInput: function() {
+		const number = this.get('_number');
+		callIfPresent(this.get('onFocusEnter'), number, !this.get('_hasError'));
 	},
-	handleKeyUpForInput: function(index, event) {
-		// ignore key input while we are focusing because allowing input
-		// may result in the cursor being placed in the wrong position after focusing
-		// and confusing the user because they are suddenly typing into the wrong place
-		if (this.get('_isFocusing')) {
-			return;
-		}
-		// store values that will be needed for focusing FIRST
-		// when we update the number displayed in the 'data down' phase
-		const $inputList = this.get('_$inputList'),
-			position = $inputList[index][0].selectionStart,
-			which = event.which;
-		this.setProperties({
-			_inputIndex: index,
-			_selectionPosition: position,
-			_whichKey: which
-		});
-		if (event.ctrlKey || event.shiftKey) { // modifier keys for text selection
-			this.doSelectionForInput(event);
-		} else if (which === 13 && index === 2) { // enter on third input, submit
-			this._handleSubmitForInput();
-		} else if (which === 37) { // left arrow
-			this._tryAdjustFocusBackwards(index, position);
-		} else if (which === 39) { // right arrow
-			this._tryAdjustFocusForwards(index, position);
+	handleFocusLeaveForInput: function() {
+		const number = this.get('_number');
+		callIfPresent(this.get('onFocusLeave'), number, !this.get('_hasError'));
+	},
+	handlePasteForInput: function(event) {
+		// need to schedule next because when the paste event fires on iOS safari,
+		// the value of the input field has not yet been updated
+		next(this, function(event) {
+			this._handleValueChangeForInput(event);
+			scheduleOnce('actions', this, this.checkErrorForInput);
+		}, event);
+	},
+	handleKeyUpForInput: function(event) {
+		if (event.which === 13) { // enter on input -> submit
+			this._trySubmitForInput();
 		} else {
-			this._handleValueChangeForInput(index);
+			this._handleValueChangeForInput(event);
 			scheduleOnce('actions', this, this.checkErrorForInput);
 		}
 	},
 	checkErrorForInput: function() {
-		const number = this._getNumber(this.get('_valList')),
+		const number = this.get('_number'),
 			errorClass = this.get('errorClass'),
 			$el = this.get('_$el');
 		if (isBlank(number) || validateNumber(number)) {
@@ -163,21 +156,13 @@ export default Ember.Component.extend({
 			$el.addClass(errorClass);
 		}
 	},
-	handleFocusEnterForInput: function() {
-		const number = this._getNumber(this.get('_valList'));
-		callIfPresent(this.get('onFocusEnter'), number, !this.get('_hasError'));
-	},
-	handleFocusLeaveForInput: function() {
-		const number = this._getNumber(this.get('_valList'));
-		callIfPresent(this.get('onFocusLeave'), number, !this.get('_hasError'));
-	},
 
 	// Actions
 	// -------
 
 	actions: {
 		submitInput: function() {
-			this._handleSubmitForInput();
+			this._trySubmitForInput();
 		},
 		revertExternalValidation: function() {
 			this._revertExternalValidation();
@@ -190,28 +175,26 @@ export default Ember.Component.extend({
 	// Phone number input
 	// ------------------
 
-	_handleValueChangeForInput: function(index) {
-		const $inputList = this.get('_$inputList'),
-			valList = this.get('_valList');
-		// update values in value list
-		valList.replace(index, 1, [$inputList[index].val()]);
+	_handleValueChangeForInput: function(event) {
+		const newNumber = cleanNumber(event.target.value);
+		this.set('_number', newNumber);
 		// after value change for and schedule calling hook (if present)
 		// in a LATER queue of the runloop (afterRender happens after actions)
 		const onChange = this.get('onChange'),
-			cleanedOriginal = this.get('_cleanedOriginal'),
-			newNumber = cleanNumber(this._getNumber(valList));
+			cleanedOriginal = this.get('_cleanedOriginal');
 		if (isPresent(onChange) && cleanedOriginal !== newNumber) {
 			scheduleOnce('afterRender', this, onChange, newNumber);
 		}
 	},
-	_handleSubmitForInput: function() {
+	_trySubmitForInput: function() {
 		const onClick = this.get('onClick'),
 			onValidate = this.get('onValidate'),
-			number = this._getNumber(this.get('_valList'));
+			number = this.get('_number');
 		if (this.get('_hasError') || isBlank(number)) {
 			return;
 		}
-		callIfPresent(onClick, number);
+		this.set('_isEditingInput', false);
+		callIfPresent(onClick, number, true);
 		// move onto validate if present
 		if (isPresent(onValidate)) {
 			this.set('_isValidating', true);
@@ -219,26 +202,12 @@ export default Ember.Component.extend({
 		}
 	},
 
-	// Updating number
-	// ---------------
+	// Phone number display
+	// --------------------
 
 	// data down after we sent the 'onChange' event up
-	updateNumber: function() {
-		run(() => {
-			// update number in value list
-			if (this.get('someNumberPresent') || this.get('allowChanges')) {
-				this._displayNumber();
-			}
-			this._adjustFocusAfterUpdatingNumber();
-			this.setProperties({
-				_inputIndex: null,
-				_selectionPosition: null,
-				_whichKey: null
-			});
-		});
-	},
-	_displayNumber: function() {
-		const $inputList = this.get('_$inputList'),
+	displayNumber: function() {
+		const $displayList = this.get('_$displayList'),
 			valList = this.get('_valList'),
 			cleaned = this.get('_cleanedOriginal');
 		valList
@@ -247,16 +216,9 @@ export default Ember.Component.extend({
 				cleaned.slice(3, 6),
 				cleaned.slice(6)
 			])
-			.forEach((val, i) => $inputList[i].val(val));
-	},
-	_adjustFocusAfterUpdatingNumber: function() {
-		// adjust focus, if needed
-		const currentFocus = document.activeElement,
-			$el = this.get('_$el');
-		// if a DOM element is focused, check that is inside this component
-		if (isPresent(currentFocus) && $.contains($el[0], currentFocus)) {
-			this.doFocusOnElement();
-		}
+			.forEach((val, i) => $displayList[i].val(val));
+		this.set('_number', cleaned);
+		scheduleOnce('actions', this, this.checkErrorForInput);
 	},
 
 	// External validation
@@ -272,7 +234,7 @@ export default Ember.Component.extend({
 	_handleSubmitForExternalValidation: function() {
 		const code = this.get('_externalValidationCode'),
 			onValidate = this.get('onValidate'),
-			number = this._getNumber(this.get('_valList'));
+			number = this.get('_number');
 		if (isBlank(code)) {
 			return;
 		}
@@ -283,117 +245,57 @@ export default Ember.Component.extend({
 		}
 	},
 
-	// Selection
-	// ---------
-
-	doSelectionForInput: function(event) {
-		const selection = document.getSelection(),
-			$inputList = this.get('_$inputList');
-		// Ctrl-A to select the entire number
-		if (event.which === 65 && event.ctrlKey === true) {
-			selection.selectAllChildren(this.get('_$inputContainer')[0]);
-		} else if (event.shiftKey === true) {
-			const startNode = selection.anchorNode,
-				newRange = document.createRange();
-			if (event.which === 37) { // LEFT, move focus of selection to beginning
-				const endNode = $inputList[0].parent()[0];
-				// right to left selection
-				newRange.setStart(endNode, 0);
-				newRange.setEnd(startNode, startNode.childNodes.length);
-				selection.removeAllRanges();
-				selection.addRange(newRange);
-			} else if (event.which === 39) { // RIGHT, move focus of selection to end
-				const endNode = $inputList[2].parent()[0];
-				// left to right selection
-				newRange.setStart(startNode, 0);
-				newRange.setEnd(endNode, endNode.childNodes.length);
-				selection.removeAllRanges();
-				selection.addRange(newRange);
-			}
-		}
-	},
-
 	// Focus
 	// -----
 
-	doFocusOnElement: function() {
+	doStopFocusElement: function(event) {
+		const $input = this.get('_$input'),
+			// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
+			relTarget = event.relatedTarget; // child element that is gaining focus next
+		// if relTarget is null then that means that no child element is gaining focus next
+		// if there is a relTarget, then confirm that the input is NOT gaining focus then close
+		if (isNone(relTarget) || !$input.is(relTarget)) {
+			this.set('_isEditingInput', false);
+		}
+	},
+	doFocusOnElement: function(event) {
+		if (!this.get('allowChanges')) {
+			return;
+		}
+		// handle focus at the level of individual input because if we handled here
+		// then we will miss the opportunity short circuit a possible infinite loop
+		// of focus events triggered by the fact that we are using the focusin event
+		// which supports event bubbling up when child elements receive focus too
 		if (this.get('_isValidating')) {
-			this.doFocusOnValidate();
+			this.doFocusOnValidate(event);
 		} else {
-			this.doFocusOnInput();
+			this.doFocusOnInput(event);
 		}
 	},
-	doFocusOnValidate: function() {
-		this.get('_$validate').focus();
-	},
-	doFocusOnInput: function() {
-
-		this.set('_isFocusing', true);
-
-		const index = this.get('_inputIndex'),
-			position = this.get('_selectionPosition'),
-			which = this.get('_whichKey');
-		if ([index, position, which].every(isPresent)) {
-			this._doExistingFocusOnInput();
-		} else {
-			this._doNewFocusOnInput();
+	doFocusOnValidate: function(event) {
+		const $validate = this.get('_$validate');
+		// see focus on input rationale for this check
+		if (!$validate.is(event.target)) {
+			$validate.focus();
 		}
-
-		next(this, function() {
-			this.set('_isFocusing', false);
+	},
+	doFocusOnInput: function(event) {
+		this.set('_isEditingInput', true);
+		scheduleOnce('afterRender', this, () => {
+			// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
+			const $input = this.get('_$input'),
+				target = event.target, // element receiving focus
+				relTarget = event.relatedTarget; // element losing focus
+			// we want to focus only when the event target is a parent of this input
+			// when the event target is actually the input itself then we know that
+			// this is the bubbled up event and if we handled this bubbled up event
+			// we would start an infinite loop of focus events
+			// ALSO element losing focus (relTarget) must not be the input itself
+			// since we don't want to cancel out actions that shift focus away from
+			// the input such as tabbing away
+			if (!$input.is(target) && !$input.is(relTarget)) {
+				$input.focus();
+			}
 		});
-	},
-	_doNewFocusOnInput: function() {
-		const $inputList = this.get('_$inputList'),
-			valList = this.get('_valList'),
-			firstIncomplete = valList.find((val) => isBlank(val) || val.length < 3),
-			incompleteIndex = valList.indexOf(firstIncomplete);
-		// if focus is still in the same input, then preserve position
-		if (incompleteIndex > -1) {
-			$inputList[incompleteIndex].focus();
-		} else {
-			$inputList[2].focus();
-		}
-	},
-	_doExistingFocusOnInput: function() {
-		const index = this.get('_inputIndex'),
-			// selection position AFTER key is pressed because from keyup event
-			position = this.get('_selectionPosition'),
-			which = this.get('_whichKey');
-		if (which === 8) { // backspace removing one character
-			this._tryAdjustFocusBackwards(index, position);
-		} else { // all other keys adding one character
-			this._tryAdjustFocusForwards(index, position);
-		}
-	},
-	_tryAdjustFocusBackwards: function(index, position) {
-		if (index > 0 && position === 0) {
-			const $input = this.get('_$inputList')[index - 1],
-				input = $input[0],
-				numChar = $input.val().length;
-			run(() => {
-				$input.focus();
-				input.selectionStart = numChar;
-				input.selectionEnd = numChar;
-			});
-		}
-	},
-	_tryAdjustFocusForwards: function(index, position) {
-		if (index < 2 && position > 2) {
-			const $input = this.get('_$inputList')[index + 1],
-				input = $input[0];
-			run(() => {
-				$input.focus();
-				input.selectionStart = 0;
-				input.selectionEnd = 0;
-			});
-		}
-	},
-
-	// Helper methods
-	// --------------
-
-	_getNumber: function(valList) {
-		return valList.join('');
-	},
+	}
 });

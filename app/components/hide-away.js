@@ -365,22 +365,32 @@ export default Component.extend({
 		const openTimer = run.scheduleOnce('afterRender', this, function() {
 			callIfPresent(this.get('onOpen'));
 			// need to wait until after render for body to appear
+			let triggerOpenPromise = null;
 			if (this.get('hideTriggerOnOpen')) {
-				this.get('$trigger')
+				triggerOpenPromise = this.get('$trigger')
 					.hide()
-					.promise()
-					.done(this._resetTrigger.bind(this));
+					.promise();
 			}
 			const $body = this._findBody(),
 				after = this._afterOpen.bind(this, $body, skipFocus, callback);
+			let openAction = null;
 			this.positionBody($body);
 			$body.css('visibility', 'visible').hide();
 			if (this.get('animation') === 'fade') {
-				$body.fadeIn().promise().done(after);
+				openAction = () => $body.fadeIn('fast').promise().done(after);
 			} else if (this.get('animation') === 'slide') {
-				$body.slideDown().promise().done(after);
+				openAction = () => $body.slideDown().promise().done(after);
 			} else {
-				$body.show(0, '').promise().done(after);
+				// need a 1ms duration to allow body element to injected first
+				// this is equivalent to wrapping in run.next call
+				openAction = () => $body.show(1).promise().done(after);
+			}
+			if (triggerOpenPromise) {
+				triggerOpenPromise
+					.then(openAction)
+					.done(this._resetTrigger.bind(this));
+			} else {
+				openAction();
 			}
 		});
 		this.set('_openTimer', openTimer);
@@ -428,22 +438,25 @@ export default Component.extend({
 		callIfPresent(this.get('onClose'));
 		if (this.get('hideTriggerOnOpen')) {
 			if (animation === 'fade') {
-				$body.hide(0, '');
-				$trigger.fadeIn().promise().done(after);
+				$body.hide().promise().then(() => {
+					$trigger.fadeIn('fast').promise().done(after);
+				});
 			} else if (animation === 'slide') {
-				$body.slideUp(function() {
+				$body.slideUp(() => {
 					$trigger.slideDown().promise().done(after);
 				});
 			} else {
-				$body.hide(0, '');
-				$trigger.show(0, '').promise().done(after);
+				// calling trigger in promise.then of body.hide
+				// does not show the trigger for some reason
+				$body.hide();
+				$trigger.show().promise().done(after);
 			}
 		} else if (animation === 'slide') {
 			$body.slideUp().promise().done(after);
 		} else if (animation === 'fade') {
 			$body.fadeOut().promise().done(after);
 		} else {
-			$body.hide(0, '').promise().done(after);
+			$body.hide().promise().done(after);
 		}
 	},
 	_afterClose: function($body, skipFocus, callback) {
