@@ -1,0 +1,59 @@
+{{#slideout-pane title='Call'
+    onOpen=(route-action 'initializeCallSlideout')
+    doClose=(route-action 'closeAllSlideouts')
+    ignoreCloseSelectors='.header-slideout, .c-notification__container'
+    forceKeepOpen=isCallingForNumber
+    focusSelector='.number-control' as |slideout|}}
+
+    <div class="pad-t pad-l pad-r">
+        <div class="form-element">
+            {{#hide-away clickOutToClose=true
+                focusOutClose=true
+                bodyClickClose=false
+                animation='fade'
+                hideTriggerOnOpen=true
+                bodyFocusOnOpenSelector='input'}}
+                {{input type="tel"
+                    class='form-control form-control-minimal text-biggest text-center'
+                    pattern="[0-9]*" placeholder="Enter number here"
+                    value=callByNumber
+                    key-up=(route-action 'validateAndCheckCallNumberForName')
+                    focus-out=(route-action 'validateAndCheckCallNumberForName')}}
+            {{else}}
+                <input type="tel"
+                    disabled='disabled'
+                    class='form-control form-control-minimal text-biggest text-center'
+                    value={{phone-number callByNumber}}>
+            {{/hide-away}}
+            <div class='row margin-t margin-b text-center text-small'>
+                {{#if callByNumberContact}}
+                    <span class="center text-ellipses xs-full-row">
+                        <span class="text-bold">{{callByNumberContact.identifier}}</span>
+                        {{#if callByNumberMoreNum}}
+                            and {{callByNumberMoreNum}} {{pluralize 'other' callByNumberMoreNum}}
+                        {{/if}}
+                    </span>
+                {{/if}}
+            </div>
+        </div>
+        <div class="form-element margin-b-double">
+            {{number-control val=callByNumber
+                numDigits=10
+                doChange=(route-action 'onCallNumberChange')
+                onSubmit=(route-action 'makeCallForNumber' slideout.actions.close)}}
+        </div>
+    </div>
+    <div class="form-element text-center">
+        {{#if isCallingForNumber}}
+            <button class="btn btn-default" type='button' disabled='disabled'>Calling...</button>
+        {{else}}
+            {{async-button classNames='btn btn-default'
+                action=(route-action 'makeCallForNumber' slideout.actions.close)
+                disableWhen=(or (not callByNumber) (not callByNumberIsValid))
+                default='Call'
+                pending='Calling...'
+                fulfilled='Called!'
+                rejected='Call Error'}}
+        {{/if}}
+    </div>
+{{/slideout-pane}}

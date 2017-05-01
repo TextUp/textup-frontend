@@ -2,7 +2,6 @@
 	onOpen=(route-action 'initializeCompose')
     doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
     ignoreCloseSelectors='.header-slideout, .c-notification__container'
-
     focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
 		{{#if model.phone.isFulfilled}}

@@ -3,8 +3,8 @@
 
 @mixin lock-control-message($namespace) {
 	.dial-pad {
-		.dial-pad-item {
-			visibility: hidden;
+		.number-control {
+			opacity: 0; // use opacity instead of visibility to preserve focus on number control
 		}
 		.#{$namespace}-message {
 			display: block;
@@ -19,6 +19,9 @@
 }
 .lock-control.lock-control-locked {
 	@include lock-control-message('locked');
+	.dial-pad .number-control {
+		visibility: hidden; // add hidden visibility to avoid focus bypassing lockout
+	}
 }
 .form-error .lock-control, .lock-control.form-error {
 	.indicator {
@@ -29,9 +32,6 @@
 			background-color: $danger-color;
 		}
 	}
-	.dial-pad .dial-pad-item {
-		color: $font-color;
-	}
 }
 .form-disabled .lock-control, .lock-control.form-disabled {
 	.indicator {
@@ -40,16 +40,6 @@
 		&.active {
 			border-color: shade($border-color);
 			background-color: shade($border-color);
-		}
-	}
-	.dial-pad .dial-pad-item {
-		cursor: not-allowed;
-
-		&:hover, &:focus, &:active {
-			border-bottom: 1px solid $border-color;
-			background-color: transparent;
-			opacity: 1;
-			color: $font-color;
 		}
 	}
 }
@@ -84,33 +74,8 @@
 		padding: 0;
 		padding-top: $padding;
 
-		.dial-pad-item {
-			@extend .text-ellipsis;
-			@extend .text-center;
-			@extend .text-bold;
-			@extend %border-box;
-			@extend .no-select;
-
-			cursor: pointer;
-			position: relative;
-			padding: $padding ($padding * 2);
-			margin: $padding * 0.5;
-			background-color: transparent;
-			border-bottom: 1px solid $border-color;
-
-			&:hover, &:focus, &:active {
-				border-radius: $border-radius;
-				border-bottom: 1px solid transparent;
-			}
-			&:hover {
-	            background-color: shade($bg-color, 1.2);
-	            opacity: 0.8;
-	        }
-			&:focus, &:active {
-				color: white;
-				background-color: shade($brand-color, 2);
-				opacity: 0.8;
-			}
+		.number-control {
+			opacity: 1;
 		}
 		.dial-pad-message {
 			display: none;

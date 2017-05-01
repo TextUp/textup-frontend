@@ -1,0 +1,15 @@
+.phone-control {
+    .phone-number-display-container {
+        position: relative;
+
+        .phone-number-display-overlay {
+            position: absolute;
+            content: ' ';
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: transparent;
+        }
+    }
+}

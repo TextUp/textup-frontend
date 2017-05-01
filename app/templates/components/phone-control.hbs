@@ -3,24 +3,25 @@
 	{{!-- for editing phone number --}}
 	<div class="input-group-element {{if (not _isEditingInput) 'hidden'}}">
 		<input type="tel" class="phone-number-input form-control text-center"
-    		pattern="[0-9]*" tabindex="0" placeholder="### ### ####"
+    		pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength='10'
     		value={{_number}} disabled={{if (not allowChanges) 'disabled'}}>
 	</div>
 	{{!-- for display phone number --}}
-    <div class="input-group-element
+    <div class="input-group-element phone-number-display-container
     	{{if _isEditingInput 'hidden'}}
     	{{if (not allowChanges) 'form-disabled'}}">
 		<span class="phone-number-display input-group">
-		    <span class="input-group-text-display no-select">(</span>
-	    	<input type="tel" class="form-control text-center no-select" pattern="[0-9]*"
+		    <span class="input-group-text-display">(</span>
+	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
 	    		placeholder="###" disabled='{{if (not allowChanges) 'disabled'}}'>
-		    <span class="input-group-text-display no-select">)</span>
-	    	<input type="tel" class="form-control text-center no-select" pattern="[0-9]*"
+		    <span class="input-group-text-display">)</span>
+	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
 	    		placeholder="###" disabled='{{if (not allowChanges) 'disabled'}}'>
-		    <span class="input-group-text-display no-select">-</span>
-	    	<input type="tel" class="form-control text-center no-select" pattern="[0-9]*"
+		    <span class="input-group-text-display">-</span>
+	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
 	    		placeholder="####" disabled='{{if (not allowChanges) 'disabled'}}'>
 		</span>
+		<span class="phone-number-display-overlay"></span>
 	</div>
 	{{#if (and (not disabled) (or showControl onClick onValidate))}}
 		<span class="input-group-addon {{controlClass}} no-select">

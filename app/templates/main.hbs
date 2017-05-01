@@ -109,6 +109,21 @@
             <span>Compose</span>
         </div>
     </li>
+    <li class='menu-item menu-slideout display-l'
+        {{action 'toggleSlideout' 'slideouts/call' 'main'}}>
+        {{#tool-tipster position='right'
+            theme='tooltipster-clean'
+            title='Call'
+            classNames='btn-expand'}}
+            <span class="fa fa-phone"></span>
+        {{/tool-tipster}}
+    </li>
+    <li class='menu-item menu-slideout display-xs display-s display-m'
+        {{action 'toggleSlideout' 'slideouts/call' 'main'}}>
+        <div class="btn-expand">
+            <span>Call</span>
+        </div>
+    </li>
 
     {{!-- contacts --}}
 

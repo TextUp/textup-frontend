@@ -2,6 +2,17 @@ import Ember from 'ember';
 import callIfPresent from '../../utils/call-if-present';
 import defaultIfAbsent from '../../utils/default-if-absent';
 
+const {
+	$,
+	isEmpty,
+	isBlank,
+	computed,
+	run: {
+		next,
+		scheduleOnce
+	}
+} = Ember;
+
 export default Ember.Component.extend({
 	displayProperty: null,
 	placeholder: defaultIfAbsent(''),
@@ -40,13 +51,13 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
-	anyData: Ember.computed('data.[]', function() {
+	anyData: computed('data.[]', function() {
 		return this.get('data.length') > 0;
 	}),
-	inputObj: Ember.computed(function() {
+	inputObj: computed(function() {
 		return this.$().children('input.multi-select-input-item');
 	}),
-	publicAPI: Ember.computed(function() {
+	publicAPI: computed(function() {
 		return {
 			currentVal: '',
 			isCreating: false,
@@ -134,9 +145,9 @@ export default Ember.Component.extend({
 				node: $node,
 				object
 			} = this._getDataFromEvent(event),
-				$input = Ember.$(event.target),
+				$input = $(event.target),
 				inputVal = $input.val(),
-				isEmpty = Ember.isEmpty(inputVal);
+				isEmpty = isEmpty(inputVal);
 			this.set('publicAPI.currentVal', inputVal);
 			// set restore flag to true because the only time we don't
 			// want to restore the original value is when the update
@@ -150,24 +161,33 @@ export default Ember.Component.extend({
 				this._inputChange(inputVal, event);
 			}
 		},
+		handlePastedInput: function(event) {
+			// need to schedule next because when the paste event fires on iOS safari,
+			// the value of the input field has not yet been updated
+			next(this, function(event) {
+				const inputVal = this.get('inputObj').val();
+				this.set('publicAPI.currentVal', inputVal);
+				this._inputChange(inputVal, event);
+			}, event);
+		},
 		handleNewInput: function(event) {
 			const $input = this.get('inputObj'),
 				inputVal = $input.val(),
-				isEmpty = Ember.isEmpty(inputVal),
-				isBlank = Ember.isBlank(inputVal),
+				inputEmpty = isEmpty(inputVal),
+				inputBlank = isBlank(inputVal),
 				anyData = this.get('anyData');
 			this.set('publicAPI.currentVal', inputVal);
-			if (event.which === 13 && !isEmpty) { // enter
+			if (event.which === 13 && !inputEmpty) { // enter
 				this.insert(event);
 			} else if (event.which === 27) { // escape
 				this.clearInput($input);
-			} else if (event.which === 8 && isEmpty && anyData &&
-				Ember.isEmpty(this.get('_lastInputValue'))) { // backspace
+			} else if (event.which === 8 && inputEmpty && anyData &&
+				isEmpty(this.get('_lastInputValue'))) { // backspace
 				const $prev = this._getPrevItem($input),
 					prevObj = this._getObjectFromNode($prev);
 				this.remove(prevObj, $prev);
-			} else if (event.which === 37 && (isEmpty || isBlank) && anyData) { // left arrow and empty
-				if (isBlank) {
+			} else if (event.which === 37 && (inputEmpty || inputBlank) && anyData) { // left arrow and empty
+				if (inputBlank) {
 					this.clearInput($input);
 				}
 				this._focusBefore();
@@ -177,7 +197,7 @@ export default Ember.Component.extend({
 		},
 		leaveNewInput: function(event) {
 			const $input = this.get('inputObj');
-			if (!Ember.isEmpty($input.val())) {
+			if (!isEmpty($input.val())) {
 				this.inputEnd(event);
 			}
 		}
@@ -202,7 +222,7 @@ export default Ember.Component.extend({
 	},
 	update: function(object, $input, $node, event) {
 		const inputVal = $input.val(),
-			isEmpty = Ember.isEmpty(inputVal);
+			isEmpty = isEmpty(inputVal);
 		if (isEmpty || inputVal === this.get('_originalBeforeEdits')) {
 			this._stopEditing($input, $node);
 		} else {
@@ -223,10 +243,10 @@ export default Ember.Component.extend({
 	remove: function(object, $node) {
 		if (object) { // ignore if only the input field remaining
 			// run next to allow click out to close handler to run first
-			Ember.run.next(this, function() {
+			next(this, function() {
 				const $next = this._getNextItem($node);
 				callIfPresent(this.get('onRemove'), object);
-				Ember.run.scheduleOnce('afterRender', this, function() {
+				scheduleOnce('afterRender', this, function() {
 					this.resetEditing();
 					$next.focus();
 					// for edge case when multiple data are removed
@@ -299,7 +319,7 @@ export default Ember.Component.extend({
 			_originalBeforeEdits: original,
 			_shouldRestoreOriginal: false
 		});
-		Ember.run.scheduleOnce('afterRender', this, function() {
+		scheduleOnce('afterRender', this, function() {
 			$edit.focus();
 			if (this.get('autoCloseEdit')) {
 				$edit.on('focusout', function() {
@@ -311,7 +331,7 @@ export default Ember.Component.extend({
 	},
 	_stopEditing: function($edit, $node) {
 		this.resetEditing();
-		Ember.run.scheduleOnce('afterRender', this, function() {
+		scheduleOnce('afterRender', this, function() {
 			$node.focus();
 		});
 	},
@@ -371,7 +391,7 @@ export default Ember.Component.extend({
 		return this.get('data')[arrayIndex];
 	},
 	_getDataFromEvent: function(event) {
-		const $target = Ember.$(event.target),
+		const $target = $(event.target),
 			$node = $target.hasClass('multi-select-input-item') ? $target : $target.closest(".multi-select-input-item");
 		return {
 			node: $node,

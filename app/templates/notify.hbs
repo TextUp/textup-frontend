@@ -1,12 +1,22 @@
 {{title "Notification"}}
 
 <div class="bg-color bg-light full-viewport-height">
-	<div class="center xs-full-row text-center">
-		<img class="brand" src='assets/images/logo.png' />
-		{{#each errors as |error|}}
-			<p class="margin-t text-darken text-bold text-biggest">
-				{{error.message}}
-			</p>
+	<div class="notify-contents">
+		<div class="row margin-t-double">
+			<img class="brand" src='assets/images/logo.png' />
+		</div>
+		{{#if errors}}
+			{{#each errors as |error|}}
+				<p class="margin-t text-darken text-bold text-biggest">
+					{{error.message}}
+				</p>
+			{{/each}}
+			<div class="text-bigger margin-t-double">
+				{{#link-to 'index' tagName='button'
+					classNames='btn btn-default'}}
+					Return to app
+				{{/link-to}}
+			</div>
 		{{else}}
 			<div class="display-s display-xs">
 				<div class="row margin-t">
@@ -35,12 +45,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="text-bigger margin-t-double">
+			<div class="text-bigger margin-t-double margin-b">
 				<button class="btn btn-plain" {{action 'openInApp' model}}>
 					Open in app
 				</button>
 			</div>
-		{{/each}}
+		{{/if}}
 	</div>
 </div>
 

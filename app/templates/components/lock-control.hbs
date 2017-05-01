@@ -27,42 +27,10 @@
 			{{/if}}
 		</div>
 	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="1">
-		<div class="dial-pad-item">1</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="2">
-		<div class="dial-pad-item">2</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="3">
-		<div class="dial-pad-item">3</div>
-	</li>
-	<div class="xs-new-row"></div>
-	<li class="xs-row-3 dial-pad-control" data-value="4">
-		<div class="dial-pad-item">4</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="5">
-		<div class="dial-pad-item">5</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="6">
-		<div class="dial-pad-item">6</div>
-	</li>
-	<div class="xs-new-row"></div>
-	<li class="xs-row-3 dial-pad-control" data-value="7">
-		<div class="dial-pad-item">7</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="8">
-		<div class="dial-pad-item">8</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="9">
-		<div class="dial-pad-item">9</div>
-	</li>
-	<div class="xs-new-row"></div>
-	<li class="xs-row-3 dial-pad-remove">
-		<div class="dial-pad-item">
-			<span class="fa fa-undo"></span>
-		</div>
-	</li>
-	<li class="xs-row-3 dial-pad-control" data-value="0">
-		<div class="dial-pad-item">0</div>
-	</li>
+	{{number-control val=val
+		numDigits=numDigits
+		disabled=disabled
+		tabindex=tabindex
+		hasError=_hasError
+		doChange=(action 'updateVal')}}
 </ul>

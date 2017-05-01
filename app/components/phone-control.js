@@ -81,6 +81,9 @@ export default Ember.Component.extend({
 		const $i = this.$('.phone-number-display').find('.form-control');
 		return [$i.eq(0), $i.eq(1), $i.eq(2)];
 	}),
+	_$display: computed(function() {
+		return this.$('.phone-number-display-overlay');
+	}),
 	_$input: computed(function() {
 		return this.$('.phone-number-input');
 	}),
@@ -105,13 +108,17 @@ export default Ember.Component.extend({
 			.on(`focusout.${elId}`, this.checkErrorForInput.bind(this))
 			.on(`focusout.${elId}`, this.handleFocusLeaveForInput.bind(this))
 			.on(`focusin.${elId}`, this.handleFocusEnterForInput.bind(this));
+		// to support tap-to-edit on touch devices
+		this.get('_$display')
+			.on(`touchend.${elId}`, this.doFocusOnInput.bind(this));
 		// start displaying number
 		scheduleOnce('afterRender', this, this.displayNumber);
 	},
 	willDestroyElement: function() {
-		const elId = this.elementId;
-		this.get('_$el').off(`.${elId}`);
-		this.get('_$input').off(`.${elId}`);
+		const ns = `.${this.elementId}`;
+		this.get('_$el').off(ns);
+		this.get('_$input').off(ns);
+		this.get('_$display').off(ns);
 	},
 	didUpdateAttrs: function() {
 		scheduleOnce('afterRender', this, this.displayNumber);
@@ -198,7 +205,7 @@ export default Ember.Component.extend({
 		// move onto validate if present
 		if (isPresent(onValidate)) {
 			this.set('_isValidating', true);
-			next(this, this.doFocusOnValidate);
+			next(this, this.tryFocusOnValidate);
 		}
 	},
 
@@ -228,7 +235,7 @@ export default Ember.Component.extend({
 		this.set('_isValidating', false);
 		this.set('_externalValidationCode', '');
 		if (!skipFocus) {
-			scheduleOnce('afterRender', this, this.doFocusOnInput);
+			scheduleOnce('afterRender', this, this.tryFocusOnInput);
 		}
 	},
 	_handleSubmitForExternalValidation: function() {
@@ -267,35 +274,40 @@ export default Ember.Component.extend({
 		// of focus events triggered by the fact that we are using the focusin event
 		// which supports event bubbling up when child elements receive focus too
 		if (this.get('_isValidating')) {
-			this.doFocusOnValidate(event);
+			this.tryFocusOnValidate(event);
 		} else {
-			this.doFocusOnInput(event);
+			this.tryFocusOnInput(event);
 		}
 	},
-	doFocusOnValidate: function(event) {
+	tryFocusOnValidate: function(event = undefined) {
 		const $validate = this.get('_$validate');
 		// see focus on input rationale for this check
-		if (!$validate.is(event.target)) {
+		if (isNone(event) || !$validate.is(event.target)) {
 			$validate.focus();
 		}
 	},
-	doFocusOnInput: function(event) {
+	tryFocusOnInput: function(event = undefined) {
+		// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
+		const $input = this.get('_$input');
+		// event.target is element receiving focus
+		// event.relatedTarget is element losing focus
+		// we want to focus only when the event target is a parent of this input
+		// when the event target is actually the input itself then we know that
+		// this is the bubbled up event and if we handled this bubbled up event
+		// we would start an infinite loop of focus events
+		// ALSO element losing focus (relTarget) must not be the input itself
+		// since we don't want to cancel out actions that shift focus away from
+		// the input such as tabbing away
+		if (isNone(event) || !$input.is(event.target) && !$input.is(event.relatedTarget)) {
+			this.doFocusOnInput();
+		}
+	},
+	doFocusOnInput: function() {
+		if (!this.get('allowChanges')) {
+			return;
+		}
+		const $input = this.get('_$input');
 		this.set('_isEditingInput', true);
-		scheduleOnce('afterRender', this, () => {
-			// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
-			const $input = this.get('_$input'),
-				target = event.target, // element receiving focus
-				relTarget = event.relatedTarget; // element losing focus
-			// we want to focus only when the event target is a parent of this input
-			// when the event target is actually the input itself then we know that
-			// this is the bubbled up event and if we handled this bubbled up event
-			// we would start an infinite loop of focus events
-			// ALSO element losing focus (relTarget) must not be the input itself
-			// since we don't want to cancel out actions that shift focus away from
-			// the input such as tabbing away
-			if (!$input.is(target) && !$input.is(relTarget)) {
-				$input.focus();
-			}
-		});
+		scheduleOnce('afterRender', this, () => $input.focus());
 	}
 });

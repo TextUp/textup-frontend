@@ -156,10 +156,8 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 		const recip = recipients.get('firstObject');
 		if (this._isContact(recip)) {
 			json.callContact = get(recip, 'id');
-		} else if (this._isShared(recip)) {
-			json.callSharedContact = get(recip, 'id');
 		} else {
-			json.callPhoneNumber = get(recip, 'identifier');
+			json.callSharedContact = get(recip, 'id');
 		}
 	},
 	_buildRecipientsForNote: function(json, recipients) {

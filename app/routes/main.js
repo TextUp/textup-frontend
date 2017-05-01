@@ -3,9 +3,22 @@ import callIfPresent from '../utils/call-if-present';
 import Ember from 'ember';
 import Setup from '../mixins/setup-route';
 import Slideout from '../mixins/slideout-route';
+import {
+	validate as validateNumber,
+	clean as cleanNumber
+} from '../utils/phone-number';
+
 
 const {
-	isNone
+	isNone,
+	isPresent,
+	run: {
+		debounce,
+		next
+	},
+	RSVP: {
+		Promise
+	}
 } = Ember;
 
 export default Ember.Route.extend(Slideout, Auth, Setup, {
@@ -77,7 +90,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 			if (user && user.get('isAdmin')) {
 				this.transitionTo('admin');
 			} else {
-				this.notifications.error(`Sorry. We didn't get that. Your credentials should be 
+				this.notifications.error(`Sorry. We didn't get that. Your credentials should be
 					correct. Please try to log in one more time.`);
 				this.get('authManager').logout();
 			}
@@ -199,8 +212,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 					const contacts = this.controller.get('contacts');
 					if (contacts) {
 						contacts.unshiftObject(contact);
-						// have to copy to trigger re-render on infinite scroll
-						this.controller.set('contacts', Ember.copy(contacts));
 					}
 					callIfPresent(then);
 				});
@@ -209,13 +220,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 			contact.removeDuplicatesForNumber(removedNum);
 		},
 		checkContactNumberDuplicates: function(contact, addedNum) {
-			const query = Object.create(null),
-				team = this.get('stateManager.ownerAsTeam');
-			query.search = addedNum;
-			if (team) {
-				query.teamId = team.get('id');
-			}
-			this.store.query('contact', query).then((results) => {
+			this._searchContactsByNumber(addedNum).then((results) => {
 				contact.addDuplicatesForNumber(addedNum, results.toArray());
 			});
 		},
@@ -292,6 +297,78 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 			this.controller.set('selectedRecipients', []);
 		},
 
+		// Call
+		// ----
+
+		initializeCallSlideout: function() {
+			this.controller.setProperties({
+				isCallingForNumber: false,
+				callByNumber: null,
+				callByNumberIsValid: false,
+				callByNumberContact: null,
+				callByNumberMoreNum: 0
+			});
+		},
+		onCallNumberChange: function(number) {
+			const controller = this.controller;
+			controller.set('callByNumber', number);
+			debounce(this, this._validateAndCheckCallNumberForName, number, 250);
+		},
+		validateAndCheckCallNumberForName: function(number /*, event*/ ) {
+			debounce(this, this._validateAndCheckCallNumberForName, number, 250);
+		},
+		makeCallForNumber: function(...then) {
+			return new Promise((resolve, reject) => {
+				const controller = this.controller;
+				if (!controller.get('callByNumberIsValid')) {
+					return resolve();
+				}
+				const newNum = controller.get('callByNumber'),
+					forTarget = controller.get('callByNumberContact'),
+					dataHandler = this.get('dataHandler'),
+					doNext = (contact) => {
+						dataHandler
+							.makeCall(contact)
+							.then(() => {
+								controller.set('isCallingForNumber', false);
+								then.forEach(callIfPresent);
+								next(this, () => {
+									this.transitionTo('main.contacts.contact', contact.get('id'), {
+										queryParams: {
+											filter: 'all'
+										}
+									}).then((targetRoute) => {
+										targetRoute.controller.set('isMakingCall', true);
+									});
+								});
+								resolve();
+							}, (failure) => {
+								controller.set('isCallingForNumber', false);
+								reject(failure);
+							});
+					};
+				controller.set('isCallingForNumber', true);
+				if (isPresent(forTarget)) {
+					doNext(forTarget);
+				} else {
+					const newContact = this.store.createRecord('contact', {
+						numbers: [{
+							number: newNum
+						}]
+					});
+					dataHandler
+						.persist(newContact)
+						.then(() => {
+							const contacts = controller.get('contacts');
+							if (contacts) {
+								contacts.unshiftObject(newContact);
+								doNext(newContact);
+							}
+						}, reject);
+				}
+			});
+		},
+
 		// Communications
 		// --------------
 
@@ -317,6 +394,41 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 	// Helpers
 	// -------
 
+	_validateAndCheckCallNumberForName: function(number) {
+		const controller = this.controller,
+			maxNum = 1,
+			cleaned = cleanNumber(number);
+		if (validateNumber(cleaned)) {
+			this._searchContactsByNumber(cleaned, {
+				max: maxNum
+			}).then((results) => {
+				const total = results.get('meta.total');
+				controller.setProperties({
+					callByNumber: cleaned,
+					callByNumberContact: results.toArray().get('firstObject'),
+					callByNumberMoreNum: Math.max(total - maxNum, 0),
+					callByNumberIsValid: true
+				});
+			});
+		} else {
+			controller.setProperties({
+				callByNumber: cleaned,
+				callByNumberIsValid: false,
+				callByNumberContact: null,
+				callByNumberMoreNum: 0
+			});
+		}
+	},
+	_searchContactsByNumber: function(number, params = Object.create(null)) {
+		return new Promise((resolve, reject) => {
+			const teamId = this.get('stateManager.ownerAsTeam.id');
+			params.search = number;
+			if (teamId) {
+				params.teamId = teamId;
+			}
+			this.store.query('contact', params).then(resolve, reject);
+		});
+	},
 	_changeContactStatus: function(contacts) {
 		this.get('dataHandler')
 			.persist(contacts)

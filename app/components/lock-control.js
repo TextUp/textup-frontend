@@ -5,7 +5,12 @@ import moment from 'moment';
 
 const {
 	computed,
-	$
+	computed: {
+		equal: eq
+	},
+	run: {
+		scheduleOnce
+	}
 } = Ember;
 
 export default Ember.Component.extend({
@@ -47,7 +52,6 @@ export default Ember.Component.extend({
 
 	classNames: 'lock-control',
 	classNameBindings: ['_status', '_addDisabledClass'],
-	attributeBindings: ['tabIndex:tabindex'],
 
 	_status: '',
 	_whenUnlock: null,
@@ -55,10 +59,6 @@ export default Ember.Component.extend({
 	// Computed properties
 	// -------------------
 
-	tabIndex: computed('tabindex', function() {
-		const ind = this.get('tabindex');
-		return (this.get('disabled') || ind === false) ? null : ind;
-	}),
 	_addDisabledClass: computed('disabled', function() {
 		return this.get('disabled') ? this.get('disabledClass') : '';
 	}),
@@ -71,6 +71,7 @@ export default Ember.Component.extend({
 		}
 		return shouldBeActive;
 	}),
+	_hasError: eq('_status', 'errorClass'),
 	_isFull: computed('val', 'numDigits', function() {
 		return this.get('val.length') >= this.get('numDigits');
 	}),
@@ -98,6 +99,9 @@ export default Ember.Component.extend({
 	_lockedForKey: computed('storageNamespace', function() {
 		return `${this.get('storageNamespace')}--lockedfor`;
 	}),
+	_$input: computed(function() {
+		return this.$('.number-control');
+	}),
 
 	// Events
 	// ------
@@ -109,68 +113,20 @@ export default Ember.Component.extend({
 				this.tryStartLock();
 			}
 		});
-		const elId = this.elementId,
-			events = `click.${elId} touchend.${elId}`;
-		this.$(".dial-pad-control")
-			.on(events, this.addFromUserInput.bind(this));
-		this.$(".dial-pad-remove")
-			.on(events, this.removeByUserInput.bind(this));
-	},
-	willDestroyElement: function() {
-		this._super(...arguments);
-		const elId = this.elementId,
-			events = `click.${elId} touchend.${elId}`;
-		this.$(".dial-pad-control").off(events);
-		this.$(".dial-pad-remove").off(events);
-	},
-	keyDown: function(event) {
-		// disable going back for backspace
-		if (!this.get('disabled') && event.which === 8) {
-			event.preventDefault();
-			return false;
-		}
-	},
-	keyUp: function(event) {
-		if (!this.get('disabled')) {
-			if (event.which >= 48 && event.which <= 57) {
-				this.appendToPasscode(String.fromCharCode(event.which));
-			} else if (event.which === 8) {
-				this.removeLastFromPasscode();
-			}
-		}
 	},
 
-	// Handlers
-	// --------
+	// Actions
+	// -------
 
-	addFromUserInput: function(event) {
-		const val = $(event.currentTarget).attr("data-value");
-		this.appendToPasscode(val);
-		// stop click event from being called if touchend is called first
-		event.stopImmediatePropagation();
-		return false;
-	},
-	removeByUserInput: function(event) {
-		this.removeLastFromPasscode();
-		// stop click event from being called if touchend is called first
-		event.stopImmediatePropagation();
-		return false;
+	actions: {
+		updateVal: function(newVal) {
+			this.updateVal(newVal);
+		}
 	},
 
 	// Helpers
 	// -------
 
-	appendToPasscode: function(charToAdd) {
-		if (!this.get('_isFull')) {
-			this.updateVal(this.get('val') + String(charToAdd));
-		}
-	},
-	removeLastFromPasscode: function() {
-		if (!this.get('_isEmpty')) {
-			const val = this.get('val');
-			this.updateVal(val.substring(0, val.length - 1));
-		}
-	},
 	updateVal: function(newVal) {
 		if (this.get('disabled')) {
 			return;
@@ -229,13 +185,15 @@ export default Ember.Component.extend({
 		}
 	},
 	resetLock: function() {
-		const storage = this.get('storage');
+		const storage = this.get('storage'),
+			$input = this.get('_$input');
 		storage.removeItem(this.get('_whenLockedKey'));
 		storage.removeItem(this.get('_lockedForKey'));
 		storage.removeItem(this.get('_numAttemptsKey'));
 		// clear locked fields
 		this.set('_status', '');
 		this.set('_whenUnlock', null);
+		scheduleOnce('afterRender', this, () => $input && $input.focus());
 	},
 
 	// Locked for helpers

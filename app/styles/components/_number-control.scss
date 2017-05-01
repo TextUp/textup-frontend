@@ -1,0 +1,54 @@
+.form-error .number-control, .number-control.form-error {
+    .number-control-label {
+        color: $font-color;
+    }
+}
+
+.number-control {
+    @extend %clearfix;
+    @extend %border-box;
+    position: relative;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    &.form-disabled .number-control-item {
+        cursor: not-allowed;
+
+        &:hover, &:focus, &:active {
+            border-bottom: 1px solid $border-color;
+            background-color: transparent;
+            opacity: 1;
+            color: $font-color;
+        }
+    }
+    .number-control-label {
+        @extend .text-ellipsis;
+        @extend .text-center;
+        @extend .text-bold;
+        @extend .no-select;
+
+        box-sizing: border-box;
+        cursor: pointer;
+        position: relative;
+        padding: $padding ($padding * 2);
+        margin: $padding * 0.5;
+        background-color: transparent;
+        border-bottom: 1px solid $border-color;
+
+        &:hover, &:focus, &:active {
+            border-radius: $border-radius;
+            border-bottom: 1px solid transparent;
+        }
+        &:hover {
+            background-color: shade($bg-color, 1.2);
+            opacity: 0.8;
+        }
+        &:focus, &:active {
+            color: white;
+            background-color: shade($brand-color, 2);
+            opacity: 0.8;
+        }
+    }
+}

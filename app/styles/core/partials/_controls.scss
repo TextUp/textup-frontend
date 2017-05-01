@@ -53,6 +53,9 @@
     &.form-disabled {
         @extend %form-disabled;
     }
+    &:disabled {
+        @extend %form-disabled;
+    }
 }
 %form-error {
     color: tint($danger-color);

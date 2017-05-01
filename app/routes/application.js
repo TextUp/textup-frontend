@@ -233,7 +233,7 @@ export default Ember.Route.extend(Slideout, Loading, {
 		}
 		this.controller.set('isLocked', true);
 		Ember.run.scheduleOnce('afterRender', this, function() {
-			$('#container .lock-control').focus();
+			$('#container .number-control').focus();
 		});
 	},
 	doUnlock: function() {
