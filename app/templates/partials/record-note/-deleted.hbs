@@ -29,7 +29,7 @@
     </div>
 </div>
 <span class='decoration'>
-    {{moment-from-now rNote.whenChanged interval=1000}} by
+    {{moment-format rNote.whenChanged}} by
     <span class="text-bold">
         {{if rNote.authorName rNote.authorName 'Unknown'}}
     </span>

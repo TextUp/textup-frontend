@@ -1,5 +1,5 @@
 <span class='decoration-right no-select'>
-    {{moment-from-now record.whenCreated interval=1000}} by
+    {{moment-format record.whenCreated}} by
     <span class="text-bold">
         {{if record.authorName record.authorName 'Unknown'}}
     </span>
@@ -12,7 +12,7 @@
             </div>
             <span class="fa fa-phone"></span>
             <span class='pad-l duration'>
-                {{moment-duration record.durationInSeconds}}
+                {{moment-duration record.durationInSeconds 'seconds'}}
             </span>
         {{else}}
             <div class="decoration-center-left">

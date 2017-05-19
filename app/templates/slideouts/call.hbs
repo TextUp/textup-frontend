@@ -38,6 +38,7 @@
         </div>
         <div class="form-element margin-b-double">
             {{number-control val=callByNumber
+                showAlphabet=true
                 numDigits=10
                 doChange=(route-action 'onCallNumberChange')
                 onSubmit=(route-action 'makeCallForNumber' slideout.actions.close)}}

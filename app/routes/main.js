@@ -331,7 +331,14 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 							.makeCall(contact)
 							.then(() => {
 								controller.set('isCallingForNumber', false);
-								then.forEach(callIfPresent);
+								then.forEach((func) => {
+									// async-button adds on this function and if this function
+									// is called, then an error saying that we tried to call
+									// set on a destroyed object is raised.
+									if (func.name !== 'deprecatingCallbackHandler') {
+										callIfPresent(func);
+									}
+								});
 								next(this, () => {
 									this.transitionTo('main.contacts.contact', contact.get('id'), {
 										queryParams: {
@@ -343,7 +350,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 								});
 								resolve();
 							}, (failure) => {
-								controller.set('isCallingForNumber', false);
 								reject(failure);
 							});
 					};

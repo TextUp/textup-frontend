@@ -36,7 +36,7 @@
 			height: $control-height;
 			background-color: $brand-color;
 			color: contrast-color($brand-color);
-			transition: width 1s;
+			transition: width 0.5s;
 		}
 		.audio-loaded {
 			width: 30%;

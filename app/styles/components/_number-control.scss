@@ -23,6 +23,15 @@
             color: $font-color;
         }
     }
+    &.show-alphabet {
+        .number-control-label {
+            height: 4.5em;
+
+            .alphabet-label {
+                display: block;
+            }
+        }
+    }
     .number-control-label {
         @extend .text-ellipsis;
         @extend .text-center;
@@ -44,11 +53,22 @@
         &:hover {
             background-color: shade($bg-color, 1.2);
             opacity: 0.8;
+            .alphabet-label {
+                color: $font-color;
+            }
         }
         &:focus, &:active {
             color: white;
             background-color: shade($brand-color, 2);
             opacity: 0.8;
+        }
+        .alphabet-label {
+            @extend .text-small;
+            @extend .text-lighten;
+
+            margin-top: 0.5em;
+            text-transform: uppercase;
+            display: none;
         }
     }
 }

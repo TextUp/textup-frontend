@@ -32,7 +32,7 @@
     </div>
 {{else}}
     <span class='decoration-right no-select'>
-        {{moment-from-now record.whenCreated interval=1000}} by
+        {{moment-format record.whenCreated}} by
         <span class="text-bold">
             {{if record.authorName record.authorName 'Unknown'}}
         </span>

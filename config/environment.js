@@ -37,7 +37,8 @@ module.exports = function(environment) {
             }
         },
         moment: {
-            includeTimezone: '2010-2020'
+            includeTimezone: 'subset',
+            outputFormat: 'llll'
         },
         storage: {
             namespace: 'textup'
@@ -80,7 +81,7 @@ module.exports = function(environment) {
     };
 
     if (environment === 'development') {
-        // ENV.host = "https://91b011ee.ngrok.io";
+        // ENV.host = "https://c3e0b356.ngrok.io";
         ENV.host = "https://dev.textup.org";
         // ENV.host = "https://v2.textup.org";
 
@@ -108,7 +109,6 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-        // ENV.host = "https://5e6aa46b.ngrok.io";
         // ENV.host = "https://dev.textup.org";
         ENV.host = "https://v2.textup.org";
     }

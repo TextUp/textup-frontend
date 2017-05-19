@@ -122,10 +122,12 @@ export default Ember.Component.extend({
 
 	_close: function(manualClose, ...then) {
 		if (manualClose || this.get('forceKeepOpen') === false) {
-			this.get('_$el').addClass('is-closing');
-			this.set('_isOpen', false);
-			this.set('_isOpening', false);
-			this._removeOverlay();
+			if (!(this.isDestroying || this.isDestroyed)) {
+				this.get('_$el').addClass('is-closing');
+				this.set('_isOpen', false);
+				this.set('_isOpening', false);
+				this._removeOverlay();
+			}
 			callIfPresent(this.get('doClose'), this.get('publicAPI'));
 			then.forEach(callIfPresent);
 		}

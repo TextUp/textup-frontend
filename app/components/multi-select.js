@@ -22,6 +22,7 @@ export default Ember.Component.extend({
 	selected: defaultIfAbsent([]),
 	delayThreshold: defaultIfAbsent(300),
 	allowCreate: defaultIfAbsent(true),
+	removeSpacesInDefaultFilter: defaultIfAbsent(true),
 
 	searchPlaceholder: defaultIfAbsent('Search here'),
 	searchingMessage: defaultIfAbsent('Loading'),
@@ -415,9 +416,15 @@ export default Ember.Component.extend({
 			fProp = this.get('filterProperty'),
 			dProp = this.get('displayProperty'),
 			iProp = this.get('identityProperty'),
-			prop = here(fProp) ? fProp : (here(iProp) ? iProp : dProp),
-			matchExp = new RegExp(searchString, 'i'),
-			matchString = ((item && prop) ? Ember.get(item, prop) : item).toString();
+			prop = here(fProp) ? fProp : (here(iProp) ? iProp : dProp);
+		let matchString = ((item && prop) ? Ember.get(item, prop) : item).toString();
+		let matchExp;
+		if (this.get('removeSpacesInDefaultFilter')) {
+			matchExp = new RegExp(searchString.replace(/\s+/g, ''), 'i');
+			matchString = matchString.replace(/\s+/g, '');
+		} else {
+			matchExp = new RegExp(searchString, 'i');
+		}
 		return matchString.search(matchExp) !== -1;
 	},
 

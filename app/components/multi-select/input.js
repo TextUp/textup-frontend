@@ -147,7 +147,7 @@ export default Ember.Component.extend({
 			} = this._getDataFromEvent(event),
 				$input = $(event.target),
 				inputVal = $input.val(),
-				isEmpty = isEmpty(inputVal);
+				isValEmpty = isEmpty(inputVal);
 			this.set('publicAPI.currentVal', inputVal);
 			// set restore flag to true because the only time we don't
 			// want to restore the original value is when the update
@@ -155,7 +155,7 @@ export default Ember.Component.extend({
 			this._shouldRestoreOriginal = true;
 			if (event.which === 13 || event.which === 27) { // enter, escape
 				this.update(object, $input, $node, event);
-			} else if ((event.which === 8 || event.which === 46) && isEmpty) { // backspace, delete
+			} else if ((event.which === 8 || event.which === 46) && isValEmpty) { // backspace, delete
 				this.remove(object, $node);
 			} else {
 				this._inputChange(inputVal, event);
@@ -222,8 +222,8 @@ export default Ember.Component.extend({
 	},
 	update: function(object, $input, $node, event) {
 		const inputVal = $input.val(),
-			isEmpty = isEmpty(inputVal);
-		if (isEmpty || inputVal === this.get('_originalBeforeEdits')) {
+			isValEmpty = isEmpty(inputVal);
+		if (isValEmpty || inputVal === this.get('_originalBeforeEdits')) {
 			this._stopEditing($input, $node);
 		} else {
 			const result = callIfPresent(this.get('onUpdate'), object, $input.val(), event);

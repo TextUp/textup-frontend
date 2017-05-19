@@ -16,6 +16,7 @@ export default Ember.Component.extend({
     numDigits: defaultIfAbsent(false), // if specified, should be a positive integer
     disabled: defaultIfAbsent(false),
     hasError: defaultIfAbsent(false),
+    showAlphabet: defaultIfAbsent(false),
     tabindex: defaultIfAbsent(0),
 
     // passed current value
@@ -30,7 +31,7 @@ export default Ember.Component.extend({
     onSubmit: null,
 
     classNames: 'number-control',
-    classNameBindings: ['disabled:form-disabled', 'hasError:form-error'],
+    classNameBindings: ['disabled:form-disabled', 'hasError:form-error', 'showAlphabet:show-alphabet'],
     attributeBindings: ['tabindex:tabIndex'],
 
     // Computed properties

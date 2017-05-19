@@ -32,7 +32,7 @@
         {{/if}}
     {{/with}}
     <span class='decoration no-select'>
-        {{moment-from-now record.whenChanged interval=1000}} by
+        {{moment-format record.whenChanged}} by
         <span class="text-bold">
             {{if record.authorName record.authorName 'Unknown'}}
         </span>

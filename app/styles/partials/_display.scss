@@ -123,6 +123,15 @@ $dropdown-shadow-size: 3px;
     line-height: $record-item-space * 0.9;
     color: $font-color;
     font-weight: $font-weight-bold;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+
+    @include mq($until: tablet) {
+        font-size: 0.8em;
+    }
 }
 $note-item-bg-color: tint($bg-color);
 $max-note-item-height: $padding * 8;
@@ -166,6 +175,7 @@ $max-note-item-height: $padding * 8;
         @extend .text-right;
         bottom: $padding * -1.5;
         right: $record-item-triangle * 1.7;
+        width: calc(100% - #{$record-item-triangle * 1.7});
     }
 }
 .note-item {

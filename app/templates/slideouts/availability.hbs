@@ -7,7 +7,10 @@
     ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
     {{#if model.phone.isFulfilled}}
         <div class="form-element pad-t pad-l pad-r">
-            <label for='Your Name' class='control-label'>Phone Away Message</label>
+            <label for='Your Name' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
+            <div class="margin-b">
+                TextUp will reply with this message to texts and calls received by {{stateManager.owner.name}} when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available.
+            </div>
             {{textarea rows="3"
                 autoresize=true
                 class="form-control"
