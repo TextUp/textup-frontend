@@ -14,12 +14,15 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
+* Ensure that the tested versions of `node` and `npm` are used
+  * `node` version 4.8.3
+  * `npm` version 2.15.11
 * Clone the repository. Since this repository uses [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) to share core styles with other repositories, this repository and its subtree can be cloned in one of the two following ways.
  1. `git clone --recursive <repository-url>`
  2. `git fetch` + `git submodule sync --recursive` + `git submodule update --init --recursive`
 * Change into the new directory
 * For ease of use, create a remote to the core styles repository with `git remote add styles git@github.com:TextUp/textup-styles.git`
-* `npm install`
+* `npm install` to install from `npm-shrinkwrap.json`
 * `bower install`
 
 ## Pulling / Pushing
@@ -35,6 +38,8 @@ When you need to backport any changes to the core styles repository, the simples
 However, the main drawback of this command is that all commits that touched the subtree and used. If we need more control, we can cherry pick the commits we want to push to the subtree.
 
 [More details about this and about all git-subtree related commands can be found at this tutorial](https://medium.com/@porteneuve/mastering-git-subtrees-943d29a798ec#.s0lfst7jk)
+
+If you are changing dependency versions, you will need to update `npm-shrinkwrap.json`. Follow the steps outlined in [this conservative guide for updating `npm-shrinkwrap.json`](https://github.com/thewoolleyman/npm-shrinkwrap-helper)
 
 ## Running / Development
 
