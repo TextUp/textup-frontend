@@ -53,7 +53,7 @@
                             {{/if}}
                         {{/multi-toggle}}
                     </div>
-                    {{#if org.hasDirtyAttributes}}
+                    {{#if org.isDirty}}
                         <div class="form-element text-center">
                             <button class="btn" type='button'
                                 onclick={{route-action 'revert' org}}>

@@ -18,7 +18,12 @@
             Date
         </label>
         {{#if futureMsg.isNew}}
-            {{datetime-control/mutable value=futureMsg.startDate min=(now)}}
+            {{!-- if the startDate has been rounded down such that it less than the
+            unrounded time right now, use the unbounded startDate as the minimum --}}
+            {{datetime-control/mutable
+                timeInterval=futureMsg.timeIntervalInMinutes
+                value=futureMsg.startDate
+                min=(if (gt (now) (unbound futureMsg.startDate)) (unbound futureMsg.startDate) now)}}
         {{else}}
             {{datetime-control/mutable value=futureMsg.startDate disabled=true}}
         {{/if}}

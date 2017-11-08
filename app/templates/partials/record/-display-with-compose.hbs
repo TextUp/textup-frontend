@@ -16,7 +16,11 @@
                 {{partial 'partials/record/deleted-cluster'}}
             {{/with}}
         {{else if record.isNote}}
-            {{partial 'partials/record/note'}}
+            {{#if record.isReadOnly}}
+                {{partial 'partials/record/read-only-note'}}
+            {{else}}
+                {{partial 'partials/record/note'}}
+            {{/if}}
         {{else}}
             <div class="record-item
                 {{if record.outgoing 'outgoing' 'incoming'}}

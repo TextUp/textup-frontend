@@ -1,59 +1,61 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import {
-	validator,
-	buildValidations
-} from 'ember-cp-validations';
+import { validator, buildValidations } from 'ember-cp-validations';
 import RecordModel from '../mixins/record-model';
 import FutureMessageModel from '../mixins/future-message-model';
 
-const {
-	alias,
-	notEmpty,
-	equal: eq
-} = Ember.computed,
-	Validations = buildValidations({
-		name: {
-			description: 'Name',
-			validators: [
-				validator('presence', true)
-			]
-		}
-	});
+const { alias, notEmpty, equal: eq } = Ember.computed,
+  Validations = buildValidations({
+    name: {
+      description: 'Name',
+      validators: [validator('presence', true)]
+    }
+  });
 
 export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
+  init: function() {
+    this._super(...arguments);
+    this.set('actions', []);
+  },
+  rollbackAttributes: function() {
+    this._super(...arguments);
+    this.get('actions').clear();
+  },
 
-	init: function() {
-		this._super(...arguments);
-		this.set('actions', []);
-	},
-	rollbackAttributes: function() {
-		this._super(...arguments);
-		this.get('actions').clear();
-	},
+  // Events
+  // ------
 
-	// Attributes
-	// ----------
+  didCreate() {
+    this.rollbackAttributes();
+  },
+  didUpdate() {
+    this.rollbackAttributes();
+  },
 
-	name: DS.attr('string'),
-	hexColor: DS.attr('string'),
-	phone: DS.belongsTo('phone'),
-	numMembers: DS.attr('number'),
+  // Attributes
+  // ----------
 
-	// Not attributes
-	// --------------
+  name: DS.attr('string'),
+  hexColor: DS.attr('string', {
+    defaultValue: '#1BA5E0'
+  }),
+  phone: DS.belongsTo('phone'),
+  numMembers: DS.attr('number'),
 
-	type: 'tag', // for compose menu
-	actions: null,
+  // Not attributes
+  // --------------
 
-	// Computed properties
-	// -------------------
+  type: 'tag', // for compose menu
+  actions: null,
 
-	isEmpty: eq('numMembers', 0),
-	hasManualChanges: notEmpty('actions'),
-	identifier: alias('name'),
-	uniqueIdentifier: alias('name'),
-	urlIdentifier: Ember.computed('name', function() {
-		return Ember.String.dasherize(this.get('name') || '');
-	}),
+  // Computed properties
+  // -------------------
+
+  isEmpty: eq('numMembers', 0),
+  hasManualChanges: notEmpty('actions'),
+  identifier: alias('name'),
+  uniqueIdentifier: alias('name'),
+  urlIdentifier: Ember.computed('name', function() {
+    return Ember.String.dasherize(this.get('name') || '');
+  })
 });

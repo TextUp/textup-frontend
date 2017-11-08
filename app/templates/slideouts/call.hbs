@@ -14,7 +14,7 @@
                 hideTriggerOnOpen=true
                 bodyFocusOnOpenSelector='input'}}
                 {{input type="tel"
-                    class='form-control form-control-minimal text-biggest text-center'
+                    class='form-control form-control--only-bottom text-biggest text-center'
                     pattern="[0-9]*" placeholder="Enter number here"
                     value=callByNumber
                     key-up=(route-action 'validateAndCheckCallNumberForName')
@@ -22,7 +22,7 @@
             {{else}}
                 <input type="tel"
                     disabled='disabled'
-                    class='form-control form-control-minimal text-biggest text-center'
+                    class='form-control form-control--only-bottom text-biggest text-center'
                     value={{phone-number callByNumber}}>
             {{/hide-away}}
             <div class='row margin-t margin-b text-center text-small'>

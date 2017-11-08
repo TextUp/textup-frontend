@@ -1,8 +1,9 @@
-
 // Badges
 // ------
 
-.btn, .dropdown-item, .menu-item {
+.btn,
+.dropdown-item,
+.menu-item {
     .badge {
         margin-top: -0.1em;
         margin-left: 0.2em;
@@ -40,13 +41,12 @@ $dropdown-shadow-size: 3px;
 
         &.hide-away-body--left {
             border-bottom-left-radius: 0;
-            box-shadow: -#{$dropdown-shadow-size} -#{$dropdown-shadow-size}
-                6px 0 shade($border-color);
+            box-shadow: -#{$dropdown-shadow-size} -#{$dropdown-shadow-size} 6px 0
+                shade($border-color);
         }
         &.hide-away-body--right {
             border-bottom-right-radius: 0;
-            box-shadow: $dropdown-shadow-size -#{$dropdown-shadow-size}
-                6px 0 shade($border-color);
+            box-shadow: $dropdown-shadow-size -#{$dropdown-shadow-size} 6px 0 shade($border-color);
         }
     }
     &.hide-away-body--bottom {
@@ -54,13 +54,11 @@ $dropdown-shadow-size: 3px;
         transform: translateY($triangle-size);
 
         &.hide-away-body--left {
-            box-shadow: -#{$dropdown-shadow-size} $dropdown-shadow-size
-                6px 0 shade($border-color);
+            box-shadow: -#{$dropdown-shadow-size} $dropdown-shadow-size 6px 0 shade($border-color);
             border-top-left-radius: 0;
         }
         &.hide-away-body--right {
-            box-shadow: $dropdown-shadow-size $dropdown-shadow-size
-                6px 0 shade($border-color);
+            box-shadow: $dropdown-shadow-size $dropdown-shadow-size 6px 0 shade($border-color);
             border-top-right-radius: 0;
         }
     }
@@ -82,7 +80,10 @@ $dropdown-shadow-size: 3px;
         &:not(:last-child) {
             border-bottom: 1px solid $border-color;
         }
-        &.active, &:hover, &:active, &:focus {
+        &.active,
+        &:hover,
+        &:active,
+        &:focus {
             background-color: $bg-light-color;
         }
     }
@@ -136,7 +137,6 @@ $dropdown-shadow-size: 3px;
 $note-item-bg-color: tint($bg-color);
 $max-note-item-height: $padding * 8;
 %note-item {
-
     position: relative;
     clear: both;
     transition: all 0.5s;
@@ -149,7 +149,8 @@ $max-note-item-height: $padding * 8;
         position: relative;
         width: 100%;
 
-        .media-item, .media-description {
+        .media-item,
+        .media-description {
             height: $max-note-item-height;
         }
         .media-description {
@@ -195,6 +196,11 @@ $max-note-item-height: $padding * 8;
         }
     }
 
+    &--read-only {
+        border-width: 0;
+        background-color: transparent;
+    }
+
     @include mq($from: tablet) {
         $edit-note-controls-width: $padding * 2.5;
 
@@ -218,7 +224,7 @@ $max-note-item-height: $padding * 8;
             top: 50%;
             transform: translateY(-50%);
 
-            z-index: 10; // to be above location or images if no content present
+            z-index: 100; // to be above location or images if no content present
             background-color: $note-item-bg-color;
             border-top-right-radius: $border-radius;
             border-bottom-right-radius: $border-radius;
@@ -238,7 +244,8 @@ $max-note-item-height: $padding * 8;
     float: left;
     clear: both;
 
-    &:nth-last-child(2) { // because add-note div will be the last child
+    &:nth-last-child(2) {
+        // because add-note div will be the last child
         margin-bottom: 1.5 * $padding;
     }
     .cluster-trigger {
@@ -290,7 +297,7 @@ $max-note-item-height: $padding * 8;
 
         .cluster-trigger {
             &:before {
-               border-top-color: shade($cluster-background-color, 2);
+                border-top-color: shade($cluster-background-color, 2);
             }
             .cluster-label {
                 background-color: $cluster-background-color;
@@ -366,7 +373,8 @@ $max-note-item-height: $padding * 8;
     &:first-child {
         margin-top: $record-item-space;
     }
-    &.incoming, &.outgoing {
+    &.incoming,
+    &.outgoing {
         clear: both;
         transition: margin-left 0.5s, width 0.5s;
     }
@@ -376,7 +384,7 @@ $max-note-item-height: $padding * 8;
         color: contrast-color($incoming-color);
         background-color: $incoming-color;
         .contents {
-            @include triangle("left", $record-item-triangle, shade($incoming-color));
+            @include triangle('left', $record-item-triangle, shade($incoming-color));
         }
         &.voicemail {
             cursor: pointer;
@@ -390,7 +398,7 @@ $max-note-item-height: $padding * 8;
         background-color: $outgoing-color;
 
         .contents {
-            @include triangle("right", $record-item-triangle, shade($outgoing-color));
+            @include triangle('right', $record-item-triangle, shade($outgoing-color));
         }
     }
     .decoration-left {

@@ -1,14 +1,16 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-	activate: function() {
-		const signupController = this.controllerFor('signup'),
-			selected = signupController.get('selected');
-		// need to rollback if coming from create new org
-		if (selected && selected.get('isNew')) {
-			selected.get('location.content').rollbackAttributes();
-			selected.rollbackAttributes();
-			signupController.set('selected', null);
-		}
-	},
+  actions: {
+    willTransition({ targetName }) {
+      if (targetName === 'signup.new') {
+        const signupController = this.controllerFor('signup'),
+          staff = signupController.get('staff');
+        if (staff.get('isDeleted') === false) {
+          staff.rollbackAttributes();
+          signupController.set('staff', this.store.createRecord('staff'));
+        }
+      }
+    }
+  }
 });

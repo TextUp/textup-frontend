@@ -1,0 +1,11 @@
+<div class="row note-item note-item--read-only">
+    <div class="text-center margin-t-half margin-l margin-r text-small">
+        {{record.noteContents}}
+    </div>
+    <span class='decoration no-select'>
+        {{moment-format record.whenChanged}} by
+        <span class="text-bold">
+            {{if record.authorName record.authorName 'Unknown'}}
+        </span>
+    </span>
+</div>

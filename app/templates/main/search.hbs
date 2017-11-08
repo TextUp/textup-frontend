@@ -7,7 +7,7 @@
 		<div class="tag-title">
 			{{input type="text"
 				value=_searchQuery
-				classNames='form-control form-control-minimal search-input'
+				classNames='form-control form-control--only-bottom search-input'
 				placeholder="Search here..."
 				enter=(route-action "triggerSearch" _searchQuery)
 				escape-press=(action (mut _searchQuery) null)}}

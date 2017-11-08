@@ -9,17 +9,30 @@
         <div class="form-element pad-t pad-l pad-r">
             <label for='Your Name' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
             <div class="margin-b">
-                TextUp will reply with this message to texts and calls received by {{stateManager.owner.name}} when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available.
+                TextUp will reply with this message to texts and calls <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
             </div>
-            {{textarea rows="3"
-                autoresize=true
-                class="form-control"
-                maxlength="160"
-                remaining='top'
-                value=model.phone.content.awayMessage
-                validateObj=model.phone.content
-                validateField='awayMessage'
-                validate='bottom'}}
+            {{#hide-away clickOutToClose=true
+                focusOutClose=true
+                bodyClickClose=false
+                animation='slide'
+                bodyClass='margin-t'
+                hideTriggerOnOpen=false
+                bodyFocusOnOpenSelector='textarea'}}
+                {{textarea rows="3"
+                    autoresize=true
+                    class="form-control"
+                    maxlength=model.phone.content.awayMessageMaxLength
+                    remaining='top'
+                    value=model.phone.content.awayMessage
+                    validateObj=model.phone.content
+                    validateField='awayMessage'
+                    validate='bottom'}}
+            {{else}}
+                <div class="form-control-minimal pad-all">
+                    {{model.phone.content.awayMessage}}
+                    <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
+                </div>
+            {{/hide-away}}
         </div>
         <hr>
     {{/if}}

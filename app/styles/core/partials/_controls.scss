@@ -4,7 +4,8 @@
 }
 
 %input-disabled {
-    &:disabled, &.disabled {
+    &:disabled,
+    &.disabled {
         @extend .no-select;
         background-color: $bg-lightest-color;
         color: $font-color;
@@ -32,7 +33,9 @@
         border-color: $border-color;
         border-bottom-color: $brand-color;
     }
-    &:active, &:focus, &.focus {
+    &:active,
+    &:focus,
+    &.focus {
         outline: 0;
         border-color: shade($border-color);
         border-bottom-color: shade($brand-color);
@@ -42,7 +45,9 @@
         &:hover {
             border-color: transparent;
         }
-        &:active, &:focus, &.focus {
+        &:active,
+        &:focus,
+        &.focus {
             outline: 0;
             border-color: transparent;
         }
@@ -65,7 +70,8 @@
         color: $danger-color;
         border-bottom-color: $danger-color;
     }
-    &:active, &:focus {
+    &:active,
+    &:focus {
         color: shade($danger-color);
         border-bottom-color: shade($danger-color);
     }
@@ -74,15 +80,19 @@
     color: shade($border-color, 2);
     border-bottom-color: $border-color;
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
         color: shade($border-color, 2);
         border-bottom-color: $border-color;
     }
 }
-.form-error, .form-error %input-decoration {
+.form-error,
+.form-error %input-decoration {
     @extend %form-error;
 }
-.form-disabled, .form-disabled %input-decoration {
+.form-disabled,
+.form-disabled %input-decoration {
     @extend %form-disabled;
 }
 
@@ -120,7 +130,8 @@
         &.btn-default:not(:disabled) {
             color: $brand-color;
         }
-        &:disabled, &.disabled {
+        &:disabled,
+        &.disabled {
             background-color: $bg-light-color;
         }
     }
@@ -157,13 +168,13 @@
 // Checkbox hack
 // -------------
 
-input[type="checkbox"] {
+input[type='checkbox'] {
     position: relative;
     transform: translateY(1px);
 }
 
-input[type="checkbox"]:checked:after,
-input[type="checkbox"]:before {
+input[type='checkbox']:checked:after,
+input[type='checkbox']:before {
     content: '';
     display: inline-block;
     width: 12px;
@@ -173,16 +184,16 @@ input[type="checkbox"]:before {
     left: -2px;
 }
 
-input[type="checkbox"]:before {
+input[type='checkbox']:before {
     border: 3px solid $brand-color;
     border-radius: $border-radius;
     background-color: $bg-light-color;
 }
 
-input[type="checkbox"]:checked:after {
+input[type='checkbox']:checked:after {
     @extend .center;
 
-    content: " ";
+    content: ' ';
     background-color: $font-color;
     height: $padding / 2;
     width: $padding / 2;
@@ -207,11 +218,17 @@ input[type="checkbox"]:checked:after {
     padding: 0 $padding;
     transition: border-color 0.5s;
 
-    &.form-control-minimal {
-        border-top-width: 0;
-        border-left-width: 0;
-        border-right-width: 0;
+    &--only-bottom {
+        border-width: 0 0 $button-accent-size 0;
     }
+}
+.form-control-minimal,
+.form-control.form-control-minimal,
+.form-control.form-control-minimal:disabled {
+    color: $font-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    cursor: pointer;
 }
 textarea.form-control {
     height: auto;
@@ -229,20 +246,23 @@ textarea.form-control {
     width: 100%;
 
     @include mq($until: desktop) {
-        input.form-control {
+        input.form-control:not(:first-child) {
             padding: 0 (0.2 * $padding);
         }
     }
-    .input-group { // all nested have auto width
+    .input-group {
+        // all nested have auto width
         width: auto;
     }
     & > .input-group-element .input-group {
         width: 100%;
     }
-    & > :not(.input-group) { // first level children are table cells
+    & > :not(.input-group) {
+        // first level children are table cells
         display: table-cell;
     }
-    & > .input-group-element, & > .form-control {
+    & > .input-group-element,
+    & > .form-control {
         @extend %inline-item;
         vertical-align: middle;
     }
@@ -252,7 +272,6 @@ textarea.form-control {
         padding: 0 ($padding * 0.7);
         border: 1px solid $border-color;
         border-radius: $border-radius;
-
     }
     & > .input-group-text-display {
         @extend %input-decoration;

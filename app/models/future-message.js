@@ -1,111 +1,108 @@
 import DS from 'ember-data';
 import Ember from 'ember';
 import moment from 'moment';
-import {
-	validator,
-	buildValidations
-} from 'ember-cp-validations';
+import { validator, buildValidations } from 'ember-cp-validations';
 
-const {
-	computed: {
-		equal: eq,
-		gt
-	}
-} = Ember,
-Validations = buildValidations({
-	type: validator('inclusion', { in : [
-			'CALL', 'TEXT'
-		]
-	}),
-	message: {
-		description: 'Message',
-		validators: [
-			validator('length', {
-				max: 320
-			}),
-			validator('presence', {
-				presence: true,
-				ignoreBlank: true
-			})
-		]
-	},
-	repeatIntervalInDays: {
-		description: 'Repeat interval',
-		validators: [
-			validator('number', {
-				allowBlank: true,
-				allowString: true,
-				positive: true
-			})
-		]
-	},
-	repeatCount: {
-		description: 'Number of times to repeat',
-		validators: [
-			validator('number', {
-				allowBlank: true,
-				allowString: true,
-				positive: true
-			})
-		]
-	}
-});
+const { computed: { equal: eq, gt } } = Ember,
+  Validations = buildValidations({
+    type: validator('inclusion', {
+      in: ['CALL', 'TEXT']
+    }),
+    message: {
+      description: 'Message',
+      validators: [
+        validator('length', {
+          max: 320
+        }),
+        validator('presence', {
+          presence: true,
+          ignoreBlank: true
+        })
+      ]
+    },
+    repeatIntervalInDays: {
+      description: 'Repeat interval',
+      validators: [
+        validator('number', {
+          allowBlank: true,
+          allowString: true,
+          positive: true
+        })
+      ]
+    },
+    repeatCount: {
+      description: 'Number of times to repeat',
+      validators: [
+        validator('number', {
+          allowBlank: true,
+          allowString: true,
+          positive: true
+        })
+      ]
+    }
+  });
 
 export default DS.Model.extend(Validations, {
+  rollbackAttributes: function() {
+    this._super(...arguments);
+    this.set('intervalMultiplier', 1);
+  },
+  didUpdate: function() {
+    this.rollbackAttributes();
+  },
 
-	rollbackAttributes: function() {
-		this._super(...arguments);
-		this.set('intervalMultiplier', 1);
-	},
-	didUpdate: function() {
-		this.rollbackAttributes();
-	},
+  // Attributes
+  // ----------
 
-	// Attributes
-	// ----------
+  whenCreated: DS.attr('date'),
+  isDone: DS.attr('boolean'),
+  isRepeating: DS.attr('boolean', {
+    defaultValue: false
+  }),
+  hasEndDate: DS.attr('boolean', {
+    defaultValue: false
+  }),
+  nextFireDate: DS.attr('date'),
+  timesTriggered: DS.attr('number'),
+  startDate: DS.attr('date', {
+    defaultValue: () => {
+      const m = moment();
+      // round down to nearest 15 minutes, used number literals instead of the `timeInteralInMinutes`
+      // variable because the context of this `defaultValue` method is NOT this model, as this
+      // method is called before this model is done initializing
+      return m.minutes(Math.floor(m.minutes() / 15) * 15).toDate();
+    }
+  }),
+  timeIntervalInMinutes: 15, // NOT ATTRIBUTE, to control the interval datetime-control displays
 
-	whenCreated: DS.attr('date'),
-	isDone: DS.attr('boolean'),
-	isRepeating: DS.attr('boolean', {
-		defaultValue: false
-	}),
-	hasEndDate: DS.attr('boolean', {
-		defaultValue: false
-	}),
-	nextFireDate: DS.attr('date'),
-	timesTriggered: DS.attr('number'),
-	startDate: DS.attr('date', {
-		defaultValue: () => moment().toDate()
-	}),
+  type: DS.attr('string', {
+    defaultValue: 'TEXT'
+  }),
+  message: DS.attr('string'),
+  notifySelf: DS.attr('boolean', {
+    defaultValue: false
+  }),
 
-	type: DS.attr('string', {
-		defaultValue: 'TEXT'
-	}),
-	message: DS.attr('string'),
-	notifySelf: DS.attr('boolean', {
-		defaultValue: false
-	}),
+  contact: DS.belongsTo('contact'),
+  tag: DS.belongsTo('tag'),
 
-	contact: DS.belongsTo('contact'),
-	tag: DS.belongsTo('tag'),
+  // Repeating
+  // ---------
 
-	// Repeating
-	// ---------
+  repeatIntervalInDays: DS.attr('number'),
+  repeatCount: DS.attr('number'),
+  endDate: DS.attr('date'),
 
-	repeatIntervalInDays: DS.attr('number'),
-	repeatCount: DS.attr('number'),
-	endDate: DS.attr('date'),
+  // Not attributes
+  // --------------
 
-	// Not attributes
-	// --------------
+  intervalMultiplier: 1,
+  contactId: null, // see adapter
+  tagId: null, // see adapter
 
-	intervalMultiplier: 1,
-	contactId: null, // see adapter
-	tagId: null, // see adapter
+  // Computed properties
+  // -------------------
 
-	// Computed properties
-	// -------------------
-
-	hasManualChanges: gt('intervalMultiplier', 1),
-	isText: eq('type', 'TEXT'),
+  hasManualChanges: gt('intervalMultiplier', 1),
+  isText: eq('type', 'TEXT')
 });

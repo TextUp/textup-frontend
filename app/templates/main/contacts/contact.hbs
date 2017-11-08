@@ -70,10 +70,12 @@
                                     {{/if}}
                                     <span class="text-darken">{{contact.sharedBy}}</span>
                                 </span>
-                                {{#if contact.hasTags}}
-                                    <span class="badge-divider"></span>
-                                {{/if}}
                             </span>
+                            {{#if contact.hasTags}}
+                                <span class="display-l">
+                                    <span class="badge-divider"></span>
+                                </span>
+                            {{/if}}
                         {{/if}}
                         <span class='clickable display-l'
                             onclick={{route-action 'toggleDetailSlideout'

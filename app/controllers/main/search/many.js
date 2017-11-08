@@ -1,18 +1,16 @@
 import Ember from 'ember';
 import MainContactsManyController from '../contacts/many';
 
-const {
-	filterBy,
-	alias
-} = Ember.computed;
+const { filterBy, alias } = Ember.computed;
 
 export default MainContactsManyController.extend({
-	searchController: Ember.inject.controller('main.search'),
+  isSearch: true,
+  searchController: Ember.inject.controller('main.search'),
 
-	selected: filterBy('searchController.searchResults', 'isSelected', true),
-	allContacts: alias('searchController.searchResults'),
+  selected: filterBy('searchController.searchResults', 'isSelected', true),
+  allContacts: alias('searchController.searchResults'),
 
-	_exitMany: function() {
-		this.transitionToRoute('main.search');
-	}
+  _exitMany: function() {
+    this.transitionToRoute('main.search');
+  }
 });

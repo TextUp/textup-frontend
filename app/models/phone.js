@@ -1,39 +1,44 @@
+import Ember from 'ember';
 import DS from 'ember-data';
-import {
-	validator,
-	buildValidations
-} from 'ember-cp-validations';
+import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
-	awayMessage: {
-		description: 'Away Message',
-		validators: [
-			validator('length', {
-				allowBlank: false,
-				min: 1,
-				max: 160
-			})
-		]
-	}
-});
+    awayMessage: {
+      description: 'Away Message',
+      validators: [
+        validator('length', {
+          allowBlank: false,
+          min: 1,
+          max: 160
+        })
+      ]
+    }
+  }),
+  { computed } = Ember;
 
 export default DS.Model.extend(Validations, {
-	init: function() {
-		this._super(...arguments);
-		this.set('contacts', []);
-	},
+  init() {
+    this._super(...arguments);
+    this.set('contacts', []);
+  },
 
-	// Attributes
-	// ----------
+  // Attributes
+  // ----------
 
-	number: DS.attr('phone-number'),
-	awayMessage: DS.attr('string', {
-		defaultValue: ''
-	}),
-	tags: DS.hasMany('tag'),
+  number: DS.attr('phone-number'),
+  awayMessage: DS.attr('string', { defaultValue: '' }),
+  mandatoryEmergencyMessage: DS.attr('string', { defaultValue: '' }),
+  tags: DS.hasMany('tag'),
 
-	// Not attributes
-	// --------------
+  // Computed properties
+  // -------------------
 
-	contacts: null,
+  awayMessageMaxLength: computed('mandatoryEmergencyMessage', function() {
+    return 160 - this.get('mandatoryEmergencyMessage.length');
+  }),
+
+  // Not attributes
+  // --------------
+
+  contacts: null
 });

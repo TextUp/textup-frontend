@@ -3,27 +3,34 @@ import Public from '../mixins/public-route';
 import config from '../config/environment';
 
 export default Ember.Route.extend(Public, {
-	model: function() {
-		return Ember.$.ajax({
-			type: 'GET',
-			url: `${config.host}/v1/public/organizations?status[]=approved`
-		}).then((data) => {
-			const orgs = data.organizations;
-			return orgs ? orgs.map((org) => {
-				return this.store.push(this.store.normalize('organization', org));
-			}) : [];
-		});
-	},
-	deactivate: function() {
-		const selected = this.controller.get('selected');
-		if (!selected) {
-			return;
-		}
-		if (selected.get('isNew')) {
-			selected.get('location.content').rollbackAttributes();
-			selected.rollbackAttributes();
-		} else if (selected.get('hasDirtyAttributes')) {
-			selected.rollbackAttributes();
-		}
-	},
+  model: function() {
+    return Ember.$
+      .ajax({
+        type: 'GET',
+        url: `${config.host}/v1/public/organizations?status[]=approved`
+      })
+      .then(({ organizations = [] }) => {
+        return organizations.map(org => {
+          return this.store.push(this.store.normalize('organization', org));
+        });
+      });
+  },
+  setupController(controller) {
+    this._super(...arguments);
+    controller.set('staff', this.store.createRecord('staff'));
+  },
+  deactivate() {
+    const controller = this.controller,
+      newStaff = controller.get('staff'),
+      selected = controller.get('selected');
+    if (newStaff) {
+      controller.set('staff', null);
+      newStaff.rollbackAttributes();
+    }
+    if (selected) {
+      controller.set('selected', null);
+      selected.get('location.content').rollbackAttributes();
+      selected.rollbackAttributes();
+    }
+  }
 });

@@ -61,11 +61,11 @@
                                 Compose
                             </li>
                             <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/tags/membership' 'main/contacts/many'}}>
+                                {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Tags
                             </li>
                             <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/many'}}>
+                                {{action 'toggleDetailSlideout' 'slideouts/share' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Share
                             </li>
                             <li class='dropdown-divider'>Status</li>
@@ -77,7 +77,7 @@
                             </button>
                         {{/hide-away/dropdown}}
                     </span>
-                    <span class='clear-badge no-space display-s'>
+                    <span class='clear-badge no-space display-s display-l'>
                         {{#hide-away/dropdown}}
                             {{partial 'partials/contact/status'}}
                         {{else}}
@@ -94,11 +94,11 @@
                                 Compose
                             </li>
                             <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/tags/membership' 'main/contacts/many'}}>
+                                {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Tags
                             </li>
                             <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/many'}}>
+                                {{action 'toggleDetailSlideout' 'slideouts/share' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Share
                             </li>
                         {{else}}
@@ -116,13 +116,13 @@
                     </span>
                     <span class='display-l clear-badge no-space'>
                         <button class='btn' type='button'
-                            {{action 'toggleDetailSlideout' 'slideouts/tags/membership' 'main/contacts/many'}}>
+                            {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                             Tags
                         </button>
                     </span>
                     <span class='display-l clear-badge no-space'>
                         <button class='btn' type='button'
-                            {{action 'toggleDetailSlideout' 'slideouts/share' 'main/contacts/many'}}>
+                            {{action 'toggleDetailSlideout' 'slideouts/share' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                             Share
                         </button>
                     </span>
