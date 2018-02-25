@@ -1,29 +1,43 @@
 import callIfPresent from '../utils/call-if-present';
-import defaultIfAbsent from '../utils/default-if-absent';
 import Ember from 'ember';
 import moment from 'moment';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, isPresent, computed: { and } } = Ember;
 
-export default Ember.Component.extend({
-  datePlaceholder: defaultIfAbsent('Select date'),
-  timePlaceholder: defaultIfAbsent('Select time'),
+export default Ember.Component.extend(PropTypesMixin, {
+  propTypes: {
+    datePlaceholder: PropTypes.string,
+    timePlaceholder: PropTypes.string,
+    dateFormat: PropTypes.string,
+    timeFormat: PropTypes.string,
+    timeInterval: PropTypes.number,
+    min: PropTypes.oneOfType([PropTypes.null, PropTypes.date]),
+    max: PropTypes.oneOfType([PropTypes.null, PropTypes.date]),
+    disabled: PropTypes.bool,
+    showDate: PropTypes.bool,
+    showTime: PropTypes.bool,
+    value: PropTypes.oneOfType([PropTypes.null, PropTypes.date]), // cannot be number because time input does not populate correctly
+    onSelect: PropTypes.func,
+    wormholeClass: PropTypes.string
+  },
+  getDefaultProps() {
+    return {
+      datePlaceholder: 'Select date',
+      timePlaceholder: 'Select time',
+      dateFormat: 'ddd mmm d, yyyy',
+      timeFormat: 'h:i A',
+      timeInterval: 1,
+      disabled: false,
+      showDate: true,
+      showTime: true,
+      wormholeClass: 'datetime-control-wormhole'
+    };
+  },
 
-  dateFormat: defaultIfAbsent('ddd mmm d, yyyy'),
-  timeFormat: defaultIfAbsent('h:i A'),
-  timeInterval: defaultIfAbsent(1),
+  // Properties
+  // ----------
 
-  min: null,
-  max: null,
-
-  disabled: defaultIfAbsent(false),
-  showDate: defaultIfAbsent(true),
-  showTime: defaultIfAbsent(true),
-
-  value: null,
-  onSelect: null,
-
-  wormholeClass: defaultIfAbsent('datetime-control-wormhole'),
   classNames: 'datetime-control',
 
   // Internal properties
@@ -82,13 +96,10 @@ export default Ember.Component.extend({
     }
     return options;
   }),
-  timeOptions: computed('timeFormat', 'timeInterval', function() {
-    return this._addBoundariesToTimeOptions({
-      format: this.get('timeFormat'),
-      interval: this.get('timeInterval')
-    });
+  // initialize time options here. All updates manually set via `_tryUpdateTimeOptions`
+  timeOptions: computed(function() {
+    return this._buildTimeOptions();
   }),
-
   destination: computed(function() {
     return `${this.elementId}--wormhole`;
   }),
@@ -121,6 +132,10 @@ export default Ember.Component.extend({
     this._super(...arguments);
     this.get('$wormhole').remove();
   },
+  didUpdateAttrs: function() {
+    // manually manage the state of the time options object
+    this._tryUpdateTimeOptions();
+  },
 
   // Actions
   // -------
@@ -138,7 +153,9 @@ export default Ember.Component.extend({
         // process has finished
         if (moment(newVal).isSame(this.get('_value')) === false) {
           Ember.run.scheduleOnce('afterRender', this, function() {
-            this.set('_value', newVal);
+            if (!this.isDestroying && !this.isDestroyed) {
+              this.set('_value', newVal);
+            }
           });
         }
       } else {
@@ -151,8 +168,11 @@ export default Ember.Component.extend({
         // modifications so that the same value isn't modified twice
         // in a render, triggering a multiple modification deprecation
         Ember.run.scheduleOnce('afterRender', this, function() {
-          callIfPresent(this.get('onSelect'), newVal);
-          this._doUpdateTimeOptions();
+          if (!this.isDestroying && !this.isDestroyed) {
+            const selectHook = this.get('onSelect');
+            callIfPresent(selectHook, newVal);
+            this._tryUpdateTimeOptions(() => callIfPresent(selectHook, this.get('_value')));
+          }
         });
       }
     }
@@ -164,39 +184,55 @@ export default Ember.Component.extend({
   _isSameDay: function(moment1, moment2) {
     return isPresent(moment1) && isPresent(moment2) ? moment2.isSame(moment1, 'day') : false;
   },
-  _addBoundariesToTimeOptions: function(options) {
-    const forMin = this.get('isValueSameDayAsMin'),
-      forMax = this.get('isValueSameDayAsMax');
-    options.isValueSameDayAsMin = forMin;
-    options.min = forMin ? this.get('min') : false;
-    options.isValueSameDayAsMax = forMax;
-    options.max = forMax ? this.get('max') : false;
-    return options;
-  },
 
-  _doUpdateTimeOptions: function() {
-    const isValueSameDayAsMin = this.get('isValueSameDayAsMin'),
+  _tryUpdateTimeOptions: function(then) {
+    const options = this.get('timeOptions'),
+      format = this.get('timeFormat'),
+      isValueSameDayAsMin = this.get('isValueSameDayAsMin'),
       isValueSameDayAsMax = this.get('isValueSameDayAsMax'),
-      options = this.get('timeOptions');
-    // should short circuit if boundary status
+      min = this._includeIfSameDay(isValueSameDayAsMin, this.get('min')),
+      max = this._includeIfSameDay(isValueSameDayAsMax, this.get('max'));
+    // should short circuit if nothing has changed
     if (
+      options.format === format &&
       options.isValueSameDayAsMin === isValueSameDayAsMin &&
-      options.isValueSameDayAsMax === isValueSameDayAsMax
+      options.isValueSameDayAsMax === isValueSameDayAsMax &&
+      options.min === min &&
+      options.max === max
     ) {
       return;
     }
     // otherwise, update the boundary conditions and re-render controls
-    this._addBoundariesToTimeOptions(options);
     // select hook is called repeatedly on re-render so
     // we need to short circuit the select hook to avoid an infinite loop
     this.set('_isRerenderingControls', true);
-    this.set('timeOptions', Ember.copy(options));
+    this.set('timeOptions', this._buildTimeOptions());
     // after rendering is done, stop short circuiting select hook
     // also, pass the possibly new value that falls within the new
     // boundaries up to the application
     Ember.run.next(() => {
-      this.set('_isRerenderingControls', false);
-      callIfPresent(this.get('onSelect'), this.get('_value'));
+      if (!this.isDestroying && !this.isDestroyed) {
+        this.set('_isRerenderingControls', false);
+        callIfPresent(then);
+      }
     });
+  },
+  _buildTimeOptions: function() {
+    // Need to initialize object as {} and not Object.create(null)
+    // because picker calls `hasOwnProperty`, which is only added using the {} constructor
+    const options = {
+        format: this.get('timeFormat')
+      },
+      forMin = this.get('isValueSameDayAsMin'),
+      forMax = this.get('isValueSameDayAsMax');
+    options.isValueSameDayAsMin = forMin;
+    options.min = this._includeIfSameDay(forMin, this.get('min'));
+    options.isValueSameDayAsMax = forMax;
+    options.max = this._includeIfSameDay(forMax, this.get('max'));
+    options.interval = this.get('timeInterval');
+    return options;
+  },
+  _includeIfSameDay(isSameDay, val) {
+    return isSameDay ? val : false;
   }
 });

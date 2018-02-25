@@ -174,10 +174,13 @@
 			                    trueString='Yes'}}
 			            </div>
 					{{else}}
-						{{#if person.schedule.isFulfilled}}
-				            {{tab-container/availability
-				                schedule=(mut person.schedule.content)}}
-					    {{/if}}
+                        {{#if person.schedule.isFulfilled}}
+                            {{schedule-control
+                                class="margin-t"
+                                scheduleClass="pad-l pad-r"
+                                schedule=person.schedule.content
+                                onChange=(route-action "replaceRangeForSchedule" person.schedule.content)}}
+                        {{/if}}
 					{{/if}}
 				</div>
 				{{#if person.isDirty}}

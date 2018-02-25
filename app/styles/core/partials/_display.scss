@@ -54,33 +54,33 @@ $bg-color-states: hover regular;
     $prefix: '';
     $suffix: '';
     @if ($state != 'regular') {
-        $prefix: "#{$state}-";
-        $suffix: ":#{$state}";
+        $prefix: '#{$state}-';
+        $suffix: ':#{$state}';
     }
-    ".#{$prefix}bg-color#{$suffix}" {
+    '.#{$prefix}bg-color#{$suffix}' {
         @if ($state != 'regular') {
             transition: background-color 0.5s;
         }
         background-color: $bg-color;
 
-        "&.#{$prefix}bg-brand#{$suffix}" {
+        '&.#{$prefix}bg-brand#{$suffix}' {
             background-color: $brand-color;
             color: contrast-color($brand-color);
         }
-        "&.#{$prefix}bg-brand-dark#{$suffix}" {
+        '&.#{$prefix}bg-brand-dark#{$suffix}' {
             background-color: shade($brand-color);
             color: contrast-color(shade($brand-color));
         }
-        "&.#{$prefix}bg-dark#{$suffix}" {
+        '&.#{$prefix}bg-dark#{$suffix}' {
             background-color: shade($bg-color);
         }
-        "&.#{$prefix}bg-darkest#{$suffix}" {
+        '&.#{$prefix}bg-darkest#{$suffix}' {
             background-color: $bg-dark-color;
         }
-        "&.#{$prefix}bg-light#{$suffix}" {
+        '&.#{$prefix}bg-light#{$suffix}' {
             background-color: $bg-light-color;
         }
-        "&.#{$prefix}bg-lightest#{$suffix}" {
+        '&.#{$prefix}bg-lightest#{$suffix}' {
             background-color: $bg-lightest-color;
         }
     }
@@ -107,6 +107,9 @@ $bg-color-states: hover regular;
 .margin-center {
     float: none !important;
     margin: 0 auto;
+}
+.relative-parent {
+    position: relative;
 }
 .v-center {
     position: absolute;
@@ -216,4 +219,32 @@ $bg-color-states: hover regular;
     border-radius: 0;
     border-left: 1px solid $border-color;
     padding: 0;
+}
+
+// Lists
+// -----
+
+.textup-list {
+    margin: 0;
+    list-style: none;
+
+    &--columns-2 {
+        column-count: 2;
+        column-gap: 3em; // to enable bullet points to still show
+    }
+
+    &__item {
+        position: relative;
+
+        &:after {
+            position: absolute;
+            content: '';
+            height: 0.5em;
+            width: 0.5em;
+            top: 0.35em;
+            left: -1.5em;
+            border-radius: 100%;
+            background-color: $brand-color;
+        }
+    }
 }

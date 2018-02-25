@@ -24,9 +24,9 @@
     }
 }
 @mixin remaining($property, $amounts) {
-    $difference: "100%";
+    $difference: '100%';
     @each $amount in $amounts {
-        $difference: "#{$difference} - #{$amount}"
+        $difference: '#{$difference} - #{$amount}';
     }
     #{$property}: calc(#{$difference});
 }
@@ -39,8 +39,7 @@
         @if $adjust-back {
             transform: translate(-50%, -50%);
         }
-    }
-    @else if $direction == right {
+    } @else if $direction == right {
         right: $amount;
         @if $adjust-back {
             transform: translate(50%, -50%);
@@ -56,8 +55,7 @@
         @if $adjust-back {
             transform: translate(-50%, -50%);
         }
-    }
-    @else if $direction == bottom {
+    } @else if $direction == bottom {
         bottom: $amount;
         @if $adjust-back {
             transform: translate(-50%, 50%);
@@ -81,10 +79,9 @@
         border-#{$position}-width: 0;
         border-#{opposite-direction($position)}-color: $color;
 
-        @if $position == "top" or $position == "bottom" {
+        @if $position == 'top' or $position == 'bottom' {
             @include h-center;
-        }
-        @else {
+        } @else {
             @include v-center;
         }
 
@@ -92,20 +89,16 @@
     }
 }
 @function opposite-direction($direction) {
-    @if $direction == "top" {
-        @return "bottom";
-    }
-    @else if $direction == "bottom" {
-        @return "top";
-    }
-    @else if $direction == "right" {
-        @return "left";
-    }
-    @else if $direction == "left" {
-        @return "right";
-    }
-    @else {
-        @return "";
+    @if $direction == 'top' {
+        @return 'bottom';
+    } @else if $direction == 'bottom' {
+        @return 'top';
+    } @else if $direction == 'right' {
+        @return 'left';
+    } @else if $direction == 'left' {
+        @return 'right';
+    } @else {
+        @return '';
     }
 }
 
@@ -134,7 +127,7 @@
     @extend %pretty-scrollbars;
     @include mq($from: desktop) {
         &::-webkit-scrollbar {
-            width: 5px;
+            width: 8px;
             height: 1px;
             border-left: 0;
         }
@@ -145,7 +138,7 @@
     @include mq($from: desktop) {
         &::-webkit-scrollbar {
             width: 1px;
-            height: 5px;
+            height: 8px;
             border-top: 0;
         }
     }
@@ -155,14 +148,14 @@
         // only desktop browser show wide scrollbars
         // mobile browsers usually only show the scrollbars when scrolling
         &::-webkit-scrollbar {
-            background: $border-color;
+            background: lighten($border-color, 10%);
         }
         &::-webkit-scrollbar-track {
             background: none;
         }
         &::-webkit-scrollbar-thumb {
-            background: darken($border-color, 40%);
-            border-radius: 0;
+            background: darken($border-color, 20%);
+            border-radius: $border-radius;
         }
     }
 }
@@ -173,7 +166,7 @@
 %clearfix:after {
     clear: both;
     display: table;
-    content: " ";
+    content: ' ';
 }
 %liquid-fire-full-height {
     height: 100%;

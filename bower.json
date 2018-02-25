@@ -6,7 +6,6 @@
         "ember-cli-test-loader": "0.2.2",
         "ember-qunit-notifications": "0.1.0",
         "tooltipster": "^3.3.0",
-        "elessar": "^1.8.5",
         "colpick": "2.0.2",
         "mapbox.js": "^2.4.0",
         "dom-ruler": "0.1.13",

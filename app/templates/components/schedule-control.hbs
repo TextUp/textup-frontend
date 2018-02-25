@@ -1,0 +1,117 @@
+{{#hide-away tabindex=false
+    hideTriggerOnOpen=true
+    bodyClickClose=false
+    clickOutToClose=false
+    animation="fade"
+    startOpen=false
+    classNames="margin-b-half"
+    triggerClass="pad-t-half pad-l pad-r"
+    bodyClass="pad-t-half pad-b pad-l pad-r bg-color"
+    onClosed=(action _resetNewProps) as |hideAway|}}
+    <div class="row margin-b-half">
+        <div class="xs-8-row-10">
+            <button type="button" class="btn btn--keep-case btn-plain relative-parent"
+                onclick={{hideAway.actions.close}}>
+                <span class="fa fa-times-circle text-brand text-biggest pull-left-to-edge"></span>
+                <span class="text-normal text-small margin-l text-ellipsis">Cancel adding new available time range</span>
+            </button>
+        </div>
+        <div class="xs-2-row-10 text-right">
+            <button type="button" class="btn btn-default schedule-add-range-btn"
+                onclick={{action _handleAdd _newRangeDay _newRangeTimes hideAway.actions.close}}
+                disabled={{if (and _newRangeDay (get _newRangeTimes "0") (get _newRangeTimes "1")) "" "disabled"}}>
+                Add
+            </button>
+        </div>
+    </div>
+    <div class="row margin-b-half">
+        <div class="xs-2-row-10 text-center">
+            <span class="control-text">on</span>
+        </div>
+        <div class="xs-4-row-10">
+            <select name="add-new-schedule-range" class="form-control"
+                onchange={{action (mut _newRangeDay) value="target.value"}}>
+                <option value="">Select day of week</option>
+                {{#each _daysOfWeek as |_day|}}
+                    <option value={{_day}}
+                        selected={{if (eq _day _newRangeDay) "selected"}}>
+                        {{capitalize _day 1}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="xs-2-row-10 text-center">
+            <span class="control-text">from</span>
+        </div>
+        <div class="xs-8-row-10">
+            {{schedule-control/range data=_newRangeTimes
+                onChange=(action (mut _newRangeTimes))}}
+        </div>
+    </div>
+{{else}}
+    <button type="button" class="btn btn--keep-case btn-plain relative-parent">
+        <span class="fa fa-plus-circle text-brand text-biggest pull-left-to-edge"></span>
+        <span class="text-normal text-small margin-l">Add an available time range</span>
+    </button>
+{{/hide-away}}
+
+<div class="{{scheduleClass}}">
+    {{#each _daysOfWeek as |_day|}}
+        <div class="margin-b">
+            <p>
+                <b>{{capitalize _day 1}}</b>
+                {{if (gt (get (get schedule _day) 'length') 0) 'available from' 'not available'}}
+            </p>
+            {{#each (get schedule _day) as |_dataArray _dataIndex|}}
+                <div class="margin-t-half row">
+                    {{schedule-control/range class="xs-9-row-10"
+                        data=_dataArray
+                        onChange=(action _handleUpdate _day _dataIndex)}}
+                    <div class="xs-row-10 text-center">
+                        <button type="button"
+                            class="btn btn-span btn-plain"
+                            onclick={{action _handleRemove _day _dataIndex}}>
+                            <span class="fa fa-minus-circle text-brand text-biggest"></span>
+                        </button>
+                    </div>
+                </div>
+            {{/each}}
+            {{#if others}}
+                {{#hide-away tabindex=false
+                    hideTriggerOnOpen=false
+                    bodyClickClose=false
+                    clickOutToClose=false
+                    animation="slide"
+                    startOpen=false
+                    classNames="margin-t-half"
+                    bodyClass="pad-t pad-b-half pad-l pad-r bg-color relative-parent"}}
+                    {{#each others as |_other|}}
+                        <div class="margin-b-half">
+                            <p>
+                                <b>{{_other.name}}</b>
+                                {{#if _other.schedule.isFulfilled}}
+                                    {{if (gt (get (get _other.schedule.content _day) 'length') 0)
+                                        'available from'
+                                        'not available'}}
+                                {{/if}}
+                            </p>
+                            <ul class="textup-list">
+                                {{#each (get _other.schedule.content _day) as |_range|}}
+                                    <li class="textup-list__item">{{display-schedule-range _range}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <button type="button" class="btn btn-span btn--keep-case btn-plain">
+                        Show team availability
+                        <span class="fa fa-angle-down"></span>
+                    </button>
+                {{/hide-away}}
+            {{/if}}
+        </div>
+    {{/each}}
+</div>
+

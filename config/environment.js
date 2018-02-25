@@ -110,7 +110,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // ENV.host = "https://dev.textup.org";
+    // ENV.host = 'https://dev.textup.org';
     ENV.host = 'https://v2.textup.org';
   }
 

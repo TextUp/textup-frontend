@@ -115,6 +115,10 @@
     border-bottom-width: $button-accent-size;
     border-bottom-style: solid;
 
+    &--keep-case {
+        text-transform: initial;
+    }
+
     &.btn-plain {
         @extend %input-disabled;
         border-color: transparent;
@@ -236,6 +240,9 @@ textarea.form-control {
     resize: none;
     overflow: auto;
     padding: ($padding * 0.5) $padding;
+}
+select.form-control {
+    appearance: menulist;
 }
 
 // Input-group

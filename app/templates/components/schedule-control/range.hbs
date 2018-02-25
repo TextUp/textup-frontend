@@ -1,0 +1,16 @@
+<div class="xs-4-row-10">
+    {{datetime-control value=_start
+        showDate=false
+        timeInterval=timeInterval
+        onSelect=(action _handleStartChange)}}
+</div>
+<div class="xs-2-row-10 text-center">
+    <span class="control-text">to</span>
+</div>
+<div class="xs-4-row-10">
+    {{datetime-control value=_end
+        showDate=false
+        timeInterval=timeInterval
+        onSelect=(action _handleEndChange)
+        min=_start}}
+</div>

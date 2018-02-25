@@ -4,7 +4,7 @@
             (route-action 'closeAllSlideouts')))
     forceKeepOpen=(or model.isSaving authManager.authUser.isSaving
         model.isDirty authManager.authUser.isDirty)
-    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
+    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole' as |slideout|}}
     {{#if model.phone.isFulfilled}}
         <div class="form-element pad-t pad-l pad-r">
             <label for='Your Name' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
@@ -36,13 +36,13 @@
         </div>
         <hr>
     {{/if}}
-	<div class="margin-b pad-l pad-r">
+	<div class="pad-l pad-r">
         {{#if (not authManager.authUser.enableNotifications)}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have turned notifications off <span class="link" {{action slideout.actions.close (route-action 'toggleSlideout' 'slideouts/account' 'main')}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
             </div>
         {{/if}}
-        <div class="form-element row pad-l pad-r">
+        <div class="row pad-l pad-r">
             <div class="xs-2-row-3 control-text">
                 <label for="Availability" class='text-ellipsis'>
                     My Availability
@@ -55,16 +55,6 @@
                 falseString='Schedule'
                 trueString='Manual'}}
         </div>
-        {{#if (not authManager.authUser.manualSchedule)}}
-            <div class="margin-t">
-                <span class='display-xs display-s display-m'>
-                    Double tap to delete a range. Tap once then tap the plus button to add a range. Blue ranges are when you are available. The gray area is when you are not available.
-                </span>
-                <span class='display-l'>
-                    Double click to delete a range. Click and drag to add a range. Blue ranges are when you are available. The gray area is when you are not available.
-                </span>
-            </div>
-        {{/if}}
 	</div>
     {{#if authManager.authUser.manualSchedule}}
         <div class="bg-color pad-t pad-b pad-l-double pad-r-double">
@@ -82,7 +72,7 @@
                     trueString='Yes'}}
             </div>
         </div>
-        {{#if stateManager.teamMembers }}
+        {{#if stateManager.teamMembers}}
             <div class="form-element pad-l-double pad-r-double pad-t">
                 <label for="Team Member Availabilities" class='text-ellipsis'>
                     Team Members
@@ -108,21 +98,34 @@
             </div>
         {{/if}}
     {{else}}
+        {{#if (and stateManager.teamMembers (or model.isDirty authManager.authUser.isDirty))}}
+            <div class="horizontal-items text-center margin-t margin-b">
+                <div class="clear-badge no-space">
+                    <button class="btn" type='button'
+                        onclick={{slideout.actions.close}}>
+                        Cancel
+                    </button>
+                </div>
+                <div class="clear-badge no-space">
+                    {{async-button classNames='btn btn-default'
+                        action=(route-action 'persist' model
+                            (route-action 'persist' authManager.authUser
+                            (route-action 'closeAllSlideouts')))
+                        disableWhen=(or
+                            (not (v-get model 'isValid'))
+                            (not (v-get authManager.authUser 'isValid')))
+                        default='Update'
+                        pending='Updating...'}}
+                </div>
+            </div>
+        {{/if}}
         {{#if authManager.authUser.schedule.isFulfilled}}
-            <div class="display-xs display-s display-m">
-                <div class="form-element pad-l pad-r">
-                    {{tab-container/availability
-                        schedule=(mut authManager.authUser.schedule.content)
-                        otherStaffs=stateManager.teamMembers}}
-                </div>
-            </div>
-            <div class="display-l">
-                <div class="form-element">
-                    {{tab-container/availability
-                        schedule=(mut authManager.authUser.schedule.content)
-                        otherStaffs=stateManager.teamMembers}}
-                </div>
-            </div>
+            {{schedule-control
+                class="margin-t"
+                scheduleClass="pad-l pad-r"
+                schedule=authManager.authUser.schedule.content
+                others=stateManager.teamMembers
+                onChange=(action "replaceRange" target=authManager.authUser.schedule.content)}}
         {{/if}}
     {{/if}}
     {{#if (or model.isDirty authManager.authUser.isDirty)}}

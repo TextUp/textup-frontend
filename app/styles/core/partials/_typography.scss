@@ -1,7 +1,6 @@
 @font-face {
     font-family: 'Bitter';
-    src: url('fonts/Bitter.woff2') format('woff2'),
-        url('fonts/Bitter.woff') format('woff'),
+    src: url('fonts/Bitter.woff2') format('woff2'), url('fonts/Bitter.woff') format('woff'),
         url('fonts/Bitter.ttf') format('truetype');
 }
 @font-face {
@@ -14,8 +13,7 @@
 }
 @font-face {
     font-family: 'Lato';
-    src: url('fonts/Lato-Bold.woff2') format('woff2'),
-        url('fonts/Lato-Bold.woff') format('woff'),
+    src: url('fonts/Lato-Bold.woff2') format('woff2'), url('fonts/Lato-Bold.woff') format('woff'),
         url('fonts/Lato-Bold.ttf') format('truetype');
     font-style: normal;
     font-weight: $font-weight-bold;
@@ -34,7 +32,9 @@ body {
 a {
     color: $font-color;
     transition: color 0.5s;
-    &:hover, &:active, &:active {
+    &:hover,
+    &:active,
+    &:active {
         color: darken($font-color, 20%);
     }
 }
@@ -46,7 +46,11 @@ p {
 // Headers
 // -------
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
     @extend .text-heading;
 
     margin: 0;
@@ -88,6 +92,9 @@ h5 {
 .text-white {
     color: $font-light-color;
 }
+.text-brand {
+    color: $brand-color;
+}
 .text-center {
     text-align: center;
 }
@@ -123,21 +130,24 @@ h5 {
 .text-biggest {
     font-size: 1.5em;
 
-    &.form-control, .form-control {
+    &.form-control,
+    .form-control {
         padding: 0 0.7em;
     }
 }
 .text-bigger {
     font-size: 1.3em;
 
-    &.form-control, .form-control {
+    &.form-control,
+    .form-control {
         padding: 0 0.8em;
     }
 }
 .text-big {
     font-size: 1.1em;
 
-    &.form-control, .form-control {
+    &.form-control,
+    .form-control {
         padding: 0 0.9em;
     }
 }
@@ -156,4 +166,3 @@ h5 {
     @extend .text-bold;
     margin-bottom: 0.3em;
 }
-
