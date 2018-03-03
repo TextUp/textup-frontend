@@ -5,10 +5,10 @@ node_js:
 
 sudo: false
 
-branches:
-  only:
-  - $BRANCH_PRODUCTION
-  - $BRANCH_STAGING
+# branches:
+#   only:
+#   - $BRANCH_PRODUCTION
+#   - $BRANCH_STAGING
 
 cache: yarn
 
@@ -26,12 +26,12 @@ install:
 script:
   - npm test
 
-deploy:
-  - provider: script
-    script: bash deploy.sh dist $S3_STAGING
-    on:
-      branch: $BRANCH_STAGING
-  - proivider: script
-    script: bash deploy.sh dist $S3_PRODUCTION
-    on:
-      branch: $BRANCH_PRODUCTION
+# deploy:
+#   - provider: script
+#     script: bash deploy.sh dist $S3_STAGING
+#     on:
+#       branch: $BRANCH_STAGING
+#   - proivider: script
+#     script: bash deploy.sh dist $S3_PRODUCTION
+#     on:
+#       branch: $BRANCH_PRODUCTION
