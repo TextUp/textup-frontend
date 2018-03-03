@@ -5,8 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'textup-frontend',
     environment: environment,
     apiKeys: {
-      mapbox:
-        'pk.eyJ1IjoiZXJpY2JhaSIsImEiOiJjaWdwMXdhMWwwMGhxc3hrbm44dzdwaGFzIn0.MI2T3IHOtoE3s7ABwbDXfw'
+      mapbox: process.env.API_MAPBOX
     },
     baseURL: '/',
     locationType: 'hash',
@@ -22,7 +21,7 @@ module.exports = function(environment) {
       // when it is created
     },
     gReCaptcha: {
-      siteKey: '6LeXTgkUAAAAAD6AxV0jRU5PDlusBakxwQFNDutq'
+      siteKey: process.env.API_GOOGLE_RECAPTCHA
     },
     locationPreview: {
       host: 'https://api.mapbox.com/v4/mapbox.streets',
@@ -45,7 +44,7 @@ module.exports = function(environment) {
       namespace: 'textup'
     },
     socket: {
-      authKey: '931ddcc6c5780a68022f'
+      authKey: process.env.API_PUSHER
     },
     lock: {
       lockOnHidden: true
@@ -110,8 +109,9 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // ENV.host = 'https://dev.textup.org';
-    ENV.host = 'https://v2.textup.org';
+    ENV.host = process.env.TRAVIS_BRANCH === 'master' ?
+      process.env.HOST_PRODUCTION :
+      process.env.HOST_STAGING;
   }
 
   return ENV;

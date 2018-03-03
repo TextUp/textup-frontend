@@ -1,45 +1,54 @@
 # Textup Frontend
 
+[![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=master)](https://travis-ci.org/TextUp/textup-frontend)
+
 This is the frontend Ember app that connects to the [TextUp Grails backend](https://github.com/TextUp/textup-backend).
-
-## Prerequisites
-
-You will need the following things properly installed on your computer.
-
-* [Git](http://git-scm.com/)
-* [Node.js](http://nodejs.org/) (with NPM)
-* [Bower](http://bower.io/)
-* [Ember CLI](http://ember-cli.com/)
-* [PhantomJS](http://phantomjs.org/)
 
 ## Installation
 
-* Ensure that the tested versions of `node` and `npm` are used
-  * `node` version 4.8.3
-  * `npm` version 2.15.11
-* Clone the repository. Since this repository uses [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) to share core styles with other repositories, this repository and its subtree can be cloned in one of the two following ways.
- 1. `git clone --recursive <repository-url>`
- 2. `git fetch` + `git submodule sync --recursive` + `git submodule update --init --recursive`
-* Change into the new directory
-* For ease of use, create a remote to the core styles repository with `git remote add styles git@github.com:TextUp/textup-styles.git`
-* `npm install` to install from `npm-shrinkwrap.json`
+* Ensure that the following pre-requisites are fulfilled
+    * `node` LTS Argon: install with `nvm`
+    * `yarn`: install with `npm install --global yarn`
+    * `bower`: install with `yarn global add bower`
+* Clone the repository.
+    * `git clone --recursive <repository-url>` to also associate the [core styles](https://github.com/TextUp/textup-styles) repo. See [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) for more details.
+    * `git remote add styles git@github.com:TextUp/textup-styles.git` to create a remote to the core styles repository for easier pulling/pushing later on
+* `yarn install --ignore-engines`
 * `bower install`
+
+## Environment variables
+
+In order to successfully build, certain environment variables are accessed in `config/environment.js`. These variables are:
+
+* `API_GOOGLE_RECAPTCHA`
+* `API_MAPBOX`
+* `API_PUSHER`
+* `HOST_PRODUCTION`
+* `HOST_STAGING`
+
+The host environment variables are used during the Travis CI build to determine if the built assets should be deployed to the staging or production environment. Note that Travis also requires
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_DEFAULT_REGION`
+* `AWS_SECRET_ACCESS_KEY`
+* `BRANCH_PRODUCTION`
+* `BRANCH_STAGING`
+* `S3_PRODUCTION`
+* `S3_STAGING`
 
 ## Pulling / Pushing
 
-Separate changes to the subtree application from changes to the [core styles](https://github.com/TextUp/textup-styles). When pushing or pulling from this repository, use the standard methods. When working with changes that pertain to the core styles, you must first use the following commands to update your copy of the core styles
+*When pushing or pulling from this repository, use the standard methods.* However, when making updates to styles that you want to propagate to other TextUp repos, some specialized commands are needed.
+
+To update your copy of the core styles:
 
 * `git subtree pull  --prefix=app/styles/core --squash styles master`
 
-When you need to backport any changes to the core styles repository, the simplest way to do so is by using this command
+To backport any changes to the core styles repository:
 
 * `git subtree push  --prefix=app/styles/core --squash styles master`
 
-However, the main drawback of this command is that all commits that touched the subtree and used. If we need more control, we can cherry pick the commits we want to push to the subtree.
-
-[More details about this and about all git-subtree related commands can be found at this tutorial](https://medium.com/@porteneuve/mastering-git-subtrees-943d29a798ec#.s0lfst7jk)
-
-If you are changing dependency versions, you will need to update `npm-shrinkwrap.json`. Follow the steps outlined in [this conservative guide for updating `npm-shrinkwrap.json`](https://github.com/thewoolleyman/npm-shrinkwrap-helper)
+Note the main drawback of this command is that all commits that touched the subtree and used. If we need more control, we can cherry pick the commits we want to push to the subtree. [More details about this and about all git-subtree related commands can be found at this tutorial](https://medium.com/@porteneuve/mastering-git-subtrees-943d29a798ec#.s0lfst7jk)
 
 ## Running / Development
 
@@ -58,11 +67,19 @@ Make use of the many generators for code, try `ember help generate` for more det
 ### Building
 
 * `ember build` (development)
-* `ember build --environment production` (production)
+* `ember build --environment=production` (production)
 
 ### Deploying
 
-Details coming soon when the docs go up.
+#### Deploying to staging
+
+* Push to the `dev` branch to trigger a Travis CI build OR
+* Run `./deploy.sh dist demo.textup.org`
+
+#### Deploying to production
+
+* Push to the `master` branch to trigger a Travis CI build OR
+* Run `./deploy.sh dist app.textup.org`
 
 ## Further Reading / Useful Links
 
@@ -72,9 +89,9 @@ Details coming soon when the docs go up.
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
 
-## License 
+## License
 
-Copyright 2017 TextUp 
+Copyright 2018 TextUp
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -7,21 +7,31 @@ sudo: false
 
 branches:
   only:
-  - master
-  - dev
+  - $BRANCH_PRODUCTION
+  - $BRANCH_STAGING
 
-cache:
-  directories:
-    - node_modules
+cache: yarn
 
 before_install:
+  - pip install --user awscli
   - npm config set spin false
-  - npm install -g bower
-  - npm install phantomjs-prebuilt
+  - npm install --global yarn
+  - yarn global add bower
+  - yarn add phantomjs-prebuilt
 
 install:
-  - npm install
+  - yarn install --ignore-engines
   - bower install
 
 script:
   - npm test
+
+deploy:
+  - provider: script
+    script: bash deploy.sh dist $S3_STAGING
+    on:
+      branch: $BRANCH_STAGING
+  - proivider: script
+    script: bash deploy.sh dist $S3_PRODUCTION
+    on:
+      branch: $BRANCH_PRODUCTION
