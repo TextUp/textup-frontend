@@ -5,10 +5,10 @@ node_js:
 
 sudo: false
 
-# branches:
-#   only:
-#   - $BRANCH_PRODUCTION
-#   - $BRANCH_STAGING
+branches:
+  only:
+  - master
+  - dev
 
 cache: yarn
 
@@ -17,7 +17,6 @@ before_install:
   - npm config set spin false
   - npm install --global yarn
   - yarn global add bower
-  - yarn add phantomjs-prebuilt
 
 install:
   - yarn install --ignore-engines
@@ -30,8 +29,8 @@ script:
 #   - provider: script
 #     script: bash deploy.sh dist $S3_STAGING
 #     on:
-#       branch: $BRANCH_STAGING
+#       branch: dev
 #   - proivider: script
 #     script: bash deploy.sh dist $S3_PRODUCTION
 #     on:
-#       branch: $BRANCH_PRODUCTION
+#       branch: master
