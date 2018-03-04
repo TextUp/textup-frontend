@@ -28,14 +28,17 @@ script:
 after_success:
   - npm run build -- --environment=production
 
+before_deploy:
+  - chmod +x .travis/deploy.sh
+
 deploy:
   - provider: script
-    script: ./deploy.sh dist $S3_STAGING
+    script: .travis/deploy.sh dist $S3_STAGING
     skip_cleanup: true
     on:
       branch: dev
-  - proivider: script
-    script: ./deploy.sh dist $S3_PRODUCTION
+  - provider: script
+    script: .travis/deploy.sh dist $S3_PRODUCTION
     skip_cleanup: true
     on:
       branch: master
