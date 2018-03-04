@@ -24,8 +24,9 @@ install:
 
 script:
   - npm test
-  - cd $TRAVIS_BUILD_DIR
-  - chmod +x ./deploy.sh
+
+after_success:
+  - npm run build
 
 deploy:
   - provider: script
