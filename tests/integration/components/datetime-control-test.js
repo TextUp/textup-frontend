@@ -198,11 +198,6 @@ test('minimum and maximum boundaries', function(assert) {
         !this.attributes['aria-disabled'],
         "day of minimum is NOT disabled b/c this attribute doesn't exist here"
       );
-      assert.equal(
-        this.attributes['aria-activedescendant'].value,
-        'true',
-        'day of minimum is currently active because minimum is today'
-      );
     } else if (day.isAfter(minDate) && day.isSameOrBefore(maxDate)) {
       assert.ok(!this.attributes['aria-disabled'], 'date between min and max is NOT disabled');
     }
