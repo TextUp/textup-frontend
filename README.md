@@ -1,8 +1,10 @@
 # Textup Frontend
 
-[![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=master)](https://travis-ci.org/TextUp/textup-frontend)
-
 This is the frontend Ember app that connects to the [TextUp Grails backend](https://github.com/TextUp/textup-backend).
+
+| Service | Master | Dev |
+| --- | --- | --- |
+| CI Status | [![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=master)](https://travis-ci.org/TextUp/textup-frontend) | [![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=dev)](https://travis-ci.org/TextUp/textup-frontend) |
 
 ## Installation
 
@@ -31,8 +33,6 @@ The host environment variables are used during the Travis CI build to determine 
 * `AWS_ACCESS_KEY_ID`
 * `AWS_DEFAULT_REGION`
 * `AWS_SECRET_ACCESS_KEY`
-* `BRANCH_PRODUCTION`
-* `BRANCH_STAGING`
 * `S3_PRODUCTION`
 * `S3_STAGING`
 

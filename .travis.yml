@@ -25,12 +25,12 @@ install:
 script:
   - npm test
 
-# deploy:
-#   - provider: script
-#     script: bash deploy.sh dist $S3_STAGING
-#     on:
-#       branch: dev
-#   - proivider: script
-#     script: bash deploy.sh dist $S3_PRODUCTION
-#     on:
-#       branch: master
+deploy:
+  - provider: script
+    script: bash deploy.sh dist $S3_STAGING
+    on:
+      branch: dev
+  - proivider: script
+    script: bash deploy.sh dist $S3_PRODUCTION
+    on:
+      branch: master
