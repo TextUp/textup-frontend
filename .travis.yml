@@ -24,15 +24,17 @@ install:
 
 script:
   - npm test
+  - cd $TRAVIS_BUILD_DIR
+  - chmod +x ./deploy.sh
 
 deploy:
   - provider: script
-    script: bash deploy.sh dist $S3_STAGING
+    script: ./deploy.sh dist $S3_STAGING
     skip_cleanup: true
     on:
       branch: dev
   - proivider: script
-    script: bash deploy.sh dist $S3_PRODUCTION
+    script: ./deploy.sh dist $S3_PRODUCTION
     skip_cleanup: true
     on:
       branch: master
