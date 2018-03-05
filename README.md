@@ -28,7 +28,7 @@ In order to successfully build, certain environment variables are accessed in `c
 * `HOST_PRODUCTION`
 * `HOST_STAGING`
 
-The host environment variables are used during the Travis CI build to determine if the built assets should be deployed to the staging or production environment. Note that Travis also requires
+Environment variables used by Travis when building and deploying are:
 
 * `AWS_ACCESS_KEY_ID`
 * `AWS_DEFAULT_REGION`
