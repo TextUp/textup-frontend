@@ -19,7 +19,7 @@ echo "...done"
 if [ ${optional_cloudfront_id} ]
 then
     echo "Triggering cache invalidation..."
-    aws cloudfront create-invalidation --distribution-id ${optional_cloudfront_id} --paths "*"
+    aws cloudfront create-invalidation --distribution-id ${optional_cloudfront_id} --paths "/*"
     echo "...done"
 else
     echo "Skipping cache invalidation"
