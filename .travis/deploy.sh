@@ -14,6 +14,7 @@ aws s3 sync ${app_path} s3://${bucket_name} --size-only --delete --exclude "inde
 # previous assets have been deleted, leading to a broken app where the html file points
 # to older assets that have already been deleted
 aws s3 sync ${app_path} s3://${bucket_name} --exclude "*" --include "index.html" --cache-control "max-age=180"
+aws s3 sync ${app_path} s3://${bucket_name} --exclude "*" --include "manifest.appcache"
 echo "...done"
 
 if [ ${optional_cloudfront_id} ]
