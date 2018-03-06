@@ -31,6 +31,7 @@ In order to successfully build, certain environment variables are accessed in `c
 Environment variables used by Travis when building and deploying are:
 
 * `AWS_ACCESS_KEY_ID`
+* `AWS_CLOUDFRONT_ID_PRODUCTION`
 * `AWS_DEFAULT_REGION`
 * `AWS_SECRET_ACCESS_KEY`
 * `S3_PRODUCTION`

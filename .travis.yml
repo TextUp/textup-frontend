@@ -38,7 +38,7 @@ deploy:
     on:
       branch: dev
   - provider: script
-    script: .travis/deploy.sh dist $S3_PRODUCTION
+    script: .travis/deploy.sh dist $S3_PRODUCTION $AWS_CLOUDFRONT_ID_PRODUCTION
     skip_cleanup: true
     on:
       branch: master
