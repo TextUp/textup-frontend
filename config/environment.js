@@ -109,9 +109,10 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.host = process.env.TRAVIS_BRANCH === 'master' ?
-      process.env.HOST_PRODUCTION :
-      process.env.HOST_STAGING;
+    ENV.host =
+      process.env.TRAVIS_BRANCH === 'master'
+        ? process.env.HOST_PRODUCTION
+        : process.env.HOST_STAGING;
   }
 
   return ENV;

@@ -29,6 +29,7 @@ export default DS.Model.extend(Validations, {
   awayMessage: DS.attr('string', { defaultValue: '' }),
   mandatoryEmergencyMessage: DS.attr('string', { defaultValue: '' }),
   tags: DS.hasMany('tag'),
+  voice: DS.attr('string'),
 
   // Computed properties
   // -------------------
