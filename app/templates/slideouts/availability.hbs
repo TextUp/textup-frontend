@@ -77,7 +77,7 @@
         {{/if}}
         <hr>
     {{/if}}
-	<div class="pad-l pad-r">
+	<div class="pad-l pad-r pad-b">
         {{#if (not authManager.authUser.enableNotifications)}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have turned notifications off <span class="link" {{action slideout.actions.close (route-action 'toggleSlideout' 'slideouts/account' 'main')}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
