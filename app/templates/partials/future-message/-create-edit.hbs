@@ -20,12 +20,16 @@
         {{#if futureMsg.isNew}}
             {{!-- if the startDate has been rounded down such that it less than the
             unrounded time right now, use the unbounded startDate as the minimum --}}
-            {{datetime-control/mutable
+            {{datetime-control
+                onSelect=(action (mut futureMsg.startDate))
                 timeInterval=futureMsg.timeIntervalInMinutes
                 value=futureMsg.startDate
                 min=(if (gt (now) (unbound futureMsg.startDate)) (unbound futureMsg.startDate) now)}}
         {{else}}
-            {{datetime-control/mutable value=futureMsg.startDate disabled=true}}
+            {{datetime-control
+                onSelect=(action (mut futureMsg.startDate))
+                value=futureMsg.startDate
+                disabled=true}}
         {{/if}}
     </div>
 {{/liquid-if}}
@@ -125,8 +129,10 @@
                     <div class="xs-row-3 control-text">
                         <label for="End Date">End On</label>
                     </div>
-                    {{datetime-control/mutable classNames='xs-2-row-3'
+                    {{datetime-control
+                        classNames='xs-2-row-3'
                         disabled=futureMsg.isDeleted
+                        onSelect=(action (mut futureMsg.endDate))
                         value=futureMsg.endDate
                         min=futureMsg.startDate
                         showTime=false}}
