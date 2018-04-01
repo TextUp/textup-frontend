@@ -53,9 +53,10 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
         if (team) {
           return team;
         } else {
-          // otherwise, identifier doesn't match anything
-          this.notifications.error(`User ${id} could not be found.
-            Perhaps you logged in with the wrong account?`);
+          // do not display an error message here because, when we store the previously-visited
+          // URL, this place will display an error even when we are trying to log into
+          // a different user's account OR we are using a computer previously logged into
+          // another user's TextUp account
           if (user.get('isAdmin')) {
             this.transitionTo('admin');
           } else {

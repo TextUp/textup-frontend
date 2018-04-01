@@ -92,15 +92,15 @@
             <div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
                 full-height row">
                 <div class="horizontal-items pull-right">
-                    {{#if (not contact.isShared)}}
-                        <span class='clear-badge no-space'>
-                            {{#hide-away/dropdown}}
-                                <li tabindex='0' class='dropdown-item'
-                                    {{action 'toggleDetailSlideout'
-                                        'slideouts/contact'
-                                        'main/contacts/contact'}}>
-                                    Details
-                                </li>
+                    <span class='clear-badge no-space'>
+                        {{#hide-away/dropdown}}
+                            <li tabindex='0' class='dropdown-item'
+                                {{action 'toggleDetailSlideout'
+                                    'slideouts/contact'
+                                    'main/contacts/contact'}}>
+                                Details
+                            </li>
+                            {{#if (not contact.isShared)}}
                                 <li tabindex='0' class='dropdown-item'
                                     {{action 'toggleDetailSlideout'
                                         'slideouts/share'
@@ -119,25 +119,16 @@
                                         {{contact.tags.content.length}}
                                     </span>
                                 </li>
-                                <li class='dropdown-divider'>Status</li>
-                                {{partial 'partials/contact/status'}}
-                            {{else}}
-                                <button class='btn' type='button'>
-                                    More
-                                    <span class='fa fa-caret-down'></span>
-                                </button>
-                            {{/hide-away/dropdown}}
-                        </span>
-                    {{else}}
-                        <span class='clear-badge no-space'>
-                            <button type='button' class='btn'
-                                {{action 'toggleDetailSlideout'
-                                    'slideouts/contact'
-                                    'main/contacts/contact'}}>
-                                Details
+                            {{/if}}
+                            <li class='dropdown-divider'>Status</li>
+                            {{partial 'partials/contact/status'}}
+                        {{else}}
+                            <button class='btn' type='button'>
+                                More
+                                <span class='fa fa-caret-down'></span>
                             </button>
-                        </span>
-                    {{/if}}
+                        {{/hide-away/dropdown}}
+                    </span>
                     <span class="clear-badge display-m display-l">
                         {{#link-to (if tag 'main.tag'
                             (if stateManager.viewingSearch

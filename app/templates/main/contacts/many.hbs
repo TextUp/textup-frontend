@@ -3,6 +3,7 @@
 <div class="details">
 	<div class="section-header">
 		<div class="horizontal-items xs-2-row-3 l-4-row-10 pull-left">
+            {{!-- close button on smaller screens --}}
             <span class="clear-badge display-xs display-s no-space">
                 <button class="btn btn-plain" type='button'
                     {{action 'leave'}}>
@@ -53,13 +54,16 @@
 		</div>
         {{#if selected}}
             <div class="horizontal-items xs-row-3 l-6-row-10 pull-right">
-                {{#if noSharedWithMeSelected}}
-                    <span class='clear-badge no-space display-xs display-m'>
-                        {{#hide-away/dropdown}}
+                {{!-- for all except large screens --}}
+                <span class='clear-badge no-space display-xs display-s display-m'>
+                    {{#hide-away/dropdown}}
+                        {{#if (or noSharedWithMeSelected selectedCanMessage)}}
                             <li tabindex='0' class='dropdown-item'
                                 {{action 'composeWithRecipients' selected}}>
                                 Compose
                             </li>
+                        {{/if}}
+                        {{#if noSharedWithMeSelected}}
                             <li tabindex='0' class='dropdown-item'
                                 {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Tags
@@ -68,52 +72,36 @@
                                 {{action 'toggleDetailSlideout' 'slideouts/share' (if isSearch 'main/search/many' 'main/contacts/many')}}>
                                 Share
                             </li>
-                            <li class='dropdown-divider'>Status</li>
-                            {{partial 'partials/contact/status'}}
-                        {{else}}
-                            <button class='btn' type='button'>
-                                Actions
-                                <span class='fa fa-caret-down'></span>
-                            </button>
-                        {{/hide-away/dropdown}}
-                    </span>
-                    <span class='clear-badge no-space display-s display-l'>
-                        {{#hide-away/dropdown}}
-                            {{partial 'partials/contact/status'}}
-                        {{else}}
-                            <button class='btn' type='button'>
-                                Status
-                                <span class='fa fa-caret-down'></span>
-                            </button>
-                        {{/hide-away/dropdown}}
-                    </span>
-                    <span class="display-s clear-badge no-space">
-                        {{#hide-away/dropdown}}
-                            <li tabindex='0' class='dropdown-item'
-                                {{action 'composeWithRecipients' selected}}>
-                                Compose
-                            </li>
-                            <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
-                                Tags
-                            </li>
-                            <li tabindex='0' class='dropdown-item'
-                                {{action 'toggleDetailSlideout' 'slideouts/share' (if isSearch 'main/search/many' 'main/contacts/many')}}>
-                                Share
-                            </li>
-                        {{else}}
-                            <button class='btn' type='button'>
-                                Actions
-                                <span class='fa fa-caret-down'></span>
-                            </button>
-                        {{/hide-away/dropdown}}
-                    </span>
+                        {{/if}}
+                        <li class='dropdown-divider'>Status</li>
+                        {{partial 'partials/contact/status'}}
+                    {{else}}
+                        <button class='btn' type='button'>
+                            Actions
+                            <span class='fa fa-caret-down'></span>
+                        </button>
+                    {{/hide-away/dropdown}}
+                </span>
+                {{!-- for large screens --}}
+                <span class='clear-badge no-space display-l'>
+                    {{#hide-away/dropdown}}
+                        {{partial 'partials/contact/status'}}
+                    {{else}}
+                        <button class='btn' type='button'>
+                            Status
+                            <span class='fa fa-caret-down'></span>
+                        </button>
+                    {{/hide-away/dropdown}}
+                </span>
+                {{#if (or noSharedWithMeSelected selectedCanMessage)}}
                     <span class="display-l clear-badge no-space">
                         <button class="btn btn-default"
                             {{action 'composeWithRecipients' selected}}>
                             Compose
                         </button>
                     </span>
+                {{/if}}
+                {{#if noSharedWithMeSelected}}
                     <span class='display-l clear-badge no-space'>
                         <button class='btn' type='button'
                             {{action 'toggleDetailSlideout' 'slideouts/tags/membership' (if isSearch 'main/search/many' 'main/contacts/many')}}>
@@ -126,14 +114,8 @@
                             Share
                         </button>
                     </span>
-                {{else if selectedCanMessage}}
-                    <span class="clear-badge no-space">
-                        <button class="btn btn-default"
-                            {{action 'composeWithRecipients' selected}}>
-                            Compose
-                        </button>
-                    </span>
                 {{/if}}
+                {{!-- close button on larger screens --}}
                 <span class="clear-badge display-m display-l">
                     <button class="btn btn-plain" type='button'
                         {{action 'leave'}}>
