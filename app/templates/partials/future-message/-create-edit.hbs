@@ -49,6 +49,24 @@
         falseString='Text'
         trueString='Call'}}
 </div>
+{{#liquid-if futureMsg.isCall class='animate-slide-from-top'}}
+    <div class="form-element row pad-l pad-r">
+        <div class="xs-2-row-3 control-text">
+            <label for="Start Date">
+                Language
+            </label>
+        </div>
+        <select name="scheduled-message-language" class="xs-row-3 form-control"
+            onchange={{action (mut futureMsg.language) value="target.value"}}>
+            {{#each constants.LANGUAGES as |_lang|}}
+                <option value={{_lang}}
+                    selected={{if (eq _lang futureMsg.language) "selected"}}>
+                    {{capitalize (lowercase _lang) 1}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
+{{/liquid-if}}
 <div class="form-element row pad-l pad-r">
     <div class="xs-2-row-3 control-text">
         <label for="Notify Self" class='text-ellipsis'>

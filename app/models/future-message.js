@@ -78,6 +78,10 @@ export default DS.Model.extend(Validations, {
   type: DS.attr('string', {
     defaultValue: 'TEXT'
   }),
+  language: DS.attr('string', {
+    defaultValue: 'ENGLISH'
+  }),
+
   message: DS.attr('string'),
   notifySelf: DS.attr('boolean', {
     defaultValue: false
@@ -104,5 +108,6 @@ export default DS.Model.extend(Validations, {
   // -------------------
 
   hasManualChanges: gt('intervalMultiplier', 1),
-  isText: eq('type', 'TEXT')
+  isText: eq('type', 'TEXT'),
+  isCall: eq('type', 'CALL')
 });

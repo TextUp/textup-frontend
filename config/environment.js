@@ -83,7 +83,7 @@ module.exports = function(environment) {
   if (environment === 'development') {
     // ENV.host = '';
     ENV.host = 'https://dev.textup.org';
-    // ENV.host = "https://v2.textup.org";
+    // ENV.host = 'https://v2.textup.org';
 
     // ENV.lock.lockOnHidden = false;
     ENV.manifest = {
