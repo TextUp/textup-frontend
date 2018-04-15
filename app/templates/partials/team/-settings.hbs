@@ -1,14 +1,30 @@
 <div class="form-element pad-l pad-r">
-    <label for="Your Name">Team Name</label>
+    <label for="Team Name">Team Name</label>
     {{input value=team.name type="text" placeholder="Team Name" class="form-control"}}
 </div>
 <div class="form-element pad-l pad-r">
-    <label for="Your Name">Team Color</label>
+    <label for="Team Name">Team Color</label>
     {{color-control color=team.hexColor}}
 </div>
 {{#if team.phone.isFulfilled}}
     <div class='form-element pad-l pad-r'>
         <label for='TextUp Phone'>TextUp Phone</label>
         {{phone-control number=team.phone.content.number}}
+    </div>
+    <div class="form-element pad-l pad-r row">
+        <div class="xs-2-row-3 control-text">
+            <label for="Team Default Language" class='text-ellipsis'>
+                Team Default Language
+            </label>
+        </div>
+        <select name="scheduled-message-language" class="xs-row-3 form-control"
+            onchange={{action (mut team.phone.content.language) value="target.value"}}>
+            {{#each constants.LANGUAGES as |_lang|}}
+                <option value={{_lang}}
+                    selected={{if (eq _lang team.phone.content.language) "selected"}}>
+                    {{capitalize (lowercase _lang) 1}}
+                </option>
+            {{/each}}
+        </select>
     </div>
 {{/if}}

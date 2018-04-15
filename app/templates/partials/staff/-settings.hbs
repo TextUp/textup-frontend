@@ -23,4 +23,20 @@
         <label for='TextUp Phone' class='control-label'>TextUp Phone</label>
         {{phone-control number=staff.phone.content.number}}
     </div>
+    <div class="form-element row">
+        <div class="xs-2-row-3 control-text">
+            <label for="Default Language" class='text-ellipsis'>
+                Default Language
+            </label>
+        </div>
+        <select name="scheduled-message-language" class="xs-row-3 form-control"
+            onchange={{action (mut staff.phone.content.language) value="target.value"}}>
+            {{#each constants.LANGUAGES as |_lang|}}
+                <option value={{_lang}}
+                    selected={{if (eq _lang staff.phone.content.language) "selected"}}>
+                    {{capitalize (lowercase _lang) 1}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
 {{/if}}

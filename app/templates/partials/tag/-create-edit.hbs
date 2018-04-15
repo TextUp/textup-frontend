@@ -14,3 +14,19 @@
     {{color-control color=newTag.hexColor
         disabled=newTag.isDeleted}}
 </div>
+<div class="form-element row">
+    <div class="xs-2-row-3 control-text">
+        <label for="Language">
+            Tag Language
+        </label>
+    </div>
+    <select name="tag-language" class="xs-row-3 form-control"
+        onchange={{action (mut newTag.language) value="target.value"}}>
+        {{#each constants.LANGUAGES as |_lang|}}
+            <option value={{_lang}}
+                selected={{if (eq _lang newTag.language) "selected"}}>
+                {{capitalize (lowercase _lang) 1}}
+            </option>
+        {{/each}}
+    </select>
+</div>
