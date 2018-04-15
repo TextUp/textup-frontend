@@ -78,6 +78,7 @@ export default DS.Model.extend(Validations, {
   type: DS.attr('string', {
     defaultValue: 'TEXT'
   }),
+  language: DS.attr('string'),
   message: DS.attr('string'),
   notifySelf: DS.attr('boolean', {
     defaultValue: false

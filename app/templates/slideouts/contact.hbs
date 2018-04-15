@@ -39,7 +39,7 @@
                     validateObj=contact
                     validateField='name'
                     validate='bottom'
-                    readonly=(if (not contact.allowEdits) 'readonly')
+                    disabled=(if (not contact.allowEdits) 'disabled')
                     type="text" placeholder="Name" class="form-control"
                     autocorrect="off"}}
             {{else}}
@@ -55,7 +55,7 @@
             <label for="Note">Note</label>
             {{#if contact}}
                 {{textarea rows="3"
-                    readonly=(if (not contact.allowEdits) 'readonly')
+                    disabled=(if (not contact.allowEdits) 'disabled')
                     autoresize=true
                     remaining='bottom'
                     class="form-control"
@@ -76,8 +76,37 @@
                     value=newContact.note}}
             {{/if}}
         </div>
+        <div class="form-element row">
+            <div class="xs-2-row-3 control-text">
+                <label for="Language">
+                    Language
+                </label>
+            </div>
+            {{#if contact}}
+                <select name="contact-language" class="xs-row-3 form-control"
+                    onchange={{action (mut contact.language) value="target.value"}}
+                    disabled={{if (not contact.allowEdits) "disabled"}}>
+                    {{#each constants.LANGUAGES as |_lang|}}
+                        <option value={{_lang}}
+                            selected={{if (eq _lang contact.language) "selected"}}>
+                            {{capitalize (lowercase _lang) 1}}
+                        </option>
+                    {{/each}}
+                </select>
+            {{else}}
+                <select name="new-contact-language" class="xs-row-3 form-control"
+                    onchange={{action (mut newContact.language) value="target.value"}}>
+                    {{#each constants.LANGUAGES as |_lang|}}
+                        <option value={{_lang}}
+                            selected={{if (eq _lang newContact.language) "selected"}}>
+                            {{capitalize (lowercase _lang) 1}}
+                        </option>
+                    {{/each}}
+                </select>
+            {{/if}}
+        </div>
         <div class="form-element">
-            <label for="Note">Numbers</label>
+            <label for="Numbers">Numbers</label>
             {{#with (if contact contact.numberDuplicates
                 newContact.numberDuplicates) as |dupsList|}}
                 <div class="bg-color margin-b border-radius-all

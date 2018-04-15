@@ -181,7 +181,12 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
     // -------
 
     initializeNewContact: function() {
-      this.controller.set('newContact', this.store.createRecord('contact'));
+      this.controller.set(
+        'newContact',
+        this.store.createRecord('contact', {
+          language: this.get('stateManager.owner.phone.content.language')
+        })
+      );
     },
     cleanNewContact: function() {
       // nullify newContact to avoid sortable numbers component setting
@@ -237,7 +242,12 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
     // ---
 
     initializeNewTag: function() {
-      this.controller.set('newTag', this.store.createRecord('tag'));
+      this.controller.set(
+        'newTag',
+        this.store.createRecord('tag', {
+          language: this.get('stateManager.owner.phone.content.language')
+        })
+      );
     },
     createTag: function(tag, then = undefined) {
       return this.get('dataHandler')

@@ -77,8 +77,7 @@
                 title=team.name}}
                 <div class="pad-t pad-b">
                     {{partial 'partials/team/settings'}}
-                    {{#if (or team.hasDirtyAttributes
-                        team.hasManualChanges)}}
+                    {{#if team.isDirty}}
                         <div class="form-element text-center">
                             <button class="btn" type='button'
                                 onclick={{route-action 'revert' team}}>
@@ -105,7 +104,7 @@
                         {{partial 'partials/staff/settings'}}
                     </div>
                     {{partial 'partials/staff/personal-number'}}
-                    {{#if staff.hasDirtyAttributes}}
+                    {{#if staff.isDirty}}
                         {{!-- separate if loops to prevent multiple-set deprecation --}}
                         {{#if (and (not usernameDropdown.isOpen)
                             (not passwordDropdown.isOpen)
