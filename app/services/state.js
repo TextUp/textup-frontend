@@ -31,6 +31,28 @@ export default Ember.Service.extend({
       .off(config.events.auth.clear);
   },
 
+  // Actions
+  // -------
+
+  actions: {
+    doNumbersSearch(search = '') {
+      return new Ember.RSVP.Promise((resolve, reject) => {
+        const auth = this.get('authManager');
+        auth
+          .authRequest({
+            type: 'GET',
+            url: `${config.host}/v1/numbers?search=${search}`
+          })
+          .then(({ numbers = [] }) => {
+            numbers.forEach(num => {
+              num.phoneNumber = cleanNumber(num.phoneNumber);
+            });
+            resolve(numbers);
+          }, this.get('dataHandler').buildErrorHandler(reject));
+      });
+    }
+  },
+
   // Routing
   // -------
 
@@ -129,74 +151,6 @@ export default Ember.Service.extend({
       })
     });
   }),
-
-  // Numbers
-  // -------
-
-  _lastRetrievedNumbers: Ember.computed(() => new Date()),
-  _cachedNumbers: null,
-  numbers: Ember.computed({
-    set: (key, value) => value,
-    get: function() {
-      return DS.PromiseArray.create({
-        promise: this._getNumbers()
-      });
-    }
-  }).volatile(),
-  _getNumbers: function() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      // if cache time is older than our grace period, then we
-      // need to refresh our cache of available numbers
-      const cacheTime = this.get('_lastRetrievedNumbers'),
-        cacheGracePeriod = moment().subtract(1, 'minutes'),
-        cacheExpired = cacheGracePeriod.isAfter(cacheTime),
-        cachedNums = this._getUniqueCachedNums();
-      if (!cachedNums || cachedNums.length < 5 || cacheExpired) {
-        const auth = this.get('authManager');
-        auth
-          .authRequest({
-            type: 'GET',
-            url: `${config.host}/v1/numbers`
-          })
-          .then(({ numbers = [] }) => {
-            numbers.forEach(num => {
-              num.phoneNumber = cleanNumber(num.phoneNumber);
-            });
-            this.set('_lastRetrievedNumbers', new Date());
-            this.set('_cachedNumbers', numbers);
-            resolve(numbers);
-          }, this.get('dataHandler').buildErrorHandler(reject));
-      } else {
-        resolve(cachedNums);
-      }
-    });
-  },
-  _getUniqueCachedNums: function() {
-    const nums = this.get('_cachedNumbers');
-    if (!nums) {
-      return nums;
-    }
-    const staffs = this.get('store').peekAll('staff'),
-      teams = this.get('store').peekAll('team');
-    return this._removeExisting(this._removeExisting(nums, staffs), teams);
-  },
-  _removeExisting: function(nums, models) {
-    const numsMap = this._makeNumsMap(models);
-    return nums.filter(num => !numsMap[num.phoneNumber]);
-  },
-  _makeNumsMap: function(models) {
-    const numsMap = Object.create(null),
-      keys = ['phoneActionData.phoneNumber', 'phone.content.number'];
-    models.filter(model => keys.any(key => Ember.isPresent(model.get(key)))).forEach(model => {
-      keys.forEach(key => {
-        const num = model.get(key);
-        if (num) {
-          numsMap[num] = true;
-        }
-      });
-    });
-    return numsMap;
-  },
 
   // Socket handlers
   // ---------------

@@ -24,11 +24,6 @@
             {{/multi-toggle/item}}
         {{/multi-toggle}}
     </div>
-    <div class="{{if (not (eq owner.phoneAction 'number')) 'hidden'}}">
-        {{single-select/mutable-phone-number data=stateManager.numbers
-            selected=(mut owner.phoneActionData)
-            classNames='form-element pad-l pad-r'}}
-    </div>
 {{else}}
     <div class='form-element'>
         <label for='TextUp Phone'>TextUp Phone</label>
@@ -68,11 +63,6 @@
             {{/multi-toggle/item}}
         {{/multi-toggle}}
     </div>
-    <div class="{{if (not (eq owner.phoneAction 'number')) 'hidden'}}">
-        {{single-select/mutable-phone-number data=stateManager.numbers
-            selected=(mut owner.phoneActionData)
-            classNames='form-element pad-l pad-r'}}
-    </div>
     <div class="{{if (not (eq owner.phoneAction 'transfer')) 'hidden'}}">
         {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
             phoneOwner=owner
@@ -102,3 +92,25 @@
         </div>
     </div>
 {{/if}}
+
+<div class="{{if (not (eq owner.phoneAction 'number')) 'hidden'}}">
+    {{#single-select classNames='form-element pad-l pad-r'
+        selected=owner.phoneActionData
+        displayProperty='phoneNumber'
+        identityProperty='phoneNumber'
+        allowCreate=false
+        searchPlaceholder='Pick your TextUp number'
+        noResultsMessage='Start typing to search for a phone number'
+        onInsert=(action (mut owner.phoneActionData))
+        onRemove=(action (mut owner.phoneActionData) null)
+        doSearch=(action 'doNumbersSearch' target=stateManager) as |item select|}}
+        <div class="text-ellipsis">
+            <span class="text-bold">
+                {{phone-number item.phoneNumber}}
+            </span>
+            {{#if item.region}}
+                <span class="pad-l text-normal">{{item.region}}</span>
+            {{/if}}
+        </div>
+    {{/single-select}}
+</div>

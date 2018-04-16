@@ -44,9 +44,24 @@
 				<div class="xs-full-row m-2-row-3 horizontal-items">
 					<div class="input-group">
 						<div class="input-group-element">
-							{{single-select/mutable-phone-number
-								data=stateManager.numbers
-			            		selected=(mut selected.phoneActionData)}}
+			            	{{#single-select selected=selected.phoneActionData
+						        displayProperty='phoneNumber'
+						        identityProperty='phoneNumber'
+						        allowCreate=false
+						        searchPlaceholder='Pick your TextUp number'
+						        noResultsMessage='Start typing to search for a phone number'
+						        onInsert=(action (mut selected.phoneActionData))
+						        onRemove=(action (mut selected.phoneActionData) null)
+						        doSearch=(action 'doNumbersSearch' target=stateManager) as |item select|}}
+						        <div class="text-ellipsis">
+						            <span class="text-bold">
+						                {{phone-number item.phoneNumber}}
+						            </span>
+						            {{#if item.region}}
+						                <span class="pad-l text-normal">{{item.region}}</span>
+						            {{/if}}
+						        </div>
+						    {{/single-select}}
 						</div>
 						{{#if selected.phoneActionData}}
 							<div class="input-group-addon">
