@@ -1,7 +1,6 @@
 import config from '../config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
-import moment from 'moment';
 import Inflector from 'ember-inflector';
 import { clean as cleanNumber } from '../utils/phone-number';
 
