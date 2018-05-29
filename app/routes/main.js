@@ -384,6 +384,25 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
         .then(() => then.forEach(callIfPresent));
     },
 
+    // Availability
+    // ------------
+
+    onAvailabilityEntitySwitch(entity) {
+      return new Promise((resolve, reject) => {
+        const isManualSchedule = entity.get('manualSchedule');
+        if (isManualSchedule === false) {
+          entity.get('schedule').then(sched1 => {
+            if (!sched1) {
+              entity.set('schedule', this.store.createRecord('schedule'));
+            }
+            resolve();
+          }, reject);
+        } else {
+          resolve();
+        }
+      });
+    },
+
     // Feedback
     // --------
 

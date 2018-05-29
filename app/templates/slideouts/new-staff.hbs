@@ -1,29 +1,21 @@
-{{#slideout-pane title='New Staff'
-    direction='left'
+{{#slideout-pane
+    headerProps=(hash title='New Staff')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action 'createStaff' newStaff
+            (route-action 'cleanNewStaff' newStaff
+                (route-action 'closeAllSlideouts')))
+        disablePrimary=(not (v-get newStaff 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating...")
     onOpen=(route-action 'initializeNewStaff')
     doClose=(route-action 'revert' newStaff
         (route-action 'cleanNewStaff' newStaff
             (route-action 'closeAllSlideouts')))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     forceKeepOpen=newStaff.isSaving
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t pad-l pad-r">
         {{partial 'partials/staff/create'}}
-    </div>
-    <div class="horizontal-items text-center margin-t margin-b">
-        <div class="clear-badge no-space">
-            <button class="btn" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </div>
-        <div class="clear-badge no-space">
-            {{async-button classNames='btn btn-default'
-                disableWhen=(not (v-get newStaff 'isValid'))
-                action=(route-action 'createStaff' newStaff
-                    slideout.actions.close)
-                default='Create'
-                pending='Creating...'}}
-        </div>
     </div>
 {{/slideout-pane}}

@@ -25,18 +25,6 @@
 								<span class="margin-l badge">Admin</span>
 							</span>
 						{{/if}}
-						{{#if (and person.isAvailableNow
-							(if (not person.nextUnavailable) true
-								(date/is-after person.nextUnavailable now)))}}
-							<span class="display-s display-m display-l">
-								<span class="badge">
-									Available
-									{{#if person.nextUnavailable}}
-										for {{moment-from-now person.nextUnavailable hideSuffix=true}}
-									{{/if}}
-								</span>
-							</span>
-						{{/if}}
                     </div>
                 </div>
                 <div class="contact-details">
@@ -144,45 +132,12 @@
 				</div>
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
-				title="Availability"}}
-				<div class="form-element row pad-t pad-l pad-r">
-		            <div class="xs-2-row-3 control-text">
-		                <label for="Availability" class='text-ellipsis'>
-		                    {{person.name}}'s Availability
-		                </label>
-		            </div>
-		            {{multi-toggle/binary classNames='xs-row-3'
-		                value=person.manualSchedule
-		                falseColor='#76c9ec'
-		                trueColor='#1BA5E0'
-		                falseString='Schedule'
-		                trueString='Manual'}}
-		        </div>
-		        <div class="form-element">
-					{{#if person.manualSchedule}}
-						<div class="row pad-r pad-l">
-			                <div class="xs-2-row-3 control-text">
-			                    <label for="Availability" class='text-bold text-ellipsis'>
-			                        Is {{person.name}} available now?
-			                    </label>
-			                </div>
-			                {{multi-toggle/binary classNames='xs-row-3'
-			                    value=person.isAvailable
-			                    falseColor='#d3d3d3'
-			                    trueColor='#76c9ec'
-			                    falseString='No'
-			                    trueString='Yes'}}
-			            </div>
-					{{else}}
-                        {{#if person.schedule.isFulfilled}}
-                            {{schedule-control
-                                class="margin-t"
-                                scheduleClass="pad-l pad-r"
-                                schedule=person.schedule.content
-                                onChange=(route-action "replaceRangeForSchedule" person.schedule.content)}}
-                        {{/if}}
-					{{/if}}
-				</div>
+				title="Default Availability"}}
+				{{availability-control class="margin-t"
+                    entity=person
+                    onTypeChange=(action (mut person.manualSchedule))
+                    onManualAvailabilityChange=(action (mut person.isAvailable))
+                    onScheduleAvailabilityChange=(action "replaceRange" target=person.schedule.content)}}
 				{{#if person.isDirty}}
 			        <div class="horizontal-items text-center margin-t margin-b">
 			            <div class="clear-badge no-space">

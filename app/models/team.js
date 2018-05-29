@@ -2,7 +2,7 @@ import DS from 'ember-data';
 import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { notEmpty, or, alias } = Ember.computed,
+const { computed } = Ember,
   Validations = buildValidations({
     name: {
       description: 'Name',
@@ -69,20 +69,23 @@ export default DS.Model.extend(Validations, {
   // Computed properties
   // -------------------
 
-  locationIsDirty: alias('location.isDirty'),
-  phoneIsDirty: alias('phone.isDirty'),
-  hasPhoneAction: notEmpty('phoneAction'),
-  hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
-  hasActions: notEmpty('actions'),
-  hasManualChanges: or('hasActions', 'phoneIsDirty', 'hasPhoneAction', 'locationIsDirty'),
+  hasPhoneAction: computed.notEmpty('phoneAction'),
+  hasPhoneActionData: computed.notEmpty('phoneActionData'), // not all actions have data!
+  hasActions: computed.notEmpty('actions'),
+  hasManualChanges: computed.or(
+    'hasActions',
+    'phone.isDirty',
+    'hasPhoneAction',
+    'location.isDirty'
+  ),
 
-  urlIdentifier: Ember.computed('name', function() {
+  urlIdentifier: computed('name', function() {
     return Ember.String.dasherize(this.get('name') || '');
   }),
-  transferId: Ember.computed('id', function() {
+  transferId: computed('id', function() {
     return `team-${this.get('id')}`;
   }),
-  transferFilter: Ember.computed('name', 'location.content.address', function() {
+  transferFilter: computed('name', 'location.content.address', function() {
     const name = this.get('name'),
       address = this.get('location.content.address');
     return `${name},${address}`;

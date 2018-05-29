@@ -1,0 +1,21 @@
+{{#if props.showDelete}}
+    <div class="textup-container__item">
+        <button class="btn btn-plain btn-danger" type='button' onclick={{props.doMarkForDelete}}>
+            <span class="fa fa-trash"></span>
+        </button>
+    </div>
+{{/if}}
+{{#if (not props.hideSecondary)}}
+    <div class="textup-container__item">
+        <button class="btn" type='button' onclick={{if props.doSecondary props.doSecondary doClose}}>
+            {{if props.secondaryLabel props.secondaryLabel 'Cancel'}}
+        </button>
+    </div>
+{{/if}}
+<div class="textup-container__item">
+    {{async-button class=(if props.primaryClass props.primaryClass 'btn btn-default')
+        action=props.doPrimary
+        disableWhen=props.disablePrimary
+        default=props.primaryLabel
+        pending=props.primaryPendingLabel}}
+</div>

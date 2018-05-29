@@ -1,0 +1,42 @@
+{{#if entity.manualSchedule}}
+    <p>
+        <b class="margin-r">{{entity.name}}</b>
+        {{if entity.isAvailable 'available all day' 'not available'}}
+    </p>
+{{else if entity.schedule.isFulfilled}}
+    {{#if _showAllDays}}
+        <p>
+            <b class="margin-r">{{entity.name}}</b>
+            {{if entity.isAvailableNow 'currently available' 'currently not available'}}
+        </p>
+        <ul class="textup-list">
+            {{#each constants.DAYS_OF_WEEK as |_day|}}
+                <li class="textup-list__item">
+                    <i>{{capitalize _day 1}}</i>
+                    {{#if (get entity.schedule.content _day)}}
+                        <span class="margin-l">available from</span>
+                        <ul class="textup-list">
+                            {{#each (get entity.schedule.content _day) as |_range|}}
+                                <li class="textup-list__item">{{display-schedule-range _range}}</li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        <span class="margin-l">not available</span>
+                    {{/if}}
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>
+            <b class="margin-r">{{entity.name}}</b>
+            {{if (gt (get (get entity.schedule.content dayOfWeek) 'length') 0)
+                'available from'
+                'not available'}}
+        </p>
+        <ul class="textup-list">
+            {{#each (get entity.schedule.content dayOfWeek) as |_range|}}
+                <li class="textup-list__item">{{display-schedule-range _range}}</li>
+            {{/each}}
+        </ul>
+    {{/if}}
+{{/if}}

@@ -1,4 +1,5 @@
 // $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
+@import 'font-awesome/scss/font-awesome.scss';
 
 // import core textup styles library
 @import 'core/main';
@@ -27,6 +28,7 @@
 @import 'components/_photo-control';
 @import 'components/photo-control/_stack-display';
 @import 'components/photo-control/_grid-display';
+@import 'components/_account-switcher';
 
 // import app-specific styles
 // put this last so these styles take precendence over all

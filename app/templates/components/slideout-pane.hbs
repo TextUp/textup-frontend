@@ -1,43 +1,9 @@
-<div class="slideout-header {{this.elementId}}-header" tabindex='-1'>
-	{{#if
-		(or
-			(not (hasBlock 'inverse'))
-			(and (hasBlock 'inverse') includeDefaultHeader)
-		)
-	}}
-		<div class="default-slideout-header {{defaultHeaderClass}}">
-			<div class="display-xs display-s">
-				<div class="pull-left horizontal-items">
-					<span class="clear-badge no-space">
-						<a href="" {{action 'close'}}>
-							<span class="pad-all">
-	                            <span class="fa fa-chevron-left"></span>
-	                        </span>
-						</a>
-		            </span>
-					<span class='clear-badge no-space'>
-						<h5 class='text-ellipsis'>{{title}}</h5>
-					</span>
-				</div>
-			</div>
-			<div class="display-m display-l">
-				<div class='pull-left'>
-					<span class='clear-badge'>
-						<h5 class='text-ellipsis'>{{title}}</h5>
-					</span>
-				</div>
-				<div class='pull-right'>
-					<button class="btn btn-plain" {{action 'close'}}>
-						<span class="fa fa-times"></span>
-					</button>
-				</div>
-			</div>
-		</div>
-	{{/if}}
-	{{#if (hasBlock 'inverse')}}
-		{{yield to='inverse'}}
-	{{/if}}
-</div>
-<div class="slideout-body {{this.elementId}}-body">
+{{component headerComponent doClose=(action 'forceClose') props=headerProps}}
+
+<div class="slideout-pane__body">
     {{yield publicAPI}}
 </div>
+
+{{#if footerComponent}}
+	{{component footerComponent doClose=(action 'forceClose') props=footerProps}}
+{{/if}}

@@ -1,41 +1,28 @@
-{{#slideout-pane title=(if (and model.phone.isFulfilled model.phone.content.tags)
-        'Tags' 'New Tag')
-    direction='left'
-    doClose=(if (and newTag (not newTag.isDeleted))
-        (route-action 'revert' newTag (route-action 'closeAllSlideouts'))
-        (route-action 'closeAllSlideouts'))
-    forceKeepOpen=newTag.isSaving
-    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
+{{#slideout-pane
+    headerProps=(hash title=(if model.phone.content.tags 'Tags' 'New Tag'))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=tagsListHideAway.isOpen
+        doPrimary=(route-action 'createTag' newTag tagsListHideAway.actions.close)
+        disablePrimary=(not (v-get newTag 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating..."
+        doSecondary=(route-action 'revert' newTag tagsListHideAway.actions.close)
+        hideSecondary=(not model.phone.content.tags))
+    doClose=(route-action 'revert' newTag (route-action 'closeAllSlideouts'))
+    forceKeepOpen=newTag.isSaving as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
         bodyFocusOnOpenSelector='.start-focus'
-        startOpen=(if (and model.phone.isFulfilled model.phone.content.tags)
-            false true)
+        startOpen=(if model.phone.content.tags false true)
+        doRegister=(action (mut tagsListHideAway))
         onOpen=(route-action 'initializeNewTag')
         onClosed=(route-action 'revert' newTag)
         tabindex=false
         hideTriggerOnOpen=true as |hideAway|}}
         <div class="pad-t pad-l pad-r">
             {{partial 'partials/tag/create-edit'}}
-        </div>
-        <div class="horizontal-items text-center margin-t-double margin-b">
-            {{#if (and model.phone.isFulfilled model.phone.content.tags)}}
-                <div class="clear-badge no-space">
-                    <button class="btn" type='button'
-                        onclick={{hideAway.actions.close}}>
-                        Cancel
-                    </button>
-                </div>
-            {{/if}}
-            <div class="clear-badge no-space">
-                {{async-button classNames='btn btn-default'
-                    disableWhen=(not (v-get newTag 'isValid'))
-                    action=(route-action 'createTag' newTag
-                        hideAway.actions.close)
-                    default='Create'
-                    pending='Creating...'}}
-            </div>
         </div>
     {{else}}
          <ul class="result-list">

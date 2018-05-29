@@ -1,44 +1,30 @@
-{{#slideout-pane title=(if model.teams 'Teams' 'New Team')
-    direction='left'
-    doClose=(if (and newTeam (not newTeam.isDeleted))
-        (route-action 'revert' newTeam (route-action 'closeAllSlideouts'))
-        (route-action 'closeAllSlideouts'))
-    forceKeepOpen=newTeam.isSaving
-    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
+{{#slideout-pane
+    headerProps=(hash title=(if model.teams 'Teams' 'New Team'))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=teamsListHideAway.isOpen
+        doPrimary=(route-action 'createTeam' newTeam teamsListHideAway.actions.close)
+        disablePrimary=(not (v-get newTeam 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating..."
+        doSecondary=(route-action 'revert' newTeam teamsListHideAway.actions.close)
+        hideSecondary=(not model.existingTeams))
+    doClose=(route-action 'revert' newTeam (route-action 'closeAllSlideouts'))
+    forceKeepOpen=newTeam.isSaving as |slideout|}}
     {{#hide-away clickOutToClose=false
         animation='fade'
         ignoreTriggerSelectors='.result-list'
         bodyFocusOnOpenSelector='.start-focus'
         startOpen=(if model.teams false true)
+        doRegister=(action (mut teamsListHideAway))
         onOpen=(route-action 'initializeNewTeam')
-        onClosed=(route-action 'revert' newTeam
-            (route-action 'revert' newTeam.location.content))
+        onClosed=(route-action 'revert' newTeam)
         tabindex=false
         hideTriggerOnOpen=true as |hideAway|}}
         <div class="pad-t">
             {{partial 'partials/team/create-edit'}}
         </div>
-        <div class="form-element horizontal-items text-center">
-            {{#if model.teams}}
-                <div class="clear-badge no-space">
-                    <button class="btn" type='button'
-                        onclick={{hideAway.actions.close}}>
-                        Cancel
-                    </button>
-                </div>
-            {{/if}}
-            <div class="clear-badge no-space">
-                {{async-button classNames='btn btn-default'
-                    disableWhen=(not (v-get newTeam 'isValid'))
-                    action=(route-action 'createTeam' newTeam
-                        hideAway.actions.close)
-                    default='Create'
-                    pending='Creating...'}}
-            </div>
-        </div>
-        {{#with newTeam as |owner|}}
-            {{partial 'partials/location'}}
-        {{/with}}
+        {{form/location-form entity=newTeam onLocationError=(route-action 'mapError')}}
     {{else}}
          <ul class="result-list">
             {{#each model.teams as |team|}}

@@ -32,7 +32,7 @@
             <select name="add-new-schedule-range" class="form-control"
                 onchange={{action (mut _newRangeDay) value="target.value"}}>
                 <option value="">Select day of week</option>
-                {{#each _daysOfWeek as |_day|}}
+                {{#each constants.DAYS_OF_WEEK as |_day|}}
                     <option value={{_day}}
                         selected={{if (eq _day _newRangeDay) "selected"}}>
                         {{capitalize _day 1}}
@@ -58,7 +58,7 @@
 {{/hide-away}}
 
 <div class="{{scheduleClass}}">
-    {{#each _daysOfWeek as |_day|}}
+    {{#each constants.DAYS_OF_WEEK as |_day|}}
         <div class="margin-b">
             <p>
                 <b>{{capitalize _day 1}}</b>
@@ -78,39 +78,7 @@
                     </div>
                 </div>
             {{/each}}
-            {{#if others}}
-                {{#hide-away tabindex=false
-                    hideTriggerOnOpen=false
-                    bodyClickClose=false
-                    clickOutToClose=false
-                    animation="slide"
-                    startOpen=false
-                    classNames="margin-t-half"
-                    bodyClass="pad-t pad-b-half pad-l pad-r bg-color relative-parent"}}
-                    {{#each others as |_other|}}
-                        <div class="margin-b-half">
-                            <p>
-                                <b>{{_other.name}}</b>
-                                {{#if _other.schedule.isFulfilled}}
-                                    {{if (gt (get (get _other.schedule.content _day) 'length') 0)
-                                        'available from'
-                                        'not available'}}
-                                {{/if}}
-                            </p>
-                            <ul class="textup-list">
-                                {{#each (get _other.schedule.content _day) as |_range|}}
-                                    <li class="textup-list__item">{{display-schedule-range _range}}</li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    {{/each}}
-                {{else}}
-                    <button type="button" class="btn btn-span btn--keep-case btn-plain">
-                        Show team availability
-                        <span class="fa fa-angle-down"></span>
-                    </button>
-                {{/hide-away}}
-            {{/if}}
+            {{yield (hash dayOfWeek=_day)}}
         </div>
     {{/each}}
 </div>

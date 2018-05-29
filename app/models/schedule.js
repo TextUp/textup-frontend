@@ -1,6 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import { daysOfWeek, stringToIntervals, intervalsToString } from '../utils/schedule';
+import { stringToIntervals, intervalsToString } from '../utils/schedule';
 
 const { defineProperty, computed, on } = Ember;
 
@@ -21,7 +21,7 @@ export default DS.Model.extend({
   // -------------------
 
   defineProperties: on('init', function() {
-    daysOfWeek.forEach(dayOfWeek => {
+    this.get('constants.DAYS_OF_WEEK').forEach(dayOfWeek => {
       const stringProp = `${dayOfWeek}String`;
       defineProperty(
         this,
@@ -44,7 +44,7 @@ export default DS.Model.extend({
 
   actions: {
     replaceRange(dayOfWeek, newRanges) {
-      if (!daysOfWeek.contains(dayOfWeek)) {
+      if (!this.get('constants.DAYS_OF_WEEK').contains(dayOfWeek)) {
         return;
       }
       this.set(dayOfWeek, newRanges);

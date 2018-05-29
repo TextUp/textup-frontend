@@ -1,15 +1,15 @@
 // Removal of query param allows fetching of this font from app cache
 // rather than making a call to the server each time
 @font-face {
-    font-family: 'FontAwesome';
-    src: url('fonts/fontawesome-webfont.eot');
-    src: url('fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+	font-family: 'FontAwesome';
+	src: url('fonts/fontawesome-webfont.eot');
+	src: url('fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
 		url('fonts/fontawesome-webfont.woff2') format('woff2'),
 		url('fonts/fontawesome-webfont.woff') format('woff'),
 		url('fonts/fontawesome-webfont.ttf') format('truetype'),
 		url('fonts/fontawesome-webfont.svg?#fontawesomeregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-weight: normal;
+	font-style: normal;
 }
 
 // when we want element of an animated div to overflow
@@ -23,51 +23,7 @@
 	}
 }
 .loading-slider > span {
-    background-color: $brand-color;
-}
-
-// main menu
-// ---------
-
-.header-slideout {
-	position: relative;
-	min-height: $header-height;
-	width: 100%;
-
-	.header-settings {
-		position: absolute;
-		height: $header-height;
-		top: 0;
-		right: 0;
-		z-index: 20;
-	}
-	.toggle-control, .settings-btn {
-		@include button-colors(shade($brand-color, 1));
-	}
-	.header-toggle {
-		@extend .row;
-		height: $header-height;
-
-		&:focus {
-			opacity:0.9;
-		}
-		.toggle-control {
-			@extend .full-height;
-			@extend %border-box;
-			cursor: pointer;
-			position: relative;
-			transition: all 0.5s;
-			border-bottom-style: solid;
-			border-bottom-width: $button-accent-size;
-		}
-		.settings-btn {
-			@extend .btn.btn-expand;
-			border-radius: 0;
-		}
-	}
-	.hide-away-body {
-		font-size: 0.8em;
-	}
+	background-color: $brand-color;
 }
 
 // signup/account
@@ -176,7 +132,8 @@
 			height: $badge-height;
 		}
 	}
-	@include mq($until:desktop) { // displaying shared status
+	@include mq($until:desktop) {
+		// displaying shared status
 		&.is-shared {
 			.contact-summary .horizontal-items {
 				left: $padding / 2;
@@ -191,9 +148,12 @@
 			}
 		}
 	}
-	@include mq($from:desktop) { // displaying shared status and tags
+	@include mq($from:desktop) {
+		// displaying shared status and tags
 		&.has-details {
-			&:hover, &:active, &:focus {
+			&:hover,
+			&:active,
+			&:focus {
 				.contact-summary {
 					height: calc(100% - #{$contact-details-height});
 				}
@@ -213,9 +173,9 @@
 		display: none;
 	}
 }
-@include split(height, ".contact-controls" ".contact-record", $control-height + $form-v-space * 2);
+@include split(height, '.contact-controls' '.contact-record', $control-height + $form-v-space * 2);
 .contact-record {
-	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	cursor: initial;
 
 	&.no-future-messages {
@@ -230,7 +190,7 @@
 		@extend %vertical-scroll;
 		max-height: 150px;
 	}
-	@include split(height, ".future-messages" ".record-body", $control-height);
+	@include split(height, '.future-messages' '.record-body', $control-height);
 	.record-body {
 		@extend %no-results;
 	}
@@ -238,17 +198,19 @@
 		@extend %border-box;
 
 		cursor: pointer;
-	    position: relative;
-	    text-align: center;
-	    overflow: hidden;
+		position: relative;
+		text-align: center;
+		overflow: hidden;
 
-	    border-top: 1px solid $border-color;
+		border-top: 1px solid $border-color;
 		transition: all 0.5s;
 		background-color: shade($bg-color);
 
-	    &:hover, &:active, &:focus {
+		&:hover,
+		&:active,
+		&:focus {
 			background-color: shade($bg-color, 1.5);
-	    }
+		}
 	}
 }
 .contact-controls {
@@ -264,7 +226,8 @@
 		padding-right: 0.5 * $padding;
 		padding-bottom: 0.3 * $padding;
 
-		.btn, .send-text-field {
+		.btn,
+		.send-text-field {
 			display: inline-block;
 			vertical-align: middle;
 		}
@@ -285,11 +248,12 @@
 	$add-note-control-width: $record-item-triangle * 2.5;
 	$add-note-control-height: 3 * $padding;
 
-	.infinite-container:before, .infinite-items:before {
+	.infinite-container:before,
+	.infinite-items:before {
 		z-index: $contents-z-index * 2;
-	    position: absolute;
-	    content: ' ';
-	    height: calc(100% + #{$add-note-control-height / 2});
+		position: absolute;
+		content: ' ';
+		height: calc(100% + #{$add-note-control-height / 2});
 		background-color: shade($bg-color);
 
 		width: 0;
@@ -308,7 +272,10 @@
 		opacity: 0;
 		transition: opacity 0.2s, height 0.5s; // leaving add note
 
-		&:hover, &:focus, &:active, &.adding {
+		&:hover,
+		&:focus,
+		&:active,
+		&.adding {
 			background: shade($bg-color, 1.5);
 
 			.add-note-control {
@@ -324,7 +291,9 @@
 			height: $add-note-control-height;
 			width: $add-note-control-width;
 
-			&:hover, &:focus, &:active {
+			&:hover,
+			&:focus,
+			&:active {
 				background-color: shade($bg-color, 2);
 			}
 		}
@@ -333,16 +302,17 @@
 	&.adding-note {
 		@extend .contact-record.no-future-messages;
 
-		.cluster-item, .cluster-item:hover {
+		.cluster-item,
+		.cluster-item:hover {
 			.cluster-trigger {
 				@extend .no-select;
 
 				&:before {
-		            border-top-color: $border-color;
-		        }
-		        .cluster-label {
-		            color: $border-color;
-		        }
+					border-top-color: $border-color;
+				}
+				.cluster-label {
+					color: $border-color;
+				}
 			}
 		}
 		.add-note {
@@ -355,9 +325,10 @@
 				height: 2 * $padding;
 			}
 		}
-		.infinite-container:before, .infinite-items:before {
-		    width: $add-note-control-width;
-		    transition: width 0.5s; // preparing to add note
+		.infinite-container:before,
+		.infinite-items:before {
+			width: $add-note-control-width;
+			transition: width 0.5s; // preparing to add note
 		}
 		.note-item {
 			margin-left: $add-note-control-width;

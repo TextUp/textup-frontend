@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { daysOfWeek } from '../utils/schedule';
 import callIfPresent from '../utils/call-if-present';
 
 const { computed } = Ember;
@@ -8,18 +7,16 @@ const { computed } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     schedule: PropTypes.EmberObject.isRequired,
-    others: PropTypes.arrayOf(PropTypes.EmberObject),
     scheduleClass: PropTypes.string,
     onChange: PropTypes.func
   },
   getDefaultProps() {
-    return { others: [], scheduleClass: '' };
+    return { scheduleClass: '' };
   },
 
   // Internal props
   // --------------
 
-  _daysOfWeek: daysOfWeek,
   _newRangeDay: null,
   _newRangeTimes: computed(() => []),
 

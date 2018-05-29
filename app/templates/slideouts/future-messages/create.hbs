@@ -1,6 +1,14 @@
-{{#slideout-pane title='Schedule Message'
-    direction='right'
-    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole'
+{{#slideout-pane
+    headerProps=(hash title='Schedule Message')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action 'createFutureMsg' newFutureMsg
+            (route-action 'closeAllSlideouts'))
+        disablePrimary=(not (v-get newFutureMsg 'isValid'))
+        primaryLabel="Schedule"
+        primaryProgressLabel="Scheduling...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
     focusSelector='.start-focus'
     forceKeepOpen=newFutureMsg.isSaving
     onOpen=(route-action 'initializeFutureMsg')
@@ -10,21 +18,5 @@
         {{#with newFutureMsg as |futureMsg|}}
             {{partial 'partials/future-message/create-edit'}}
         {{/with}}
-    </div>
-    <div class="horizontal-items text-center margin-t-double margin-b">
-        <div class="clear-badge no-space">
-            <button class="btn" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </div>
-        <div class="clear-badge no-space">
-            {{async-button classNames='btn btn-default'
-                disableWhen=(not (v-get newFutureMsg 'isValid'))
-                action=(route-action 'createFutureMsg' newFutureMsg
-                    slideout.actions.close)
-                default='Schedule'
-                pending='Scheduling...'}}
-        </div>
     </div>
 {{/slideout-pane}}

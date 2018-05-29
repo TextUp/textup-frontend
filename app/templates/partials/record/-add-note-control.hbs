@@ -4,7 +4,7 @@
             (route-action 'mutate' (action (mut recordNote)) null
                 (route-action 'mutate' (action (mut recordItemToInsertAfter)) rItem
                     (route-action 'toggleDetailSlideout'
-                        'slideouts/record-note/create-edit'
+                        'slideouts/record-note/create'
                         (if contact 'main/contacts/contact' 'main/tag/details'))))}}>
         <span class="fa fa-plus-square center"></span>
     </div>

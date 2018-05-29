@@ -31,6 +31,16 @@ export default DS.Model.extend(Validations, {
   isPending: eq('status', 'PENDING'),
   isApproved: eq('status', 'APPROVED'),
 
+  existingTeams: computed('teams.[]', function() {
+    return DS.PromiseArray.create({
+      promise: new Promise((resolve, reject) => {
+        this.get('teams').then(teams => {
+          resolve(teams.filterBy('isNew', false));
+        }, reject);
+      })
+    });
+  }),
+
   timeoutInSeconds: computed('timeout', {
     get: function() {
       return this.get('timeout') / 1000;

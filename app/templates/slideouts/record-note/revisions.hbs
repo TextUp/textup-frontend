@@ -1,7 +1,7 @@
-{{#slideout-pane title='Note History'
-    direction='right'
-    doClose=(route-action 'closeAllSlideouts')
-    ignoreCloseSelectors='.header-slideout, .c-notification__container, .pswp' as |slideout|}}
+{{#slideout-pane
+    headerProps=(hash title='Note History')
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action 'closeAllSlideouts') as |slideout|}}
     <ul class="result-list">
         <li class="result-item">
             <div class="revision-item">

@@ -1,7 +1,7 @@
-{{#slideout-pane title='Feedback'
+{{#slideout-pane
+	headerProps=(hash title='Feedback')
 	onOpen=(route-action 'cleanFeedback')
     doClose=(route-action 'closeAllSlideouts')
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     focusSelector='.start-focus' as |slideout|}}
 	<iframe name="hidden-iframe" id="hidden-iframe" class='hidden'></iframe>
 	<form action="https://docs.google.com/a/textup.org/forms/d/e/1FAIpQLSduC2lU79S3AZn_eGIfHmythLVSTaq_hl5lMJBNYQ8Gjsyfxw/formResponse"
@@ -21,14 +21,14 @@
 					name="entry.2102104798"}}
 			</div>
 		</div>
-		<div class="horizontal-items text-center margin-t margin-b">
-	        <div class="clear-badge no-space">
+		<div class="textup-container textup-container--justify-center margin-t margin-b">
+	        <div class="textup-container__item">
 	            <button class="btn" type='button'
 	                onclick={{slideout.actions.close}}>
 	                Cancel
 	            </button>
 	        </div>
-	        <div class="clear-badge no-space">
+	        <div class="textup-container__item">
 	            <button type='submit' class="btn btn-default"
 	            	disabled={{if (not feedbackMessage) 'true' ''}}>
 					Submit

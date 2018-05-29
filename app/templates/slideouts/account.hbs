@@ -1,14 +1,35 @@
-{{#slideout-pane title='Your Account'
+{{#slideout-pane
+    headerComponent="slideout-pane/accounts"
+    headerProps=(hash
+        title='Your Account'
+        activeOwner=stateManager.owner
+        user=authManager.authUser
+        doLogOut=(route-action 'logout'))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=(and (or stateManager.owner.isDirty authManager.authUser.isDirty)
+                (not usernameDropdown.isOpen)
+                (not passwordDropdown.isOpen)
+                (not codeDropdown.isOpen))
+        doPrimary=(route-action 'persist'
+            (if (eq accountSettingsTabs.currentIndex 1) authManager.authUser stateManager.owner)
+            (route-action 'closeAllSlideouts'))
+        disablePrimary=(or
+            (not (v-get stateManager.owner 'isValid'))
+            (not (v-get authManager.authUser 'isValid')))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating..."
+        doSecondary=(route-action 'revert' stateManager.owner
+            (route-action 'revert' authManager.authUser)))
     doClose=(route-action 'revert' stateManager.owner
         (route-action 'revert' authManager.authUser)
         (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
-    includeDefaultHeader=true
-    defaultHeaderClass='display-xs display-s display-m'
     forceKeepOpen=(or stateManager.owner.isSaving authManager.authUser.isSaving)
     focusSelector='.hide-away-trigger, .slideout-header'}}
-    {{#tab-container onChange=(route-action 'revert' stateManger.owner
-        (route-action 'revert' authManager.authUser))
+    {{#tab-container
+        doRegister=(action (mut accountSettingsTabs))
+        onChange=(route-action 'revert' stateManger.owner
+            (route-action 'revert' authManager.authUser))
         animation='fade' as |tabContainer doRegister|}}
         {{#with stateManager.ownerAsOrg as |org|}}
             {{#tab-container/item doRegister=doRegister
@@ -53,22 +74,7 @@
                             {{/if}}
                         {{/multi-toggle}}
                     </div>
-                    {{#if org.isDirty}}
-                        <div class="form-element text-center">
-                            <button class="btn" type='button'
-                                onclick={{route-action 'revert' org}}>
-                                Cancel
-                            </button>
-                            {{async-button classNames='btn btn-default'
-                                disableWhen=(not (v-get org 'isValid'))
-                                action=(route-action 'persist' org)
-                                default='Update'
-                                pending='Updating...'}}
-                        </div>
-                    {{/if}}
-                    {{#with org as |owner|}}
-                        {{partial 'partials/location'}}
-                    {{/with}}
+                    {{form/location-form entity=org onLocationError=(route-action 'mapError')}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
@@ -77,22 +83,7 @@
                 title=team.name}}
                 <div class="pad-t pad-b">
                     {{partial 'partials/team/settings'}}
-                    {{#if team.isDirty}}
-                        <div class="form-element text-center">
-                            <button class="btn" type='button'
-                                onclick={{route-action 'revert' team}}>
-                                Cancel
-                            </button>
-                            {{async-button classNames='btn btn-default'
-                                disableWhen=(not (v-get team 'isValid'))
-                                action=(route-action 'persist' team)
-                                default='Update'
-                                pending='Updating...'}}
-                        </div>
-                    {{/if}}
-                    {{#with team as |owner|}}
-                        {{partial 'partials/location'}}
-                    {{/with}}
+                    {{form/location-form entity=team onLocationError=(route-action 'mapError')}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
@@ -104,24 +95,6 @@
                         {{partial 'partials/staff/settings'}}
                     </div>
                     {{partial 'partials/staff/personal-number'}}
-                    {{#if staff.isDirty}}
-                        {{!-- separate if loops to prevent multiple-set deprecation --}}
-                        {{#if (and (not usernameDropdown.isOpen)
-                            (not passwordDropdown.isOpen)
-                            (not codeDropdown.isOpen))}}
-                            <div class="form-element text-center">
-                                <button class="btn" type='button'
-                                    onclick={{route-action 'revert' staff}}>
-                                    Cancel
-                                </button>
-                                {{async-button classNames='btn btn-default'
-                                    disableWhen=(not (v-get staff 'isValid'))
-                                    action=(route-action 'persist' staff)
-                                    default='Update'
-                                    pending='Updating...'}}
-                            </div>
-                        {{/if}}
-                    {{/if}}
                     <hr>
                     <div class="pad-l pad-r">
                         {{partial 'partials/staff/code-with-confirm'}}
@@ -132,14 +105,4 @@
             </div>
         {{/tab-container/item}}
     {{/tab-container}}
-{{else}}
-    {{#hide-away classNames='header-slideout display-l'
-        triggerClass='header-toggle'
-        bodyClickClose=true}}
-        {{partial 'partials/account/switcher'}}
-    {{else}}
-        <div class="toggle-control">
-            {{partial 'partials/account/display'}}
-        </div>
-    {{/hide-away}}
 {{/slideout-pane}}

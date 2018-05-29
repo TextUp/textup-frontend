@@ -1,11 +1,24 @@
-{{#slideout-pane title=(if contact (phone-number contact.identifier) 'New Contact')
-    direction=(if contact 'right' 'left')
+{{#slideout-pane
+    headerProps=(hash title=(if contact (phone-number contact.identifier) 'New Contact'))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(if contact
+            (route-action 'persist' contact (route-action 'closeAllSlideouts'))
+            (route-action 'createContact' newContact
+                (route-action 'closeAllSlideouts'
+                    (route-action 'cleanNewContact'))))
+        disablePrimary=(if contact
+            (or (not contact.allowEdits) (not (v-get contact 'isValid')))
+            (not (v-get newContact 'isValid')))
+        primaryLabel=(if contact 'Update' 'Create')
+        primaryProgressLabel=(if contact 'Updating...' 'Creating...'))
+    direction=(if contact constants.SLIDEOUT.DIRECTION.RIGHT constants.SLIDEOUT.DIRECTION.LEFT)
     onOpen=(if (not contact) (route-action 'initializeNewContact'))
     doClose=(route-action 'revert'
         (if contact contact newContact)
         (route-action 'closeAllSlideouts'
             (route-action 'cleanNewContact')))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     forceKeepOpen=(if contact contact.isSaving newContact.isSaving)
     focusSelector='.start-focus' as |slideout|}}
 
@@ -151,31 +164,4 @@
             {{/if}}
         </div>
     </form>
-    <div class="horizontal-items text-center margin-t-double margin-b">
-        <div class="clear-badge no-space">
-            <button class="btn" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </div>
-        <div class="clear-badge no-space">
-            {{#if contact}}
-                {{#if contact.allowEdits}}
-                    {{async-button classNames='btn btn-default'
-                        disableWhen=(not (v-get contact 'isValid'))
-                        action=(route-action 'persist' contact
-                            slideout.actions.close)
-                        default='Update'
-                        pending='Updating...'}}
-                {{/if}}
-            {{else}}
-                {{async-button classNames='btn btn-default'
-                    disableWhen=(not (v-get newContact 'isValid'))
-                    action=(route-action 'createContact' newContact
-                        slideout.actions.close)
-                    default='Create'
-                    pending='Creating...'}}
-            {{/if}}
-        </div>
-    </div>
 {{/slideout-pane}}

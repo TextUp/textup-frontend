@@ -1,28 +1,18 @@
-{{#slideout-pane title=(if selected
+{{#slideout-pane
+    headerProps=(hash title=(if selected
         (concat 'Share (' selected.length ' selected)')
-        (concat 'Sharing ' contact.name))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
-    direction='right'
+        (concat 'Sharing ' contact.name)))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=contactAnySharingChange
+        doPrimary=(route-action 'persist' (if selected selected contact)
+            (route-action 'clearList' (if selected selected contact) 'actions'
+                (route-action 'closeAllSlideouts')))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
     doClose=(route-action 'clearList' (if selected selected contact) 'actions'
         (route-action 'closeAllSlideouts')) as |slideout|}}
-    {{#if contactAnySharingChange}}
-        <div class="horizontal-items text-center pad-all bg-color border-b">
-            <div class="clear-badge no-space">
-                <button class="btn" type='button'
-                    onclick={{slideout.actions.close}}>
-                    Cancel
-                </button>
-            </div>
-            <div class="clear-badge no-space">
-                {{async-button classNames='btn btn-default'
-                    action=(route-action 'persist'
-                        (if selected selected contact)
-                        slideout.actions.close)
-                    default='Update'
-                    pending='Updating...'}}
-            </div>
-        </div>
-    {{/if}}
     {{#if stateManager.shareCandidates.isFulfilled}}
         {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
             contacts=(if selected selected contact)

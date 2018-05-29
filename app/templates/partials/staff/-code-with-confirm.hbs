@@ -2,7 +2,7 @@
     doRegister=(action (mut codeDropdown))
     classNames='form-element'
     bodyFocusOnOpenSelector='.start-focus'
-    onOpen=(action (mut staff.lockCode) '')
+    onOpened=(action (mut staff.lockCode) '')
     onClose=(route-action 'revert' staff
         (action (mut newCPassword) null))
     bodyClass='pad-all' as |hideAway|}}

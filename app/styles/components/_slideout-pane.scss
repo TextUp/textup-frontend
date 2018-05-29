@@ -1,61 +1,96 @@
-// styles also overriden in _structure.scss
-
-.slideout-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    content: '';
-    height: 100vh;
-    width: 100vw;
-    z-index: $slideout-z-index - 1;
-
-    background-color: $border-color;
-    opacity: 0;
-    transition: opacity 0.5s;
-}
-.slideout-pane.force-keep-open + .slideout-overlay {
-    opacity: 0.5;
-}
-.slideout-pane.force-keep-open.is-closing + .slideout-overlay {
-    opacity: 0;
-}
 .slideout-pane {
     @extend %liquid-fire-full-height;
 
     position: absolute;
     top: 0;
-    width: $slideout-width;
+    width: 100%;
+    max-width: 100%;
     z-index: $slideout-z-index;
     background-color: $bg-lightest-color;
 
-    opacity: 0;
-    transition: opacity 0.5s;
+    &--direction {
+        &-left {
+            left: 0;
+            box-shadow: 9px 0 20px -4px $border-color;
+            border-right: 1px solid $border-color;
+        }
+        &-right {
+            right: 0;
+            box-shadow: -9px 0 20px -4px $border-color;
+            border-left: 1px solid $border-color;
+        }
+    }
+    &--keep-open + &__overlay {
+        opacity: 0.5;
+    }
+    &:not(&--open) + &__overlay {
+        opacity: 0;
+    }
 
-    &.is-open {
-        opacity: 1;
-        transition: opacity 0.2s;
-    }
-    &.slideout-pane-left {
+    &__overlay {
+        position: fixed;
+        content: '';
+        top: 50%;
         left: 0;
-        box-shadow: 9px 0 20px -4px $border-color;
-        border-right: 1px solid $border-color;
+        height: 100vh;
+        width: 100vw;
+        z-index: $slideout-z-index - 1;
+
+        background-color: $border-color;
+        opacity: 0;
+        transition: opacity 0.5s;
     }
-    &.slideout-pane-right {
-        right: 0;
-        box-shadow: -9px 0 20px -4px $border-color;
-        border-left: 1px solid $border-color;
+    &__body {
+        @extend %vertical-scroll;
+
+        width: 100%;
     }
-    .slideout-header, .slideout-body {
-        @extend %border-box;
-        position: relative;
-    }
-    .slideout-header {
-        min-height: $header-height;
-        border-bottom: 1px solid $border-color;
+    &__header,
+    &__footer {
+        flex-shrink: 0;
+        width: 100%;
         z-index: 20;
     }
-    .slideout-body {
-        @extend %vertical-scroll;
-        height: calc(100% - #{$header-height});
+    &__header {
+        justify-content: flex-start;
+        height: $header-height;
+        border-bottom: 1px solid $border-color;
+
+        &__control {
+            @extend .fa;
+            @extend .fa-chevron-left;
+        }
+
+        @include mq($from: desktop) {
+            flex-direction: row-reverse;
+
+            &__control:before {
+                content: $fa-var-times;
+            }
+
+            & > :first-child {
+                padding-left: $padding / 2;
+                padding-right: $padding;
+            }
+            & > :last-child {
+                padding-left: $padding;
+                padding-right: $padding / 2;
+            }
+        }
+    }
+    &__footer {
+        justify-content: center;
+        padding: $padding;
+        border-top: 1px solid $border-color;
+        overflow: hidden;
+
+        opacity: 1;
+        transition: all 0.2s, opacity 0.1s;
+
+        &--hidden {
+            height: 0;
+            padding: 0;
+            opacity: 0;
+        }
     }
 }

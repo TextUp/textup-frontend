@@ -1,7 +1,14 @@
-{{#slideout-pane title='Call'
+{{#slideout-pane
+    headerProps=(hash title='Call')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action 'makeCallForNumber' (route-action 'closeAllSlideouts'))
+        disablePrimary=(or isCallingForNumber (not callByNumber) (not callByNumberIsValid))
+        primaryLabel=(if isCallingForNumber "Calling..." "Call")
+        primaryProgressLabel="Calling...")
     onOpen=(route-action 'initializeCallSlideout')
     doClose=(route-action 'closeAllSlideouts')
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     forceKeepOpen=isCallingForNumber
     focusSelector='.number-control' as |slideout|}}
 
@@ -43,18 +50,5 @@
                 doChange=(route-action 'onCallNumberChange')
                 onSubmit=(route-action 'makeCallForNumber' slideout.actions.close)}}
         </div>
-    </div>
-    <div class="form-element text-center">
-        {{#if isCallingForNumber}}
-            <button class="btn btn-default" type='button' disabled='disabled'>Calling...</button>
-        {{else}}
-            {{async-button classNames='btn btn-default'
-                action=(route-action 'makeCallForNumber' slideout.actions.close)
-                disableWhen=(or (not callByNumber) (not callByNumberIsValid))
-                default='Call'
-                pending='Calling...'
-                fulfilled='Called!'
-                rejected='Call Error'}}
-        {{/if}}
     </div>
 {{/slideout-pane}}

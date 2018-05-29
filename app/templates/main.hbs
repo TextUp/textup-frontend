@@ -28,25 +28,18 @@
     {{/liquid-if}}
     {{outlet}}
 {{else}}
-    {{#hide-away tagName='li'
-        classNames='header-slideout display-xs display-s display-m'
-        tabindex=false
-        triggerClass='header-toggle'
-        allowedTriggerSelectors='.toggle-control'
-        doRegister=(action (mut accountSwitcher))
-        bodyClickClose=false}}
-        {{partial 'partials/account/switcher'}}
-    {{else}}
-        <div class="xs-8-row-10 toggle-control">
-            {{partial 'partials/account/display'}}
-        </div>
-        <div class="xs-2-row-10 header-settings"
-            {{action 'toggleSlideout' 'slideouts/account' 'main'}}>
-            <button class="btn btn-expand settings-btn">
-                <span class="fa fa-cog"></span>
-            </button>
-        </div>
-    {{/hide-away}}
+    {{#account-switcher class='display-xs display-s display-m'
+        activeOwner=stateManager.owner
+        user=authManager.authUser
+        doLogOut=(route-action 'logout')
+        containerTagName='li'
+        doRegisterContainer=(action (mut accountSwitcher))
+        toggleClass='xs-8-row-10'}}
+        <button class="xs-2-row-10 textup-account-switcher__display-control"
+            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'main'}}>
+            <span class="fa fa-cog"></span>
+        </button>
+    {{/account-switcher}}
     {{#if stateManager.ownerIsTeam}}
         <li class='menu-item menu-header display-l'
             style='background-color:{{stateManager.owner.hexColor}};
@@ -70,15 +63,15 @@
             {{/tool-tipster}}
         </li>
     {{/if}}
-    {{#if authManager.authUser.schedule.isFulfilled}}
+    {{#if stateManager.owner.phone.isFulfilled}}
         <li class='menu-item menu-slideout display-l
-            {{if stateManager.isPhoneAvailable "success"}}'
+            {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}'
             {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
             {{#tool-tipster position='right'
                 theme='tooltipster-clean'
                 title='Availability'
                 classNames='btn-expand'}}
-                {{#if stateManager.isPhoneAvailable}}
+                {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
                     <span class="fa fa-calendar-check-o"></span>
                 {{else}}
                     <span class="fa fa-calendar-times-o"></span>
@@ -86,7 +79,7 @@
             {{/tool-tipster}}
         </li>
         <li class='menu-item menu-slideout display-xs display-s display-m
-            {{if stateManager.isPhoneAvailable "success"}}'
+            {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}'
             {{action 'toggleSlideout' 'slideouts/availability' 'main'}}>
             <div class="btn-expand">
                 <span>Availability</span>
@@ -196,7 +189,7 @@
     <li class="menu-divider display-xs display-s display-m">
         Tags
         <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/tags/create-edit' 'main'}}>
+            {{action 'toggleSlideout' 'slideouts/tags/create' 'main'}}>
             <span class="fa fa-plus"></span>
         </button >
     </li>

@@ -3,7 +3,11 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
-  var app = new EmberApp(defaults, {});
+  var app = new EmberApp(defaults, {
+    sassOptions: {
+      includePaths: ['bower_components']
+    }
+  });
 
   // Use `app.import` to add additional libraries to the generated
   // output files.
@@ -33,7 +37,6 @@ module.exports = function(defaults) {
   app.import(app.bowerDirectory + '/font-awesome/fonts/fontawesome-webfont.woff2', {
     destDir: '/assets/fonts'
   });
-  app.import(app.bowerDirectory + '/font-awesome/css/font-awesome.css');
 
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.js');
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.css');

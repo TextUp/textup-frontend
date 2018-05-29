@@ -1,193 +1,101 @@
-{{#slideout-pane title='Availability'
+{{#slideout-pane
+    headerProps=(hash title=(concat stateManager.owner.name ' Availability'))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=(or model.isDirty authManager.authUser.isDirty)
+        doPrimary=(route-action 'persist' model
+            (route-action 'persist' authManager.authUser
+            (route-action 'closeAllSlideouts')))
+        disablePrimary=(or
+            (not (v-get model 'isValid'))
+            (not (v-get authManager.authUser 'isValid')))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating...")
     doClose=(route-action 'revert' model
         (route-action 'revert' authManager.authUser
             (route-action 'closeAllSlideouts')))
     forceKeepOpen=(or model.isSaving authManager.authUser.isSaving
-        model.isDirty authManager.authUser.isDirty)
-    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole' as |slideout|}}
-    {{#if model.phone.isFulfilled}}
-        <div class="form-element pad-t pad-l pad-r">
-            <label for='Away Message' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
-            <div class="margin-b">
-                TextUp will reply with this message to texts and calls <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
-            </div>
-            {{#hide-away clickOutToClose=true
-                focusOutClose=true
-                bodyClickClose=false
-                animation='slide'
-                bodyClass='margin-t'
-                hideTriggerOnOpen=false
-                bodyFocusOnOpenSelector='textarea'}}
-                {{textarea rows="3"
-                    autoresize=true
-                    class="form-control"
-                    maxlength=model.phone.content.awayMessageMaxLength
-                    remaining='top'
-                    value=model.phone.content.awayMessage
-                    validateObj=model.phone.content
-                    validateField='awayMessage'
-                    validate='bottom'}}
-            {{else}}
-                <div class="form-control-minimal pad-all">
-                    {{model.phone.content.awayMessage}}
-                    <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
-                </div>
-            {{/hide-away}}
+        model.isDirty authManager.authUser.isDirty) as |slideout|}}
+
+    <div class="form-element pad-t pad-l pad-r">
+        <label for='Away Message' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
+        <div class="margin-b">
+            TextUp will reply with this message to texts and calls <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
         </div>
-        <div class="row pad-l-double pad-r-double">
-            <div class="xs-2-row-3 control-text">
-                <label for="Voice Type" class='text-ellipsis'>
-                    Read Away Message with Voice
-                </label>
+        {{#hide-away clickOutToClose=true
+            focusOutClose=true
+            bodyClickClose=false
+            animation='slide'
+            bodyClass='margin-t'
+            hideTriggerOnOpen=false
+            bodyFocusOnOpenSelector='textarea'}}
+            {{textarea rows="3"
+                autoresize=true
+                class="form-control"
+                maxlength=model.phone.content.awayMessageMaxLength
+                remaining='top'
+                value=model.phone.content.awayMessage
+                validateObj=model.phone.content
+                validateField='awayMessage'
+                validate='bottom'}}
+        {{else}}
+            <div class="form-control-minimal pad-all">
+                {{model.phone.content.awayMessage}}
+                <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
             </div>
-            {{#multi-toggle classNames='xs-row-3'
-                selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#76c9ec'
-                    onSelect=(action (mut model.phone.content.voice) 'MALE')}}
-                    Male
-                {{/multi-toggle/item}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color='#1BA5E0'
-                    onSelect=(action (mut model.phone.content.voice) 'FEMALE')}}
-                    Female
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
+        {{/hide-away}}
+    </div>
+    <div class="row pad-l pad-r">
+        <div class="xs-row-2 control-text">
+            <label for="Voice Type" class='text-ellipsis'>
+                Read with voice
+            </label>
         </div>
-        {{#if model.isDirty}}
-            <div class="horizontal-items text-center margin-t margin-b">
-                <div class="clear-badge no-space">
-                    <button class="btn" type='button'
-                        onclick={{slideout.actions.close}}>
-                        Cancel
-                    </button>
-                </div>
-                <div class="clear-badge no-space">
-                    {{async-button classNames='btn btn-default'
-                        action=(route-action 'persist' model
-                            (route-action 'persist' authManager.authUser
-                            (route-action 'closeAllSlideouts')))
-                        disableWhen=(or
-                            (not (v-get model 'isValid'))
-                            (not (v-get authManager.authUser 'isValid')))
-                        default='Update'
-                        pending='Updating...'}}
-                </div>
-            </div>
-        {{/if}}
-        <hr>
-    {{/if}}
+        {{#multi-toggle classNames='xs-row-2'
+            selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.LIGHT_BLUE
+                onSelect=(action (mut model.phone.content.voice) 'MALE')}}
+                Male
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.BRAND
+                onSelect=(action (mut model.phone.content.voice) 'FEMALE')}}
+                Female
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
+    </div>
+
+    <hr>
+
 	<div class="pad-l pad-r pad-b">
         {{#if (not authManager.authUser.enableNotifications)}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have turned notifications off <span class="link" {{action slideout.actions.close (route-action 'toggleSlideout' 'slideouts/account' 'main')}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
             </div>
         {{/if}}
-        <div class="row pad-l pad-r">
-            <div class="xs-2-row-3 control-text">
-                <label for="Availability" class='text-ellipsis'>
-                    My Availability
-                </label>
-            </div>
-            {{multi-toggle/binary classNames='xs-row-3'
-                value=authManager.authUser.manualSchedule
-                falseColor='#76c9ec'
-                trueColor='#1BA5E0'
-                falseString='Schedule'
-                trueString='Manual'}}
-        </div>
+        {{!-- choice of availability source only available for team phones --}}
+        {{#if (and (eq model.constructor.modelName constants.MODEL.TEAM)
+                (or (gt authManager.authUser.teamsWithPhones.content.length 1)
+                    authManager.authUser.phone.content))}}
+            {{multi-toggle/binary value=model.phone.content.availability.content.useStaffAvailability
+                falseColor=constants.COLOR.LIGHT_BLUE
+                trueColor=constants.COLOR.BRAND
+                falseString='Custom availability'
+                trueString='Default availability'}}
+        {{/if}}
 	</div>
-    {{#if authManager.authUser.manualSchedule}}
-        <div class="bg-color pad-t pad-b pad-l-double pad-r-double">
-            <div class="row">
-                <div class="xs-2-row-3 control-text">
-                    <label for="Availability" class='text-bold text-ellipsis'>
-                        Are you available now?
-                    </label>
-                </div>
-                {{multi-toggle/binary classNames='xs-row-3'
-                    value=authManager.authUser.isAvailable
-                    falseColor='#d3d3d3'
-                    trueColor='#76c9ec'
-                    falseString='No'
-                    trueString='Yes'}}
-            </div>
-        </div>
-        {{#if stateManager.teamMembers}}
-            <div class="form-element pad-l-double pad-r-double pad-t">
-                <label for="Team Member Availabilities" class='text-ellipsis'>
-                    Team Members
-                </label>
-            </div>
-            <div class="bg-color pad-t pad-l-double pad-r-double">
-                {{#each stateManager.teamMembers as |otherStaff|}}
-                    <div class="row pad-b">
-                        <div class="xs-2-row-3 control-text">
-                            <label for="Availability" class='text-bold text-ellipsis'>
-                                {{otherStaff.name}}
-                            </label>
-                        </div>
-                        {{multi-toggle/binary classNames='xs-row-3'
-                            disabled=true
-                            value=otherStaff.isAvailableNow
-                            falseColor='#d3d3d3'
-                            trueColor='#76c9ec'
-                            falseString='Not available'
-                            trueString='Available'}}
-                    </div>
-                {{/each}}
-            </div>
-        {{/if}}
-    {{else}}
-        {{#if (and stateManager.teamMembers (or model.isDirty authManager.authUser.isDirty))}}
-            <div class="horizontal-items text-center margin-t margin-b">
-                <div class="clear-badge no-space">
-                    <button class="btn" type='button'
-                        onclick={{slideout.actions.close}}>
-                        Cancel
-                    </button>
-                </div>
-                <div class="clear-badge no-space">
-                    {{async-button classNames='btn btn-default'
-                        action=(route-action 'persist' model
-                            (route-action 'persist' authManager.authUser
-                            (route-action 'closeAllSlideouts')))
-                        disableWhen=(or
-                            (not (v-get model 'isValid'))
-                            (not (v-get authManager.authUser 'isValid')))
-                        default='Update'
-                        pending='Updating...'}}
-                </div>
-            </div>
-        {{/if}}
-        {{#if authManager.authUser.schedule.isFulfilled}}
-            {{schedule-control
-                class="margin-t"
-                scheduleClass="pad-l pad-r"
-                schedule=authManager.authUser.schedule.content
-                others=stateManager.teamMembers
-                onChange=(action "replaceRange" target=authManager.authUser.schedule.content)}}
-        {{/if}}
-    {{/if}}
-    {{#if (or model.isDirty authManager.authUser.isDirty)}}
-        <div class="horizontal-items text-center margin-t margin-b">
-            <div class="clear-badge no-space">
-                <button class="btn" type='button'
-                    onclick={{slideout.actions.close}}>
-                    Cancel
-                </button>
-            </div>
-            <div class="clear-badge no-space">
-                {{async-button classNames='btn btn-default'
-                    action=(route-action 'persist' model
-                        (route-action 'persist' authManager.authUser
-                        (route-action 'closeAllSlideouts')))
-                    disableWhen=(or
-                        (not (v-get model 'isValid'))
-                        (not (v-get authManager.authUser 'isValid')))
-                    default='Update'
-                    pending='Updating...'}}
-            </div>
-        </div>
-    {{/if}}
+
+    {{#with (if model.phone.content.availability.content.useStaffAvailability
+            authManager.authUser
+            model.phone.content.availability.content) as |entity|}}
+        {{availability-control
+            entity=entity
+            entityIdentityProp='constructor.modelName'
+            onEntityDidChange=(route-action 'onAvailabilityEntitySwitch')
+            others=model.phone.content.others.content
+            onTypeChange=(action (mut entity.manualSchedule))
+            onManualAvailabilityChange=(action (mut entity.isAvailable))
+            onScheduleAvailabilityChange=(action "replaceRange" target=entity.schedule.content)}}
+    {{/with}}
 {{/slideout-pane}}

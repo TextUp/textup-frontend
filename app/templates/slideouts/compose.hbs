@@ -1,7 +1,16 @@
-{{#slideout-pane title='Compose'
+{{#slideout-pane
+	headerProps=(hash title='Compose')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action "sendMessage" composeMessage selectedRecipients
+		    (route-action 'closeAllSlideouts'
+		    	(route-action 'cleanCompose')))
+        disablePrimary=(or (not composeMessage) (not hasRecipients))
+        primaryLabel="Send"
+        primaryProgressLabel="Sending...")
 	onOpen=(route-action 'initializeCompose')
     doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     forceKeepOpen=(or composeMessage hasRecipients)
     focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
@@ -53,15 +62,5 @@
 				value=composeMessage
 				placeholder="Type your message here"}}
 		</div>
-	</div>
-	<div class="form-element text-center">
-	    {{async-button classNames='btn btn-default'
-	    	action=(route-action "sendMessage" composeMessage selectedRecipients
-		    	slideout.actions.close)
-	    	disableWhen=(or (not composeMessage) (not hasRecipients))
-	    	default='Send'
-	    	pending='Sending...'
-	    	fulfilled='Sent!'
-	    	rejected='Send Error'}}
 	</div>
 {{/slideout-pane}}

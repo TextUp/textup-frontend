@@ -100,9 +100,11 @@ export default DS.Model.extend(Validations, {
   hasInactivePhone: DS.attr('boolean'),
   schedule: DS.belongsTo('schedule'),
 
-  manualSchedule: DS.attr('boolean'),
+  manualSchedule: DS.attr('boolean', {
+    defaultValue: true
+  }),
   isAvailable: DS.attr('boolean', {
-    defaultValue: false
+    defaultValue: true
   }),
 
   teams: DS.hasMany('team'),
@@ -118,11 +120,9 @@ export default DS.Model.extend(Validations, {
   // Computed properties
   // -------------------
 
-  phoneIsDirty: alias('phone.isDirty'),
-  scheduleIsDirty: alias('schedule.isDirty'),
   hasPhoneAction: notEmpty('phoneAction'),
   hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
-  hasManualChanges: or('phoneIsDirty', 'scheduleIsDirty', 'hasPhoneAction'),
+  hasManualChanges: or('phone.isDirty', 'schedule.isDirty', 'hasPhoneAction'),
   enableNotifications: computed('personalPhoneNumber', {
     get: function() {
       return isPresent(this.get('personalPhoneNumber'));
@@ -141,17 +141,6 @@ export default DS.Model.extend(Validations, {
       return value;
     }
   }),
-
-  isAvailableNow: computed(
-    'manualSchedule',
-    'isAvailable',
-    'schedule.content.isAvailableNow',
-    function() {
-      return this.get('manualSchedule')
-        ? this.get('isAvailable')
-        : this.get('schedule.content.isAvailableNow');
-    }
-  ),
 
   urlIdentifier: computed('username', function() {
     return dasherize(this.get('username') || '');

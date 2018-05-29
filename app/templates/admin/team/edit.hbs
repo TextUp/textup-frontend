@@ -90,9 +90,7 @@
 			        </div>
 			    </div>
 	    	{{/if}}
-	    	{{#with team as |owner|}}
-	    		{{partial 'partials/location'}}
-	    	{{/with}}
+			{{form/location-form entity=team onLocationError=(route-action 'mapError')}}
 	    </div>
     {{/if}}
 </div>

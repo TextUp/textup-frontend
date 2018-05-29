@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 hr {
     margin: $padding 0;
     border: 0;
@@ -166,7 +170,6 @@ $bg-color-states: hover regular;
 }
 .badge {
     @extend %border-box;
-    max-width: initial;
     min-height: $badge-height;
 
     color: $font-color;
@@ -228,6 +231,12 @@ $bg-color-states: hover regular;
     margin: 0;
     list-style: none;
 
+    & & {
+        .textup-list__item:after {
+            background-color: transparent;
+        }
+    }
+
     &--columns-2 {
         column-count: 2;
         column-gap: 3em; // to enable bullet points to still show
@@ -244,6 +253,7 @@ $bg-color-states: hover regular;
             top: 0.35em;
             left: -1.5em;
             border-radius: 100%;
+            border: 1px solid $brand-color;
             background-color: $brand-color;
         }
     }

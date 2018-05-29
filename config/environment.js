@@ -81,14 +81,14 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    // ENV.host = '';
-    ENV.host = 'https://dev.textup.org';
+    ENV.host = 'http://localhost:8080';
+    // ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
-    // ENV.lock.lockOnHidden = false;
-    ENV.manifest = {
-      enabled: true
-    };
+    ENV.lock.lockOnHidden = false;
+    // ENV.manifest = {
+    //   enabled: true
+    // };
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

@@ -1,0 +1,28 @@
+{{#slideout-pane
+    headerProps=(hash title='New Note')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action 'createNote' recordNote (if contact contact tag)
+            (route-action 'closeAllSlideouts' (route-action 'cleanNoteSlideout'))
+            (route-action 'mutate' (action (mut isAddingNote)) false))
+        disablePrimary=(not (v-get recordNote 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    onOpen=(route-action 'initializeNewNote')
+    doClose=(route-action 'revert' recordNote
+        (route-action 'closeAllSlideouts'
+            (route-action 'cleanNoteSlideout')))
+    forceKeepOpen=recordNote.isSaving
+    focusSelector='.start-focus' as |slideout|}}
+    {{form/record-note class='pad-t'
+        recordNote=recordNote
+        doAddPhoto=(route-action 'addPhotoToNote' recordNote)
+        doRemovePhoto=(route-action 'removePhotoFromNote' recordNote)
+        doAddLocation=(route-action 'addLocationToNote' recordNote)
+        doRemoveLocation=(route-action 'removeLocationFromNote' recordNote)
+        onLocationError=(route-action 'mapError')
+        contentsClass='form-control start-focus'
+        readOnly=(not contact.allowEdits)}}
+{{/slideout-pane}}

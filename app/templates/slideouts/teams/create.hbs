@@ -1,32 +1,20 @@
-{{#slideout-pane title='New Team'
-    direction='left'
+{{#slideout-pane
+    headerProps=(hash title='New Team')
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action 'createTeam' newTeam
+            (route-action 'closeAllSlideouts'))
+        disablePrimary=(not (v-get newTeam 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating...")
     onOpen=(route-action 'initializeNewTeam')
     doClose=(route-action 'revert' newTeam
-        (route-action 'revert' newTeam.location.content)
         (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container'
     forceKeepOpen=newTeam.isSaving
     focusSelector='.start-focus' as |slideout|}}
     <div class="pad-t">
         {{partial 'partials/team/create-edit'}}
     </div>
-    <div class="form-element horizontal-items text-center">
-        <div class="clear-badge no-space">
-            <button class="btn" type='button'
-                onclick={{slideout.actions.close}}>
-                Cancel
-            </button>
-        </div>
-        <div class="clear-badge no-space">
-            {{async-button classNames='btn btn-default'
-                disableWhen=(not (v-get newTeam 'isValid'))
-                action=(route-action 'createTeam' newTeam
-                    slideout.actions.close)
-                default='Create'
-                pending='Creating...'}}
-        </div>
-    </div>
-    {{#with newTeam as |owner|}}
-        {{partial 'partials/location'}}
-    {{/with}}
+    {{form/location-form entity=newTeam onLocationError=(route-action 'mapError')}}
 {{/slideout-pane}}

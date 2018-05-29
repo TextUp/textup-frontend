@@ -1,29 +1,20 @@
-{{#slideout-pane title=(if selected
+{{#slideout-pane
+    headerProps=(hash title=(if selected
         (concat 'Teams (' selected.length ' selected)')
-        (concat person.name ' Teams'))
-    direction='right'
+        (concat person.name ' Teams')))
+    footerComponent="slideout-pane/actions"
+    footerProps=(hash
+        showFooter=teamsHaveActions
+        doPrimary=(route-action 'updateTeamMemberships'
+            stateManager.owner.teams
+            (if selected selected person)
+            (route-action 'clearList' stateManager.owner.teams 'actions'
+                (route-action 'closeAllSlideouts')))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
     doClose=(route-action 'clearList' stateManager.owner.teams 'actions'
-        (route-action 'closeAllSlideouts'))
-    ignoreCloseSelectors='.header-slideout, .c-notification__container' as |slideout|}}
-    {{#if teamsHaveActions}}
-        <div class="horizontal-items text-center pad-all bg-color border-b">
-            <div class="clear-badge no-space">
-                <button class="btn" type='button'
-                    onclick={{slideout.actions.close}}>
-                    Cancel
-                </button>
-            </div>
-            <div class="clear-badge no-space">
-                {{async-button classNames='btn btn-default'
-                    action=(route-action 'updateTeamMemberships'
-                        stateManager.owner.teams
-                        (if selected selected person)
-                        slideout.actions.close)
-                    default='Update'
-                    pending='Updating...'}}
-            </div>
-        </div>
-    {{/if}}
+        (route-action 'closeAllSlideouts')) as |slideout|}}
     {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)
         itemBucketProperty='teams'
         items=(if selected selected person)

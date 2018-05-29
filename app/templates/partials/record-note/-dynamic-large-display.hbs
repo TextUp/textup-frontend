@@ -13,7 +13,7 @@
             onclick={{route-action 'mutate' (action (mut recordNote)) rNote
                 (route-action 'mutate' (action (mut rNote.isEditingNote)) true
                     (route-action 'toggleDetailSlideout'
-                    'slideouts/record-note/create-edit'
+                    'slideouts/record-note/edit'
                     (if contact 'main/contacts/contact' 'main/tag/details')))}}>
             <span class="fa fa-pencil"></span>
         </button>

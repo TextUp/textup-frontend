@@ -22,6 +22,11 @@ export default DS.Model.extend(Validations, {
     this.set('contacts', []);
   },
 
+  rollbackAttributes: function() {
+    this._super(...arguments);
+    this.get('availability').then(a1 => a1 && a1.rollbackAttributes());
+  },
+
   // Attributes
   // ----------
 
@@ -34,12 +39,16 @@ export default DS.Model.extend(Validations, {
     defaultValue: 'ENGLISH'
   }),
 
+  availability: DS.belongsTo('availability'),
+  others: DS.hasMany('availability'),
+
   // Computed properties
   // -------------------
 
   awayMessageMaxLength: computed('mandatoryEmergencyMessage', function() {
     return 160 - this.get('mandatoryEmergencyMessage.length');
   }),
+  hasManualChanges: computed.alias('availability.isDirty'),
 
   // Not attributes
   // --------------

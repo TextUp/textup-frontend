@@ -6,13 +6,14 @@ body {
 #container {
 	@extend %vertical-scroll;
 	width: 100%;
-    width: 100vw;
-    height: 100%;
-    height: 100vh;
+	width: 100vw;
+	height: 100%;
+	height: 100vh;
 	background-color: $brand-color;
 	position: relative;
 }
-#menu, #body {
+#menu,
+#body {
 	@extend %liquid-fire-full-height;
 	@extend %border-box;
 	float: left;
@@ -24,7 +25,8 @@ body {
 	width: 100%;
 	z-index: $body-z-index;
 
-	.content, .details {
+	.content,
+	.details {
 		@extend %border-box;
 		width: 100%;
 	}
@@ -33,7 +35,8 @@ body {
 		background-color: $bg-lightest-color;
 		z-index: $contents-z-index;
 	}
-	.details { // should not have full height to allow for resizing of overlay
+	.details {
+		// should not have full height to allow for resizing of overlay
 		background-color: $bg-color;
 		z-index: $details-z-index;
 		position: absolute;
@@ -99,47 +102,47 @@ body {
 	@extend .text-bold;
 	position: relative;
 	padding-top: 1em;
-	padding-bottom:0.5em;
+	padding-bottom: 0.5em;
 	line-height: 1.25em;
 	background-color: shade($bg-dark-color, 0.5);
 	border-bottom: 1px solid shade($bg-dark-color);
 	color: contrast-color($bg-dark-color);
-    text-transform: uppercase;
-}
-.slideout-pane.slideout-pane-left, .slideout-overlay.slideout-pane-left {
-	left: 0;
-}
-.slideout-pane.slideout-pane-right, .slideout-pane.slideout-pane-left {
-	width: 100%;
+	text-transform: uppercase;
 }
 
-@include mq($from: tablet) { // split screen view
+@include mq($from: tablet) {
+	// split screen view
 	#body {
-		.content, .details {
+		.content,
+		.details {
 			height: 100%;
 			float: left;
 		}
-		@include split(width, ".content" ".details", $split-sidebar-width);
+		@include split(width, '.content' '.details', $split-sidebar-width);
 		.content {
 			border-right: 1px solid $border-color;
 		}
 		.details {
 			height: 100%;
-			left: $split-sidebar-width
+			left: $split-sidebar-width;
 		}
 	}
-	.slideout-pane.slideout-pane-left, .slideout-overlay.slideout-pane-left {
-		left: $collapsed-menu-width;
-	}
-	.slideout-pane.slideout-pane-left {
-		width: calc(100% - #{$collapsed-menu-width});
-	}
-	.slideout-pane.slideout-pane-right {
+	.slideout-pane {
 		width: $slideout-width;
+
+		&--direction-left {
+			left: $collapsed-menu-width;
+			width: calc(100% - #{$collapsed-menu-width});
+
+			& + .slideout-pane__overlay {
+				left: $collapsed-menu-width;
+			}
+		}
 	}
 }
-@include mq($from: desktop) { // exposed menu
-	@include split(width, "#menu" "#body", $exposed-menu-width);
+@include mq($from: desktop) {
+	// exposed menu
+	@include split(width, '#menu' '#body', $exposed-menu-width);
 	#menu {
 		border-right: 1px solid $border-color;
 		background-color: $bg-light-color;
@@ -186,14 +189,17 @@ body {
 			width: 95%;
 		}
 	}
-	.slideout-pane.slideout-pane-left, .slideout-overlay.slideout-pane-left {
-		left: $exposed-menu-width;
-	}
-	.slideout-overlay.slideout-pane-right {
-		left: -$exposed-menu-width;
-	}
-	.slideout-pane.slideout-pane-left {
+
+	.slideout-pane {
 		width: $slideout-width;
+
+		&--direction-left {
+			left: $exposed-menu-width;
+
+			& + .slideout-pane__overlay {
+				left: $exposed-menu-width;
+			}
+		}
 	}
 }
 
@@ -209,7 +215,8 @@ img.brand {
 	img.brand {
 		margin-bottom: 1em;
 	}
-	.single-header, .single-footer {
+	.single-header,
+	.single-footer {
 		position: relative;
 		text-align: center;
 	}
@@ -243,12 +250,12 @@ img.brand {
 	@include mq($until: tablet) {
 		width: 100%;
 
-	    .single-header {
+		.single-header {
 			margin-top: 1em;
 			margin-bottom: 1em;
 			.subtitle {
 				text-align: center;
-		    	font-weight: $font-weight-bold;
+				font-weight: $font-weight-bold;
 			}
 		}
 		.single-footer {
@@ -277,15 +284,15 @@ img.brand {
 		&.single-container-small {
 			width: 28em;
 		}
-	    .single-header {
+		.single-header {
 			margin-top: 8vh;
 			margin-bottom: 1em;
 			.subtitle {
 				font-weight: $font-weight-bold;
-			    position: absolute;
-			    right: 0;
-			    bottom: 0;
-			    text-align: right;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				text-align: right;
 			}
 		}
 		.single-body {
@@ -312,9 +319,9 @@ img.brand {
 %no-results {
 	.no-results {
 		@extend .text-center;
-    	margin: $padding;
-    	margin-bottom: 0;
-    	color: $font-color;
+		margin: $padding;
+		margin-bottom: 0;
+		color: $font-color;
 	}
 }
 
@@ -332,20 +339,21 @@ img.brand {
 		&:hover {
 			background-color: $bg-light-color;
 		}
-		.active:after, .unread:after {
+		.active:after,
+		.unread:after {
 			@extend %border-box;
 			position: absolute;
-		    content: ' ';
-		    height: 1em;
-		    right: 0;
-		    top: 0;
-		    height: 100%;
-		    width: $padding;
-		    border-right: ($padding * 0.5) solid $border-color;
+			content: ' ';
+			height: 1em;
+			right: 0;
+			top: 0;
+			height: 100%;
+			width: $padding;
+			border-right: ($padding * 0.5) solid $border-color;
 		}
 		.active:after {
-		    background-color: $border-color;
-		    border-right-color: shade($border-color);
+			background-color: $border-color;
+			border-right-color: shade($border-color);
 		}
 		.unread:after {
 			background-color: $brand-color;
@@ -380,22 +388,23 @@ img.brand {
 
 	overflow-y: hidden;
 	overflow-x: auto;
-    white-space: nowrap;
+	white-space: nowrap;
 
 	@include mq($from: desktop) {
 		overflow-x: auto;
 	}
 
-    & > :first-child {
-        margin-left: $badge-h-space;
-    }
+	& > :first-child {
+		margin-left: $badge-h-space;
+	}
 }
 
 // Section
 // -------
 
-@include split(height, ".section-header" ".section-body", $header-height);
-.section-header, .section-footer {
+@include split(height, '.section-header' '.section-body', $header-height);
+.section-header,
+.section-footer {
 	@extend %border-box;
 	background-color: $bg-lightest-color;
 	position: relative;
@@ -414,11 +423,11 @@ img.brand {
 	border-top: 1px solid $border-color;
 }
 .overlay {
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 99;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.5);
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 999;
 }

@@ -1,6 +1,6 @@
-{{#slideout-pane title='Scheduled Messages'
-    direction='right'
-    ignoreCloseSelectors='.header-slideout, .c-notification__container, .datetime-control-wormhole'
+{{#slideout-pane
+    headerProps=(hash title='Scheduled Messages')
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
     doClose=(route-action 'closeAllSlideouts') as |slideout|}}
     <ul class="result-list">
         {{#each futureMsgs as |futureMsg|}}
