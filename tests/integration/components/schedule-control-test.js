@@ -1,13 +1,16 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { daysOfWeek } from '../../../utils/schedule';
 
 moduleForComponent('schedule-control', 'Integration | Component | schedule control', {
   integration: true
 });
 
 test('rendering without any data', function(assert) {
+  const daysOfWeek = Ember.getOwner(this)
+    .lookup('service:constants')
+    .get('DAYS_OF_WEEK');
+
   assert.throws(
     this.render(hbs`{{schedule-control}}`),
     TypeError,
@@ -32,7 +35,10 @@ test('rendering without any data', function(assert) {
 });
 
 test('rendering a schedule withOUT team members', function(assert) {
-  const initialData = {},
+  const daysOfWeek = Ember.getOwner(this)
+      .lookup('service:constants')
+      .get('DAYS_OF_WEEK'),
+    initialData = {},
     scheduleClass = 'test-schedule-class';
   daysOfWeek.forEach(day => {
     initialData[day] = [['0130', '0835']];
@@ -58,14 +64,17 @@ test('rendering a schedule withOUT team members', function(assert) {
     if (index % 2 === 0) {
       assert.strictEqual(this.value, '1:30 AM', 'even is starting time in range');
     } else {
-      // note 8:45 not 8:35 because we display the first 15-minute time point AFTER the specified time
-      assert.strictEqual(this.value, '8:45 AM', 'odd is starting time in range');
+      // note 9:00 not 8:35 because we display the first 30-minute time point AFTER the specified time
+      assert.strictEqual(this.value, '9:00 AM', 'odd is starting time in range');
     }
   });
 });
 
 test('rendering a schedule WITH team members', function(assert) {
-  const initialData = {},
+  const daysOfWeek = Ember.getOwner(this)
+      .lookup('service:constants')
+      .get('DAYS_OF_WEEK'),
+    initialData = {},
     teamMemberData = {},
     scheduleClass = 'test-schedule-class',
     teamMemberName = 'I am your team member';
@@ -98,33 +107,25 @@ test('rendering a schedule WITH team members', function(assert) {
     renderedText.indexOf('not available') === -1 && renderedText.indexOf('available from') > -1,
     'all days have some available time range'
   );
-  assert.ok(renderedText.indexOf('show team availability') > -1, 'has team info toggle');
+  assert.ok(
+    renderedText.indexOf('show team availability') === -1,
+    'does not have team info toggle because we have factored this out into a separate component passed in via the yield outlet'
+  );
   assert.ok(renderedText.indexOf('add an available time range') > -1, 'can add new range');
   this.$(`.${scheduleClass} input`).each(function(index) {
     if (index % 2 === 0) {
       assert.strictEqual(this.value, '1:30 AM', 'even is starting time in range');
     } else {
-      // note 8:45 not 8:35 because we display the first 15-minute time point AFTER the specified time
-      assert.strictEqual(this.value, '8:45 AM', 'odd is starting time in range');
+      // note 9:00 not 8:35 because we display the first 30-minute time point AFTER the specified time
+      assert.strictEqual(this.value, '9:00 AM', 'odd is starting time in range');
     }
   });
-
-  // Open one of the team availability slideouts and verify its contents
-  this.$(`.${scheduleClass} .hide-away-trigger`)
-    .first()
-    .mousedown();
-  const openTeamInfo = this.$(`.${scheduleClass} .hide-away`)
-    .first()
-    .text()
-    .trim();
-  assert.ok(openTeamInfo.indexOf(teamMemberName) > -1, 'displays team member name');
-  assert.ok(
-    openTeamInfo.indexOf('11:12 AM to 11:09 PM') > -1,
-    'displays relevant available times for team member without any rounding'
-  );
 });
 
 test('adding a range', function(assert) {
+  const daysOfWeek = Ember.getOwner(this)
+    .lookup('service:constants')
+    .get('DAYS_OF_WEEK');
   assert.expect(14);
 
   // prep data for rendering schedule
@@ -133,7 +134,7 @@ test('adding a range', function(assert) {
     assert.equal(dayOfWeek, 'monday', 'day of week we are adding is monday');
     assert.equal(newRanges.length, 1, 'monday now has one range');
     assert.equal(newRanges[0][0], '0030', 'starting time is 12:30 AM');
-    assert.equal(newRanges[0][1], '0145', 'ending time is 1:45 AM');
+    assert.equal(newRanges[0][1], '0530', 'ending time is 5:30 AM');
   });
 
   // render schedule
@@ -182,7 +183,7 @@ test('adding a range', function(assert) {
     // set end time
     const endInput = this.$('.hide-away input').eq(1);
     endInput.click();
-    Ember.$(`#${endInput.attr('aria-owns')} [data-pick="105"]`).click();
+    Ember.$(`#${endInput.attr('aria-owns')} [data-pick="330"]`).click();
 
     // press add button after asserting that it is no longer disabled
     assert.ok(
@@ -208,11 +209,14 @@ test('adding a range', function(assert) {
 });
 
 test('updating an existing range', function(assert) {
-  assert.expect(9);
+  const daysOfWeek = Ember.getOwner(this)
+    .lookup('service:constants')
+    .get('DAYS_OF_WEEK');
+  assert.expect(6);
 
   const initialData = {},
     scheduleClass = 'test-schedule-class',
-    done = assert.async(3);
+    done = assert.async(2);
   let expectedDayOfWeek, expectedNewStart, expectedNewEnd;
   daysOfWeek.forEach(day => (initialData[day] = [['0130', '0535']]));
   this.setProperties({
@@ -265,6 +269,10 @@ test('updating an existing range', function(assert) {
 });
 
 test('deleting an existing range', function(assert) {
+  const daysOfWeek = Ember.getOwner(this)
+    .lookup('service:constants')
+    .get('DAYS_OF_WEEK');
+
   assert.expect(2);
   const initialData = {},
     scheduleClass = 'test-schedule-class';

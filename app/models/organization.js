@@ -2,7 +2,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isPresent, computed, computed: { equal: eq, or, alias } } = Ember,
+const { isPresent, computed, computed: { equal: eq, or, alias }, RSVP } = Ember,
   Validations = buildValidations({
     name: {
       description: 'Name',
@@ -33,7 +33,7 @@ export default DS.Model.extend(Validations, {
 
   existingTeams: computed('teams.[]', function() {
     return DS.PromiseArray.create({
-      promise: new Promise((resolve, reject) => {
+      promise: new RSVP.Promise((resolve, reject) => {
         this.get('teams').then(teams => {
           resolve(teams.filterBy('isNew', false));
         }, reject);

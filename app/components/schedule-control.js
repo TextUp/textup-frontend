@@ -5,6 +5,8 @@ import callIfPresent from '../utils/call-if-present';
 const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
+  constants: Ember.inject.service(),
+
   propTypes: {
     schedule: PropTypes.EmberObject.isRequired,
     scheduleClass: PropTypes.string,

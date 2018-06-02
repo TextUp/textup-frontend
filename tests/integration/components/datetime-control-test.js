@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
-import { moduleForComponent, test, todo } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('datetime-control', 'Integration | Component | datetime control', {
   integration: true
@@ -164,10 +164,6 @@ test('rendering different time intervals', function(assert) {
   });
 });
 
-todo('adjusting time that falls after the last available time selection', function(assert) {
-  assert.ok(false);
-});
-
 test('minimum and maximum boundaries', function(assert) {
   const min = moment().subtract(1, 'hour'),
     max = moment().add(2, 'days');
@@ -310,3 +306,7 @@ test('handling change', function(assert) {
   timePick = $timeToSelect.data('pick');
   $timeToSelect.click();
 });
+
+// todo('adjusting time that falls after the last available time selection', function(assert) {
+//   assert.ok(false);
+// });

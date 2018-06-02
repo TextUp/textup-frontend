@@ -46,8 +46,8 @@ test('rendering with unclean but valid data', function(assert) {
   this.set('invalidData', ['1asdf8sd']);
   this.render(hbs`{{schedule-control/range data=invalidData}}`);
 
-  // pulls out any numbers possible, rounds to nearest 15 minute increment
-  assert.strictEqual(this.$('input')[0].value, '1:15 AM');
+  // pulls out any numbers possible, rounds to nearest 30 minute increment
+  assert.strictEqual(this.$('input')[0].value, '1:30 AM');
   assert.strictEqual(this.$('input')[1].value, '');
   assert.strictEqual(
     this.$()
@@ -60,15 +60,15 @@ test('rendering with unclean but valid data', function(assert) {
 test('rendering with valid data', function(assert) {
   this.setProperties({
     validData: ['0128', '0810'],
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(hbs`{{schedule-control/range data=validData timeInterval=timeInterval}}`);
 
-  // rounds to nearest 15 minutes
+  // rounds to nearest 30 minutes
   assert.strictEqual(this.$('input')[0].value, '1:30 AM');
-  // from starting point of 1:28AM, increment by 15 minute intervals until
+  // from starting point of 1:28AM, increment by 30 minute intervals until
   // we get to a time closest to 8:10AM
-  assert.strictEqual(this.$('input')[1].value, '8:13 AM');
+  assert.strictEqual(this.$('input')[1].value, '8:58 AM');
   assert.strictEqual(
     this.$()
       .text()
@@ -83,7 +83,7 @@ test('handling change for start when end is undefined', function(assert) {
       assert.strictEqual(newData[0], '0030');
       assert.equal(newData[1], null);
     },
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(
     hbs`{{schedule-control/range onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -99,7 +99,7 @@ test('handling change for end', function(assert) {
       assert.equal(newData[0], null);
       assert.strictEqual(newData[1], '0215');
     },
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(
     hbs`{{schedule-control/range onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -114,7 +114,7 @@ test('handling change for end', function(assert) {
       assert.strictEqual(newData[0], originalStart);
       assert.strictEqual(newData[1], '0230');
     },
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -129,7 +129,7 @@ test('handling change for start when end is after start', function(assert) {
       assert.strictEqual(newData[0], '0230');
       assert.strictEqual(newData[1], '0230');
     },
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -144,7 +144,7 @@ test('handling change for start when end is before start', function(assert) {
       assert.strictEqual(newData[0], '0230');
       assert.strictEqual(newData[1], '0312');
     },
-    timeInterval: 15
+    timeInterval: 30
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`

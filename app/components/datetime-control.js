@@ -47,7 +47,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   // with the actual value to avoid multiple render issues
   _value: null,
   // All updates manually set via `_tryUpdateTimeOptions`
-  _timeOptions: null,
+  _timeOptions: computed(function() {
+    return this._buildTimeOptions();
+  }),
   // updating the time options hash refires the select action,
   // so we need to short-circuit the select action while the component
   // re-renders so that we don't create an infinite loop of
@@ -78,7 +80,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     return this._isSameDay(this.get('mValue'), this.get('mMax'));
   }),
 
-  dateOptions: computed('dateFormat', 'mMin', 'max', function() {
+  _dateOptions: computed('dateFormat', 'mMin', 'max', function() {
     const options = {
         format: this.get('dateFormat')
       },
@@ -260,8 +262,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     // Need to initialize object as {} and not Object.create(null)
     // because picker calls `hasOwnProperty`, which is only added using the {} constructor
     const options = {
-        format: this.get('timeFormat'),
-        interval: this.get('timeInterval')
+        format: this.get('timeFormat')
       },
       forMin = this.get('isValueSameDayAsMin'),
       forMax = this.get('isValueSameDayAsMax');
@@ -269,6 +270,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     options.min = this._includeIfSameDay(forMin, this.get('min'));
     options.isValueSameDayAsMax = forMax;
     options.max = this._includeIfSameDay(forMax, this.get('max'));
+    options.interval = this.get('timeInterval');
     return options;
   },
   _includeIfSameDay(isSameDay, val) {

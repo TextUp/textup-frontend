@@ -3,6 +3,8 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend(PropTypesMixin, {
+  constants: Ember.inject.service(),
+
   propTypes: {
     entity: PropTypes.EmberObject.isRequired,
     entityIdentityProp: PropTypes.string,

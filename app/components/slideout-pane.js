@@ -5,6 +5,8 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { $, getOwner, isNone, computed, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
+  constants: Ember.inject.service(),
+
   propTypes: {
     doClose: PropTypes.func.isRequired,
 
