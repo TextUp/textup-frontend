@@ -12,7 +12,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     timeInterval: PropTypes.number
   },
   getDefaultProps() {
-    return { data: [], timeInterval: 15 };
+    return { data: [], timeInterval: 30 };
   },
   classNames: 'row',
 

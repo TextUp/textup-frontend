@@ -6,7 +6,7 @@
 %input-disabled {
     &:disabled,
     &.disabled {
-        @extend .no-select;
+        outline: 0;
         background-color: $bg-lightest-color;
         color: $font-color;
         border-bottom-color: $border-color;
@@ -29,13 +29,13 @@
     // for removing top inset shadow on mobile browsers
     appearance: none;
 
-    &:hover {
+    &:hover:not(.disabled) {
         border-color: $border-color;
         border-bottom-color: $brand-color;
     }
-    &:active,
-    &:focus,
-    &.focus {
+    &:active:not(.disabled),
+    &:focus:not(.disabled),
+    &.focus:not(.disabled) {
         outline: 0;
         border-color: shade($border-color);
         border-bottom-color: shade($brand-color);

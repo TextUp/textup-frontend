@@ -2,9 +2,9 @@
 <div class="input-group {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
 	{{!-- for editing phone number --}}
 	<div class="input-group-element {{if (not _isEditingInput) 'hidden'}}">
-		<input type="tel" class="phone-number-input form-control text-center"
-    		pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength='10'
-    		value={{_number}} disabled={{if (not allowChanges) 'disabled'}}>
+		<input type="tel" pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength='10'
+			class="phone-number-input form-control text-center {{if (not allowChanges) 'disabled'}}"
+    		value={{_number}} readonly={{if (not allowChanges) 'readonly'}}>
 	</div>
 	{{!-- for display phone number --}}
     <div class="input-group-element phone-number-display-container

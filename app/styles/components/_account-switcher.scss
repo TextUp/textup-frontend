@@ -5,13 +5,10 @@
         height: $header-height;
         width: 100%;
     }
-    &__display-control,
     &__display {
         @include button-colors(shade($brand-color, 1));
 
         height: 100%;
-    }
-    &__display {
         border-bottom-style: solid;
         border-bottom-width: $button-accent-size;
         cursor: pointer;
