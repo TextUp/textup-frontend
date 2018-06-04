@@ -5,7 +5,7 @@ import { complement as findComplement } from '../utils/color';
 
 const { computed } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
 
   props: {
