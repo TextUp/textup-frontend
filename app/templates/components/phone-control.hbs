@@ -1,5 +1,5 @@
 {{!-- phone number input --}}
-<div class="input-group {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
+<div class="input-group input-group--full-width {{if (or (not _isValidating) (not onValidate)) '' 'hidden'}}">
 	{{!-- for editing phone number --}}
 	<div class="input-group-element {{if (not _isEditingInput) 'hidden'}}">
 		<input type="tel" pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength='10'

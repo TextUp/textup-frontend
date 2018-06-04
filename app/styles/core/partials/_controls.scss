@@ -260,6 +260,10 @@ select.form-control {
     .input-group {
         // all nested have auto width
         width: auto;
+
+        &--full-width {
+            width: 100%;
+        }
     }
     & > .input-group-element .input-group {
         width: 100%;

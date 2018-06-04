@@ -13,16 +13,19 @@
         min-width: 0;
         flex-grow: 0;
 
-        padding: 0 ($padding / 2);
+        padding: 0 ($spacing / 2);
 
         &:first-child {
-            padding-left: $padding;
+            padding-left: $spacing;
         }
         &:last-child {
-            padding-right: $padding;
+            padding-right: $spacing;
         }
         &--grow {
             flex-grow: 1;
+        }
+        &--no-shrink {
+            flex-shrink: 0;
         }
         &--no-spacing {
             padding: 0;

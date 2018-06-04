@@ -78,28 +78,6 @@
 		left: $padding;
 	}
 }
-.contacts-control {
-	cursor: pointer;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: $contacts-h-space;
-	height: 100%;
-	background-color: $bg-color;
-	color: shade($bg-color);
-
-	&.selected {
-		$selected-color: tint($brand-color);
-		background-color: $selected-color;
-		color: shade($selected-color, 2);
-	}
-}
-.contacts-info {
-	cursor: pointer;
-	margin-left: $contacts-h-space;
-	padding: $padding;
-	padding-right: 0;
-}
 
 // main/contacts/contact
 // ---------------------

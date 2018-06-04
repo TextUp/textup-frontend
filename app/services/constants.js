@@ -30,5 +30,11 @@ export default Ember.Service.extend({
     },
     DEFAULT_IGNORE_CLOSE_SELECTOR:
       '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp'
+  },
+  PREVIEW_BADGE: {
+    DISPLAY_MODE: {
+      OUTLINE: 'outline',
+      BACKGROUND: 'background'
+    }
   }
 });

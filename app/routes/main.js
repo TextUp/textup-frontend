@@ -416,17 +416,18 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
 
   _validateAndCheckCallNumberForName: function(number) {
     const controller = this.controller,
-      maxNum = 1,
+      maxNum = 30, // we want some options in case the earlier contacts are view-only
       cleaned = cleanNumber(number);
     if (validateNumber(cleaned)) {
       this._searchContactsByNumber(cleaned, {
         max: maxNum
       }).then(results => {
-        const total = results.get('meta.total');
+        const noViewOnlyContacts = results.toArray().filterBy('isSharedView', false),
+          total = noViewOnlyContacts.length;
         controller.setProperties({
           callByNumber: cleaned,
-          callByNumberContact: results.toArray().get('firstObject'),
-          callByNumberMoreNum: Math.max(total - maxNum, 0),
+          callByNumberContact: noViewOnlyContacts.get('firstObject'),
+          callByNumberMoreNum: Math.max(total - 1, 0), // this is an approx total
           callByNumberIsValid: true
         });
       });

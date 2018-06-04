@@ -118,7 +118,15 @@
         total=numContacts
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |contact|}}
-       {{partial 'partials/contact/display'}}
+        {{#entity-display class="result-item"
+            entityIdentifier=contact.identifier
+            linkTarget=(if tag 'main.tag.contact' 'main.contacts.contact')
+            linkParam=contact.id
+            bodyClass=(if contact.isUnread 'unread')
+            isSelected=contact.isSelected
+            onSelect=(route-action 'toggleSelected' contact)}}
+            {{entity-display/contact entity=contact}}
+        {{/entity-display}}
     {{else}}
         {{#if (and (eq filter 'all') (not tag))}}
             <div class="no-results">

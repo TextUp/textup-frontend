@@ -1,0 +1,56 @@
+<div class="textup-container margin-b-half">
+    <div class="textup-container__item textup-container__item--grow">
+        <p class="text-darken text-bold text-ellipsis">
+            {{phone-number entity.identifier}}
+        </p>
+    </div>
+    <div class="textup-container__item textup-container__item--no-shrink text-right">
+        <p>
+            {{moment-from-now entity.lastRecordActivity interval=1000}}
+        </p>
+    </div>
+</div>
+<div class="textup-container text-smaller">
+    <div class="textup-container__item textup-container__item--grow text-ellipsis">
+        {{#if entity.isShared}}
+            <span class="badge">
+                {{entity.sharedBy}}
+            </span>
+        {{else if entity.sharedWith.content.length}}
+            <span class="badge">
+                Shared with {{entity.sharedWith.content.length}}
+            </span>
+        {{else if (eq entity.numbers.length 1)}}
+            <span class="text-bold">
+                {{phone-number (get (get entity.numbers "0") 'number')}}
+            </span>
+        {{else}}
+            <span class="badge">
+                {{entity.numbers.length}} numbers
+            </span>
+        {{/if}}
+    </div>
+    <div class="textup-container__item textup-container__item--no-shrink text-right">
+        {{#if (and entity.isUnread entity.unreadInfo)}}
+            <div class="text-big text-brand">
+                <span class="margin-l-half">{{entity.unreadInfo.numTexts}}</span>
+                <i class="fa fa-commenting margin-l-quarter" aria-hidden="true"></i>
+                <span class="margin-l-half">{{entity.unreadInfo.numCalls}}</span>
+                <i class="fa fa-phone margin-l-quarter" aria-hidden="true"></i>
+                <span class="margin-l-half">{{entity.unreadInfo.numVoicemails}}</span>
+                <i class="fa fa-microphone margin-l-quarter" aria-hidden="true"></i>
+            </div>
+        {{else if entity.hasTags}}
+            {{preview-badge class="badge badge--constrain-width"
+                displayMode=constants.PREVIEW_BADGE.DISPLAY_MODE.OUTLINE
+                onlyShowFull=true
+                color=entity.tags.content.firstObject.hexColor
+                content=entity.tags.content.firstObject.name}}
+            {{#if (gt entity.tags.content.length 1)}}
+                <span class="badge">
+                    +{{plus entity.tags.content.length -1}}
+                </span>
+            {{/if}}
+        {{/if}}
+    </div>
+</div>

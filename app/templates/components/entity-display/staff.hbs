@@ -1,0 +1,17 @@
+<div class="textup-container margin-b-half">
+    <div class="textup-container__item textup-container__item--grow">
+        <p class="text-darken text-bold text-ellipsis">
+            {{entity.name}}
+        </p>
+    </div>
+    <div class="textup-container__item textup-container__item--no-shrink text-right">
+        {{#with entity as |person|}}
+            {{partial 'partials/staff/indicators'}}
+        {{/with}}
+    </div>
+</div>
+<div class="textup-container text-small">
+    <div class="textup-container__item">
+        {{entity.username}}
+    </div>
+</div>

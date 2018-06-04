@@ -81,28 +81,14 @@
         total=numPeople
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |person|}}
-        <div class="result-item row">
-            <div class="contacts-control {{if person.isSelected 'selected'}}"
-                {{action 'toggleSelected' person preventDefault=false}}>
-                <span class="fa fa-check center"></span>
-            </div>
-            {{#link-to (if team
-                    'admin.team.person'
-                    'admin.people.person')
-                person.id
-                classNames="contacts-info"
-                tagName="div"}}
-                <div class="emphasize horizontal-items">
-                    <span class="clear-badge no-space">
-                        <span class="margin-r-half">
-                            {{person.name}}
-                        </span>
-                    </span>
-                    {{partial 'partials/staff/indicators'}}
-                </div>
-                <p>{{person.username}}</p>
-            {{/link-to}}
-        </div>
+        {{#entity-display class="result-item"
+            entityIdentifier=person.name
+            linkTarget=(if team 'admin.team.person' 'admin.people.person')
+            linkParam=person.id
+            isSelected=person.isSelected
+            onSelect=(route-action 'toggleSelected' person)}}
+            {{entity-display/staff entity=person}}
+        {{/entity-display}}
     {{else}}
         {{#if team}}
             <div class="no-results">

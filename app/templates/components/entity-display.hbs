@@ -1,0 +1,17 @@
+<div class="entity-display__toggle">
+    <input id={{concat this.elementId "--toggle"}}
+        type="checkbox"
+        checked={{if isSelected 'checked'}}
+        class="entity-display__toggle__control"
+        onChange={{action 'onToggleSelect'}}>
+    <label for={{concat this.elementId "--toggle"}}
+        class="entity-display__toggle__label">
+        <span class="sr-only">Select {{entityIdentifier}}</span>
+        <i class="fa fa-check center" aria-hidden="true"></i>
+    </label>
+</div>
+{{#link-to linkTarget linkParam
+    tagName="div"
+    class=(concat "entity-display__body " bodyClass)}}
+    {{yield}}
+{{/link-to}}

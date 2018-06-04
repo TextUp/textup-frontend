@@ -348,8 +348,8 @@ img.brand {
 			right: 0;
 			top: 0;
 			height: 100%;
-			width: $padding;
-			border-right: ($padding * 0.5) solid $border-color;
+			width: $padding * 0.5;
+			border-right: ($padding * 0.3) solid $border-color;
 		}
 		.active:after {
 			background-color: $border-color;

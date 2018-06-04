@@ -1,6 +1,4 @@
-{{title (if searchQuery
-	(concat 'Search ' searchQuery)
-	'New Search') separator=' - '}}
+{{title (if searchQuery (concat 'Search ' searchQuery) 'New Search') separator=' - '}}
 
 <div class="content">
 	<div class="section-header">
@@ -38,7 +36,15 @@
         total=numResults
         doLoad=(route-action 'loadMore')
         doRefresh=(route-action 'refresh') as |contact|}}
-        {{partial 'partials/contact/display'}}
+        {{#entity-display class="result-item"
+            entityIdentifier=contact.identifier
+            linkTarget='main.search.contact'
+            linkParam=contact.id
+            bodyClass=(if contact.isUnread 'unread')
+            isSelected=contact.isSelected
+            onSelect=(route-action 'toggleSelected' contact)}}
+            {{entity-display/contact entity=contact}}
+        {{/entity-display}}
     {{else}}
 		<div class="no-results">
 			{{#if searchQuery}}

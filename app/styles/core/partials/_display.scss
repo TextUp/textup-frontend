@@ -11,6 +11,12 @@ hr {
 .hidden {
     display: none !important;
 }
+// from https://webaim.org/techniques/css/invisiblecontent/
+.sr-only {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+}
 .clickable {
     cursor: pointer;
 }
@@ -173,9 +179,12 @@ $bg-color-states: hover regular;
     min-height: $badge-height;
 
     color: $font-color;
-    border-color: $border-color;
     background-color: $bg-color;
     border-radius: $border-radius;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
 
     vertical-align: middle;
     display: inline-block;
@@ -186,6 +195,14 @@ $bg-color-states: hover regular;
 
     padding: 0 $badge-h-space;
     margin-right: $badge-h-space;
+
+    &--constrain-width {
+        max-width: 12 * $padding;
+    }
+    &--outline {
+        background-color: transparent;
+        border-color: $border-color;
+    }
 
     &.tint {
         background-color: shade($bg-color);
