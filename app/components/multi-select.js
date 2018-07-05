@@ -155,9 +155,6 @@ export default Ember.Component.extend({
       this.clearHighlight();
       this.get('_input.actions.stopEditing')();
     },
-    inputEnd: function(val, event) {
-      return this.insertOrUpdate(true, val, this.get('selected.length'), event);
-    },
 
     // Input hooks
     // -----------
