@@ -1,3 +1,4 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import Ember from 'ember';
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -14,7 +15,7 @@ const { isPresent, computed, computed: { equal: eq, or, alias }, RSVP } = Ember,
     }
   });
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Dirtiable, Validations, {
   name: DS.attr('string'),
   status: DS.attr('string'),
   numAdmins: DS.attr('number'),

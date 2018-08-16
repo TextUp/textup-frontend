@@ -22,7 +22,7 @@
             unrounded time right now, use the unbounded startDate as the minimum --}}
             {{datetime-control
                 onSelect=(action (mut futureMsg.startDate))
-                timeInterval=futureMsg.timeIntervalInMinutes
+                timeInterval=constants.DEFAULT_TIME_INTERVAL_IN_MINUTES
                 value=futureMsg.startDate
                 min=(if (gt (now) (unbound futureMsg.startDate)) (unbound futureMsg.startDate) now)}}
         {{else}}

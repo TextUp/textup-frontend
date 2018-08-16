@@ -1,3 +1,4 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import Ember from 'ember';
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -16,7 +17,7 @@ const Validations = buildValidations({
   }),
   { computed } = Ember;
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Dirtiable, Validations, {
   init() {
     this._super(...arguments);
     this.set('contacts', []);

@@ -1,3 +1,4 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -52,7 +53,7 @@ const {
     }
   });
 
-export default DS.Model.extend(Validations, {
+export default DS.Model.extend(Dirtiable, Validations, {
   authManager: inject.service('auth'),
 
   rollbackAttributes: function() {

@@ -1,9 +1,10 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 
 const { computed } = Ember;
 
-export default DS.Model.extend({
+export default DS.Model.extend(Dirtiable, {
   rollbackAttributes: function() {
     this._super(...arguments);
     this.get('schedule').then(s1 => s1 && s1.rollbackAttributes());

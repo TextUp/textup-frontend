@@ -1,10 +1,10 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import { validator, buildValidations } from 'ember-cp-validations';
+import OwnsFutureMessages from '../mixins/model/owns-future-messages';
+import OwnsRecordItems from '../mixins/model/owns-record-items';
 import { validate as validateNumber } from '../utils/phone-number';
-import RecordModel from '../mixins/record-model';
-import FutureMessageModel from '../mixins/future-message-model';
-import defaultIfAbsent from '../utils/default-if-absent';
+import { validator, buildValidations } from 'ember-cp-validations';
 
 const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
   Validations = buildValidations({
@@ -43,7 +43,7 @@ const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
     }
   });
 
-export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
+export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
   init: function() {
     this._super(...arguments);
     this.set('actions', []);
@@ -92,7 +92,7 @@ export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
 
   type: 'contact', // for compose menu
   isSelected: false,
-  numberDuplicates: defaultIfAbsent([]),
+  numberDuplicates: Ember.computed(() => []),
   actions: null,
 
   // Computed properties

@@ -1,10 +1,11 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import { stringToIntervals, intervalsToString } from '../utils/schedule';
 
 const { defineProperty, computed, on } = Ember;
 
-export default DS.Model.extend({
+export default DS.Model.extend(Dirtiable, {
   isAvailableNow: DS.attr('boolean'),
   nextAvailable: DS.attr('date'),
   nextUnavailable: DS.attr('date'),

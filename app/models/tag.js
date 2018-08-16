@@ -1,8 +1,9 @@
+import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import OwnsFutureMessages from '../mixins/model/owns-future-messages';
+import OwnsRecordItems from '../mixins/model/owns-record-items';
 import { validator, buildValidations } from 'ember-cp-validations';
-import RecordModel from '../mixins/record-model';
-import FutureMessageModel from '../mixins/future-message-model';
 
 const { alias, notEmpty, equal: eq } = Ember.computed,
   Validations = buildValidations({
@@ -12,7 +13,7 @@ const { alias, notEmpty, equal: eq } = Ember.computed,
     }
   });
 
-export default DS.Model.extend(Validations, RecordModel, FutureMessageModel, {
+export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
   init: function() {
     this._super(...arguments);
     this.set('actions', []);
