@@ -64,10 +64,8 @@ export default DS.Model.extend(Dirtiable, Validations, {
   isDone: DS.attr('boolean', { defaultValue: false }),
   notifySelf: DS.attr('boolean', { defaultValue: false }),
   timesTriggered: DS.attr('number', { defaultValue: 0 }),
-
   isRepeating: DS.attr('boolean', { defaultValue: false }),
   repeatCount: DS.attr('number'),
-
   startDate: DS.attr('date', {
     defaultValue: model => {
       const momentObj = moment(),
@@ -79,19 +77,18 @@ export default DS.Model.extend(Dirtiable, Validations, {
   }),
   hasEndDate: DS.attr('boolean', { defaultValue: false }),
   endDate: DS.attr('date'),
-
   type: DS.attr('string', {
     defaultValue: model => model.get('constants.FUTURE_MESSAGE.TYPE.TEXT')
   }),
   language: DS.attr('string'),
   message: DS.attr('string'),
-  media: DS.belongsTo('media'), // hasOne
 
+  media: DS.belongsTo('media'), // hasOne
   contact: DS.belongsTo('contact'), // hasOne
   tag: DS.belongsTo('tag'), // hasOne
 
   intervalSize: computed('_intervalSize', {
-    get(key) {
+    get() {
       const size = this.get('_intervalSize'),
         fallbackSize = this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY');
       return typeOf(size) === 'number' ? size : fallbackSize;

@@ -14,6 +14,14 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
 
   rollbackAttributes() {
     this._super(...arguments);
+    this.get('_contactRecipients').clear();
+    this.get('_tagRecipients').clear();
+    this.get('_sharedContactRecipients').clear();
+    this.get('_newNumberRecipients').clear();
+  },
+  didUpdate() {
+    this._super(...arguments);
+    this.rollbackAttributes();
   },
   hasManualChanges: computed.alias('media.isDirty'),
 
@@ -23,14 +31,14 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   whenCreated: DS.attr('date'),
   outgoing: DS.attr('boolean'),
   hasAwayMessage: DS.attr('boolean'),
-  noteContents: DS.attr('string'),
+  noteContents: DS.attr('string', { defaultValue: '' }),
 
   receipts: DS.attr('record-item-status'), // now a json object with no id
   media: DS.belongsTo('media'), // hasOne
 
   // belong to either a contact or a tag
-  contact: DS.belongsTo('contact'),
-  tag: DS.belongsTo('tag'),
+  contact: DS.belongsTo('contact', { inverse: null }),
+  tag: DS.belongsTo('tag', { inverse: null }),
 
   contactRecipients: computed.readOnly('_contactRecipients'),
   sharedContactRecipients: computed.readOnly('_sharedContactRecipients'),

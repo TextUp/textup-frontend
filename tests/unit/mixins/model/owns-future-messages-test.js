@@ -14,7 +14,8 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
     'validator:length',
     'validator:presence',
     'validator:number',
-    'validator:inclusion'
+    'validator:inclusion',
+    'validator:has-any'
   ],
   subject() {
     // The scope here is the module, so we have access to the registration stuff.

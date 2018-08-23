@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run } = Ember;
@@ -19,6 +20,41 @@ test('dirty checking', function(assert) {
   obj.set('media', null);
 
   assert.notOk(obj.get('hasManualChanges'), 'no media yet');
+});
+
+test('rolling back changes', function(assert) {
+  run(() => {
+    const constants = this.container.lookup('service:constants'),
+      obj = this.subject(),
+      newContact1 = mockModel('testing', constants.MODEL.CONTACT),
+      newShared1 = mockModel(null, constants.MODEL.CONTACT, { isShared: true }),
+      newTag1 = mockModel('ok', constants.MODEL.TAG),
+      newNumber1 = '111 asdfsa 222 asfo!@@ 33(((33   ';
+
+    assert.ok(obj.addRecipient(newContact1));
+    assert.ok(obj.addRecipient(newShared1));
+    assert.ok(obj.addRecipient(newTag1));
+    assert.ok(obj.addRecipient(newNumber1));
+    assert.equal(obj.get('numRecipients'), 4);
+
+    obj.rollbackAttributes();
+
+    assert.equal(obj.get('numRecipients'), 0);
+    assert.deepEqual(obj.get('contactRecipients'), []);
+    assert.deepEqual(obj.get('sharedContactRecipients'), []);
+    assert.deepEqual(obj.get('tagRecipients'), []);
+    assert.deepEqual(obj.get('newNumberRecipients'), []);
+  });
+});
+
+test('default values', function(assert) {
+  const obj = this.subject();
+
+  assert.equal(
+    obj.get('noteContents'),
+    '',
+    'note contents initialized to empty string to avoid being interpreted as the string "null"'
+  );
 });
 
 test('adding and removing existing recipients', function(assert) {
@@ -78,7 +114,7 @@ test('adding and removing existing recipients', function(assert) {
   assert.equal(obj.get('sharedContactRecipients').length, 1);
 });
 
-test('test adding and removing new recipients', function(assert) {
+test('test adding and removing new recipients (phone numbers)', function(assert) {
   const obj = this.subject();
 
   assert.equal(obj.get('numRecipients'), 0);
@@ -107,10 +143,3 @@ test('test adding and removing new recipients', function(assert) {
   assert.ok(obj.removeRecipient('11122233kdfj33  asdf'), 'removing also cleans');
   assert.equal(obj.get('numRecipients'), 0);
 });
-
-// Helpers
-// -------
-
-function mockModel(id, modelName, otherProps) {
-  return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });
-}

@@ -1,0 +1,16 @@
+{{!-- TODO: read only state, view revisions, edit, delete --}}
+
+<p>note.media.content.displayedImages.length: {{note.media.content.displayedImages.length}}</p>
+
+{{note.noteContents}}
+
+<div class="textup-container">
+    <div class="textup-container__item">
+        {{photo-control photos=note.media.content.displayedImages}}
+    </div>
+    {{#if note.location.content.latLng}}
+        <div class="textup-container__item">
+            {{location-preview location=note.location.content.latLng}}
+        </div>
+    {{/if}}
+</div>

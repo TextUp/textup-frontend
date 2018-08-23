@@ -1,0 +1,17 @@
+<input type="file"
+    id="{{elementId}}__input"
+    accept="image/*;capture=camera"
+    multiple="multiple">
+<label for="{{elementId}}__input">
+    {{#if hasBlock}}
+        {{yield _isLoading _isLoadError}}
+    {{else}}
+        {{#if _isLoading}}
+            <span>Adding images...</span>
+        {{else if _isLoadError}}
+            <span>Oops. Please try again.</span>
+        {{else}}
+            <span>Add images</span>
+        {{/if}}
+    {{/if}}
+</label>

@@ -1,14 +1,9 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import uniqBy from '../../utils/uniq-by';
+import { RecordCluster } from 'textup-frontend/objects/record-cluster';
+import uniqBy from 'textup-frontend/utils/uniq-by';
 
 const { computed, typeOf } = Ember;
-
-export const RecordCluster = Ember.Object.extend({
-  label: '',
-  numItems: computed.alias('items.length'),
-  items: computed(() => [])
-});
 
 export default Ember.Mixin.create({
   // Properties
@@ -26,8 +21,33 @@ export default Ember.Mixin.create({
   // Private properties
   // ------------------
 
-  _recordItems: DS.hasMany('record-item', { polymorphic: true }),
-  _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
+  // originally, `_recordItems` was set to
+  //    _recordItems: DS.hasMany('record-item', { polymorphic: true }),
+  //    _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
+  // However, there's some weirdness around this version of Ember data making polymorphic
+  // records available under both the base class and the subclass. We had issues where calling
+  // `v1/records` would return a polymorphic payload, but these models would only be available
+  // under their respective subclasses. Therefore, we manually add merge these subclasses
+  // here instead of relying on a declared polymorphic relationship property
+  _recordItems: DS.hasMany('record-item'),
+  _recordTexts: DS.hasMany('record-text'),
+  _recordCalls: DS.hasMany('record-call'),
+  _recordNotes: DS.hasMany('record-note'),
+  _mergedRecordItems: computed(
+    '_recordItems.[]',
+    '_recordTexts.[]',
+    '_recordCalls.[]',
+    '_recordNotes.[]',
+    function() {
+      const results = [];
+      this.get('_recordItems.content').forEach(obj => results.pushObject(obj));
+      this.get('_recordTexts.content').forEach(obj => results.pushObject(obj));
+      this.get('_recordCalls.content').forEach(obj => results.pushObject(obj));
+      this.get('_recordNotes.content').forEach(obj => results.pushObject(obj));
+      return results;
+    }
+  ),
+  _uniqueRecordItems: uniqBy('_mergedRecordItems', 'id'),
   _recordsSorting: ['whenCreated:asc'],
   _sortedRecordItems: computed.sort('_uniqueRecordItems', '_recordsSorting'),
 

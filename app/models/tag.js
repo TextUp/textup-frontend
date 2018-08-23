@@ -7,13 +7,15 @@ import { validator, buildValidations } from 'ember-cp-validations';
 
 const { alias, notEmpty, equal: eq } = Ember.computed,
   Validations = buildValidations({
-    name: {
-      description: 'Name',
-      validators: [validator('presence', true)]
-    }
+    name: { description: 'Name', validators: [validator('presence', true)] }
   });
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
+  constants: Ember.inject.service(),
+
+  // Overrides
+  // ------
+
   init: function() {
     this._super(...arguments);
     this.set('actions', []);
@@ -22,10 +24,6 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
     this._super(...arguments);
     this.get('actions').clear();
   },
-
-  // Events
-  // ------
-
   didCreate() {
     this.rollbackAttributes();
   },
@@ -37,9 +35,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   // ----------
 
   name: DS.attr('string'),
-  hexColor: DS.attr('string', {
-    defaultValue: '#1BA5E0'
-  }),
+  hexColor: DS.attr('string', { defaultValue: model => model.get('constants.COLOR.BRAND') }),
   phone: DS.belongsTo('phone'),
   numMembers: DS.attr('number'),
 

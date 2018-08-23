@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DS from 'ember-data';
+import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
 
 const { typeOf, get } = Ember;
 
@@ -13,27 +14,25 @@ export default DS.Transform.extend({
     if (typeOf(serialized) !== 'array') {
       return [];
     }
-    const result = [];
+    const images = [];
     serialized.forEach(apiItem => {
       if (isAnyObject(apiItem)) {
-        const transformedObj = {};
+        const mediaImage = MediaImage.create({
+          [API_ID_PROP_NAME]: get(apiItem, API_ID_PROP_NAME),
+          mimeType: get(apiItem, 'mimeType')
+        });
         Object.keys(apiItem).forEach(key => {
-          const val = apiItem[key];
-          if (isAnyObject(val) && get(val, 'link')) {
-            // if a prop is an object and has a link transform it
-            transformedObj[key] = {
-              source: get(val, 'link'),
-              width: get(val, 'width')
-            };
-          } else {
-            // otherwise, just pass it through
-            transformedObj[key] = val;
+          const version = get(apiItem, key);
+          // if a prop is an object and has a link transform it
+          if (isAnyObject(version) && get(version, 'link')) {
+            const { link, width, height } = version;
+            mediaImage.addVersion(link, width, height);
           }
         });
-        result.pushObject(transformedObj);
+        images.pushObject(mediaImage);
       }
     });
-    return result;
+    return images;
   },
 
   serialize(deserialized) {

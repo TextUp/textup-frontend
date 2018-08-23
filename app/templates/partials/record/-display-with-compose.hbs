@@ -1,7 +1,7 @@
 <div class="contact-record
     {{if isAddingNote 'adding-note'}}
-    {{if contact (if (not contact.hasFutureMsgs) 'no-future-messages')
-        (if (not tag.hasFutureMsgs) 'no-future-messages')}}">
+    {{if contact (if (not contact.numFutureMessages) 'no-future-messages')
+        (if (not tag.numFutureMessages) 'no-future-messages')}}">
     {{#infinite-scroll classNames='record-body bg-color bg-dark'
         doRegister=(action (mut _recordsList))
         containerClass='bg-color'
@@ -11,31 +11,9 @@
         total=totalNumRecords
         doLoad=(action 'loadMore')
         doRefresh=(action 'refresh') as |record|}}
-        {{#if record.isDeletedCluster}}
-            {{#with record as |cluster|}}
-                {{partial 'partials/record/deleted-cluster'}}
-            {{/with}}
-        {{else if record.isNote}}
-            {{#if record.isReadOnly}}
-                {{partial 'partials/record/read-only-note'}}
-            {{else}}
-                {{partial 'partials/record/note'}}
-            {{/if}}
-        {{else}}
-            <div class="record-item
-                {{if record.outgoing 'outgoing' 'incoming'}}
-                {{if record.hasVoicemail 'voicemail'}}">
-                {{#if record.outgoing}}
-                    {{#if record.isText}}
-                        {{partial 'partials/record/outgoing-text'}}
-                    {{else if record.isCall}}
-                        {{partial 'partials/record/outgoing-call'}}
-                    {{/if}}
-                {{else}}
-                    {{partial 'partials/record/incoming'}}
-                {{/if}}
-            </div>
-        {{/if}}
+
+        {{record-cluster}}
+
         {{!-- so we can properly set the isAddingNoteAfter flag on record item --}}
         {{#if record.isDeletedCluster}}
             {{#with record.items.lastObject as |rItem|}}
@@ -70,190 +48,6 @@
             {{/if}}
         </div>
     {{/infinite-scroll}}
-    <div class="future-messages no-select" {{action 'toggleDetailSlideout'
-        'slideouts/future-messages/list'
-        (if contact 'main/contacts/contact' 'main/tag/details')}}>
-        <div class="center text-ellipsis">
-            {{#if (and contact.nextFutureFire.isFulfilled
-                contact.nextFutureFire.content)}}
-                Next scheduled message in
-                <span class="text-bold">
-                    {{moment-from-now contact.nextFutureFire.content
-                        interval=1000 hideSuffix=true}}
-                </span>
-                <span class="display-l display-m">
-                    on
-                    <span class="text-bold">
-                        {{moment-format contact.nextFutureFire.content '
-                            ddd MMM D h:mm A'}}
-                    </span>
-                </span>
-            {{else if (and tag.nextFutureFire.isFulfilled
-                tag.nextFutureFire.content)}}
-                Next scheduled message in
-                <span class="text-bold">
-                    {{moment-from-now tag.nextFutureFire.content
-                        interval=1000 hideSuffix=true}}
-                </span>
-                <span class="display-l display-m">
-                    on
-                    <span class="text-bold">
-                        {{moment-format tag.nextFutureFire.content '
-                            ddd MMM D h:mm A'}}
-                    </span>
-                </span>
-            {{else}}
-                Scheduled Messages
-            {{/if}}
-        </div>
-    </div>
+    {{!-- {{upcoming-future-messages}} --}}
 </div>
-{{#hide-away tabindex=false
-    disabled=(and (not contact) tag.isEmpty)
-    onOpen=_recordsList.actions.resetPosition
-    allowedTriggerSelectors='.form-control'
-    clickOutToClose=true
-    bodyClickClose=false
-    animation='fade'
-    hideTriggerOnOpen=true
-    triggerClass='contact-controls'
-    bodyClass='contact-controls floating'
-    bodyFocusOnOpenSelector='textarea' as |hideAway|}}
-    {{textarea containerClass='send-text-field'
-        class='form-control'
-        maxlength='320'
-        remaining='top'
-        autoresize=true
-        rows='1'
-        value=textContents
-        submitOnNewline=true
-        action=(if textContents (route-action 'sendMessage' textContents (if contact contact tag)
-                (action (mut textContents) null)
-                hideAway.actions.close
-                _recordsList.actions.resetPosition))}}
-    {{#async-button classNames='btn btn-default'
-        disableWhen=(not textContents)
-        action=(route-action 'sendMessage' textContents (if contact contact tag)
-            (action (mut textContents) null)
-            hideAway.actions.close
-            _recordsList.actions.resetPosition) as |btn|}}
-        {{#if (eq btn.textState 'pending')}}
-            <span class="fa fa-spin fa-circle-o-notch"></span>
-        {{else if (eq btn.textState 'rejected')}}
-            <span class="fa fa-exclamation-triangle"></span>
-        {{else}}
-            <span class='fa fa-paper-plane-o'></span>
-        {{/if}}
-    {{/async-button}}
-{{else}}
-    {{#if isMakingCall}}
-        <div class="overlay">
-            <div class="center row">
-                <span class="offset-xs-row-20 xs-15-row-20 text-bold text-white control-text">
-                    Calling you at
-                    {{phone-number authManager.authUser.personalPhoneNumber}}.
-                </span>
-                <span class='xs-2-row-10 text-center'>
-                    <button type='button' class="btn btn-plain"
-                        onclick={{action (mut isMakingCall) false}}>
-                        <span class="text-white">Ok</span>
-                    </button>
-                </span>
-            </div>
-        </div>
-    {{else if isAddingNote}}
-        <div class="overlay">
-            <div class="center row">
-                <span class="offset-xs-row-20 xs-13-row-20 text-bold text-white control-text">
-                    Choose your note's place.
-                </span>
-                <span class='xs-3-row-10 text-center'>
-                    <button type='button' class="btn btn-plain"
-                        onclick={{action (mut isAddingNote) false}}>
-                        <span class="text-white">Cancel</span>
-                    </button>
-                </span>
-            </div>
-        </div>
-    {{/if}}
-    <div class='input-group'>
-        {{#if textContents}}
-            <span class="input-group-addon align-top blend-in">
-                <button class="btn" type='button'
-                    onclick={{action (mut textContents) null}}>
-                    <span class="fa fa-times"></span>
-                </button>
-            </span>
-        {{else}}
-            <span class="input-group-addon align-top">
-                {{#hide-away/dropdown horizontal='left'
-                    disabled=(and (not contact) tag.isEmpty)}}
-                    <li class='dropdown-divider'>Documentation</li>
-                    {{#if records}}
-                        <li tabindex='0' class='dropdown-item'
-                            onclick={{route-action 'mutate' (action (mut isAddingNote)) true
-                                _recordsList.actions.resetPosition}}>
-                            Add past note
-                        </li>
-                    {{/if}}
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'toggleDetailSlideout'
-                            'slideouts/record-note/create'
-                            (if contact 'main/contacts/contact' 'main/tag/details')}}>
-                        Add note
-                    </li>
-                    <li class='dropdown-divider'>Outgoing</li>
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'toggleDetailSlideout'
-                            'slideouts/future-messages/create'
-                            (if contact 'main/contacts/contact' 'main/tag/details')}}>
-                        Schedule message
-                    </li>
-                    {{#if (and contact
-                        authManager.authUser.personalPhoneNumber)}}
-                        <li tabindex='0' class='dropdown-item'
-                            onclick={{route-action 'makeCall' contact
-                                (action (mut isMakingCall) true)
-                                _recordsList.actions.resetPosition}}>
-                            Make call
-                        </li>
-                    {{/if}}
-                {{else}}
-                    <button class='btn' type='button'>
-                        <span class='fa fa-plus'></span>
-                    </button>
-                {{/hide-away/dropdown}}
-            </span>
-        {{/if}}
-        {{#if (and (not contact) tag.isEmpty)}}
-            <div class="form-control text-ellipsis form-disabled">
-                Add contacts to
-                <span class="text-bold">
-                    {{tag.name}}
-                </span>
-                to send messages.
-            </div>
-        {{else}}
-            {{input class='form-control text-ellipsis'
-                readonly=true
-                value=textContents}}
-        {{/if}}
-        {{#if textContents}}
-            <span class="input-group-addon align-top">
-                {{#async-button classNames='btn btn-default'
-                    disabledWhen=(and (not contact) tag.isEmpty)
-                    action=(route-action 'sendMessage' textContents (if contact contact tag)
-                        (action (mut textContents) null)
-                        _recordsList.actions.resetPosition) as |btn|}}
-                    {{#if (eq btn.textState 'pending')}}
-                        <span class="fa fa-spin fa-circle-o-notch"></span>
-                    {{else if (eq btn.textState 'rejected')}}
-                        <span class="fa fa-exclamation-triangle"></span>
-                    {{else}}
-                        <span class='fa fa-paper-plane-o'></span>
-                    {{/if}}
-                {{/async-button}}
-            </span>
-        {{/if}}
-    </div>
-{{/hide-away}}
+{{!-- {{record-actions-control}} --}}

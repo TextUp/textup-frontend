@@ -49,17 +49,18 @@ module.exports = function(environment) {
     lock: {
       lockOnHidden: true
     },
-    photoCompression: {
-      maxSizeInBytes: 750000,
-      maxHeightInPixels: 1024,
-      maxWidthInPixels: 1024,
-      jpegQuality: 1.0,
-      // step size to enable image to fit within size constraint, needs to be between 0 and 1
-      // closer to 1 is a more fine-grained (conservative) scaling down
-      // closer to 0 is a more coarse-grained (extreme) scaling down
-      scalingStep: 0.9,
-      orient: true
-    },
+    // TODO remove
+    // photoCompression: {
+    //   maxSizeInBytes: 750000,
+    //   maxHeightInPixels: 1024,
+    //   maxWidthInPixels: 1024,
+    //   jpegQuality: 1.0,
+    //   // step size to enable image to fit within size constraint, needs to be between 0 and 1
+    //   // closer to 1 is a more fine-grained (conservative) scaling down
+    //   // closer to 0 is a more coarse-grained (extreme) scaling down
+    //   scalingStep: 0.9,
+    //   orient: true
+    // },
     state: {
       ignoreTracking: ['reset', 'setup', 'notify'],
       ignoreLock: ['setup', 'notify']
@@ -81,14 +82,15 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    // ENV.host = '';
-    ENV.host = 'https://dev.textup.org';
+    ENV.host = 'http://localhost:8080';
+    // ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
-    // ENV.lock.lockOnHidden = false;
-    ENV.manifest = {
-      enabled: true
-    };
+    // TODO restore
+    ENV.lock.lockOnHidden = false;
+    // ENV.manifest = {
+    //   enabled: true
+    // };
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -106,6 +108,8 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+
+    ENV['ember-prop-types'] = { throwErrors: true };
   }
 
   if (environment === 'production') {

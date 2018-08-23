@@ -1,46 +1,12 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import * as MediaActions from 'textup-frontend/objects/media-actions';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import md5 from 'npm:blueimp-md5';
+import { ACTIONS_ID_PROP_NAME } from 'textup-frontend/objects/media-actions';
+import { API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { ensureImageDimensions } from 'textup-frontend/utils/photo';
 
-const { computed, get } = Ember,
-  ACTIONS_ID_PROP_NAME = 'key',
-  API_ID_PROP_NAME = 'uid',
-  MediaImage = Ember.Object.extend({
-    [API_ID_PROP_NAME]: null,
-    small: computed(() => {
-      return { source: null, width: null };
-    }),
-    medium: computed(() => {
-      return { source: null, width: null };
-    }),
-    large: computed(() => {
-      return { source: null, width: null };
-    })
-  }),
-  AddChange = Ember.Object.extend({
-    [ACTIONS_ID_PROP_NAME]: null,
-    mimeType: null,
-    data: null,
-    toAction(constants) {
-      const data = this.get('data');
-      return {
-        action: constants.ACTION.MEDIA.ADD,
-        mimeType: this.get('mimeType'),
-        data: data,
-        checksum: md5(data)
-      };
-    }
-  }),
-  RemoveChange = Ember.Object.extend({
-    [ACTIONS_ID_PROP_NAME]: null,
-    toAction(constants) {
-      return {
-        action: constants.ACTION.MEDIA.REMOVE,
-        [ACTIONS_ID_PROP_NAME]: this.get(ACTIONS_ID_PROP_NAME)
-      };
-    }
-  });
+const { computed, get, typeOf } = Ember;
 
 export default DS.Model.extend(Dirtiable, {
   constants: Ember.inject.service(),
@@ -50,8 +16,8 @@ export default DS.Model.extend(Dirtiable, {
 
   rollbackAttributes() {
     this._super(...arguments);
-    this.get('_imagesToAdd').clear();
-    this.get('_imagesToRemove').clear();
+    this.get('_imageAddChanges').clear();
+    this.get('_imageRemoveChanges').clear();
   },
   hasManualChanges: computed('pendingChanges.[]', function() {
     return this.get('pendingChanges.length') > 0;
@@ -61,7 +27,7 @@ export default DS.Model.extend(Dirtiable, {
   // ----------
 
   images: DS.attr('media-collection'),
-  displayedImages: computed.readOnly('_displayedImages'),
+  displayedImages: computed.readOnly('_displayedImagesWithDimensions'),
   pendingChanges: computed.readOnly('_pendingChanges'),
   hasElements: computed.readOnly('_hasElements'),
   // list of string error messages in the event that some of the images we are trying
@@ -71,73 +37,71 @@ export default DS.Model.extend(Dirtiable, {
   // Private properties
   // ------------------
 
-  _displayedImages: computed('images.[]', '_imagesToAdd.[]', '_imagesToRemove.[]', function() {
-    const displayedNew = this.get('_imagesToAdd').map(buildMediaImageForNew),
-      imagesToExclude = this.get('_imagesToRemove'),
-      // after rolling back `images` may become undefined
-      displayedExisting = (this.get('images') || [])
-        .filter(
-          existing => !imagesToExclude.findBy(ACTIONS_ID_PROP_NAME, get(existing, API_ID_PROP_NAME))
-        )
-        .map(buildMediaImageForExisting);
-    return [].addObjects(displayedNew).addObjects(displayedExisting);
+  _displayedImagesWithDimensions: computed('_displayedImages.[]', function() {
+    return DS.PromiseArray.create({ promise: ensureImageDimensions(this.get('_displayedImages')) });
   }),
-  _pendingChanges: computed('_imagesToAdd.[]', '_imagesToRemove.[]', function() {
+  _displayedImages: computed(
+    'images.[]',
+    '_imageAddChanges.[]',
+    '_imageRemoveChanges.[]',
+    function() {
+      const displayedNew = this.get('_imageAddChanges').map(addChange => addChange.toMediaImage()),
+        removeActions = this.get('_imageRemoveChanges'),
+        // after rolling back `images` may become undefined
+        // because of transform, images is already an array of `MediaImage`s
+        displayedExisting = (this.get('images') || [])
+          .filter(
+            existing => !removeActions.findBy(ACTIONS_ID_PROP_NAME, get(existing, API_ID_PROP_NAME))
+          );
+      return [].addObjects(displayedNew).addObjects(displayedExisting);
+    }
+  ),
+  _pendingChanges: computed('_imageAddChanges.[]', '_imageRemoveChanges.[]', function() {
     const constants = this.get('constants'),
-      addChanges = this.get('_imagesToAdd').map(toAdd => toAdd.toAction(constants)),
-      removeChanges = this.get('_imagesToRemove').map(toAdd => toAdd.toAction(constants));
+      addChanges = this.get('_imageAddChanges').map(toAdd => toAdd.toAction(constants)),
+      removeChanges = this.get('_imageRemoveChanges').map(toAdd => toAdd.toAction(constants));
     return [].addObjects(addChanges).addObjects(removeChanges);
   }),
   _hasElements: computed('_displayedImages.[]', function() {
     return this.get('_displayedImages.length') > 0;
   }),
-  _imagesToAdd: computed(() => []),
-  _imagesToRemove: computed(() => []),
+  _imageAddChanges: computed(() => []),
+  _imageRemoveChanges: computed(() => []),
 
   // Methods
   // -------
 
-  addChange(mimeType, data) {
-    const addObj = AddChange.create({
-        mimeType: mimeType,
-        data: data
-      }),
+  addChange(mimeType, data, rawWidth, rawHeight) {
+    const width = parseInt(rawWidth),
+      height = parseInt(rawHeight);
+    if (
+      typeOf(mimeType) !== 'string' ||
+      typeOf(data) !== 'string' ||
+      isNaN(width) ||
+      isNaN(height)
+    ) {
+      return;
+    }
+    const addObj = MediaActions.AddChange.create({ mimeType, data, width, height }),
       tempId = Ember.guidFor(addObj);
     addObj.set(ACTIONS_ID_PROP_NAME, tempId);
-    this.get('_imagesToAdd').pushObject(addObj);
+    this.get('_imageAddChanges').pushObject(addObj);
     return tempId;
   },
   removeElement(elId) {
-    const toAdd = this.get('_imagesToAdd'),
+    if (typeOf(elId) !== 'string') {
+      return false;
+    }
+    const toAdd = this.get('_imageAddChanges'),
       matchingNewEl = toAdd.findBy(ACTIONS_ID_PROP_NAME, elId);
     if (matchingNewEl) {
-      // if is new, then remove from new
+      // if is new, then remove from; new
       toAdd.removeObject(matchingNewEl);
     } else {
-      const removeObj = RemoveChange.create({
-        [ACTIONS_ID_PROP_NAME]: elId
-      });
+      const removeObj = MediaActions.RemoveChange.create({ [ACTIONS_ID_PROP_NAME]: elId });
       // else add to the list of images to remove
-      this.get('_imagesToRemove').pushObject(removeObj);
+      this.get('_imageRemoveChanges').pushObject(removeObj);
     }
+    return true;
   }
 });
-
-function buildMediaImageForNew(newImage) {
-  return MediaImage.create({
-    [API_ID_PROP_NAME]: get(newImage, ACTIONS_ID_PROP_NAME),
-    large: {
-      source: get(newImage, 'data'),
-      width: null
-    }
-  });
-}
-
-function buildMediaImageForExisting(existingImage) {
-  return MediaImage.create({
-    [API_ID_PROP_NAME]: get(existingImage, API_ID_PROP_NAME),
-    small: get(existingImage, 'small'),
-    medium: get(existingImage, 'medium'),
-    large: get(existingImage, 'large')
-  });
-}

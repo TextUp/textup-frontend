@@ -1,27 +1,16 @@
-{{component _displayComponent imageLinks=imageLinks
-    itemClass=itemClass
-    deferred=deferred
-    onOneSuccess=(action 'onOneSuccess')
-    onOneFailure=onOneFailure
-    onAllTried=onAllTried
-    readonly=readonly
-    doRemove=doRemove}}
+{{#component imageDisplayComponent
+    images=images
+    itemClass="photo-control__item" as |image index|}}
+    {{#if (not readOnly)}}
+        <button
+            type='button'
+            class="photo-control__remove"
+            onclick={{action _doRemove image index}}>
+            <span class="fa fa-times"></span>
+        </button>
+    {{/if}}
+{{/component}}
 
-<div class="photo-control-add-container">
-    <input type="file"
-        id="photo-control-input--{{elementId}}"
-        accept="image/*;capture=camera"
-        multiple='multiple'>
-    <label for="photo-control-input--{{elementId}}">
-        {{#if _isUploading}}
-            <span class="fa fa-upload"></span>
-            <span class="margin-l-quarter">Adding images...</span>
-        {{else if _isUploadError}}
-            <span class="fa fa-exclamation"></span>
-            <span class="margin-l-quarter">Oops. Please try again.</span>
-        {{else}}
-            <span class="fa fa-plus"></span>
-            <span class="margin-l-quarter">Add images</span>
-        {{/if}}
-    </label>
-</div>
+{{#if (and onAdd (not readOnly))}}
+    {{photo-control/add onAdd=onAdd}}
+{{/if}}

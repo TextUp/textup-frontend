@@ -1,11 +1,13 @@
 import Ember from 'ember';
+import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, typeOf } = Ember;
 
 moduleForModel('record-note', 'Unit | Model | record note', {
   needs: [
     'service:constants',
+    'model:record-item',
     'model:contact',
     'model:tag',
     'model:media',
@@ -38,6 +40,61 @@ test('dirty checking', function(assert) {
   obj.set('location', null);
 
   assert.notOk(obj.get('hasManualChanges'), 'no location yet');
+});
+
+test('rolling back chanages, including inherited rollback', function(assert) {
+  run(() => {
+    const constants = this.container.lookup('service:constants'),
+      obj = this.subject(),
+      mockContact1 = mockModel('1', constants.MODEL.CONTACT),
+      rItem = this.store().createRecord('record-item', { whenCreated: new Date() });
+
+    obj.addRecipient(mockContact1);
+    obj.addAfter(rItem);
+
+    assert.equal(obj.get('numRecipients'), 1);
+    assert.equal(typeOf(obj.get('addAfterDate')), 'date');
+
+    obj.rollbackAttributes();
+
+    assert.equal(obj.get('numRecipients'), 0);
+    assert.equal(obj.get('addAfterDate'), null);
+  });
+});
+
+test('specifying a time to add this note after', function(assert) {
+  run(() => {
+    const obj = this.subject(),
+      rItem = this.store().createRecord('record-item');
+
+    assert.notOk(obj.addAfter(), 'non-object values are ignored');
+    assert.notOk(obj.addAfter(null), 'non-object values are ignored');
+    assert.notOk(obj.addAfter([]), 'non-object values are ignored');
+    assert.notOk(obj.addAfter('string'), 'non-object values are ignored');
+    assert.notOk(obj.addAfter(88), 'non-object values are ignored');
+
+    assert.ok(obj.addAfter({}), 'object values are considered');
+
+    assert.notOk(rItem.get('whenCreated'));
+    assert.ok(obj.addAfter(rItem));
+
+    assert.equal(
+      obj.get('addAfterDate'),
+      null,
+      'set to null because passed-in item has a null created timestamp'
+    );
+
+    const createdDate = new Date();
+    rItem.set('whenCreated', createdDate);
+    assert.ok(obj.addAfter(rItem));
+
+    assert.equal(obj.get('addAfterDate'), createdDate);
+
+    assert.throws(
+      () => obj.set('addAfterDate', null),
+      'only way to change add after date is using the provided method'
+    );
+  });
 });
 
 test('validating content', function(assert) {
@@ -83,7 +140,7 @@ test('validating content', function(assert) {
           'no noteContents and has media but is empty'
         );
 
-        mediaObj.addChange('valid mime type', 'valid data');
+        mediaObj.addChange('valid mime type', 'valid data', 88, 88);
         assert.ok(mediaObj.get('hasElements'));
 
         return model.validate();
@@ -172,10 +229,3 @@ test('validating recipients', function(assert) {
       });
   });
 });
-
-// Helpers
-// -------
-
-function mockModel(id, modelName, otherProps) {
-  return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });
-}

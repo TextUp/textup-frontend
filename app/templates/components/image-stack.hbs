@@ -1,0 +1,11 @@
+{{#responsive-image-gallery
+    images=images
+    thumbnailClass=(concat elementId '-item') as |gallery|}}
+    <div class="{{itemClass}} {{concat elementId '-item'}}" onclick={{gallery.actions.open}}>
+        {{responsive-image
+            versions=_coverImage.versions
+            onSuccess=(action _onSuccess)
+            onFailure=(action _onFailure)}}
+        {{yield _coverImage}}
+    </div>
+{{/responsive-image-gallery}}

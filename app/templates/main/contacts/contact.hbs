@@ -1,5 +1,4 @@
 {{title (phone-number contact.identifier)}}
-
 <div class="details full-height">
 	<div class="section-header">
         <div class="row full-height">
@@ -147,6 +146,21 @@
         </div>
     </div>
     <div class="section-body row {{if (not contact.allowEdits) 'readonly'}}">
-        {{partial 'partials/record/display-with-compose'}}
+        {{!-- {{partial 'partials/record/display-with-compose'}} --}}
+        {{#infinite-scroll
+            classNames='record-body bg-color bg-dark'
+            doRegister=(action (mut _recordsList))
+            containerClass='bg-color'
+            direction='up'
+            data=records
+            dataLength=recordsAdjustedSize
+            total=totalNumRecords
+            doLoad=(action 'loadMore')
+            doRefresh=(action 'refresh') as |cluster|}}
+
+            {{record-cluster cluster=cluster}}
+        {{else}}
+            <h1>Nothing in record yet!</h1>
+        {{/infinite-scroll}}
     </div>
 </div>

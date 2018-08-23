@@ -11,11 +11,7 @@ test('rendering without any data', function(assert) {
     .lookup('service:constants')
     .get('DAYS_OF_WEEK');
 
-  assert.throws(
-    this.render(hbs`{{schedule-control}}`),
-    TypeError,
-    'Missing required property schedule so throws TypeError'
-  );
+  assert.throws(() => this.render(hbs`{{schedule-control}}`), 'requires schedule');
 
   // with schedule class
   this.set('scheduleObj', Ember.Object.create({}));

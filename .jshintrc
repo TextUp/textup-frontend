@@ -3,9 +3,7 @@
     "document",
     "window",
     "-Promise",
-    "L",
-    "PhotoSwipe",
-    "PhotoSwipeUI_Default"
+    "L"
   ],
   "browser": true,
   "boss": true,

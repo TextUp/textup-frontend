@@ -50,7 +50,7 @@ test('validating contents', function(assert) {
           'no contents and has media but is empty'
         );
 
-        mediaObj.addChange('valid mime type', 'valid data');
+        mediaObj.addChange('valid mime type', 'valid data', 88, 88);
         assert.ok(mediaObj.get('hasElements'));
 
         return model.validate();

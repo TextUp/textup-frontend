@@ -1,5 +1,6 @@
 // $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
 @import 'font-awesome/scss/font-awesome.scss';
+@import 'ember-photoswipe';
 
 // import core textup styles library
 @import 'core/main';
@@ -30,6 +31,7 @@
 @import 'components/photo-control/_grid-display';
 @import 'components/_account-switcher';
 @import 'components/_entity-display';
+@import 'components/_responsive-image';
 
 // import app-specific styles
 // put this last so these styles take precendence over all

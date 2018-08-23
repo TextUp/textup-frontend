@@ -3,7 +3,7 @@ import Ember from 'ember';
 import RecordItem from './record-item';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed } = Ember,
+const { computed, typeOf, get } = Ember,
   Validations = buildValidations({
     numRecipients: validator('inclusion', {
       in: [1],
@@ -25,6 +25,10 @@ export default RecordItem.extend(Validations, {
   // Overrides
   // ---------
 
+  rollbackAttributes() {
+    this._super(...arguments);
+    this.set('_addAfterDate', null);
+  },
   hasManualChanges: computed('media.isDirty', 'location.isDirty', function() {
     return this.get('media.isDirty') || this.get('location.isDirty');
   }),
@@ -41,9 +45,23 @@ export default RecordItem.extend(Validations, {
   hasRevisions: computed.notEmpty('_revisions'),
   revisions: computed.sort('_revisions', '_revisionsSorting'),
 
+  addAfterDate: computed.readOnly('_addAfterDate'),
+
   // Private properties
   // ------------------
 
   _revisions: DS.hasMany('record-note-revision'),
-  _revisionsSorting: ['whenChanged:desc']
+  _revisionsSorting: ['whenChanged:desc'],
+  _addAfterDate: null,
+
+  // Methods
+  // -------
+
+  addAfter(rItem) {
+    if (typeOf(rItem) !== 'object' && typeOf(rItem) !== 'instance') {
+      return false;
+    }
+    this.set('_addAfterDate', get(rItem, 'whenCreated'));
+    return true;
+  }
 });

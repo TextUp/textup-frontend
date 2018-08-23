@@ -1,0 +1,14 @@
+{{#if call.hasVoicemail}}
+    {{audio-control source=call.voicemailUrl}}
+{{else}}
+    {{#if (gt call.receipts.successes.length 0)}}
+        {{moment-duration call.durationInSeconds 'seconds'}} call
+    {{else if (date/is-same-day call.whenCreated (now))}}
+        Call in progress
+    {{else}}
+        Call could not be completed
+    {{/if}}
+{{/if}}
+
+{{call.noteContents}}
+{{!-- {{photo-control photos=call.media.content.displayedImages}} --}}

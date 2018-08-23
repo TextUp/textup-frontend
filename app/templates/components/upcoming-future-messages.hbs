@@ -1,0 +1,35 @@
+<div class="future-messages no-select" {{action 'toggleDetailSlideout'
+    'slideouts/future-messages/list'
+    (if contact 'main/contacts/contact' 'main/tag/details')}}>
+    <div class="center text-ellipsis">
+        {{#if contact.nextFutureFire}}
+            Next scheduled message in
+            <span class="text-bold">
+                {{moment-from-now contact.nextFutureFire
+                    interval=1000 hideSuffix=true}}
+            </span>
+            <span class="display-l display-m">
+                on
+                <span class="text-bold">
+                    {{moment-format contact.nextFutureFire '
+                        ddd MMM D h:mm A'}}
+                </span>
+            </span>
+        {{else if tag.nextFutureFire}}
+            Next scheduled message in
+            <span class="text-bold">
+                {{moment-from-now tag.nextFutureFire
+                    interval=1000 hideSuffix=true}}
+            </span>
+            <span class="display-l display-m">
+                on
+                <span class="text-bold">
+                    {{moment-format tag.nextFutureFire '
+                        ddd MMM D h:mm A'}}
+                </span>
+            </span>
+        {{else}}
+            Scheduled Messages
+        {{/if}}
+    </div>
+</div>

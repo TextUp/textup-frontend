@@ -24,7 +24,7 @@ export default Component.extend({
   focusOutClose: defaultIfAbsent(false),
   bodyClickClose: defaultIfAbsent(false),
 
-  ignoreCloseSelectors: defaultIfAbsent(''),
+  ignoreCloseSelectors: defaultIfAbsent('.slideout-pane, .c-notification__container'),
   bodyFocusOnOpenSelector: defaultIfAbsent(''),
   allowedTriggerSelectors: defaultIfAbsent(''),
   ignoreTriggerSelectors: defaultIfAbsent(''),

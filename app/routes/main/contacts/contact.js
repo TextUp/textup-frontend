@@ -55,7 +55,8 @@ export default Ember.Route.extend(RecordNote, {
       this.controller.set(
         'newFutureMsg',
         this.store.createRecord('future-message', {
-          language: this.get('currentModel.language')
+          language: this.get('currentModel.language'),
+          contact: this.get('currentModel')
         })
       );
     },

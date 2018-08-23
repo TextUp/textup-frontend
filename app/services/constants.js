@@ -40,6 +40,15 @@ export default Ember.Service.extend({
       BACKGROUND: 'background'
     }
   },
+  PHOTO_CONTROL: {
+    DISPLAY: {
+      GRID: 'image-grid',
+      STACK: 'image-stack'
+    }
+  },
+  IMAGE: {
+    DEFAULT_ALT: 'User provided image'
+  },
   FUTURE_MESSAGE: {
     TYPE: {
       CALL: 'call',

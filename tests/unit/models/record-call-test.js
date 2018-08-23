@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run } = Ember;
@@ -66,6 +67,3 @@ test('validating recipients', function(assert) {
 // Helpers
 // -------
 
-function mockModel(id, modelName, otherProps) {
-  return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });
-}

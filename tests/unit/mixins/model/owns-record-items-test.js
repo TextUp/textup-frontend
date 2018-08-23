@@ -1,7 +1,6 @@
 import Ember from 'ember';
-import ModelOwnsRecordItemsMixin, {
-  RecordCluster
-} from 'textup-frontend/mixins/model/owns-record-items';
+import ModelOwnsRecordItemsMixin from 'textup-frontend/mixins/model/owns-record-items';
+import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 import { moduleFor, test } from 'ember-qunit';
 
 const { run } = Ember;

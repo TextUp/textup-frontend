@@ -8,21 +8,9 @@ import { validator, buildValidations } from 'ember-cp-validations';
 
 const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
   Validations = buildValidations({
-    name: {
-      description: 'Name',
-      validators: [validator('presence', true)]
-    },
-    note: {
-      description: 'Note',
-      validators: [
-        validator('length', {
-          max: 1000
-        })
-      ]
-    },
-    status: validator('inclusion', {
-      in: ['UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED']
-    }),
+    name: { description: 'Name', validators: [validator('presence', true)] },
+    note: { description: 'Note', validators: [validator('length', { max: 1000 })] },
+    status: validator('inclusion', { in: ['UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED'] }),
     numbers: {
       description: 'Numbers',
       validators: [
@@ -35,10 +23,7 @@ const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
             return validateNumber(Ember.get(numObj, 'number'));
           }
         }),
-        validator('length', {
-          min: 1,
-          message: 'Contact must have at least {min} phone number.'
-        })
+        validator('length', { min: 1, message: 'Contact must have at least {min} phone number.' })
       ]
     }
   });
@@ -58,18 +43,10 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   // Attributes
   // ----------
 
-  name: DS.attr('string', {
-    defaultValue: ''
-  }),
-  note: DS.attr('string', {
-    defaultValue: ''
-  }),
-  status: DS.attr('string', {
-    defaultValue: 'ACTIVE'
-  }),
-  numbers: DS.attr('collection', {
-    defaultValue: () => []
-  }),
+  name: DS.attr('string', { defaultValue: '' }),
+  note: DS.attr('string', { defaultValue: '' }),
+  status: DS.attr('string', { defaultValue: 'ACTIVE' }),
+  numbers: DS.attr('collection', { defaultValue: () => [] }),
   phone: DS.belongsTo('phone'),
   unreadInfo: DS.attr(),
 
