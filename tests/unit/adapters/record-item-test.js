@@ -73,7 +73,7 @@ test('building url', function(assert) {
 });
 
 test('getting polymorphic list of items', function(assert) {
-  const store = this.container.lookup('service:store'),
+  const store = Ember.getOwner(this).lookup('service:store'),
     itemBaseline = getStoreCountFor(store, 'record-item'),
     textBaseline = getStoreCountFor(store, 'record-text'),
     callBaseline = getStoreCountFor(store, 'record-call'),
@@ -101,7 +101,7 @@ test('getting polymorphic list of items', function(assert) {
 
 test('getting polymorphic individual items', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       itemBaseline = getStoreCountFor(store, 'record-item'),
       textBaseline = getStoreCountFor(store, 'record-text'),
       callBaseline = getStoreCountFor(store, 'record-call'),

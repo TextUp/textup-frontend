@@ -44,7 +44,7 @@ test('dirty checking', function(assert) {
 
 test('rolling back chanages, including inherited rollback', function(assert) {
   run(() => {
-    const constants = this.container.lookup('service:constants'),
+    const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject(),
       mockContact1 = mockModel('1', constants.MODEL.CONTACT),
       rItem = this.store().createRecord('record-item', { whenCreated: new Date() });
@@ -98,7 +98,7 @@ test('specifying a time to add this note after', function(assert) {
 });
 
 test('validating content', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     done = assert.async();
 
@@ -165,7 +165,7 @@ test('validating content', function(assert) {
 });
 
 test('validating recipients', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     done = assert.async(),
     mockContact = mockModel('1', constants.MODEL.CONTACT),

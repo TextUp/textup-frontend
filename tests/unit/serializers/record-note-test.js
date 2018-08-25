@@ -51,7 +51,7 @@ test('serialized form', function(assert) {
 });
 
 test('serializing recipients', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject();
 
   let serialized = obj.serialize();

@@ -1,20 +1,15 @@
-{{!-- TODO: incoming vs outgoing vs internal, horizontal vs vertical flow --}}
-
 {{#if (eq item.constructor.modelName 'record-text')}}
     {{record-cluster/item/text text=item}}
 {{else if (eq item.constructor.modelName 'record-call')}}
     {{record-cluster/item/call call=item}}
 {{else if (eq item.constructor.modelName 'record-note')}}
-    {{record-cluster/item/note note=item}}
-{{/if}}
-
-{{#if (eq item.constructor.modelName 'record-note')}}
-    {{record-cluster/item/metadata
-        timestamp=item.whenChanged
-        authorName=item.authorName}}
-{{else}}
-    {{record-cluster/item/metadata
-        timestamp=item.whenCreated
-        authorName=item.authorName
-        receiptInfo=item.receipts}}
+    {{#if item.isReadOnly}}
+        {{record-cluster/item/system-note note=item}}
+    {{else}}
+        {{record-cluster/item/note note=item
+            onEdit=noteOptions.onEdit
+            onRestore=noteOptions.onRestore
+            onViewHistory=noteOptions.onViewHistory
+            readOnly=noteOptions.readOnly}}
+    {{/if}}
 {{/if}}

@@ -1,7 +1,8 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 import uniqBy from 'textup-frontend/utils/uniq-by';
+import { pluralize } from 'textup-frontend/utils/text';
+import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { computed, typeOf } = Ember;
 
@@ -72,6 +73,7 @@ export default Ember.Mixin.create({
     if (currentCluster.get('numItems') > 0) {
       clustersList.pushObject(currentCluster);
     }
+    clustersList.forEach(addClusterLabel);
     return clustersList;
   }),
 
@@ -95,3 +97,15 @@ export default Ember.Mixin.create({
     return true;
   }
 });
+
+function addClusterLabel(cluster) {
+  const numItems = cluster.get('numItems');
+  if (numItems > 0) {
+    const rItem = cluster.get('items.firstObject'),
+      measureWord = pluralize('item', numItems),
+      labelWords = rItem.get('hasBeenDeleted')
+        ? [numItems, 'deleted', measureWord]
+        : [numItems, measureWord];
+    cluster.set('label', labelWords.join(' '));
+  }
+}

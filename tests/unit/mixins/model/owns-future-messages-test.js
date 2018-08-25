@@ -34,7 +34,7 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
 
 test('adding future messages', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       fMsgs = Array(8)
         .fill()
@@ -64,7 +64,7 @@ test('adding future messages', function(assert) {
 
 test('calculating next fire date', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       date1 = new Date(Date.now() + 1000),
       date2 = new Date(),

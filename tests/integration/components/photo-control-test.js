@@ -35,7 +35,7 @@ test('inputs', function(assert) {
 });
 
 test('changing image display type', function(assert) {
-  const constants = this.container.lookup('service:constants');
+  const constants = Ember.getOwner(this).lookup('service:constants');
 
   this.setProperties({ images: [] });
   this.render(hbs`{{photo-control images=images}}`);
@@ -60,7 +60,7 @@ test('changing image display type', function(assert) {
 });
 
 test('displaying images', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage());
@@ -113,7 +113,7 @@ test('adding images', function(assert) {
 });
 
 test('removing images', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage()),
@@ -173,7 +173,7 @@ test('removing images', function(assert) {
 });
 
 test('readOnly mode', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage());

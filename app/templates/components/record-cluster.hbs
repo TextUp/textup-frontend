@@ -1,21 +1,21 @@
 {{#if (eq cluster.numItems 1)}}
     {{record-cluster/item item=cluster.items.firstObject}}
 {{else if (gt cluster.numItems 1)}}
-    {{#hide-away classNames='textup-cluster'
+    {{#hide-away classNames='record-cluster'
         tabindex=false
         animation='slide'
-        clickOutToClose=true
+        clickOutToClose=false
         bodyClickClose=false
         hideTriggerOnOpen=true as |hideAway|}}
-        <div class="textup-cluster__trigger" onclick={{hideAway.actions.close}}>
+        <div class="record-cluster__trigger" onclick={{hideAway.actions.close}}>
             Hide {{cluster.label}}
         </div>
-        <div class="textup-cluster__body">
+        <div class="record-cluster__body">
             {{#each cluster.items as |item|}}
                 {{record-cluster/item item=item}}
             {{/each}}
         </div>
     {{else}}
-        <div class="textup-cluster__trigger">{{cluster.label}}</div>
+        <div class="record-cluster__trigger">Show {{cluster.label}}</div>
     {{/hide-away}}
 {{/if}}

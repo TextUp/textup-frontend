@@ -1,16 +1,7 @@
-<span class='textup-container'>
-    <div class="textup-container__item">
-        {{moment-format timestamp}} by <span class="text-bold">{{phone-number authorName}}</span>
-    </div>
-    {{#if receiptInfo}}
-        <div class="textup-container__item">
-            {{#if (gt receiptInfo.successes.length 0)}}
-                Sent to {{receiptInfo.successes.length}}
-            {{else if (gt receiptInfo.pending.length 0)}}
-                Sending...
-            {{else}}
-                Failed
-            {{/if}}
-        </div>
-    {{/if}}
-</span>
+{{#if (and _timestamp _author)}}
+    {{moment-format _timestamp}} by <span class="text-bold">{{phone-number _author}}</span>
+{{else if _timestamp}}
+    {{moment-format _timestamp}} by Unknown
+{{else if _author}}
+    by <span class="text-bold">{{phone-number _author}}</span>
+{{/if}}

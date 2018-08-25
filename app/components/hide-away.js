@@ -225,6 +225,7 @@ export default Component.extend({
     const $el = this.$(),
       throttle = this.get('throttleThreshold'),
       scrollSelector = this.get('scrollSelector'),
+      $appRoot = this.get('$appRoot'),
       doReposition = function() {
         Ember.run.throttle(this, this.positionBody, $body, true, throttle, true);
       }.bind(this);
@@ -254,9 +255,9 @@ export default Component.extend({
       }.bind(this)
     );
 
-    $(document).on(`click.${this.elementId}`, this.checkAndDoCloseOnClick.bind(this, $body));
+    $appRoot.on(`click.${this.elementId}`, this.checkAndDoCloseOnClick.bind(this, $body));
     // only trigger check to close on touch if touchstart follows touchend
-    $(document)
+    $appRoot
       .on(
         `touchstart.${this.elementId}`,
         function(event) {
@@ -298,7 +299,11 @@ export default Component.extend({
     this._startObserveMutations($body, doReposition);
   },
   removeBodyListeners: function() {
-    $(document).off(`click.${this.elementId}`);
+    const $appRoot = this.get('$appRoot');
+    $appRoot
+      .off(`click.${this.elementId}`)
+      .off(`touchstart.${this.elementId}`)
+      .off(`touchend.${this.elementId}`);
     $(window).off(`.${this.elementId}`);
     const $body = this._findBody(),
       scrollSelector = this.get('_scrollBinding');
@@ -694,7 +699,8 @@ export default Component.extend({
   checkAndDoCloseOnClick: function($body, event) {
     const $appRoot = this.get('$appRoot'),
       $target = Ember.$(event.target),
-      targetStillInDOM = $appRoot.find($target).length > 0;
+      targetStillInDOM = $appRoot.is($target) || $appRoot.find($target).length > 0;
+
     if (!targetStillInDOM) {
       return;
     }
@@ -704,6 +710,7 @@ export default Component.extend({
       isInBody = !!$body.find($target).length,
       closeClickedOutside = this.get('clickOutToClose') && isOutside,
       closeClickedInBody = this.get('bodyClickClose') && isInBody;
+
     if (shouldIgnore) {
       return;
     }

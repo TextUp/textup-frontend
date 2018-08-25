@@ -24,7 +24,7 @@ test('dirty checking', function(assert) {
 
 test('rolling back changes', function(assert) {
   run(() => {
-    const constants = this.container.lookup('service:constants'),
+    const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject(),
       newContact1 = mockModel('testing', constants.MODEL.CONTACT),
       newShared1 = mockModel(null, constants.MODEL.CONTACT, { isShared: true }),
@@ -58,7 +58,7 @@ test('default values', function(assert) {
 });
 
 test('adding and removing existing recipients', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject();
 
   assert.equal(obj.get('numRecipients'), 0);

@@ -3,7 +3,7 @@ import ModelOwnsRecordItemsMixin from 'textup-frontend/mixins/model/owns-record-
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, isPresent } = Ember;
 
 // testing DS.attr in mixins from https://stackoverflow.com/a/39860250
 moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-items', {
@@ -40,7 +40,7 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
 
 test('record items relationship is polymorphic', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       rItem1 = store.createRecord('record-item', { id: '1' }),
       rText1 = store.createRecord('record-text', { id: '2' }),
@@ -67,7 +67,7 @@ test('record items relationship is polymorphic', function(assert) {
 
 test('adding record items ignores duplicate, invalid, and falsy values', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       rItems1 = Array(8)
         .fill()
@@ -109,7 +109,7 @@ test('adding record items ignores duplicate, invalid, and falsy values', functio
 
 test('getting record items and record clusters', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       numItems = 4,
       rItems1 = Array(numItems)
@@ -149,6 +149,7 @@ test('getting record items and record clusters', function(assert) {
     assert.equal(obj.get('numRecordItems'), numItems + numNotes + numItems);
     assert.equal(obj.get('numRecordClusters'), numItems + numNotes + numItems);
     assert.ok(obj.get('recordClusters').every(cl1 => cl1 instanceof RecordCluster));
+    assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
 
@@ -158,6 +159,7 @@ test('getting record items and record clusters', function(assert) {
     assert.equal(obj.get('numRecordItems'), numItems + numNotes + numItems);
     assert.equal(obj.get('numRecordClusters'), numItems + numNotes + numItems);
     assert.ok(obj.get('recordClusters').every(cl1 => cl1 instanceof RecordCluster));
+    assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
 
@@ -167,6 +169,7 @@ test('getting record items and record clusters', function(assert) {
     assert.equal(obj.get('numRecordItems'), numItems + numNotes + numItems);
     assert.equal(obj.get('numRecordClusters'), numItems + numNotes + numItems);
     assert.ok(obj.get('recordClusters').every(cl1 => cl1 instanceof RecordCluster));
+    assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
 
@@ -180,8 +183,10 @@ test('getting record items and record clusters', function(assert) {
       'deleted items are clustered'
     );
     assert.ok(obj.get('recordClusters').every(cl1 => cl1 instanceof RecordCluster));
+    assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.notOk(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.notOk(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
+    assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('label').includes('delete')));
     assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('numItems') === numNotes));
     assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('items.length') === numNotes));
   });

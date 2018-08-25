@@ -1,4 +1,10 @@
-
+{{#if text.hasAwayMessage}}
+    Auto-responded with away message
+{{/if}}
 {{text.contents}}
-
-{{!-- {{photo-control photos=text.media.content.displayedImages}} --}}
+{{#if text.media.content.displayedImages.isFulfilled}}
+    {{image-stack images=text.media.content.displayedImages.content}}
+{{/if}}
+{{#record-cluster/item/receipts item=text}}
+    {{record-cluster/item/metadata item=text}}
+{{/record-cluster/item/receipts}}

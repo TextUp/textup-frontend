@@ -1,0 +1,36 @@
+{{#hide-away tabindex=false
+    clickOutToClose=true
+    bodyClickClose=false
+    allowedTriggerSelectors=_triggerIdSelector}}
+    {{#if item.receipts.success}}
+        <p>{{item.receipts.success.length}} {{pluralize 'success' item.receipts.success.length}}</p>
+        <ul>
+            {{#each item.receipts.success as |num|}}<li>{{phone-number num}}</li>{{/each}}
+        </ul>
+    {{/if}}
+    {{#if item.receipts.pending}}
+        <p>{{item.receipts.pending.length}} pending</p>
+        <ul>
+            {{#each item.receipts.pending as |num|}}<li>{{phone-number num}}</li>{{/each}}
+        </ul>
+    {{/if}}
+    {{#if item.receipts.busy}}
+        <p>{{item.receipts.busy.length}} busy</p>
+        <ul>
+            {{#each item.receipts.busy as |num|}}<li>{{phone-number num}}</li>{{/each}}
+        </ul>
+    {{/if}}
+    {{#if item.receipts.failed}}
+        <p>{{item.receipts.failed.length}} failed</p>
+        <ul>
+            {{#each item.receipts.failed as |num|}}<li>{{phone-number num}}</li>{{/each}}
+        </ul>
+    {{/if}}
+{{else}}
+    {{yield}}
+    {{#if _hasReceipts}}
+        <button type="button" class="record-item__receipts__trigger" id="{{_triggerId}}">
+            {{_triggerText}}
+        </button>
+    {{/if}}
+{{/hide-away}}

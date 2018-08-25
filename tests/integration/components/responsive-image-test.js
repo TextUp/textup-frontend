@@ -2,7 +2,7 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { mockValidMediaImage } from '../../helpers/utilities';
+import { mockValidMediaImage, VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 // [FUTURE] investigate testing window resizing recalculation
@@ -58,8 +58,7 @@ test('rendering success', function(assert) {
   this.setProperties({
     versions: [
       {
-        source:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII='
+        source: VALID_IMAGE_DATA_URL
       }
     ],
     onSuccess,
@@ -120,8 +119,7 @@ test('rendering responsive image', function(assert) {
       { source: 'https://via.placeholder.com/100x150', width: 100 },
       { source: 'https://via.placeholder.com/50x150', width: 50 },
       {
-        source:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=',
+        source: VALID_IMAGE_DATA_URL,
         width: 10
       }
     ],

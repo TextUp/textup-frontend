@@ -42,7 +42,7 @@ moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
 
 test('building url when creating record', function(assert) {
   run(() => {
-    const store = this.container.lookup('service:store'),
+    const store = Ember.getOwner(this).lookup('service:store'),
       adapter = this.subject(),
       cId = `${Math.random()}`,
       ctId = `${Math.random()}`,

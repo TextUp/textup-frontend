@@ -16,7 +16,7 @@ moduleForModel('record-call', 'Unit | Model | record call', {
 });
 
 test('validating recipients', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     done = assert.async(),
     mockContact = mockModel('1', constants.MODEL.CONTACT),

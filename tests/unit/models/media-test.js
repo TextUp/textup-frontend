@@ -163,7 +163,7 @@ test('rolling back changes', function(assert) {
 });
 
 test('building changes for API', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     mimeType = 'image/jpeg',
     data = 'i am some valid data',

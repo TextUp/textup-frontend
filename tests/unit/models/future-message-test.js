@@ -18,7 +18,7 @@ moduleForModel('future-message', 'Unit | Model | future message', {
 
 test('dirty checking', function(assert) {
   run(() => {
-    const constants = this.container.lookup('service:constants'),
+    const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject();
 
     assert.equal(obj.get('hasManualChanges'), false);
@@ -42,7 +42,7 @@ test('dirty checking', function(assert) {
 
 test('setting intervals of different sizes', function(assert) {
   run(() => {
-    const constants = this.container.lookup('service:constants'),
+    const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject();
 
     assert.equal(obj.get('intervalSize'), constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
@@ -86,7 +86,7 @@ test('setting intervals of different sizes', function(assert) {
 
 test('rolling back changes', function(assert) {
   run(() => {
-    const constants = this.container.lookup('service:constants'),
+    const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject();
 
     obj.set('intervalSize', constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
@@ -101,7 +101,7 @@ test('rolling back changes', function(assert) {
 });
 
 test('default values', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject();
 
   assert.equal(obj.get('isDone'), false);
@@ -115,7 +115,7 @@ test('default values', function(assert) {
 });
 
 test('validating supporting properties', function(assert) {
-  const constants = this.container.lookup('service:constants'),
+  const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     done = assert.async();
 

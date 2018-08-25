@@ -1,13 +1,11 @@
-<img src="" alt="preview location">
-<div class="location-preview-overlay {{if _isLoading 'show-overlay'}}">
-    <span class="center text-center text-ellipsis xs-9-row-10 s-8-row-10">
-        <span class="fa fa-circle-o-notch fa-spin"></span>
-        <span class='margin-l-quarter'>{{loadingMessage}}</span>
-    </span>
-</div>
-<div class="location-preview-overlay {{if _isError 'show-overlay'}}">
-    <span class="center text-center text-ellipsis xs-9-row-10 s-8-row-10">
-        <span class="fa fa-exclamation-triangle"></span>
-        <span class='margin-l-quarter'>{{errorMessage}}</span>
-    </span>
-</div>
+<img src="{{_previewUrl}}" alt="{{_previewAlt}}">
+
+{{#if _isShowingAddress}}
+    {{location.address}}
+{{else}}
+    {{#if _isLoading}}
+        {{loadingMessage}}
+    {{else if _isError}}
+        {{errorMessage}}
+    {{/if}}
+{{/if}}

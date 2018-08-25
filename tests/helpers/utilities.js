@@ -1,5 +1,8 @@
 import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
 
+export const VALID_IMAGE_DATA_URL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
+
 export function mockInvalidMediaImage() {
   const mediaImage = MediaImage.create({ [API_ID_PROP_NAME]: `${Math.random()}` });
   mediaImage.addVersion('not', 350, 88);
