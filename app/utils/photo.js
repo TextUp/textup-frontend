@@ -2,7 +2,7 @@ import Ember from 'ember';
 import imageCompression from 'npm:browser-image-compression';
 import { MediaImage } from 'textup-frontend/objects/media-image';
 
-const { get, RSVP, isPresent, isArray, typeOf } = Ember;
+const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 
 // Uploading image
 // ---------------
@@ -64,7 +64,7 @@ function _formatCompressedImages(compressedFile) {
 
 export function ensureImageDimensions(mediaImages) {
   return new RSVP.Promise((resolve, reject) => {
-    if (typeOf(mediaImages) !== 'array' || !isPresent(mediaImages)) {
+    if (!isArray(mediaImages) || isNone(mediaImages)) {
       reject(mediaImages);
     }
     const versionsFetchingDimensions = [];

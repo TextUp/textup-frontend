@@ -129,7 +129,7 @@ test('rendering valid location + clicking', function(assert) {
 
           done();
         });
-    }, 500);
+    }, 1000);
   });
 });
 

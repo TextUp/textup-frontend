@@ -1,0 +1,14 @@
+{{#liquid-spacer}}
+    {{yield}}
+    {{#if images}}
+        {{#image-grid classNames="record-actions-control__media-drawer"
+            images=images
+            itemClass="photo-control__item" as |image index|}}
+            <button type="button"
+                class="photo-control__remove"
+                onclick={{action _onRemoveImage image index}}>
+                <span class="fa fa-times"></span>
+            </button>
+        {{/image-grid}}
+    {{/if}}
+{{/liquid-spacer}}

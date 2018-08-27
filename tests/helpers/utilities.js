@@ -1,4 +1,8 @@
+import Ember from 'ember';
 import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { RecordCluster } from 'textup-frontend/objects/record-cluster';
+
+const { run } = Ember;
 
 export const VALID_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
@@ -29,3 +33,22 @@ export function mockModel(id, modelName, otherProps) {
   return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });
 }
 /* jshint ignore:end */
+
+export function mockRecordClusters(
+  store,
+  numClusters = 40,
+  itemModel = 'record-text',
+  itemProps = { contents: 'hi' }
+) {
+  let clusters = [];
+  run(() => {
+    clusters = Array(numClusters)
+      .fill()
+      .map(() => {
+        return RecordCluster.create({
+          items: [store.createRecord(itemModel, itemProps)]
+        });
+      });
+  });
+  return clusters;
+}

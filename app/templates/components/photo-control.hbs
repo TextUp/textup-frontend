@@ -2,8 +2,7 @@
     images=images
     itemClass="photo-control__item" as |image index|}}
     {{#if (not readOnly)}}
-        <button
-            type='button'
+        <button type='button'
             class="photo-control__remove"
             onclick={{action _doRemove image index}}>
             <span class="fa fa-times"></span>

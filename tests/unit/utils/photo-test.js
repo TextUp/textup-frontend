@@ -90,31 +90,31 @@ test('extracting images from an event', function(assert) {
   });
 });
 
-test('ensuring image dimensions with empty array', function(assert) {
+test('ensuring image dimensions a variety of inputs', function(assert) {
   const done = assert.async(6);
 
   PhotoUtils.ensureImageDimensions().then(null, res => {
-    assert.equal(res, undefined, 'invalid inputs pass through');
+    assert.equal(res, undefined, 'invalid inputs are rejected');
     done();
   });
   PhotoUtils.ensureImageDimensions(null).then(null, res => {
-    assert.equal(res, null, 'invalid inputs pass through');
+    assert.equal(res, null, 'invalid inputs are rejected');
     done();
   });
   PhotoUtils.ensureImageDimensions('hello').then(null, res => {
-    assert.equal(res, 'hello', 'invalid inputs pass through');
+    assert.equal(res, 'hello', 'invalid inputs are rejected');
     done();
   });
   PhotoUtils.ensureImageDimensions(88).then(null, res => {
-    assert.equal(res, 88, 'invalid inputs pass through');
+    assert.equal(res, 88, 'invalid inputs are rejected');
     done();
   });
   PhotoUtils.ensureImageDimensions({}).then(null, res => {
-    assert.deepEqual(res, {}, 'invalid inputs pass through');
+    assert.deepEqual(res, {}, 'invalid inputs are rejected');
     done();
   });
-  PhotoUtils.ensureImageDimensions([]).then(null, res => {
-    assert.deepEqual(res, [], 'empty arrays pass through');
+  PhotoUtils.ensureImageDimensions([]).then(res => {
+    assert.deepEqual(res, [], 'empty arrays pass through, NOT REJECTED');
     done();
   });
 });

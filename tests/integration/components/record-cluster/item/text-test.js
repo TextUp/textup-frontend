@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent, test } from 'ember-qunit';
+import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 
 const { run } = Ember;
 let store;
@@ -58,8 +59,10 @@ test('text with only contents', function(assert) {
 test('text with media and away message', function(assert) {
   run(() => {
     const rText = store.createRecord('record-text', {
-      hasAwayMessage: true
+      hasAwayMessage: true,
+      media: store.createRecord('media')
     });
+    rText.get('media.content').addChange('image/png', VALID_IMAGE_DATA_URL, 77, 88);
     this.setProperties({ rText });
 
     this.render(hbs`{{record-cluster/item/text text=rText}}`);
@@ -68,7 +71,7 @@ test('text with media and away message', function(assert) {
     assert.ok(this.$('.record-item--text').length);
 
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
-    assert.notOk(this.$('.image-stack').length, 'no images');
+    assert.ok(this.$('.image-stack').length, 'has images');
     assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
 
     const text = this.$().text();

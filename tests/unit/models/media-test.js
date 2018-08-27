@@ -1,6 +1,7 @@
+import * as PhotoUtils from 'textup-frontend/utils/photo';
 import Ember from 'ember';
 import sinon from 'sinon';
-import * as PhotoUtils from 'textup-frontend/utils/photo';
+import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, RSVP } = Ember;
@@ -11,7 +12,8 @@ moduleForModel('media', 'Unit | Model | media', {
   subject() {
     return run(() => {
       return this.store().createRecord('media', {
-        images: [{ uid: `${Math.random()}` }]
+        // `media-collection` transform -- returns an array of `MediaImage`s
+        images: [MediaImage.create({ [API_ID_PROP_NAME]: `${Math.random()}` })]
       });
     });
   },
@@ -40,6 +42,7 @@ test('adding/removing new media elements + dirty checking', function(assert) {
     .get('displayedImages')
     .then(displayedImages => {
       assert.equal(displayedImages.length, 1);
+      assert.ok(displayedImages.every(img => img instanceof MediaImage));
       assert.equal(ensureDimensionsStub.callCount, 1);
 
       assert.notOk(obj.addChange());
@@ -60,6 +63,7 @@ test('adding/removing new media elements + dirty checking', function(assert) {
     })
     .then(displayedImages => {
       assert.equal(displayedImages.length, 2);
+      assert.ok(displayedImages.every(img => img instanceof MediaImage));
       assert.equal(ensureDimensionsStub.callCount, 2);
 
       assert.notOk(obj.removeElement());
@@ -74,6 +78,7 @@ test('adding/removing new media elements + dirty checking', function(assert) {
     })
     .then(displayedImages => {
       assert.equal(displayedImages.length, 1);
+      assert.ok(displayedImages.every(img => img instanceof MediaImage));
       assert.equal(ensureDimensionsStub.callCount, 3);
 
       done();
@@ -94,6 +99,7 @@ test('removing existing media elements', function(assert) {
     .get('displayedImages')
     .then(displayedImages => {
       assert.equal(displayedImages.length, 1);
+      assert.ok(displayedImages.every(img => img instanceof MediaImage));
       assert.equal(ensureDimensionsStub.callCount, 1);
 
       obj.removeElement(existingId);
@@ -127,6 +133,7 @@ test('rolling back changes', function(assert) {
       .get('displayedImages')
       .then(displayedImages => {
         assert.equal(displayedImages.length, 1);
+        assert.ok(displayedImages.every(img => img instanceof MediaImage));
         assert.equal(ensureDimensionsStub.callCount, 1);
 
         obj.addChange(mimeType, data, 77, 88);
@@ -139,6 +146,7 @@ test('rolling back changes', function(assert) {
       })
       .then(displayedImages => {
         assert.equal(displayedImages.length, 2);
+        assert.ok(displayedImages.every(img => img instanceof MediaImage));
         assert.equal(ensureDimensionsStub.callCount, 2);
 
         obj.rollbackAttributes();
@@ -179,6 +187,7 @@ test('building changes for API', function(assert) {
   assert.equal(obj.get('hasElements'), true);
   obj.get('displayedImages').then(displayedImages => {
     assert.equal(displayedImages.length, 4, 'one existing + 3 newly added');
+    assert.ok(displayedImages.every(img => img instanceof MediaImage));
     assert.equal(ensureDimensionsStub.callCount, 1);
 
     const pendingChanges = obj.get('pendingChanges');

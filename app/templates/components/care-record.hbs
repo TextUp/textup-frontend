@@ -1,0 +1,54 @@
+{{#infinite-scroll classNames="care-record__body-container"
+    containerClass="care-record__body"
+    doRegister=(action (mut _recordClustersScroll))
+    direction=constants.INFINITE_SCROLL.DIRECTION.UP
+    data=recordClusters
+    dataLength=numRecordItems
+    total=totalNumRecordItems
+    doLoad=(action _onLoadRecordItems)
+    doRefresh=(action _onRefreshRecordItems) as |cluster|}}
+    {{#record-cluster cluster=cluster
+        noteOptions=(hash onEdit=(action _onEditNote)
+            onRestore=(action _onRestoreNote)
+            onViewHistory=(action _onViewNoteHistory)
+            readOnly=(not canModifyExistingInRecord)) as |item|}}
+        {{#if (and _isAddingNoteInPast (not item.hasBeenDeleted))}}
+            <button class="care-record__add-note-button"
+                type="button"
+                onclick={{action _addNoteInPast item}}>
+                <span class="fa fa-plus"></span>
+            </button>
+        {{/if}}
+    {{/record-cluster}}
+{{else}}
+    <div class="care-record__body__message">{{noRecordItemsMessage}}</div>
+{{/infinite-scroll}}
+
+{{upcoming-future-messages nextFutureFire=nextFutureFire onClick=(action _onViewScheduledMessages)}}
+
+{{#record-actions-control hasPersonalPhoneNumber=_hasPersonalPhoneNumber
+    hasItemsInRecord=_hasItemsInRecord
+    images=images
+    contents=contents
+    onContentChange=(action _onContentChange)
+    onAddImage=(action _onAddImage)
+    onRemoveImage=(action _onRemoveImage)
+    onAddNoteInPast=(action (mut _isAddingNoteInPast) true)
+    onAddNote=(action _addNoteNow)
+    onCall=(action _onCall)
+    onText=(action _onText)
+    onScheduleMessage=(action _onScheduleMessage)}}
+    {{#record-actions-control/overlay show=(not canAddToRecord) showCloseButton=false}}
+        {{noAddToRecordMessage}}
+    {{/record-actions-control/overlay}}
+    {{#record-actions-control/overlay show=_hasStartedCall
+        onClose=(action (mut _hasStartedCall) false)
+        closeButtonLabel="Got it"}}
+        {{startCallMessage}}
+    {{/record-actions-control/overlay}}
+    {{#record-actions-control/overlay show=_isAddingNoteInPast
+        onClose=(action (mut _isAddingNoteInPast) false)
+        closeButtonLabel="Cancel"}}
+        {{addNoteInPastMessage}}
+    {{/record-actions-control/overlay}}
+{{/record-actions-control}}

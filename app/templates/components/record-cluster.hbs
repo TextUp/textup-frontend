@@ -1,5 +1,6 @@
 {{#if (eq cluster.numItems 1)}}
-    {{record-cluster/item item=cluster.items.firstObject}}
+    {{record-cluster/item item=cluster.items.firstObject noteOptions=noteOptions}}
+    {{yield cluster.items.firstObject 0}}
 {{else if (gt cluster.numItems 1)}}
     {{#hide-away classNames='record-cluster'
         tabindex=false
@@ -11,8 +12,9 @@
             Hide {{cluster.label}}
         </div>
         <div class="record-cluster__body">
-            {{#each cluster.items as |item|}}
-                {{record-cluster/item item=item}}
+            {{#each cluster.items as |item index|}}
+                {{record-cluster/item item=item noteOptions=noteOptions}}
+                {{yield item index}}
             {{/each}}
         </div>
     {{else}}
