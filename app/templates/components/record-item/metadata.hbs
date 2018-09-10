@@ -1,0 +1,7 @@
+{{#if (and timestamp author)}}
+    {{moment-format timestamp}} by <span class="text-bold">{{phone-number author}}</span>
+{{else if timestamp}}
+    {{moment-format timestamp}} by Unknown
+{{else if author}}
+    by <span class="text-bold">{{phone-number author}}</span>
+{{/if}}

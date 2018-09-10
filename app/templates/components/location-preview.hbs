@@ -1,11 +1,18 @@
-<img src="{{_previewUrl}}" alt="{{_previewAlt}}">
-
-{{#if _isShowingAddress}}
-    {{location.address}}
-{{else}}
-    {{#if _isLoading}}
-        {{loadingMessage}}
-    {{else if _isError}}
-        {{errorMessage}}
-    {{/if}}
+{{#if _shouldLoad}}
+    {{responsive-image classNames="location-preview__image"
+        versions=_previewUrl
+        alt=_previewAlt
+        onSuccess=(action _onSuccess)
+        onFailure=(action _onFailure)}}
 {{/if}}
+<div class="location-preview__message">
+    {{#if _isShowingAddress}}
+        {{location.address}}
+    {{else}}
+        {{#if _isLoading}}
+            {{loadingMessage}}
+        {{else if _isError}}
+            {{errorMessage}}
+        {{/if}}
+    {{/if}}
+</div>

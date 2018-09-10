@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
-import callIfPresent from '../utils/call-if-present';
 
 const {
   $,
@@ -14,7 +13,7 @@ const {
 
 export default Ember.Component.extend({
   data: defaultIfAbsent([]),
-  total: defaultIfAbsent(0),
+  total: null,
   direction: defaultIfAbsent('down'), // up | down
   // OPTIONAL. use this if need to implement custom data length logic
   // if this isn't provided, then defaults to callling data.length
@@ -131,7 +130,7 @@ export default Ember.Component.extend({
 
   didInitAttrs: function() {
     this._super(...arguments);
-    callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   didInsertElement: function() {
     scheduleOnce('afterRender', this, function() {

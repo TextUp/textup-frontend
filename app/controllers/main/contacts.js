@@ -10,7 +10,6 @@ export default Ember.Controller.extend({
   filter: alias('mainController.filter'),
   // store contacts on mainController so we can add new contacts for display
   contacts: alias('mainController.contacts'),
-
   // contacts array on mainController is an alias of the owner's contacts
   // so when we are switching to admin, we are changing owner and switching to
   // an owner that doesn't have contacts becuase owner is now an organization
@@ -70,6 +69,7 @@ export default Ember.Controller.extend({
         team = this.get('stateManager.ownerAsTeam'),
         tag = this.get('tag');
       // build query
+      query.max = 20;
       query.status = this.get('statuses');
       query.offset = offset;
       if (tag) {
@@ -83,7 +83,7 @@ export default Ember.Controller.extend({
       this.store.query('contact', query).then(results => {
         this.set('numContacts', results.get('meta.total'));
         resolve(results);
-      }, this.get('dataHandler').buildErrorHandler(reject));
+      }, this.get('dataService').buildErrorHandler(reject));
     });
   },
   _translateFilter: function(filter) {

@@ -4,7 +4,7 @@ import Ember from 'ember';
 import moment from 'moment';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, typeOf } = Ember,
+const { computed, get } = Ember,
   Validations = buildValidations({
     type: validator('inclusion', {
       in: model => Object.values(model.get('constants.FUTURE_MESSAGE.TYPE'))
@@ -15,23 +15,40 @@ const { computed, typeOf } = Ember,
         validator('length', { max: 320 }),
         validator('has-any', {
           also: ['media.hasElements'],
-          // see `valdiators/has-any` for why we need to manually specify dependent key here
-          dependentKeys: ['media.hasElements'],
-          description: 'message body or images'
+          // [FUTURE] add images too here. We are not supporting images in the UI for this release
+          description: 'message body'
         })
       ]
     },
     intervalSize: {
+      disabled(model) {
+        return !model.get('isRepeating');
+      },
+      dependentKeys: ['isRepeating'],
       description: 'Repeat interval size in days',
-      validators: [validator('number', { allowBlank: true, allowString: true, gt: 0 })]
+      validators: [validator('number', { allowString: true, gt: 0 })]
     },
     repeatInterval: {
+      disabled(model) {
+        return !model.get('isRepeating');
+      },
+      dependentKeys: ['isRepeating'],
       description: 'Repeat interval',
-      validators: [validator('number', { allowBlank: true, allowString: true, gt: 0 })]
+      validators: [validator('number', { allowString: true, gt: 0 })]
     },
     repeatCount: {
+      disabled(model) {
+        return !model.get('isRepeating');
+      },
+      dependentKeys: ['isRepeating'],
       description: 'Number of times to repeat',
-      validators: [validator('number', { allowBlank: true, allowString: true, gt: 0 })]
+      validators: [
+        validator('number', { allowBlank: true, allowString: true, gt: 0 }),
+        validator('has-any', {
+          also: ['endDate'],
+          description: 'number of times or end date to stop after'
+        })
+      ]
     }
   });
 
@@ -41,19 +58,8 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides
   // ---------
 
-  rollbackAttributes: function() {
-    this._super(...arguments);
-    this.set('intervalSize', this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY'));
-  },
-  didUpdate: function() {
-    this._super(...arguments);
-    this.rollbackAttributes();
-  },
-  hasManualChanges: computed('intervalSize', 'media.isDirty', function() {
-    return (
-      this.get('intervalSize') !== this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY') ||
-      !!this.get('media.isDirty')
-    );
+  hasManualChanges: computed('media.isDirty', function() {
+    return !!this.get('media.isDirty');
   }),
 
   // Properties
@@ -87,47 +93,67 @@ export default DS.Model.extend(Dirtiable, Validations, {
   contact: DS.belongsTo('contact'), // hasOne
   tag: DS.belongsTo('tag'), // hasOne
 
+  owner: computed('contact', 'tag', {
+    get() {
+      return this.get('tag.content') ? this.get('tag') : this.get('contact');
+    },
+    set(key, value) {
+      const modelName = get(value || {}, 'constructor.modelName');
+      if (modelName === this.get('constants.MODEL.CONTACT')) {
+        this.setProperties({ contact: value, tag: null });
+        return this.get('contact');
+      } else if (modelName === this.get('constants.MODEL.TAG')) {
+        this.setProperties({ contact: null, tag: value });
+        return this.get('tag');
+      } else {
+        return value;
+      }
+    }
+  }),
+
   intervalSize: computed('_intervalSize', {
     get() {
-      const size = this.get('_intervalSize'),
-        fallbackSize = this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY');
-      return typeOf(size) === 'number' ? size : fallbackSize;
+      return this.get('_intervalSize');
     },
-    set(key, size) {
-      if (!this.get('isDeleted')) {
+    set(key, rawSize) {
+      const size = parseInt(rawSize);
+      if (!this.get('isDeleted') && !isNaN(size)) {
         this.setProperties({
           _repeatIntervalInDays: buildNewIntervalInDays(this.get('repeatInterval'), size),
           _intervalSize: size
         });
       }
-      return size;
+      return rawSize; // avoid NaN error messages that may happen with returning `size`
     }
   }),
   repeatInterval: computed('_repeatInterval', {
     get() {
       return this.get('_repeatInterval');
     },
-    set(key, interval) {
-      if (!this.get('isDeleted')) {
+    set(key, rawInterval) {
+      const interval = parseInt(rawInterval);
+      if (!this.get('isDeleted') && !isNaN(interval)) {
         this.setProperties({
           _repeatIntervalInDays: buildNewIntervalInDays(interval, this.get('intervalSize')),
           _repeatInterval: interval
         });
       }
-      return interval;
+      return rawInterval; // avoid NaN error messages that may happen with returning `interval`
     }
   }),
 
   // Private Properties
   // ------------------
 
-  _repeatInterval: null,
-  _intervalSize: null,
+  _repeatInterval: computed(function() {
+    return this.get('_repeatIntervalInDays');
+  }),
+  _intervalSize: computed(function() {
+    return this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY');
+  }),
   _repeatIntervalInDays: DS.attr('number')
 });
 
 function buildNewIntervalInDays(interval, intervalSize) {
-  return typeOf(interval) === 'number' && typeOf(intervalSize) === 'number'
-    ? interval * intervalSize
-    : null;
+  return !isNaN(interval) && !isNaN(intervalSize) ? interval * intervalSize : null;
 }

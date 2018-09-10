@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -19,7 +18,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   actions: {
     onToggleSelect() {
-      callIfPresent(this.get('onSelect'), ...arguments);
+      Ember.tryInvoke(this, 'onSelect', [...arguments]);
     }
   }
 });

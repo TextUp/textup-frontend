@@ -1,0 +1,18 @@
+<div class="record-item__body">
+    <div class="text-wrap">
+        {{text.contents}}
+    </div>
+    {{#if text.hasAwayMessage}}
+        <div class="text-small text--deemphasize text-ellipsis margin-t-half">
+            Auto-responded with away message
+        </div>
+    {{/if}}
+</div>
+{{#if text.media.content.displayedImages.isFulfilled}}
+    <div class="record-item__media">
+        {{image-stack images=text.media.content.displayedImages.content}}
+    </div>
+{{/if}}
+{{#record-item/receipts item=text disabled=(not text.outgoing)}}
+    {{record-item/metadata timestamp=text.whenCreated author=text.authorName}}
+{{/record-item/receipts}}

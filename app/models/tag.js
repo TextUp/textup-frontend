@@ -22,7 +22,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   },
   rollbackAttributes: function() {
     this._super(...arguments);
-    this.get('actions').clear();
+    this.clearMembershipChanges();
   },
   didCreate() {
     this.rollbackAttributes();
@@ -42,7 +42,6 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   // Not attributes
   // --------------
 
-  type: 'tag', // for compose menu
   actions: null,
 
   // Computed properties
@@ -54,5 +53,12 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   uniqueIdentifier: alias('name'),
   urlIdentifier: Ember.computed('name', function() {
     return Ember.String.dasherize(this.get('name') || '');
-  })
+  }),
+
+  // Methods
+  // -------
+
+  clearMembershipChanges() {
+    this.get('actions').clear();
+  }
 });

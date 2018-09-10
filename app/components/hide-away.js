@@ -1,7 +1,7 @@
+import callIfPresent from 'textup-frontend/utils/call-if-present';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import Ember from 'ember';
-import callIfPresent from '../utils/call-if-present';
-import defaultIfAbsent from '../utils/default-if-absent';
-import { distance } from '../utils/coordinate';
+import { distance } from 'textup-frontend/utils/coordinate';
 
 const { Component, run, computed, $ } = Ember,
   MutObserver =
@@ -94,7 +94,7 @@ export default Component.extend({
 
   didInitAttrs: function() {
     this._super(...arguments);
-    callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   didInsertElement: function() {
     this._super(...arguments);
@@ -326,11 +326,13 @@ export default Component.extend({
           }
         }.bind(this)
       );
-      observer.observe($body[0], {
-        childList: true,
-        subtree: true
-      });
-      this.set('_mutationObserver', observer);
+      if ($body[0]) {
+        observer.observe($body[0], {
+          childList: true,
+          subtree: true
+        });
+        this.set('_mutationObserver', observer);
+      }
     } else {
       $body
         .on(`DOMNodeInserted.${this.elementId}`, doReposition)
@@ -392,8 +394,10 @@ export default Component.extend({
       _closeTimer: null,
       _isOpen: true
     });
-    const openTimer = run.scheduleOnce('afterRender', this, function() {
-      callIfPresent(this.get('onOpen'));
+    // sometimes when there's a lot to render, the body may take more than one
+    // render cycle to be rendered
+    const openTimer = run.next(this, function() {
+      Ember.tryInvoke(this, 'onOpen');
       // need to wait until after render for body to appear
       let triggerOpenPromise = null;
       if (this.get('hideTriggerOnOpen')) {
@@ -404,6 +408,7 @@ export default Component.extend({
       }
       const $body = this._findBody(),
         after = this._afterOpen.bind(this, $body, skipFocus, callback);
+
       let openAction = null;
       this.positionBody($body);
       $body.css('visibility', 'visible').hide();
@@ -451,8 +456,8 @@ export default Component.extend({
         return;
       }
       this.set('publicAPI.isOpen', true);
-      callIfPresent(this.get('onOpened'));
-      callIfPresent(callback);
+      Ember.tryInvoke(this, 'onOpened');
+      callIfPresent(this, callback);
 
       const bodyTimer = run.scheduleOnce('afterRender', this, this._addBodyListeners, $body);
       this.set('_bodyTimer', bodyTimer);
@@ -461,7 +466,7 @@ export default Component.extend({
           $bodyFocus = focusSelector ? this.$(focusSelector) : null;
         if ($bodyFocus && $bodyFocus.length) {
           $bodyFocus.focus();
-        } else if ($body[0].tabIndex > -1) {
+        } else if ($body[0] && $body[0].tabIndex > -1) {
           $body.focus();
         }
       }
@@ -486,7 +491,7 @@ export default Component.extend({
     if (Ember.isNone($body[0]) || !$trigger) {
       return;
     }
-    callIfPresent(this.get('onClose'));
+    Ember.tryInvoke(this, 'onClose');
     if (this.get('hideTriggerOnOpen')) {
       if (animation === 'fade') {
         $body
@@ -539,8 +544,8 @@ export default Component.extend({
       this.set('_isOpen', false);
       const closeTimer = run.scheduleOnce('afterRender', this, function() {
         this.set('publicAPI.isOpen', false);
-        callIfPresent(this.get('onClosed'));
-        callIfPresent(callback);
+        Ember.tryInvoke(this, 'onClosed');
+        callIfPresent(this, callback);
 
         const $trigger = this.get('$trigger');
         if (!skipFocus && $trigger && $trigger[0].tabIndex > -1) {
@@ -694,6 +699,7 @@ export default Component.extend({
   },
   _findBody: function() {
     const $parent = this.get('floating') ? this.get('$appRoot') : this.$();
+
     return $parent.find(`.hide-away-body.${this.elementId}`);
   },
   checkAndDoCloseOnClick: function($body, event) {
@@ -727,6 +733,6 @@ export default Component.extend({
     }
   },
   _shouldStopEvent: function(event) {
-    return callIfPresent(event.isImmediatePropagationStopped);
+    return Ember.tryInvoke(event, 'isImmediatePropagationStopped');
   }
 });

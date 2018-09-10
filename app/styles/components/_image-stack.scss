@@ -1,0 +1,60 @@
+%stack-ghost {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    height: 100%;
+    width: 100%;
+    background-color: shade($border-color, 2);
+    opacity: 0.8;
+    transition: all 0.5s;
+}
+%stack-item {
+    box-shadow: 2px 2px 5px 0px shade($border-color, 2.5);
+}
+
+.image-stack {
+    $bottom-z-index: 1;
+    $image-stack-height: $media-preview-height;
+
+    position: relative;
+    height: $image-stack-height;
+    width: 100%;
+    min-width: $image-stack-height;
+
+    &__preview {
+        position: relative;
+        height: $image-stack-height;
+        width: 100%;
+        background-color: $bg-color;
+        transition: all 0.5s;
+        z-index: 10;
+        cursor: pointer;
+        overflow: hidden;
+
+        &__image {
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    // Complexities of z-index and 3d-transforms documented
+    // at http://katydecorah.com/code/z-index-and-transform/
+    &--multiple {
+        &:before {
+            @extend %stack-ghost;
+        }
+        &:hover .image-stack__preview,
+        &.active .image-stack__preview {
+            @extend %stack-item;
+            z-index: $bottom-z-index * 2;
+            transform: translate(-5px, -5px);
+        }
+        &:hover:before,
+        &.active:hover:before {
+            z-index: $bottom-z-index;
+        }
+    }
+}

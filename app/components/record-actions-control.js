@@ -48,7 +48,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   // content-related handlers
   _onContentChange(newVal) {
-    run.debounce(() => tryInvoke(this, 'onContentChange', [newVal]), 500);
+    tryInvoke(this, 'onContentChange', [newVal]); // do NOT debounce or else typing will be very laggy
   },
   _onAddImage() {
     tryInvoke(this, 'onAddImage', [...arguments]);

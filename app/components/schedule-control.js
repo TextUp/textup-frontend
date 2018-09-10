@@ -1,6 +1,6 @@
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import callIfPresent from '../utils/call-if-present';
 
 const { computed } = Ember;
 
@@ -32,21 +32,21 @@ export default Ember.Component.extend(PropTypesMixin, {
     });
   },
   _handleAdd(dayOfWeek, timeRange, then) {
-    callIfPresent(this.get('onChange'), dayOfWeek, [
-      ...this._copyDayOfWeekRanges(dayOfWeek),
-      timeRange
+    Ember.tryInvoke(this, 'onChange', [
+      dayOfWeek,
+      [...this._copyDayOfWeekRanges(dayOfWeek), timeRange]
     ]);
-    callIfPresent(then);
+    callIfPresent(this, then);
   },
   _handleUpdate(dayOfWeek, dataIndex, newRange) {
     const ranges = this._copyDayOfWeekRanges(dayOfWeek);
     ranges[dataIndex] = newRange;
-    callIfPresent(this.get('onChange'), dayOfWeek, ranges);
+    Ember.tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
   },
   _handleRemove(dayOfWeek, dataIndex) {
     const ranges = this._copyDayOfWeekRanges(dayOfWeek);
     ranges.removeAt(dataIndex, 1);
-    callIfPresent(this.get('onChange'), dayOfWeek, ranges);
+    Ember.tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
   },
 
   // Helpers

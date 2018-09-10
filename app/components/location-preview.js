@@ -3,7 +3,7 @@ import Location from 'textup-frontend/models/location';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { buildPreviewUrl } from 'textup-frontend/utils/location';
 
-const { computed, tryInvoke, run, getWithDefault } = Ember;
+const { computed, tryInvoke, run, typeOf, getWithDefault } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -17,21 +17,29 @@ export default Ember.Component.extend(PropTypesMixin, {
     return { loadingMessage: 'Loading', errorMessage: 'Could not load preview' };
   },
   classNames: ['location-preview'],
+  classNameBindings: [
+    '_isShowingAddress:location-preview--overlay',
+    '_isLoading:location-preview--overlay',
+    '_isError:location-preview--overlay'
+  ],
 
   didInsertElement() {
     this._super(...arguments);
-    this.get('_$img')
-      .on(this.get('_loadEventName'), this._onSuccess.bind(this))
-      .on(this.get('_errorEventName'), this._onFailure.bind(this));
+    // wait until after render so that client height and width will not be null
+    run.scheduleOnce('afterRender', () => {
+      if (this.get('isDestroying') || this.get('isDestroyed')) {
+        return;
+      }
+      this.set('_shouldLoad', true);
+    });
   },
-  willDestroyElement() {
-    this._super(...arguments);
-    this.get('_$img')
-      .off(this.get('_loadEventName'))
-      .off(this.get('_errorEventName'));
-  },
+
   click() {
-    this.toggleProperty('_isShowingAddress');
+    if (this.get('location.address')) {
+      this.toggleProperty('_isShowingAddress');
+    } else {
+      this.set('_isShowingAddress', false);
+    }
   },
 
   // Internal properties
@@ -40,24 +48,21 @@ export default Ember.Component.extend(PropTypesMixin, {
   _previewAlt: computed('location.address', function() {
     return `Previewing location with address ${this.get('location.address')}`;
   }),
-  _previewUrl: computed('location.latLng', function() {
-    const { lat, lng } = this.get('location.latLng'),
+  _previewUrl: computed('location.latLng.{lat,lng}', function() {
+    const latLng = this.get('location.latLng');
+    if (typeOf(latLng) !== 'object' || !latLng.lat || !latLng.lng) {
+      return;
+    }
+    const { lat, lng } = latLng,
       config = Ember.getOwner(this).resolveRegistration('config:environment');
-    this._startLoadProps();
-    return buildPreviewUrl(config, lat, lng, this._getLargestDimension(config));
+    // schedule this method call so we don't try to modify classes multiple times in a single render
+    run.scheduleOnce('actions', this._startLoadProps.bind(this));
+    return [{ source: buildPreviewUrl(config, lat, lng, this._getLargestDimension(config)) }];
   }),
+  _shouldLoad: false,
   _isLoading: false,
   _isError: false,
   _isShowingAddress: false,
-  _loadEventName: computed('elementId', function() {
-    return `load.${this.get('elementId')}`;
-  }),
-  _errorEventName: computed('elementId', function() {
-    return `error.${this.get('elementId')}`;
-  }),
-  _$img: computed(function() {
-    return this.$('img');
-  }),
 
   // Internal handlers
   // -----------------
@@ -71,9 +76,15 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onFailure', [...arguments]);
   },
   _startLoadProps() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     this.setProperties({ _isLoading: true, _isError: false });
   },
   _finishLoadProps(isSuccess) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     this.setProperties({ _isLoading: false, _isError: !isSuccess });
   },
   _getLargestDimension: function(config) {

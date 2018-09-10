@@ -1,33 +1,50 @@
 .location-preview {
     position: relative;
     overflow: hidden;
-    min-width: 100px;
-    min-height: 100px;
+    background-color: $bg-color;
+    height: $media-preview-height;
+    width: 100%;
+    min-width: $media-preview-height;
 
-    .location-preview-overlay {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-
-        background-color: $bg-color;
-        transition: opacity 0.25s;
-        opacity: 0;
-        display: none;
-
-        &.show-overlay {
-            position: absolute;
+    &--overlay {
+        .location-preview__message {
             opacity: 1;
-            display: block;
+        }
+        .location-preview__image {
+            filter: blur(1px);
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: $overlay-color;
         }
     }
-    img {
+    &__message {
+        @extend .text-small;
+
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -45%);
-
-        min-height: 100%;
-        min-width: 100%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - #{$spacing * 2});
+        color: white;
+        text-align: center;
+        font-weight: $font-weight-bold;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.5s;
+        overflow: scroll;
+        cursor: default;
+        user-select: none;
+    }
+    &__image {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }

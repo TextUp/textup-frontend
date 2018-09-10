@@ -22,33 +22,9 @@ export default Ember.Mixin.create({
   // Private properties
   // ------------------
 
-  // originally, `_recordItems` was set to
-  //    _recordItems: DS.hasMany('record-item', { polymorphic: true }),
-  //    _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
-  // However, there's some weirdness around this version of Ember data making polymorphic
-  // records available under both the base class and the subclass. We had issues where calling
-  // `v1/records` would return a polymorphic payload, but these models would only be available
-  // under their respective subclasses. Therefore, we manually add merge these subclasses
-  // here instead of relying on a declared polymorphic relationship property
-  _recordItems: DS.hasMany('record-item'),
-  _recordTexts: DS.hasMany('record-text'),
-  _recordCalls: DS.hasMany('record-call'),
-  _recordNotes: DS.hasMany('record-note'),
-  _mergedRecordItems: computed(
-    '_recordItems.[]',
-    '_recordTexts.[]',
-    '_recordCalls.[]',
-    '_recordNotes.[]',
-    function() {
-      const results = [];
-      this.get('_recordItems.content').forEach(obj => results.pushObject(obj));
-      this.get('_recordTexts.content').forEach(obj => results.pushObject(obj));
-      this.get('_recordCalls.content').forEach(obj => results.pushObject(obj));
-      this.get('_recordNotes.content').forEach(obj => results.pushObject(obj));
-      return results;
-    }
-  ),
-  _uniqueRecordItems: uniqBy('_mergedRecordItems', 'id'),
+  // polymorphic needs `inverse: '_recordItems'` in `mixins/model/owns-record-items`
+  _recordItems: DS.hasMany('record-item', { polymorphic: true }),
+  _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
   _recordsSorting: ['whenCreated:asc'],
   _sortedRecordItems: computed.sort('_uniqueRecordItems', '_recordsSorting'),
 
@@ -74,6 +50,7 @@ export default Ember.Mixin.create({
       clustersList.pushObject(currentCluster);
     }
     clustersList.forEach(addClusterLabel);
+    clustersList.forEach(alwaysClusterDeletedItems);
     return clustersList;
   }),
 
@@ -107,5 +84,11 @@ function addClusterLabel(cluster) {
         ? [numItems, 'deleted', measureWord]
         : [numItems, measureWord];
     cluster.set('label', labelWords.join(' '));
+  }
+}
+
+function alwaysClusterDeletedItems(cluster) {
+  if (cluster.get('items.firstObject.hasBeenDeleted')) {
+    cluster.set('alwaysCluster', true);
   }
 }

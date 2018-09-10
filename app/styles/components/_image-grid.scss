@@ -1,0 +1,41 @@
+.image-grid {
+    width: 100%;
+
+    &--none &__item-container {
+        height: 0;
+    }
+    &__item-container {
+        position: relative;
+        height: 10 * $spacing;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-y: hidden;
+        overflow-x: auto;
+        white-space: nowrap;
+        transition: height 0.1s;
+    }
+    &__item {
+        display: inline-block;
+        height: 100%;
+        width: $spacing * 10;
+        max-width: 40%;
+        padding: 0 ($padding / 4);
+        vertical-align: middle;
+        text-align: center;
+        transform-style: preserve-3d; // prevent blurry half-pixel effect in children
+        animation: fadein 2s;
+        overflow: hidden;
+
+        & &__image {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                transform: translateY(-50%) scale(1.1);
+            }
+        }
+    }
+}

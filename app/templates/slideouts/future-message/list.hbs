@@ -1,0 +1,117 @@
+{{#slideout-pane
+    headerProps=(hash title="Scheduled Messages")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
+    <ul class="result-list">
+        {{#each model.futureMessages as |existingFutureMessage|}}
+            {{#hide-show tagName="li" as |hideShow|}}
+                <div class="row pad-all bg-color">
+                    {{#if (or existingFutureMessage.isDone (and
+                        (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits)))}}
+                        <div class="text-bold text-wrap">
+                            {{existingFutureMessage.message}}
+                        </div>
+                    {{else}}
+                        <div class="xs-9-row-10 text-bold text-wrap">
+                            {{existingFutureMessage.message}}
+                        </div>
+                        <div class="xs-row-10">
+                            <button class="btn-span btn btn-plain"
+                                type="button"
+                                onclick={{if hideShow.isOpen
+                                    (route-action "onFutureMessageCancelEditing"
+                                        existingFutureMessage
+                                        hideShow.actions.close)
+                                    hideShow.actions.open}}>
+                                {{#if hideShow.isOpen}}
+                                    <span class="fa fa-times"></span>
+                                {{else}}
+                                    <span class="fa fa-pencil"></span>
+                                {{/if}}
+                            </button>
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="border-b">
+                    <div class="row text-center">
+                        <div class="xs-6-row-20 s-4-row-20 control-text border-r">
+                            <span class="badge bg-color bg-dark">
+                                {{#if (eq existingFutureMessage.type constants.FUTURE_MESSAGE.TYPE.TEXT)}}
+                                    {{#tool-tip title='Send message via text'}}
+                                        <span class="fa fa-paper-plane-o"></span>
+                                    {{/tool-tip}}
+                                {{else}}
+                                    {{#tool-tip title='Send message via phone call'}}
+                                        <span class="fa fa-phone"></span>
+                                    {{/tool-tip}}
+                                {{/if}}
+                            </span>
+                            <span class="badge {{if existingFutureMessage.notifySelf 'bg-color bg-dark'}}">
+                                {{#tool-tip title=(if existingFutureMessage.notifySelf 'Notify myself via text' 'Do not notify me')}}
+                                    <span class="fa fa-user
+                                        {{if (not existingFutureMessage.notifySelf) 'fa-inverse'}}"></span>
+                                {{/tool-tip}}
+                            </span>
+                        </div>
+                        {{#if existingFutureMessage.isDone}}
+                            <div class="xs-4-row-20 s-8-row-20 control-text border-r text-ellipsis">
+                                <span class="text-bold">Done</span>
+                            </div>
+                            <div class="xs-10-row-20 s-8-row-20 control-text text-ellipsis">
+                                <span class="text-bold">Started</span>
+                                {{moment-format existingFutureMessage.startDate 'MMM D, Y'}}
+                            </div>
+                        {{else}}
+                            <div class="xs-14-row-20 s-8-row-20 control-text border-r text-ellipsis">
+                                <span class="text-bold">Next</span>
+                                {{moment-format existingFutureMessage.nextFireDate 'MMM D h:mm A'}}
+                            </div>
+                            <div class="display-s display-m display-l s-8-row-20 control-text text-ellipsis">
+                                {{#if existingFutureMessage.isRepeating}}
+                                    <span class="text-bold">Stop</span>
+                                    {{#if existingFutureMessage.hasEndDate}}
+                                        {{moment-format existingFutureMessage.endDate 'MMM D, Y'}}
+                                    {{else}}
+                                        after {{existingFutureMessage.repeatCount}}
+                                        {{pluralize 'times' existingFutureMessage.repeatCount}}
+                                    {{/if}}
+                                {{else}}
+                                    <span class="text-bold">Created</span>
+                                    {{moment-format existingFutureMessage.whenCreated 'MMM D, Y'}}
+                                {{/if}}
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+                {{#if hideShow.isOpen}}
+                    {{form/dropdown-controls classNames="border-b"
+                        isMarkedForDelete=existingFutureMessage.isDeleted
+                        isDirty=existingFutureMessage.isDirty
+                        isValid=(v-get existingFutureMessage "isValid")
+                        onMarkForDelete=(route-action "onFutureMessageMarkForDelete"
+                            existingFutureMessage)
+                        onUndoDelete=(route-action "onFutureMessageUndoDelete"
+                            existingFutureMessage)
+                        onCancel=(route-action "onFutureMessageCancelEditing"
+                            existingFutureMessage
+                            hideShow.actions.close)
+                        onSave=(route-action "onFutureMessageSaveEditing"
+                            existingFutureMessage
+                            hideShow.actions.close)}}
+                    {{form/future-message classNames="pad-t pad-b-double border-b"
+                        futureMessage=existingFutureMessage
+                        personalPhoneNumber=authService.authUser.personalPhoneNumber}}
+                {{/if}}
+            {{/hide-show}}
+        {{else}}
+            <li class="no-results">
+                <p class='margin-b'>No scheduled messages yet.</p>
+                <button type="button"
+                    class="btn btn-default btn-plain"
+                    onclick={{route-action "startNewScheduleMessageSlideout"}}>
+                    Schedule a message.
+                </button>
+            </li>
+        {{/each}}
+    </ul>
+{{/slideout-pane}}

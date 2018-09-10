@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
-import callIfPresent from '../utils/call-if-present';
 import { validate as validateNumber, clean as cleanNumber } from '../utils/phone-number';
 
 const {
@@ -120,11 +119,11 @@ export default Ember.Component.extend({
   // of the read-only phone number.
   handleFocusEnterForInput() {
     const number = this.get('_number');
-    callIfPresent(this.get('onFocusEnter'), number, !this.get('_hasError'));
+    Ember.tryInvoke(this, 'onFocusEnter', [number, !this.get('_hasError')]);
   },
   handleFocusLeaveForInput() {
     const number = this.get('_number');
-    callIfPresent(this.get('onFocusLeave'), number, !this.get('_hasError'));
+    Ember.tryInvoke(this, 'onFocusLeave', [number, !this.get('_hasError')]);
   },
   handlePasteForInput(event) {
     // need to schedule next because when the paste event fires on iOS safari,
@@ -190,14 +189,13 @@ export default Ember.Component.extend({
     }
   },
   _trySubmitForInput() {
-    const onClick = this.get('onClick'),
-      onValidate = this.get('onValidate'),
+    const onValidate = this.get('onValidate'),
       number = this.get('_number');
     if (this.get('_hasError') || isBlank(number)) {
       return;
     }
     this.set('_isEditingInput', false);
-    callIfPresent(onClick, number, true);
+    Ember.tryInvoke(this, 'onClick', [number, true]);
     // move onto validate if present
     if (isPresent(onValidate)) {
       this.set('_isValidating', true);

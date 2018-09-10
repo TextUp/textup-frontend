@@ -1,8 +1,9 @@
 import Ember from 'ember';
-import callIfPresent from '../utils/call-if-present';
 import defaultIfAbsent from '../utils/default-if-absent';
 
 export default Ember.Component.extend({
+  constants: Ember.inject.service(),
+
   displayProperty: null,
   identityProperty: null,
   filterProperty: null,
@@ -168,7 +169,7 @@ export default Ember.Component.extend({
       return this.insertOrUpdate(false, val, this.get('selected.length'), event);
     },
     remove: function(item) {
-      callIfPresent(this.get('onRemove'), item);
+      Ember.tryInvoke(this, 'onRemove', [item]);
       Ember.run.next(this, this.setupResults);
     }
   },
@@ -203,13 +204,13 @@ export default Ember.Component.extend({
     });
   },
   _doCreateAndInsert: function(val, index, event) {
-    const created = callIfPresent(this.get('doCreate'), val, event);
+    const created = Ember.tryInvoke(this, 'doCreate', [val, event]);
     if (created) {
       return this._doInsert(index, event, created);
     }
   },
   _doInsert: function(index, event, toBeInserted) {
-    return callIfPresent(this.get('onInsert'), index, toBeInserted, event);
+    return Ember.tryInvoke(this, 'onInsert', [index, toBeInserted, event]);
   },
   getDataAt: function(index) {
     return {
@@ -351,7 +352,7 @@ export default Ember.Component.extend({
     }
   },
   _doAsyncResults: function(val) {
-    const searchResult = callIfPresent(this.get('doSearch'), val);
+    const searchResult = Ember.tryInvoke(this, 'doSearch', [val]);
     if (!searchResult || !searchResult.then) {
       return;
     }

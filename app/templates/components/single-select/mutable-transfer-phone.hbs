@@ -20,29 +20,26 @@
         <div class="text-ellipsis">
             <span class="text-bold">{{item.name}}</span>
             <span class='pad-l-half'>{{item.username}}</span>
-            {{#if (eq item.type 'team')}}
-				{{#tool-tipster class='pad-l'
+            {{#if (eq item.constructor.modelName constants.MODEL.TEAM)}}
+				{{#tool-tip class='pad-l'
 			        tagName='span'
-			        theme='tooltipster-clean'
 			        title=(concat 'Team of ' item.numMembers)}}
 			        <span class="fa fa-users"></span>
-			    {{/tool-tipster}}
+			    {{/tool-tip}}
             {{/if}}
             {{#if (and (not item.hasInactivePhone) item.phone.content)}}
-            	{{#tool-tipster class='pad-l'
+            	{{#tool-tip class='pad-l'
 			        tagName='span'
-			        theme='tooltipster-clean'
 			        title=(concat 'TextUp Phone ' (phone-number item.phone.content.number))}}
 			        <span class="fa fa-phone"></span>
-			    {{/tool-tipster}}
+			    {{/tool-tip}}
             {{/if}}
             {{#if item.hasInactivePhone}}
-            	{{#tool-tipster class='pad-l text-lighten'
+            	{{#tool-tip class='pad-l text-lighten'
 			        tagName='span'
-			        theme='tooltipster-clean'
 			        title='Has inactive phone'}}
 			        <span class="fa fa-phone"></span>
-			    {{/tool-tipster}}
+			    {{/tool-tip}}
             {{/if}}
         </div>
     {{/if}}

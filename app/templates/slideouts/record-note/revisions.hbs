@@ -1,38 +1,16 @@
 {{#slideout-pane
     headerProps=(hash title='Note History')
     direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action 'closeAllSlideouts') as |slideout|}}
+    doClose=(route-action "finishViewNoteHistorySlideout") as |slideout|}}
     <ul class="result-list">
-        <li class="result-item">
-            <div class="revision-item">
-                <div class="xs-full-row bg-color bg-dark pad-all horizontal-items">
-                    <span class="badge text-smaller">
-                        Current
-                    </span>
-                    <span class="clear-badge">
-                        {{moment-format recordNote.whenChanged}} by
-                        {{if recordNote.authorName recordNote.authorName 'Unknown'}}
-                    </span>
-                </div>
-                {{#with recordNote as |noteOrRevision|}}
-                    {{partial 'partials/record-note/revision'}}
-                {{/with}}
-            </div>
-        </li>
-        {{#each recordNote.revisions as |revision|}}
-            <li class="result-item border-t">
-                <div class="revision-item">
-                    <div class="xs-full-row bg-color pad-all">
-                        {{moment-format revision.whenChanged}} by
-                        <span class="text-bold">
-                            {{if revision.authorName revision.authorName 'Unknown'}}
-                        </span>
-                    </div>
-                    {{#with revision as |noteOrRevision|}}
-                        {{partial 'partials/record-note/revision'}}
-                    {{/with}}
-                </div>
-            </li>
+        {{#each viewingRecordNote.revisions as |revision index|}}
+            {{#record-note-revision classNames="result-item"
+                tagName="li"
+                revision=revision}}
+                {{#if (eq index 0)}}
+                    <span class="badge text-smaller">Previous</span>
+                {{/if}}
+            {{/record-note-revision}}
         {{/each}}
     </ul>
 {{/slideout-pane}}

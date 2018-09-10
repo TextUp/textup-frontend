@@ -2,7 +2,7 @@ import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { MediaImageVersion } from 'textup-frontend/objects/media-image';
 
-const { computed, tryInvoke } = Ember;
+const { computed, tryInvoke, isNone } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
@@ -37,7 +37,12 @@ export default Ember.Component.extend(PropTypesMixin, {
     'alt'
   ],
   classNames: ['responsive-image'],
+  classNameBindings: ['_isLoadingSuccess:responsive-image--success'],
 
+  didReceiveAttrs() {
+    this._super(...arguments);
+    this.set('_isLoading', true);
+  },
   didInsertElement() {
     this._super(...arguments);
     this.get('_$window').on(this.get('_windowEventName'), () => this._onWindowResize());
@@ -59,7 +64,10 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _sortVersionsBy: ['width'],
   _sortedVersions: computed.sort('versions', '_sortVersionsBy'),
-  _sourceSet: computed('_sortedVersions.@each.{source,width}', function() {
+  _sourceSet: computed('_sizes', '_sortedVersions.@each.{source,width}', function() {
+    if (isNone(this.get('_sizes'))) {
+      return;
+    }
     const versions = this.get('_sortedVersions'),
       sources = [];
     versions.forEach(({ source, width }) => {
@@ -69,7 +77,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     });
     return sources.join(',');
   }),
-  _fallbackSource: computed('_sortedVersions.@each.{source,width}', function() {
+  _fallbackSource: computed('_sizes', '_sortedVersions.@each.{source,width}', function() {
+    if (isNone(this.get('_sizes'))) {
+      return;
+    }
     const versions = this.get('_sortedVersions');
     let source = '';
     if (versions.get('firstObject.source')) {
@@ -102,14 +113,21 @@ export default Ember.Component.extend(PropTypesMixin, {
   _$window: computed(function() {
     return this.$(window);
   }),
+  _isLoading: false,
+  _isSuccess: false,
+  _isLoadingSuccess: computed('_isLoading', '_isSuccess', function() {
+    return !this.get('_isLoading') && this.get('_isSuccess');
+  }),
 
   // Internal handlers
   // -----------------
 
   _onLoadSuccess(event) {
+    this.setProperties({ _isSuccess: true, _isLoading: false });
     tryInvoke(this, 'onSuccess', [event]);
   },
   _onLoadFailure(event) {
+    this.setProperties({ _isSuccess: false, _isLoading: false });
     tryInvoke(this, 'onFailure', [event]);
   },
   _onWindowResize() {
@@ -123,8 +141,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _calculateUpdatedSize() {
     const viewportWidthRatio = Math.round(
-      Math.max(this.get('_$img').width() / this.get('_$window').width() * 100, 100)
+      Math.min(this.get('_$img').width() / this.get('_$window').width() * 100, 100)
     );
-    return `${viewportWidthRatio}vw`;
+    // don't want to return `0vw` because that effectively hides the image completely
+    return viewportWidthRatio !== 0 ? `${viewportWidthRatio}vw` : '1vw';
   }
 });

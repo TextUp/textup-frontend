@@ -4,7 +4,7 @@ import Ember from 'ember';
 import HasAuthor from '../mixins/model/has-author';
 import PhoneNumber from '../utils/phone-number';
 
-const { computed, get, getWithDefault, typeOf } = Ember;
+const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
   constants: Ember.inject.service(),
@@ -18,6 +18,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
     this.get('_tagRecipients').clear();
     this.get('_sharedContactRecipients').clear();
     this.get('_newNumberRecipients').clear();
+    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
   },
   didUpdate() {
     this._super(...arguments);
@@ -37,8 +38,8 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   media: DS.belongsTo('media'), // hasOne
 
   // belong to either a contact or a tag
-  contact: DS.belongsTo('contact', { inverse: null }),
-  tag: DS.belongsTo('tag', { inverse: null }),
+  contact: DS.belongsTo('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
+  tag: DS.belongsTo('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
 
   contactRecipients: computed.readOnly('_contactRecipients'),
   sharedContactRecipients: computed.readOnly('_sharedContactRecipients'),

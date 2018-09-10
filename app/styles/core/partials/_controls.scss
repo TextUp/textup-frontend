@@ -114,6 +114,7 @@
     transition: all 0.5s;
     border-bottom-width: $button-accent-size;
     border-bottom-style: solid;
+    outline: none;
 
     &--keep-case {
         text-transform: initial;
@@ -140,10 +141,6 @@
         }
     }
     &:not(.btn-plain):not(:disabled) {
-        &.btn-danger {
-            @extend %input-disabled;
-            @include button-colors($danger-color);
-        }
         &.btn-success {
             @extend %input-disabled;
             @include button-colors($success-color);
@@ -151,6 +148,10 @@
         &.btn-default {
             @extend %input-disabled;
             @include button-colors($brand-color);
+        }
+        &.btn-danger {
+            @extend %input-disabled;
+            @include button-colors($danger-color);
         }
     }
     &.btn-expand {

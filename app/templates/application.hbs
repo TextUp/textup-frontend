@@ -1,9 +1,10 @@
 {{title "TextUp"}}
 
 {{notification-container notifications=notifications}}
-{{#liquid-if showSlideout class='animate-slide-from-left animated-overflow'}}
+{{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DEFAULT)
+	class='animate-slide-from-left animated-overflow'}}
 	<div class="{{if isLocked 'hidden'}}">
-		{{outlet 'slideout'}}
+		{{outlet constants.SLIDEOUT.OUTLET.DEFAULT}}
 	</div>
 {{/liquid-if}}
 <div id="container">
@@ -15,13 +16,13 @@
 			</div>
 			<div class="single-body">
 				{{lock-control val=lockCode
-					lockTarget=authManager.authUser.username
+					lockTarget=authService.authUser.username
 					numDigits=4
 					doUpdate=(route-action 'updateLockCode')
 					doSubmit=(route-action 'verifyLockCode')}}
 			</div>
 			<div class="single-footer">
-				<p class="emphasize text-white">Not {{authManager.authUser.name}}?</p>
+				<p class="emphasize text-white">Not {{authService.authUser.name}}?</p>
 		        <h4>
 		        	<a href="" onclick={{route-action 'logout'}} class='text-white'>
 		        		Log Out
@@ -30,7 +31,7 @@
 			</div>
 		</div>
 	{{else}}
-		{{liquid-outlet class='main-outlet'}}
+		{{liquid-outlet}}
 	{{/if}}
 </div>
 

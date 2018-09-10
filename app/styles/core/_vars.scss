@@ -5,11 +5,13 @@ $success-color: #56a556;
 
 // elements
 $bg-dark-color: #222222;
+$overlay-color: rgba(0, 0, 0, 0.3);
+$overlay-light-color: rgba(255, 255, 255, 0.2);
 $bg-color: #f3f3f3;
 $bg-light-color: #f8f8f8;
 $bg-lightest-color: #fff;
 $border-color: #d3d3d3;
-$incoming-color: $border-color;
+$incoming-color: #e9e9e9;
 $outgoing-color: $brand-color;
 
 // font
@@ -34,6 +36,7 @@ $corners-with-abbr: (
 $padding: 1em;
 $button-accent-size: 3px;
 $min-control-width: (50px / $font-size * 1em);
+$media-preview-height: $spacing * 8;
 $control-height: 2.5em;
 $form-v-space: 0.5em; // one side
 $badge-height: 1.5em;
@@ -43,7 +46,7 @@ $contacts-h-space: 50px;
 
 // sizes
 $record-item-triangle: 1em;
-$record-item-space: 1.25em;
+$record-item-space: $spacing;
 $header-height: 5rem;
 $split-sidebar-width: 20em;
 $slideout-width: 30em;

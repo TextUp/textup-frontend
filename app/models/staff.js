@@ -54,7 +54,7 @@ const {
   });
 
 export default DS.Model.extend(Dirtiable, Validations, {
-  authManager: inject.service('auth'),
+  authService: inject.service(),
 
   rollbackAttributes: function() {
     this._super(...arguments);
@@ -196,8 +196,8 @@ export default DS.Model.extend(Dirtiable, Validations, {
       }, reject);
     });
   }),
-  isAuthUser: computed('authManager.authUser', function() {
-    return this.get('authManager.authUser.id') === this.get('id');
+  isAuthUser: computed('authService.authUser', function() {
+    return this.get('authService.authUser.id') === this.get('id');
   }),
 
   // Helper methods

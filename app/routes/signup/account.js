@@ -56,7 +56,7 @@ export default Ember.Route.extend({
       // make the request
       return new Ember.RSVP.Promise((resolve, reject) => {
         const onFail = failure => {
-          if (this.get('dataHandler').displayErrors(failure) === 0) {
+          if (this.get('dataService').displayErrors(failure) === 0) {
             this.notifications.error(`Could not create new account.
               Please try again later.`);
           }
@@ -73,7 +73,7 @@ export default Ember.Route.extend({
           .then(result => {
             this.notifications.success(`Almost done creating your account...`);
             const staff = this.store.push(this.store.normalize('staff', result.staff));
-            this.get('authManager')
+            this.get('authService')
               .login(staff.get('username'), password)
               .then(() => {
                 this.notifications.success(`Success! Welcome ${staff.get('name')}!`);

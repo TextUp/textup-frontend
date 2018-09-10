@@ -1,18 +1,18 @@
-import Auth from '../mixins/auth-route';
-import callIfPresent from '../utils/call-if-present';
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
-import randomstring from 'npm:randomstring';
-import Setup from '../mixins/setup-route';
-import Slideout from '../mixins/slideout-route';
+import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
+import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
+import humanId from 'npm:human-id';
+import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 
-const { get } = Ember;
+const { get, computed } = Ember;
 
-export default Ember.Route.extend(Slideout, Auth, Setup, {
-  slideoutOutlet: 'details-slideout',
+export default Ember.Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSetup, {
+  slideoutOutlet: computed.alias('constants.SLIDEOUT.OUTLET.DETAIL'),
 
   beforeModel: function() {
     this._super(...arguments);
-    const user = this.get('authManager.authUser');
+    const user = this.get('authService.authUser');
     return user.get('org').then(org => {
       if (!org.get('isApproved')) {
         this.transitionTo('none');
@@ -22,7 +22,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
     });
   },
   model: function() {
-    return this.get('authManager.authUser.org');
+    return this.get('authService.authUser.org');
   },
   afterModel: function(org) {
     this.get('stateManager').set('owner', org);
@@ -50,28 +50,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
       staff.toggleProperty('isSelected');
     },
 
-    // Slideout
-    // ---------
-
-    didTransition: function() {
-      this._closeSlideout();
-      return true;
-    },
-    toggleDetailSlideout: function(name, context) {
-      this._toggleSlideout(name, context);
-    },
-    openDetailSlideout: function(name, context) {
-      this._openSlideout(name, context);
-    },
-    closeSlideout: function() {
-      this._closeSlideout();
-      return true;
-    },
-    closeAllSlideouts: function(then) {
-      this.send('closeSlideout');
-      callIfPresent(then);
-    },
-
     // Staff
     // -----
 
@@ -81,11 +59,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
         this.store.createRecord('staff', {
           org: this.get('currentModel'),
           status: 'STAFF',
-          password: randomstring.generate({
-            length: 12,
-            readable: true,
-            charset: 'alphanumeric'
-          })
+          password: humanId({ separator: '-', capitalize: false })
         })
       );
     },
@@ -94,10 +68,10 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
       // from showing true when reinitializing this slideout
       // after it is closed with with phoneAction set to true
       staff.set('phoneAction', null);
-      callIfPresent(then);
+      callIfPresent(this, then);
     },
     createStaff: function(staff, then = undefined) {
-      return this.get('dataHandler')
+      return this.get('dataService')
         .persist(staff)
         .then(() => {
           const people = this.controller.get('people');
@@ -105,11 +79,11 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
             people.unshiftObject(staff);
             this.controller.set('people', Ember.copy(people));
           }
-          callIfPresent(then);
+          callIfPresent(this, then);
         });
     },
     resetPassword: function(username) {
-      return this.get('authManager')
+      return this.get('authService')
         .resetPassword(username)
         .then(
           () => {
@@ -156,7 +130,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
       );
     },
     createTeam: function(team, then = undefined) {
-      return this.get('dataHandler')
+      return this.get('dataService')
         .persist(team)
         .then(persistedTeam => {
           // there's a zombie location record that persists, but we
@@ -164,18 +138,18 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
           // location also disassociates the team and its location
           const model = this.get('currentModel');
           model.get('teams').then(teams => teams.unshiftObject(persistedTeam));
-          callIfPresent(then);
+          callIfPresent(this, then);
         });
     },
     updateTeamMemberships: function(teams, person, then = undefined) {
       const people = Ember.isArray(person) ? person : [person];
-      return this.get('dataHandler')
+      return this.get('dataService')
         .persist(teams)
         .then(() => {
           const promises = people.map(person => person.reload());
           Ember.RSVP.all(promises).then(() => {
-            callIfPresent(then);
-          }, this.get('dataHandler').buildErrorHandler());
+            callIfPresent(this, then);
+          }, this.get('dataService').buildErrorHandler());
         });
     },
 
@@ -189,7 +163,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
         // if transfer, one of 'staff' or 'team', see phone-serializer.js mixin for
         // how this type is transformed into what is accepted by the backend
         targetClass = isTransfer ? get(data, 'type') : null;
-      return this.get('dataHandler')
+      return this.get('dataService')
         .persist(withPhone)
         .then(() => {
           if (targetId && targetClass) {
@@ -197,9 +171,9 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
               .findRecord(targetClass, targetId, {
                 reload: true
               })
-              .then(() => callIfPresent(then));
+              .then(() => callIfPresent(this, then));
           } else {
-            callIfPresent(then);
+            callIfPresent(this, then);
           }
         });
     }
@@ -209,7 +183,7 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
   // -------
 
   _changeStaffStatus: function(people) {
-    this.get('dataHandler')
+    this.get('dataService')
       .persist(people)
       .then(updatedPeople => {
         this.controller.notifyPropertyChange('people');
@@ -225,6 +199,6 @@ export default Ember.Route.extend(Slideout, Auth, Setup, {
       .then(success => {
         this.controller.set('pending', success.toArray());
         this.controller.set('numPending', success.get('meta.total'));
-      }, this.get('dataHandler').buildErrorHandler());
+      }, this.get('dataService').buildErrorHandler());
   }
 });

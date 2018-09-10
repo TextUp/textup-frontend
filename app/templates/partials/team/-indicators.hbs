@@ -2,23 +2,21 @@
     team.phone.isFulfilled
     team.phone.content)}}
     <span class="badge">
-        {{#tool-tipster tagName='span'
-            position='right'
-            theme='tooltipster-clean'
+        {{#tool-tip tagName='span'
+            side=constants.TOOLTIP.SIDE.RIGHT
             title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
             <span class="fa fa-phone"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </span>
 {{/if}}
 {{#if team.hasInactivePhone}}
     <span class="badge">
-        {{#tool-tipster tagName='span'
+        {{#tool-tip tagName='span'
             class='text-lighten'
-            position='right'
-            theme='tooltipster-clean'
+            side=constants.TOOLTIP.SIDE.RIGHT
             title='Has inactive phone'}}
             <span class="fa fa-phone"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </span>
 {{/if}}
 <span class="badge">

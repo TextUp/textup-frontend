@@ -9,7 +9,6 @@
         </button>
     {{/if}}
 {{/component}}
-
 {{#if (and onAdd (not readOnly))}}
-    {{photo-control/add onAdd=onAdd}}
+    {{photo-control/add labelClass="photo-control__add-control" onAdd=onAdd}}
 {{/if}}

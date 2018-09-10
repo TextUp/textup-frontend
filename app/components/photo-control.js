@@ -26,7 +26,9 @@ export default Ember.Component.extend(DisplaysImages, {
   // Internal handlers
   // -----------------
 
-  _doRemove() {
+  _doRemove(image, index, event) {
+    // so that the gallery is not opened
+    event.stopPropagation();
     tryInvoke(this, 'onRemove', [...arguments]);
   }
 });

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import md5 from 'npm:blueimp-md5';
 import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
 
-export const ACTIONS_ID_PROP_NAME = 'key';
+export const ACTIONS_ID_PROP_NAME = 'uid';
 
 export const AddChange = Ember.Object.extend({
   [ACTIONS_ID_PROP_NAME]: null,
@@ -23,12 +23,12 @@ export const AddChange = Ember.Object.extend({
     return img;
   },
   toAction(constants) {
-    const data = this.get('data');
+    const dataNoHeader = (this.get('data') || '').split(',')[1];
     return {
       action: constants.ACTION.MEDIA.ADD,
       mimeType: this.get('mimeType'),
-      data: data,
-      checksum: md5(data)
+      data: dataNoHeader,
+      checksum: md5(dataNoHeader)
     };
   }
 });

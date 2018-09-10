@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import moment from 'moment';
-import callIfPresent from '../../utils/call-if-present';
 
 const { computed } = Ember;
 
@@ -35,15 +34,14 @@ export default Ember.Component.extend(PropTypesMixin, {
     // if new start is later than a DEFINED end time, set the end time
     // to be the same as the start time so we don't have an invalid range
     if (endDate && newStart > endDate) {
-      callIfPresent(this.get('onChange'), [newStartString, newStartString]);
+      Ember.tryInvoke(this, 'onChange', [[newStartString, newStartString]]);
     } else {
-      callIfPresent(this.get('onChange'), [newStartString, this.get('data').objectAt(1)]);
+      Ember.tryInvoke(this, 'onChange', [[newStartString, this.get('data').objectAt(1)]]);
     }
   },
   _handleEndChange(newEnd) {
-    callIfPresent(this.get('onChange'), [
-      this.get('data').objectAt(0),
-      this._convertDateToTimeString(newEnd)
+    Ember.tryInvoke(this, 'onChange', [
+      [this.get('data').objectAt(0), this._convertDateToTimeString(newEnd)]
     ]);
   },
 

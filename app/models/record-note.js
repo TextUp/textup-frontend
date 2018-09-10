@@ -3,20 +3,26 @@ import Ember from 'ember';
 import RecordItem from './record-item';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, typeOf, get } = Ember,
+const { computed, typeOf, get, getWithDefault, tryInvoke } = Ember,
   Validations = buildValidations({
     numRecipients: validator('inclusion', {
+      disabled(model) {
+        return !model.get('isNew');
+      },
+      dependentKeys: ['isNew'],
       in: [1],
       message: 'should have exactly one recipient'
     }),
     'contactRecipients.length': validator('has-any', {
+      disabled(model) {
+        return !model.get('isNew');
+      },
       also: ['sharedContactRecipients.length', 'tagRecipients.length'],
-      dependentKeys: ['numRecipients'],
+      dependentKeys: ['isNew', 'numRecipients'],
       description: 'a contact, a shared contact, or a tag'
     }),
     noteContents: validator('has-any', {
       also: ['media.hasElements', 'location.content'],
-      dependentKeys: ['media.hasElements'],
       description: 'contents, images, or a location'
     })
   });
@@ -28,6 +34,7 @@ export default RecordItem.extend(Validations, {
   rollbackAttributes() {
     this._super(...arguments);
     this.set('_addAfterDate', null);
+    tryInvoke(getWithDefault(this, 'location.content', {}), 'rollbackAttributes');
   },
   hasManualChanges: computed('media.isDirty', 'location.isDirty', function() {
     return this.get('media.isDirty') || this.get('location.isDirty');

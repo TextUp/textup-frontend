@@ -14,6 +14,7 @@ export default Ember.Route.extend({
 
   actions: {
     didTransition: function() {
+      this._super(...arguments);
       if (!this.get('stateManager.viewingPeople') || this.get('_changedFilter')) {
         this._resetController();
       }

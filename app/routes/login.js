@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import Public from '../mixins/public-route';
+import IsPublic from 'textup-frontend/mixins/route/is-public';
 
-export default Ember.Route.extend(Public, {
+export default Ember.Route.extend(IsPublic, {
   deactivate: function() {
     this._super(...arguments);
     this.controller.setProperties({
@@ -12,10 +12,9 @@ export default Ember.Route.extend(Public, {
   },
   actions: {
     login: function(un, pwd, doStore) {
-      const auth = this.get('authManager');
+      const auth = this.get('authService');
       return auth.login(un, pwd, doStore).then(
         data => {
-          this.notifications.success(`Welcome back ${data.staff.name}!`);
           auth.retryAttemptedTransition(() => {
             this.transitionTo('main', auth.get('authUser'));
           });
@@ -26,7 +25,7 @@ export default Ember.Route.extend(Public, {
       );
     },
     resetPassword: function(un) {
-      return this.get('authManager')
+      return this.get('authService')
         .resetPassword(un)
         .then(
           () => {

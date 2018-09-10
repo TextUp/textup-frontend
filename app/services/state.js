@@ -1,14 +1,14 @@
-import config from '../config/environment';
+import config from 'textup-frontend/config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
 import Inflector from 'ember-inflector';
-import { clean as cleanNumber } from '../utils/phone-number';
+import { clean as cleanNumber } from 'textup-frontend/utils/phone-number';
 
 const { equal: eq, match } = Ember.computed;
 
 export default Ember.Service.extend({
-  authManager: Ember.inject.service('auth'),
-  dataHandler: Ember.inject.service('data'),
+  authService: Ember.inject.service(),
+  dataService: Ember.inject.service(),
   routing: Ember.inject.service('-routing'),
   store: Ember.inject.service(),
   socket: Ember.inject.service(),
@@ -19,13 +19,13 @@ export default Ember.Service.extend({
 
   init: function() {
     this._super(...arguments);
-    this.get('authManager')
+    this.get('authService')
       .on(config.events.auth.success, this._bindSocketEvents.bind(this))
       .on(config.events.auth.clear, this._unbindSocketEvents.bind(this));
   },
   willDestroy: function() {
     this._super(...arguments);
-    this.get('authManager')
+    this.get('authService')
       .off(config.events.auth.success)
       .off(config.events.auth.clear);
   },
@@ -36,7 +36,7 @@ export default Ember.Service.extend({
   actions: {
     doNumbersSearch(search = '') {
       return new Ember.RSVP.Promise((resolve, reject) => {
-        const auth = this.get('authManager');
+        const auth = this.get('authService');
         auth
           .authRequest({
             type: 'GET',
@@ -47,7 +47,7 @@ export default Ember.Service.extend({
               num.phoneNumber = cleanNumber(num.phoneNumber);
             });
             resolve(numbers);
-          }, this.get('dataHandler').buildErrorHandler(reject));
+          }, this.get('dataService').buildErrorHandler(reject));
       });
     }
   },
@@ -90,8 +90,8 @@ export default Ember.Service.extend({
   // Setup
   // -----
 
-  skippedSetupKey: Ember.computed('authManager.authUser.id', function() {
-    const id = this.get('authManager.authUser.id');
+  skippedSetupKey: Ember.computed('authService.authUser.id', function() {
+    const id = this.get('authService.authUser.id');
     return `${id}-skippedSetup`;
   }),
   hasSkippedSetup: Ember.computed('skippedSetupKey', function() {
@@ -108,7 +108,7 @@ export default Ember.Service.extend({
 
   relevantStaffs: null,
   staffsExceptMe: Ember.computed('relevantStaffs', function() {
-    const user = this.get('authManager.authUser');
+    const user = this.get('authService.authUser');
     return (this.get('relevantStaffs') || []).filter(staff => {
       return staff.get('id') !== user.get('id');
     });
@@ -138,13 +138,13 @@ export default Ember.Service.extend({
 
   _bindSocketEvents: function() {
     const socket = this.get('socket'),
-      channelName = this.get('authManager.channelName');
+      channelName = this.get('authService.channelName');
     socket.connect({
       encrypted: true,
       authEndpoint: `${config.host}/v1/sockets`,
       auth: {
         headers: {
-          Authorization: `Bearer ${this.get('authManager.token')}`
+          Authorization: `Bearer ${this.get('authService.token')}`
         }
       }
     });
@@ -155,7 +155,7 @@ export default Ember.Service.extend({
         socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
         socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this))
       ])
-      .catch(this.get('dataHandler').buildErrorHandler());
+      .catch(this.get('dataService').buildErrorHandler());
   },
   _unbindSocketEvents: function() {
     this.get('socket').disconnect();
@@ -165,7 +165,7 @@ export default Ember.Service.extend({
     this._addNewForComputedArray('future-message', data);
   },
   _handleSocketRecords: function(data) {
-    this._addNewForComputedArray('record', data);
+    this._addNewForComputedArray('record-item', data);
   },
   _handleSocketContacts: function(data) {
     if (!Ember.isArray(data)) {
@@ -187,8 +187,19 @@ export default Ember.Service.extend({
     if (!Ember.isArray(data)) {
       return;
     }
-    const store = this.get('store');
-    data.forEach(item => store.push(store.normalize(modelName, item)));
+    const store = this.get('store'),
+      serializer = store.serializerFor(modelName),
+      modelClass = store.modelFor(modelName),
+      // user the normalizeResponse method of serializer to enable handling of polymorphic classes
+      // These polymorphic hooks are not called when using the `store.normalize` method
+      normalized = serializer.normalizeResponse(
+        store,
+        modelClass,
+        { [modelName]: data },
+        null,
+        'query'
+      );
+    store.push(normalized);
   },
   _addNewForManualArray: function(ownerName, itemName, data) {
     if (!data) {

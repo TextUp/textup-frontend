@@ -22,7 +22,8 @@ test('inputs + rendering block form', function(assert) {
   const testClass = 'responsive-image-gallery-block-form',
     images = [mockValidMediaImage(), mockValidMediaImage()];
 
-  assert.throws(() => this.render(hbs`{{responsive-image-gallery}}`), 'must pass in images');
+  this.render(hbs`{{responsive-image-gallery}}`);
+  assert.ok(this.$('.pswp').length, 'has rendered, images being null is acceptable');
 
   this.set('images', []);
   this.render(hbs`{{responsive-image-gallery images=images}}`);

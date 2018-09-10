@@ -8,6 +8,10 @@ export default RecordItemSerializer.extend({
     voicemailInSeconds: { serialize: false }
   },
 
+  modelNameFromPayloadKey() {
+    return this._super('record-call');
+  },
+
   serialize(snapshot) {
     const json = this._super(...arguments),
       rCall = snapshot.record;

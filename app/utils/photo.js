@@ -17,7 +17,6 @@ export function extractImagesFromEvent(event) {
     if (!isPresent(files) || !isArray(files)) {
       reject();
     }
-
     files.forEach(file => {
       promises.pushObject(imageCompression(file, 0.5));
     });
@@ -32,8 +31,8 @@ export function extractImagesFromEvent(event) {
 }
 
 function _getFilesFromTarget(target) {
-  if (typeOf(target.files) === 'array') {
-    return target.files;
+  if (target.files instanceof FileList) {
+    return Array.from(target.files);
   } else if (isPresent(target.value)) {
     return [target.value];
   } else {

@@ -1,0 +1,145 @@
+.record-item {
+    &--text,
+    &--call {
+        .record-item__media {
+            width: 100%;
+        }
+    }
+    &--note {
+        background-color: $bg-lightest-color;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+
+        .record-item {
+            &__multi-item-body {
+                position: relative;
+                display: flex;
+                align-items: stretch;
+                flex-wrap: wrap;
+
+                @include mq($from: desktop) {
+                    flex-wrap: nowrap;
+                }
+            }
+            &__body {
+                width: 100%;
+                padding: ($spacing / 2) $spacing;
+                padding-right: $min-control-width;
+
+                @include mq($from: desktop) {
+                    width: auto;
+                    padding-right: $spacing;
+                }
+            }
+            &__media-container {
+                display: flex;
+                flex-grow: 1;
+
+                @include mq($from: desktop) {
+                    flex-grow: 0;
+                }
+            }
+            &__media {
+                width: 100%;
+
+                @include mq($from: desktop) {
+                    width: $media-preview-height;
+                }
+            }
+            &__control {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                @include mq($from: desktop) {
+                    position: static;
+                }
+            }
+        }
+    }
+    &--system-message {
+        @extend .text-small;
+        @extend .text--deemphasize;
+
+        width: 100%;
+        margin: 0 auto;
+        padding: ($spacing * 0.3) ($spacing * 0.5);
+        border: 1px solid lightgray;
+        border-radius: $border-radius;
+        text-align: center;
+
+        @include mq($from: tablet) {
+            width: 70%;
+        }
+        @include mq($from: desktop) {
+            width: 40%;
+        }
+        .record-item__metadata {
+            padding-bottom: 0;
+        }
+    }
+    &__body {
+        flex-grow: 1;
+        padding: ($spacing / 2) $spacing;
+    }
+    &__metadata {
+        @extend .text-ellipsis;
+
+        padding: ($spacing * 0.25) 0;
+    }
+    &__receipts {
+        @extend %vertical-scroll;
+        @extend .text-small;
+
+        max-height: $spacing * 10;
+        background-color: $overlay-light-color;
+        padding: 0 $spacing;
+
+        &--disabled {
+            background-color: transparent;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+            .record-item__receipts__trigger {
+                cursor: auto;
+                user-select: auto;
+                opacity: 0.8;
+            }
+        }
+        &__trigger {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+            background-color: transparent;
+            border-width: 0;
+            outline: 0;
+            padding-left: 0;
+            padding-right: 0;
+
+            &__label {
+                @extend .text-ellipsis;
+
+                display: none;
+                margin-left: $spacing / 2;
+                text-decoration: underline;
+
+                @include mq($from: tablet) {
+                    display: block;
+                }
+            }
+        }
+        &__body {
+            padding: ($spacing * 0.6) 0 ($spacing * 0.1);
+        }
+        &__label {
+            font-weight: $font-weight-bold;
+        }
+        &__list {
+            padding-left: $spacing;
+            column-count: 2;
+            column-gap: $spacing * 2;
+        }
+    }
+}

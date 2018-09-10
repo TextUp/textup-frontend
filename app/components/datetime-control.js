@@ -1,11 +1,12 @@
-import callIfPresent from '../utils/call-if-present';
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
+import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, isPresent, computed: { and } } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     datePlaceholder: PropTypes.string,
     timePlaceholder: PropTypes.string,
@@ -18,8 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     showDate: PropTypes.bool,
     showTime: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.null, PropTypes.date]), // cannot be number because time input does not populate correctly
-    onSelect: PropTypes.func,
-    wormholeClass: PropTypes.string
+    onSelect: PropTypes.func
   },
   getDefaultProps() {
     return {
@@ -98,36 +98,15 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
     return options;
   }),
-  destination: computed(function() {
-    return `${this.elementId}--wormhole`;
-  }),
-  $wormholeParent: computed(function() {
-    const rootSelector = Ember.testing
-      ? '#ember-testing'
-      : Ember.getOwner(this).lookup('application:main').rootElement;
-    return Ember.$(rootSelector);
-  }),
-  $wormhole: computed('destination', 'wormholeClass', function() {
-    const destination = this.get('destination'),
-      wormholeClass = this.get('wormholeClass');
-    return Ember.$(`<div id='${destination}' class='${wormholeClass}'></div>`);
-  }),
-  $picker: computed(function() {
+  _elementToWormhole: computed(function() {
     return this.$('.picker');
   }),
 
   // Events
   // ------
 
-  init() {
-    this._super(...arguments);
-    this.get('$wormholeParent').append(this.get('$wormhole'));
-  },
   didInsertElement() {
     this._super(...arguments);
-    this.get('$picker') // move all instance of picker to the wormhole
-      .detach()
-      .appendTo(this.get('$wormhole'));
     Ember.run.scheduleOnce('afterRender', this, function() {
       this._setValue(this.get('value'));
       // must be called AFTER _value is set. Use this helper method to set time options
@@ -135,10 +114,6 @@ export default Ember.Component.extend(PropTypesMixin, {
       // an infinite rendering loop
       this._tryUpdateTimeOptions();
     });
-  },
-  willDestroyElement() {
-    this._super(...arguments);
-    this.get('$wormhole').remove();
   },
   didUpdateAttrs() {
     // manually manage the state of the time options object
@@ -173,9 +148,10 @@ export default Ember.Component.extend(PropTypesMixin, {
         // in a render, triggering a multiple modification deprecation
         Ember.run.scheduleOnce('afterRender', this, function() {
           if (!this.isDestroying && !this.isDestroyed) {
-            const selectHook = this.get('onSelect');
-            callIfPresent(selectHook, newVal);
-            this._tryUpdateTimeOptions(() => callIfPresent(selectHook, this.get('_value')));
+            Ember.tryInvoke(this, 'onSelect', [newVal]);
+            this._tryUpdateTimeOptions(() =>
+              Ember.tryInvoke(this, 'onSelect', [this.get('_value')])
+            );
           }
         });
       }
@@ -194,7 +170,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     let newVal = val;
-    const $picker = this.get('$picker');
+    const $picker = this.get('_elementToWormhole');
     if ($picker && $picker.hasClass('picker--time')) {
       const lastOptionNumMinutes = $picker
           .find('.picker__list-item')
@@ -254,7 +230,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     Ember.run.next(() => {
       if (!this.isDestroying && !this.isDestroyed) {
         this.set('_isRerenderingControls', false);
-        callIfPresent(then);
+        callIfPresent(this, then);
       }
     });
   },

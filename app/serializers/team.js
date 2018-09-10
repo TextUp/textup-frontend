@@ -1,7 +1,7 @@
 import DS from 'ember-data';
-import Phone from '../mixins/phone-serializer';
+import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 
-export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, Phone, {
+export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
     org: {
       serialize: 'ids'

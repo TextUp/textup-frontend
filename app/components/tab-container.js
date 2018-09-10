@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
-import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend({
   startIndex: defaultIfAbsent(0),
@@ -46,7 +45,7 @@ export default Ember.Component.extend({
 
   didInitAttrs: function() {
     this._super(...arguments);
-    callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   didInsertElement: function() {
     this._super(...arguments);
@@ -119,11 +118,11 @@ export default Ember.Component.extend({
         current.actions.hide(animation).then(() => {
           target.actions.show(animation).then(() => {
             this.set('_currentIndex', itemIndex);
-            callIfPresent(this.get('onChanged'), current, target, publicAPI);
+            Ember.tryInvoke(this, 'onChanged', [current, target, publicAPI]);
           });
         });
       }.bind(this);
-    callIfPresent(this.get('onChange'), current, target, publicAPI);
+    Ember.tryInvoke(this, 'onChange', [current, target, publicAPI]);
     if (dropdown.isOpen) {
       dropdown.actions.close(null, true, doSwitch);
     } else {

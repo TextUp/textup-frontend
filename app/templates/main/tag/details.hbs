@@ -1,71 +1,51 @@
-{{title tag.name}}
+{{title model.name}}
 
 <div class="details full-height">
 	<div class="section-header">
-		<div class="row full-height">
-			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
-                full-height row ">
-            	{{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')
-            		classNames='pull-left'}}
-					<span class="pad-all">
-						<span class="fa fa-chevron-left"></span>
-					</span>
-				{{/link-to}}
-            </div>
-            <div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
-	            full-height contact-info">
-				<div class='contact-summary'>
-	                <div class="horizontal-items clickable"
-	                	onclick={{route-action 'toggleDetailSlideout'
-	                		'slideouts/tags/edit'
-	                		'main/tag/details'}}>
-	                    <span class="clear-badge no-space clickable">
-	                        <h5>{{tag.name}}</h5>
-	                    </span>
-	                    <span class="display-s display-m display-l">
-	                    	<div class="margin-l badge clickable">
-								{{tag.numMembers}}
-								{{pluralize 'members' tag.numMembers}}
-							</div>
-	                    </span>
-	                </div>
-	            </div>
-	        </div>
-			<div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
-	            full-height row">
-	            <div class="horizontal-items pull-right">
-	            	{{#if (not tag.isDeleted)}}
-		            	<span class='clear-badge no-space'>
-			                <button type='button' class='btn'
-			                    {{action 'toggleDetailSlideout'
-			                    	'slideouts/tags/edit'
-			                    	'main/tag/details'}}>
-			                    Details
-			                </button>
-			            </span>
-		            {{/if}}
-					<span class="clear-badge display-m display-l">
-	                    {{#link-to (if tag.isDeleted 'main.contacts' 'main.tag')}}
-							<span class="pad-all">
-								<span class="fa fa-times"></span>
-							</span>
-		            	{{/link-to}}
-	                </span>
-	        	</div>
-	        </div>
-		</div>
+		{{record-owner-header/tag classNames="row full-height"
+			tag=model
+			backRouteName=backRouteName
+            onEdit=(route-action "startExistingTagSlideout")}}
 	</div>
-	<div class="section-body row">
-		{{#if tag.isDeleted}}
+	{{#if model.isDeleted}}
+		<div class="section-body row">
 			<div class="center">
-				{{#if tag.hasDirtyAttributes}}
-					<p>{{tag.name}} is about to be deleted.</p>
+				{{#if model.hasDirtyAttributes}}
+					<p>{{model.name}} is about to be deleted.</p>
 				{{else}}
-					<p>{{tag.name}} has been deleted.</p>
+					<p>{{model.name}} has been deleted.</p>
 				{{/if}}
 			</div>
-		{{else}}
-			{{partial 'partials/record/display-with-compose'}}
-		{{/if}}
-	</div>
+		</div>
+	{{else}}
+		{{care-record classNames="section-body row"
+	        canAddToRecord=(not model.isEmpty)
+	        noAddToRecordMessage="Add some contacts to this tag to start messaging."
+	        canModifyExistingInRecord=true
+	        nextFutureFire=model.nextFutureFire
+	        recordClusters=model.recordClusters
+	        numRecordItems=model.numRecordItems
+	        totalNumRecordItems=model.totalNumRecordItems
+
+	        contents=careRecordText.contents
+	        onContentChange=(action (mut careRecordText.contents))
+
+	        images=careRecordText.media.content.displayedImages.content
+	        onAddImage=(route-action "onAddImage")
+	        onRemoveImage=(route-action "onRemoveImage")
+
+	        doRegister=(action (mut careRecordRef))
+	        onLoadRecordItems=(route-action "onLoadRecordItems")
+	        onRefreshRecordItems=(route-action "onRefreshRecordItems")
+
+	        onText=(route-action "onText")
+
+	        onAddNote=(route-action "startAddNoteSlideout")
+	        onEditNote=(route-action "startEditNoteSlideout")
+	        onViewNoteHistory=(route-action "startViewNoteHistorySlideout")
+	        onRestoreNote=(route-action "onRestoreNote")
+
+	        onScheduleMessage=(route-action "startNewScheduleMessageSlideout")
+	        onViewScheduledMessages=(route-action "startViewScheduledMessagesSlideout")}}
+	{{/if}}
 </div>

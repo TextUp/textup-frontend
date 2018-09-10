@@ -1,0 +1,42 @@
+{{#liquid-spacer}}
+    <button type="button" class="record-item__receipts__trigger" onclick={{action _toggleDetails}}>
+        {{yield}}
+        {{#if (and _hasReceipts (not disabled))}}
+            <span class="record-item__receipts__trigger__label">
+                {{#if _showDetails}}
+                    Hide details
+                {{else}}
+                    {{_triggerText}}
+                {{/if}}
+            </span>
+        {{/if}}
+    </button>
+    {{#if _showDetails}}
+        <div class="record-item__receipts__body">
+            {{#if item.receipts.success}}
+                <p class="record-item__receipts__label">{{item.receipts.success.length}} {{pluralize 'success' item.receipts.success.length}}</p>
+                <ul class="record-item__receipts__list">
+                    {{#each item.receipts.success as |num|}}<li>{{phone-number num}}</li>{{/each}}
+                </ul>
+            {{/if}}
+            {{#if item.receipts.pending}}
+                <p class="record-item__receipts__label">{{item.receipts.pending.length}} pending</p>
+                <ul class="record-item__receipts__list">
+                    {{#each item.receipts.pending as |num|}}<li>{{phone-number num}}</li>{{/each}}
+                </ul>
+            {{/if}}
+            {{#if item.receipts.busy}}
+                <p class="record-item__receipts__label">{{item.receipts.busy.length}} busy</p>
+                <ul class="record-item__receipts__list">
+                    {{#each item.receipts.busy as |num|}}<li>{{phone-number num}}</li>{{/each}}
+                </ul>
+            {{/if}}
+            {{#if item.receipts.failed}}
+                <p class="record-item__receipts__label">{{item.receipts.failed.length}} failed</p>
+                <ul class="record-item__receipts__list">
+                    {{#each item.receipts.failed as |num|}}<li>{{phone-number num}}</li>{{/each}}
+                </ul>
+            {{/if}}
+        </div>
+    {{/if}}
+{{/liquid-spacer}}

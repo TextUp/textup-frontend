@@ -1,64 +1,23 @@
 <div class="location-map">
-	<div class='map-container' id={{mapId}} tabindex='0'></div>
+	<div class="map-container" id={{mapId}} tabindex="0"></div>
 	{{#if _isEditing}}
-		<form class="map-search-bar" {{action 'doSearch' on='submit'}}>
-			<div class="input-group">
-				{{input type="text"
+		<div class="map-search-bar">
+			<form class="input-group" onsubmit={{action _doSearch}}>
+				<input type="text"
 					class="form-control"
-					placeholder=searchPlaceholder
-					value=_searchTerm
-					autocomplete="off"}}
+					placeholder={{searchPlaceholder}}
+					autocomplete="off">
 				<span class="input-group-addon blend-in">
-					<button class="btn" type='submit'>
+					<button class="btn" type="submit">
 						<span class="fa fa-search"></span>
 					</button>
 				</span>
-			</div>
-		</form>
+			</form>
+		</div>
 	{{else}}
-		<button class="map-editing btn btn-default" type='button'
+		<button class="map-editing btn btn-default" type="button"
 			onclick={{action (mut _isEditing) true}}>
 			<span class="fa fa-search"></span>
 		</button>
 	{{/if}}
-</div>
-<div class="location-sidebar">
-	<button class="sidebar-toggle btn" type='button' {{action 'toggleSidebar'}}>
-		{{#if _isOpen}}
-			<span class="fa fa-chevron-left"></span>
-		{{else}}
-			<span class="fa fa-chevron-right"></span>
-		{{/if}}
-	</button>
-	<div class="sidebar-contents">
-		<div class="pad-all pad-t-double border-b horizontal-items">
-			<span class="clear-badge">
-				<h5>Results</h5>
-			</span>
-			<span class="badge">{{_results.length}}</span>
-		</div>
-		<ul class="result-list">
-			{{#each _results as |result|}}
-				<li class="result-item clickable pad-all {{result.status}}"
-					{{action 'selectResult' result}}>
-					<p class="text-bold">{{result.feature.text}}</p>
-					<p>
-						{{#if result.feature.properties.address}}
-							{{result.feature.properties.address}}
-						{{else}}
-							{{result.feature.place_name}}
-						{{/if}}
-					</p>
-				</li>
-			{{else}}
-				<li class="no-results">
-					{{#if _searchTerm}}
-						No results for your search.
-					{{else}}
-						Start a search to see results here.
-					{{/if}}
-				</li>
-			{{/each}}
-		</ul>
-	</div>
 </div>

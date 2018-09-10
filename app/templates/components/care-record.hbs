@@ -1,5 +1,6 @@
 {{#infinite-scroll classNames="care-record__body-container"
     containerClass="care-record__body"
+    itemsClass="care-record__body__items"
     doRegister=(action (mut _recordClustersScroll))
     direction=constants.INFINITE_SCROLL.DIRECTION.UP
     data=recordClusters
@@ -7,13 +8,14 @@
     total=totalNumRecordItems
     doLoad=(action _onLoadRecordItems)
     doRefresh=(action _onRefreshRecordItems) as |cluster|}}
-    {{#record-cluster cluster=cluster
+    {{#record-cluster classNames="care-record__add-note"
+        cluster=cluster
         noteOptions=(hash onEdit=(action _onEditNote)
             onRestore=(action _onRestoreNote)
             onViewHistory=(action _onViewNoteHistory)
             readOnly=(not canModifyExistingInRecord)) as |item|}}
         {{#if (and _isAddingNoteInPast (not item.hasBeenDeleted))}}
-            <button class="care-record__add-note-button"
+            <button class="care-record__add-note__button"
                 type="button"
                 onclick={{action _addNoteInPast item}}>
                 <span class="fa fa-plus"></span>

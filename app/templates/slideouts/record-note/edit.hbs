@@ -1,45 +1,26 @@
-{{!-- REGARDING THE CONVOLUTED DELETION OPERATION:
-    we revert the note then set the deleted flag to true then persist because
-    we can't update an invalid note and we don't want to pre-emptively rollback
-    any unsaved changes in case the user wants to undo the delete operation --}}
 {{#slideout-pane
-    headerProps=(hash title='Edit Note')
-    footerComponent="slideout-pane/actions"
+    headerProps=(hash title="Edit Note")
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=true
-        doPrimary=(if recordNote.toggleNoteDeleteStatus
-            (route-action 'revert' recordNote
-                (route-action 'mutate' (action (mut recordNote.toggleNoteDeleteStatus)) true
-                    (route-action 'persist' recordNote
-                        (route-action 'closeAllSlideouts'
-                            (route-action 'cleanNoteSlideout')))))
-            (route-action 'updateNote' recordNote
-                (route-action 'closeAllSlideouts'
-                    (route-action 'cleanNoteSlideout'))))
-        disablePrimary=(or
-            (not contact.allowEdits)
-            (not (v-get recordNote 'isValid')))
-        primaryLabel=(if recordNote.toggleNoteDeleteStatus 'Confirm Delete' 'Update')
-        primaryProgressLabel=(if recordNote.toggleNoteDeleteStatus 'Deleting...' 'Updating')
-        primaryClass=(if recordNote.toggleNoteDeleteStatus 'btn btn-danger')
-        secondaryLabel=(if recordNote.toggleNoteDeleteStatus 'Undo')
-        doSecondary=(if recordNote.toggleNoteDeleteStatus
-            (route-action 'mutate'
-                (action (mut recordNote.toggleNoteDeleteStatus)) false))
-        showDelete=(not recordNote.toggleNoteDeleteStatus)
-        doMarkForDelete=(route-action 'mutate'
-            (action (mut recordNote.toggleNoteDeleteStatus)) true))
+        doPrimary=(route-action "finishEditNoteSlideout")
+        disablePrimary=(not (v-get editingRecordNote "isValid"))
+        primaryLabel=(if editingRecordNote.hasBeenDeleted "Confirm Delete" "Update")
+        primaryProgressLabel=(if editingRecordNote.hasBeenDeleted "Deleting..." "Updating")
+        primaryClass=(if editingRecordNote.hasBeenDeleted "btn btn-danger")
+        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo")
+        doSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
+        showDelete=(not editingRecordNote.hasBeenDeleted)
+        doMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
     direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action 'revert' recordNote
-        (route-action 'closeAllSlideouts'
-            (route-action 'cleanNoteSlideout')))
-    forceKeepOpen=recordNote.isSaving as |slideout|}}
-     {{form/record-note class='pad-t'
-        recordNote=recordNote
-        doAddPhoto=(route-action 'addPhotoToNote' recordNote)
-        doRemovePhoto=(route-action 'removePhotoFromNote' recordNote)
-        doAddLocation=(route-action 'addLocationToNote' recordNote)
-        doRemoveLocation=(route-action 'removeLocationFromNote' recordNote)
-        onLocationError=(route-action 'mapError')
-        readOnly=(not contact.allowEdits)}}
+    doClose=(route-action "cancelEditNoteSlideout")
+    forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
+    {{form/record-note class="pad-t"
+        recordNote=editingRecordNote
+        doAddImage=(route-action "onNoteAddImage" editingRecordNote)
+        doRemoveImage=(route-action "onNoteRemoveImage" editingRecordNote)
+        doAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
+        doRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
+        onLocationError=(route-action "onLocationError")
+        readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
 {{/slideout-pane}}

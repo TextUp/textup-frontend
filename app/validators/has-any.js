@@ -22,12 +22,6 @@ HasAny.reopenClass({
   getDependentsFor(attribute, options) {
     const keys = buildKeysFor(attribute);
     ensureArrayOfStrings(options).forEach(attr => keys.pushObjects(buildKeysFor(attr)));
-    // sometimes, we still need to specify dependent key on the model because all strings
-    // NOT prefaced with `model.` are assigned automatically prefaced to the validations namespace
-    // Sometimes we just want the computed key to be `media.hasElements` not `model.media.hasElements`
-    // or `model.validations.attrs.media.hasElements` but in this hook we have no way of
-    // specifying just `media.hasElements`.
-    // See https://rawgit.com/offirgolan/ember-cp-validations/c4123c983e54f24dd790ffa1bad66cfdf2f47ec6/docs/classes/Custom.html
     return keys;
   }
 });
@@ -40,7 +34,9 @@ function ensureArrayOfStrings(options) {
 }
 
 function buildKeysFor(keyName) {
-  return [`model.${keyName}`, `model.${keyName}.[]`];
+  // need to include `_model` keys because those are the ones that seem to cause the computed
+  // property to re-execute from empirical investigation.
+  return [`model.${keyName}`, `model.${keyName}.[]`, `_model.${keyName}`, `_model.${keyName}.[]`];
 }
 
 export default HasAny;

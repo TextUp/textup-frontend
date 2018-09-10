@@ -26,10 +26,25 @@ export default Ember.Service.extend({
     CONTACT: 'contact',
     TAG: 'tag'
   },
+  TOOLTIP: {
+    SIDE: {
+      TOP: 'top',
+      BOTTOM: 'bottom',
+      RIGHT: 'right',
+      LEFT: 'left'
+    }
+  },
   SLIDEOUT: {
+    OUTLET: {
+      DEFAULT: 'slideout',
+      DETAIL: 'details-slideout'
+    },
     DIRECTION: {
       LEFT: 'left',
       RIGHT: 'right'
+    },
+    FOOTER: {
+      ACTIONS: 'slideout-pane/actions'
     },
     DEFAULT_IGNORE_CLOSE_SELECTOR:
       '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp'
@@ -57,22 +72,36 @@ export default Ember.Service.extend({
   },
   FUTURE_MESSAGE: {
     TYPE: {
-      CALL: 'call',
-      TEXT: 'text'
+      CALL: 'CALL', // need to capitalized to match
+      TEXT: 'TEXT'
     },
     INTERVAL_SIZE: {
       DAY: 1,
       WEEK: 7
     }
   },
+  CONTACT: {
+    STATUS: {
+      UNREAD: 'UNREAD',
+      ACTIVE: 'ACTIVE',
+      ARCHIVED: 'ARCHIVED',
+      BLOCKED: 'BLOCKED'
+    }
+  },
   SHARING_PERMISSION: {
-    DELEGATE: 'delegate',
-    VIEW: 'view'
+    DELEGATE: 'DELEGATE',
+    VIEW: 'VIEW'
   },
   ACTION: {
     MEDIA: {
-      ADD: 'add',
-      REMOVE: 'remove'
+      ADD: 'ADD',
+      REMOVE: 'REMOVE'
+    }
+  },
+  HIDE_AWAY: {
+    // [FUTURE] placeholder until we rewrite hide-away with prop types
+    IGNORE_CLOSE_SELECTOR: {
+      NONE: `do-not-ignore-anything-${Math.random()}`
     }
   }
 });

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { format } from 'textup-frontend/utils/phone-number';
 import { MediaImage } from 'textup-frontend/objects/media-image';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
@@ -15,12 +16,12 @@ export default Ember.Component.extend(PropTypesMixin, {
     // for modifying available functionality
     canAddToRecord: PropTypes.bool,
     canModifyExistingInRecord: PropTypes.bool,
-    nextFutureFire: PropTypes.date, // could be null
-    personalPhoneNumber: PropTypes.string, // could be null
+    nextFutureFire: PropTypes.oneOfType([PropTypes.null, PropTypes.date]),
+    personalPhoneNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     // for displaying existing items
     recordClusters: PropTypes.arrayOf(PropTypes.instanceOf(RecordCluster)),
     numRecordItems: PropTypes.number,
-    totalNumRecordItems: PropTypes.number, // don't know until after 1st async call so not required
+    totalNumRecordItems: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     // for creating a new text
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)),
     contents: PropTypes.string,
@@ -28,6 +29,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     // Handlers
     // --------
 
+    doRegister: PropTypes.func,
     // note-specific handlers
     onEditNote: PropTypes.func,
     onRestoreNote: PropTypes.func,
@@ -59,24 +61,32 @@ export default Ember.Component.extend(PropTypesMixin, {
       canAddToRecord: false,
       canModifyExistingInRecord: false,
       recordClusters: [],
-      noRecordItemsMessage: 'Nothing in record yet!',
+      noRecordItemsMessage: 'Nothing in the record yet!',
       noAddToRecordMessage: "You don't have permission to add to this record.",
-      startCallMessage: `Calling your personal phone at ${this.get('personalPhoneNumber')}`,
+      startCallMessage: `Calling your personal phone at ${format(this.get('personalPhoneNumber'))}`,
       addNoteInPastMessage: "Choose your note's place"
     };
   },
   classNames: 'care-record',
 
+  didInitAttrs() {
+    this._super(...arguments);
+    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
+
   // Internal properties
   // -------------------
 
   _recordClustersScroll: null, // set by `doRegister` in `infinite-scroll`
+  _publicAPI: computed(function() {
+    return { actions: { reset: () => this._tryResetScroll() } };
+  }),
 
   _hasPersonalPhoneNumber: computed.notEmpty('personalPhoneNumber'),
   _hasItemsInRecord: computed.notEmpty('recordClusters'),
 
-  _isAddingNoteInPast: false,
   _hasStartedCall: false,
+  _isAddingNoteInPast: false,
 
   // Internal handlers
   // -----------------
@@ -94,10 +104,10 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   // record display handlers
   _onLoadRecordItems() {
-    tryInvoke(this, 'onLoadRecordItems', [...arguments]);
+    return tryInvoke(this, 'onLoadRecordItems', [...arguments]);
   },
   _onRefreshRecordItems() {
-    tryInvoke(this, 'onRefreshRecordItems', [...arguments]);
+    return tryInvoke(this, 'onRefreshRecordItems', [...arguments]);
   },
   _onViewScheduledMessages() {
     tryInvoke(this, 'onViewScheduledMessages', [...arguments]);
@@ -105,7 +115,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   // content-related handlers
   _onContentChange() {
-    tryInvoke(this, 'onContentChange', [...arguments]); // debounced in `compose-text`
+    tryInvoke(this, 'onContentChange', [...arguments]);
   },
   _onAddImage() {
     tryInvoke(this, 'onAddImage', [...arguments]);
@@ -116,14 +126,14 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   // record modification handlers
   _addNoteInPast(addAfterRecordItem) {
+    this.set('_isAddingNoteInPast', false);
     tryInvoke(this, 'onAddNote', [addAfterRecordItem]);
   },
   _addNoteNow() {
     tryInvoke(this, 'onAddNote', [...arguments]);
   },
   _onCall() {
-    this.set('_hasStartedCall', true);
-    this._tryResetScroll();
+    this._afterStartCall();
     tryInvoke(this, 'onCall', [...arguments]);
   },
   _onText() {
@@ -139,5 +149,9 @@ export default Ember.Component.extend(PropTypesMixin, {
     if (scrollEl && scrollEl.actions) {
       tryInvoke(scrollEl.actions, 'resetPosition');
     }
+  },
+  _afterStartCall() {
+    this.set('_hasStartedCall', true);
+    this._tryResetScroll();
   }
 });

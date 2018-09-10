@@ -1,12 +1,14 @@
 {{#responsive-image-gallery images=images thumbnailClass=(concat elementId '-item') as |gallery|}}
-    {{#each images as |image index|}}
-        <div class="{{itemClass}} {{concat elementId '-item'}}"
-            onclick={{action gallery.actions.open (hash index=index)}}>
-            {{responsive-image
-                versions=image.versions
-                onSuccess=(action _onSuccess index)
-                onFailure=(action _onFailure index)}}
-            {{yield image index}}
-        </div>
-    {{/each}}
+    <div class="image-grid__item-container">
+        {{#each images as |image index|}}
+            <div class="image-grid__item {{itemClass}} {{concat elementId '-item'}}"
+                onclick={{action gallery.actions.open (hash index=index)}}>
+                {{responsive-image classNames="image-grid__item__image"
+                    versions=image.versions
+                    onSuccess=(action _onSuccess index)
+                    onFailure=(action _onFailure index)}}
+                {{yield image index}}
+            </div>
+        {{/each}}
+    </div>
 {{/responsive-image-gallery}}

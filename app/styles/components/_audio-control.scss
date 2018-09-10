@@ -5,6 +5,9 @@
 		overflow: hidden;
 	}
 	.volume-control {
+		border-left: 1px solid shade($border-color);
+		margin-left: 0.5 * $spacing;
+
 		.input-group-element {
 			border-top: 1px solid $border-color;
 			border-bottom: 1px solid $border-color;
@@ -12,23 +15,25 @@
 	}
 	.volume-bar {
 		@extend %labeled-bar;
-		width: 75px;
-		background-color: $bg-color;
-	    position: relative;
-    	top: 0.15em;
+		width: 100px;
+		background-color: $bg-light-color;
+		position: relative;
+		border-radius: $border-radius;
 
 		.volume-level-bar {
-			height: 1em;
-			background-color: shade($bg-color);
+			height: 1.5 * $spacing;
+			background-color: $brand-color;
 			transition: width 0.5s;
 		}
 	}
 	.audio-progress-bar {
 		@extend %labeled-bar;
 		width: 100%;
-		height: $control-height;
-		background-color: $bg-color;
-		color: contrast-color($bg-color);
+		height: 1.5 * $spacing;
+		line-height: 1.5 * $spacing;
+		border-radius: $border-radius;
+		background-color: $overlay-light-color;
+		color: $font-color;
 
 		.audio-progress {
 			@extend %labeled-bar;
@@ -44,7 +49,7 @@
 			top: 0;
 			left: 0;
 			height: $control-height;
-			$color: shade($bg-color);
+			$color: $bg-light-color;
 			background-color: $color;
 			color: contrast-color($color);
 			transition: width 1s;

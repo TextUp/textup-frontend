@@ -1,4 +1,4 @@
 import Ember from 'ember';
-import SubmitTextArea from '../mixins/submit-textarea';
+import CanSubmitOnNewline from 'textup-frontend/mixins/component/can-submit-on-newline';
 
-Ember.TextArea.reopen(SubmitTextArea);
+Ember.TextArea.reopen(CanSubmitOnNewline);

@@ -1,5 +1,9 @@
+/* global PhotoSwipe */
+/* global PhotoSwipeUI_Default */
+
 import Ember from 'ember';
-import PhotoSwipe from 'ember-photoswipe/components/photo-swipe';
+import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
+import PhotoSwipeComponent from 'ember-photoswipe/components/photo-swipe';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { MediaImage } from 'textup-frontend/objects/media-image';
 import {
@@ -10,9 +14,12 @@ import {
 
 const { computed, isPresent, tryInvoke } = Ember;
 
-export default PhotoSwipe.extend(PropTypesMixin, {
+export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
-    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)).isRequired,
+    images: PropTypes.oneOfType([
+      PropTypes.null,
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaImage))
+    ]),
     thumbnailClass: PropTypes.string // for thumbnail coordinates function
   },
   getDefaultProps() {
@@ -25,8 +32,6 @@ export default PhotoSwipe.extend(PropTypesMixin, {
   // Overrides
   // ---------
 
-  items: computed.readOnly('images'),
-
   showHideOpacity: true,
   history: false,
   captionEl: false,
@@ -36,27 +41,36 @@ export default PhotoSwipe.extend(PropTypesMixin, {
     return this.get('_getThumbBoundsFn').bind(this);
   }),
 
-  // need to override event listeners binding because event properties aren't
-  // being passed to the listeners properly
-  _addEventListeners(pswp) {
+  open(actionOptions) {
+    const images = this.get('images');
+    if (!isPresent(images)) {
+      return;
+    }
+    const pswpElement = this.get('_elementToWormhole'),
+      options = this.get('options'),
+      assignedOptions = Ember.assign({}, options, actionOptions),
+      pswp = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, images, assignedOptions);
+    // need to override event listeners binding because event properties aren't
+    // being passed to the listeners properly AND these events for responsive image selection
+    // need to be bound BEFORE init is called
     pswp.listen('gettingData', this.get('_onGettingData').bind(this));
     pswp.listen('beforeResize', this.get('_onBeforeResize').bind(this));
-  },
-  open() {
-    if (isPresent(this.get('images'))) {
-      this._super(...arguments);
-      this._resetResizeProps();
-    }
+    pswp.init();
+
+    this.set('pswp', pswp);
+    this._resetResizeProps();
   },
 
   // Internal properties
   // -------------------
 
+  _elementToWormhole: computed(function() {
+    return this.get('element').querySelector('.pswp');
+  }),
   _getThumbBoundsFn: function(index) {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-
     const thumbnailClass = this.get('thumbnailClass');
     if (isPresent(thumbnailClass)) {
       const displayedItem = this.$(`.${thumbnailClass}`).get(index);
@@ -76,7 +90,6 @@ export default PhotoSwipe.extend(PropTypesMixin, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-
     const viewportWidth = this.get('pswp.viewportSize.x'),
       pixelDensity = window.devicePixelRatio;
     if (this.get('_isFirstResize')) {
@@ -105,14 +118,12 @@ export default PhotoSwipe.extend(PropTypesMixin, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-
     const viewportWidth = this.get('pswp.viewportSize.x'),
       pixelDensity = window.devicePixelRatio,
       mediaImage = this.get('images').objectAt(index),
       result = formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity, mediaImage);
-
     if (result) {
-      item = result;
+      Ember.merge(item, result);
     }
   }
 });

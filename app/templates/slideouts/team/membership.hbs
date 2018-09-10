@@ -1,0 +1,26 @@
+{{#slideout-pane
+    headerProps=(hash title=(if selected
+        (concat 'Teams (' selected.length ' selected)')
+        (concat person.name ' Teams')))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=teamsHaveActions
+        doPrimary=(route-action 'updateTeamMemberships'
+            stateManager.owner.teams
+            (if selected selected person)
+            (route-action 'clearList' stateManager.owner.teams 'actions'
+                (route-action "closeSlideout")))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action 'clearList' stateManager.owner.teams 'actions'
+        (route-action "closeSlideout")) as |slideout|}}
+    {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)
+        itemBucketProperty='teams'
+        items=(if selected selected person)
+        buckets=stateManager.owner.teams as |team|}}
+            {{preview-badge color=team.hexColor onlyShowFull=true content=team.name}}
+    {{else}}
+        <li class="no-results">No teams yet.</li>
+    {{/multi-toggle/group-by-bucket}}
+{{/slideout-pane}}

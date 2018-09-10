@@ -1,24 +1,42 @@
-.tooltipster-clean, .tooltipster-help {
-    border-radius: 5px;
-    border-width: 0;
-    background: $bg-dark-color;
-    color: $font-light-color;
-}
-.tooltipster-clean .tooltipster-content {
-    font-family: Arial, sans-serif;
-    font-size: $font-size;
-    line-height: $font-size + 2;
-    text-transform: uppercase;
-    font-weight: $font-weight-bold;
-    opacity: 0.8;
-    padding: 8px 10px;
-}
-.tooltipster-help .tooltipster-content {
-    font-family: Arial, sans-serif;
-    font-size: $font-size;
-    line-height: $font-size + 2;
-    text-transform: none;
-    font-weight: $font-weight-std;
-    opacity: 0.8;
-    padding: 8px 10px;
+.tooltipster-clean {
+    .tooltipster-box {
+        border-radius: 5px;
+        border-width: 0;
+        background: $bg-dark-color;
+        color: $font-light-color;
+
+        .tooltipster-content {
+            font-family: Arial, sans-serif;
+            font-size: $font-size;
+            line-height: $font-size + 2;
+            text-transform: uppercase;
+            font-weight: $font-weight-bold;
+            opacity: 0.8;
+            padding: 8px 10px;
+        }
+    }
+    &.tooltipster-top {
+        .tooltipster-arrow-border,
+        .tooltipster-arrow-background {
+            border-top-color: $bg-dark-color;
+        }
+    }
+    &.tooltipster-right {
+        .tooltipster-arrow-border,
+        .tooltipster-arrow-background {
+            border-right-color: $bg-dark-color;
+        }
+    }
+    &.tooltipster-bottom {
+        .tooltipster-arrow-border,
+        .tooltipster-arrow-background {
+            border-bottom-color: $bg-dark-color;
+        }
+    }
+    &.tooltipster-left {
+        .tooltipster-arrow-border,
+        .tooltipster-arrow-background {
+            border-left-color: $bg-dark-color;
+        }
+    }
 }

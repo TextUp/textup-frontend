@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import callIfPresent from '../../utils/call-if-present';
 import defaultIfAbsent from '../../utils/default-if-absent';
 
 const { $, isEmpty, isBlank, computed, run: { next, scheduleOnce } } = Ember;
@@ -74,7 +73,7 @@ export default Ember.Component.extend({
 
   didInitAttrs: function() {
     this._super(...arguments);
-    callIfPresent(this.get('doRegister'), this.get('publicAPI'));
+    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   didInsertElement: function() {
     this._super(...arguments);
@@ -213,7 +212,7 @@ export default Ember.Component.extend({
 
   insert: function(event) {
     const $input = this.get('inputObj'),
-      result = callIfPresent(this.get('onInsert'), $input.val(), event);
+      result = Ember.tryInvoke(this, 'onInsert', [$input.val(), event]);
     if (result && result.then) {
       result.then(() => this.clearInput($input));
     }
@@ -224,7 +223,7 @@ export default Ember.Component.extend({
     if (isValEmpty || inputVal === this.get('_originalBeforeEdits')) {
       this._stopEditing($input, $node);
     } else {
-      const result = callIfPresent(this.get('onUpdate'), object, $input.val(), event);
+      const result = Ember.tryInvoke(this, 'onUpdate', [object, $input.val(), event]);
       if (result && result.then) {
         result.then(() => {
           // on success, stop editing and don't revert
@@ -244,7 +243,7 @@ export default Ember.Component.extend({
       // run next to allow click out to close handler to run first
       next(this, function() {
         const $next = this._getNextItem($node);
-        callIfPresent(this.get('onRemove'), object);
+        Ember.tryInvoke(this, 'onRemove', [object]);
         scheduleOnce('afterRender', this, function() {
           this.resetEditing();
           $next.focus();
@@ -256,11 +255,11 @@ export default Ember.Component.extend({
   },
   _inputStart: function(event) {
     this.set('_lastInputValue', event.target.value);
-    callIfPresent(this.get('onInputStart'), event.target.value, event);
+    Ember.tryInvoke(this, 'onInputStart', [event.target.value, event]);
   },
   _inputChange: function(inputVal, event) {
     if (this.get('_lastInputValue') !== inputVal) {
-      callIfPresent(this.get('onInput'), inputVal, event);
+      Ember.tryInvoke(this, 'onInput', [inputVal, event]);
     }
     this.set('_lastInputValue', inputVal);
   },

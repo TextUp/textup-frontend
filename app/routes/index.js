@@ -1,9 +1,9 @@
 import Ember from 'ember';
-import Public from '../mixins/public-route';
+import IsPublic from 'textup-frontend/mixins/route/is-public';
 
-export default Ember.Route.extend(Public, {
-	redirect: function() {
-		this._super(...arguments);
-		this.transitionTo('login');
-	},
+export default Ember.Route.extend(IsPublic, {
+  redirect: function() {
+    this._super(...arguments);
+    this.transitionTo('login');
+  }
 });

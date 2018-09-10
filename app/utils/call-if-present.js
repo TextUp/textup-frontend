@@ -1,3 +1,7 @@
-export default function callIfPresent(onCall, ...args) {
-	return (onCall && typeof onCall === 'function') ? onCall(...args) : null;
+import Ember from 'ember';
+
+const { typeOf } = Ember;
+
+export default function callIfPresent(context, onCall, args) {
+  return typeOf(onCall) === 'function' ? onCall.apply(this, args) : null;
 }

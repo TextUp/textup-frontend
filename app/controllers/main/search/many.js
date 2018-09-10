@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import MainContactsManyController from '../contacts/many';
+import MainContactsManyController from 'textup-frontend/controllers/main/contacts/many';
 
 const { filterBy, alias } = Ember.computed;
 
@@ -8,9 +8,5 @@ export default MainContactsManyController.extend({
   searchController: Ember.inject.controller('main.search'),
 
   selected: filterBy('searchController.searchResults', 'isSelected', true),
-  allContacts: alias('searchController.searchResults'),
-
-  _exitMany: function() {
-    this.transitionToRoute('main.search');
-  }
+  allContacts: alias('searchController.searchResults')
 });

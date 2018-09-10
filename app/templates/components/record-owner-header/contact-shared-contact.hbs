@@ -1,0 +1,115 @@
+<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
+    full-height row ">
+    {{#link-to backRouteName classNames='pull-left'}}
+        <span class="pad-all">
+            <span class="fa fa-chevron-left"></span>
+        </span>
+    {{/link-to}}
+</div>
+<div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20 full-height contact-info
+    {{if contact.isShared 'is-shared'}}
+    {{if (or contact.hasTags contact.isShared) 'has-details'}}">
+    <div class='contact-summary'>
+        <div class="horizontal-items clickable" onclick={{action _onEdit}}>
+            <span class="clear-badge no-space clickable">
+                <h5>{{phone-number contact.identifier}}</h5>
+            </span>
+            {{#if contact.name}}
+                <span class="clear-badge no-space clickable
+                    display-s display-m display-l">
+                    <span class="margin-l-half text-big">
+                        {{phone-number contact.numbers.firstObject.number}}
+                    </span>
+                </span>
+            {{/if}}
+            {{#if (gt contact.numbers.length 1)}}
+                <span class="display-l">
+                    <span class='margin-l-half badge text-small clickable'>
+                        <span class="text-small">
+                            +{{plus contact.numbers.length -1}}
+                            {{pluralize 'number' (plus contact.numbers.length -1)}}
+                        </span>
+                    </span>
+                </span>
+            {{/if}}
+        </div>
+    </div>
+    <div class="contact-details">
+        <div class="horizontal-items full-height pad-l-half">
+            {{#if contact.isShared}}
+                {{!-- for uniform spacing via horizontal-items children selector --}}
+                <span>
+                    {{!-- add click to increase click area on small screens --}}
+                    <span class="display-xs">
+                        <span class="badge clickable" onclick={{action _onEdit}}>
+                            Shared
+                        </span>
+                    </span>
+                    <span class="display-s display-m display-l">
+                        {{#if contact.isSharedView}}
+                            Viewing only from
+                        {{else if contact.isSharedDelegate}}
+                            Collaborating with
+                        {{else}}
+                            Shared by
+                        {{/if}}
+                        <span class="text-darken">{{contact.sharedBy}}</span>
+                    </span>
+                </span>
+                {{#if contact.hasTags}}
+                    <span class="display-l">
+                        <span class="badge-divider"></span>
+                    </span>
+                {{/if}}
+            {{/if}}
+            <span class='clickable display-l' onclick={{action _onEditTagMembership}}>
+                {{#each contact.tags as |tag|}}
+                    {{preview-badge classNames='clickable'
+                        onlyShowFull=true
+                        color=tag.hexColor
+                        content=tag.name}}
+                {{/each}}
+            </span>
+        </div>
+    </div>
+</div>
+<div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
+    full-height row">
+    <div class="horizontal-items pull-right">
+        <span class='clear-badge no-space'>
+            {{#hide-away/dropdown}}
+                <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
+                    Details
+                </li>
+                {{#if (not contact.isShared)}}
+                    <li tabindex='0' class='dropdown-item' onclick={{action _onEditSharing}}>
+                        Share
+                        <span class="badge">
+                            {{contact.sharedWith.length}}
+                        </span>
+                    </li>
+                    <li tabindex='0' class='dropdown-item'
+                        onclick={{action _onEditTagMembership}}>
+                        Tags
+                        <span class="badge">{{contact.tags.content.length}}</span>
+                    </li>
+                {{/if}}
+                <li class='dropdown-divider'>Status</li>
+                {{record-owner-header/contact-status-list contacts=contact
+                    onChange=(action _onStatusChange)}}
+            {{else}}
+                <button class='btn' type='button'>
+                    More
+                    <span class='fa fa-caret-down'></span>
+                </button>
+            {{/hide-away/dropdown}}
+        </span>
+        <span class="clear-badge display-m display-l">
+            {{#link-to backRouteName}}
+                <span class="pad-all">
+                    <span class="fa fa-times"></span>
+                </span>
+            {{/link-to}}
+        </span>
+    </div>
+</div>

@@ -3,7 +3,13 @@ import NotificationsService from 'ember-cli-notifications/services/notification-
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('adapter:application', 'Unit | Adapter | application', {
-  needs: ['service:auth', 'service:state', 'service:data', 'service:storage', 'service:socket'],
+  needs: [
+    'service:auth-service',
+    'service:state',
+    'service:data-service',
+    'service:storage',
+    'service:socket'
+  ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
@@ -16,7 +22,7 @@ test('adding an authorization token header if present', function(assert) {
 
   assert.deepEqual(obj.get('headers'), {});
 
-  obj.set('authManager', { token });
+  obj.set('authService', { token });
 
   assert.deepEqual(obj.get('headers'), { Authorization: `Bearer ${token}` });
 });

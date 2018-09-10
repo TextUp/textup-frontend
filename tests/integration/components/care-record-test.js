@@ -6,6 +6,7 @@ import { mockRecordClusters } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
+const { typeOf } = Ember;
 let store;
 
 moduleForComponent('care-record', 'Integration | Component | care record', {
@@ -30,6 +31,7 @@ test('empty + invalid inputs', function(assert) {
     invalidTotalNumRecordItems: 'not a number',
     invalidImages: 88,
     invalidContents: 88,
+    invalidDoRegister: 88,
     invalidOnEditNote: 88,
     invalidOnRestoreNote: 88,
     invalidOnViewNoteHistory: 88,
@@ -60,6 +62,7 @@ test('empty + invalid inputs', function(assert) {
       totalNumRecordItems=invalidTotalNumRecordItems
       images=invalidImages
       contents=invalidContents
+      doRegister=invalidDoRegister
       onEditNote=invalidOnEditNote
       onRestoreNote=invalidOnRestoreNote
       onViewNoteHistory=invalidOnViewNoteHistory
@@ -92,6 +95,7 @@ test('all valid inputs', function(assert) {
     totalNumRecordItems: 88,
     images: [],
     contents: 'ok',
+    doRegister: () => null,
     onEditNote: () => null,
     onRestoreNote: () => null,
     onViewNoteHistory: () => null,
@@ -121,6 +125,7 @@ test('all valid inputs', function(assert) {
       totalNumRecordItems=totalNumRecordItems
       images=images
       contents=contents
+      doRegister=doRegister
       onEditNote=onEditNote
       onRestoreNote=onRestoreNote
       onViewNoteHistory=onViewNoteHistory
@@ -167,6 +172,23 @@ test('overlay messages', function(assert) {
   assert.ok(text.includes(noAddToRecordMessage));
   assert.ok(text.includes(startCallMessage));
   assert.ok(text.includes(addNoteInPastMessage));
+});
+
+test('doRegister a reference to the public API', function(assert) {
+  const doRegister = sinon.spy();
+  this.setProperties({ doRegister });
+
+  this.render(hbs`{{care-record doRegister=doRegister}}`);
+
+  assert.ok(this.$('.care-record').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+  assert.equal(doRegister.firstCall.args.length, 1);
+  assert.equal(
+    typeOf(doRegister.firstCall.args[0]),
+    'object',
+    'is a public API, not component itself'
+  );
+  assert.equal(typeOf(doRegister.firstCall.args[0].actions.reset), 'object');
 });
 
 test('cannot add to record', function(assert) {

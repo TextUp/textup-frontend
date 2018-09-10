@@ -6,6 +6,7 @@ const { computed, get, tryInvoke } = Ember;
 
 export default Ember.Component.extend(DisplaysImages, {
   classNames: ['image-grid'],
+  classNameBindings: ['_hasImages::image-grid--none'],
 
   didUpdateAttrs() {
     this._super(...arguments);
@@ -20,6 +21,7 @@ export default Ember.Component.extend(DisplaysImages, {
   _shouldReturnResults: computed('images.[]', '_numImagesLoaded', function() {
     return this.get('images.length') === this.get('_numImagesLoaded');
   }),
+  _hasImages: computed.alias('images.length'),
 
   // Internal handlers
   // -----------------

@@ -3,14 +3,14 @@ import Ember from 'ember';
 import config from '../config/environment';
 
 export default DS.RESTAdapter.extend({
-  authManager: Ember.inject.service('auth'),
+  authService: Ember.inject.service(),
   stateManager: Ember.inject.service('state'),
 
   host: config.host,
   namespace: 'v1',
   coalesceFindRequests: true,
-  headers: Ember.computed('authManager.token', function() {
-    const token = this.get('authManager.token');
+  headers: Ember.computed('authService.token', function() {
+    const token = this.get('authService.token');
     return token ? { Authorization: `Bearer ${token}` } : {};
   }),
 

@@ -1,0 +1,65 @@
+.textup-modal {
+    & &__overlay {
+        background-color: $overlay-color;
+    }
+    &__container {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+        max-width: 95vw;
+        max-height: 90vh;
+        padding: 0;
+        border-radius: $border-radius;
+        box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
+
+        @include mq($from: mobileLandscape) {
+            max-width: 80vw;
+        }
+        @include mq($from: desktop) {
+            max-width: 60vw;
+        }
+    }
+    &__body {
+        @extend %vertical-scroll;
+
+        min-height: 0;
+        padding: $spacing;
+
+        &__title {
+            @extend .text-bigger;
+
+            margin-bottom: $spacing;
+            font-weight: $font-weight-bold;
+            text-align: center;
+        }
+        &__description {
+            margin-bottom: $spacing;
+        }
+        &__more {
+            display: block;
+            padding: $spacing / 2;
+            margin-bottom: $spacing;
+            border: 1px solid tint($brand-color, 4);
+            border-radius: $border-radius;
+            color: $brand-color;
+            text-align: center;
+            font-weight: $font-weight-bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        &__image-container {
+            width: 100%;
+            text-align: center;
+
+            img {
+                max-width: 100%;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14);
+            }
+        }
+    }
+    &__footer {
+        padding: ($spacing / 2) $spacing;
+        border-top: 1px solid $border-color;
+        text-align: center;
+    }
+}

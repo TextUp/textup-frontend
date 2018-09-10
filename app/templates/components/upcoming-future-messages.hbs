@@ -1,7 +1,7 @@
 {{#if _dateMissing}}
     No scheduled messages
 {{else if _isInPast}}
-    Scheduled message sent {{moment-from-now nextFutureFire interval=1000}}
+    Scheduled message sent <span class="text-bold">{{moment-from-now nextFutureFire interval=1000}}</span>
 {{else}}
-    Next scheduled message {{moment-from-now nextFutureFire interval=1000}}
+    Next scheduled message <span class="text-bold">{{moment-from-now nextFutureFire interval=1000}}</span>
 {{/if}}

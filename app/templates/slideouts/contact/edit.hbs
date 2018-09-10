@@ -1,0 +1,19 @@
+{{#slideout-pane
+    headerProps=(hash title=(phone-number model.identifier))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action "finishExistingContactSlideout")
+        disablePrimary=(or (not model.allowEdits) (not (v-get model "isValid")))
+        primaryLabel="Update"
+        primaryProgressLabel="Updating...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action "cancelExistingContactSlideout")
+    forceKeepOpen=model.isSaving
+    focusSelector=".start-focus" as |slideout|}}
+    {{form/contact-model classNames="pad-t pad-l pad-r"
+        contact=model
+        onGoToDuplicates=(route-action "goToDuplicateContact")
+        onAddNumber=(route-action "onAddNumber")
+        onRemoveNumber=(route-action "onRemoveNumber")}}
+{{/slideout-pane}}

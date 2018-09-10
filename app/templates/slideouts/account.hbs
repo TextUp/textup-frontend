@@ -3,33 +3,33 @@
     headerProps=(hash
         title='Your Account'
         activeOwner=stateManager.owner
-        user=authManager.authUser
+        user=authService.authUser
         doLogOut=(route-action 'logout'))
-    footerComponent="slideout-pane/actions"
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
-        showFooter=(and (or stateManager.owner.isDirty authManager.authUser.isDirty)
+        showFooter=(and (or stateManager.owner.isDirty authService.authUser.isDirty)
                 (not usernameDropdown.isOpen)
                 (not passwordDropdown.isOpen)
                 (not codeDropdown.isOpen))
         doPrimary=(route-action 'persist'
-            (if (eq accountSettingsTabs.currentIndex 1) authManager.authUser stateManager.owner)
-            (route-action 'closeAllSlideouts'))
+            (if (eq accountSettingsTabs.currentIndex 1) authService.authUser stateManager.owner)
+            (route-action "closeSlideout"))
         disablePrimary=(or
             (not (v-get stateManager.owner 'isValid'))
-            (not (v-get authManager.authUser 'isValid')))
+            (not (v-get authService.authUser 'isValid')))
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
         doSecondary=(route-action 'revert' stateManager.owner
-            (route-action 'revert' authManager.authUser)))
+            (route-action 'revert' authService.authUser)))
     doClose=(route-action 'revert' stateManager.owner
-        (route-action 'revert' authManager.authUser)
-        (route-action 'closeAllSlideouts'))
-    forceKeepOpen=(or stateManager.owner.isSaving authManager.authUser.isSaving)
+        (route-action 'revert' authService.authUser)
+        (route-action "closeSlideout"))
+    forceKeepOpen=(or stateManager.owner.isSaving authService.authUser.isSaving)
     focusSelector='.hide-away-trigger, .slideout-header'}}
     {{#tab-container
         doRegister=(action (mut accountSettingsTabs))
         onChange=(route-action 'revert' stateManger.owner
-            (route-action 'revert' authManager.authUser))
+            (route-action 'revert' authService.authUser))
         animation='fade' as |tabContainer doRegister|}}
         {{#with stateManager.ownerAsOrg as |org|}}
             {{#tab-container/item doRegister=doRegister
@@ -74,7 +74,7 @@
                             {{/if}}
                         {{/multi-toggle}}
                     </div>
-                    {{form/location-form entity=org onLocationError=(route-action 'mapError')}}
+                    {{form/location-model entity=org onLocationError=(route-action 'mapError')}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
@@ -83,14 +83,14 @@
                 title=team.name}}
                 <div class="pad-t pad-b">
                     {{partial 'partials/team/settings'}}
-                    {{form/location-form entity=team onLocationError=(route-action 'mapError')}}
+                    {{form/location-model entity=team onLocationError=(route-action 'mapError')}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
         {{#tab-container/item doRegister=doRegister
             title="My Account"}}
             <div class="pad-t pad-b">
-                {{#with authManager.authUser as |staff|}}
+                {{#with authService.authUser as |staff|}}
                     <div class="pad-l pad-r">
                         {{partial 'partials/staff/settings'}}
                     </div>

@@ -1,0 +1,52 @@
+<div class="record-item__multi-item-body">
+    <div class="record-item__body text-wrap">
+        {{#if note.noteContents}}
+            {{note.noteContents}}
+        {{else}}
+            <div class="text-small text--deemphasize text-ellipsis">
+                No note contents
+            </div>
+        {{/if}}
+    </div>
+    <div class="record-item__media-container">
+        {{#if (and (not note.media.content.isNew) note.media.content.displayedImages.content)}}
+            <div class="record-item__media">
+                {{image-stack images=note.media.content.displayedImages.content}}
+            </div>
+        {{/if}}
+        {{#if (and (not note.location.content.isNew) note.location.content)}}
+            <div class="record-item__media">
+                {{location-preview location=note.location.content}}
+            </div>
+        {{/if}}
+    </div>
+    {{#if (or (not readOnly) note.hasRevisions)}}
+        {{#hide-away/dropdown classNames="record-item__control"
+            containerClass="full-height"
+            triggerClass="full-height"}}
+            {{#if (not readOnly)}}
+                {{#if note.hasBeenDeleted}}
+                    <li tabindex='0' class='dropdown-item' onclick={{action _onRestore note}}>
+                        Restore
+                    </li>
+                {{else}}
+                    <li tabindex='0' class='dropdown-item' onclick={{action _onEdit note}}>
+                        Edit
+                    </li>
+                {{/if}}
+            {{/if}}
+            {{#if note.hasRevisions}}
+                <li tabindex='0' class='dropdown-item' onclick={{action _onViewHistory note}}>
+                    See version history
+                </li>
+            {{/if}}
+        {{else}}
+            <button class='btn btn-default btn-plain btn-expand' type='button'>
+                <span class='fa fa-ellipsis-v'></span>
+            </button>
+        {{/hide-away/dropdown}}
+    {{/if}}
+</div>
+<div class="record-item__receipts text--deemphasize">
+    {{record-item/metadata timestamp=note.whenCreated author=note.authorName}}
+</div>

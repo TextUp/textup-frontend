@@ -1,6 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import HasMedia from '../mixins/serializer/has-media';
+import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
   attrs: {

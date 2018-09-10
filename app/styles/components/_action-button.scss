@@ -1,0 +1,27 @@
+.action-button {
+    @extend .btn;
+    @extend .text-ellipsis;
+
+    position: relative;
+
+    &.action-button--error {
+        @extend .btn.btn-danger;
+    }
+    &--disabled {
+        @extend .disabled;
+    }
+    &__overlay {
+        opacity: 0;
+        transition: opacity 0.1s;
+    }
+    &--loading &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        opacity: 1;
+        color: white;
+        background-color: $overlay-color;
+    }
+}

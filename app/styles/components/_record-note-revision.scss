@@ -1,0 +1,29 @@
+.record-note-revision {
+    border-top: 1px solid $border-color;
+
+    &:first-child {
+        border-top-width: 0;
+    }
+    &__asset {
+        display: flex;
+        align-items: center;
+
+        &--heading {
+            background-color: $bg-color;
+        }
+        &__item {
+            flex-grow: 1;
+            padding: ($spacing / 2) 0;
+
+            &:first-child {
+                padding-left: $spacing / 2;
+            }
+            &:last-child {
+                padding-right: $spacing / 2;
+            }
+            &--right {
+                text-align: right;
+            }
+        }
+    }
+}

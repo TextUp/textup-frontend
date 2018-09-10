@@ -1,18 +1,3 @@
-import Ember from 'ember';
+import MainContactsManyRoute from 'textup-frontend/routes/main/contacts/many';
 
-export default Ember.Route.extend({
-	templateName: 'main/contacts/many',
-
-	actions: {
-		willTransition: function() {
-			this.controller._deselectAll();
-			return true;
-		},
-		didTransition: function() {
-			if (this.controller.get('selected').length === 0) {
-				this.transitionTo('main.tag');
-			}
-			return true; // for closing slideouts
-		},
-	}
-});
+export default MainContactsManyRoute.extend({ backRouteName: 'main.tag' });

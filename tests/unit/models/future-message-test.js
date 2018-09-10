@@ -9,7 +9,16 @@ moduleForModel('future-message', 'Unit | Model | future message', {
     'model:media',
     'model:contact',
     'model:tag',
+    'model:phone',
+    'model:shared-contact',
+    'model:record-item',
+    'model:record-text',
+    'model:record-call',
+    'model:record-note',
+    'model:future-message',
+    'validator:collection',
     'validator:inclusion',
+    'validator:presence',
     'validator:length',
     'validator:has-any',
     'validator:number'
@@ -81,6 +90,37 @@ test('setting intervals of different sizes', function(assert) {
     assert.equal(obj.get('intervalSize'), null);
     assert.equal(obj.get('repeatInterval'), 1);
     assert.equal(obj.get('_repeatIntervalInDays'), null);
+  });
+});
+
+test('getting and setting owner', function(assert) {
+  run(() => {
+    const validContact = this.store().createRecord('contact'),
+      validTag = this.store().createRecord('tag'),
+      invalidOwner = 'not a model',
+      obj = this.subject();
+
+    assert.notOk(obj.get('owner.content'));
+    assert.notOk(obj.get('contact.content'));
+    assert.notOk(obj.get('tag.content'));
+
+    obj.set('owner', invalidOwner);
+
+    assert.notOk(obj.get('owner.content'));
+    assert.notOk(obj.get('contact.content'));
+    assert.notOk(obj.get('tag.content'));
+
+    obj.set('owner', validContact);
+
+    assert.deepEqual(obj.get('owner.content'), validContact);
+    assert.ok(obj.get('contact.content'));
+    assert.notOk(obj.get('tag.content'));
+
+    obj.set('owner', validTag);
+
+    assert.deepEqual(obj.get('owner.content'), validTag);
+    assert.notOk(obj.get('contact.content'));
+    assert.ok(obj.get('tag.content'));
   });
 });
 

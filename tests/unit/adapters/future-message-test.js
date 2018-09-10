@@ -11,8 +11,8 @@ const { run } = Ember;
 moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
   needs: [
     'serializer:future-message',
-    'service:auth',
-    'service:data',
+    'service:auth-service',
+    'service:data-service',
     'service:state',
     'service:storage',
     'service:socket',

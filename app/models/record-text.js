@@ -9,8 +9,6 @@ const Validations = buildValidations({
   }),
   contents: validator('has-any', {
     also: ['media.hasElements'],
-    // see `valdiators/has-any` for why we need to manually specify dependent key here
-    dependentKeys: ['media.hasElements'],
     description: 'contents or images'
   })
 });

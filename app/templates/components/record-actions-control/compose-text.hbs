@@ -1,20 +1,24 @@
-{{textarea class='compose-text__item'
-    placeholder=placeholder
-    maxlength='320'
-    remaining='top'
-    autoresize=true
-    rows='1'
-    value=contents
-    submitOnNewline=true
-    action=(action _onSend)}}
+<div class="compose-text__contents">
+    {{textarea class="compose-text__contents__control"
+        placeholder=placeholder
+        maxlength="320"
+        remaining="top"
+        autoresize=true
+        rows="1"
+        value=contents
+        submitOnNewline=true
+        action=(action _onSend)}}
+</div>
 {{#if contents}}
-    <button class="compose-text__item" type="button" onclick={{action _onClearContents}}>
+    <button class="compose-text__control compose-text__remove-control"
+        type="button"
+        onclick={{action _onClearContents}}>
         <span class="fa fa-times"></span>
     </button>
 {{/if}}
-{{#photo-control/add classNames="compose-text__item" onAdd=(action _onAddImage)}}
+{{#photo-control/add classNames="compose-text__control" onAdd=(action _onAddImage)}}
     <span class="fa fa-picture-o"></span>
 {{/photo-control/add}}
-{{#action-button classNames="compose-text__item" disabled=_isInvalid onAction=(action _onSend)}}
-    <span class='fa fa-paper-plane-o'></span>
+{{#action-button classNames="compose-text__control btn-plain btn-default" disabled=_isInvalid onAction=(action _onSend)}}
+    <span class="fa fa-paper-plane-o"></span>
 {{/action-button}}

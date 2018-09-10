@@ -1,0 +1,31 @@
+<div class="record-note-revision__asset record-note-revision__asset--heading">
+    <div class="record-note-revision__asset__item">
+        {{record-item/metadata timestamp=revision.whenChanged author=revision.authorName}}
+    </div>
+    {{#if hasBlock}}
+        <div class="record-note-revision__asset__item record-note-revision__asset__item--right">
+            {{yield}}
+        </div>
+    {{/if}}
+</div>
+{{#if revision.noteContents}}
+    <div class="record-note-revision__asset">
+        <div class="record-note-revision__asset__item">
+            {{revision.noteContents}}
+        </div>
+    </div>
+{{/if}}
+{{#if (or revision.media.content.displayedImages.content revision.location.content)}}
+    <div class="record-note-revision__asset">
+        {{#if revision.media.content.displayedImages.content}}
+            <div class="record-note-revision__asset__item">
+                {{image-stack images=revision.media.content.displayedImages.content}}
+            </div>
+        {{/if}}
+        {{#if revision.location.content}}
+            <div class="record-note-revision__asset__item">
+                {{location-preview location=revision.location.content}}
+            </div>
+        {{/if}}
+    </div>
+{{/if}}

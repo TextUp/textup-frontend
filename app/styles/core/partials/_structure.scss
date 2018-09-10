@@ -8,6 +8,9 @@
     &--justify-center {
         justify-content: center;
     }
+    &--stretch-items {
+        align-items: stretch;
+    }
 
     &__item {
         min-width: 0;

@@ -2,6 +2,12 @@ import DS from 'ember-data';
 import HasAuthor from '../mixins/serializer/has-author';
 import HasMedia from '../mixins/serializer/has-media';
 
+const polymorphicTypeToModelName = {
+  TEXT: 'record-text',
+  CALL: 'record-call',
+  NOTE: 'record-note'
+};
+
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasMedia, {
   attrs: {
     whenCreated: { serialize: false },
@@ -12,30 +18,22 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
     tag: { serialize: false }
   },
 
-  modelNameFromPayloadKey() {
-    return this._super('record-item');
+  modelNameFromPayloadKey(payloadKey) {
+    if (payloadKey === 'records' || payloadKey === 'record') {
+      return this._super('record-item');
+    } else {
+      // let pass through (1) results from subclasses, (2) non-model keys like the `link` object
+      return this._super(...arguments);
+    }
   },
 
   payloadKeyFromModelName() {
     return this._super('record');
   },
 
-  normalizeResponse(store, primaryModelClass, payload) {
-    delete payload.links; // TODO test
-    return this._super(...arguments);
-  },
-
   _normalizePolymorphicRecord(obj, hash) {
-    switch (hash.type) {
-      case 'TEXT':
-        hash.type = 'record-text';
-        break;
-      case 'CALL':
-        hash.type = 'record-call';
-        break;
-      case 'NOTE':
-        hash.type = 'record-note';
-        break;
+    if (Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
+      hash.type = polymorphicTypeToModelName[hash.type];
     }
     return this._super(...arguments);
   }

@@ -2,7 +2,7 @@
     doRegister=(action (mut usernameDropdown))
     classNames='form-element'
     bodyFocusOnOpenSelector='.start-focus'
-    onOpen=(action (mut storedUsername) authManager.authUser.username)
+    onOpen=(action (mut storedUsername) authService.authUser.username)
     onClose=(route-action 'revert' staff
         (action (mut newUPassword) null)
         (action (mut storedUsername) null))
@@ -14,7 +14,7 @@
     {{/if}}
     <div class='form-element'>
         <label for='Your Password' class='control-label'>
-            {{authManager.authUser.name}}'s Password
+            {{authService.authUser.name}}'s Password
         </label>
         {{input type='password'
             allowShowPassword=true

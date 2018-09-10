@@ -3,13 +3,12 @@
         <span class="badge text-smaller">Shared</span>
     </span>
     <span class="display-l">
-        {{#tool-tipster tagName='span'
+        {{#tool-tip tagName='span'
             classNames='badge text-smaller'
-            theme='tooltipster-clean'
             title=(concat (if contact.isSharedDelegate
                 'Collaborating with '
                 (if contact.isSharedView 'Viewing only from ' 'Shared by')) contact.sharedBy)}}
             Shared
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </span>
 {{/if}}

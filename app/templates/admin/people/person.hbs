@@ -30,9 +30,10 @@
                 <div class="contact-details">
                     <div class="horizontal-items full-height">
                         <span class='clickable display-l'
-                            onclick={{route-action 'toggleDetailSlideout'
+                            onclick={{route-action 'toggleSlideout'
                             	'slideouts/teams/membership'
-                            	'admin.people.person'}}>
+                            	'admin.people.person'
+                                constants.SLIDEOUT.OUTLET.DETAIL}}>
 							{{#each person.teams as |team|}}
 				                {{preview-badge classNames='clickable'
 				                	color=team.hexColor content=team.name}}
@@ -52,9 +53,10 @@
 									Send password reset
 								</li>
 								<li tabindex='0' class='dropdown-item'
-                                    {{action 'toggleDetailSlideout'
+                                    {{action 'toggleSlideout'
 		                            	'slideouts/teams/membership'
-		                            	'admin.people.person'}}>
+		                            	'admin.people.person'
+                                        constants.SLIDEOUT.OUTLET.DETAIL}}>
                                     Teams
                                     <span class="badge">
                                         {{person.teams.content.length}}
@@ -72,9 +74,10 @@
                     {{else}}
                     	<span class='clear-badge no-space'>
                             <button type='button' class='btn'
-                                {{action 'toggleDetailSlideout'
+                                {{action 'toggleSlideout'
 	                            	'slideouts/teams/membership'
-	                            	'admin.people.person'}}>
+	                            	'admin.people.person'
+                                    constants.SLIDEOUT.OUTLET.DETAIL}}>
                                 Teams
                                 <span class="badge tint">
                                     {{person.teams.content.length}}

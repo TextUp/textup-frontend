@@ -1,19 +1,19 @@
 import Ember from 'ember';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
-import Pretender from 'pretender';
+import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
 const { run } = Ember,
   TYPE_TEXT = 'TEXT',
   TYPE_CALL = 'CALL',
   TYPE_NOTE = 'NOTE';
-let server, listPayload, buildSinglePayload, buildSavePayload;
+let server;
 
 moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
   needs: [
     'serializer:record-item',
-    'service:auth',
-    'service:data',
+    'service:auth-service',
+    'service:data-service',
     'service:state',
     'service:storage',
     'service:socket',
@@ -34,21 +34,10 @@ moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
 
-    server = new Pretender(function() {
-      this.get('/v1/records', () => {
-        return [200, { 'Content-Type': 'application/json' }, listPayload];
-      });
-      this.get('v1/records/:id', request => {
-        return [200, { 'Content-Type': 'application/json' }, buildSinglePayload(request.params.id)];
-      });
-      this.post('v1/records', request => {
-        return [201, { 'Content-Type': 'application/json' }, buildSavePayload(request)];
-      });
-    });
-    server.prepareBody = body => JSON.stringify(body);
+    server = sinon.createFakeServer({ respondImmediately: true });
   },
   afterEach() {
-    server.shutdown();
+    server.restore();
   }
 });
 
@@ -78,14 +67,22 @@ test('getting polymorphic list of items', function(assert) {
     textBaseline = getStoreCountFor(store, 'record-text'),
     callBaseline = getStoreCountFor(store, 'record-call'),
     noteBaseline = getStoreCountFor(store, 'record-note');
-  listPayload = {
-    records: [
-      { id: Math.random() },
-      { id: Math.random(), type: TYPE_TEXT },
-      { id: Math.random(), type: TYPE_CALL },
-      { id: Math.random(), type: TYPE_NOTE }
-    ]
-  };
+
+  server.respondWith('GET', '/v1/records', xhr => {
+    xhr.respond(
+      200,
+      { 'Content-Type': 'application/json' },
+      JSON.stringify({
+        records: [
+          { id: Math.random() },
+          { id: Math.random(), type: TYPE_TEXT },
+          { id: Math.random(), type: TYPE_CALL },
+          { id: Math.random(), type: TYPE_NOTE }
+        ]
+      })
+    );
+  });
+
   store.findAll('record-item').then(items => {
     assert.equal(items.get('length'), 1, 'only returns the record-items in the payload');
     assert.equal(
@@ -107,6 +104,15 @@ test('getting polymorphic individual items', function(assert) {
       callBaseline = getStoreCountFor(store, 'record-call'),
       noteBaseline = getStoreCountFor(store, 'record-note'),
       done = assert.async();
+
+    let buildSinglePayload;
+    server.respondWith('GET', /\/v1\/records\/(\d+)/, (xhr, id) => {
+      xhr.respond(
+        200,
+        { 'Content-Type': 'application/json' },
+        JSON.stringify(buildSinglePayload(id))
+      );
+    });
 
     buildSinglePayload = id => {
       return { record: { id } };

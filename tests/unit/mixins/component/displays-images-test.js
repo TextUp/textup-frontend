@@ -8,17 +8,14 @@ module('Unit | Mixin | component/displays images');
 test('validating input props', function(assert) {
   const ComponentDisplaysImagesObject = Ember.Component.extend(ComponentDisplaysImagesMixin);
 
-  assert.throws(
-    () => ComponentDisplaysImagesObject.create(),
-    'must pass in MediaObject in an array'
-  );
+  assert.ok(ComponentDisplaysImagesObject.create(), 'images can be null');
   assert.throws(
     () => ComponentDisplaysImagesObject.create({ images: 'not an array' }),
-    'must pass in MediaObject in an array'
+    'if images specified, must pass in MediaObject in an array'
   );
   assert.throws(
     () => ComponentDisplaysImagesObject.create({ images: [1, 2, 3] }),
-    'must pass in MediaObject in an array'
+    'if images specified, must pass in MediaObject in an array'
   );
   assert.ok(ComponentDisplaysImagesObject.create({ images: [] }), 'images array can be empty');
   assert.ok(ComponentDisplaysImagesObject.create({ images: [mockValidMediaImage()] }));

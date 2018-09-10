@@ -2,7 +2,10 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
-import { mockInvalidMediaImage, mockValidMediaImage } from '../../helpers/utilities';
+import {
+  mockInvalidMediaImage,
+  mockValidMediaImage
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 const { typeOf } = Ember;
@@ -12,13 +15,14 @@ moduleForComponent('image-grid', 'Integration | Component | image grid', {
 });
 
 test('inputs', function(assert) {
-  assert.throws(() => this.render(hbs`{{image-grid}}`), 'must pass in images');
+  this.render(hbs`{{image-grid}}`);
+
+  assert.ok(this.$('.image-grid').length, 'has rendered, images can be null');
 
   this.set('images', []);
   this.render(hbs`{{image-grid images=images}}`);
 
   const $el = this.$('.image-grid');
-
   assert.ok($el.length, 'has rendered, images can be an empty array');
 });
 

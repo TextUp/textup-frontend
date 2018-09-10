@@ -1,7 +1,9 @@
 {{yield}} {{!-- for overlays --}}
 {{#record-actions-control/media-drawer images=images onRemoveImage=(action _onRemoveImage)}}
     <div class="record-actions-control__action-container">
-        {{#hide-away/dropdown classNames="record-actions-control__action-item" horizontal="left"}}
+        {{#hide-away/dropdown containerClass="full-height"
+            triggerClass="record-actions-control__dropdown-trigger"
+            horizontal="left"}}
             <li tabindex="0" class="dropdown-item" onclick={{action _scheduleMessage}}>
                 Schedule message
             </li>
@@ -20,12 +22,14 @@
                 Add note
             </li>
         {{else}}
-            <button class="btn" type="button">
+            <button class="btn btn-default btn-plain btn-expand"
+                type="button">
                 <span class="fa fa-plus"></span>
             </button>
         {{/hide-away/dropdown}}
         {{!-- manually create DDAU pattern for `contents` for now --}}
-        {{record-actions-control/compose-text classNames="record-actions-control__action-item"
+        {{record-actions-control/compose-text
+            classNames="record-actions-control__action-item record-actions-control__action-item--grow"
             hasMedia=_hasImages
             contents=(mut _contents)
             onClearContents=(action _onContentChange '')

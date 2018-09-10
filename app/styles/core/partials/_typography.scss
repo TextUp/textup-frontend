@@ -86,6 +86,9 @@ h5 {
 .text-darken {
     color: $title-color;
 }
+.text--deemphasize {
+    color: tint($font-color, 0.8);
+}
 .text-lighten {
     color: tint($font-color, 3.5);
 }

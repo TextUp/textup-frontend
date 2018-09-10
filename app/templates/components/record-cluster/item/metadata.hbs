@@ -1,7 +1,0 @@
-{{#if (and _timestamp _author)}}
-    {{moment-format _timestamp}} by <span class="text-bold">{{phone-number _author}}</span>
-{{else if _timestamp}}
-    {{moment-format _timestamp}} by Unknown
-{{else if _author}}
-    by <span class="text-bold">{{phone-number _author}}</span>
-{{/if}}

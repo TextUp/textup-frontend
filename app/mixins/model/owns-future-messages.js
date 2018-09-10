@@ -27,12 +27,15 @@ export default Ember.Mixin.create({
     '_sortedFutureMessages.@each.nextFireDate',
     '_sortedFutureMessages.@each.isDone',
     function() {
-      const fMsgs = this.get('_sortedFutureMessages');
+      const fMsgs = this.get('_sortedFutureMessages'),
+        currentTime = new Date().getTime();
       let nextFire;
       fMsgs.forEach(fMsg => {
         if (!fMsg.get('isDone')) {
           const thisTime = fMsg.get('nextFireDate');
-          nextFire = !nextFire || thisTime.getTime() < nextFire.getTime() ? thisTime : nextFire;
+          if (thisTime && thisTime.getTime() > currentTime) {
+            nextFire = !nextFire || thisTime.getTime() < nextFire.getTime() ? thisTime : nextFire;
+          }
         }
       });
       return nextFire;

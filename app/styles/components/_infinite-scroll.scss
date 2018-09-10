@@ -2,7 +2,7 @@
 	height: 500px;
 	overflow: hidden;
 	position: relative;
-	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
 	.infinite-container {
 		@extend %vertical-scroll;
@@ -27,15 +27,15 @@
 	}
 	.infinite-scroll-refreshing {
 		position: absolute;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 	&.scroll-up {
 		position: relative;
 
 		.infinite-items {
 			position: relative;
-			top: $padding * 2;
+			top: $padding * 3;
 
 			&.is-displaying {
 				opacity: 0;
@@ -48,7 +48,7 @@
 			transform: translateY(50%);
 		}
 		.infinite-scroll-refreshing {
-		    transform: translate(-50%, 50%);
+			transform: translate(-50%, 50%);
 		}
 		&.done:not(.loading) {
 			.infinite-items {
@@ -69,11 +69,11 @@
 	&.refreshing {
 		.infinite-container:after {
 			position: absolute;
-		    top: 0;
-		    left: 0;
-		    height: 100%;
-		    width: 100%;
-		    z-index: 99;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			z-index: 99;
 			content: '';
 		}
 	}
@@ -82,4 +82,3 @@
 		cursor: grabbing;
 	}
 }
-

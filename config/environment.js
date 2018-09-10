@@ -49,18 +49,11 @@ module.exports = function(environment) {
     lock: {
       lockOnHidden: true
     },
-    // TODO remove
-    // photoCompression: {
-    //   maxSizeInBytes: 750000,
-    //   maxHeightInPixels: 1024,
-    //   maxWidthInPixels: 1024,
-    //   jpegQuality: 1.0,
-    //   // step size to enable image to fit within size constraint, needs to be between 0 and 1
-    //   // closer to 1 is a more fine-grained (conservative) scaling down
-    //   // closer to 0 is a more coarse-grained (extreme) scaling down
-    //   scalingStep: 0.9,
-    //   orient: true
-    // },
+    appMessage: {
+      messageEndpoint: 'https://app-messages.textup.org/',
+      oldestMessageInDays: 30,
+      lastViewedStorageKey: 'textupMessageLastViewed'
+    },
     state: {
       ignoreTracking: ['reset', 'setup', 'notify'],
       ignoreLock: ['setup', 'notify']
@@ -91,6 +84,8 @@ module.exports = function(environment) {
     // ENV.manifest = {
     //   enabled: true
     // };
+    ENV.appMessage.messageEndpoint =
+      'http://app-messages.textup.org.s3-website-us-east-1.amazonaws.com/';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

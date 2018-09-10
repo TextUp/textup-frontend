@@ -2,34 +2,41 @@
     <label for="Contents">Contents</label>
     {{textarea rows="3"
         autoresize=true
-        readonly=(if readOnly 'readonly')
-        remaining='bottom'
+        readonly=(if readOnly "readonly")
+        remaining="bottom"
         class=(if contentsClass contentsClass "form-control")
         maxlength="1000"
         validateFreq=1000
         validateObj=recordNote
-        validateField='noteContents'
-        validate='bottom'
+        validateField="noteContents"
+        validate="bottom"
         value=recordNote.noteContents}}
 </div>
 <div class="form-element">
-    {{photo-control imageLinks=recordNote.imageLinks
-        display='grid'
-        readonly=(or readOnly recordNote.isSaving)
-        doAdd=doAddPhoto
-        doRemove=doRemovePhoto}}
+    {{photo-control images=recordNote.media.content.displayedImages.content
+        imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+        readOnly=(or readOnly recordNote.isSaving)
+        onAdd=doAddImage
+        onRemove=doRemoveImage}}
 </div>
-{{#if (and (not readOnly) (or (not recordNote.hasLocation) recordNote.shouldAddLocation))}}
-    <div class="form-element">
-        {{#if recordNote.shouldAddLocation}}
-            <label class="text-center clickable pad-all
-                bg-color hover-bg-color hover-bg-dark"
-                tabindex="0"
-                onclick={{doRemoveLocation}}>
-                <span class="fa fa-minus"></span>
-                <span class="margin-l-quarter">Remove location</span>
-            </label>
-        {{else}}
+{{#if (not readOnly)}}
+    {{#if recordNote.location.content}}
+        {{!-- can only remove location if is new --}}
+        {{!-- [FUTURE] need to have a readonly-view for the location-control --}}
+        {{#if recordNote.location.content.isNew}}
+            <div class="form-element">
+                <label class="text-center clickable pad-all
+                    bg-color hover-bg-color hover-bg-dark"
+                    tabindex="0"
+                    onclick={{doRemoveLocation}}>
+                    <span class="fa fa-minus"></span>
+                    <span class="margin-l-quarter">Remove location</span>
+                </label>
+            </div>
+        {{/if}}
+        {{form/location-model entity=recordNote onLocationError=onLocationError}}
+    {{else}}
+        <div class="form-element">
             <label class="text-center clickable pad-all
                 bg-color hover-bg-color hover-bg-dark"
                 tabindex="0"
@@ -37,9 +44,6 @@
                 <span class="fa fa-plus"></span>
                 <span class="margin-l-quarter">Add location</span>
             </label>
-        {{/if}}
-    </div>
-{{/if}}
-{{#if (or recordNote.hasLocation recordNote.shouldAddLocation)}}
-    {{form/location-form entity=recordNote onLocationError=onLocationError}}
+        </div>
+    {{/if}}
 {{/if}}

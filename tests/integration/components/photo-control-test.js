@@ -14,7 +14,9 @@ moduleForComponent('photo-control', 'Integration | Component | photo control', {
 });
 
 test('inputs', function(assert) {
-  assert.throws(() => this.render(hbs`{{photo-control}}`), 'requires images');
+  this.render(hbs`{{photo-control}}`);
+
+  assert.ok(this.$('.photo-control').length, 'images can be null');
 
   this.set('images', []);
   this.render(hbs`{{photo-control images=images}}`);

@@ -1,0 +1,50 @@
+.record-actions-control {
+    position: relative;
+    border-top: 1px solid $border-color;
+    background-color: white;
+
+    &__action-container {
+        display: flex;
+        align-items: stretch;
+        margin: $spacing * 0.3;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+
+        @include mq($from: tablet) {
+            border-width: 0;
+        }
+    }
+    &__action-item {
+        &--grow {
+            flex-grow: 1;
+        }
+    }
+    &__dropdown-trigger {
+        height: 100%;
+
+        @include mq($from: tablet) {
+            margin-right: $spacing * 0.5;
+        }
+    }
+    &__media-drawer {
+    }
+    &__overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        padding: 0 $spacing;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-weight: $font-weight-bold;
+        z-index: 10;
+
+        &--open {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}

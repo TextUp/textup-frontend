@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import callIfPresent from '../utils/call-if-present';
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
@@ -24,19 +23,19 @@ export default Ember.Component.extend(PropTypesMixin, {
   }) {
     const identProp = this.get('entityIdentityProp');
     if (newEntity.get(identProp) !== oldEntity.get(identProp)) {
-      callIfPresent(this.get('onEntityDidChange'), newEntity);
+      Ember.tryInvoke(this, 'onEntityDidChange', [newEntity]);
     }
   },
 
   actions: {
     handleType() {
-      callIfPresent(this.get('onTypeChange'), ...arguments);
+      Ember.tryInvoke(this, 'onTypeChange', [...arguments]);
     },
     handleManualAvailability() {
-      callIfPresent(this.get('onManualAvailabilityChange'), ...arguments);
+      Ember.tryInvoke(this, 'onManualAvailabilityChange', [...arguments]);
     },
     handleScheduleAvailability() {
-      callIfPresent(this.get('onScheduleAvailabilityChange'), ...arguments);
+      Ember.tryInvoke(this, 'onScheduleAvailabilityChange', [...arguments]);
     }
   }
 });

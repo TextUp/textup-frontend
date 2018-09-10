@@ -8,14 +8,13 @@
 					<h5>Pending</h5>
 				</div>
 				<div class="badge {{if selectedPending 'hidden'}}">
-					{{#tool-tipster theme='tooltipster-clean'
-	                    title=(concat pendingStaff.length ' pending')
+					{{#tool-tip title=(concat pendingStaff.length ' pending')
 	                    classNames='btn-expand'}}
 	                    <span class='text-bold'>
 	                    	{{pendingStaff.length}}
 	                    </span>
 						<span class="fa fa-user"></span>
-	                {{/tool-tipster}}
+	                {{/tool-tip}}
 				</div>
 			</div>
 		</span>

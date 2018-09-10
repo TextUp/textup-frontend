@@ -6,6 +6,7 @@ module('Unit | Object | record cluster');
 test('properties', function(assert) {
   const rCluster = RecordCluster.create();
 
+  assert.equal(rCluster.get('alwaysCluster'), false, 'do not always cluster by default');
   assert.equal(rCluster.get('numItems'), 0);
   assert.deepEqual(rCluster.get('items'), []);
 

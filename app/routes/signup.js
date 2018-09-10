@@ -1,8 +1,8 @@
 import Ember from 'ember';
-import Public from '../mixins/public-route';
+import IsPublic from 'textup-frontend/mixins/route/is-public';
 import config from '../config/environment';
 
-export default Ember.Route.extend(Public, {
+export default Ember.Route.extend(IsPublic, {
   model: function() {
     return Ember.$
       .ajax({

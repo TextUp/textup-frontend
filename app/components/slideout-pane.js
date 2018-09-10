@@ -1,4 +1,4 @@
-import callIfPresent from '../utils/call-if-present';
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
@@ -137,8 +137,8 @@ export default Ember.Component.extend(PropTypesMixin, {
         this.set('_isOpen', false);
         this._removeOverlay();
       }
-      callIfPresent(this.get('doClose'), this.get('publicAPI'));
-      then.forEach(callIfPresent);
+      Ember.tryInvoke(this, 'doClose', [this.get('publicAPI')]);
+      then.forEach(fn => callIfPresent(this, fn));
     }
   },
   _open() {
@@ -147,7 +147,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
     this.set('_isOpen', true);
     this._insertOverlay();
-    callIfPresent(this.get('onOpen'), this.get('publicAPI'));
+    Ember.tryInvoke(this, 'onOpen', [this.get('publicAPI')]);
     // events
     run.next(() => {
       if (this.get('clickOutToClose')) {

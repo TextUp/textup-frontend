@@ -1,0 +1,46 @@
+<div class="input-group text-center">
+    {{#if (not isMarkedForDelete)}}
+        <div class="input-group-addon">
+            {{#tool-tip tagName='span' title='Delete'}}
+                <button class="btn-span btn btn-plain btn-danger" type='button'
+                    onclick={{action _onMarkForDelete}}>
+                    <span class="fa fa-trash-o"></span>
+                </button>
+            {{/tool-tip}}
+        </div>
+    {{/if}}
+    {{#if (or isDirty isMarkedForDelete)}}
+        <div class="input-group-addon">
+            {{#tool-tip tagName='span' title='Undo'}}
+                <button class="btn-span btn btn-plain" type='button'
+                    onclick={{if isMarkedForDelete (action _onUndoDelete) (action _onCancel)}}>
+                    <span class="fa fa-undo"></span>
+                </button>
+            {{/tool-tip}}
+        </div>
+        <div class="input-group-addon">
+            {{#if isMarkedForDelete}}
+                {{async-button classNames='btn-span btn btn-plain btn-danger'
+                    action=(action _onSave)
+                    default='Confirm delete'
+                    pending='Deleting...'}}
+            {{else}}
+                {{#tool-tip tagName='span' title='Update'}}
+                    {{#async-button classNames='btn-span btn btn-plain'
+                        disableWhen=(not isValid)
+                        action=(action _onSave)
+                        default='Update'
+                        pending='Updating...' as |btn|}}
+                        {{#if (eq btn.textState 'pending')}}
+                            <span class="fa fa-spin fa-circle-o-notch"></span>
+                        {{else if (eq btn.textState 'rejected')}}
+                            <span class="fa fa-exclamation-triangle"></span>
+                        {{else}}
+                            <span class="fa fa-save"></span>
+                        {{/if}}
+                    {{/async-button}}
+                {{/tool-tip}}
+            {{/if}}
+        </div>
+    {{/if}}
+</div>

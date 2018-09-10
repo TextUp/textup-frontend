@@ -3,7 +3,7 @@
 <div class="single-container">
     <div class="single-header">
         <img class="brand" src='assets/images/logo.png' />
-        <h3 class='text-white'>Hello, {{authManager.authUser.name}}!</h3>
+        <h3 class='text-white'>Hello, {{authService.authUser.name}}!</h3>
         <div class="subtitle display-m display-l">
             <a class='text-white' href="#" onclick={{route-action 'logout'}}>
                 Done editing info? <b>Log out.</b>
@@ -16,10 +16,10 @@
                 <h5>One more thing...</h5>
             </div>
             <p class="text-justify">
-                {{#if authManager.authUser.isPending}}
+                {{#if authService.authUser.isPending}}
                     <span>Your account is waiting for an administrator's approval. You will be emailed when you receive confirmation.</span>
-                {{else if authManager.authUser.org.content.isPending}}
-                    <span>Your organization, <span class="text-bold">{{authManager.authUser.org.content.name}}</span>, is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
+                {{else if authService.authUser.org.content.isPending}}
+                    <span>Your organization, <span class="text-bold">{{authService.authUser.org.content.name}}</span>, is still pending verification in our closed beta. Please check your email for additional instructions on how to proceed with the verification process.</span>
                 {{else}}
                     <span>Your administrator has not assigned you a TextUp phone and has not assigned you to a team with a TextUp phone.</span>
                 {{/if}}
@@ -27,7 +27,7 @@
             </p>
         </div>
         <div class="single-body-content">
-            {{#with authManager.authUser as |staff|}}
+            {{#with authService.authUser as |staff|}}
                 {{partial 'partials/staff/settings'}}
                 {{#if staff.hasDirtyAttributes}}
                     {{!-- separate if loops to prevent multiple-set deprecation --}}

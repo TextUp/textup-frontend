@@ -1,21 +1,17 @@
 {{#slideout-pane
     headerProps=(hash title=(concat stateManager.owner.name ' Availability'))
-    footerComponent="slideout-pane/actions"
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
-        showFooter=(or model.isDirty authManager.authUser.isDirty)
-        doPrimary=(route-action 'persist' model
-            (route-action 'persist' authManager.authUser
-            (route-action 'closeAllSlideouts')))
+        showFooter=(or model.isDirty authService.authUser.isDirty)
+        doPrimary=(route-action "finishAvailabilitySlideout")
         disablePrimary=(or
             (not (v-get model 'isValid'))
-            (not (v-get authManager.authUser 'isValid')))
+            (not (v-get authService.authUser 'isValid')))
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
-    doClose=(route-action 'revert' model
-        (route-action 'revert' authManager.authUser
-            (route-action 'closeAllSlideouts')))
-    forceKeepOpen=(or model.isSaving authManager.authUser.isSaving
-        model.isDirty authManager.authUser.isDirty) as |slideout|}}
+    doClose=(route-action "cancelAvailabilitySlideout")
+    forceKeepOpen=(or model.isSaving authService.authUser.isSaving
+        model.isDirty authService.authUser.isDirty) as |slideout|}}
 
     <div class="form-element pad-t pad-l pad-r">
         <label for='Away Message' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
@@ -69,15 +65,15 @@
     <hr>
 
 	<div class="pad-l pad-r pad-b">
-        {{#if (not authManager.authUser.enableNotifications)}}
+        {{#if (not authService.authUser.enableNotifications)}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have turned notifications off <span class="link" {{action slideout.actions.close (route-action 'toggleSlideout' 'slideouts/account' 'main')}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
             </div>
         {{/if}}
         {{!-- choice of availability source only available for team phones --}}
         {{#if (and (eq model.constructor.modelName constants.MODEL.TEAM)
-                (or (gt authManager.authUser.teamsWithPhones.content.length 1)
-                    authManager.authUser.phone.content))}}
+                (or (gt authService.authUser.teamsWithPhones.content.length 1)
+                    authService.authUser.phone.content))}}
             {{multi-toggle/binary value=model.phone.content.availability.content.useStaffAvailability
                 falseColor=constants.COLOR.LIGHT_BLUE
                 trueColor=constants.COLOR.BRAND
@@ -87,12 +83,12 @@
 	</div>
 
     {{#with (if model.phone.content.availability.content.useStaffAvailability
-            authManager.authUser
+            authService.authUser
             model.phone.content.availability.content) as |entity|}}
         {{availability-control
             entity=entity
             entityIdentityProp='constructor.modelName'
-            onEntityDidChange=(route-action 'onAvailabilityEntitySwitch')
+            onEntityDidChange=(action availabilitySlideoutService.onAvailabilityEntitySwitch)
             others=model.phone.content.others.content
             onTypeChange=(action (mut entity.manualSchedule))
             onManualAvailabilityChange=(action (mut entity.isAvailable))

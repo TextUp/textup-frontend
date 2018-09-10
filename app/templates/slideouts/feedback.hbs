@@ -1,7 +1,6 @@
 {{#slideout-pane
 	headerProps=(hash title='Feedback')
-	onOpen=(route-action 'cleanFeedback')
-    doClose=(route-action 'closeAllSlideouts')
+    doClose=(route-action "finishFeedbackSlideout")
     focusSelector='.start-focus' as |slideout|}}
 	<iframe name="hidden-iframe" id="hidden-iframe" class='hidden'></iframe>
 	<form action="https://docs.google.com/a/textup.org/forms/d/e/1FAIpQLSduC2lU79S3AZn_eGIfHmythLVSTaq_hl5lMJBNYQ8Gjsyfxw/formResponse"
@@ -35,9 +34,9 @@
 				</button>
 	    	</div>
 	    </div>
-	    <input type="text" class="hidden" name="entry.1271619718" value={{authManager.authUser.name}}>
-	    <input type="text" class="hidden" name="entry.826110677" value={{authManager.authUser.username}}>
-	    <input type="text" class="hidden" name="entry.1793501464" value={{authManager.authUser.email}}>
+	    <input type="text" class="hidden" name="entry.1271619718" value={{authService.authUser.name}}>
+	    <input type="text" class="hidden" name="entry.826110677" value={{authService.authUser.username}}>
+	    <input type="text" class="hidden" name="entry.1793501464" value={{authService.authUser.email}}>
 
 	    <input type="hidden" name="fvv" value="1">
 		<input type="hidden" name="pageHistory" value="0">

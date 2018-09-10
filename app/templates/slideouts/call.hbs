@@ -1,17 +1,15 @@
 {{#slideout-pane
     headerProps=(hash title='Call')
-    footerComponent="slideout-pane/actions"
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=true
-        doPrimary=(route-action 'makeCallForNumber' (route-action 'closeAllSlideouts'))
+        doPrimary=(route-action "finishCallSlideout")
         disablePrimary=(or isCallingForNumber (not callByNumber) (not callByNumberIsValid))
         primaryLabel=(if isCallingForNumber "Calling..." "Call")
         primaryProgressLabel="Calling...")
-    onOpen=(route-action 'initializeCallSlideout')
-    doClose=(route-action 'closeAllSlideouts')
+    doClose=(route-action "cancelCallSlideout")
     forceKeepOpen=isCallingForNumber
     focusSelector='.number-control' as |slideout|}}
-
     <div class="pad-t pad-l pad-r">
         <div class="form-element">
             {{#hide-away clickOutToClose=true
@@ -22,10 +20,11 @@
                 bodyFocusOnOpenSelector='input'}}
                 {{input type="tel"
                     class='form-control form-control--only-bottom text-biggest text-center'
-                    pattern="[0-9]*" placeholder="Enter number here"
+                    pattern="[0-9]*"
+                    placeholder="Enter number here"
                     value=callByNumber
-                    key-up=(route-action 'validateAndCheckCallNumberForName')
-                    focus-out=(route-action 'validateAndCheckCallNumberForName')}}
+                    key-up=(route-action "onCallNumberChange")
+                    focus-out=(route-action "onCallNumberChange")}}
             {{else}}
                 <input type="tel"
                     disabled='disabled'
@@ -47,8 +46,8 @@
             {{number-control val=callByNumber
                 showAlphabet=true
                 numDigits=10
-                doChange=(route-action 'onCallNumberChange')
-                onSubmit=(route-action 'makeCallForNumber' slideout.actions.close)}}
+                doChange=(route-action "onCallNumberChange")
+                onSubmit=(route-action "finishCallSlideout")}}
         </div>
     </div>
 {{/slideout-pane}}

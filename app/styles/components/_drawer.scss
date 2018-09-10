@@ -22,7 +22,7 @@
 		z-index: -1;
 		width: 100%;
 		height: 100%;
-		background: rgba(0, 0, 0, 0.3);
+		background: $overlay-color;
 		content: '';
 		opacity: 0;
 		transition: opacity 0.5s, transform 0.5s;

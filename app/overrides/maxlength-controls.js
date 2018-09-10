@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Maxlength from '../mixins/maxlength-component';
+import HasMaxLength from 'textup-frontend/mixins/component/has-maxlength';
 
-Ember.TextArea.reopen(Maxlength);
-Ember.TextField.reopen(Maxlength);
+Ember.TextArea.reopen(HasMaxLength);
+Ember.TextField.reopen(HasMaxLength);

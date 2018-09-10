@@ -8,7 +8,7 @@
     bodyClass='pad-all' as |hideAway|}}
     <div class='form-element'>
         <label for='Your Password' class='control-label'>
-            {{authManager.authUser.name}}'s Password
+            {{authService.authUser.name}}'s Password
         </label>
         {{input type='password'
             allowShowPassword=true
@@ -34,7 +34,7 @@
             {{async-button classNames='btn btn-default'
                 disableWhen=(not (v-get staff 'isValid'))
                 action=(route-action 'validate'
-                        authManager.authUser.username newCPassword
+                        authService.authUser.username newCPassword
                     (route-action 'persist' staff hideAway.actions.close))
                 default='Update'
                 pending='Updating...'}}

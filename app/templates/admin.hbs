@@ -14,40 +14,39 @@
             </span>
         </button>
     </span>
-    {{#liquid-if showSlideout class='animate-slide-from-right animated-overflow'}}
-        {{outlet 'details-slideout'}}
+    {{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DETAIL)
+        class='animate-slide-from-right animated-overflow'}}
+        {{outlet constants.SLIDEOUT.OUTLET.DETAIL}}
     {{/liquid-if}}
     {{outlet}}
 {{else}}
     {{#account-switcher class='display-xs display-s display-m'
         activeOwner=stateManager.owner
-        user=authManager.authUser
+        user=authService.authUser
         doLogOut=(route-action 'logout')
         containerTagName='li'
         doRegisterContainer=(action (mut accountSwitcher))
         toggleClass='xs-8-row-10'}}
         <button class="xs-2-row-10 textup-account-switcher__display"
-            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'admin'}}>
+            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
             <span class="fa fa-cog"></span>
         </button>
     {{/account-switcher}}
     <li class='menu-item menu-header menu-header-light display-l'
-        {{action 'toggleSlideout' 'slideouts/account' 'admin'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
+        {{action 'toggleSlideout' 'slideouts/account' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
+        {{#tool-tip classNames='btn-expand'
             title=(concat 'Admin (' stateManager.owner.name ')')
-            classNames='btn-expand'}}
+            side=constants.TOOLTIP.SIDE.RIGHT}}
             <span class="fa fa-home"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </li>
     {{#if numPending}}
         {{#link-to 'admin.pending' tagName='li' classNames='menu-item'}}
-            {{#tool-tipster position='right'
-                theme='tooltipster-clean'
+            {{#tool-tip classNames='btn-expand display-l'
                 title=(concat 'Pending (' numPending ')')
-                classNames='btn-expand display-l'}}
+                side=constants.TOOLTIP.SIDE.RIGHT}}
                 <span class="fa fa-clock-o"></span>
-            {{/tool-tipster}}
+            {{/tool-tip}}
             <div class="btn-expand display-xs display-s display-m">
                 <span>Pending</span>
                 <span class="badge dark">{{numPending}}</span>
@@ -56,31 +55,22 @@
     {{/if}}
     <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
-        {{action 'toggleSlideout' 'slideouts/new-staff' 'admin'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title='Add Staff'
-            classNames='btn-expand'}}
+        {{action 'toggleSlideout' 'slideouts/new-staff' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
+        {{#tool-tip classNames='btn-expand' title='Add Staff' side=constants.TOOLTIP.SIDE.RIGHT}}
             <span class="fa fa-user-plus"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </li>
     {{#link-to 'admin.people' tagName='li' classNames='menu-item display-l'}}
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title='People'
-            classNames='btn-expand'}}
+        {{#tool-tip classNames='btn-expand' title='People' side=constants.TOOLTIP.SIDE.RIGHT}}
             <span class="fa fa-user"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     {{/link-to}}
     <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
-        {{action 'toggleSlideout' 'slideouts/teams/list' 'admin'}}>
-        {{#tool-tipster position='right'
-            theme='tooltipster-clean'
-            title='Teams'
-            classNames='btn-expand'}}
+        {{action 'toggleSlideout' 'slideouts/teams/list' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
+        {{#tool-tip classNames='btn-expand' title='Teams' side=constants.TOOLTIP.SIDE.RIGHT}}
             <span class="fa fa-users"></span>
-        {{/tool-tipster}}
+        {{/tool-tip}}
     </li>
 
     {{!-- staff members --}}
@@ -88,7 +78,7 @@
     <li class="menu-divider display-xs display-s display-m">
         People
         <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/new-staff' 'admin'}}>
+            {{action 'toggleSlideout' 'slideouts/new-staff' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
             <span class="fa fa-plus"></span>
         </button >
     </li>
@@ -113,7 +103,7 @@
     <li class="menu-divider display-xs display-s display-m">
         Teams
         <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/teams/create' 'admin'}}>
+            {{action 'toggleSlideout' 'slideouts/teams/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
             <span class="fa fa-plus"></span>
         </button >
     </li>

@@ -31,7 +31,7 @@ export default Ember.Controller.extend({
               doPushOrg = org => this.store.push(this.store.normalize('organization', org)),
               models = orgs ? orgs.map(doPushOrg) : [];
             resolve(models);
-          }, this.get('dataHandler').buildErrorHandler(reject));
+          }, this.get('dataService').buildErrorHandler(reject));
       });
     }
   }

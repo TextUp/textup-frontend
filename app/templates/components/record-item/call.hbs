@@ -1,0 +1,28 @@
+<div class="record-item__body">
+    {{#if call.hasVoicemail}}
+        {{audio-control source=call.voicemailUrl}}
+    {{else}}
+        <div class="text-small text-wrap">
+            {{#if (gt call.receipts.successes.length 0)}}
+                Call lasting {{moment-duration call.durationInSeconds 'seconds'}}
+            {{else if (date/is-same-day call.whenCreated (now))}}
+                Call in progress
+            {{else}}
+                Call could not be completed
+            {{/if}}
+        </div>
+    {{/if}}
+    {{#if call.noteContents}}
+        <div class="margin-t-half text-wrap">
+            {{call.noteContents}}
+        </div>
+    {{/if}}
+</div>
+{{#if call.media.content.displayedImages.isFulfilled}}
+    <div class="record-item__media">
+        {{image-stack images=call.media.content.displayedImages.content}}
+    </div>
+{{/if}}
+{{#record-item/receipts item=call disabled=true}}
+    {{record-item/metadata timestamp=call.whenCreated author=call.authorName}}
+{{/record-item/receipts}}

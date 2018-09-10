@@ -1,0 +1,54 @@
+{{#slideout-pane
+    headerProps=(hash title=(if model.phone.content.tags 'Tags' 'New Tag'))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=tagsListHideAway.isOpen
+        doPrimary=(route-action "finishCreateTagInTagList")
+        disablePrimary=(not (v-get newTag 'isValid'))
+        primaryLabel="Create"
+        primaryProgressLabel="Creating..."
+        doSecondary=(route-action "cancelCreateTagInTagList")
+        hideSecondary=(not model.phone.content.tags))
+    doClose=(route-action "closeTagListSlideout")
+    forceKeepOpen=newTag.isSaving as |slideout|}}
+    {{#hide-away clickOutToClose=false
+        animation='fade'
+        ignoreTriggerSelectors='.result-list'
+        bodyFocusOnOpenSelector='.start-focus'
+        startOpen=(if model.phone.content.tags false true)
+        doRegister=(action (mut tagsListHideAway))
+        onOpen=(route-action 'onOpenCreateTagInTagList')
+        onClosed=(route-action 'onCloseCreateTagInTagList')
+        tabindex=false
+        hideTriggerOnOpen=true as |hideAway|}}
+        {{form/tag-model classNames="pad-t pad-l pad-r" tag=newTag}}
+    {{else}}
+         <ul class="result-list">
+            {{#if model.phone.isFulfilled}}
+                {{#each model.phone.content.tags as |tag|}}
+                    <li class="result-item">
+                        <div class="row">
+                            {{#link-to 'main.tag' tag
+                                tagName='div'
+                                classNames='control-text'
+                                tabindex='0'}}
+                                <div class="horizontal-items clickable pad-all">
+                                    {{preview-badge color=tag.hexColor
+                                        onlyShowFull=true
+                                        content=tag.name}}
+                                    <span class="badge">
+                                        {{tag.numMembers}}
+                                        <span class="fa fa-user"></span>
+                                    </span>
+                                </div>
+                            {{/link-to}}
+                        </div>
+                    </li>
+                {{/each}}
+            {{/if}}
+        </ul>
+        <button class="btn btn-span" type='button'>
+            <span class="fa fa-plus"></span>
+        </button>
+    {{/hide-away}}
+{{/slideout-pane}}

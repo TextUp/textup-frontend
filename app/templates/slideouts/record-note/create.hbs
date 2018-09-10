@@ -1,28 +1,23 @@
 {{#slideout-pane
-    headerProps=(hash title='New Note')
-    footerComponent="slideout-pane/actions"
+    headerProps=(hash title="New Note")
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=true
-        doPrimary=(route-action 'createNote' recordNote (if contact contact tag)
-            (route-action 'closeAllSlideouts' (route-action 'cleanNoteSlideout'))
-            (route-action 'mutate' (action (mut isAddingNote)) false))
-        disablePrimary=(not (v-get recordNote 'isValid'))
+        doPrimary=(route-action "finishAddNoteSlideout")
+        disablePrimary=(not (v-get newRecordNote "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    onOpen=(route-action 'initializeNewNote')
-    doClose=(route-action 'revert' recordNote
-        (route-action 'closeAllSlideouts'
-            (route-action 'cleanNoteSlideout')))
-    forceKeepOpen=recordNote.isSaving
-    focusSelector='.start-focus' as |slideout|}}
-    {{form/record-note class='pad-t'
-        recordNote=recordNote
-        doAddPhoto=(route-action 'addPhotoToNote' recordNote)
-        doRemovePhoto=(route-action 'removePhotoFromNote' recordNote)
-        doAddLocation=(route-action 'addLocationToNote' recordNote)
-        doRemoveLocation=(route-action 'removeLocationFromNote' recordNote)
-        onLocationError=(route-action 'mapError')
-        contentsClass='form-control start-focus'
-        readOnly=(not contact.allowEdits)}}
+    doClose=(route-action "cancelAddNoteSlideout")
+    forceKeepOpen=newRecordNote.isSaving
+    focusSelector=".start-focus" as |slideout|}}
+    {{form/record-note class="pad-t"
+        recordNote=newRecordNote
+        doAddImage=(route-action "onNoteAddImage" newRecordNote)
+        doRemoveImage=(route-action "onNoteRemoveImage" newRecordNote)
+        doAddLocation=(route-action "onNoteAddLocation" newRecordNote)
+        doRemoveLocation=(route-action "onNoteRemoveLocation" newRecordNote)
+        onLocationError=(route-action "onLocationError")
+        contentsClass="form-control start-focus"
+        readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
 {{/slideout-pane}}

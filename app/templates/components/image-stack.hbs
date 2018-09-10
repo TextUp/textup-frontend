@@ -1,8 +1,7 @@
-{{#responsive-image-gallery
-    images=images
-    thumbnailClass=(concat elementId '-item') as |gallery|}}
-    <div class="{{itemClass}} {{concat elementId '-item'}}" onclick={{gallery.actions.open}}>
-        {{responsive-image
+{{#responsive-image-gallery images=images thumbnailClass=(concat elementId '-item') as |gallery|}}
+    <div class="image-stack__preview {{itemClass}} {{concat elementId '-item'}}"
+        onclick={{gallery.actions.open}}>
+        {{responsive-image classNames="image-stack__preview__image"
             versions=_coverImage.versions
             onSuccess=(action _onSuccess)
             onFailure=(action _onFailure)}}

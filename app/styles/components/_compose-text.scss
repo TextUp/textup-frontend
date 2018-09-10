@@ -1,0 +1,65 @@
+.compose-text {
+    display: flex;
+    align-items: stretch;
+    min-height: $control-height;
+
+    @include mq($from: tablet) {
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+    }
+    & &__contents {
+        flex-grow: 1;
+
+        &__control {
+            height: 100%;
+            width: 100%;
+            line-height: normal;
+            resize: none;
+            overflow: auto;
+            margin-top: 2px;
+            border-width: 0;
+            padding: $spacing * 0.5;
+            padding-left: 0;
+            padding-right: 0;
+            outline: none;
+
+            @include mq($from: tablet) {
+                padding-left: $spacing;
+            }
+        }
+        .remaining-indicator.top {
+            bottom: calc(100% - #{$spacing / 2});
+            border-radius: $border-radius;
+            padding: ($spacing * 0.01) ($spacing * 0.3);
+        }
+    }
+    &__control {
+        display: flex;
+        align-items: center;
+        padding: 0 $spacing;
+        height: auto;
+        min-height: $control-height;
+    }
+    &__control,
+    &__control label {
+        color: $brand-color;
+        cursor: pointer;
+        background-color: transparent;
+        border-width: 0;
+        border-radius: 0;
+        text-align: center;
+        line-height: $control-height;
+        outline: 0;
+
+        &:not(:last-child) {
+            border-right: 1px solid tint($border-color);
+        }
+    }
+    &__remove-control {
+        display: none;
+
+        @include mq($from: tablet) {
+            display: flex;
+        }
+    }
+}

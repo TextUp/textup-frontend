@@ -24,12 +24,11 @@
                 {{#link-to 'main.tag.details'
                     classNames='pull-right-to-edge full-height'
                     activeClass='bg-color bg-dark'}}
-                    {{#tool-tipster theme='tooltipster-clean'
-                        title='View Tag Details'
+                    {{#tool-tip title='View Tag Details'
                         tagName='button'
                         classNames='btn btn-plain btn-expand'}}
                         <span class="fa fa-sliders"></span>
-                    {{/tool-tipster}}
+                    {{/tool-tip}}
                 {{/link-to}}
             {{/if}}
         </div>
@@ -99,12 +98,11 @@
                 </div>
                 <div class="pull-right-to-edge full-height
                     display-l filter-button">
-                    {{#tool-tipster theme='tooltipster-clean'
-                        title='Filter Contacts'
+                    {{#tool-tip title='Filter Contacts'
                         tagName='button'
                         classNames='btn btn-plain btn-expand'}}
                         <span class="fa fa-filter"></span>
-                    {{/tool-tipster}}
+                    {{/tool-tip}}
                 </div>
             </div>
         {{/hide-away}}
@@ -131,7 +129,7 @@
         {{#if (and (eq filter 'all') (not tag))}}
             <div class="no-results">
                 No contacts yet!
-                <a href='' {{action 'toggleSlideout' 'slideouts/contact' 'main'}}>
+                <a href='' onclick={{route-action "startNewContactSlideout"}}>
                     Get started by creating a new contact.
                 </a>
             </div>

@@ -2,22 +2,14 @@ import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { extractImagesFromEvent } from 'textup-frontend/utils/photo';
 
-const { computed, tryInvoke } = Ember;
+const { computed, get, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    onAdd: PropTypes.func.isRequired
+    onAdd: PropTypes.func.isRequired,
+    labelClass: PropTypes.string
   },
   classNames: ['photo-control__add'],
-
-  didInsertElement() {
-    this._super(...arguments);
-    this.get('_$input').on(this.get('_changeEventName'), () => this._handleChange());
-  },
-  willDestroyElement() {
-    this._super(...arguments);
-    this.get('_$input').off(this.get('_changeEventName'));
-  },
 
   // Internal properties
   // -------------------
@@ -25,9 +17,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isLoading: false,
   _isLoadError: false,
   _callId: 0,
-  _changeEventName: computed('elementId', function() {
-    return `change.${this.elementId}`;
-  }),
   _$input: computed(function() {
     return this.$('input');
   }),
@@ -36,26 +25,39 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _handleChange(event) {
+    // short circuit without resulting in error state if no files attached
+    if (!get(event.target.files, 'length')) {
+      this._finishAdd(true);
+      return;
+    }
     this.incrementProperty('_callId');
     const thisCallId = this.get('_callId');
-    this._setLoadStartProps();
+    this._startAdd();
     extractImagesFromEvent(event).then(
       success => this._onSuccess(thisCallId, success),
       () => this._onFailure(thisCallId)
     );
   },
-  _setLoadStartProps() {
-    this.setProperties({ _isLoading: true, _isLoadError: false });
-  },
   _onSuccess(thisCallId, payload) {
     if (thisCallId === this.get('_callId')) {
-      this.setProperties({ _isLoading: false, _isLoadError: false });
+      this._finishAdd(true);
       tryInvoke(this, 'onAdd', [payload]);
     }
   },
   _onFailure(thisCallId) {
     if (thisCallId === this.get('_callId')) {
-      this.setProperties({ _isLoading: false, _isLoadError: true });
+      this._finishAdd(false);
     }
+  },
+
+  _startAdd() {
+    this.setProperties({ _isLoading: true, _isLoadError: false });
+  },
+  _finishAdd(isSuccess) {
+    const $input = this.get('_$input');
+    if ($input.length) {
+      $input[0].value = null;
+    }
+    this.setProperties({ _isLoading: false, _isLoadError: !isSuccess });
   }
 });

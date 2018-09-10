@@ -9,37 +9,9 @@ $bottom-layer: 5;
 	height: 350px;
 	overflow: hidden;
 
-	.location-sidebar {
-		height: 100%;
-		z-index: $top-layer;
-
-		.sidebar-contents {
-			@extend %border-box;
-			@extend %vertical-scroll;
-			height: 100%;
-			z-index: $bottom-layer;
-			background-color: $bg-light-color;
-			border-right: 1px solid $border-color;
-		}
-		.sidebar-toggle {
-			z-index: $top-layer;
-			border-bottom-width: 1px;
-			border-left-width: 0;
-			border-right-width: $button-accent-size;
-			padding: 0 $padding * 1.5;
-			height: $control-height * 2;
-			min-width: auto;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-		@include mq($from:desktop) {
-			.sidebar-toggle {
-				padding: $padding;
-			}
-		}
-	}
 	.location-map {
 		height: 100%;
+		width: 100%;
 		z-index: $bottom-layer;
 		background-color: $bg-color;
 
@@ -48,7 +20,8 @@ $bottom-layer: 5;
 			height: 100%;
 			width: 100%;
 		}
-		.map-search-bar, .map-editing {
+		.map-search-bar,
+		.map-editing {
 			z-index: $top-layer;
 		}
 	}
@@ -58,55 +31,14 @@ $bottom-layer: 5;
 
 			button {
 				@include button-colors($bg-color);
-				@extend %border-box;
-				padding: ($padding * 0.3) ($padding 0.8);
-			    font-weight: $font-weight-bold;
-			    text-transform: uppercase;
-			    border-radius: $border-radius;
+
+				box-sizing: border-box;
+				padding: ($spacing * 0.3) ($spacing 0.8);
+				font-weight: $font-weight-bold;
+				text-transform: uppercase;
+				border-radius: $border-radius;
 				border-width: 0;
 			}
-		}
-	}
-	&.sidebar-hidden {
-		.sidebar-toggle {
-			display: none;
-		}
-	}
-	// always hide toggle and sidebar on non-desktop views
-	@include mq($until: tablet) {
-		.sidebar-toggle {
-			display: none;
-		}
-	}
-}
-
-// positioning and open/close
-// --------------------------
-
-@mixin std-location-split($loc-sidebar-percent, $slide-off-controls:true) {
-	$remaining-percent: 100 - $loc-sidebar-percent;
-
-	.location-sidebar {
-		width: $loc-sidebar-percent * 1%;
-	}
-	.location-map {
-		width: $remaining-percent * 1%;
-		left: $loc-sidebar-percent * 1%;
-	}
-	@if $slide-off-controls {
-		.map-search-bar {
-			left: 60%;
-			width: 200%;
-		}
-		&.closed .map-search-bar {
-			left: 20%;
-			width: 70%;
-		}
-	}
-	@else {
-		.map-search-bar {
-			left: 10%;
-			width: 80%;
 		}
 	}
 }
@@ -114,48 +46,19 @@ $bottom-layer: 5;
 .location-control {
 	position: relative;
 
-	.location-sidebar {
-		position: relative;
-
-		.sidebar-toggle {
-			position: absolute;
-			left: 100%;
-			top: 50%;
-			transform: translateY(-50%);
-		}
-	}
 	.location-map {
 		position: absolute;
 
 		.map-search-bar {
 			position: absolute;
-			top: $padding;
+			top: $spacing;
+			left: 20%;
+			width: 70%;
 		}
 		.map-editing {
 			position: absolute;
-			top: $padding;
-			right: $padding;
-		}
-	}
-	&.closed {
-		.location-map {
-			width: 100%;
-		}
-	}
-
-	$loc-sidebar: (
-		'default': 80,
-		'tablet': 40,
-		'desktop': 30
-	);
-	@each $breakpoint, $loc-sidebar-percent in $loc-sidebar {
-		@if ($breakpoint == 'default') {
-			@include std-location-split($loc-sidebar-percent);
-		}
-		@else {
-			@include mq($from:$breakpoint) {
-				@include std-location-split($loc-sidebar-percent, false);
-			}
+			top: $spacing;
+			right: $spacing;
 		}
 	}
 }

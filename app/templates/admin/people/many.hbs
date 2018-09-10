@@ -32,22 +32,20 @@
                 {{/hide-away/dropdown}}
 			</span>
             <span class='clear-badge display-s display-m display-l'>
-                {{#tool-tipster theme='tooltipster-clean'
+                {{#tool-tip classNames='btn-expand'
                     title=(concat selected.length ' '
-                        (pluralize 'person' selected.length) ' selected')
-                    classNames='btn-expand'}}
+                        (pluralize 'person' selected.length) ' selected')}}
                     <span class='text-bold'>{{selected.length}}</span>
                     <span class="fa fa-user"></span>
-                {{/tool-tipster}}
+                {{/tool-tip}}
         	</span>
             <span class='clear-badge display-s display-m display-l'>
-                {{#tool-tipster theme='tooltipster-clean'
+                {{#tool-tip classNames='btn-expand'
                     title=(concat selectedAdmins.length ' '
-                        (pluralize 'admin' selectedAdmins.length) ' selected')
-                    classNames='btn-expand'}}
+                        (pluralize 'admin' selectedAdmins.length) ' selected')}}
                     <span class='text-bold'>{{selectedAdmins.length}}</span>
                     <span class="fa fa-star-o"></span>
-                {{/tool-tipster}}
+                {{/tool-tip}}
             </span>
 		</div>
         {{#if selected}}
@@ -55,8 +53,10 @@
                 <span class='clear-badge no-space display-xs display-s display-m'>
                     {{#hide-away/dropdown}}
                         <li tabindex='0' class='dropdown-item'
-                            {{action 'toggleDetailSlideout'
-                                'slideouts/teams/membership' 'admin/people/many'}}>
+                            {{action 'toggleSlideout'
+                                'slideouts/teams/membership'
+                                'admin/people/many'
+                                constants.SLIDEOUT.OUTLET.DETAIL}}>
                             Edit teams
                         </li>
                         {{#if (not selectedMe)}}
@@ -84,8 +84,10 @@
                 {{/if}}
                 <span class='clear-badge display-l'>
                     <button class='btn' type='button'
-                        {{action 'toggleDetailSlideout'
-                            'slideouts/teams/membership' 'admin/people/many'}}>
+                        {{action 'toggleSlideout'
+                            'slideouts/teams/membership'
+                            'admin/people/many'
+                            constants.SLIDEOUT.OUTLET.DETAIL}}>
                         Teams
                     </button>
                 </span>

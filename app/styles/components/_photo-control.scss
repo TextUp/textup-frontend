@@ -1,17 +1,56 @@
 .photo-control {
-    height: 100%;
-    width: 100%;
-
-    &.readonly .photo-control-add-container {
-        display: none;
-    }
-    .photo-control-add-container {
-        width: 100%;
-        text-align: center;
+    &__item {
         position: relative;
-        margin-top: $padding;
-        box-sizing: border-box;
 
+        &:hover {
+            .photo-control__remove {
+                opacity: 1;
+            }
+        }
+    }
+    &__remove {
+        position: absolute;
+        top: $spacing / 2;
+        right: $spacing / 2;
+        height: $spacing * 2;
+        width: $spacing * 2;
+        background-color: $border-color;
+        color: $font-color;
+        border-width: 0;
+        border-radius: $border-radius;
+        box-shadow: 0 0 1px 0px rgba(0, 0, 0, 0.2);
+        opacity: 0.5;
+
+        @include mq($from: tablet) {
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+    }
+    &__add-control {
+        cursor: pointer;
+        display: inline-block;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+        padding: $padding;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+
+        background-color: $bg-color;
+        transition: all 0.5s;
+
+        &:hover,
+        &:active,
+        &:focus {
+            background-color: shade($bg-color);
+        }
+        & * {
+            pointer-events: none;
+        }
+    }
+    &__add {
         // Restyling file input adapted from
         // https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
         input[type='file'] {
@@ -21,61 +60,6 @@
             overflow: hidden;
             width: 0.1px;
             height: 0.1px;
-
-            & + label {
-                cursor: pointer;
-                display: inline-block;
-                overflow: hidden;
-                width: 100%;
-                box-sizing: border-box;
-                padding: $padding;
-
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                text-align: center;
-
-                background-color: $bg-color;
-                transition: all 0.5s;
-
-                &:hover, &:active, &:focus {
-                    background-color: shade($bg-color);
-                }
-                & * {
-                    pointer-events: none;
-                }
-            }
-        }
-    }
-    .photo-control-remove {
-        z-index: 10;
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: $padding * 1.5;
-        background-color: $border-color;
-        text-align: center;
-        opacity: 0.8;
-        cursor: pointer;
-        transition: all 0.5s;
-
-        &:after {
-            @extend .text-bigger;
-            content: "\f00d";
-            font-family: "FontAwesome";
-            position: absolute;
-            top: $padding * 0.7;
-            left: 0;
-            width: 100%;
-        }
-        &.loading:after {
-            content: "\f1ce";
-            animation: fa-spin 2s infinite linear;
-        }
-        &.error:after {
-            content: "\f12a";
-        }
-        &:hover, &:active, &:focus {
-            background-color: shade($border-color);
         }
     }
 }

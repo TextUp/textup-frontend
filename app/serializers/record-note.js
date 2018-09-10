@@ -6,7 +6,11 @@ export default RecordItemSerializer.extend({
     hasBeenDeleted: { key: 'isDeleted', serialize: true },
     isReadOnly: { serialize: false },
     location: { deserialize: 'records', serialize: 'records' },
-    _revisions: { key: 'revisions', serialize: false }
+    _revisions: { key: 'revisions', deserialize: 'records', serialize: false }
+  },
+
+  modelNameFromPayloadKey() {
+    return this._super('record-note');
   },
 
   serialize(snapshot) {

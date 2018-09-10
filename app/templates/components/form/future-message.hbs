@@ -1,0 +1,182 @@
+<div class="form-element pad-l pad-r">
+    <label for="Scheduled Message">Message</label>
+    {{textarea class='form-control start-focus'
+        disabled=futureMessage.isDeleted
+        maxlength='320'
+        remaining='top'
+        autoresize=true
+        rows='1'
+        value=futureMessage.message
+        validateObj=futureMessage
+        validateField='message'
+        validate='bottom'}}
+</div>
+{{#liquid-if futureMessage.message class='animate-slide-from-top'}}
+    <div class="form-element pad-l pad-r">
+        <label for="Start Date">
+            {{if futureMessage.isRepeating 'Start' 'Send'}}
+            Date
+        </label>
+        {{#if futureMessage.isNew}}
+            {{!-- if the startDate has been rounded down such that it less than the
+            unrounded time right now, use the unbounded startDate as the minimum --}}
+            {{datetime-control
+                onSelect=(action (mut futureMessage.startDate))
+                timeInterval=constants.DEFAULT_TIME_INTERVAL_IN_MINUTES
+                value=futureMessage.startDate
+                min=(if (gt (now) (unbound futureMessage.startDate)) (unbound futureMessage.startDate) now)}}
+        {{else}}
+            {{datetime-control
+                onSelect=(action (mut futureMessage.startDate))
+                value=futureMessage.startDate
+                disabled=true}}
+        {{/if}}
+    </div>
+{{/liquid-if}}
+<div class="form-element row pad-l pad-r">
+    <div class="xs-2-row-3 control-text">
+        <label for="Type" class='text-ellipsis'>
+            Send As
+        </label>
+    </div>
+    {{multi-toggle/binary classNames='xs-row-3'
+        disabled=futureMessage.isDeleted
+        value=(eq futureMessage.type constants.FUTURE_MESSAGE.TYPE.CALL)
+        onFalse=(action (mut futureMessage.type) constants.FUTURE_MESSAGE.TYPE.TEXT)
+        onTrue=(action (mut futureMessage.type) constants.FUTURE_MESSAGE.TYPE.CALL)
+        falseColor=constants.COLOR.LIGHT_BLUE
+        trueColor=constants.COLOR.BRAND
+        falseString='Text'
+        trueString='Call'}}
+</div>
+{{#liquid-if (eq futureMessage.type constants.FUTURE_MESSAGE.TYPE.CALL)
+    class='animate-slide-from-top'}}
+    <div class="form-element row pad-l pad-r">
+        <div class="xs-2-row-3 control-text">
+            <label for="Start Date">
+                Language
+            </label>
+        </div>
+        <select name="scheduled-message-language" class="xs-row-3 form-control"
+            onchange={{action (mut futureMessage.language) value="target.value"}}>
+            {{#each constants.LANGUAGES as |_lang|}}
+                <option value={{_lang}}
+                    selected={{if (eq _lang futureMessage.language) "selected"}}>
+                    {{capitalize (lowercase _lang) 1}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
+{{/liquid-if}}
+<div class="form-element row pad-l pad-r">
+    <div class="xs-2-row-3 control-text">
+        <label for="Notify Self" class='text-ellipsis'>
+            Notify me also?
+            {{#if (not personalPhoneNumber)}}
+                {{#tool-tip title='Notifications disabled'
+                    classNames='margin-l-quarter'
+                    tagName='span'}}
+                    <span class="fa fa-question-circle"></span>
+                {{/tool-tip}}
+            {{/if}}
+        </label>
+    </div>
+    {{multi-toggle/binary classNames='xs-row-3'
+        disabled=(or futureMessage.isDeleted (not personalPhoneNumber))
+        value=futureMessage.notifySelf}}
+</div>
+{{#if futureMessage.isNew}}
+    <div class="form-element row pad-l pad-r">
+        <div class="xs-2-row-3 control-text">
+            <label for="Repeat" class='text-ellipsis'>
+                Repeat?
+            </label>
+        </div>
+        {{multi-toggle/binary classNames='xs-row-3'
+            disabled=futureMessage.isDeleted
+            value=futureMessage.isRepeating}}
+    </div>
+{{/if}}
+{{#if futureMessage.isRepeating}}
+    <div class="pad-t-double bg-color">
+        <div class="form-element row pad-l pad-r">
+            <div class="xs-row-3 control-text">
+                <label for="Repeat" class='text-ellipsis'>
+                    Repeat Every
+                </label>
+            </div>
+            <div class="xs-row-3 pad-r-half">
+                {{input class='form-control'
+                    disabled=futureMessage.isDeleted
+                    type='number'
+                    min='1'
+                    placeholder='#'
+                    value=futureMessage.repeatInterval
+                    validateObj=futureMessage
+                    validateField='repeatInterval'
+                    validate='bottom'}}
+            </div>
+            {{multi-toggle/binary classNames='xs-row-3'
+                disabled=futureMessage.isDeleted
+                value=(eq futureMessage.intervalSize 7)
+                onFalse=(action (mut futureMessage.intervalSize) 1)
+                onTrue=(action (mut futureMessage.intervalSize) 7)
+                falseColor=constants.COLOR.LIGHT_BLUE
+                trueColor=constants.COLOR.BRAND
+                falseString=(pluralize 'Day' futureMessage.repeatInterval)
+                trueString=(pluralize 'Week' futureMessage.repeatInterval)}}
+        </div>
+        <div class="form-element row pad-l pad-r">
+            <div class="xs-2-row-3 control-text">
+                <label for="Repeat" class='text-ellipsis'>
+                    Stop After
+                </label>
+            </div>
+            {{multi-toggle/binary classNames='xs-row-3'
+                disabled=futureMessage.isDeleted
+                value=futureMessage.hasEndDate
+                falseColor=constants.COLOR.LIGHT_BLUE
+                trueColor=constants.COLOR.BRAND
+                falseString='Number'
+                trueString='Date'}}
+        </div>
+        <div class="pad-b pad-t pad-l pad-r bg-color bg-dark">
+            {{#if futureMessage.hasEndDate}}
+                <div class="form-element row no-space">
+                    <div class="xs-row-3 control-text">
+                        <label for="End Date">End On</label>
+                    </div>
+                    {{datetime-control
+                        classNames='xs-2-row-3'
+                        disabled=futureMessage.isDeleted
+                        onSelect=(action (mut futureMessage.endDate))
+                        value=futureMessage.endDate
+                        min=futureMessage.startDate
+                        showTime=false}}
+                </div>
+            {{else}}
+                <div class="form-element row no-space">
+                    <div class="xs-row-3 control-text">
+                        <label for="Repeat Count">Repeat</label>
+                    </div>
+                    <div class="xs-row-3 pad-r-half">
+                        {{input class='form-control'
+                            disabled=futureMessage.isDeleted
+                            type='number'
+                            min='1'
+                            placeholder='#'
+                            value=futureMessage.repeatCount
+                            validateObj=futureMessage
+                            validateField='repeatCount'
+                            validate='bottom'}}
+                    </div>
+                    <div class="xs-row-3 control-text text-center">
+                        <label for="Repeat Count">
+                            {{pluralize 'Time' futureMessage.repeatCount}}
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+{{/if}}

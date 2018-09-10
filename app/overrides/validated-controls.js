@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Validated from '../mixins/validated-component';
+import SupportsValidation from 'textup-frontend/mixins/component/supports-validation';
 
-Ember.TextArea.reopen(Validated);
-Ember.TextField.reopen(Validated);
+Ember.TextArea.reopen(SupportsValidation);
+Ember.TextField.reopen(SupportsValidation);

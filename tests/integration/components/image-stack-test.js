@@ -17,7 +17,9 @@ moduleForComponent('image-stack', 'Integration | Component | image stack', {
 test('inputs', function(assert) {
   const itemClass = 'image-stack-test-inputs';
 
-  assert.throws(() => this.render(hbs`{{image-stack}}`), 'must pass in images');
+  this.render(hbs`{{image-stack}}`);
+
+  assert.ok(this.$('.image-stack').length, 'images can be null');
 
   this.setProperties({ images: [], itemClass });
   this.render(hbs`{{image-stack images=images itemClass=itemClass}}`);

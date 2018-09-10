@@ -1,37 +1,48 @@
 // $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop);
 @import 'font-awesome/scss/font-awesome.scss';
 @import 'ember-photoswipe';
+@import 'ember-modal-dialog/ember-modal-structure';
+@import 'ember-modal-dialog/ember-modal-appearance';
 
 // import core textup styles library
 @import 'core/main';
 
 // import component styles
-@import 'components/_drawer';
-@import 'components/_hide-away';
-@import 'components/_slideout-pane';
-@import 'components/_tooltipster';
-@import 'components/_multi-select';
-@import 'components/_single-select';
-@import 'components/_tab';
-@import 'components/_multi-toggle';
-@import 'components/_color-control';
-@import 'components/_audio-control';
-@import 'components/_location-control';
-@import 'components/_infinite-scroll';
-@import 'components/_maxlength';
-@import 'components/_async-button';
-@import 'components/_datetime-control';
-@import 'components/_lock-control';
-@import 'components/_number-control';
-@import 'components/_show-password-toggle';
-@import 'components/_phone-control';
-@import 'components/_location-preview';
-@import 'components/_photo-control';
-@import 'components/photo-control/_stack-display';
-@import 'components/photo-control/_grid-display';
-@import 'components/_account-switcher';
-@import 'components/_entity-display';
-@import 'components/_responsive-image';
+@import 'components/account-switcher';
+@import 'components/action-button';
+@import 'components/async-button';
+@import 'components/audio-control';
+@import 'components/care-record';
+@import 'components/color-control';
+@import 'components/compose-text';
+@import 'components/datetime-control';
+@import 'components/drawer';
+@import 'components/entity-display';
+@import 'components/hide-away';
+@import 'components/image-grid';
+@import 'components/image-stack';
+@import 'components/infinite-scroll';
+@import 'components/location-control';
+@import 'components/location-preview';
+@import 'components/lock-control';
+@import 'components/maxlength';
+@import 'components/modal';
+@import 'components/multi-select';
+@import 'components/multi-toggle';
+@import 'components/number-control';
+@import 'components/phone-control';
+@import 'components/photo-control';
+@import 'components/record-actions-control';
+@import 'components/record-cluster';
+@import 'components/record-item';
+@import 'components/record-note-revision';
+@import 'components/responsive-image';
+@import 'components/show-password-toggle';
+@import 'components/single-select';
+@import 'components/slideout-pane';
+@import 'components/tab';
+@import 'components/tooltipster';
+@import 'components/upcoming-future-messages';
 
 // import app-specific styles
 // put this last so these styles take precendence over all

@@ -29,13 +29,15 @@ const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
   });
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
+  constants: Ember.inject.service(),
+
   init: function() {
     this._super(...arguments);
     this.set('actions', []);
   },
   rollbackAttributes: function() {
     this._super(...arguments);
-    this.get('actions').clear();
+    this.clearSharingChanges();
     this.get('numberDuplicates').clear();
     this.set('isSelected', false);
   },
@@ -45,7 +47,9 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
 
   name: DS.attr('string', { defaultValue: '' }),
   note: DS.attr('string', { defaultValue: '' }),
-  status: DS.attr('string', { defaultValue: 'ACTIVE' }),
+  status: DS.attr('string', {
+    defaultValue: model => model.get('constants.CONTACT.STATUS.ACTIVE')
+  }),
   numbers: DS.attr('collection', { defaultValue: () => [] }),
   phone: DS.belongsTo('phone'),
   unreadInfo: DS.attr(),
@@ -67,7 +71,6 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   // Not attributes
   // --------------
 
-  type: 'contact', // for compose menu
   isSelected: false,
   numberDuplicates: Ember.computed(() => []),
   actions: null,
@@ -122,22 +125,13 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
       dupsList.removeObject(foundObj);
     }
   },
+  clearSharingChanges() {
+    this.get('actions').clear();
+  },
 
   isAnyStatus: function(raw) {
     return (Ember.isArray(raw) ? raw : [raw])
       .map(stat => String(stat).toLowerCase())
       .contains(String(this.get('status')).toLowerCase());
-  },
-  markUnread: function() {
-    this.set('status', 'UNREAD');
-  },
-  markActive: function() {
-    this.set('status', 'ACTIVE');
-  },
-  markArchived: function() {
-    this.set('status', 'ARCHIVED');
-  },
-  markBlocked: function() {
-    this.set('status', 'BLOCKED');
   }
 });

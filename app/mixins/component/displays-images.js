@@ -4,7 +4,10 @@ import { MediaImage } from 'textup-frontend/objects/media-image';
 
 export default Ember.Mixin.create(PropTypesMixin, {
   propTypes: {
-    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)).isRequired,
+    images: PropTypes.oneOfType([
+      PropTypes.null,
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaImage))
+    ]),
     onLoadEnd: PropTypes.func,
     itemClass: PropTypes.string
   }

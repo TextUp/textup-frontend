@@ -4,7 +4,7 @@ import Ember from 'ember';
 const { dasherize, pluralize } = Ember.String;
 
 export default ApplicationAdapter.extend({
-  authManager: Ember.inject.service('auth'),
+  authService: Ember.inject.service(),
 
   pathForType: function(modelName) {
     return pluralize(dasherize(modelName));

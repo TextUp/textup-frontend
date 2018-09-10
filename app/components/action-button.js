@@ -15,7 +15,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   tagName: 'button',
   attributeBindings: ['type', 'disabled'],
-  classNames: 'action-button',
+  classNames: ['action-button'],
   classNameBindings: [
     'error:action-button--error',
     'disabled:action-button--disabled',

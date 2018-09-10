@@ -1,39 +1,35 @@
 {{#slideout-pane
 	headerProps=(hash title='Compose')
-    footerComponent="slideout-pane/actions"
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=true
-        doPrimary=(route-action "sendMessage" composeMessage selectedRecipients
-		    (route-action 'closeAllSlideouts'
-		    	(route-action 'cleanCompose')))
-        disablePrimary=(or (not composeMessage) (not hasRecipients))
+        doPrimary=(route-action "finishComposeSlideout")
+        disablePrimary=(or (not composeMessage) (not composeHasRecipients))
         primaryLabel="Send"
         primaryProgressLabel="Sending...")
-	onOpen=(route-action 'initializeCompose')
-    doClose=(route-action 'closeAllSlideouts' (route-action 'cleanCompose'))
-    forceKeepOpen=(or composeMessage hasRecipients)
+    doClose=(route-action "cancelComposeSlideout")
+    forceKeepOpen=(or composeMessage composeHasRecipients)
     focusSelector='.multi-select-new-input' as |slideout|}}
 	<div class="pad-t pad-l pad-r">
 		{{#if model.phone.isFulfilled}}
 			<div class="form-element">
 				{{#multi-select data=model.phone.content.tags
-			    	selected=selectedRecipients
+			    	selected=composeRecipients
 			    	displayProperty='identifier'
 			    	identityProperty='uniqueIdentifier'
-			    	doSearch=(action 'doSearch')
-			    	doCreate=(action 'createRecipient')
-			    	onInsert=(action 'insertRecipientAt')
-					onRemove=(action 'deselectRecipient') as |recipient select|}}
+			    	doSearch=(route-action "composeDoSearch")
+			    	doCreate=(route-action "composeCreateRecipient")
+			    	onInsert=(route-action "composeInsertRecipient")
+					onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
 					<span class="horizontal-items">
 						<span class="clear-badge">
-							{{#if (eq recipient.type 'tag')}}
+							{{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
 								<span class="fa fa-tag"></span>
-							{{else if (eq recipient.type 'contact')}}
+							{{else if (eq recipient.constructor.modelName constants.MODEL.CONTACT)}}
 								{{#if recipient.isShared}}
-									{{#tool-tipster theme='tooltipster-clean'
-							            title=(concat 'Shared by ' recipient.sharedBy)}}
+									{{#tool-tip title=(concat 'Shared by ' recipient.sharedBy)}}
 							            <span class="fa fa-share"></span>
-							        {{/tool-tipster}}
+							        {{/tool-tip}}
 								{{else}}
 									<span class="fa fa-user"></span>
 								{{/if}}
@@ -43,7 +39,7 @@
 						</span>
 						<span class="clear-badge text-bold">
 							{{phone-number recipient.identifier}}
-							{{#if (eq recipient.type 'tag')}}
+							{{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
 								<span class="margin-l-half halo halo-sm bg-color bg-dark">
 									{{recipient.numMembers}}
 								</span>

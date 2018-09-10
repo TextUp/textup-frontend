@@ -1,0 +1,20 @@
+{{#slideout-pane
+    headerProps=(hash title=(concat 'Edit ' editingTag.name))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action "finishExistingTagSlideout")
+        disablePrimary=(not (v-get editingTag 'isValid'))
+        primaryLabel=(if editingTag.isDeleted 'Confirm Delete' 'Update')
+        primaryProgressLabel=(if editingTag.isDeleted 'Deleting...' 'Updating')
+        primaryClass=(if editingTag.isDeleted 'btn btn-danger')
+        secondaryLabel=(if editingTag.isDeleted 'Undo')
+        doSecondary=(if editingTag.isDeleted (route-action "onTagUndoDelete"))
+        showDelete=(not editingTag.isDeleted)
+        doMarkForDelete=(route-action "onTagMarkForDelete"))
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action "cancelExistingTagSlideout")
+    forceKeepOpen=editingTag.isSaving
+    focusSelector='.start-focus' as |slideout|}}
+    {{form/tag-model classNames="pad-t pad-l pad-r" tag=editingTag}}
+{{/slideout-pane}}
