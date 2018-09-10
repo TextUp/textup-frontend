@@ -6,7 +6,7 @@ export default Ember.Service.extend({
   notifications: Ember.inject.service(),
   loadingSlider: Ember.inject.service(),
   authService: Ember.inject.service(),
-  routing: Ember.inject.service('-routing'),
+  router: Ember.inject.service(),
 
   persist: function(data) {
     return new Ember.RSVP.Promise((resolve, reject) => {
@@ -51,7 +51,7 @@ export default Ember.Service.extend({
       this.get('authService').logout();
       this.notifications.info('Please log in first.');
     } else if (this.checkForStatus(failure, 404)) {
-      this.get('routing').transitionTo('index');
+      this.get('router').transitionTo('index');
     } else if (this.checkForStatus(failure, 0)) {
       this.notifications.error(
         `Sorry, we're having trouble connecting to the server. This problem is usually the

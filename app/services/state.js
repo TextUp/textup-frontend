@@ -4,12 +4,12 @@ import Ember from 'ember';
 import Inflector from 'ember-inflector';
 import { clean as cleanNumber } from 'textup-frontend/utils/phone-number';
 
-const { equal: eq, match } = Ember.computed;
+const { computed } = Ember;
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
   dataService: Ember.inject.service(),
-  routing: Ember.inject.service('-routing'),
+  router: Ember.inject.service(),
   store: Ember.inject.service(),
   socket: Ember.inject.service(),
   storage: Ember.inject.service(),
@@ -55,20 +55,20 @@ export default Ember.Service.extend({
   // Routing
   // -------
 
-  viewingContacts: match('routing.currentPath', /main.contacts/),
-  viewingTag: match('routing.currentPath', /main.tag/),
-  viewingSearch: match('routing.currentPath', /main.search/),
-  viewingMany: match('routing.currentPath', /many/),
-  viewingPeople: match('routing.currentPath', /admin.people/),
-  viewingTeam: match('routing.currentPath', /admin.team/),
+  viewingContacts: computed.match('router.currentRouteName', /main.contacts/),
+  viewingTag: computed.match('router.currentRouteName', /main.tag/),
+  viewingSearch: computed.match('router.currentRouteName', /main.search/),
+  viewingMany: computed.match('router.currentRouteName', /many/),
+  viewingPeople: computed.match('router.currentRouteName', /admin.people/),
+  viewingTeam: computed.match('router.currentRouteName', /admin.team/),
 
-  currentRoute: Ember.computed('routing.currentRouteName', function() {
-    const routeName = this.get('routing.currentRouteName');
+  currentRoute: computed('router.currentRouteName', function() {
+    const routeName = this.get('router.currentRouteName');
     return routeName ? Ember.getOwner(this).lookup(`route:${routeName}`) : null;
   }),
-  trackLocation: Ember.observer('routing.router.url', function() {
+  trackLocation: Ember.observer('router.currentURL', function() {
     Ember.run.next(this, function() {
-      this.get('storage').trySet(localStorage, 'currentUrl', this.get('routing.router.url'));
+      this.get('storage').trySet(localStorage, 'currentUrl', this.get('router.currentURL'));
     });
   }),
 
@@ -78,23 +78,23 @@ export default Ember.Service.extend({
   // the current owner in the current application state
   // may be the logged-in user or a team that the user is on
   owner: null,
-  ownerIsTeam: eq('owner.constructor.modelName', 'team'),
-  ownerAsTeam: Ember.computed('owner', 'ownerIsTeam', function() {
+  ownerIsTeam: computed.equal('owner.constructor.modelName', 'team'),
+  ownerAsTeam: computed('owner', 'ownerIsTeam', function() {
     return this.get('ownerIsTeam') ? this.get('owner') : null;
   }),
-  ownerIsOrg: eq('owner.constructor.modelName', 'organization'),
-  ownerAsOrg: Ember.computed('owner', 'ownerIsOrg', function() {
+  ownerIsOrg: computed.equal('owner.constructor.modelName', 'organization'),
+  ownerAsOrg: computed('owner', 'ownerIsOrg', function() {
     return this.get('ownerIsOrg') ? this.get('owner') : null;
   }),
 
   // Setup
   // -----
 
-  skippedSetupKey: Ember.computed('authService.authUser.id', function() {
+  skippedSetupKey: computed('authService.authUser.id', function() {
     const id = this.get('authService.authUser.id');
     return `${id}-skippedSetup`;
   }),
-  hasSkippedSetup: Ember.computed('skippedSetupKey', function() {
+  hasSkippedSetup: computed('skippedSetupKey', function() {
     const storage = this.get('storage');
     return storage.isItemPersistent(this.get('skippedSetupKey'));
   }).volatile(),
@@ -107,16 +107,16 @@ export default Ember.Service.extend({
   // -------------
 
   relevantStaffs: null,
-  staffsExceptMe: Ember.computed('relevantStaffs', function() {
+  staffsExceptMe: computed('relevantStaffs', function() {
     const user = this.get('authService.authUser');
     return (this.get('relevantStaffs') || []).filter(staff => {
       return staff.get('id') !== user.get('id');
     });
   }),
-  teamMembers: Ember.computed('ownerIsTeam', 'staffsExceptMe', function() {
+  teamMembers: computed('ownerIsTeam', 'staffsExceptMe', function() {
     return this.get('ownerIsTeam') ? this.get('staffsExceptMe') : [];
   }),
-  shareCandidates: Ember.computed('ownerIsTeam', 'relevantStaffs', 'staffsExceptMe', function() {
+  shareCandidates: computed('ownerIsTeam', 'relevantStaffs', 'staffsExceptMe', function() {
     const candidates = this.get('ownerIsTeam')
       ? this.get('relevantStaffs')
       : this.get('staffsExceptMe');

@@ -7,7 +7,7 @@ const { $, computed: { notEmpty, and }, RSVP: { Promise } } = Ember;
 
 export default Ember.Service.extend(Ember.Evented, {
   store: Ember.inject.service(),
-  routing: Ember.inject.service('-routing'),
+  router: Ember.inject.service(),
   storage: Ember.inject.service(),
   notifications: Ember.inject.service(),
 
@@ -94,7 +94,7 @@ export default Ember.Service.extend(Ember.Evented, {
   logout: function() {
     this._doAuthClear();
     this.get('store').unloadAll();
-    this.get('routing').transitionTo('index');
+    this.get('router').transitionTo('index');
   },
   resetPassword: function(username) {
     return new Ember.RSVP.Promise((resolve, reject) => {
@@ -178,7 +178,7 @@ export default Ember.Service.extend(Ember.Evented, {
     if (storage.getItem('token')) {
       this._doSetup().then(() => {
         if (!cachedIsLoggedIn) {
-          this.get('routing').transitionTo('main', [this.get('authUser')]);
+          this.get('router').transitionTo('main', this.get('authUser'));
         }
       }, this.logout.bind(this));
     } else {
