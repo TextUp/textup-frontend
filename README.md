@@ -22,11 +22,12 @@ This is the frontend Ember app that connects to the [TextUp Grails backend](http
 
 In order to successfully build, certain environment variables are accessed in `config/environment.js`. These variables are:
 
-* `API_GOOGLE_RECAPTCHA`
-* `API_MAPBOX`
-* `API_PUSHER`
-* `HOST_PRODUCTION`
-* `HOST_STAGING`
+* `TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS`
+* `TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA`
+* `TEXTUP_FRONTEND_API_MAPBOX`
+* `TEXTUP_FRONTEND_API_PUSHER`
+* `TEXTUP_FRONTEND_HOST_PRODUCTION`
+* `TEXTUP_FRONTEND_HOST_STAGING`
 
 Environment variables used by Travis when building and deploying are:
 

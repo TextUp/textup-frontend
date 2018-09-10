@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'textup-frontend',
     environment: environment,
     apiKeys: {
-      mapbox: process.env.API_MAPBOX
+      mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX
     },
     baseURL: '/',
     locationType: 'hash',
@@ -15,13 +15,12 @@ module.exports = function(environment) {
         // e.g. 'with-controller': true
       }
     },
-
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
     gReCaptcha: {
-      siteKey: process.env.API_GOOGLE_RECAPTCHA
+      siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA
     },
     locationPreview: {
       host: 'https://api.mapbox.com/v4/mapbox.streets',
@@ -44,7 +43,7 @@ module.exports = function(environment) {
       namespace: 'textup'
     },
     socket: {
-      authKey: process.env.API_PUSHER
+      authKey: process.env.TEXTUP_FRONTEND_API_PUSHER
     },
     lock: {
       lockOnHidden: true
@@ -109,9 +108,21 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.host =
-      process.env.TRAVIS_BRANCH === 'master'
-        ? process.env.HOST_PRODUCTION
-        : process.env.HOST_STAGING;
+      process.env.TEXTUP_FRONTEND_TRAVIS_BRANCH === 'master'
+        ? process.env.TEXTUP_FRONTEND_HOST_PRODUCTION
+        : process.env.TEXTUP_FRONTEND_HOST_STAGING;
+    ENV.analytics = {
+      options: { limitRouteInformation: true },
+      integrations: [
+        {
+          name: 'GoogleAnalytics',
+          config: {
+            id: process.env.TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS,
+            set: { anonymizeIp: true }
+          }
+        }
+      ]
+    };
   }
 
   return ENV;

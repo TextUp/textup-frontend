@@ -2670,6 +2670,19 @@ ember-browserify@^1.1.7:
     through2 "^2.0.0"
     walk-sync "^0.2.7"
 
+ember-cli-adapter-pattern@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-adapter-pattern/-/ember-cli-adapter-pattern-1.2.0.tgz#b4b1c8154ca89fdf28ff870f0a87dfa6fad03240"
+  dependencies:
+    ember-cli-babel "^6.6.0"
+
+ember-cli-analytics@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-analytics/-/ember-cli-analytics-1.3.0.tgz#f5c4a39bff671672f4013281a4e47992620cc3c6"
+  dependencies:
+    ember-cli-adapter-pattern "^1.2.0"
+    ember-cli-babel "^6.6.0"
+
 ember-cli-app-version@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ember-cli-app-version/-/ember-cli-app-version-1.0.1.tgz#d135eba75f30e791d8a5e5844f1251dcbcc40438"
