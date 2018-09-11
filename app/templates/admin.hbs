@@ -55,7 +55,7 @@
     {{/if}}
     <li class="menu-divider display-l"></li>
     <li class='menu-item menu-slideout display-l'
-        {{action 'toggleSlideout' 'slideouts/new-staff' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
+        {{action 'toggleSlideout' 'slideouts/staff/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
         {{#tool-tip classNames='btn-expand' title='Add Staff' side=constants.TOOLTIP.SIDE.RIGHT}}
             <span class="fa fa-user-plus"></span>
         {{/tool-tip}}
@@ -78,7 +78,7 @@
     <li class="menu-divider display-xs display-s display-m">
         People
         <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/new-staff' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
+            {{action 'toggleSlideout' 'slideouts/staff/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
             <span class="fa fa-plus"></span>
         </button >
     </li>

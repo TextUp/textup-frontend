@@ -68,7 +68,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onCall');
   },
   _onSendText() {
-    tryInvoke(this, 'onText', [this.get('contents'), this.get('images')]);
+    return tryInvoke(this, 'onText', [this.get('contents'), this.get('images')]);
   },
   _scheduleMessage() {
     tryInvoke(this, 'onScheduleMessage');

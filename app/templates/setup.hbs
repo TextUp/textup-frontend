@@ -11,7 +11,7 @@
     		</a>
         </div>
     </div>
-    <div class="single-body">
+    <div class="single-body margin-b-double">
 	    <div class="single-body-header">
 	        <h5 class="text-center pad-b">Welcome to TextUp, {{authService.authUser.name}}!</h5>
 	        <p class="text-justify">Harness the power of TextUp by <b>connecting your personal cell phone to your account.</b> Please enter your personal cell phone below to get started. We"ll send you a text message with a verification code after you submit your number.</p>
@@ -38,11 +38,11 @@
                         placeholder="Enter verification code..."
                         autocorrect="off"
                         autocapitalize="off"
-                        enter=(route-action "startVerifyPersonalPhone" personalNumber verificationCode)}}
+                        enter=(route-action "finishVerifyPersonalPhone" personalNumber verificationCode)}}
                 </div>
                 {{#action-button classNames='btn-default xs-full-row m-3-row-10'
                     disabled=(not verificationCode)
-                    onAction=(route-action "startVerifyPersonalPhone" personalNumber verificationCode)}}
+                    onAction=(route-action "finishVerifyPersonalPhone" personalNumber verificationCode)}}
                     Finish set up
                 {{/action-button}}
             </div>

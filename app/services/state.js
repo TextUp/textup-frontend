@@ -1,7 +1,6 @@
 import config from 'textup-frontend/config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
-import Inflector from 'ember-inflector';
 import { clean as cleanNumber } from 'textup-frontend/utils/phone-number';
 
 const { computed } = Ember;
@@ -162,28 +161,15 @@ export default Ember.Service.extend({
   },
 
   _handleSocketFutureMsgs: function(data) {
-    this._addNewForComputedArray('future-message', data);
+    this._normalizeAndPushSocketPayload('future-message', data);
   },
   _handleSocketRecords: function(data) {
-    this._addNewForComputedArray('record-item', data);
+    this._normalizeAndPushSocketPayload('record-item', data);
   },
   _handleSocketContacts: function(data) {
-    if (!Ember.isArray(data)) {
-      return;
-    }
-    // Prevent updating of the contact that we are currently viewing
-    const rte = this.get('currentRoute');
-    if (
-      rte &&
-      (rte.get('routeName') === 'main.contacts.contact' ||
-        rte.get('routeName') === 'main.tag.contact')
-    ) {
-      const contactId = String(rte.get('currentModel.id'));
-      data.removeObject(data.find(item => String(item.id) === contactId));
-    }
-    this._addNewForManualArray('phone', 'contact', data);
+    this._normalizeAndPushSocketPayload('contact', data);
   },
-  _addNewForComputedArray: function(modelName, data) {
+  _normalizeAndPushSocketPayload: function(modelName, data) {
     if (!Ember.isArray(data)) {
       return;
     }
@@ -200,22 +186,5 @@ export default Ember.Service.extend({
         'query'
       );
     store.push(normalized);
-  },
-  _addNewForManualArray: function(ownerName, itemName, data) {
-    if (!data) {
-      return;
-    }
-    const store = this.get('store');
-    data.forEach(item => {
-      const existingBefore = store.hasRecordForId(itemName, item.id),
-        model = store.push(store.normalize(itemName, item)),
-        owner = store.peekRecord(ownerName, item[ownerName]);
-      if (!existingBefore && owner) {
-        const array = owner.get(Inflector.inflector.pluralize(itemName));
-        if (Ember.isArray(array)) {
-          array.unshiftObject(model);
-        }
-      }
-    });
   }
 });

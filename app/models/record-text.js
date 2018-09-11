@@ -14,5 +14,5 @@ const Validations = buildValidations({
 });
 
 export default RecordItem.extend(Validations, {
-  contents: DS.attr('string')
+  contents: DS.attr('string', { defaultValue: '' })
 });

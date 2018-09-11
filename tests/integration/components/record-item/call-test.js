@@ -34,7 +34,7 @@ test('finished call', function(assert) {
   run(() => {
     const rCall = store.createRecord('record-call', {
       durationInSeconds: 88,
-      receipts: { successes: ['111 222 3333'] }
+      receipts: { success: ['111 222 3333'] }
     });
     this.setProperties({ rCall });
 

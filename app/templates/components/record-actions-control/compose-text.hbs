@@ -19,6 +19,8 @@
 {{#photo-control/add classNames="compose-text__control" onAdd=(action _onAddImage)}}
     <span class="fa fa-picture-o"></span>
 {{/photo-control/add}}
-{{#action-button classNames="compose-text__control btn-plain btn-default" disabled=_isInvalid onAction=(action _onSend)}}
+{{#action-button classNames="compose-text__control btn-plain btn-default"
+    disabled=_isInvalid
+    onAction=(action _onSend)}}
     <span class="fa fa-paper-plane-o"></span>
 {{/action-button}}

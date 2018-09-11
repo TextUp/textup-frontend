@@ -138,7 +138,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onText() {
     this._tryResetScroll();
-    tryInvoke(this, 'onText', [...arguments]);
+    return tryInvoke(this, 'onText', [...arguments]);
   },
   _onScheduleMessage() {
     tryInvoke(this, 'onScheduleMessage', [...arguments]);

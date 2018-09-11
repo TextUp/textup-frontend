@@ -2,6 +2,8 @@ import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
 import moment from 'moment';
 
+const { computed, isPresent } = Ember;
+
 export default Ember.Component.extend({
   source: defaultIfAbsent(''),
   volume: defaultIfAbsent(75),
@@ -11,20 +13,10 @@ export default Ember.Component.extend({
 
   classNames: 'audio-control',
 
-  _audio: null,
-  _isMuted: false,
-  _isPlaying: false,
-  _isLoading: false,
-  _hasError: false,
-  _durationDisplay: null,
-  _currentTimeDisplay: null,
-  _percentBuffered: '0%',
-  _percentComplete: '0%',
-
   // Computed properties
   // -------------------
 
-  publicAPI: Ember.computed(
+  publicAPI: computed(
     'hasSource',
     '_hasError',
     '_isMuted',
@@ -38,7 +30,7 @@ export default Ember.Component.extend({
         isMuted: this.get('_isMuted'),
         isPlaying: this.get('_isPlaying'),
         isLoading: this.get('_isLoading'),
-        _volume: this.get('_volume'),
+        volume: this.get('_volume'),
         actions: {
           play: this.play.bind(this),
           pause: this.pause.bind(this)
@@ -46,8 +38,8 @@ export default Ember.Component.extend({
       };
     }
   ),
-  hasSource: Ember.computed.notEmpty('source'),
-  _volume: Ember.computed('volume', '_isMuted', {
+  hasSource: computed.notEmpty('source'),
+  _volume: computed('volume', '_isMuted', {
     get: function() {
       const volume = parseInt(this.get('volume'));
       if (this.get('_isMuted')) {
@@ -64,52 +56,29 @@ export default Ember.Component.extend({
       return value;
     }
   }),
-  _volumePercentage: Ember.computed('_volume', function() {
+  _volumePercentage: computed('_volume', function() {
     return this.get('_volume') + '%';
   }),
 
   // Events
   // ------
 
-  didInsertElement: function() {
-    Ember.run.scheduleOnce('afterRender', this, function() {
-      const audio = new Audio(this.get('source'));
-
-      this.set('_audio', audio);
-
-      audio.onloadedmetadata = this.setup.bind(this, audio);
-      audio.onended = this.reset.bind(this, audio);
-
-      audio.ondurationchange = this.updateDuration.bind(this, audio);
-      audio.ontimeupdate = this.updateTimeAndPercent.bind(this, audio);
-
-      audio.onprogress = this.updateBuffered.bind(this, audio);
-      audio.oncanplaythrough = this.updateBuffered.bind(this, audio);
-
-      audio.onplaying = function() {
-        if (this.isDestroying || this.isDestroyed) {
-          return;
-        }
-        this.set('_isLoading', false);
-      }.bind(this);
-      audio.onwaiting = function() {
-        if (this.isDestroying || this.isDestroyed) {
-          return;
-        }
-        this.set('_isLoading', true);
-      }.bind(this);
-      audio.onerror = function() {
-        if (this.isDestroying || this.isDestroyed) {
-          return;
-        }
-        this.set('_hasError', true);
-      }.bind(this);
-    });
+  didInsertElement() {
+    this._super(...arguments);
+    Ember.run('afterRender', this._buildFromSource.bind(this));
+  },
+  didUpdateAttrs() {
+    this._super(...arguments);
+    if (this.get('source') !== this.get('_originalSource')) {
+      this._buildFromSource();
+    }
   },
   willDestroyElement: function() {
+    this._super(...arguments);
     this.pause();
     this.$().off(`.${this.elementId}`);
   },
+
   keyUp: function(event) {
     const audio = this.get('_audio');
     if (!Ember.isPresent(audio)) {
@@ -159,6 +128,61 @@ export default Ember.Component.extend({
       this.setVolume(this.get('_audio'), 0);
       return false;
     }
+  },
+
+  // Internal properties
+  // -------------------
+
+  _originalSource: null,
+  _audio: null,
+  _isMuted: false,
+  _isPlaying: false,
+  _isLoading: false,
+  _hasError: false,
+  _durationDisplay: null,
+  _currentTimeDisplay: null,
+  _percentBuffered: '0%',
+  _percentComplete: '0%',
+
+  // Internal handlers
+  // -----------------
+
+  _buildFromSource() {
+    const source = this.get('source');
+    if (!isPresent(source)) {
+      return;
+    }
+
+    const audio = new Audio(source);
+    this.setProperties({ _audio: audio, _originalSource: source });
+
+    audio.onloadedmetadata = this.setup.bind(this, audio);
+    audio.onended = this.reset.bind(this, audio);
+
+    audio.ondurationchange = this.updateDuration.bind(this, audio);
+    audio.ontimeupdate = this.updateTimeAndPercent.bind(this, audio);
+
+    audio.onprogress = this.updateBuffered.bind(this, audio);
+    audio.oncanplaythrough = this.updateBuffered.bind(this, audio);
+
+    audio.onplaying = function() {
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
+      this.set('_isLoading', false);
+    }.bind(this);
+    audio.onwaiting = function() {
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
+      this.set('_isLoading', true);
+    }.bind(this);
+    audio.onerror = function() {
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
+      this.set('_hasError', true);
+    }.bind(this);
   },
 
   // Audio event handlers

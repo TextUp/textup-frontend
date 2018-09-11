@@ -23,6 +23,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isInvalid: computed('hasMedia', 'contents', function() {
     return !this.get('hasMedia') && !this.get('contents');
   }),
+  _$textarea: computed(function() {
+    return this.$('textarea');
+  }),
 
   // Internal handlers
   // -----------------
@@ -34,6 +37,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onClearContents', [...arguments]);
   },
   _onSend() {
-    tryInvoke(this, 'onSend', [...arguments]);
+    const textarea = this.get('_$textarea');
+    if (textarea) {
+      textarea.blur();
+    }
+    return tryInvoke(this, 'onSend', [...arguments]);
   }
 });

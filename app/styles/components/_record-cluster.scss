@@ -33,11 +33,12 @@
         &--outgoing,
         &--incoming {
             max-width: 85%;
+            min-width: 17 * $spacing;
             border-radius: $border-radius;
 
             @include mq($from: desktop) {
                 max-width: 60%;
-                min-width: 30em;
+                min-width: 20 * $spacing;
             }
         }
         &--outgoing {

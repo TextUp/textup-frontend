@@ -102,7 +102,9 @@
 .btn {
     @extend %input-disabled;
     @include button-colors($bg-color);
-    @extend %border-box;
+
+    box-sizing: border-box;
+    flex-shrink: 0;
     min-width: $min-control-width;
     padding: ($padding * 0.5) ($padding * 0.8);
     font-weight: $font-weight-bold;
