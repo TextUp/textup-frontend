@@ -2,7 +2,7 @@ import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { MediaImageVersion } from 'textup-frontend/objects/media-image';
 
-const { computed, tryInvoke, isNone } = Ember;
+const { computed, tryInvoke, isNone, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
@@ -123,11 +123,11 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _onLoadSuccess(event) {
-    this.setProperties({ _isSuccess: true, _isLoading: false });
+    run(() => this.setProperties({ _isSuccess: true, _isLoading: false }));
     tryInvoke(this, 'onSuccess', [event]);
   },
   _onLoadFailure(event) {
-    this.setProperties({ _isSuccess: false, _isLoading: false });
+    run(() => this.setProperties({ _isSuccess: false, _isLoading: false }));
     tryInvoke(this, 'onFailure', [event]);
   },
   _onWindowResize() {

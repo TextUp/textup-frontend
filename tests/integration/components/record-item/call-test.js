@@ -6,7 +6,7 @@ import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 const { run } = Ember;
 let store;
 
-moduleForComponent('record-item/call', 'Integration | Component | record cluster/item/call', {
+moduleForComponent('record-item/call', 'Integration | Component | record item/call', {
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');

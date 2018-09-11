@@ -1,8 +1,8 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { extractImagesFromEvent } from 'textup-frontend/utils/photo';
+import { extractImagesFromEvent, eventHasFiles } from 'textup-frontend/utils/photo';
 
-const { computed, get, tryInvoke } = Ember;
+const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -26,7 +26,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _handleChange(event) {
     // short circuit without resulting in error state if no files attached
-    if (!get(event.target.files, 'length')) {
+    if (!eventHasFiles(event)) {
       this._finishAdd(true);
       return;
     }

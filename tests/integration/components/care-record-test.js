@@ -188,7 +188,7 @@ test('doRegister a reference to the public API', function(assert) {
     'object',
     'is a public API, not component itself'
   );
-  assert.equal(typeOf(doRegister.firstCall.args[0].actions.reset), 'object');
+  assert.equal(typeOf(doRegister.firstCall.args[0].actions.reset), 'function');
 });
 
 test('cannot add to record', function(assert) {
@@ -270,10 +270,8 @@ test('starting call', function(assert) {
         callOverlayText.includes(personalPhoneNumber),
         'default message shows personal phone number'
       );
-
-      assert.equal(
-        this.$('.care-record__body').scrollTop(),
-        originalScrollPosition,
+      assert.ok(
+        this.$('.care-record__body').scrollTop() >= originalScrollPosition,
         'scroll position is reset'
       );
 
@@ -320,9 +318,8 @@ test('sending text', function(assert) {
       .click();
     wait().then(() => {
       assert.ok(onText.calledOnce);
-      assert.equal(
-        this.$('.care-record__body').scrollTop(),
-        originalScrollPosition,
+      assert.ok(
+        this.$('.care-record__body').scrollTop() >= originalScrollPosition,
         'scroll position is reset'
       );
 
@@ -362,14 +359,14 @@ test('adding note in the past + cannot modify existing', function(assert) {
       'three of four options because no phone number provided'
     );
     assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
-    assert.notOk(this.$('.care-record__add-note-button').length, 'no add buttons shown');
+    assert.notOk(this.$('.care-record__add-note__button').length, 'no add buttons shown');
 
     Ember.$('.hide-away-body .dropdown-item')
       .eq(1) // with three items, the second one is to add note in the past
       .triggerHandler('click');
     Ember.run.later(() => {
       assert.equal(
-        this.$('.care-record__add-note-button').length,
+        this.$('.care-record__add-note__button').length,
         recordClusters.length,
         'add buttons displayed, one for each single-item cluster'
       );

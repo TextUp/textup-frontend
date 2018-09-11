@@ -14,7 +14,7 @@ export default Ember.Route.extend(IsPublic, {
     login: function(un, pwd, doStore) {
       const auth = this.get('authService');
       return auth.login(un, pwd, doStore).then(
-        data => {
+        () => {
           auth.retryAttemptedTransition(() => {
             this.transitionTo('main', auth.get('authUser'));
           });

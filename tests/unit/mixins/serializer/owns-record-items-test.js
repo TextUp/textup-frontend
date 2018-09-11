@@ -15,7 +15,7 @@ test('it works', function(assert) {
   );
   assert.equal(obj.attrs.language.serialize, true, 'DO serialize language');
   assert.equal(obj.attrs._recordItems.serialize, false, 'do not serialize _recordItems');
-  assert.equal(obj.attrs._recordTexts.serialize, false, 'do not serialize _recordTexts');
-  assert.equal(obj.attrs._recordCalls.serialize, false, 'do not serialize _recordCalls');
-  assert.equal(obj.attrs._recordNotes.serialize, false, 'do not serialize _recordNotes');
+  assert.notOk(obj.attrs._recordTexts, 'do not break out polymorphic sub-types');
+  assert.notOk(obj.attrs._recordCalls, 'do not break out polymorphic sub-types');
+  assert.notOk(obj.attrs._recordNotes, 'do not break out polymorphic sub-types');
 });

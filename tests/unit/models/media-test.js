@@ -2,6 +2,7 @@ import * as PhotoUtils from 'textup-frontend/utils/photo';
 import Ember from 'ember';
 import sinon from 'sinon';
 import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { ACTIONS_ID_PROP_NAME } from 'textup-frontend/objects/media-actions';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, RSVP } = Ember;
@@ -174,7 +175,7 @@ test('building changes for API', function(assert) {
   const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     mimeType = 'image/jpeg',
-    data = 'i am some valid data',
+    data = 'i am some valid data,what is this',
     done = assert.async();
   obj.addChange(mimeType, data, 88, 888);
   obj.addChange(mimeType, data, 88, 888);
@@ -200,11 +201,11 @@ test('building changes for API', function(assert) {
         'media action must be one of two valid types'
       );
       if (pChange.action === constants.ACTION.MEDIA.REMOVE) {
-        assert.ok(pChange.key);
+        assert.ok(pChange[ACTIONS_ID_PROP_NAME]);
       } else {
         // adding media
         assert.ok(pChange.mimeType);
-        assert.ok(pChange.data);
+        assert.equal(pChange.data, data.split(',')[1]);
         assert.ok(pChange.checksum);
       }
     });

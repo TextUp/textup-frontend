@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
@@ -102,81 +103,75 @@ test('rendering block cluster of several + opening and closing', function(assert
     `);
 
     assert.ok(this.$('.record-cluster').length, 'has cluster');
-    assert.notOk(this.$('.hide-away-body').length, 'cluster starts out closed');
+    assert.notOk(this.$('.record-cluster__body').length, 'cluster starts out closed');
     assert.notOk(this.$('.record-cluster__item').length, 'no items shown');
-    assert.notOk(this.$('.record-cluster__body').length);
     assert.equal(this.$('.record-cluster__trigger').length, 1, 'has OPEN trigger');
 
     let text = this.$().text();
     assert.ok(text.includes(rCluster.get('label')), 'cluster label is shown');
 
-    this.$('.hide-away-trigger')
+    this.$('.record-cluster__trigger')
       .first()
-      .triggerHandler('mousedown');
-    // wait for hide-away to fully open and attach `afterOpen` listeners
-    Ember.run.later(() => {
-      assert.ok(this.$('.hide-away-body').length, 'cluster is open');
-      assert.ok(this.$('.record-cluster__item').length, 'items are shown when cluster is open');
-      assert.ok(this.$('.record-cluster__body').length);
-      assert.equal(
-        this.$('.record-cluster__trigger').length,
-        2,
-        'TWO triggers because close also has one to explicitly close'
-      );
+      .triggerHandler('click');
+    wait()
+      .then(() => {
+        assert.ok(this.$('.record-cluster__body').length, 'cluster is open');
+        assert.ok(this.$('.record-cluster__item').length, 'items are shown when cluster is open');
+        assert.ok(this.$('.record-cluster__trigger').length);
 
-      text = this.$().text();
-      assert.ok(text.includes(rCluster.get('label')), 'cluster label is still shown');
-      assert.equal(text.match(new RegExp(blockText, 'gi')).length, rCluster.get('numItems'));
+        text = this.$().text();
+        assert.ok(text.includes(rCluster.get('label')), 'cluster label is still shown');
+        assert.equal(text.match(new RegExp(blockText, 'gi')).length, rCluster.get('numItems'));
 
-      const yieldIndexToClick = Math.floor(rCluster.get('numItems') / 2);
-      this.$('.test-block')
-        .eq(yieldIndexToClick)
-        .triggerHandler('click');
-      assert.ok(blockSpy.calledOnce);
-      assert.deepEqual(
-        blockSpy.firstCall.args[0],
-        rCluster.get('items').objectAt(yieldIndexToClick)
-      );
-      assert.equal(blockSpy.firstCall.args[1], yieldIndexToClick);
+        const yieldIndexToClick = Math.floor(rCluster.get('numItems') / 2);
+        this.$('.test-block')
+          .eq(yieldIndexToClick)
+          .triggerHandler('click');
+        assert.ok(blockSpy.calledOnce);
+        assert.deepEqual(
+          blockSpy.firstCall.args[0],
+          rCluster.get('items').objectAt(yieldIndexToClick)
+        );
+        assert.equal(blockSpy.firstCall.args[1], yieldIndexToClick);
 
-      this.$('.hide-away-body')
-        .children()
-        .last()
-        .triggerHandler('click');
-      // wait doesn't wait long enough
-      Ember.run.later(() => {
-        assert.ok(this.$('.hide-away-body').length, 'clicking on body does NOT close');
+        this.$('.record-cluster__body')
+          .children()
+          .last()
+          .triggerHandler('click');
+        return wait();
+      })
+      .then(() => {
+        assert.ok(this.$('.record-cluster__body').length, 'clicking on body does NOT close');
         assert.ok(this.$('.record-cluster__item').length);
         assert.ok(this.$('.record-cluster__body').length);
-        assert.equal(this.$('.record-cluster__trigger').length, 2);
+        assert.ok(this.$('.record-cluster__trigger').length);
 
         Ember.$('#ember-testing')
           .first()
           .triggerHandler('click');
-        // wait doesn't wait long enough
-        Ember.run.later(() => {
-          assert.ok(this.$('.hide-away-body').length, 'clicking outside does NOT close');
-          assert.ok(this.$('.record-cluster__item').length);
-          assert.ok(this.$('.record-cluster__body').length);
-          assert.equal(this.$('.record-cluster__trigger').length, 2);
+        return wait();
+      })
+      .then(() => {
+        assert.ok(this.$('.record-cluster__body').length, 'clicking outside does NOT close');
+        assert.ok(this.$('.record-cluster__item').length);
+        assert.ok(this.$('.record-cluster__body').length);
+        assert.ok(this.$('.record-cluster__trigger').length);
 
-          this.$('.record-cluster__trigger')
-            .eq(1)
-            .triggerHandler('click');
-          // closing and re-showing trigger is very slow, so need to wait a whole second
-          Ember.run.later(() => {
-            assert.notOk(
-              this.$('.hide-away-body').length,
-              'cluster is closed after selecting explicit close button'
-            );
-            assert.notOk(this.$('.record-cluster__item').length, 'no items shown');
-            assert.notOk(this.$('.record-cluster__body').length);
-            assert.equal(this.$('.record-cluster__trigger').length, 1, 'still has OPEN trigger');
+        this.$('.record-cluster__trigger')
+          .first()
+          .triggerHandler('click');
+        return wait();
+      })
+      .then(() => {
+        assert.notOk(
+          this.$('.record-cluster__body').length,
+          'cluster is closed after selecting explicit close button'
+        );
+        assert.notOk(this.$('.record-cluster__item').length, 'no items shown');
+        assert.notOk(this.$('.record-cluster__body').length);
+        assert.ok(this.$('.record-cluster__trigger').length);
 
-            done();
-          }, 1000);
-        }, 500);
-      }, 500);
-    }, 500);
+        done();
+      });
   });
 });

@@ -76,7 +76,7 @@ test('contents, placeholder, and clearing contents', function(assert) {
   assert.equal(this.$('textarea').attr('placeholder'), placeholder);
   assert.notOk(this.$('textarea').val(), 'textarea is empty');
   assert.equal(
-    this.$('button.compose-text__item').length,
+    this.$('button.compose-text__control').length,
     1,
     'only send button, clear button not shown if no contents'
   );
@@ -87,14 +87,17 @@ test('contents, placeholder, and clearing contents', function(assert) {
     .then(() => {
       assert.equal(this.$('textarea').val(), contents);
       assert.equal(
-        this.$('button.compose-text__item').length,
+        this.$('button.compose-text__control').length,
         2,
         'now both clear and send buttons present'
       );
-      assert.ok(this.$('button.compose-text__item:not(.action-button)').length, 'has clear button');
+      assert.ok(
+        this.$('button.compose-text__control:not(.action-button)').length,
+        'has clear button'
+      );
       assert.ok(onClearContents.notCalled);
 
-      this.$('button.compose-text__item:not(.action-button)')
+      this.$('button.compose-text__control:not(.action-button)')
         .first()
         .triggerHandler('click');
       return wait();

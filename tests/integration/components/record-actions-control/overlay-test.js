@@ -94,7 +94,7 @@ test('rendering', function(assert) {
   this.render(hbs`{{record-actions-control/overlay closeButtonLabel=closeButtonLabel}}`);
 
   assert.ok(this.$('.record-actions-control__overlay').length, 'did render');
-  assert.ok(this.$('button.record-actions-control__overlay__button').length);
+  assert.ok(this.$('.record-actions-control__overlay button').length);
   let text = this.$().text();
   assert.ok(text.includes(closeButtonLabel));
   assert.notOk(text.includes(blockText));
@@ -106,7 +106,7 @@ test('rendering', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control__overlay').length, 'did render');
-  assert.ok(this.$('button.record-actions-control__overlay__button').length);
+  assert.ok(this.$('.record-actions-control__overlay button').length);
   text = this.$().text();
   assert.ok(text.includes(closeButtonLabel));
   assert.ok(text.includes(blockText));
@@ -118,11 +118,11 @@ test('toggle close button display', function(assert) {
   this.render(hbs`{{record-actions-control/overlay showCloseButton=showCloseButton}}`);
 
   assert.ok(this.$('.record-actions-control__overlay').length, 'did render');
-  assert.ok(this.$('button.record-actions-control__overlay__button').length, 'button is visible');
+  assert.ok(this.$('.record-actions-control__overlay button').length, 'button is visible');
 
   this.set('showCloseButton', false);
 
-  assert.notOk(this.$('button.record-actions-control__overlay__button').length, 'button is hidden');
+  assert.notOk(this.$('.record-actions-control__overlay button').length, 'button is hidden');
 });
 
 test('opening', function(assert) {
@@ -175,9 +175,9 @@ test('closing via button click', function(assert) {
 
   assert.ok(this.$('.record-actions-control__overlay').length, 'did render');
   assert.ok(this.$('.record-actions-control__overlay--open').length, 'is open');
-  assert.ok(this.$('button.record-actions-control__overlay__button').length, 'has button');
+  assert.ok(this.$('.record-actions-control__overlay button').length, 'has button');
 
-  this.$('button.record-actions-control__overlay__button')
+  this.$('.record-actions-control__overlay button')
     .first()
     .triggerHandler('click');
   wait().then(() => {

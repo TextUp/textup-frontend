@@ -8,7 +8,7 @@ import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 
 const { run } = Ember;
 
-moduleForComponent('record-item/note', 'Integration | Component | record cluster/item/note', {
+moduleForComponent('record-item/note', 'Integration | Component | record item/note', {
   integration: true
 });
 
@@ -76,10 +76,10 @@ test('displaying empty note', function(assert) {
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
     assert.notOk(this.$('.location-preview').length, 'no location');
-    assert.ok(this.$('.record-item__controls').length, 'has dropdown with note controls');
+    assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
 
-    this.$('.record-item__controls .hide-away-trigger')
+    this.$('.record-item__control .hide-away-trigger')
       .first()
       .triggerHandler('mousedown');
 
@@ -115,9 +115,15 @@ test('display note with note contents, media, and location', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
-    assert.ok(this.$('.image-stack').length, 'has images');
-    assert.ok(this.$('.location-preview').length, 'has location');
-    assert.ok(this.$('.record-item__controls').length, 'has dropdown with note controls');
+    assert.notOk(
+      this.$('.image-stack').length,
+      'do not show media it being edited to avoid too many request while editing'
+    );
+    assert.notOk(
+      this.$('.location-preview').length,
+      'do not show location it being edited to avoid too many request while editing'
+    );
+    assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
     assert.ok(
       this.$()
@@ -146,10 +152,10 @@ test('displaying note with revisions + actions', function(assert) {
 
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
-    assert.ok(this.$('.record-item__controls').length, 'has dropdown with note controls');
+    assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
 
-    this.$('.record-item__controls .hide-away-trigger')
+    this.$('.record-item__control .hide-away-trigger')
       .first()
       .triggerHandler('mousedown');
 
@@ -206,10 +212,10 @@ test('displaying deleted note with revisions + actions', function(assert) {
 
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
-    assert.ok(this.$('.record-item__controls').length, 'has dropdown with note controls');
+    assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
 
-    this.$('.record-item__controls .hide-away-trigger')
+    this.$('.record-item__control .hide-away-trigger')
       .first()
       .triggerHandler('mousedown');
 
@@ -262,10 +268,10 @@ test('readonly mode with revisions + actions', function(assert) {
 
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
-    assert.ok(this.$('.record-item__controls').length, 'has dropdown with note controls');
+    assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
 
-    this.$('.record-item__controls .hide-away-trigger')
+    this.$('.record-item__control .hide-away-trigger')
       .first()
       .triggerHandler('mousedown');
 
@@ -304,7 +310,7 @@ test('readonly mode without revisions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.notOk(
-      this.$('.record-item__controls').length,
+      this.$('.record-item__control').length,
       'no dropdown if readOnly and no revisions'
     );
   });

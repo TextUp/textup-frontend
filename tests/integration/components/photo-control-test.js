@@ -88,8 +88,10 @@ test('adding images', function(assert) {
       .map(() => mockValidMediaImage()),
     done = assert.async(),
     onAdd = sinon.spy(),
+    hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
     extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
     randValue1 = Math.random();
+  hasFilesStub.callsFake(() => true);
   extractStub.callsFake(() => new Ember.RSVP.Promise(resolve => resolve(randValue1)));
 
   this.setProperties({ images, onAdd });
@@ -108,6 +110,7 @@ test('adding images', function(assert) {
       );
       assert.ok(onAdd.calledOnce, 'add handler is called on success');
 
+      hasFilesStub.restore();
       extractStub.restore();
       done();
     });

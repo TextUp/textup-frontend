@@ -7,13 +7,9 @@ import { phoneNumber } from 'textup-frontend/helpers/phone-number';
 
 const { run } = Ember;
 
-moduleForComponent(
-  'record-item/metadata',
-  'Integration | Component | record cluster/item/metadata',
-  {
-    integration: true
-  }
-);
+moduleForComponent('record-item/metadata', 'Integration | Component | record item/metadata', {
+  integration: true
+});
 
 test('inputs', function(assert) {
   this.render(hbs`{{record-item/metadata}}`);

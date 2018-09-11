@@ -7,16 +7,12 @@ import { phoneNumber } from 'textup-frontend/helpers/phone-number';
 const { run } = Ember;
 let store;
 
-moduleForComponent(
-  'record-item/receipts',
-  'Integration | Component | record cluster/item/receipts',
-  {
-    integration: true,
-    beforeEach() {
-      store = Ember.getOwner(this).lookup('service:store');
-    }
+moduleForComponent('record-item/receipts', 'Integration | Component | record item/receipts', {
+  integration: true,
+  beforeEach() {
+    store = Ember.getOwner(this).lookup('service:store');
   }
-);
+});
 
 test('inputs', function(assert) {
   run(() => {
@@ -78,7 +74,10 @@ test('trigger text', function(assert) {
     let text = this.$().text();
     assert.ok(text.includes(blockContent), 'block still rendered');
     assert.ok(this.$('.record-item__receipts').length, 'did render');
-    assert.notOk(this.$('.record-item__receipts__trigger').length, 'no receipts = no trigger');
+    assert.notOk(
+      this.$('.record-item__receipts__trigger__label').length,
+      'no receipts = no trigger label'
+    );
 
     // has failed
     rItem.set('receipts.failed', [Math.random()]);
@@ -91,7 +90,10 @@ test('trigger text', function(assert) {
     wait()
       .then(() => {
         text = this.$().text();
-        assert.ok(this.$('.record-item__receipts__trigger').length, 'has receipts = has trigger');
+        assert.ok(
+          this.$('.record-item__receipts__trigger__label').length,
+          'has receipts = has trigger'
+        );
         assert.ok(text.includes('fail'), 'trigger text is about failed numbers');
 
         // has failed + busy
@@ -105,7 +107,10 @@ test('trigger text', function(assert) {
       })
       .then(() => {
         text = this.$().text();
-        assert.ok(this.$('.record-item__receipts__trigger').length, 'has receipts = has trigger');
+        assert.ok(
+          this.$('.record-item__receipts__trigger__label').length,
+          'has receipts = has trigger'
+        );
         assert.ok(text.includes('busy'), 'trigger text is about busy numbers');
 
         // has failed + busy + pending
@@ -118,7 +123,10 @@ test('trigger text', function(assert) {
       })
       .then(() => {
         text = this.$().text();
-        assert.ok(this.$('.record-item__receipts__trigger').length, 'has receipts = has trigger');
+        assert.ok(
+          this.$('.record-item__receipts__trigger__label').length,
+          'has receipts = has trigger'
+        );
         assert.ok(text.includes('pending'), 'trigger text is about pending numbers');
 
         // has failed + busy + pending + success
@@ -131,8 +139,11 @@ test('trigger text', function(assert) {
       })
       .then(() => {
         text = this.$().text();
-        assert.ok(this.$('.record-item__receipts__trigger').length, 'has receipts = has trigger');
-        assert.ok(text.includes('success'), 'trigger text is about successful numbers');
+        assert.ok(
+          this.$('.record-item__receipts__trigger__label').length,
+          'has receipts = has trigger'
+        );
+        assert.ok(text.includes('recipient'), 'trigger text is about successful recipients');
 
         done();
       });
@@ -155,41 +166,48 @@ test('viewing receipt details', function(assert) {
     this.render(hbs`{{record-item/receipts item=rItem}}`);
 
     assert.ok(this.$('.record-item__receipts').length, 'did render');
-    assert.ok(this.$('.record-item__receipts__trigger').length, 'has trigger');
+    assert.ok(this.$('.record-item__receipts__trigger__label').length, 'has trigger');
     assert.notOk(this.$('.hide-away-body').length, 'receipt details are closed');
 
     this.$('.record-item__receipts__trigger')
       .first()
-      .mousedown();
+      .triggerHandler('click');
 
-    // wait for hide-away to fully open and attach `afterOpen` listeners
-    Ember.run.later(() => {
-      assert.ok(this.$('.hide-away-body').length, 'receipt details are open');
+    wait()
+      .then(() => {
+        assert.ok(this.$('.record-item__receipts__body').length, 'receipt details are open');
 
-      const text = this.$('.hide-away-body').text();
-      assert.ok(rItem.get('receipts.success').every(num => text.includes(phoneNumber([num]))));
-      assert.ok(rItem.get('receipts.pending').every(num => text.includes(phoneNumber([num]))));
-      assert.ok(rItem.get('receipts.busy').every(num => text.includes(phoneNumber([num]))));
-      assert.ok(rItem.get('receipts.failed').every(num => text.includes(phoneNumber([num]))));
+        const text = this.$('.record-item__receipts__body').text();
+        assert.ok(rItem.get('receipts.success').every(num => text.includes(phoneNumber([num]))));
+        assert.ok(rItem.get('receipts.pending').every(num => text.includes(phoneNumber([num]))));
+        assert.ok(rItem.get('receipts.busy').every(num => text.includes(phoneNumber([num]))));
+        assert.ok(rItem.get('receipts.failed').every(num => text.includes(phoneNumber([num]))));
 
-      this.$('.hide-away-body')
-        .children()
-        .first()
-        .triggerHandler('click');
-      // wait doesn't wait long enough
-      Ember.run.later(() => {
-        assert.ok(this.$('.hide-away-body').length, 'clicking on body does not close receipts');
-
-        Ember.$('#ember-testing')
+        this.$('.record-item__receipts__body')
+          .children()
           .first()
           .triggerHandler('click');
-        // wait doesn't wait long enough
-        Ember.run.later(() => {
-          assert.notOk(this.$('.hide-away-body').length, 'clicking outside DOES close receipts');
+        return wait();
+      })
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts__body').length,
+          'clicking on body does not close receipts'
+        );
 
-          done();
-        }, 500);
-      }, 500);
-    }, 500);
+        // click trigger again to close
+        this.$('.record-item__receipts__trigger')
+          .first()
+          .triggerHandler('click');
+        return wait();
+      })
+      .then(() => {
+        assert.notOk(
+          this.$('.record-item__receipts__body').length,
+          'clicking trigger close receipts'
+        );
+
+        done();
+      });
   });
 });

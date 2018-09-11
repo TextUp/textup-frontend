@@ -4,13 +4,9 @@ import hbs from 'htmlbars-inline-precompile';
 
 const { run } = Ember;
 
-moduleForComponent(
-  'record-item/system-note',
-  'Integration | Component | record cluster/item/system note',
-  {
-    integration: true
-  }
-);
+moduleForComponent('record-item/system-note', 'Integration | Component | record item/system note', {
+  integration: true
+});
 
 test('inputs', function(assert) {
   run(() => {

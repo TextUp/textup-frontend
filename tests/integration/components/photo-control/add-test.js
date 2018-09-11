@@ -53,10 +53,12 @@ test('rendering nonblock vs block forms', function(assert) {
 
 test('handling file upload', function(assert) {
   // can spy on imports using the * imports. See https://stackoverflow.com/a/33676328
-  const extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
+  const hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
+    extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
     onAddSpy = sinon.spy(),
     done = assert.async(),
     randValue1 = Math.random();
+  hasFilesStub.callsFake(() => true);
 
   this.set('onAddSpy', onAddSpy);
   this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
@@ -68,6 +70,7 @@ test('handling file upload', function(assert) {
 
     wait()
       .then(() => {
+        assert.ok(hasFilesStub.calledOnce);
         assert.ok(extractStub.calledOnce, 'called extract helper once');
         assert.ok(onAddSpy.calledOnce, 'called add handler when promise successfully resolves');
         assert.ok(
@@ -85,6 +88,7 @@ test('handling file upload', function(assert) {
         return wait();
       })
       .then(() => {
+        assert.ok(hasFilesStub.calledTwice);
         assert.ok(extractStub.calledTwice, 'called extract helper twice');
         assert.ok(onAddSpy.calledOnce, 'add handler not called when promise rejects');
         assert.ok(
@@ -93,6 +97,7 @@ test('handling file upload', function(assert) {
             .includes('Please try again')
         );
 
+        hasFilesStub.restore();
         extractStub.restore();
         done();
       });
@@ -100,10 +105,12 @@ test('handling file upload', function(assert) {
 });
 
 test('handling async change events in rapid succession', function(assert) {
-  const extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
+  const hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
+    extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
     onAddSpy = sinon.spy(),
     done = assert.async(),
     randValue1 = Math.random();
+  hasFilesStub.callsFake(() => true);
 
   this.set('onAddSpy', onAddSpy);
   this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
@@ -124,6 +131,7 @@ test('handling async change events in rapid succession', function(assert) {
       );
       assert.ok(onAddSpy.calledWith(randValue1));
 
+      hasFilesStub.restore();
       extractStub.restore();
       done();
     });

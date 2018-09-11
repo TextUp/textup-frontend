@@ -1,4 +1,3 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import Ember from 'ember';

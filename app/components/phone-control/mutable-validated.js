@@ -41,7 +41,7 @@ export default Ember.Component.extend({
             this.set('_newNumber', num);
             tryInvoke(this, 'onValidateSuccess', [num]);
             resolve();
-          });
+          }, reject);
       });
     }
   }

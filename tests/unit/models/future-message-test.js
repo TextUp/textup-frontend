@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, typeOf } = Ember;
@@ -34,12 +35,13 @@ test('dirty checking', function(assert) {
 
     obj.set('intervalSize', constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
 
-    assert.equal(obj.get('hasManualChanges'), true);
+    assert.equal(
+      obj.get('hasManualChanges'),
+      false,
+      'rely on `intervalSize` setting `_repeatIntervalInDays` for dirty checking'
+    );
 
-    obj.setProperties({
-      intervalSize: constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY,
-      media: this.store().createRecord('media')
-    });
+    obj.setProperties({ media: this.store().createRecord('media') });
 
     assert.equal(obj.get('hasManualChanges'), true);
 
@@ -76,11 +78,16 @@ test('setting intervals of different sizes', function(assert) {
     assert.equal(obj.get('repeatInterval'), 1);
     assert.equal(obj.get('_repeatIntervalInDays'), 7);
 
+    const originalRepeatIntervalInDays = obj.get('_repeatIntervalInDays');
     obj.set('repeatInterval', null);
 
     assert.equal(obj.get('intervalSize'), constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
     assert.equal(obj.get('repeatInterval'), null);
-    assert.equal(obj.get('_repeatIntervalInDays'), null);
+    assert.equal(
+      obj.get('_repeatIntervalInDays'),
+      originalRepeatIntervalInDays,
+      'do not change repeat intervals in days when null'
+    );
 
     obj.setProperties({
       repeatInterval: 1,
@@ -89,7 +96,11 @@ test('setting intervals of different sizes', function(assert) {
 
     assert.equal(obj.get('intervalSize'), null);
     assert.equal(obj.get('repeatInterval'), 1);
-    assert.equal(obj.get('_repeatIntervalInDays'), null);
+    assert.equal(
+      obj.get('_repeatIntervalInDays'),
+      originalRepeatIntervalInDays,
+      'do not change repeat intervals in days when null'
+    );
   });
 });
 
@@ -126,17 +137,18 @@ test('getting and setting owner', function(assert) {
 
 test('rolling back changes', function(assert) {
   run(() => {
-    const constants = Ember.getOwner(this).lookup('service:constants'),
-      obj = this.subject();
+    const obj = this.subject(),
+      media = this.store().createRecord('media'),
+      rollbackSpy = sinon.spy(media, 'rollbackAttributes');
 
-    obj.set('intervalSize', constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    obj.set('media', media);
 
     assert.equal(obj.get('hasManualChanges'), true);
 
     obj.rollbackAttributes();
 
     assert.equal(obj.get('hasManualChanges'), false);
-    assert.equal(obj.get('intervalSize'), constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
+    assert.ok(rollbackSpy.calledOnce, 'rolling back future message also rolls back media');
   });
 });
 
@@ -154,7 +166,7 @@ test('default values', function(assert) {
   assert.equal(obj.get('intervalSize'), constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
 });
 
-test('validating supporting properties', function(assert) {
+test('repeat-related properties are only validated if message is repeating', function(assert) {
   const constants = Ember.getOwner(this).lookup('service:constants'),
     obj = this.subject(),
     done = assert.async();
@@ -182,21 +194,19 @@ test('validating supporting properties', function(assert) {
       })
       .then(({ model, validations }) => {
         assert.equal(validations.get('isTruelyValid'), false);
-        assert.equal(validations.get('errors').length, 4);
+        assert.equal(
+          validations.get('errors').length,
+          1,
+          'repeat-related properties not validated unless is repeating'
+        );
 
-        model.setProperties({
-          type: constants.FUTURE_MESSAGE.TYPE.CALL,
-          intervalSize: 0,
-          repeatInterval: 0,
-          repeatCount: 0
-        });
+        model.setProperties({ isRepeating: true });
 
         return model.validate();
       })
       .then(({ model, validations }) => {
         assert.equal(validations.get('isTruelyValid'), false);
-        assert.equal(validations.get('errors').length, 3);
-        assert.equal(model.get('validations.attrs.type.isValid'), true);
+        assert.equal(validations.get('errors').length, 4, 'now repeating properties are validated');
         assert.equal(
           model.get('validations.attrs.intervalSize.isValid'),
           false,
@@ -218,6 +228,50 @@ test('validating supporting properties', function(assert) {
           intervalSize: 1,
           repeatInterval: 1,
           repeatCount: 1
+        });
+
+        return model.validate();
+      })
+      .then(({ model, validations }) => {
+        assert.equal(validations.get('isTruelyValid'), true);
+
+        done();
+      });
+  });
+});
+
+test('validating repeating future message', function(assert) {
+  run(() => {
+    const constants = Ember.getOwner(this).lookup('service:constants'),
+      obj = this.subject(),
+      done = assert.async();
+
+    obj.setProperties({
+      message: 'hello',
+      type: constants.FUTURE_MESSAGE.TYPE.CALL,
+      isRepeating: true
+    });
+
+    obj
+      .validate()
+      .then(({ model, validations }) => {
+        assert.equal(validations.get('isTruelyValid'), false);
+        assert.equal(
+          validations.get('errors').length,
+          2,
+          'now repeating properties are validated, only two because intervalSize defaults to 1'
+        );
+
+        obj.setProperties({ repeatInterval: 1, repeatCount: 2 });
+
+        return model.validate();
+      })
+      .then(({ model, validations }) => {
+        assert.equal(validations.get('isTruelyValid'), true);
+
+        obj.setProperties({
+          repeatCount: null,
+          endDate: new Date(Date.now() + 1000)
         });
 
         return model.validate();

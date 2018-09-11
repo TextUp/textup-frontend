@@ -67,7 +67,8 @@ test('calculating next fire date', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       obj = this.subject(),
       date1 = new Date(Date.now() + 1000),
-      date2 = new Date(),
+      date2 = new Date(Date.now() - 100),
+      date3 = new Date(Date.now() + 500),
       fMsg1 = store.createRecord('future-message', { id: `${Math.random()}` }),
       fMsg2 = store.createRecord('future-message', {
         id: `${Math.random()}`,
@@ -76,6 +77,10 @@ test('calculating next fire date', function(assert) {
       fMsg3 = store.createRecord('future-message', {
         id: `${Math.random()}`,
         nextFireDate: date2
+      }),
+      fMsg4 = store.createRecord('future-message', {
+        id: `${Math.random()}`,
+        nextFireDate: date3
       });
 
     assert.equal(obj.get('numFutureMessages'), 0);
@@ -98,6 +103,15 @@ test('calculating next fire date', function(assert) {
     assert.ok(obj.addFutureMessage(fMsg3));
 
     assert.equal(obj.get('numFutureMessages'), 3);
-    assert.equal(obj.get('nextFutureFire'), date2);
+    assert.equal(
+      obj.get('nextFutureFire'),
+      date1,
+      'still the first date because the just-added date is in the past'
+    );
+
+    assert.ok(obj.addFutureMessage(fMsg4));
+
+    assert.equal(obj.get('numFutureMessages'), 4);
+    assert.equal(obj.get('nextFutureFire'), date3);
   });
 });

@@ -23,12 +23,14 @@ test('inputs + rendering block form', function(assert) {
     images = [mockValidMediaImage(), mockValidMediaImage()];
 
   this.render(hbs`{{responsive-image-gallery}}`);
-  assert.ok(this.$('.pswp').length, 'has rendered, images being null is acceptable');
+  assert.ok(Ember.$('.pswp').length, 'has rendered, images being null is acceptable');
+  assert.notOk(this.$('.pswp').length, 'not child of component because hoisted to top level');
 
   this.set('images', []);
   this.render(hbs`{{responsive-image-gallery images=images}}`);
 
-  assert.ok(this.$('.pswp').length, 'has rendered, empty images are acceptable');
+  assert.ok(Ember.$('.pswp').length, 'has rendered, empty images are acceptable');
+  assert.notOk(this.$('.pswp').length, 'not child of component because hoisted to top level');
 
   this.setProperties({ images, testClass });
   this.render(hbs`
@@ -39,7 +41,7 @@ test('inputs + rendering block form', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(this.$('.pswp').length, 'has rendered');
+  assert.ok(Ember.$('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 });
 
@@ -69,8 +71,8 @@ test('requires some images to open gallery', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(this.$('.pswp').length, 'has rendered');
-  assert.notOk(this.$('.pswp--open').length, 'is closed');
+  assert.ok(Ember.$('.pswp').length, 'has rendered');
+  assert.notOk(Ember.$('.pswp--open').length, 'is closed');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -79,7 +81,7 @@ test('requires some images to open gallery', function(assert) {
 
   wait()
     .then(() => {
-      assert.notOk(this.$('.pswp--open').length, 'still closed because no images');
+      assert.notOk(Ember.$('.pswp--open').length, 'still closed because no images');
 
       this.set('images', [mockValidMediaImage()]);
 
@@ -90,7 +92,7 @@ test('requires some images to open gallery', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.ok(this.$('.pswp--open').length, 'opened because now has images');
+      assert.ok(Ember.$('.pswp--open').length, 'opened because now has images');
 
       done();
     });
@@ -113,7 +115,7 @@ test('getting thumbnail bounds function for zooming effect', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(this.$('.pswp').length, 'has rendered');
+  assert.ok(Ember.$('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -163,7 +165,7 @@ test('selecting appropriate versions based on viewport width', function(assert) 
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(this.$('.pswp').length, 'has rendered');
+  assert.ok(Ember.$('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -201,7 +203,7 @@ test('deciding responsive reload on resize', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(this.$('.pswp').length, 'has rendered');
+  assert.ok(Ember.$('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -217,17 +219,9 @@ test('deciding responsive reload on resize', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.ok(
-        shouldRebuildStub.notCalled,
-        'beforeResize event not fired yet until we manually trigger a resize'
-      );
+      assert.ok(shouldRebuildStub.notCalled, 'on first resize, do not check if should resize');
       shouldRebuildStub.callsFake(() => false);
       const invalidateSpy = sinon.spy(galleryComponent.get('pswp'), 'invalidateCurrItems');
-
-      galleryComponent.get('pswp').updateSize();
-
-      assert.ok(shouldRebuildStub.notCalled, 'should rebuild function not called on FIRST resize');
-      assert.ok(invalidateSpy.notCalled, 'do not invalidate');
 
       galleryComponent.get('pswp').updateSize();
 

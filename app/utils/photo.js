@@ -7,6 +7,10 @@ const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 // Uploading image
 // ---------------
 
+export function eventHasFiles(event) {
+  return get(event.target.files, 'length');
+}
+
 export function extractImagesFromEvent(event) {
   return new RSVP.Promise((resolve, reject) => {
     if (typeOf(event) !== 'object' || typeOf(event.target) !== 'object') {
@@ -31,7 +35,7 @@ export function extractImagesFromEvent(event) {
 }
 
 function _getFilesFromTarget(target) {
-  if (target.files instanceof FileList) {
+  if (target.files instanceof FileList || isArray(target.files)) {
     return Array.from(target.files);
   } else if (isPresent(target.value)) {
     return [target.value];

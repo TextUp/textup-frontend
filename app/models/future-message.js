@@ -4,7 +4,7 @@ import Ember from 'ember';
 import moment from 'moment';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, get } = Ember,
+const { computed, get, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
     type: validator('inclusion', {
       in: model => Object.values(model.get('constants.FUTURE_MESSAGE.TYPE'))
@@ -58,6 +58,10 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides
   // ---------
 
+  rollbackAttributes: function() {
+    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
+    return this._super(...arguments);
+  },
   hasManualChanges: computed('media.isDirty', function() {
     return !!this.get('media.isDirty');
   }),

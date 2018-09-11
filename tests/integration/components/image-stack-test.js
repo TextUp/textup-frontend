@@ -109,15 +109,15 @@ test('opening gallery when selecting item on top of stack', function(assert) {
 
   assert.ok(this.$('.image-stack').length, 'component did render');
   assert.equal(this.$(`.${itemClass}`).length, 1, 'nested item did render');
-  assert.equal(this.$('.pswp').length, 1, 'gallery did render');
-  assert.notOk(this.$('.pswp--open').length, 'gallery is not open');
+  assert.equal(Ember.$('.pswp').length, 1, 'gallery did render');
+  assert.notOk(Ember.$('.pswp--open').length, 'gallery is not open');
 
   this.$(`.${itemClass}`)
     .first()
     .triggerHandler('click');
 
   wait().then(() => {
-    assert.equal(this.$('.pswp--open').length, 1, 'gallery is open');
+    assert.equal(Ember.$('.pswp--open').length, 1, 'gallery is open');
 
     done();
   });

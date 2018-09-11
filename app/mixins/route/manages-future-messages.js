@@ -1,8 +1,6 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 
-const { tryInvoke } = Ember;
-
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
   futureMessageService: Ember.inject.service(),

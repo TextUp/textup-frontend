@@ -28,7 +28,7 @@ export default Ember.Route.extend(IsAuthenticated, {
             });
         });
     },
-    skipSetup(staff) {
+    skipSetup() {
       this.get('stateManager').skipSetup();
       this.transitionTo('main', this.get('authService.authUser'));
     }

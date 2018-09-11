@@ -115,15 +115,15 @@ test('opening gallery when selecting any of the items in the grid', function(ass
 
   assert.ok(this.$('.image-grid').length, 'component did render');
   assert.equal(this.$(`.${itemClass}`).length, images.length);
-  assert.equal(this.$('.pswp').length, 1, 'gallery did render');
-  assert.notOk(this.$('.pswp--open').length, 'gallery is not open');
+  assert.equal(Ember.$('.pswp').length, 1, 'gallery did render');
+  assert.notOk(Ember.$('.pswp--open').length, 'gallery is not open');
 
   this.$(`.${itemClass}`)
     .eq(images.length - 1) // click on last object
     .triggerHandler('click');
 
   wait().then(() => {
-    assert.equal(this.$('.pswp--open').length, 1, 'gallery is open');
+    assert.equal(Ember.$('.pswp--open').length, 1, 'gallery is open');
 
     done();
   });

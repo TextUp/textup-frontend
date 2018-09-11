@@ -7,7 +7,8 @@ import { moduleForComponent, test } from 'ember-qunit';
 
 // [FUTURE] investigate testing window resizing recalculation
 
-const DEFAULT_ALT = 'I am the default alt message',
+const { run } = Ember,
+  DEFAULT_ALT = 'I am the default alt message',
   mockConstants = Ember.Service.extend({ IMAGE: { DEFAULT_ALT } });
 
 moduleForComponent('responsive-image', 'Integration | Component | responsive image', {
@@ -68,7 +69,7 @@ test('rendering success', function(assert) {
   this.render(hbs`{{responsive-image versions=versions onSuccess=onSuccess onFailure=onFailure}}`);
 
   wait().then(() => {
-    Ember.run.later(() => {
+    run.later(() => {
       // wait helper doesn't wait long enough for the image to load
       assert.ok(onSuccess.calledOnce, 'success handler called');
       assert.ok(onFailure.notCalled, 'failure handler NOT called');
@@ -87,7 +88,7 @@ test('rendering failure', function(assert) {
   this.render(hbs`{{responsive-image versions=versions onSuccess=onSuccess onFailure=onFailure}}`);
 
   wait().then(() => {
-    Ember.run.later(() => {
+    run.later(() => {
       // wait helper doesn't wait long enough for the image to load
       assert.ok(onSuccess.notCalled, 'success handler NOT called');
       assert.ok(onFailure.calledOnce, 'failure handler called');

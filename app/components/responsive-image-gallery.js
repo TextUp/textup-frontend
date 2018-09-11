@@ -50,15 +50,15 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
       options = this.get('options'),
       assignedOptions = Ember.assign({}, options, actionOptions),
       pswp = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, images, assignedOptions);
+    this.set('pswp', pswp);
+    this._resetResizeProps();
+
     // need to override event listeners binding because event properties aren't
     // being passed to the listeners properly AND these events for responsive image selection
     // need to be bound BEFORE init is called
     pswp.listen('gettingData', this.get('_onGettingData').bind(this));
     pswp.listen('beforeResize', this.get('_onBeforeResize').bind(this));
     pswp.init();
-
-    this.set('pswp', pswp);
-    this._resetResizeProps();
   },
 
   // Internal properties
