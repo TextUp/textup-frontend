@@ -105,7 +105,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.host =
-      process.env.TEXTUP_FRONTEND_TRAVIS_BRANCH === 'master'
+      process.env.TRAVIS_BRANCH === 'master'
         ? process.env.TEXTUP_FRONTEND_HOST_PRODUCTION
         : process.env.TEXTUP_FRONTEND_HOST_STAGING;
     ENV.analytics = {
