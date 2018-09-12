@@ -54,6 +54,39 @@
             img {
                 max-width: 100%;
                 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14);
+                animation: fadein 2s;
+            }
+        }
+
+        &__small-image {
+            display: block;
+        }
+        &__medium-image {
+            display: none;
+        }
+        &__large-image {
+            display: none;
+        }
+        @include mq($from: tablet) {
+            &__small-image {
+                display: none;
+            }
+            &__medium-image {
+                display: block;
+            }
+            &__large-image {
+                display: none;
+            }
+        }
+        @include mq($from: desktop) {
+            &__small-image {
+                display: none;
+            }
+            &__medium-image {
+                display: none;
+            }
+            &__large-image {
+                display: block;
             }
         }
     }
