@@ -1,7 +1,8 @@
 {
   "name": "textup-frontend",
   "version": "2.6.1",
-  "description": "Mobile communication and collaboration for social service case managers and their clients",
+  "description":
+    "Mobile communication and collaboration for social service case managers and their clients",
   "private": true,
   "directories": {
     "doc": "doc",
@@ -22,7 +23,7 @@
   "author": {
     "name": "Eric Bai",
     "email": "eric@textup.org",
-    "url": "http://www.textup.org"
+    "url": "https://www.textup.org"
   },
   "license": "Apache-2.0",
   "devDependencies": {
@@ -53,7 +54,7 @@
     "ember-cli-release": "0.2.8",
     "ember-cli-sass": "5.3.1",
     "ember-cli-tooltipster": "0.7.1",
-    "ember-cli-uglify": "^1.2.0",
+    "ember-cli-uglify": "2.0.0",
     "ember-colpick": "0.6.0",
     "ember-cp-validations": "^2.7.2",
     "ember-data": "~2.4.3",
@@ -80,7 +81,6 @@
     "jstz": "^1.0.7",
     "liquid-fire": "0.29.1",
     "loader.js": "^4.0.0",
-    "phantomjs-prebuilt": "^2.1.16",
     "pusher-js": "^3.1.0",
     "tinycolor2": "^1.3.0"
   },
