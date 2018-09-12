@@ -1,6 +1,8 @@
-<div class="record-item text-left
-	{{if model.outgoing 'outgoing' 'incoming'}}">
-    <div class="contents">
-		<b class="text-wrap">{{model.contents}}</b>
-	</div>
+<div class="record-cluster__item text-left
+    {{if model.outgoing 'record-cluster__item--outgoing' 'record-cluster__item--incoming'}}">
+    <div id="ember2458" class="ember-view record-item record-item--text">
+        <div class="record-item__body text-wrap">
+            {{model.contents}}
+        </div>
+    </div>
 </div>
