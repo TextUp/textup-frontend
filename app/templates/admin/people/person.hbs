@@ -31,7 +31,7 @@
                     <div class="horizontal-items full-height">
                         <span class='clickable display-l'
                             onclick={{route-action 'toggleSlideout'
-                            	'slideouts/teams/membership'
+                            	'slideouts/team/membership'
                             	'admin.people.person'
                                 constants.SLIDEOUT.OUTLET.DETAIL}}>
 							{{#each person.teams as |team|}}
@@ -54,7 +54,7 @@
 								</li>
 								<li tabindex='0' class='dropdown-item'
                                     {{action 'toggleSlideout'
-		                            	'slideouts/teams/membership'
+		                            	'slideouts/team/membership'
 		                            	'admin.people.person'
                                         constants.SLIDEOUT.OUTLET.DETAIL}}>
                                     Teams
@@ -75,7 +75,7 @@
                     	<span class='clear-badge no-space'>
                             <button type='button' class='btn'
                                 {{action 'toggleSlideout'
-	                            	'slideouts/teams/membership'
+	                            	'slideouts/team/membership'
 	                            	'admin.people.person'
                                     constants.SLIDEOUT.OUTLET.DETAIL}}>
                                 Teams
