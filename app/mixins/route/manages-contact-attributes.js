@@ -23,13 +23,15 @@ export default Ember.Mixin.create({
     },
     didTransition() {
       this._super(...arguments);
-      this._tryCheckAndObserveContactStatus();
+      this._tryStartObserveContactStatus();
+      // check the single contact right now
+      this._tryCheckCurrentContactStatus();
       return true;
     },
 
     onContactStatusChange(contacts, newStatus) {
       // stop watching for contact getting marked as unread while we're viewing it
-      // if we are intentionally manually changing this contact's tatus
+      // if we are intentionally manually changing this contact's status
       this._stopObserveContactStatus();
 
       const contactsArray = isArray(contacts) ? contacts : [contacts];
@@ -41,8 +43,11 @@ export default Ember.Mixin.create({
           updatedContacts.forEach(contact => contact.set('isSelected', false));
         })
         // try to start observing the single contact's status again once we are done manually
-        // updating the contact's status
-        .finally(() => this._tryCheckAndObserveContactStatus());
+        // updating the contact's status. Note that this action should ONLY be to start observing
+        // NOT to also check if status is unread. If we also check if status is unread here
+        // then users will not be able to manually mark contacts as unread because this change
+        // will just be overriden here.
+        .finally(() => this._tryStartObserveContactStatus());
     },
 
     startContactSharingSlideout(contacts) {
@@ -86,10 +91,8 @@ export default Ember.Mixin.create({
   },
 
   // only want to observe status when we are viewing a SINGLE contact
-  _tryCheckAndObserveContactStatus() {
+  _tryStartObserveContactStatus() {
     if (this.get('_isViewingSingleContact')) {
-      // check the single contact right now
-      this._checkCurrentContactStatus();
       // and add an observer for future changes to the status
       this.addObserver('controller.model.status', this, '_currentContactStatusObserver');
     }
@@ -99,16 +102,18 @@ export default Ember.Mixin.create({
   },
   // debounce because observer is called every time this property is set, whether or not changed
   _currentContactStatusObserver() {
-    run.debounce(this, this._checkCurrentContactStatus, 1000, true);
+    run.debounce(this, this._tryCheckCurrentContactStatus, 1000, true);
   },
   // when currently viewing contact receives messages (pushed through socket),
   // the contact is also marked as `unread` but should be re-marked as `active`
   // since the user is already viewing the contact and reading the messages
-  _checkCurrentContactStatus() {
-    const contact = this.get('controller.model');
-    if (contact.get('status') === this.get('constants.CONTACT.STATUS.UNREAD')) {
-      contact.set('status', this.get('constants.CONTACT.STATUS.ACTIVE'));
-      this.get('dataService').persist(contact);
+  _tryCheckCurrentContactStatus() {
+    if (this.get('_isViewingSingleContact')) {
+      const contact = this.get('controller.model');
+      if (contact.get('status') === this.get('constants.CONTACT.STATUS.UNREAD')) {
+        contact.set('status', this.get('constants.CONTACT.STATUS.ACTIVE'));
+        this.get('dataService').persist(contact);
+      }
     }
   }
 });
