@@ -33,7 +33,7 @@ export default Ember.Mixin.create({
         callByNumberContact = controller.get('callByNumberContact'),
         displayedList = this.get('controller.contacts'),
         currentFilter = this.get('controller.filter');
-      this.get('callSlideoutService')
+      return this.get('callSlideoutService')
         .makeCall(callByNumberContact, callByNumber, { displayedList, currentFilter })
         .then(contact => {
           controller.set('isCallingForNumber', false);

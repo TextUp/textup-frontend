@@ -16,6 +16,7 @@ export default Ember.Mixin.create({
     startComposeSlideout(recipientsOrEventObj) {
       const recipients = typeOf(recipientsOrEventObj) === 'array' ? copy(recipientsOrEventObj) : [];
       this.get('controller').setProperties({ composeRecipients: recipients });
+      this._checkComposeHasRecipients();
       this.send(
         'toggleSlideout',
         'slideouts/compose',
@@ -36,7 +37,7 @@ export default Ember.Mixin.create({
           return get(recipient, 'constructor.modelName') ? recipient : get(recipient, 'identifier');
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
-      this.get('dataService')
+      return this.get('dataService')
         .persist(rText)
         .then(() => this.send('cancelComposeSlideout'))
         .catch(() => rText.rollbackAttributes());

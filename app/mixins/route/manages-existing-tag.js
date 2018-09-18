@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
       this._tryRollbackText();
     },
     finishExistingTagSlideout() {
-      this.get('dataService')
+      return this.get('dataService')
         .persist(this.get('controller.editingTag'))
         .then(() => this.send('closeSlideout'));
     },

@@ -51,7 +51,7 @@ export default Ember.Mixin.create({
       this._cleanAddNoteSlideout();
     },
     finishAddNoteSlideout() {
-      this.get('dataService')
+      return this.get('dataService')
         .persist(this.get('controller.newRecordNote'))
         .then(() => this.send('cancelAddNoteSlideout'));
     },
@@ -71,7 +71,7 @@ export default Ember.Mixin.create({
     },
     finishEditNoteSlideout() {
       const rNote = this.get('controller.editingRecordNote');
-      this.get('dataService')
+      return this.get('dataService')
         .persist(rNote)
         .then(() => this.send('cancelEditNoteSlideout'));
     },

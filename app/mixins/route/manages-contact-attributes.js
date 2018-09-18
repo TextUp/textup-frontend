@@ -65,7 +65,7 @@ export default Ember.Mixin.create({
       this.get('controller').set('sharingContacts', null);
     },
     finishContactSharingSlideout() {
-      this.get('dataService')
+      return this.get('dataService')
         .persist(this.get('controller.sharingContacts'))
         .then(() => this.send('cancelContactSharingSlideout'));
     }

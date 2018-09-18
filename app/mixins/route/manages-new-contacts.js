@@ -27,7 +27,7 @@ export default Ember.Mixin.create({
       this.get('controller').set('newContact', null);
     },
     finishNewContactSlideout() {
-      this.get('contactService')
+      return this.get('contactService')
         .persistNew(this.get('controller.newContact'), {
           displayedList: this.get('controller.contacts'),
           currentFilter: this.get('controller.filter')

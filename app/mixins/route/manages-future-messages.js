@@ -28,7 +28,7 @@ export default Ember.Mixin.create({
       this._tryRevertNewFutureMessage();
     },
     finishNewScheduleMessageSlideout() {
-      this.get('futureMessageService')
+      return this.get('futureMessageService')
         .persistNew(this.get('controller.newFutureMessage'))
         .then(() => this.send('closeSlideout'));
     },
@@ -56,7 +56,7 @@ export default Ember.Mixin.create({
       callIfPresent(this, doClose);
     },
     onFutureMessageSaveEditing(fMessage, doClose) {
-      this.get('dataService')
+      return this.get('dataService')
         .persist(fMessage)
         .then(() => callIfPresent(this, doClose));
     }

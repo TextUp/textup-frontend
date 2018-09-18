@@ -18,7 +18,7 @@ export default Ember.Mixin.create({
       this.send('closeSlideout');
     },
     finishExistingContactSlideout() {
-      this.get('dataService')
+      return this.get('dataService')
         .persist(this.get('currentModel'))
         .then(() => this.send('closeSlideout'));
     },

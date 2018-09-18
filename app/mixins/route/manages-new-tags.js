@@ -28,7 +28,7 @@ export default Ember.Mixin.create({
       this._tryRevertNewTag();
     },
     finishNewTagSlideout() {
-      this.get('tagService')
+      return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => this.send('closeSlideout'));
     },
@@ -57,7 +57,7 @@ export default Ember.Mixin.create({
       this._tryCloseTagsListHideAway();
     },
     finishCreateTagInTagList() {
-      this.get('tagService')
+      return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => this._tryCloseTagsListHideAway());
     }

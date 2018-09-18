@@ -32,7 +32,7 @@ export default Ember.Mixin.create({
     },
     finishTagMembershipSlideout() {
       const controller = this.get('controller');
-      this.get('tagService')
+      return this.get('tagService')
         .updateTagMemberships(
           controller.get('tagMembershipTags'),
           controller.get('tagMembershipContacts')

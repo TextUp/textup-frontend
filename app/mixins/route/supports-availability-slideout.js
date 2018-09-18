@@ -31,7 +31,7 @@ export default Ember.Mixin.create({
     finishAvailabilitySlideout() {
       const model = this.get('currentModel'),
         authUser = this.get('authService.authUser');
-      this.get('dataService')
+      return this.get('dataService')
         .persist([model, authUser])
         .then(() => this.send('closeSlideout'));
     }
