@@ -37,7 +37,7 @@
             border-radius: $border-radius;
 
             @include mq($from: desktop) {
-                max-width: 60%;
+                max-width: 45%;
                 min-width: 20 * $spacing;
             }
         }
