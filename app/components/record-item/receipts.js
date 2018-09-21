@@ -3,7 +3,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordItem from 'textup-frontend/models/record-item';
 import { pluralize } from 'textup-frontend/utils/text';
 
-const { computed, isArray, typeOf } = Ember;
+const { computed, isArray, isEmpty, typeOf } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -14,7 +14,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     return { disabled: false };
   },
   classNames: ['record-item__receipts'],
-  classNameBindings: ['disabled:record-item__receipts--disabled'],
+  classNameBindings: [
+    'disabled:record-item__receipts--disabled',
+    '_hasReceipts::record-item__receipts--disabled'
+  ],
 
   // Internal properties
   // -------------------
@@ -23,10 +26,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     const receipts = this.get('item.receipts');
     return (
       typeOf(receipts) === 'object' &&
-      (isArray(receipts.failed) ||
-        isArray(receipts.busy) ||
-        isArray(receipts.pending) ||
-        isArray(receipts.success))
+      ((isArray(receipts.failed) && !isEmpty(receipts.failed)) ||
+        (isArray(receipts.busy) && !isEmpty(receipts.busy)) ||
+        (isArray(receipts.pending) && !isEmpty(receipts.pending)) ||
+        (isArray(receipts.success) && !isEmpty(receipts.success)))
     );
   }),
   _triggerText: computed(

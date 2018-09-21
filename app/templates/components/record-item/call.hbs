@@ -8,11 +8,14 @@
         {{audio-control source=call.voicemailUrl}}
     {{else}}
         <div class="text-small text-wrap">
-            {{#if (gt call.receipts.success.length 0)}}
+            {{#if call.durationInSeconds}}
+                <span class="fa fa-phone margin-r-half"></span>
                 Call lasting {{moment-duration call.durationInSeconds 'seconds'}}
             {{else if (date/is-same-day call.whenCreated (now))}}
+                <span class="fa fa-circle-o-notch fa-spin margin-r-half"></span>
                 Call in progress
             {{else}}
+                <span class="fa fa-times margin-r-half"></span>
                 Call could not be completed
             {{/if}}
         </div>
@@ -23,6 +26,6 @@
         {{image-stack images=call.media.content.displayedImages.content}}
     </div>
 {{/if}}
-{{#record-item/receipts item=call disabled=true}}
+{{#record-item/receipts item=call disabled=(not call.outgoing)}}
     {{record-item/metadata timestamp=call.whenCreated author=call.authorName}}
 {{/record-item/receipts}}

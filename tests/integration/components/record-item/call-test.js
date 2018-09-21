@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 
@@ -16,7 +17,8 @@ moduleForComponent('record-item/call', 'Integration | Component | record item/ca
 test('inputs', function(assert) {
   run(() => {
     const rItem = store.createRecord('record-item'),
-      rCall = store.createRecord('record-call');
+      rCall = store.createRecord('record-call', { outgoing: true }),
+      done = assert.async();
     this.setProperties({ rItem, rCall });
 
     assert.throws(() => this.render(hbs`{{record-item/call}}`), 'requires call');
@@ -27,14 +29,39 @@ test('inputs', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length);
+    assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
+    assert.ok(
+      this.$('.record-item__receipts--disabled').length,
+      'tray disabled because no receipts'
+    );
+
+    rCall.set('receipts', { success: ['1112223333'] });
+
+    wait()
+      .then(() => {
+        assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
+        assert.notOk(
+          this.$('.record-item__receipts--disabled').length,
+          'tray enabled because has receipts'
+        );
+
+        rCall.set('outgoing', false);
+        return wait();
+      })
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts--disabled').length,
+          'receipts disabled when incoming'
+        );
+        done();
+      });
   });
 });
 
 test('finished call', function(assert) {
   run(() => {
     const rCall = store.createRecord('record-call', {
-      durationInSeconds: 88,
-      receipts: { success: ['111 222 3333'] }
+      durationInSeconds: 88
     });
     this.setProperties({ rCall });
 
@@ -47,7 +74,7 @@ test('finished call', function(assert) {
     assert.notOk(this.$('.audio-control').length, 'no voicemail');
 
     const text = this.$().text();
-    assert.ok(text.includes('lasting'), 'is finished');
+    assert.ok(text.includes('lasting'), 'is finished when we get passed the duration in seconds');
     assert.notOk(text.includes(rCall.get('durationInSeconds')), 'duration in seconds is humanized');
   });
 });

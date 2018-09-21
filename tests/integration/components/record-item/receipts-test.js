@@ -32,6 +32,44 @@ test('inputs', function(assert) {
   });
 });
 
+test('disabled state', function(assert) {
+  run(() => {
+    const rItem = store.createRecord('record-item'),
+      done = assert.async();
+    this.setProperties({ rItem, disabled: true });
+
+    this.render(hbs`{{record-item/receipts item=rItem disabled=disabled}}`);
+
+    assert.ok(this.$('.record-item__receipts').length, 'did render with record item');
+    assert.ok(this.$('.record-item__receipts--disabled').length, 'is disabled');
+
+    this.set('disabled', false);
+    wait()
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts--disabled').length,
+          'still disabled because no receipts'
+        );
+
+        rItem.set('receipts', { success: [] });
+        return wait();
+      })
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts--disabled').length,
+          'still disabled because receipt arrays are empty'
+        );
+
+        rItem.set('receipts', { success: ['1112223333'] });
+        return wait();
+      })
+      .then(() => {
+        assert.notOk(this.$('.record-item__receipts--disabled').length, 'not disabled anymore');
+        done();
+      });
+  });
+});
+
 test('rendering block form', function(assert) {
   run(() => {
     const rItem = store.createRecord('record-item'),

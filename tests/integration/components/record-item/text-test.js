@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 
@@ -16,7 +17,8 @@ moduleForComponent('record-item/text', 'Integration | Component | record item/te
 test('inputs', function(assert) {
   run(() => {
     const rItem = store.createRecord('record-item'),
-      rText = store.createRecord('record-text');
+      rText = store.createRecord('record-text', { outgoing: true }),
+      done = assert.async();
     this.setProperties({ rItem, rText });
 
     assert.throws(() => this.render(hbs`{{record-item/text}}`), 'requires text');
@@ -27,6 +29,32 @@ test('inputs', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--text').length);
     assert.ok(this.$('.record-item__metadata').length);
+    assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
+    assert.ok(
+      this.$('.record-item__receipts--disabled').length,
+      'tray disabled because no receipts'
+    );
+
+    rText.set('receipts', { success: ['1112223333'] });
+
+    wait()
+      .then(() => {
+        assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
+        assert.notOk(
+          this.$('.record-item__receipts--disabled').length,
+          'tray enabled because has receipts'
+        );
+
+        rText.set('outgoing', false);
+        return wait();
+      })
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts--disabled').length,
+          'receipts disabled when incoming'
+        );
+        done();
+      });
   });
 });
 
