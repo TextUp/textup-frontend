@@ -8,7 +8,10 @@ const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 // ---------------
 
 export function eventHasFiles(event) {
-  return get(event.target.files, 'length');
+  if (typeOf(event) !== 'object' || typeOf(event.target) !== 'object') {
+    return;
+  }
+  return get(event.target.files || {}, 'length');
 }
 
 export function extractImagesFromEvent(event) {

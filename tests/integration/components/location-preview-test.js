@@ -77,6 +77,59 @@ test('valid inputs', function(assert) {
   });
 });
 
+test('rendering empty location', function(assert) {
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      location = store.createRecord('location');
+
+    this.setProperties({ location });
+    this.render(hbs`{{location-preview location=location}}`);
+
+    assert.ok(this.$('.location-preview').length, 'did render');
+    assert.notOk(this.$('img').attr('srcset'));
+    assert.notOk(this.$('img').attr('src'));
+  });
+});
+
+test('disabled address overlay when missing address', function(assert) {
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      location = store.createRecord('location'),
+      done = assert.async(),
+      originalText = `${Math.random()}`;
+
+    this.setProperties({ location, msg: originalText });
+    this.render(hbs`{{location-preview location=location loadingMessage=msg errorMessage=msg}}`);
+
+    assert.ok(this.$('.location-preview').length, 'did render');
+
+    this.$('.location-preview')
+      .first()
+      .click();
+    wait()
+      .then(() => {
+        const text = this.$('.location-preview__message')
+          .text()
+          .trim();
+        assert.equal(text, originalText, 'still showing original text because no address');
+
+        location.set('address', 'hi');
+        this.$('.location-preview')
+          .first()
+          .click();
+        return wait();
+      })
+      .then(() => {
+        const text = this.$('.location-preview__message')
+          .text()
+          .trim();
+        assert.ok(text.includes('hi'), 'address is displayed');
+
+        done();
+      });
+  });
+});
+
 test('rendering valid location + clicking', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),

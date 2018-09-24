@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import sinon from 'sinon';
 import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
@@ -29,7 +30,10 @@ test('rolling back changes', function(assert) {
       newContact1 = mockModel('testing', constants.MODEL.CONTACT),
       newShared1 = mockModel(null, constants.MODEL.CONTACT, { isShared: true }),
       newTag1 = mockModel('ok', constants.MODEL.TAG),
-      newNumber1 = '111 asdfsa 222 asfo!@@ 33(((33   ';
+      newNumber1 = '111 asdfsa 222 asfo!@@ 33(((33   ',
+      media = this.store().createRecord('media'),
+      rollbackSpy = sinon.spy(media, 'rollbackAttributes');
+    obj.set('media', media);
 
     assert.ok(obj.addRecipient(newContact1));
     assert.ok(obj.addRecipient(newShared1));
@@ -44,6 +48,7 @@ test('rolling back changes', function(assert) {
     assert.deepEqual(obj.get('sharedContactRecipients'), []);
     assert.deepEqual(obj.get('tagRecipients'), []);
     assert.deepEqual(obj.get('newNumberRecipients'), []);
+    assert.ok(rollbackSpy.calledOnce);
   });
 });
 

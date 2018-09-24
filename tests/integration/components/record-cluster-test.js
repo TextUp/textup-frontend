@@ -60,7 +60,8 @@ test('rendering block cluster of one', function(assert) {
   run(() => {
     const blockText = Math.random(),
       blockSpy = sinon.spy(),
-      rCluster = RecordCluster.create({ items: [store.createRecord('record-item')] });
+      rCluster = RecordCluster.create({ items: [store.createRecord('record-item')] }),
+      done = assert.async();
     this.setProperties({ rCluster, blockSpy, blockText });
 
     this.render(hbs`
@@ -80,6 +81,17 @@ test('rendering block cluster of one', function(assert) {
     assert.ok(blockSpy.calledOnce);
     assert.deepEqual(blockSpy.firstCall.args[0], rCluster.get('items.firstObject'));
     assert.equal(blockSpy.firstCall.args[1], 0);
+
+    rCluster.set('alwaysCluster', true);
+    wait().then(() => {
+      assert.ok(this.$('.record-cluster').length, 'can cluster even one if always cluster is set');
+      assert.notOk(
+        this.$('.record-cluster__item').length,
+        'items not shown initially if clustered'
+      );
+
+      done();
+    });
   });
 });
 

@@ -32,9 +32,16 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
   },
 
   _normalizePolymorphicRecord(obj, hash) {
-    if (Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
+    this._tryNormalizePolymorphicType(hash);
+    return this._super(...arguments);
+  },
+
+  // Helpers
+  // -------
+
+  _tryNormalizePolymorphicType(hash) {
+    if (hash && Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
       hash.type = polymorphicTypeToModelName[hash.type];
     }
-    return this._super(...arguments);
   }
 });

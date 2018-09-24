@@ -1,3 +1,4 @@
+import ComposeTextComponent from 'textup-frontend/components/record-actions-control/compose-text';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -145,7 +146,8 @@ test('when a text is valid and can be sent', function(assert) {
 
 test('triggering send from action button', function(assert) {
   const done = assert.async(),
-    onSend = sinon.spy();
+    onSend = sinon.spy(),
+    onTextareaBlur = sinon.spy();
   this.setProperties({ contents: 'hi', onSend });
 
   this.render(hbs`{{record-actions-control/compose-text contents=contents onSend=onSend}}`);
@@ -153,13 +155,27 @@ test('triggering send from action button', function(assert) {
   assert.ok(this.$('.compose-text').length, 'did render');
   assert.ok(this.$('.action-button').length);
 
+  assert.ok(this.$('.compose-text textarea').length);
+  this.$('.compose-text textarea').on('blur', onTextareaBlur);
+
   this.$('.action-button')
     .first()
     .click();
 
   wait().then(() => {
     assert.ok(onSend.calledOnce);
+    assert.ok(onTextareaBlur.calledOnce);
 
     done();
   });
+});
+
+test('send handler returns outcome', function(assert) {
+  const onSend = sinon.stub(),
+    randVal = Math.random(),
+    obj = ComposeTextComponent.create({ onSend });
+  onSend.callsFake(() => randVal);
+
+  assert.equal(obj._onSend(), randVal, 'send handler return outcome');
+  assert.ok(onSend.calledOnce);
 });

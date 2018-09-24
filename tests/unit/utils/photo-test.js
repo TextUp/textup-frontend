@@ -30,6 +30,20 @@ module('Unit | Utility | photo', {
   }
 });
 
+test('whether or not an event has files', function(assert) {
+  assert.notOk(PhotoUtils.eventHasFiles());
+  assert.notOk(PhotoUtils.eventHasFiles(null));
+  assert.notOk(PhotoUtils.eventHasFiles([]));
+  assert.notOk(PhotoUtils.eventHasFiles('hi'));
+  assert.notOk(PhotoUtils.eventHasFiles({}));
+  assert.notOk(PhotoUtils.eventHasFiles({ target: 'hi' }));
+  assert.notOk(PhotoUtils.eventHasFiles({ target: {} }));
+  assert.notOk(PhotoUtils.eventHasFiles({ target: { files: 88 } }));
+
+  assert.equal(PhotoUtils.eventHasFiles({ target: { files: [] } }), 0);
+  assert.equal(PhotoUtils.eventHasFiles({ target: { files: ['hi'] } }), 1);
+});
+
 test('invalid inputs when extracting images from an event', function(assert) {
   const done = assert.async(8);
 

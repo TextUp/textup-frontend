@@ -162,6 +162,12 @@ test('getting record items and record clusters', function(assert) {
     assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
+    assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('label').includes('delete')));
+    obj.get('recordClusters').forEach(cl1 => {
+      if (cl1.get('label').includes('delete')) {
+        assert.ok(cl1.get('alwaysCluster'));
+      }
+    });
 
     rNotes.objectAt(numNotes - 1).set('hasBeenDeleted', true);
 
@@ -172,6 +178,12 @@ test('getting record items and record clusters', function(assert) {
     assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.ok(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
+    assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('label').includes('delete')));
+    obj.get('recordClusters').forEach(cl1 => {
+      if (cl1.get('label').includes('delete')) {
+        assert.ok(cl1.get('alwaysCluster'));
+      }
+    });
 
     rNotes.forEach(rNote1 => rNote1.set('hasBeenDeleted', true));
 
@@ -186,8 +198,13 @@ test('getting record items and record clusters', function(assert) {
     assert.ok(obj.get('recordClusters').every(cl1 => isPresent(cl1.get('label'))));
     assert.notOk(obj.get('recordClusters').every(cl1 => cl1.get('numItems') === 1));
     assert.notOk(obj.get('recordClusters').every(cl1 => cl1.get('items.length') === 1));
-    assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('label').includes('delete')));
     assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('numItems') === numNotes));
     assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('items.length') === numNotes));
+    assert.ok(obj.get('recordClusters').any(cl1 => cl1.get('label').includes('delete')));
+    obj.get('recordClusters').forEach(cl1 => {
+      if (cl1.get('label').includes('delete')) {
+        assert.ok(cl1.get('alwaysCluster'));
+      }
+    });
   });
 });

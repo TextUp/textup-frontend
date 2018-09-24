@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import RecordActionsControlComponent from 'textup-frontend/components/record-actions-control';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -187,6 +188,16 @@ test('updating content follows DDAU', function(assert) {
 
       done();
     });
+});
+
+test('send text handler returns outcome', function(assert) {
+  const onText = sinon.stub(),
+    randVal = Math.random(),
+    obj = RecordActionsControlComponent.create({ onText });
+  onText.callsFake(() => randVal);
+
+  assert.equal(obj._onSendText(), randVal, 'send handler return outcome');
+  assert.ok(onText.calledOnce);
 });
 
 test('trigger schedule message action', function(assert) {

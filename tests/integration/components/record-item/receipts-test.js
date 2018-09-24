@@ -224,13 +224,22 @@ test('viewing receipt details', function(assert) {
         this.$('.record-item__receipts__body')
           .children()
           .first()
-          .triggerHandler('click');
+          .click();
         return wait();
       })
       .then(() => {
         assert.ok(
           this.$('.record-item__receipts__body').length,
           'clicking on body does not close receipts'
+        );
+
+        Ember.$().click();
+        return wait();
+      })
+      .then(() => {
+        assert.ok(
+          this.$('.record-item__receipts__body').length,
+          'clicking on outside of of the receipts tray does not close receipts'
         );
 
         // click trigger again to close

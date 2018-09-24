@@ -147,6 +147,10 @@ test('removing images', function(assert) {
         onRemove.getCall(0).args[1],
         'second arg is supposed to index, but missing for image stack'
       );
+      assert.ok(
+        onRemove.getCall(0).args[2].isPropagationStopped(),
+        'stop event propagation so gallery is not triggered to open'
+      );
 
       this.set('display', constants.PHOTO_CONTROL.DISPLAY.GRID);
 
@@ -171,6 +175,10 @@ test('removing images', function(assert) {
         onRemove.getCall(1).args[1],
         images.length - 1,
         'second arg is index of item to remove'
+      );
+      assert.ok(
+        onRemove.getCall(0).args[2].isPropagationStopped(),
+        'stop event propagation so gallery is not triggered to open'
       );
 
       done();

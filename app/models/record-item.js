@@ -13,12 +13,12 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   // ---------
 
   rollbackAttributes() {
-    this._super(...arguments);
     this.get('_contactRecipients').clear();
     this.get('_tagRecipients').clear();
     this.get('_sharedContactRecipients').clear();
     this.get('_newNumberRecipients').clear();
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
+    return this._super(...arguments);
   },
   didUpdate() {
     this._super(...arguments);

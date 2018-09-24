@@ -1,23 +1,45 @@
 import Ember from 'ember';
+import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
+import sinon from 'sinon';
 import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, typeOf } = Ember;
+let server;
 
 moduleForModel('record-note', 'Unit | Model | record note', {
   needs: [
-    'service:constants',
-    'model:record-item',
+    'adapter:record-item',
+    'adapter:record-note',
     'model:contact',
-    'model:tag',
-    'model:media',
     'model:location',
+    'model:media',
+    'model:record-item',
     'model:record-note-revision',
-    'validator:inclusion',
+    'model:tag',
+    'serializer:record-item',
+    'serializer:record-note',
+    'service:auth-service',
+    'service:constants',
+    'service:data-service',
+    'service:socket',
+    'service:state',
+    'service:storage',
+    'transform:record-item-status',
     'validator:has-any',
-    'validator:presence',
-    'validator:number'
-  ]
+    'validator:inclusion',
+    'validator:number',
+    'validator:presence'
+  ],
+  beforeEach() {
+    // see https://github.com/stonecircle/ember-cli-notifications/issues/169
+    this.register('service:notifications', NotificationsService);
+
+    server = sinon.createFakeServer({ respondImmediately: true });
+  },
+  afterEach() {
+    server.restore();
+  }
 });
 
 test('dirty checking', function(assert) {
@@ -47,8 +69,11 @@ test('rolling back chanages, including inherited rollback', function(assert) {
     const constants = Ember.getOwner(this).lookup('service:constants'),
       obj = this.subject(),
       mockContact1 = mockModel('1', constants.MODEL.CONTACT),
-      rItem = this.store().createRecord('record-item', { whenCreated: new Date() });
+      rItem = this.store().createRecord('record-item', { whenCreated: new Date() }),
+      location = this.store().createRecord('location'),
+      rollbackSpy = sinon.spy(location, 'rollbackAttributes');
 
+    obj.set('location', location);
     obj.addRecipient(mockContact1);
     obj.addAfter(rItem);
 
@@ -59,6 +84,7 @@ test('rolling back chanages, including inherited rollback', function(assert) {
 
     assert.equal(obj.get('numRecipients'), 0);
     assert.equal(obj.get('addAfterDate'), null);
+    assert.ok(rollbackSpy.calledOnce, 'rolling back also rolls back location');
   });
 });
 
@@ -224,6 +250,43 @@ test('validating recipients', function(assert) {
       })
       .then(({ model, validations }) => {
         assert.equal(validations.get('isTruelyValid'), false, 'must only have one recipient');
+
+        done();
+      });
+  });
+});
+
+test('validating recipients does not happen for non-new notes', function(assert) {
+  run(() => {
+    const obj = this.subject(),
+      done = assert.async();
+    obj.set('noteContents', 'hi');
+
+    server.respondWith('POST', '/v1/records', xhr => {
+      const requestBody = JSON.parse(xhr.requestBody);
+      requestBody.record.id = Math.random();
+      xhr.respond(201, { 'Content-Type': 'application/json' }, JSON.stringify(requestBody));
+    });
+
+    obj
+      .validate()
+      .then(({ model, validations }) => {
+        assert.equal(model.get('isNew'), true);
+        assert.equal(validations.get('isTruelyValid'), false, 'no recipients and is new');
+
+        return obj.save();
+      })
+      .then(savedObj => {
+        assert.equal(savedObj.get('isNew'), false, 'not new after saving');
+        return savedObj.validate();
+      })
+      .then(({ model, validations }) => {
+        assert.equal(model.get('isNew'), false);
+        assert.equal(
+          validations.get('isTruelyValid'),
+          true,
+          'no recipients but is valid because non-new notes do not validate recipients'
+        );
 
         done();
       });

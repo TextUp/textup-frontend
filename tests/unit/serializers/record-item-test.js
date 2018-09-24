@@ -45,3 +45,39 @@ test('serializing with media actions', function(assert) {
     assert.equal(serialized.doMediaActions.length, 2);
   });
 });
+
+test('getting model name from payload', function(assert) {
+  const serializer = Ember.getOwner(this).lookup('serializer:record-item');
+
+  assert.equal(serializer.modelNameFromPayloadKey('records'), 'record-item');
+  assert.equal(serializer.modelNameFromPayloadKey('record'), 'record-item');
+  assert.equal(
+    serializer.modelNameFromPayloadKey('blah'),
+    'blah',
+    'unrecognized payload keys pass through unchanged'
+  );
+});
+
+test('normalizing polyorphic types', function(assert) {
+  const serializer = Ember.getOwner(this).lookup('serializer:record-item'),
+    hash = {};
+
+  serializer._tryNormalizePolymorphicType(hash);
+  assert.deepEqual(hash, {}, 'no change if no type');
+
+  hash.type = 'invalid';
+  serializer._tryNormalizePolymorphicType(hash);
+  assert.deepEqual(hash.type, 'invalid', 'no change if type is invalid');
+
+  hash.type = 'TEXT';
+  serializer._tryNormalizePolymorphicType(hash);
+  assert.deepEqual(hash.type, 'record-text');
+
+  hash.type = 'CALL';
+  serializer._tryNormalizePolymorphicType(hash);
+  assert.deepEqual(hash.type, 'record-call');
+
+  hash.type = 'NOTE';
+  serializer._tryNormalizePolymorphicType(hash);
+  assert.deepEqual(hash.type, 'record-note');
+});

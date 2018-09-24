@@ -104,6 +104,33 @@ test('setting intervals of different sizes', function(assert) {
   });
 });
 
+test('getting repeat interval with an initial value for _repeatIntervalInDays', function(assert) {
+  run(() => {
+    const obj = this.subject();
+
+    obj.set('_repeatIntervalInDays', 8);
+
+    assert.equal(obj.get('repeatInterval'), 8);
+  });
+});
+
+test('test setting repeat interval and interval size with number as string', function(assert) {
+  run(() => {
+    const obj = this.subject();
+
+    obj.set('repeatInterval', '8');
+
+    assert.equal(obj.get('repeatInterval'), 8);
+    assert.equal(obj.get('_repeatIntervalInDays'), 8);
+
+    obj.set('intervalSize', '2');
+
+    assert.equal(obj.get('repeatInterval'), 8);
+    assert.equal(obj.get('intervalSize'), 2);
+    assert.equal(obj.get('_repeatIntervalInDays'), 16);
+  });
+});
+
 test('getting and setting owner', function(assert) {
   run(() => {
     const validContact = this.store().createRecord('contact'),
@@ -162,6 +189,7 @@ test('default values', function(assert) {
   assert.equal(obj.get('timesTriggered'), 0);
   assert.equal(typeOf(obj.get('startDate')), 'date');
   assert.equal(obj.get('hasEndDate'), false);
+  assert.equal(obj.get('_repeatIntervalInDays'), undefined, 'no default value');
   assert.equal(obj.get('type'), constants.FUTURE_MESSAGE.TYPE.TEXT);
   assert.equal(obj.get('intervalSize'), constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
 });

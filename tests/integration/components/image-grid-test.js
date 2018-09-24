@@ -22,8 +22,8 @@ test('inputs', function(assert) {
   this.set('images', []);
   this.render(hbs`{{image-grid images=images}}`);
 
-  const $el = this.$('.image-grid');
-  assert.ok($el.length, 'has rendered, images can be an empty array');
+  assert.ok(this.$('.image-grid').length, 'has rendered, images can be an empty array');
+  assert.ok(this.$('.image-grid--none').length, 'no items has none class applied');
 });
 
 test('loading and reloading several images', function(assert) {

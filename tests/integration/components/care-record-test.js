@@ -1,3 +1,4 @@
+import CareRecordComponent from 'textup-frontend/components/care-record';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -191,6 +192,16 @@ test('doRegister a reference to the public API', function(assert) {
   assert.equal(typeOf(doRegister.firstCall.args[0].actions.reset), 'function');
 });
 
+test('text handler returns outcome', function(assert) {
+  const onText = sinon.stub(),
+    randVal = Math.random(),
+    obj = CareRecordComponent.create({ onText });
+  onText.callsFake(() => randVal);
+
+  assert.equal(obj._onText(), randVal, 'send handler return outcome');
+  assert.ok(onText.calledOnce);
+});
+
 test('cannot add to record', function(assert) {
   this.setProperties({ canAddToRecord: false });
 
@@ -375,6 +386,10 @@ test('adding note in the past + cannot modify existing', function(assert) {
         recordClusters.length,
         'each rendered note has a dropdown menu'
       );
+      assert.ok(
+        this.$('.record-actions-control__overlay--open').length,
+        'adding note overlay is open'
+      );
 
       this.set('canModifyExistingInRecord', false);
 
@@ -384,6 +399,66 @@ test('adding note in the past + cannot modify existing', function(assert) {
       );
 
       done();
+    }, 500);
+  }, 500);
+});
+
+test('adding note in the past', function(assert) {
+  const recordClusters = mockRecordClusters(store, 40, 'record-note', { noteContents: 'hi' }),
+    onAddNote = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ recordClusters, onAddNote, canModifyExistingInRecord: true });
+
+  this.render(hbs`
+    {{care-record canAddToRecord=true
+      canModifyExistingInRecord=canModifyExistingInRecord
+      recordClusters=recordClusters
+      onAddNote=onAddNote}}
+  `);
+
+  assert.ok(this.$('.care-record').length, 'did render');
+
+  this.$('.record-actions-control__action-container .hide-away-trigger')
+    .first()
+    .triggerHandler('mousedown');
+  Ember.run.later(() => {
+    assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
+    assert.equal(
+      Ember.$('.hide-away-body .dropdown-item').length,
+      3,
+      'three of four options because no phone number provided'
+    );
+    assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
+    assert.notOk(this.$('.care-record__add-note__button').length, 'no add buttons shown');
+
+    Ember.$('.hide-away-body .dropdown-item')
+      .eq(1) // with three items, the second one is to add note in the past
+      .triggerHandler('click');
+    Ember.run.later(() => {
+      assert.equal(
+        this.$('.care-record__add-note__button').length,
+        recordClusters.length,
+        'add buttons displayed, one for each single-item cluster'
+      );
+      assert.equal(
+        $('.record-item--note .hide-away-trigger').length,
+        recordClusters.length,
+        'each rendered note has a dropdown menu'
+      );
+      assert.ok(
+        this.$('.record-actions-control__overlay--open').length,
+        'adding note overlay is open'
+      );
+
+      this.$('.care-record__add-note__button')
+        .first()
+        .triggerHandler('click');
+      Ember.run.later(() => {
+        assert.notOk(this.$('.care-record__add-note__button').length, 'all buttons are hidden');
+        assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
+
+        done();
+      }, 500);
     }, 500);
   }, 500);
 });

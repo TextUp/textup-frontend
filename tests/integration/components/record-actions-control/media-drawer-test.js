@@ -70,6 +70,10 @@ test('displaying media', function(assert) {
       this.$('.record-actions-control__media-drawer').length,
       'drawer shown when at least one image'
     );
+    assert.ok(
+      this.$('.photo-control').length,
+      'needs to be photo-control because photo-control also cancels the remove action to prevent opening the gallery'
+    );
 
     done();
   });

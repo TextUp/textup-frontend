@@ -79,6 +79,11 @@ test('displaying empty note', function(assert) {
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
 
+    const text = this.$()
+      .text()
+      .toLowerCase();
+    assert.ok(text.includes('no note contents'), 'if no note contents has a informational message');
+
     this.$('.record-item__control .hide-away-trigger')
       .first()
       .triggerHandler('mousedown');
@@ -125,13 +130,12 @@ test('display note with note contents, media, and location', function(assert) {
     );
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
-    assert.ok(
-      this.$()
-        .text()
-        .trim()
-        .includes(rNote.get('noteContents')),
-      "displays note's contents"
-    );
+
+    const text = this.$()
+      .text()
+      .toLowerCase();
+    assert.notOk(text.includes('no note contents'), 'no informational message since has contents');
+    assert.ok(text.includes(rNote.get('noteContents')), "displays note's contents");
 
     buildUrlStub.restore();
   });

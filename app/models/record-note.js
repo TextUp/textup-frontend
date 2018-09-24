@@ -32,9 +32,9 @@ export default RecordItem.extend(Validations, {
   // ---------
 
   rollbackAttributes() {
-    this._super(...arguments);
     this.set('_addAfterDate', null);
     tryInvoke(getWithDefault(this, 'location.content', {}), 'rollbackAttributes');
+    return this._super(...arguments);
   },
   hasManualChanges: computed('media.isDirty', 'location.isDirty', function() {
     return this.get('media.isDirty') || this.get('location.isDirty');

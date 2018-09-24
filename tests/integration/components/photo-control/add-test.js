@@ -51,23 +51,58 @@ test('rendering nonblock vs block forms', function(assert) {
   assert.ok(this.$(`.${testClassName}`).length, 'yielded block is rendered');
 });
 
-test('handling file upload', function(assert) {
-  // can spy on imports using the * imports. See https://stackoverflow.com/a/33676328
-  const hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
-    extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
-    onAddSpy = sinon.spy(),
-    done = assert.async(),
-    randValue1 = Math.random();
-  hasFilesStub.callsFake(() => true);
-
-  this.set('onAddSpy', onAddSpy);
-  this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
-  assert.ok(this.$('.photo-control__add input').length);
-
+test('short circuiting file upload when do not have any files', function(assert) {
   run(() => {
+    const hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
+      extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
+      onAddSpy = sinon.spy(),
+      done = assert.async();
+    extractStub.callsFake(() => new Ember.RSVP.Promise((resolve, reject) => reject()));
+
+    this.set('onAddSpy', onAddSpy);
+    this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
+    assert.ok(this.$('.photo-control__add input').length);
+
+    hasFilesStub.callsFake(() => false);
+    this.$('.photo-control__add input').change();
+    wait()
+      .then(() => {
+        assert.ok(hasFilesStub.calledOnce);
+        assert.ok(extractStub.notCalled, 'if no files short circuit upload');
+        assert.ok(onAddSpy.notCalled);
+
+        hasFilesStub.callsFake(() => true);
+        this.$('.photo-control__add input').change();
+        return wait();
+      })
+      .then(() => {
+        assert.ok(hasFilesStub.calledTwice);
+        assert.ok(extractStub.calledOnce, 'upload only proceeds if event has files');
+        assert.ok(onAddSpy.notCalled);
+
+        hasFilesStub.restore();
+        extractStub.restore();
+        done();
+      });
+  });
+});
+
+test('handling file upload', function(assert) {
+  run(() => {
+    // can spy on imports using the * imports. See https://stackoverflow.com/a/33676328
+    const hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
+      extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
+      onAddSpy = sinon.spy(),
+      done = assert.async(),
+      randValue1 = Math.random();
+    hasFilesStub.callsFake(() => true);
+
+    this.set('onAddSpy', onAddSpy);
+    this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
+    assert.ok(this.$('.photo-control__add input').length);
+
     extractStub.callsFake(() => new Ember.RSVP.Promise(resolve => resolve(randValue1)));
     this.$('.photo-control__add input').change();
-
     wait()
       .then(() => {
         assert.ok(hasFilesStub.calledOnce);
@@ -82,6 +117,7 @@ test('handling file upload', function(assert) {
             .text()
             .includes('Add images')
         );
+        assert.notOk(this.$('.photo-control__add input')[0].value, 'input value is cleared');
 
         extractStub.callsFake(() => new Ember.RSVP.Promise((resolve, reject) => reject()));
         this.$('.photo-control__add input').change();
@@ -96,6 +132,7 @@ test('handling file upload', function(assert) {
             .text()
             .includes('Please try again')
         );
+        assert.notOk(this.$('.photo-control__add input')[0].value, 'input value is cleared');
 
         hasFilesStub.restore();
         extractStub.restore();
