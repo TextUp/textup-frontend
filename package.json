@@ -1,8 +1,7 @@
 {
   "name": "textup-frontend",
   "version": "2.6.1",
-  "description":
-    "Mobile communication and collaboration for social service case managers and their clients",
+  "description": "Mobile communication and collaboration for social service case managers and their clients",
   "private": true,
   "directories": {
     "doc": "doc",
@@ -29,8 +28,11 @@
   "devDependencies": {
     "blueimp-md5": "^2.7.0",
     "broccoli-asset-rev": "^2.2.0",
+    "broccoli-funnel": "^2.0.1",
     "broccoli-manifest": "0.0.7",
     "browser-image-compression": "^0.0.3",
+    "cookieconsent": "^3.1.0",
+    "countries-and-timezones": "^1.0.1",
     "ember-ajax": "0.7.1",
     "ember-assign-polyfill": "2.4.0",
     "ember-async-button": "1.0.0",
@@ -77,7 +79,7 @@
     "ember-wormhole": "0.3.5",
     "g": "2.0.1",
     "human-id": "^1.0.2",
-    "inobounce": "^0.1.2",
+    "inobounce": "^0.1.6",
     "jstz": "^1.0.7",
     "liquid-fire": "0.29.1",
     "loader.js": "^4.0.0",

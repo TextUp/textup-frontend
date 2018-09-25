@@ -1,5 +1,7 @@
 {{title stateManager.owner.name prepend=false separator=" - "}}
-{{app-message}}
+{{message-modal url=appMessageEndpoint
+    display=shouldShowAppMessage
+    onClose=(action 'closeAppUpdateMessage')}}
 
 {{#sliding-drawer contentsId='menu'
     closeOnContentsClick=true

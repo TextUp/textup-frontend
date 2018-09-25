@@ -1,5 +1,5 @@
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
-import config from '../../config/environment';
 
 export default Ember.Route.extend({
   setupController: function(controller) {
@@ -9,8 +9,7 @@ export default Ember.Route.extend({
     if (!selected || !newStaff) {
       this.transitionTo('signup.index');
     }
-    controller.set('selected', selected);
-    controller.set('staff', newStaff);
+    controller.setProperties({ config, selected, staff: newStaff });
   },
   deactivate: function() {
     this.controller.set('confirmPassword', null);

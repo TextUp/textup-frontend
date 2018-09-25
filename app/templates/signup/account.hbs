@@ -75,13 +75,35 @@
             onExpired=(route-action 'clearCaptcha' staff)
             ref=(mut gRecaptcha)}}
     </div>
+    <div class="single-body-content">
+        <div class="textup-container textup-container--stretch-items">
+            {{input type="checkbox" checked=didAcceptPolicies}}
+            <span class="emphasize margin-l">
+                I have read and accept the
+                <button class="btn-link"
+                    type="button"
+                    onclick={{action (mut showTermsOfUse) true}}>Terms of Use</button>
+                and the
+                <button class="btn-link"
+                    type="button"
+                    onclick={{action (mut showPrivacyPolicy) true}}>Privacy Policy</button>
+            </span>
+        </div>
+        {{message-modal url=config.links.termsOfUse
+            display=showTermsOfUse
+            onClose=(action (mut showTermsOfUse) false)}}
+        {{message-modal url=config.links.privacyPolicy
+            display=showPrivacyPolicy
+            onClose=(action (mut showPrivacyPolicy) false)}}
+    </div>
     <div class="single-body-footer text-center">
         {{async-button classNames='btn btn-default'
             disableWhen=(or (not (v-get staff 'isValid'))
                 (not staff.captcha)
                 (not staff.lockCode)
                 (not staff.password)
-                (not (eq staff.password confirmPassword)))
+                (not (eq staff.password confirmPassword))
+                (not didAcceptPolicies))
             action=(route-action 'createStaff' staff)
             default='Finish'
             pending='Almost...'

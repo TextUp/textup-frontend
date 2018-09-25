@@ -67,6 +67,8 @@
         border: 1px solid lightgray;
         border-radius: $border-radius;
         text-align: center;
+        user-select: text;
+        user-select: all;
 
         @include mq($from: tablet) {
             width: 70%;
@@ -76,16 +78,20 @@
         }
         .record-item__metadata {
             padding-bottom: 0;
+            user-select: none;
         }
     }
     &__body {
         flex-grow: 1;
         padding: ($spacing / 2) $spacing;
+        user-select: text;
+        user-select: all;
     }
     &__metadata {
         @extend .text-ellipsis;
 
         padding: ($spacing * 0.25) 0;
+        user-select: none;
     }
     &__receipts {
         @extend %vertical-scroll;
@@ -94,6 +100,7 @@
         max-height: $spacing * 10;
         background-color: $overlay-light-color;
         padding: 0 $spacing;
+        user-select: none;
 
         &--disabled {
             background-color: transparent;
@@ -107,7 +114,7 @@
         }
         &__trigger {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: space-between;
             width: 100%;
             cursor: pointer;

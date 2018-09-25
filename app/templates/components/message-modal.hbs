@@ -1,0 +1,27 @@
+{{#if _shouldShow}}
+    {{#modal-dialog wrapperClass="textup-modal"
+        containerClass="textup-modal__container"
+        overlayClass="textup-modal__overlay"
+        onClose=(action (mut _shouldShow) false)
+        translucentOverlay=true}}
+        <div class="textup-modal__body">
+            {{#if _isLoading}}
+                <div class="textup-modal__body__message">
+                    Loading
+                    <span class="margin-l-half fa fa-circle-o-notch fa-spin"></span>
+                </div>
+            {{/if}}
+            <iframe class="textup-modal__body__contents"
+                src={{url}}
+                frameborder="0"
+                onload={{action _onLoad}}></iframe>
+        </div>
+        <div class="textup-modal__footer">
+            <button type="button"
+                class="btn btn-default btn-plain btn-span"
+                onclick={{action _onClose}}>
+                Got it
+            </button>
+        </div>
+    {{/modal-dialog}}
+{{/if}}

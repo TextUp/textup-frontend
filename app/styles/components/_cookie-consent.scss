@@ -1,0 +1,17 @@
+@import 'css/cookieconsent.min.css';
+
+.cc-theme-cookie-consent {
+    color: $font-color;
+    background-color: rgb(227, 238, 239);
+
+    .cc-btn {
+        @extend .btn;
+        @extend .btn-default;
+
+        width: 100%;
+
+        @include mq($from: tablet) {
+            width: auto;
+        }
+    }
+}

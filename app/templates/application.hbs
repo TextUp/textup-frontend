@@ -1,12 +1,12 @@
 {{title "TextUp"}}
 
-{{notification-container notifications=notifications}}
 {{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DEFAULT)
 	class='animate-slide-from-left animated-overflow'}}
 	<div class="{{if isLocked 'hidden'}}">
 		{{outlet constants.SLIDEOUT.OUTLET.DEFAULT}}
 	</div>
 {{/liquid-if}}
+
 <div id="container">
 	{{#if isLocked}}
 		<div class="single-container single-container-small">
@@ -35,4 +35,6 @@
 	{{/if}}
 </div>
 
+{{notification-container notifications=notifications}}
 {{loading-slider isLoading=loading}}
+{{cookie-consent learnMoreLink=constants.LINK.PRIVACY_POLICY}}

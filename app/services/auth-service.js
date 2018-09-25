@@ -1,7 +1,7 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from '../config/environment';
 import Ember from 'ember';
-import tz from 'npm:jstz';
+import LocaleUtils from 'textup-frontend/utils/locale';
 
 const { $, computed: { notEmpty, and }, RSVP: { Promise } } = Ember;
 
@@ -29,7 +29,7 @@ export default Ember.Service.extend(Ember.Evented, {
   }),
 
   timezone: Ember.computed(function() {
-    return tz.determine().name();
+    return LocaleUtils.getTimezone();
   }),
 
   // Events

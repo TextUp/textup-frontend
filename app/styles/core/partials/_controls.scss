@@ -99,6 +99,18 @@
 // Buttons
 // -------
 
+.btn-link {
+    height: auto;
+    width: auto;
+    min-width: auto;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: transparent;
+    text-transform: initial;
+    text-decoration: underline;
+}
+
 .btn {
     @extend %input-disabled;
     @include button-colors($bg-color);
@@ -107,6 +119,7 @@
     flex-shrink: 0;
     min-width: $min-control-width;
     padding: ($padding * 0.5) ($padding * 0.8);
+    font-size: 1em;
     font-weight: $font-weight-bold;
     text-transform: uppercase;
     border-radius: $border-radius;

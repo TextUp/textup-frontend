@@ -4,67 +4,37 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'textup-frontend',
     environment: environment,
-    apiKeys: {
-      mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX
-    },
     baseURL: '/',
     locationType: 'hash',
-    EmberENV: {
-      FEATURES: {
-        // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
-      }
-    },
-    APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
-    },
-    gReCaptcha: {
-      siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA
-    },
+    EmberENV: { FEATURES: {} },
+    APP: {},
+
+    apiKeys: { mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX },
+    gReCaptcha: { siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA },
     locationPreview: {
       host: 'https://api.mapbox.com/v4/mapbox.streets',
       maxWidth: 1280,
       maxHeight: 1280
     },
-    viewportConfig: {
-      viewportTolerance: {
-        top: 500,
-        left: 500,
-        bottom: 500,
-        right: 500
-      }
-    },
-    moment: {
-      includeTimezone: 'subset',
-      outputFormat: 'llll'
-    },
-    storage: {
-      namespace: 'textup'
-    },
-    socket: {
-      authKey: process.env.TEXTUP_FRONTEND_API_PUSHER
-    },
-    lock: {
-      lockOnHidden: true
-    },
+    lock: { lockOnHidden: true },
+    moment: { includeTimezone: 'subset', outputFormat: 'llll' },
+    socket: { authKey: process.env.TEXTUP_FRONTEND_API_PUSHER },
+    storage: { namespace: 'textup' },
     appMessage: {
-      messageEndpoint: 'https://app-messages.textup.org/',
-      oldestMessageInDays: 30,
-      lastViewedStorageKey: 'textupMessageLastViewed'
+      messageEndpoint: 'https://static.textup.org/latest-message/',
+      oldestMessageInDays: 30
+    },
+    links: {
+      privacyPolicy: 'https://static.textup.org/privacy-policy/',
+      termsOfUse: 'https://static.textup.org/terms-of-use/'
     },
     state: {
       ignoreTracking: ['reset', 'setup', 'notify'],
       ignoreLock: ['setup', 'notify']
     },
     events: {
-      auth: {
-        success: 'authSuccess',
-        clear: 'authClear'
-      },
-      storage: {
-        updated: 'storageUpdated'
-      },
+      auth: { success: 'authSuccess', clear: 'authClear' },
+      storage: { updated: 'storageUpdated' },
       visibility: {
         change: 'visibilityChange',
         visible: 'visibilityVisible',
@@ -80,8 +50,11 @@ module.exports = function(environment) {
 
     // ENV.lock.lockOnHidden = false;
     ENV.manifest = { enabled: true };
-    // ENV.appMessage.messageEndpoint =
-    //   'http://app-messages.textup.org.s3-website-us-east-1.amazonaws.com/';
+    ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
+    ENV.links = {
+      privacyPolicy: 'http://staging-static.textup.org/privacy-policy/',
+      termsOfUse: 'http://staging-static.textup.org/terms-of-use/'
+    };
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -104,22 +77,23 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.host =
-      process.env.TRAVIS_BRANCH === 'master'
-        ? process.env.TEXTUP_FRONTEND_HOST_PRODUCTION
-        : process.env.TEXTUP_FRONTEND_HOST_STAGING;
-    ENV.analytics = {
-      options: { limitRouteInformation: true },
-      integrations: [
-        {
-          name: 'GoogleAnalytics',
-          config: {
-            id: process.env.TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS,
-            set: { anonymizeIp: true }
+    if (process.env.TRAVIS_BRANCH === 'master') {
+      ENV.host = process.env.TEXTUP_FRONTEND_HOST_PRODUCTION;
+      ENV.analytics = {
+        options: { limitRouteInformation: true },
+        integrations: [
+          {
+            name: 'GoogleAnalytics',
+            config: {
+              id: process.env.TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS,
+              set: { anonymizeIp: true }
+            }
           }
-        }
-      ]
-    };
+        ]
+      };
+    } else {
+      ENV.host = process.env.TEXTUP_FRONTEND_HOST_STAGING;
+    }
   }
 
   return ENV;
