@@ -27,8 +27,6 @@ install:
 
 script:
   - npm test
-
-after_success:
   - npm run build -- --environment=production
 
 before_deploy:
