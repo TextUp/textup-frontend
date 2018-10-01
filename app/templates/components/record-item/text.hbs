@@ -1,8 +1,9 @@
 {{#if (or text.contents text.hasAwayMessage)}}
+
     <div class="record-item__body">
-        <div class="text-wrap">
+        {{#read-more classNames=(if text.outgoing "read-more--outgoing" "read-more--incoming")}}
             {{text.contents}}
-        </div>
+        {{/read-more}}
         {{#if text.hasAwayMessage}}
             <div class="text-small text--deemphasize text-ellipsis margin-t-half">
                 Auto-responded with away message

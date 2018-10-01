@@ -84,8 +84,6 @@
     &__body {
         flex-grow: 1;
         padding: ($spacing / 2) $spacing;
-        user-select: text;
-        user-select: all;
     }
     &__metadata {
         @extend .text-ellipsis;

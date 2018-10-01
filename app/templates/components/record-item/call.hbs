@@ -1,8 +1,8 @@
 <div class="record-item__body">
     {{#if call.noteContents}}
-        <div class="margin-b-half text-wrap">
+        {{#read-more classNames=(concat "margin-b-half " (if call.outgoing "read-more--outgoing" "read-more--incoming"))}}
             {{call.noteContents}}
-        </div>
+        {{/read-more}}
     {{/if}}
     {{#if call.voicemailUrl}}
         {{audio-control source=call.voicemailUrl}}

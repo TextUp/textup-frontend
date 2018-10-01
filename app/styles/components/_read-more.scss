@@ -1,0 +1,57 @@
+.read-more {
+    $control-height: $spacing * 2;
+    $box-shadow-specs: 0px -5px 20px 5px;
+
+    position: relative;
+    max-height: 40vh;
+    overflow: hidden;
+    margin-bottom: 0;
+    transition: max-height 0.3s, margin-bottom 0.3s;
+
+    @include mq($from: desktop) {
+        max-height: $media-preview-height;
+    }
+
+    &--open {
+        overflow: visible;
+        margin-bottom: $control-height;
+    }
+    &.read-more--open &__control {
+        bottom: $control-height * -1;
+        box-shadow: none;
+    }
+
+    &--incoming &__control {
+        background-color: $incoming-color;
+        color: $font-color;
+        box-shadow: $box-shadow-specs $incoming-color;
+    }
+    &--outgoing &__control {
+        background-color: $outgoing-color;
+        color: white;
+        box-shadow: $box-shadow-specs $outgoing-color;
+    }
+
+    &__contents {
+        @extend .text-wrap;
+
+        white-space: pre-line;
+        user-select: text;
+        user-select: all;
+    }
+    &__control {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: $control-height;
+        width: 100%;
+        font-weight: $font-weight-bold;
+        text-transform: uppercase;
+        background-color: white;
+        color: $brand-color;
+        border-width: 0;
+        box-shadow: $box-shadow-specs white;
+        outline: none;
+        box-sizing: border-box;
+    }
+}

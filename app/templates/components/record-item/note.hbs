@@ -1,12 +1,14 @@
 <div class="record-item__multi-item-body">
-    <div class="record-item__body text-wrap">
-        {{#if note.noteContents}}
-            {{note.noteContents}}
-        {{else}}
-            <div class="text-small text--deemphasize text-ellipsis">
-                No note contents
-            </div>
-        {{/if}}
+    <div class="record-item__body">
+        {{#read-more}}
+            {{#if note.noteContents}}
+                {{note.noteContents}}
+            {{else}}
+                <div class="text-small text--deemphasize text-ellipsis">
+                    No note contents
+                </div>
+            {{/if}}
+        {{/read-more}}
     </div>
     <div class="record-item__media-container">
         {{#if (and (not note.media.content.isNew) note.media.content.displayedImages.content)}}

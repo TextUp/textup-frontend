@@ -1,0 +1,14 @@
+<div class="read-more__contents">
+    {{~yield~}}
+</div>
+{{#if _shouldShowControl}}
+    <button type="button"
+        class="read-more__control"
+        onclick={{action _toggleOpen}}>
+        {{#if _isOpen}}
+            {{hideText}}
+        {{else}}
+            {{showText}}
+        {{/if}}
+    </button>
+{{/if}}

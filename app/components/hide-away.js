@@ -1,11 +1,10 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import Ember from 'ember';
+import MutationObserver from 'npm:mutation-observer';
 import { distance } from 'textup-frontend/utils/coordinate';
 
-const { Component, run, computed, $ } = Ember,
-  MutObserver =
-    window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+const { Component, run, computed, $ } = Ember;
 
 export default Component.extend({
   onOpen: null,
@@ -317,35 +316,17 @@ export default Component.extend({
     this.set('_bodyHasListeners', false);
   },
   _startObserveMutations: function($body, doReposition) {
-    if (MutObserver) {
-      const observer = new MutObserver(
-        function(mutations) {
-          const mut = mutations[0];
-          if (mut.addedNodes.length || mut.removedNodes.length) {
-            doReposition();
-          }
-        }.bind(this)
-      );
-      if ($body[0]) {
-        observer.observe($body[0], {
-          childList: true,
-          subtree: true
-        });
-        this.set('_mutationObserver', observer);
-      }
-    } else {
-      $body
-        .on(`DOMNodeInserted.${this.elementId}`, doReposition)
-        .on(`DOMNodeRemoved.${this.elementId}`, doReposition);
+    if ($body[0]) {
+      const observer = new MutationObserver(doReposition.bind(this));
+      observer.observe($body[0], { childList: true, subtree: true });
+      this.set('_mutationObserver', observer);
     }
   },
-  _stopObserveMutations: function($body) {
+  _stopObserveMutations: function() {
     const observer = this.get('_mutationObserver');
     if (observer) {
       observer.disconnect();
       this.set('_mutationObserver', null);
-    } else {
-      $body.off(`DOMNodeInserted.${this.elementId}`).off(`DOMNodeRemoved.${this.elementId}`);
     }
   },
 

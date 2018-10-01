@@ -1,15 +1,24 @@
 import Ember from 'ember';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed } = Ember;
+const { computed, tryInvoke } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
+  propTypes: {
+    doRegister: PropTypes.func
+  },
+
+  didInitAttrs() {
+    this._super(...arguments);
+    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
+
   // Internal properties
   // -------------------
 
-  _isOpen: false,
-  _publicAPI: computed('_isOpen', function() {
+  _publicAPI: computed(function() {
     return {
-      isOpen: this.get('_isOpen'),
+      isOpen: false,
       actions: {
         toggle: () => this._toggle(),
         open: () => this._open(),
@@ -22,12 +31,12 @@ export default Ember.Component.extend({
   // -----------------
 
   _toggle() {
-    this.toggleProperty('_isOpen');
+    this.toggleProperty('_publicAPI.isOpen');
   },
   _open() {
-    this.set('_isOpen', true);
+    this.set('_publicAPI.isOpen', true);
   },
   _close() {
-    this.set('_isOpen', false);
+    this.set('_publicAPI.isOpen', false);
   }
 });
