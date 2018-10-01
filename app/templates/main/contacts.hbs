@@ -126,12 +126,14 @@
             {{entity-display/contact entity=contact}}
         {{/entity-display}}
     {{else}}
-        {{#if (and (eq filter 'all') (not tag))}}
+        {{#if (and (eq filter "all") (not tag))}}
             <div class="no-results">
-                No contacts yet!
-                <a href='' onclick={{route-action "startNewContactSlideout"}}>
+                <p class="margin-b">No contacts yet!</p>
+                <button type="button"
+                    class="btn btn-default btn-plain"
+                    onclick={{route-action "startNewContactSlideout"}}>
                     Get started by creating a new contact.
-                </a>
+                </button>
             </div>
         {{else if tag}}
             <div class="no-results">
