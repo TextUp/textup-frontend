@@ -10,13 +10,13 @@
         <div class="text-small text-wrap">
             {{#if call.durationInSeconds}}
                 <span class="fa fa-phone margin-r-half"></span>
-                Call lasting {{moment-duration call.durationInSeconds 'seconds'}}
+                <span class="selectable-text">Call lasting {{moment-duration call.durationInSeconds 'seconds'}}</span>
             {{else if (date/is-same-day call.whenCreated (now))}}
                 <span class="fa fa-circle-o-notch fa-spin margin-r-half"></span>
-                Call in progress
+                <span class="selectable-text">Call in progress</span>
             {{else}}
                 <span class="fa fa-times margin-r-half"></span>
-                Call could not be completed
+                <span class="selectable-text">Call could not be completed</span>
             {{/if}}
         </div>
     {{/if}}

@@ -32,9 +32,10 @@ hr {
         cursor: pointer;
     }
 }
-.yes-select-text {
+.selectable-text {
     cursor: text;
     user-select: text;
+    user-select: all;
 }
 .no-space {
     margin: 0 !important;
