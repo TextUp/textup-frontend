@@ -8,7 +8,9 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
 
   serialize(snapshot) {
     const json = this._super(...arguments) || {};
-    json.doMediaActions = snapshot.record.get('media.pendingChanges');
+    // record may not always have media so we need to ensure null-safety here
+    json.doMediaActions = (snapshot.record.get('media.pendingChanges') || [])
+      .map(change => change.serialize());
     return json;
   }
 });

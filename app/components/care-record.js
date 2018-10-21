@@ -1,7 +1,7 @@
 import Ember from 'ember';
+import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { computed, tryInvoke } = Ember;
@@ -23,7 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     numRecordItems: PropTypes.number,
     totalNumRecordItems: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     // for creating a new text
-    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)),
+    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     contents: PropTypes.string,
 
     // Handlers

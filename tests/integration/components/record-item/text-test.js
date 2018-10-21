@@ -86,7 +86,7 @@ test('text with media and away message', function(assert) {
       hasAwayMessage: true,
       media: store.createRecord('media')
     });
-    rText.get('media.content').addChange('image/png', VALID_IMAGE_DATA_URL, 77, 88);
+    rText.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
     this.setProperties({ rText });
 
     this.render(hbs`{{record-item/text text=rText}}`);

@@ -53,7 +53,8 @@ test('render block', function(assert) {
 });
 
 test('displaying media', function(assert) {
-  const images = [],
+  const store = Ember.getOwner(this).lookup('service:store'),
+    images = [],
     done = assert.async();
 
   this.setProperties({ images });
@@ -64,7 +65,7 @@ test('displaying media', function(assert) {
     this.$('.record-actions-control__media-drawer').length,
     'drawer not shown when no images'
   );
-  run(() => images.pushObject(mockValidMediaImage()));
+  run(() => images.pushObject(mockValidMediaImage(store)));
   wait().then(() => {
     assert.ok(
       this.$('.record-actions-control__media-drawer').length,
@@ -80,7 +81,8 @@ test('displaying media', function(assert) {
 });
 
 test('trigger removing media', function(assert) {
-  const images = [mockValidMediaImage()],
+  const store = Ember.getOwner(this).lookup('service:store'),
+    images = [mockValidMediaImage(store)],
     onRemoveImage = sinon.spy(),
     done = assert.async();
 

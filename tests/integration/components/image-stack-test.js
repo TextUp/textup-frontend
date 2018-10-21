@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import MediaElement from 'textup-frontend/models/media-element';
 import wait from 'ember-test-helpers/wait';
-import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
@@ -15,7 +16,8 @@ moduleForComponent('image-stack', 'Integration | Component | image stack', {
 });
 
 test('inputs', function(assert) {
-  const itemClass = 'image-stack-test-inputs';
+  const store = Ember.getOwner(this).lookup('service:store'),
+    itemClass = 'image-stack-test-inputs';
 
   this.render(hbs`{{image-stack}}`);
 
@@ -29,7 +31,7 @@ test('inputs', function(assert) {
   assert.notOk($el.hasClass('image-stack--multiple'), 'does NOT have multiple images');
   assert.equal(this.$(`.${itemClass}`).length, 1);
 
-  this.set('images', [mockValidMediaImage(), mockValidMediaImage()]);
+  this.set('images', [mockValidMediaImage(store), mockValidMediaImage(store)]);
 
   assert.ok($el.hasClass('image-stack'));
   assert.ok($el.hasClass('image-stack--multiple'), 'DOES have multiple images');
@@ -37,12 +39,13 @@ test('inputs', function(assert) {
 });
 
 test('successfully loading an image', function(assert) {
-  const done = assert.async(1),
-    mockImage = mockValidMediaImage(),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    done = assert.async(1),
+    mockImage = mockValidMediaImage(store),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1);
-      assert.equal(results[mockImage[API_ID_PROP_NAME]], true);
+      assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], true);
       done();
     };
 
@@ -52,17 +55,18 @@ test('successfully loading an image', function(assert) {
 });
 
 test('failing to load image', function(assert) {
-  const done = assert.async(1),
-    mockImage = mockInvalidMediaImage(),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    done = assert.async(1),
+    mockImage = mockInvalidMediaImage(store),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1, 'only try the first image');
-      assert.equal(results[mockImage[API_ID_PROP_NAME]], false);
+      assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], false);
       done();
     };
 
   this.setProperties({
-    images: [mockImage, mockValidMediaImage(), mockValidMediaImage()],
+    images: [mockImage, mockValidMediaImage(store), mockValidMediaImage(store)],
     onLoadEnd
   });
 
@@ -70,13 +74,14 @@ test('failing to load image', function(assert) {
 });
 
 test('rendering block form', function(assert) {
-  const testClassName = 'image-stack-block-form',
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClassName = 'image-stack-block-form',
     images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     done = assert.async(),
     onClick = clickedImage => {
-      assert.ok(clickedImage instanceof MediaImage);
+      assert.ok(clickedImage instanceof MediaElement);
       assert.deepEqual(clickedImage, images.get('firstObject'));
       done();
     };
@@ -101,10 +106,11 @@ test('rendering block form', function(assert) {
 });
 
 test('opening gallery when selecting item on top of stack', function(assert) {
-  const itemClass = 'image-stack-test-inputs',
+  const store = Ember.getOwner(this).lookup('service:store'),
+    itemClass = 'image-stack-test-inputs',
     done = assert.async();
 
-  this.setProperties({ images: [mockValidMediaImage()], itemClass });
+  this.setProperties({ images: [mockValidMediaImage(store)], itemClass });
   this.render(hbs`{{image-stack images=images itemClass=itemClass}}`);
 
   assert.ok(this.$('.image-stack').length, 'component did render');

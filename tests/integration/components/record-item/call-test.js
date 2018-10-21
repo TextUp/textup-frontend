@@ -125,7 +125,7 @@ test('call with notes and media', function(assert) {
       noteContents: `${Math.random()}`,
       media: store.createRecord('media')
     });
-    rCall.get('media.content').addChange('image/png', VALID_IMAGE_DATA_URL, 77, 88);
+    rCall.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
     this.setProperties({ rCall });
 
     this.render(hbs`{{record-item/call call=rCall}}`);

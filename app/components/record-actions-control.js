@@ -1,6 +1,6 @@
 import Ember from 'ember';
+import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 
 const { computed, tryInvoke } = Ember;
 
@@ -9,7 +9,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     // read-only data attributes passed in
     hasPersonalPhoneNumber: PropTypes.bool,
     hasItemsInRecord: PropTypes.bool,
-    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)),
+    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     contents: PropTypes.string,
     // content-related handlers
     onContentChange: PropTypes.func,

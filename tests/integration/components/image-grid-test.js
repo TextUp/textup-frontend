@@ -1,12 +1,13 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import MediaElement from 'textup-frontend/models/media-element';
 import wait from 'ember-test-helpers/wait';
-import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
+import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
   mockValidMediaImage
 } from 'textup-frontend/tests/helpers/utilities';
-import { moduleForComponent, test } from 'ember-qunit';
 
 const { typeOf } = Ember;
 
@@ -27,16 +28,17 @@ test('inputs', function(assert) {
 });
 
 test('loading and reloading several images', function(assert) {
-  const done = assert.async(1),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    done = assert.async(1),
     validImages = Array(8)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     validImages2 = Array(2)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     invalidImages = Array(3)
       .fill()
-      .map(() => mockInvalidMediaImage()),
+      .map(() => mockInvalidMediaImage(store)),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(
@@ -44,8 +46,8 @@ test('loading and reloading several images', function(assert) {
         validImages.length + invalidImages.length,
         'try all images'
       );
-      validImages.forEach(img => assert.equal(results[img[API_ID_PROP_NAME]], true));
-      invalidImages.forEach(img => assert.equal(results[img[API_ID_PROP_NAME]], false));
+      validImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], true));
+      invalidImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], false));
 
       // load 2
       this.setProperties({
@@ -61,8 +63,8 @@ test('loading and reloading several images', function(assert) {
         validImages2.length + invalidImages.length,
         'return results for all images, even ones that were already tried'
       );
-      validImages2.forEach(img => assert.equal(results[img[API_ID_PROP_NAME]], true));
-      invalidImages.forEach(img => assert.equal(results[img[API_ID_PROP_NAME]], false));
+      validImages2.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], true));
+      invalidImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], false));
 
       done();
     };
@@ -73,14 +75,15 @@ test('loading and reloading several images', function(assert) {
 });
 
 test('rendering block form', function(assert) {
-  const testClassName = 'image-grid-block-form',
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClassName = 'image-grid-block-form',
     itemClassName = 'image-grid-item-class-test',
     images = Array(5)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     done = assert.async(images.length),
     onClick = (clickedImage, index) => {
-      assert.ok(clickedImage instanceof MediaImage);
+      assert.ok(clickedImage instanceof MediaElement);
       assert.deepEqual(clickedImage, images.objectAt(index));
       done();
     };
@@ -104,10 +107,11 @@ test('rendering block form', function(assert) {
 });
 
 test('opening gallery when selecting any of the items in the grid', function(assert) {
-  const itemClass = 'image-grid-test-inputs',
+  const store = Ember.getOwner(this).lookup('service:store'),
+    itemClass = 'image-grid-test-inputs',
     images = Array(8)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     done = assert.async();
 
   this.setProperties({ images, itemClass });

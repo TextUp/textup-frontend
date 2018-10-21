@@ -2,7 +2,7 @@
     <div class="image-stack__preview {{itemClass}} {{concat elementId '-item'}}"
         onclick={{gallery.actions.open}}>
         {{responsive-image classNames="image-stack__preview__image"
-            versions=_coverImage.versions
+            versions=_coverImage.versions.content
             onSuccess=(action _onSuccess)
             onFailure=(action _onFailure)}}
         {{yield _coverImage}}

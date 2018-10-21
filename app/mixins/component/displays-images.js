@@ -1,12 +1,12 @@
 import Ember from 'ember';
+import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 
 export default Ember.Mixin.create(PropTypesMixin, {
   propTypes: {
     images: PropTypes.oneOfType([
       PropTypes.null,
-      PropTypes.arrayOf(PropTypes.instanceOf(MediaImage))
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
     ]),
     onLoadEnd: PropTypes.func,
     itemClass: PropTypes.string

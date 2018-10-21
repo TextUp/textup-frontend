@@ -1,6 +1,6 @@
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
 import Ember from 'ember';
-import { API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed, tryInvoke } = Ember;
 
@@ -20,9 +20,9 @@ export default Ember.Component.extend(DisplaysImages, {
   // -----------------
 
   _onSuccess() {
-    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${API_ID_PROP_NAME}`)]: true }]);
+    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${MEDIA_ID_PROP_NAME}`)]: true }]);
   },
   _onFailure() {
-    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${API_ID_PROP_NAME}`)]: false }]);
+    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${MEDIA_ID_PROP_NAME}`)]: false }]);
   }
 });

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { run } = Ember;
@@ -7,25 +7,30 @@ const { run } = Ember;
 export const VALID_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
 
-export function mockInvalidMediaImage() {
-  const mediaImage = MediaImage.create({ [API_ID_PROP_NAME]: `${Math.random()}` });
-  mediaImage.addVersion('not', 350, 88);
-  mediaImage.addVersion('valid', 100, 88);
-  mediaImage.addVersion('link', 50, 88);
+export function mockInvalidMediaImage(store) {
+  return run(() => {
+    const mediaImage = store.createFragment('media-element', {
+      [MEDIA_ID_PROP_NAME]: `${Math.random()}`
+    });
+    mediaImage.addVersion('image/png', 'not', 350, 88);
+    mediaImage.addVersion('image/png', 'valid', 100, 88);
+    mediaImage.addVersion('image/png', 'link', 50, 88);
 
-  return mediaImage;
+    return mediaImage;
+  });
 }
 
-export function mockValidMediaImage() {
-  const mediaImage = MediaImage.create({
-    [API_ID_PROP_NAME]: `${Math.random()}`,
-    mimeType: Math.random()
-  });
-  mediaImage.addVersion('https://via.placeholder.com/350x150', 350, 88);
-  mediaImage.addVersion('https://via.placeholder.com/100x150', 100, 88);
-  mediaImage.addVersion('https://via.placeholder.com/50x150', 50, 88);
+export function mockValidMediaImage(store) {
+  return run(() => {
+    const mediaImage = store.createFragment('media-element', {
+      [MEDIA_ID_PROP_NAME]: `${Math.random()}`
+    });
+    mediaImage.addVersion('image/jpeg', 'https://via.placeholder.com/350x150', 350, 88);
+    mediaImage.addVersion('image/jpeg', 'https://via.placeholder.com/100x150', 100, 88);
+    mediaImage.addVersion('image/jpeg', 'https://via.placeholder.com/50x150', 50, 88);
 
-  return mediaImage;
+    return mediaImage;
+  });
 }
 
 /* jshint ignore:start */

@@ -1,10 +1,10 @@
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import MediaElement from 'textup-frontend/models/media-element';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import ResponsiveImageGallery from 'textup-frontend/components/responsive-image-gallery';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
@@ -19,8 +19,9 @@ moduleForComponent(
 );
 
 test('inputs + rendering block form', function(assert) {
-  const testClass = 'responsive-image-gallery-block-form',
-    images = [mockValidMediaImage(), mockValidMediaImage()];
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClass = 'responsive-image-gallery-block-form',
+    images = [mockValidMediaImage(store), mockValidMediaImage(store)];
 
   this.render(hbs`{{responsive-image-gallery}}`);
   assert.ok(Ember.$('.pswp').length, 'has rendered, images being null is acceptable');
@@ -58,7 +59,8 @@ test('overriden options', function(assert) {
 });
 
 test('requires some images to open gallery', function(assert) {
-  const testClass = 'responsive-image-gallery-test',
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClass = 'responsive-image-gallery-test',
     images = [],
     done = assert.async();
 
@@ -83,7 +85,7 @@ test('requires some images to open gallery', function(assert) {
     .then(() => {
       assert.notOk(Ember.$('.pswp--open').length, 'still closed because no images');
 
-      this.set('images', [mockValidMediaImage()]);
+      this.set('images', [mockValidMediaImage(store)]);
 
       this.$(`.${testClass}`)
         .first()
@@ -99,8 +101,9 @@ test('requires some images to open gallery', function(assert) {
 });
 
 test('getting thumbnail bounds function for zooming effect', function(assert) {
-  const testClass = 'responsive-image-gallery-block-form',
-    images = [mockValidMediaImage(), mockValidMediaImage()],
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClass = 'responsive-image-gallery-block-form',
+    images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
     boundsFnStub = sinon.stub(PhotoUtils, 'getPreviewBounds');
   boundsFnStub.callsFake(() => null);
@@ -150,8 +153,9 @@ test('getting thumbnail bounds function for zooming effect', function(assert) {
 });
 
 test('selecting appropriate versions based on viewport width', function(assert) {
-  const testClass = 'responsive-image-gallery-block-form',
-    images = [mockValidMediaImage(), mockValidMediaImage()],
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClass = 'responsive-image-gallery-block-form',
+    images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
     gettingDataStub = sinon.stub(PhotoUtils, 'formatResponsiveMediaImageForGallery');
   gettingDataStub.callsFake(() => null);
@@ -178,7 +182,7 @@ test('selecting appropriate versions based on viewport width', function(assert) 
     gettingDataStub.args.forEach(argList => {
       assert.ok(argList.every(arg => isPresent(arg)), 'all passed-in args are defined');
       assert.ok(argList.length === 3, '3 args passed in per call');
-      assert.ok(argList[2] instanceof MediaImage, 'third arg is a MediaImage');
+      assert.ok(argList[2] instanceof MediaElement, 'third arg is a MediaElement');
     });
 
     gettingDataStub.restore();
@@ -187,8 +191,9 @@ test('selecting appropriate versions based on viewport width', function(assert) 
 });
 
 test('deciding responsive reload on resize', function(assert) {
-  const testClass = 'responsive-image-gallery-block-form',
-    images = [mockValidMediaImage(), mockValidMediaImage()],
+  const store = Ember.getOwner(this).lookup('service:store'),
+    testClass = 'responsive-image-gallery-block-form',
+    images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
     onClickSpy = sinon.spy(),
     shouldRebuildStub = sinon.stub(PhotoUtils, 'shouldRebuildResponsiveGallery');

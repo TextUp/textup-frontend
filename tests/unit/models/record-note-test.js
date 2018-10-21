@@ -14,6 +14,9 @@ moduleForModel('record-note', 'Unit | Model | record note', {
     'model:contact',
     'model:location',
     'model:media',
+    'model:media/add',
+    'model:media-element',
+    'model:media-element-version',
     'model:record-item',
     'model:record-note-revision',
     'model:tag',
@@ -166,7 +169,7 @@ test('validating content', function(assert) {
           'no noteContents and has media but is empty'
         );
 
-        mediaObj.addChange('valid mime type', 'valid data', 88, 88);
+        mediaObj.addImage('valid mime type', 'valid data', 88, 88);
         assert.ok(mediaObj.get('hasElements'));
 
         return model.validate();

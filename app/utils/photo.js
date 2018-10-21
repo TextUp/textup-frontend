@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import imageCompression from 'npm:browser-image-compression';
-import { MediaImage } from 'textup-frontend/objects/media-image';
+import MediaElement from 'textup-frontend/models/media-element';
 
 const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 
@@ -75,9 +75,8 @@ export function ensureImageDimensions(mediaImages) {
     }
     const versionsFetchingDimensions = [];
     mediaImages.forEach(mediaImage => {
-      const versions = get(mediaImage, 'versions');
-      if (typeOf(mediaImages) === 'array') {
-        versions.forEach(version => {
+      if (mediaImage instanceof MediaElement) {
+        get(mediaImage, 'versions').forEach(version => {
           if (!_hasDimensions(version)) {
             versionsFetchingDimensions.pushObject(_fetchVersionDimensions(version));
           }
@@ -145,14 +144,17 @@ function _estimateDeviceFromWidth(width) {
 // See the the `gettingData` event in the PhotoSwipe docs
 export function formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity, mediaImage) {
   const width = parseInt(viewportWidth * pixelDensity);
-  if (isNaN(width) || !(mediaImage instanceof MediaImage)) {
+  if (isNaN(width) || !(mediaImage instanceof MediaElement)) {
     return;
   }
 
   const result = { src: '', w: 0, h: 0 };
   let currentSmallestDifference = Number.POSITIVE_INFINITY;
-  mediaImage.get('versions').forEach(({ source, width: versionWidth, height }) => {
-    const thisDifference = Math.abs(versionWidth - width);
+  mediaImage.get('versions').forEach(version => {
+    const source = version.get('source'),
+      versionWidth = version.get('width'),
+      height = version.get('height'),
+      thisDifference = Math.abs(versionWidth - width);
     if (thisDifference < currentSmallestDifference) {
       result.src = source;
       result.w = versionWidth;

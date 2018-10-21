@@ -1,12 +1,15 @@
 import ComponentDisplaysImagesMixin from 'textup-frontend/mixins/component/displays-images';
 import Ember from 'ember';
-import { mockValidMediaImage } from '../../../helpers/utilities';
-import { module, test } from 'qunit';
+import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
+import { moduleFor, test } from 'ember-qunit';
 
-module('Unit | Mixin | component/displays images');
+moduleFor('mixin:component/displays-images', 'Unit | Mixin | component/displays images', {
+  needs: ['model:media-element', 'model:media-element-version']
+});
 
 test('validating input props', function(assert) {
-  const ComponentDisplaysImagesObject = Ember.Component.extend(ComponentDisplaysImagesMixin);
+  const store = Ember.getOwner(this).lookup('service:store'),
+    ComponentDisplaysImagesObject = Ember.Component.extend(ComponentDisplaysImagesMixin);
 
   assert.ok(ComponentDisplaysImagesObject.create(), 'images can be null');
   assert.throws(
@@ -18,17 +21,20 @@ test('validating input props', function(assert) {
     'if images specified, must pass in MediaObject in an array'
   );
   assert.ok(ComponentDisplaysImagesObject.create({ images: [] }), 'images array can be empty');
-  assert.ok(ComponentDisplaysImagesObject.create({ images: [mockValidMediaImage()] }));
+  assert.ok(ComponentDisplaysImagesObject.create({ images: [mockValidMediaImage(store)] }));
 
   assert.throws(
     () =>
       ComponentDisplaysImagesObject.create({
-        images: [mockValidMediaImage()],
+        images: [mockValidMediaImage(store)],
         onLoadEnd: 'not a function'
       }),
     'onLoadEnd must be a function'
   );
   assert.ok(
-    ComponentDisplaysImagesObject.create({ images: [mockValidMediaImage()], onLoadEnd: () => {} })
+    ComponentDisplaysImagesObject.create({
+      images: [mockValidMediaImage(store)],
+      onLoadEnd: () => {}
+    })
   );
 });

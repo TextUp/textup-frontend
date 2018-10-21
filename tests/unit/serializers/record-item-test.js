@@ -8,6 +8,10 @@ moduleForModel('record-item', 'Unit | Serializer | record item', {
     'service:constants',
     'serializer:record-item',
     'model:media',
+    'model:media/add',
+    'model:media/remove',
+    'model:media-element',
+    'model:media-element-version',
     'model:contact',
     'model:tag',
     'transform:record-item-status'
@@ -37,7 +41,7 @@ test('serializing with media actions', function(assert) {
 
     assert.notOk(Ember.isPresent(serialized.doMediaActions), 'no media actions');
 
-    media.addChange('mimeType', 'data', 88, 99);
+    media.addImage('mimeType', 'data', 88, 99);
     media.removeElement('id to remove');
     serialized = obj.serialize();
 

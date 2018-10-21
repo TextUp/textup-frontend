@@ -2,15 +2,16 @@ import * as ImageCompression from 'npm:browser-image-compression';
 import Ember from 'ember';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import sinon from 'sinon';
-import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
-import { mockValidMediaImage } from '../../helpers/utilities';
-import { module, test } from 'qunit';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
+import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
+import { moduleFor, test } from 'ember-qunit';
 
-const { RSVP, typeOf } = Ember;
+const { RSVP, typeOf, run } = Ember;
 let overallStub, compressionStub, dataUrlStub, loadImageStub;
 let compressionReturnVal, dataUrlReturnVal, loadImageReturnVal;
 
-module('Unit | Utility | photo', {
+moduleFor('util:photo', 'Unit | Utility | photo', {
+  needs: ['model:media-element', 'model:media-element-version'],
   beforeEach() {
     compressionStub = sinon.stub();
     dataUrlStub = sinon.stub();
@@ -134,11 +135,12 @@ test('ensuring image dimensions a variety of inputs', function(assert) {
 });
 
 test('ensuring image dimensions for all with dimensions', function(assert) {
-  const done = assert.async();
+  const store = Ember.getOwner(this).lookup('service:store'),
+    done = assert.async();
 
   PhotoUtils.ensureImageDimensions([
-    mockValidMediaImage(),
-    mockValidMediaImage()
+    mockValidMediaImage(store),
+    mockValidMediaImage(store)
   ]).then(mediaImages => {
     assert.equal(mediaImages.length, 2);
     assert.ok(loadImageStub.notCalled, 'load image never called because already have dimensions');
@@ -148,35 +150,38 @@ test('ensuring image dimensions for all with dimensions', function(assert) {
 });
 
 test('ensuring image dimensions for some without dimensions', function(assert) {
-  const done = assert.async(),
-    withDimensions = [mockValidMediaImage(), mockValidMediaImage()],
-    numVersionsPerNoDimension = 3,
-    noDimensions = Array(5)
-      .fill()
-      .map(() => {
-        const mediaImage = MediaImage.create({ [API_ID_PROP_NAME]: 'a valid source' });
-        Array(numVersionsPerNoDimension)
-          .fill()
-          .forEach(() => {
-            mediaImage.addVersion('https://via.placeholder.com/350x150');
-          });
-        return mediaImage;
-      });
-  loadImageReturnVal = { naturalWidth: Math.random(), naturalHeight: Math.random() };
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      done = assert.async(),
+      withDimensions = [mockValidMediaImage(store), mockValidMediaImage(store)],
+      numVersionsPerNoDimension = 3,
+      noDimensions = Array(5)
+        .fill()
+        .map(() => {
+          const el = store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: 'id' });
+          Array(numVersionsPerNoDimension)
+            .fill()
+            .forEach(() => {
+              el.addVersion('image/jpeg', 'https://via.placeholder.com/350x150');
+            });
+          return el;
+        });
+    loadImageReturnVal = { naturalWidth: Math.random(), naturalHeight: Math.random() };
 
-  PhotoUtils.ensureImageDimensions(
-    [].pushObjects(withDimensions).pushObjects(noDimensions)
-  ).then(mediaImages => {
-    assert.equal(mediaImages.length, withDimensions.length + noDimensions.length);
-    assert.equal(loadImageStub.callCount, noDimensions.length * numVersionsPerNoDimension);
-    noDimensions.forEach(mediaImage => {
-      mediaImage.get('versions').forEach(version => {
-        assert.equal(version.get('width'), loadImageReturnVal.naturalWidth);
-        assert.equal(version.get('height'), loadImageReturnVal.naturalHeight);
+    PhotoUtils.ensureImageDimensions(
+      [].pushObjects(withDimensions).pushObjects(noDimensions)
+    ).then(mediaImages => {
+      assert.equal(mediaImages.length, withDimensions.length + noDimensions.length);
+      assert.equal(loadImageStub.callCount, noDimensions.length * numVersionsPerNoDimension);
+      noDimensions.forEach(mElements => {
+        mElements.get('versions').forEach(version => {
+          assert.equal(version.get('width'), loadImageReturnVal.naturalWidth);
+          assert.equal(version.get('height'), loadImageReturnVal.naturalHeight);
+        });
       });
+
+      done();
     });
-
-    done();
   });
 });
 
@@ -195,23 +200,26 @@ test('if should rebuild responsive gallery', function(assert) {
 });
 
 test('selecting appropriate image version for display in gallery', function(assert) {
-  const fn = PhotoUtils.formatResponsiveMediaImageForGallery,
-    mediaImage = MediaImage.create();
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      fn = PhotoUtils.formatResponsiveMediaImageForGallery,
+      el = store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: 'id' });
 
-  assert.notOk(fn(), 'short circuits invalid input');
-  assert.notOk(fn('not a number', 8), 'short circuits invalid input');
-  assert.notOk(fn(3, 8, []), 'short circuits invalid input');
+    assert.notOk(fn(), 'short circuits invalid input');
+    assert.notOk(fn('not a number', 8), 'short circuits invalid input');
+    assert.notOk(fn(3, 8, []), 'short circuits invalid input');
 
-  assert.deepEqual(fn(3, 8, mediaImage), { src: '', w: 0, h: 0 });
+    assert.deepEqual(fn(3, 8, el), { src: '', w: 0, h: 0 });
 
-  mediaImage.addVersion('test1', 1);
-  mediaImage.addVersion('test2', 100);
-  mediaImage.addVersion('test3', 1000);
-  assert.equal(mediaImage.get('versions.length'), 3);
+    el.addVersion('image/jpeg', 'test1', 1);
+    el.addVersion('image/jpeg', 'test2', 100);
+    el.addVersion('image/jpeg', 'test3', 1000);
+    assert.equal(el.get('versions.length'), 3);
 
-  assert.deepEqual(fn(3, 8, mediaImage), { src: 'test1', w: 1, h: null });
-  assert.deepEqual(fn(33, 3, mediaImage), { src: 'test2', w: 100, h: null });
-  assert.deepEqual(fn(33, 1000, mediaImage), { src: 'test3', w: 1000, h: null });
+    assert.deepEqual(fn(3, 8, el), { src: 'test1', w: 1, h: null });
+    assert.deepEqual(fn(33, 3, el), { src: 'test2', w: 100, h: null });
+    assert.deepEqual(fn(33, 1000, el), { src: 'test3', w: 1000, h: null });
+  });
 });
 
 test('getting boundary coordinates for preview thumbnail', function(assert) {

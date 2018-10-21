@@ -34,7 +34,9 @@ test('inputs', function(assert) {
   assert.ok(this.$('img.responsive-image').length, 'renders successfully');
   assert.equal(this.$('img.responsive-image').attr('alt'), alt, 'renders provided alt text');
 
-  const versions = mockValidMediaImage().get('versions');
+  const store = Ember.getOwner(this).lookup('service:store'),
+    versions = mockValidMediaImage(store).get('versions.content');
+
   this.set('versions', versions);
   this.render(hbs`{{responsive-image versions=versions}}`);
 

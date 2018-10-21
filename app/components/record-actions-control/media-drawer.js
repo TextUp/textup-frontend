@@ -1,6 +1,6 @@
 import Ember from 'ember';
+import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 
 const { tryInvoke } = Ember;
 
@@ -8,7 +8,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
 
   propTypes: {
-    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaImage)),
+    images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     onRemoveImage: PropTypes.func
   },
 

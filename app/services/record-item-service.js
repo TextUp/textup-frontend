@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import MediaElement from 'textup-frontend/models/media-element';
 import RecordItem from 'textup-frontend/models/record-item';
-import { MediaImage, API_ID_PROP_NAME } from 'textup-frontend/objects/media-image';
+import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { get, isArray, isNone } = Ember;
 
@@ -52,20 +53,20 @@ export default Ember.Service.extend({
       newImages.forEach(imageObj => {
         const { mimeType, data, width, height } = imageObj;
 
-        media.addChange(mimeType, data, width, height);
+        media.addImage(mimeType, data, width, height);
       });
       recordItem.set('media', media);
     });
   },
-  removeImage(recordItem, mediaImage) {
-    if (!(recordItem instanceof RecordItem) || !(mediaImage instanceof MediaImage)) {
+  removeImage(recordItem, img) {
+    if (!(recordItem instanceof RecordItem) || !(img instanceof MediaElement)) {
       return;
     }
     recordItem.get('media').then(media => {
       if (isNone(media)) {
         return;
       }
-      media.removeElement(get(mediaImage, API_ID_PROP_NAME));
+      media.removeElement(get(img, MEDIA_ID_PROP_NAME));
     });
   },
   addLocationToNote(rNote) {

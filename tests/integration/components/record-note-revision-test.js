@@ -72,7 +72,7 @@ test('rendering with only note', function(assert) {
 test('rendering with location and media', function(assert) {
   run(() => {
     const validRevision = store.createRecord('record-note-revision', {
-        media: store.createRecord('media', { images: [mockValidMediaImage()] }),
+        media: store.createRecord('media', { images: [mockValidMediaImage(store)] }),
         location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } })
       }),
       buildUrlStub = sinon

@@ -4,7 +4,7 @@
             <div class="image-grid__item {{itemClass}} {{concat elementId '-item'}}"
                 onclick={{action gallery.actions.open (hash index=index)}}>
                 {{responsive-image classNames="image-grid__item__image"
-                    versions=image.versions
+                    versions=image.versions.content
                     onSuccess=(action _onSuccess index)
                     onFailure=(action _onFailure index)}}
                 {{yield image index}}

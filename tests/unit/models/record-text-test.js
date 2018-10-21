@@ -9,6 +9,9 @@ moduleForModel('record-text', 'Unit | Model | record text', {
     'model:contact',
     'model:tag',
     'model:media',
+    'model:media/add',
+    'model:media-element',
+    'model:media-element-version',
     'validator:number',
     'validator:has-any'
   ]
@@ -50,7 +53,7 @@ test('validating contents', function(assert) {
           'no contents and has media but is empty'
         );
 
-        mediaObj.addChange('valid mime type', 'valid data', 88, 88);
+        mediaObj.addImage('valid mime type', 'valid data', 88, 88);
         assert.ok(mediaObj.get('hasElements'));
 
         return model.validate();

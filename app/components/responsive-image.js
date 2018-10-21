@@ -1,8 +1,8 @@
 import Ember from 'ember';
+import MediaElementVersion from 'textup-frontend/models/media-element-version';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { MediaImageVersion } from 'textup-frontend/objects/media-image';
 
-const { computed, tryInvoke, isNone, run } = Ember;
+const { computed, tryInvoke, isNone, run, get } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
@@ -10,11 +10,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     versions: PropTypes.arrayOf(
       PropTypes.oneOfType([
-        PropTypes.instanceOf(MediaImageVersion),
-        PropTypes.shape({
-          source: PropTypes.string.isRequired,
-          width: PropTypes.number
-        })
+        PropTypes.instanceOf(MediaElementVersion),
+        PropTypes.shape({ source: PropTypes.string.isRequired, width: PropTypes.number })
       ])
     ),
     alt: PropTypes.string,
@@ -70,7 +67,9 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
     const versions = this.get('_sortedVersions'),
       sources = [];
-    versions.forEach(({ source, width }) => {
+    versions.forEach(version => {
+      const source = get(version, 'source'),
+        width = get(version, 'width');
       if (width) {
         sources.pushObject(`${source} ${width}w`);
       }

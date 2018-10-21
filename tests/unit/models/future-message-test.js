@@ -8,6 +8,9 @@ moduleForModel('future-message', 'Unit | Model | future message', {
   needs: [
     'service:constants',
     'model:media',
+    'model:media/add',
+    'model:media-element',
+    'model:media-element-version',
     'model:contact',
     'model:tag',
     'model:phone',
@@ -347,7 +350,7 @@ test('validating contents', function(assert) {
           'no message and has media but is empty'
         );
 
-        mediaObj.addChange('valid mime type', 'valid data', 88, 99);
+        mediaObj.addImage('valid mime type', 'valid data', 88, 99);
         assert.ok(mediaObj.get('hasElements'));
 
         return model.validate();

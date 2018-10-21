@@ -1,8 +1,7 @@
 {
     "name": "textup-frontend",
     "version": "2.6.1",
-    "description":
-        "Mobile communication and collaboration for social service case managers and their clients",
+    "description": "Mobile communication and collaboration for social service case managers and their clients",
     "private": true,
     "directories": {
         "doc": "doc",
@@ -62,6 +61,7 @@
         "ember-colpick": "0.6.0",
         "ember-cp-validations": "^2.7.2",
         "ember-data": "~2.4.3",
+        "ember-data-model-fragments": "2.3.3",
         "ember-disable-proxy-controllers": "^1.0.1",
         "ember-export-application-global": "^1.0.4",
         "ember-g-recaptcha": "0.4.0",

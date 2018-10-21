@@ -3,9 +3,9 @@
 
 import Ember from 'ember';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
+import MediaElement from 'textup-frontend/models/media-element';
 import PhotoSwipeComponent from 'ember-photoswipe/components/photo-swipe';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 import {
   getPreviewBounds,
   shouldRebuildResponsiveGallery,
@@ -18,7 +18,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     images: PropTypes.oneOfType([
       PropTypes.null,
-      PropTypes.arrayOf(PropTypes.instanceOf(MediaImage))
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
     ]),
     thumbnailClass: PropTypes.string // for thumbnail coordinates function
   },
@@ -42,7 +42,9 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   }),
 
   open(actionOptions) {
-    const images = this.get('images');
+    // we create an empty placeholder object for each image because we actually extract the image
+    // information in the `_onGettingData` hook.
+    const images = this.get('_imagePlaceholders');
     if (!isPresent(images)) {
       return;
     }
@@ -64,6 +66,10 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   // Internal properties
   // -------------------
 
+  _imagePlaceholders: computed('images.[]', function() {
+    const images = this.get('images');
+    return images ? images.map(() => Object.create(null)) : null;
+  }),
   _elementToWormhole: computed(function() {
     return this.get('element').querySelector('.pswp');
   }),

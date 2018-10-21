@@ -3,8 +3,6 @@ import MediaRecorderPolyfill from 'npm:audio-recorder-polyfill';
 import 'npm:webrtc-adapter'; // standardize getUserMedia API, where available
 import lamejs from 'npm:lamejs';
 
-const { computed } = Ember;
-
 export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);

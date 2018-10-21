@@ -1,9 +1,9 @@
 import * as PhotoUtils from 'textup-frontend/utils/photo';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import MediaElement from 'textup-frontend/models/media-element';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { MediaImage } from 'textup-frontend/objects/media-image';
 import { mockValidMediaImage } from '../../helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
@@ -62,10 +62,11 @@ test('changing image display type', function(assert) {
 });
 
 test('displaying images', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants'),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage());
+      .map(() => mockValidMediaImage(store));
 
   this.setProperties({ images });
   this.render(hbs`{{photo-control images=images}}`);
@@ -83,9 +84,10 @@ test('displaying images', function(assert) {
 });
 
 test('adding images', function(assert) {
-  const images = Array(3)
+  const store = Ember.getOwner(this).lookup('service:store'),
+    images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     done = assert.async(),
     onAdd = sinon.spy(),
     hasFilesStub = sinon.stub(PhotoUtils, 'eventHasFiles'),
@@ -118,10 +120,11 @@ test('adding images', function(assert) {
 });
 
 test('removing images', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants'),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage()),
+      .map(() => mockValidMediaImage(store)),
     done = assert.async(),
     onRemove = sinon.spy();
 
@@ -142,7 +145,7 @@ test('removing images', function(assert) {
     .then(() => {
       assert.ok(onRemove.calledOnce, 'remove handler called');
       assert.equal(onRemove.getCall(0).args.length, 3, 'passed three args');
-      assert.ok(onRemove.getCall(0).args[0] instanceof MediaImage, 'first arg is media image');
+      assert.ok(onRemove.getCall(0).args[0] instanceof MediaElement, 'first arg is media image');
       assert.notOk(
         onRemove.getCall(0).args[1],
         'second arg is supposed to index, but missing for image stack'
@@ -170,7 +173,7 @@ test('removing images', function(assert) {
     .then(() => {
       assert.ok(onRemove.calledTwice, 'remove handler called');
       assert.equal(onRemove.getCall(1).args.length, 3, 'passed three args');
-      assert.ok(onRemove.getCall(1).args[0] instanceof MediaImage, 'first arg is media image');
+      assert.ok(onRemove.getCall(1).args[0] instanceof MediaElement, 'first arg is media image');
       assert.equal(
         onRemove.getCall(1).args[1],
         images.length - 1,
@@ -186,10 +189,11 @@ test('removing images', function(assert) {
 });
 
 test('readOnly mode', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants'),
+  const store = Ember.getOwner(this).lookup('service:store'),
+    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage());
+      .map(() => mockValidMediaImage(store));
 
   this.setProperties({ images, readOnly: true, display: constants.PHOTO_CONTROL.DISPLAY.STACK });
   this.render(hbs`{{photo-control images=images readOnly=readOnly imageDisplayComponent=display}}`);

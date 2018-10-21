@@ -112,7 +112,7 @@ test('display note with note contents, media, and location', function(assert) {
       buildUrlStub = sinon
         .stub(LocationUtils, 'buildPreviewUrl')
         .callsFake(() => 'https://via.placeholder.com/5x5');
-    rNote.get('media.content').addChange('image/png', VALID_IMAGE_DATA_URL, 77, 88);
+    rNote.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
 
     this.setProperties({ rNote });
     this.render(hbs`{{record-item/note note=rNote}}`);

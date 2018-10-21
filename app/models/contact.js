@@ -1,6 +1,7 @@
 import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import MF from 'model-fragments';
 import OwnsFutureMessages from '../mixins/model/owns-future-messages';
 import OwnsRecordItems from '../mixins/model/owns-record-items';
 import { validate as validateNumber } from '../utils/phone-number';
