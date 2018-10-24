@@ -44,17 +44,17 @@
     <div class="form-element pad-l pad-r">
         <label for='Voicemail' class='control-label'>{{stateManager.owner.name}}'s Voicemail</label>
         <div class="row margin-t">
-            <div class="xs-row-20 control-text">
+            <div class="xs-2-row-20 s-row-20 control-text">
                 <input id="use-voicemail-recording-false"
                     type="radio"
                     checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) 'checked'}}
                     onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) false}}>
             </div>
             <label for="use-voicemail-recording-false"
-                class="xs-9-row-20 control-text pad-l-half clickable">
+                class="xs-9-row-20 control-text pad-l-half pad-r-half clickable">
                 <span class="text-normal">Read away message</span>
             </label>
-            {{#multi-toggle classNames='xs-row-2'
+            {{#multi-toggle classNames='xs-9-row-20 s-row-2'
                 selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=constants.COLOR.LIGHT_BLUE
@@ -69,17 +69,17 @@
             {{/multi-toggle}}
         </div>
         <div class="row margin-t margin-b-half">
-            <div class="xs-row-20 control-text">
+            <div class="xs-2-row-20 s-row-20 control-text">
                 <input id="use-voicemail-recording-true"
                     type="radio"
                     checked={{if model.phone.content.useVoicemailRecordingIfPresent 'checked'}}
                     onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) true}}>
             </div>
             <label for="use-voicemail-recording-true"
-                class="xs-9-row-20 control-text pad-l-half clickable">
+                class="xs-9-row-20 control-text pad-l-half pad-r-half clickable">
                 <span class="text-normal">Use voicemail recording</span>
             </label>
-            <div class="xs-row-2 control-text text-right">
+            <div class="xs-9-row-20 s-row-2 control-text text-right">
                 {{#if (and
                     model.phone.content.media.content.hasElements
                     (not model.phone.content.shouldRedoVoicemailGreeting))}}
