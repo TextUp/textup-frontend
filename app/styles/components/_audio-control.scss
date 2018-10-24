@@ -1,68 +1,71 @@
 .audio-control {
-	overflow: hidden;
+	display: flex;
 
-	%labeled-bar {
-		@extend .no-select;
-		position: relative;
-		overflow: hidden;
-	}
-	.volume-control {
-		border-left: 1px solid shade($border-color);
-		margin-left: 0.5 * $spacing;
+	&--recording {
+		.audio-control__button {
+			color: $danger-color;
 
-		.input-group-element {
-			border-top: 1px solid $border-color;
-			border-bottom: 1px solid $border-color;
+			&--active {
+				color: white;
+			}
 		}
 	}
-	.volume-bar {
-		@extend %labeled-bar;
-		width: 80px;
-		background-color: $bg-light-color;
-		position: relative;
+	&--disabled {
+		opacity: 0.6;
+	}
+	&__button {
+		height: $control-height;
+		min-width: $control-height;
+		color: $color-brand-dark;
+		background-color: transparent;
+
+		border: 1px solid $color-brand-dark;
 		border-radius: $border-radius;
 
-		.volume-level-bar {
-			height: 1.2 * $spacing;
-			background-color: $brand-color;
-			transition: width 0.5s;
+		&--active {
+			border-color: $color-brand;
+			background-color: $color-brand;
+			color: white;
 		}
 	}
-	.audio-progress-bar {
-		@extend %labeled-bar;
-		width: 100%;
+	&__display {
+		position: relative;
+		flex-grow: 1;
+		display: flex;
+		justify-content: flex-end;
 		height: $control-height;
 		line-height: $control-height;
-		background-color: $overlay-light-color;
-		color: $font-color;
+		min-width: $media-preview-height;
+		max-width: 100%;
+		margin-left: $spacing * 0.5;
+		padding: 0 ($spacing * 0.5);
+		color: white;
+		background-color: $color-brand;
+		border-radius: $border-radius;
+		overflow: hidden;
+		cursor: pointer;
 
-		.audio-progress {
-			@extend %labeled-bar;
-			width: 0;
-			height: $control-height;
-			line-height: $control-height;
-			background-color: $brand-color;
-			color: contrast-color($brand-color);
-			transition: width 0.5s;
+		&__message {
+			@extend .text-ellipsis;
+
+			width: 100%;
+			user-select: none;
+			z-index: 10;
 		}
-		.audio-loaded {
-			width: 30%;
+		&__timestamp {
+			flex-shrink: 0;
+			text-align: right;
+			user-select: none;
+			z-index: 10;
+		}
+		&__progress {
 			position: absolute;
-			top: 0;
 			left: 0;
-			height: $control-height;
-			$color: $bg-light-color;
-			background-color: $color;
-			color: contrast-color($color);
-			transition: width 1s;
+			top: 0;
+			height: 100%;
+			width: 0;
+			transition: width 0.2s;
+			background-color: $color-brand-dark;
 		}
-	}
-	.time-label {
-		@extend .text-bold;
-		@extend .no-select;
-		@include v-center('right', $padding);
-	}
-	.input-group-addon .btn {
-		border: 1px solid $border-color;
 	}
 }

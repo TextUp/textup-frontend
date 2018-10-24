@@ -1,1 +1,12 @@
-{{yield}}
+{{#if message}}
+    <div class="audio-control__display__message">
+        {{message}}
+    </div>
+{{/if}}
+{{#if _timestamp}}
+    <div class="audio-control__display__timestamp">
+        {{_timestamp}}
+    </div>
+{{/if}}
+{{!-- quotes around `_progressWidth` prevent Ember from seeing this string as safe --}}
+<div class="audio-control__display__progress" style={{_progressWidth}}></div>

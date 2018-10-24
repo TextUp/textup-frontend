@@ -1,6 +1,6 @@
 import DS from 'ember-data';
-import HasAuthor from '../mixins/serializer/has-author';
-import HasMedia from '../mixins/serializer/has-media';
+import HasAuthor from 'textup-frontend/mixins/serializer/has-author';
+import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 
 const polymorphicTypeToModelName = {
   TEXT: 'record-text',

@@ -1,11 +1,11 @@
 <div class="record-item__body">
     {{#if call.noteContents}}
-        {{#read-more classNames=(concat "margin-b-half " (if call.outgoing "read-more--outgoing" "read-more--incoming"))}}
+        {{#read-more classNames=(concat "pad-b-half " (if call.outgoing "read-more--outgoing" "read-more--incoming"))}}
             {{call.noteContents}}
         {{/read-more}}
     {{/if}}
-    {{#if call.voicemailUrl}}
-        {{audio-control source=call.voicemailUrl}}
+    {{#if call.media.content.displayedAudio.firstObject}}
+        {{audio-player audio=call.media.content.displayedAudio.firstObject}}
     {{else}}
         <div class="text-small text-wrap">
             {{#if call.durationInSeconds}}
@@ -21,7 +21,7 @@
         </div>
     {{/if}}
 </div>
-{{#if call.media.content.displayedImages.isFulfilled}}
+{{#if call.media.content.displayedImages.content}}
     <div class="record-item__media">
         {{image-stack images=call.media.content.displayedImages.content}}
     </div>

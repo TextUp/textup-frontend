@@ -185,38 +185,53 @@
     }
 }
 
-// Checkbox hack
-// -------------
+// Checkbox/radio-button hack
+// --------------------------
 
-input[type='checkbox'] {
+input[type='checkbox'],
+input[type='radio'] {
     position: relative;
     transform: translateY(1px);
+
+    &:before,
+    &:checked:after {
+        content: '';
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        top: -2px;
+        left: -2px;
+
+        cursor: pointer;
+    }
+
+    &:before {
+        border: 3px solid $brand-color;
+        border-radius: $border-radius;
+        background-color: $bg-light-color;
+    }
+
+    &:checked:after {
+        @extend .center;
+
+        content: ' ';
+        background-color: $brand-color;
+        height: $padding / 2;
+        width: $padding / 2;
+    }
 }
+input[type='radio'] {
+    $radio-adjustment: 3px;
 
-input[type='checkbox']:checked:after,
-input[type='checkbox']:before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    position: absolute;
-    top: -2px;
-    left: -2px;
-}
+    margin-left: $radio-adjustment;
 
-input[type='checkbox']:before {
-    border: 3px solid $brand-color;
-    border-radius: $border-radius;
-    background-color: $bg-light-color;
-}
-
-input[type='checkbox']:checked:after {
-    @extend .center;
-
-    content: ' ';
-    background-color: $font-color;
-    height: $padding / 2;
-    width: $padding / 2;
+    &:before,
+    &:checked:after {
+        border-radius: 100%;
+        top: $radio-adjustment * -1;
+        left: $radio-adjustment * -1;
+    }
 }
 
 // Form

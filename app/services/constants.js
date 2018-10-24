@@ -70,6 +70,9 @@ export default Ember.Service.extend({
   IMAGE: {
     DEFAULT_ALT: 'User provided image'
   },
+  AUDIO: {
+    MAX_DURATION_IN_SECONDS: 180
+  },
   FUTURE_MESSAGE: {
     TYPE: {
       CALL: 'CALL', // need to capitalized to match

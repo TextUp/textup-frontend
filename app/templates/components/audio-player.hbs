@@ -1,1 +1,32 @@
-{{yield}}
+{{#if audio}}
+    <audio onwaiting={{action _onWaiting}}
+        onplaying={{action _onPlaying}}
+        onerror={{action _onError}}
+        onloadedmetadata={{action _onLoadedMetadata}}
+        ontimeupdate={{action _onCurrentTimeUpdated}}
+        ondurationchange={{action _onMaxTimeUpdated}}
+        onended={{action _onFinishedPlaying}}>
+        {{#each audio.versions.content as |version|}}
+            <source src={{version.source}} type={{version.type}}>
+        {{/each}}
+    </audio>
+    <button type='button'
+        class="audio-control__button {{if _isPlaying 'audio-control__button--active'}}"
+        onclick={{action _togglePlay}}
+        disabled={{if _isDisabled 'disabled'}}>
+        {{#if _isPlaying}}
+            {{#if _isLoading}}
+                <span class="fa fa-circle-o-notch fa-spin"></span>
+            {{else}}
+                <span class="fa fa-pause"></span>
+            {{/if}}
+        {{else}}
+            <span class="fa fa-play"></span>
+        {{/if}}
+    </button>
+    {{audio-control/display
+        onSelect=(action _onSeek)
+        message=(if message message _message)
+        currentNumSeconds=_currentTime
+        maxNumSeconds=_maxTime}}
+{{/if}}

@@ -16,13 +16,13 @@ export default Ember.Service.extend({
   // Events
   // ------
 
-  init: function() {
+  init() {
     this._super(...arguments);
     this.get('authService')
       .on(config.events.auth.success, this._bindSocketEvents.bind(this))
       .on(config.events.auth.clear, this._unbindSocketEvents.bind(this));
   },
-  willDestroy: function() {
+  willDestroy() {
     this._super(...arguments);
     this.get('authService')
       .off(config.events.auth.success)
@@ -97,7 +97,7 @@ export default Ember.Service.extend({
     const storage = this.get('storage');
     return storage.isItemPersistent(this.get('skippedSetupKey'));
   }).volatile(),
-  skipSetup: function() {
+  skipSetup() {
     const storage = this.get('storage');
     storage.trySet(localStorage, this.get('skippedSetupKey'), 'yes');
   },
@@ -135,7 +135,7 @@ export default Ember.Service.extend({
   // Socket handlers
   // ---------------
 
-  _bindSocketEvents: function() {
+  _bindSocketEvents() {
     const socket = this.get('socket'),
       channelName = this.get('authService.channelName');
     socket.connect({
@@ -151,24 +151,28 @@ export default Ember.Service.extend({
       .all([
         socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
         socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
-        socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this))
+        socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
+        socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this))
       ])
       .catch(this.get('dataService').buildErrorHandler());
   },
-  _unbindSocketEvents: function() {
+  _unbindSocketEvents() {
     this.get('socket').disconnect();
   },
 
-  _handleSocketFutureMsgs: function(data) {
+  _handleSocketPhones(data) {
+    this._normalizeAndPushSocketPayload('phone', data);
+  },
+  _handleSocketFutureMsgs(data) {
     this._normalizeAndPushSocketPayload('future-message', data);
   },
-  _handleSocketRecords: function(data) {
+  _handleSocketRecords(data) {
     this._normalizeAndPushSocketPayload('record-item', data);
   },
-  _handleSocketContacts: function(data) {
+  _handleSocketContacts(data) {
     this._normalizeAndPushSocketPayload('contact', data);
   },
-  _normalizeAndPushSocketPayload: function(modelName, data) {
+  _normalizeAndPushSocketPayload(modelName, data) {
     if (!Ember.isArray(data)) {
       return;
     }

@@ -15,7 +15,7 @@ const Validations = buildValidations({
       ]
     }
   }),
-  { computed } = Ember;
+  { computed, getWithDefault, tryInvoke } = Ember;
 
 export default DS.Model.extend(Dirtiable, Validations, {
   init() {
@@ -24,9 +24,13 @@ export default DS.Model.extend(Dirtiable, Validations, {
   },
 
   rollbackAttributes: function() {
-    this._super(...arguments);
+    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
     this.get('availability').then(a1 => a1 && a1.rollbackAttributes());
+    return this._super(...arguments);
   },
+  hasManualChanges: computed('availability.isDirty', 'media.isDirty', function() {
+    return this.get('availability.isDirty') || this.get('media.isDirty');
+  }),
 
   // Attributes
   // ----------
@@ -40,6 +44,11 @@ export default DS.Model.extend(Dirtiable, Validations, {
     defaultValue: 'ENGLISH'
   }),
 
+  media: DS.belongsTo('media'), // hasOne
+  requestVoicemailGreetingCall: DS.attr(),
+  useVoicemailRecordingIfPresent: DS.attr('boolean'),
+  shouldRedoVoicemailGreeting: DS.attr('boolean', { defaultValue: false }),
+
   availability: DS.belongsTo('availability'),
   others: DS.hasMany('availability'),
 
@@ -49,7 +58,6 @@ export default DS.Model.extend(Dirtiable, Validations, {
   awayMessageMaxLength: computed('mandatoryEmergencyMessage', function() {
     return 160 - this.get('mandatoryEmergencyMessage.length');
   }),
-  hasManualChanges: computed.alias('availability.isDirty'),
 
   // Not attributes
   // --------------

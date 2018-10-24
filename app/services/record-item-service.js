@@ -52,7 +52,6 @@ export default Ember.Service.extend({
       const media = foundMedia || this.get('store').createRecord('media');
       newImages.forEach(imageObj => {
         const { mimeType, data, width, height } = imageObj;
-
         media.addImage(mimeType, data, width, height);
       });
       recordItem.set('media', media);
