@@ -2,11 +2,7 @@ import * as AudioCompressionUtils from 'textup-frontend/utils/audio-compression'
 import MediaRecorderPolyfill from 'npm:audio-recorder-polyfill';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
-import {
-  getAudioStream,
-  getAudioRecorder,
-  tryCompressAudioBlob
-} from 'textup-frontend/utils/audio';
+import { getAudioRecorder, tryCompressAudioBlob } from 'textup-frontend/utils/audio';
 
 module('Unit | Utility | audio');
 
