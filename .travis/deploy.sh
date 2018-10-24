@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 #
 # Deploy Ember app to S3 bucket of choice
 
