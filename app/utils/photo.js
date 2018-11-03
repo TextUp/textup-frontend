@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import imageCompression from 'npm:browser-image-compression';
-import MediaElement from 'textup-frontend/models/media-element';
+
+// do NOT import MediaElement or else you have a circular series of imports
+// when MediaElement imports from Media
 
 const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 
@@ -75,12 +77,15 @@ export function ensureImageDimensions(mediaImages) {
     }
     const versionsFetchingDimensions = [];
     mediaImages.forEach(mediaImage => {
-      if (mediaImage instanceof MediaElement) {
-        get(mediaImage, 'versions').forEach(version => {
-          if (!_hasDimensions(version)) {
-            versionsFetchingDimensions.pushObject(_fetchVersionDimensions(version));
-          }
-        });
+      if (typeOf(mediaImage) === 'instance') {
+        const versions = get(mediaImage, 'versions');
+        if (versions && versions.forEach) {
+          versions.forEach(version => {
+            if (!_hasDimensions(version)) {
+              versionsFetchingDimensions.pushObject(_fetchVersionDimensions(version));
+            }
+          });
+        }
       }
     });
     return RSVP.Promise
@@ -144,24 +149,26 @@ function _estimateDeviceFromWidth(width) {
 // See the the `gettingData` event in the PhotoSwipe docs
 export function formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity, mediaImage) {
   const width = parseInt(viewportWidth * pixelDensity);
-  if (isNaN(width) || !(mediaImage instanceof MediaElement)) {
+  if (isNaN(width) || typeOf(mediaImage) !== 'instance') {
     return;
   }
-
-  const result = { src: '', w: 0, h: 0 };
+  const result = { src: '', w: 0, h: 0 },
+    versions = mediaImage.get('versions');
   let currentSmallestDifference = Number.POSITIVE_INFINITY;
-  mediaImage.get('versions').forEach(version => {
-    const source = version.get('source'),
-      versionWidth = version.get('width'),
-      height = version.get('height'),
-      thisDifference = Math.abs(versionWidth - width);
-    if (thisDifference < currentSmallestDifference) {
-      result.src = source;
-      result.w = versionWidth;
-      result.h = height;
-      currentSmallestDifference = thisDifference;
-    }
-  });
+  if (versions && versions.forEach) {
+    versions.forEach(version => {
+      const source = version.get('source'),
+        versionWidth = version.get('width'),
+        height = version.get('height'),
+        thisDifference = Math.abs(versionWidth - width);
+      if (thisDifference < currentSmallestDifference) {
+        result.src = source;
+        result.w = versionWidth;
+        result.h = height;
+        currentSmallestDifference = thisDifference;
+      }
+    });
+  }
   return result;
 }
 

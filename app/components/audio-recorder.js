@@ -1,12 +1,7 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { blobToBase64String } from 'textup-frontend/utils/audio-compression';
-import {
-  isRecordingSupported,
-  getAudioStream,
-  getAudioRecorder,
-  tryCompressAudioBlob
-} from 'textup-frontend/utils/audio';
+import AudioRecording from 'textup-frontend/objects/audio-recording';
+import { isRecordingSupported, blobToBase64String } from 'textup-frontend/utils/audio';
 
 const { computed, run, tryInvoke } = Ember;
 
@@ -14,11 +9,12 @@ export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
 
   propTypes: {
-    onStart: PropTypes.func,
+    onError: PropTypes.func,
     onFinish: PropTypes.func,
     disabled: PropTypes.bool,
+
     message: PropTypes.string,
-    errorMessage: PropTypes.string,
+    unsupportedMessage: PropTypes.string,
     startMessage: PropTypes.string,
     recordingMessage: PropTypes.string,
     processingMessage: PropTypes.string
@@ -26,7 +22,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   getDefaultProps() {
     return {
       disabled: false,
-      errorMessage: 'Audio recording is not supported by your browser',
+      unsupportedMessage: 'Audio recording is not supported by your browser',
       startMessage: 'Select to start recording',
       recordingMessage: 'Recording...',
       processingMessage: 'Processing...'
@@ -34,41 +30,55 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   classNames: ['audio-control', 'audio-control--recording'],
-  classNameBindings: ['_isDisabled:audio-control--disabled'],
+  classNameBindings: [
+    '_isUnsupported:audio-control--unsupported',
+    '_errorMessage:audio-control--error',
+    'disabled:audio-control--disabled'
+  ],
 
   didInsertElement() {
     this._super(...arguments);
     if (!isRecordingSupported()) {
-      run.scheduleOnce('afterRender', this._onError.bind(this));
+      run.scheduleOnce('afterRender', () => this.set('_isUnsupported', true));
     }
-  },
-  willDestroyElement() {
-    this._super(...arguments);
-    this._finishRecordingStatus();
   },
 
   // Internal properties
   // -------------------
 
-  _isError: false,
-  _isDisabled: computed('disabled', '_isError', function() {
-    return this.get('disabled') || this.get('_isError');
-  }),
+  _isUnsupported: false,
+  _errorMessage: null,
 
   _recorder: null,
   _isProcessing: false,
 
+  _maxTime: computed('_recorder', function() {
+    return this.get('_recorder') ? this.get('constants.AUDIO.MAX_DURATION_IN_SECONDS') : null;
+  }),
+  _currentTime: computed('_recorder', '_recordingDurationSoFar', function() {
+    return this.get('_recorder') ? this.get('_recordingDurationSoFar') : null;
+  }),
+  _recordingDurationSoFar: null,
+  _timerIntervalId: null,
+  _startTimeInMillis: null,
+
   _message: computed(
-    '_isError',
+    'message',
+    '_isUnsupported',
+    'unsupportedMessage',
+    '_errorMessage',
     '_recorder',
     '_isProcessing',
-    'errorMessage',
-    'startMessage',
     'recordingMessage',
     'processingMessage',
+    'startMessage',
     function() {
-      if (this.get('_isError')) {
-        return this.get('errorMessage');
+      if (this.get('message')) {
+        return this.get('message');
+      } else if (this.get('_isUnsupported')) {
+        return this.get('unsupportedMessage');
+      } else if (this.get('_errorMessage')) {
+        return this.get('_errorMessage');
       } else if (this.get('_recorder')) {
         return this.get('_isProcessing')
           ? this.get('processingMessage')
@@ -78,22 +88,12 @@ export default Ember.Component.extend(PropTypesMixin, {
       }
     }
   ),
-  _maxTime: computed('_recorder', function() {
-    return this.get('_recorder') ? this.get('constants.AUDIO.MAX_DURATION_IN_SECONDS') : null;
-  }),
-
-  _currentTime: computed('_recorder', '_recordingDurationSoFar', function() {
-    return this.get('_recorder') ? this.get('_recordingDurationSoFar') : null;
-  }),
-  _recordingDurationSoFar: null,
-  _timerIntervalId: null,
-  _startTimeInMillis: null,
 
   // Internal handlers
   // -----------------
 
   _toggleRecording() {
-    if (this.get('_isDisabled')) {
+    if (this.get('disabled') || this.get('_isUnsupported')) {
       return;
     }
     if (this.get('_recorder')) {
@@ -103,80 +103,64 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
   },
   _startRecording() {
-    getAudioStream().then(stream => {
-      const recorder = getAudioRecorder(stream);
-      recorder.addEventListener('dataavailable', this._onRecordingFinish.bind(this));
-      recorder.addEventListener('onerror', this._onError.bind(this));
-      this._startRecordingStatus(recorder);
-      // Start recording
-      recorder.start();
-    }, this._onError.bind(this));
+    const recorder = AudioRecording.create();
+    recorder.on('error', this, this._onErrorState);
+    recorder.on('dataavailable', this, this._onRecordingFinish);
+    recorder.startRecording();
+    this._onStartState(recorder);
   },
   _stopRecording() {
     const recorder = this.get('_recorder');
-    // Stop recording
-    recorder.stop();
-    // Remove “recording” icon from browser tab
-    recorder.stream.getTracks().forEach(i => i.stop());
+    if (recorder) {
+      recorder.stopRecording();
+      this.set('_isProcessing', true);
+    }
   },
-
-  _onRecordingFinish(event) {
-    if (this.get('isDestroying') || this.get('isDestroyed') || this.get('_isDisabled')) {
+  _onRecordingFinish(blob) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    this._processingRecordingStatus();
-    tryCompressAudioBlob(event.data).then(
-      blob => this._finishRecordingStatus(blob),
-      this._onError.bind(this)
-    );
+    blobToBase64String(blob).then(data => {
+      tryInvoke(this, 'onFinish', [blob.type, data]);
+      this._onFinishState();
+    }, this._onErrorState.bind(this));
   },
 
-  _updateRecordingTime() {
+  // Status handlers
+  // ---------------
+
+  _onStartState(recorder) {
+    const intervalId = setInterval(this._updateRecordingTimeAtInterval.bind(this), 1000);
+    this.setProperties({
+      _recorder: recorder,
+      _isProcessing: false,
+      _errorMessage: null,
+      _timerIntervalId: intervalId,
+      _startTimeInMillis: Date.now()
+    });
+  },
+  _onFinishState() {
+    this.setProperties({ _recorder: null, _isProcessing: false, _startTimeInMillis: null });
+  },
+  _onErrorState(message) {
+    this.set('_errorMessage', message);
+    tryInvoke(this, 'onError', [message]);
+  },
+
+  // Recording time display
+  // ----------------------
+
+  _updateRecordingTimeAtInterval() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       this._clearIntervalTimer();
       return;
     }
-    const millisElapsed = Date.now() - this.get('_startTimeInMillis');
-    this.set('_recordingDurationSoFar', Math.floor(millisElapsed / 1000));
-  },
-  _onError() {
-    this.set('_isError', true);
-  },
-
-  _startRecordingStatus(recorder) {
-    tryInvoke(this, 'onStart');
-    this.setProperties({
-      _recorder: recorder,
-      _isError: false,
-      _isProcessing: false,
-      _timerIntervalId: setInterval(this._updateRecordingTime.bind(this), 1000),
-      _startTimeInMillis: Date.now()
-    });
-  },
-  _processingRecordingStatus() {
-    this.setProperties({
-      _isError: false,
-      _isProcessing: true
-    });
-  },
-  _finishRecordingStatus(blob = null) {
-    this._clearIntervalTimer();
-    if (blob) {
-      blobToBase64String(blob).then(
-        data => tryInvoke(this, 'onFinish', [blob.type, data]),
-        this._onError.bind(this)
-      );
+    const startTime = this.get('_startTimeInMillis');
+    if (startTime) {
+      const millisElapsed = Date.now() - startTime;
+      this.set('_recordingDurationSoFar', Math.floor(millisElapsed / 1000));
     }
-    this.setProperties({
-      _recorder: null,
-      _isError: false,
-      _isProcessing: false,
-      _recordingDurationSoFar: null,
-      _timerIntervalId: null,
-      _startTimeInMillis: null
-    });
   },
-
   _clearIntervalTimer() {
     const intervalId = this.get('timerIntervalId');
     if (intervalId) {

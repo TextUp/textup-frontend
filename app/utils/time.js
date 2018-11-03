@@ -5,15 +5,17 @@ const { typeOf } = Ember;
 
 export function formatSecondsAsTimeElapsed(numSeconds) {
   const seconds = parseInt(numSeconds);
-  if (isNaN(seconds) || typeOf(seconds) !== 'number' || seconds < 0) {
+  if (isNaN(seconds) || typeOf(seconds) !== 'number') {
     return '';
+  }
+  if (seconds <= 0) {
+    return '00:00';
   }
   const duration = moment.duration(seconds, 'seconds'),
     formatted = [
       ensureTwoPlaces(duration.minutes() + ''),
       ensureTwoPlaces(duration.seconds() + '')
     ];
-
   if (duration.asHours() >= 1) {
     formatted.unshiftObject(ensureTwoPlaces(Math.floor(duration.asHours()) + ''));
   }

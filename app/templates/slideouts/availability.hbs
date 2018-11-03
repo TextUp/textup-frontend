@@ -51,10 +51,10 @@
                     onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) false}}>
             </div>
             <label for="use-voicemail-recording-false"
-                class="xs-9-row-20 control-text pad-l-half pad-r-half clickable">
+                class="xs-18-row-20 s-9-row-20 control-text pad-l-half pad-r-half clickable">
                 <span class="text-normal">Read away message</span>
             </label>
-            {{#multi-toggle classNames='xs-9-row-20 s-row-2'
+            {{#multi-toggle classNames='xs-full-row s-row-2'
                 selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=constants.COLOR.LIGHT_BLUE
@@ -68,7 +68,7 @@
                 {{/multi-toggle/item}}
             {{/multi-toggle}}
         </div>
-        <div class="row margin-t margin-b-half">
+        <div class="row margin-t margin-b-half margin-r-half">
             <div class="xs-2-row-20 s-row-20 control-text">
                 <input id="use-voicemail-recording-true"
                     type="radio"
@@ -76,10 +76,10 @@
                     onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) true}}>
             </div>
             <label for="use-voicemail-recording-true"
-                class="xs-9-row-20 control-text pad-l-half pad-r-half clickable">
+                class="xs-18-row-20 s-19-row-20 control-text pad-l-half clickable">
                 <span class="text-normal">Use voicemail recording</span>
             </label>
-            <div class="xs-9-row-20 s-row-2 control-text text-right">
+            <div class="xs-full-row control-text textup-container textup-container--horizontal-spread">
                 {{#if (and
                     model.phone.content.media.content.hasElements
                     (not model.phone.content.shouldRedoVoicemailGreeting))}}
@@ -89,6 +89,11 @@
                         Redo recording
                     </button>
                 {{else}}
+                    <button type="button"
+                        class="btn-link"
+                        onclick={{route-action "stopRedoingVoicemailGreeting"}}>
+                        Cancel redo
+                    </button>
                     {{async-button classNames='btn-link'
                         disabledWhen=(or
                             (not (v-get model 'isValid'))
@@ -99,7 +104,7 @@
                 {{/if}}
             </div>
         </div>
-        <div class="offset-xs-row-20 pad-l-half">
+        <div class="offset-s-row-20">
             {{#if (and
                 model.phone.content.media.content.hasElements
                 (not model.phone.content.shouldRedoVoicemailGreeting))}}
@@ -125,8 +130,8 @@
             {{multi-toggle/binary value=model.phone.content.availability.content.useStaffAvailability
                 falseColor=constants.COLOR.LIGHT_BLUE
                 trueColor=constants.COLOR.BRAND
-                falseString='Custom availability'
-                trueString='Default availability'}}
+                falseString="Custom availability"
+                trueString="Default availability"}}
         {{/if}}
 	</div>
 
@@ -135,8 +140,8 @@
             model.phone.content.availability.content) as |entity|}}
         {{availability-control
             entity=entity
-            entityIdentityProp='constructor.modelName'
-            onEntityDidChange=(action availabilitySlideoutService.onAvailabilityEntitySwitch)
+            entityIdentityProp="constructor.modelName"
+            onEntityDidChange=(route-action "onAvailabilityEntitySwitch")
             others=model.phone.content.others.content
             onTypeChange=(action (mut entity.manualSchedule))
             onManualAvailabilityChange=(action (mut entity.isAvailable))

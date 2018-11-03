@@ -68,12 +68,11 @@ test('displaying time elapsed', function(assert) {
 
   assert.ok(this.$('.audio-control__display').length, 'did render');
   assert.ok(this.$('.audio-control__display__progress').length, 'has progress bar');
-  // TODO fix
-  // assert.ok(
-  //   this.$('.audio-control__display__progress')
-  //     .attr('style')
-  //     .includes(numSeconds1 / numSeconds2)
-  // );
+  assert.ok(
+    this.$('.audio-control__display__progress')
+      .attr('style')
+      .includes(Math.floor(numSeconds1 / numSeconds2 * 100))
+  );
   let text = this.$()
     .text()
     .trim();
@@ -99,6 +98,13 @@ test('displaying time elapsed', function(assert) {
     'current time cannot exceed max time'
   );
   assert.ok(text.includes(formatSecondsAsTimeElapsed(numSeconds2)));
+
+  this.render(hbs`{{audio-control/display message=msg}}`);
+
+  assert.notOk(
+    this.$('.audio-control__display__progress').attr('style'),
+    'if neither time specified, then style attribute of progress bar is null'
+  );
 });
 
 test('select handler within bounds', function(assert) {

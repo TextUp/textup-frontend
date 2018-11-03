@@ -1,6 +1,8 @@
 {{#if audio}}
-    <audio onwaiting={{action _onWaiting}}
-        onplaying={{action _onPlaying}}
+    <audio onloadstart={{action _onLoadStart}}
+        onload={{action _onLoadStop}}
+        onwaiting={{action _onLoadStart}}
+        onplaying={{action _onLoadStop}}
         onerror={{action _onError}}
         onloadedmetadata={{action _onLoadedMetadata}}
         ontimeupdate={{action _onCurrentTimeUpdated}}
@@ -13,20 +15,18 @@
     <button type='button'
         class="audio-control__button {{if _isPlaying 'audio-control__button--active'}}"
         onclick={{action _togglePlay}}
-        disabled={{if _isDisabled 'disabled'}}>
-        {{#if _isPlaying}}
-            {{#if _isLoading}}
-                <span class="fa fa-circle-o-notch fa-spin"></span>
-            {{else}}
-                <span class="fa fa-pause"></span>
-            {{/if}}
+        disabled={{if disabled 'disabled'}}>
+        {{#if _isLoading}}
+            <span class="fa fa-circle-o-notch fa-spin"></span>
+        {{else if _isPlaying}}
+            <span class="fa fa-pause"></span>
         {{else}}
             <span class="fa fa-play"></span>
         {{/if}}
     </button>
     {{audio-control/display
         onSelect=(action _onSeek)
-        message=(if message message _message)
+        message=_message
         currentNumSeconds=_currentTime
         maxNumSeconds=_maxTime}}
 {{/if}}

@@ -6,6 +6,8 @@ import { stringToIntervals, intervalsToString } from '../utils/schedule';
 const { defineProperty, computed, on } = Ember;
 
 export default DS.Model.extend(Dirtiable, {
+  constants: Ember.inject.service(),
+
   isAvailableNow: DS.attr('boolean'),
   nextAvailable: DS.attr('date'),
   nextUnavailable: DS.attr('date'),

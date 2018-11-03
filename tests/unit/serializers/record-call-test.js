@@ -22,8 +22,6 @@ test('serialized form', function(assert) {
     keys = Object.keys(obj.serialize());
 
   assert.notOk(keys.contains('durationInSeconds'));
-  assert.notOk(keys.contains('hasVoicemail'));
-  assert.notOk(keys.contains('voicemailUrl'));
   assert.notOk(keys.contains('voicemailInSeconds'));
 });
 

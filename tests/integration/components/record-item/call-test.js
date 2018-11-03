@@ -2,7 +2,7 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
+import { VALID_IMAGE_DATA_URL, VALID_MP3_URL_1 } from 'textup-frontend/tests/helpers/utilities';
 
 const { run } = Ember;
 let store;
@@ -141,21 +141,20 @@ test('call with notes and media', function(assert) {
   });
 });
 
-// TODO fix -- record call should relay on media for voicemail now
-// test('voicemail', function(assert) {
-//   run(() => {
-//     const rCall = store.createRecord('record-call', {
-//       hasVoicemail: true,
-//       voicemailUrl: 'http://www.example.com'
-//     });
-//     this.setProperties({ rCall });
+test('voicemail', function(assert) {
+  run(() => {
+    const media = store.createRecord('media'),
+      rCall = store.createRecord('record-call', { media });
+    media.addAudio('audio/mpeg', VALID_MP3_URL_1);
 
-//     this.render(hbs`{{record-item/call call=rCall}}`);
+    this.setProperties({ rCall });
 
-//     assert.ok(this.$('.record-item').length);
-//     assert.ok(this.$('.record-item--call').length);
-//     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
-//     assert.notOk(this.$('.image-stack').length, 'no images');
-//     assert.ok(this.$('.audio-control').length, 'has voicemail');
-//   });
-// });
+    this.render(hbs`{{record-item/call call=rCall}}`);
+
+    assert.ok(this.$('.record-item').length);
+    assert.ok(this.$('.record-item--call').length);
+    assert.ok(this.$('.record-item__metadata').length, 'has metadata');
+    assert.notOk(this.$('.image-stack').length, 'no images');
+    assert.ok(this.$('.audio-control').length, 'has voicemail');
+  });
+});

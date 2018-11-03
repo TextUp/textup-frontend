@@ -3,8 +3,6 @@ import RecordItemSerializer from './record-item';
 export default RecordItemSerializer.extend({
   attrs: {
     durationInSeconds: { serialize: false },
-    hasVoicemail: { serialize: false },
-    voicemailUrl: { serialize: false },
     voicemailInSeconds: { serialize: false }
   },
 

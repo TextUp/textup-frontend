@@ -13,6 +13,28 @@
 	&--disabled {
 		opacity: 0.6;
 	}
+	&--error {
+		.audio-control__button {
+			border-color: $color-error-dark;
+			color: $color-error-dark;
+
+			&--active {
+				border-color: $color-error;
+				background-color: $color-error;
+			}
+		}
+		.audio-control__display {
+			color: white;
+			background-color: $color-error;
+
+			&__progress {
+				background-color: $color-error-dark;
+			}
+		}
+	}
+	&--unsupported {
+		display: none;
+	}
 	&__button {
 		height: $control-height;
 		min-width: $control-height;
@@ -48,11 +70,13 @@
 		&__message {
 			@extend .text-ellipsis;
 
+			position: relative; // to create a new stacking context
 			width: 100%;
 			user-select: none;
 			z-index: 10;
 		}
 		&__timestamp {
+			position: relative; // to create a new stacking context
 			flex-shrink: 0;
 			text-align: right;
 			user-select: none;

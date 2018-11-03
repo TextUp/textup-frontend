@@ -11,6 +11,9 @@
     &--stretch-items {
         align-items: stretch;
     }
+    &--horizontal-spread {
+        justify-content: space-between;
+    }
 
     &__item {
         min-width: 0;

@@ -16,7 +16,5 @@ const Validations = buildValidations({
 
 export default RecordItem.extend(Validations, {
   durationInSeconds: DS.attr('number'),
-  hasVoicemail: DS.attr('boolean'),
-  voicemailUrl: DS.attr('string'),
   voicemailInSeconds: DS.attr('number')
 });

@@ -307,6 +307,19 @@ test('handling change', function(assert) {
   $timeToSelect.click();
 });
 
-// todo('adjusting time that falls after the last available time selection', function(assert) {
-//   assert.ok(false);
-// });
+test('adjusting time that falls after the last available time selection', function(assert) {
+  const valueMoment = moment().endOf('day');
+
+  this.setProperties({ value: valueMoment.toDate() });
+  this.render(hbs`{{datetime-control value=value}}`);
+
+  assert.ok(this.$('.datetime-control').length, 'did render');
+
+  const displayedTime = this.$('input')
+    .eq(1)
+    .val();
+  assert.ok(displayedTime, 'has displayed time');
+
+  const displayedMoment = moment(displayedTime, 'hh:mm A');
+  assert.ok(displayedMoment.isBefore(valueMoment));
+});

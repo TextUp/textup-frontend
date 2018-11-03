@@ -3,14 +3,8 @@ import Ember from 'ember';
 export default Ember.Mixin.create({
   authService: Ember.inject.service(),
   availabilitySlideoutService: Ember.inject.service(),
+  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
-
-  setupController(controller) {
-    this._super(...arguments);
-    controller.setProperties({
-      availabilitySlideoutService: this.get('availabilitySlideoutService')
-    });
-  },
 
   actions: {
     startAvailabilitySlideout() {
@@ -36,38 +30,27 @@ export default Ember.Mixin.create({
         .then(() => this.send('closeSlideout'));
     },
 
+    onAvailabilityEntitySwitch(scheduleOwner) {
+      return this.get('availabilitySlideoutService').ensureScheduleIsPresent(scheduleOwner);
+    },
+
     redoVoicemailGreeting() {
-      const phone = this.get('currentModel.phone.content'),
-        media = phone.get('media.content');
-      if (media) {
-        media.rollbackAttributes();
-      }
-      phone.set('shouldRedoVoicemailGreeting', true);
+      const phone = this.get('currentModel.phone.content');
+      this.get('availabilitySlideoutService').startRedoVoicemailGreeting(phone);
+    },
+    stopRedoingVoicemailGreeting() {
+      const phone = this.get('currentModel.phone.content');
+      this.get('availabilitySlideoutService').cancelRedoVoicemailGreeting(phone);
     },
     onFinishRecordingGreeting(mimeType, data) {
       const phone = this.get('currentModel.phone.content');
-      this.get('availabilitySlideoutService')
-        .onAddAudio(phone, mimeType, data)
-        .then(() => {
-          phone.set('shouldRedoVoicemailGreeting', false);
-        });
+      this.get('availabilitySlideoutService').onAddAudio(phone, mimeType, data);
     },
     onRequestVoicemailGreetingCall(numToCall) {
-      return new Ember.RSVP.Promise((resolve, reject) => {
-        const model = this.get('currentModel'),
-          phone = model.get('phone.content');
-        phone.set('requestVoicemailGreetingCall', numToCall);
-        this.get('dataService')
-          .persist(model)
-          .then(savedModel => {
-            // TODO fix it so that when we get a new audio source the audio player refreshes
-            // to display that newly-updated greeting. For now, just close the slideout so when
-            // the user opens it again, the audio player will have the chance to rebuild to
-            // display the latest voicemail greeting
-            this.send('cancelAvailabilitySlideout');
-            resolve(savedModel);
-          }, reject);
-      });
+      return this.get('availabilitySlideoutService').onRequestVoicemailGreetingCall(
+        this.get('currentModel'),
+        numToCall
+      );
     }
   }
 });

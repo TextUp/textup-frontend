@@ -1,5 +1,7 @@
 /*jshint node:true*/
 /* global require, module */
+
+var BabelTranspiler = require('broccoli-babel-transpiler');
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var Funnel = require('broccoli-funnel');
 var mergeTrees = require('broccoli-merge-trees');
@@ -8,13 +10,9 @@ module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     // See https://github.com/ember-cli/ember-cli-preprocessor-registry/issues/8#issuecomment-281373733
     minifyCSS: {
-      options: {
-        processImport: false
-      }
+      options: { processImport: false }
     },
-    sassOptions: {
-      includePaths: ['bower_components']
-    }
+    sassOptions: { includePaths: ['bower_components'] }
   });
 
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.js');
@@ -38,5 +36,21 @@ module.exports = function(defaults) {
     destDir: '/assets/css'
   });
 
-  return app.toTree(mergeTrees([faTree, mapboxTree, cookieConsentTree]));
+  var mp3EncoderTree = new Funnel(app.project.root + '/node_modules/lamejs', {
+    srcDir: '/',
+    include: ['lame.min.js'],
+    destDir: '/workers/encoders'
+  });
+  var webworkersTree = new Funnel(
+    new BabelTranspiler(app.project.root + '/app/workers', { browserPolyfill: true }),
+    {
+      srcDir: '/',
+      include: ['*'],
+      destDir: '/workers'
+    }
+  );
+
+  return app.toTree(
+    mergeTrees([faTree, mapboxTree, cookieConsentTree, mp3EncoderTree, webworkersTree])
+  );
 };

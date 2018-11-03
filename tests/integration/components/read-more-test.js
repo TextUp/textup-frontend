@@ -1,6 +1,9 @@
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
+
+const { run } = Ember;
 
 moduleForComponent('read-more', 'Integration | Component | read more', {
   integration: true
@@ -74,27 +77,23 @@ test('showing and hiding', function(assert) {
     .first()
     .triggerHandler('click');
   let expandedHeight;
-  wait()
-    .then(() => {
-      expandedHeight = this.$().height();
+  wait().then(() => {
+    expandedHeight = this.$().height();
 
-      assert.ok(this.$('.read-more--open').length, 'is open');
-      assert.ok(expandedHeight > originalHeight, 'height has expanded');
-      assert.ok(this.$('.read-more__control').length);
+    assert.ok(this.$('.read-more--open').length, 'is open');
+    assert.ok(expandedHeight > originalHeight, 'height has expanded');
+    assert.ok(this.$('.read-more__control').length);
 
-      const text = this.$().text();
-      assert.notOk(text.includes(this.get('showText')));
-      assert.ok(text.includes(this.get('hideText')));
+    const text = this.$().text();
+    assert.notOk(text.includes(this.get('showText')));
+    assert.ok(text.includes(this.get('hideText')));
 
-      this.$('.read-more__control')
-        .first()
-        .triggerHandler('click');
-      return wait();
-    })
-    .then(() => {
+    this.$('.read-more__control')
+      .first()
+      .triggerHandler('click');
+    run.later(() => {
       assert.notOk(this.$('.read-more--open').length, 'is closed');
-      // TODO fix
-      // assert.ok(this.$().height() < expandedHeight, 'height has shrunk from expanded size');
+      assert.ok(this.$().height() < expandedHeight, 'height has shrunk from expanded size');
       assert.ok(this.$('.read-more__control').length);
 
       const text = this.$().text();
@@ -102,5 +101,6 @@ test('showing and hiding', function(assert) {
       assert.notOk(text.includes(this.get('hideText')));
 
       done();
-    });
+    }, 1000);
+  });
 });

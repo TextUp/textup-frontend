@@ -13,7 +13,7 @@ test('serializes records', function(assert) {
     const obj = this.subject();
     let serialized = obj.serialize();
 
-    assert.notOk(serialized[MEDIA_ID_PROP_NAME]);
+    assert.notOk(serialized.uid);
     assert.equal(serialized.versions.length, 0);
 
     obj.setProperties({ [MEDIA_ID_PROP_NAME]: Math.random() });
@@ -21,7 +21,7 @@ test('serializes records', function(assert) {
 
     serialized = obj.serialize();
 
-    assert.ok(serialized[MEDIA_ID_PROP_NAME]);
+    assert.ok(serialized.uid);
     assert.ok(serialized.versions.length, 1);
   });
 });
