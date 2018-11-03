@@ -142,33 +142,37 @@ test('has error', function(assert) {
 });
 
 test('passing in message overrides any currently displayed message', function(assert) {
-  const message = `${Math.random()}`,
-    startMessage = `${Math.random()}`;
+  run(() => {
+    const message = `${Math.random()}`,
+      startMessage = `${Math.random()}`;
 
-  this.setProperties({ message, startMessage });
+    this.setProperties({ message, startMessage });
 
-  this.render(hbs`{{audio-recorder startMessage=startMessage}}`);
+    this.render(hbs`{{audio-recorder startMessage=startMessage}}`);
 
-  assert.ok(this.$('.audio-control').length, 'did render');
-  assert.ok(this.$('.audio-control--recording').length);
-  assert.ok(
-    this.$()
-      .text()
-      .indexOf(startMessage) > -1
-  );
+    assert.ok(this.$('.audio-control').length, 'did render');
+    assert.ok(this.$('.audio-control--recording').length);
+    assert.ok(
+      this.$()
+        .text()
+        .indexOf(startMessage) > -1
+    );
 
-  this.render(hbs`{{audio-recorder message=message startMessage=startMessage}}`);
+    this.render(hbs`{{audio-recorder message=message startMessage=startMessage}}`);
 
-  assert.ok(this.$('.audio-control').length, 'did render');
-  assert.ok(this.$('.audio-control--recording').length);
-  assert.ok(
-    this.$()
-      .text()
-      .indexOf(message) > -1
-  );
+    assert.ok(this.$('.audio-control').length, 'did render');
+    assert.ok(this.$('.audio-control--recording').length);
+    assert.ok(
+      this.$()
+        .text()
+        .indexOf(message) > -1
+    );
+  });
 });
 
 test('recording + reusing for another recording', function(assert) {
+  assert.ok(1 === 1);
+
   const done = assert.async(),
     onError = sinon.spy(),
     onFinish = sinon.spy(),
@@ -185,11 +189,11 @@ test('recording + reusing for another recording', function(assert) {
   });
 
   this.render(hbs`{{audio-recorder onError=onError
-    onFinish=onFinish
-    startMessage=startMessage
-    recordingMessage=recordingMessage
-    processingMessage=processingMessage}}
-  `);
+  onFinish=onFinish
+  startMessage=startMessage
+  recordingMessage=recordingMessage
+  processingMessage=processingMessage}}
+`);
 
   assert.ok(this.$('.audio-control').length, 'did render');
   assert.ok(this.$('.audio-control--recording').length);
@@ -203,10 +207,10 @@ test('recording + reusing for another recording', function(assert) {
   this.$('button')
     .first()
     .triggerHandler('click');
-  wait().then(() => {
+  run.later(() => {
     assert.ok(this.$('button.audio-control__button--active').length, 'is recording');
-    assert.ok(onError.notCalled);
-    assert.ok(onFinish.notCalled);
+    assert.ok(onError.notCalled, 'error handler not called');
+    assert.ok(onFinish.notCalled, 'finish handler not called');
     assert.ok(
       this.$()
         .text()
@@ -247,5 +251,5 @@ test('recording + reusing for another recording', function(assert) {
         });
       }, 500);
     }, 500);
-  });
+  }, 500);
 });

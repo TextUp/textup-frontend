@@ -158,7 +158,9 @@ export default Ember.Component.extend(PropTypesMixin, {
     const startTime = this.get('_startTimeInMillis');
     if (startTime) {
       const millisElapsed = Date.now() - startTime;
-      this.set('_recordingDurationSoFar', Math.floor(millisElapsed / 1000));
+      run(() => {
+        this.set('_recordingDurationSoFar', Math.floor(millisElapsed / 1000));
+      });
     }
   },
   _clearIntervalTimer() {

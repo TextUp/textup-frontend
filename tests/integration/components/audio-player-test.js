@@ -105,16 +105,15 @@ test('switching sources dynamically', function(assert) {
   this.$('audio').on('loadstart', onLoadStartSpy);
 
   this.setProperties({ audio: el2 });
-  wait()
-    .then(() => {
-      assert.ok(onLoadStartSpy.calledOnce);
 
-      this.setProperties({ audio: el1 });
-      return wait();
-    })
-    .then(() => {
+  run.later(() => {
+    assert.ok(onLoadStartSpy.calledOnce);
+
+    this.setProperties({ audio: el1 });
+    wait().then(() => {
       assert.ok(onLoadStartSpy.calledTwice);
 
       done();
     });
+  }, 500);
 });

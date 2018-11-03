@@ -101,6 +101,6 @@ test('showing and hiding', function(assert) {
       assert.notOk(text.includes(this.get('hideText')));
 
       done();
-    }, 1000);
+    }, 1200);
   });
 });
