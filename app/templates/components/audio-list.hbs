@@ -1,0 +1,10 @@
+{{#each _displayedAudio as |audio index|}}
+    <div>
+        <div>
+            {{audio-player audio=audio}}
+        </div>
+        <div>
+            {{yield audio index}}
+        </div>
+    </div>
+{{/each}}

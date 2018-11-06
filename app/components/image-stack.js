@@ -11,9 +11,10 @@ export default Ember.Component.extend(DisplaysImages, {
   // Internal properties
   // -------------------
 
-  _coverImage: computed.alias('images.firstObject'),
-  _hasMultiple: computed('images.[]', function() {
-    return this.get('images.length') > 1;
+  _images: computed.filterBy('images', 'isImage', true),
+  _coverImage: computed.alias('_images.firstObject'),
+  _hasMultiple: computed('_images.[]', function() {
+    return this.get('_images.length') > 1;
   }),
 
   // Internal handlers

@@ -17,11 +17,12 @@ export default Ember.Component.extend(DisplaysImages, {
   // -------------------
 
   _loadResults: computed(() => Object.create(null)),
+  _images: computed.filterBy('images', 'isImage', true),
   _numImagesLoaded: 0,
-  _shouldReturnResults: computed('images.[]', '_numImagesLoaded', function() {
-    return this.get('images.length') === this.get('_numImagesLoaded');
+  _shouldReturnResults: computed('_images.[]', '_numImagesLoaded', function() {
+    return this.get('_images.length') === this.get('_numImagesLoaded');
   }),
-  _hasImages: computed.alias('images.length'),
+  _hasImages: computed.alias('_images.length'),
 
   // Internal handlers
   // -----------------
@@ -41,10 +42,10 @@ export default Ember.Component.extend(DisplaysImages, {
     }
   },
   _getImageIdFromIndex(imageIndex) {
-    if (imageIndex >= this.get('images.length')) {
+    if (imageIndex >= this.get('_images.length')) {
       return;
     }
-    const image = this.get('images').objectAt(imageIndex);
+    const image = this.get('_images').objectAt(imageIndex);
     return image ? get(image, MEDIA_ID_PROP_NAME) : null;
   }
 });

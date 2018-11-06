@@ -23,7 +23,7 @@
         vertical-align: middle;
         text-align: center;
         transform-style: preserve-3d; // prevent blurry half-pixel effect in children
-        animation: fadein 2s;
+        animation: fadeIn 2s;
         overflow: hidden;
 
         & &__image {

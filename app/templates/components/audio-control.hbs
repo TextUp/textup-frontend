@@ -1,0 +1,31 @@
+{{#hide-show as |hideShow|}}
+    <div class="audio-wrapper__control-container">
+        {{#if _showAdd}}
+            <button type="button"
+                class="audio-wrapper__control"
+                onclick={{hideShow.actions.toggle}}>
+                {{#if hideShow.isOpen}}
+                    <span class="fa fa-minus"></span> {{cancelAddMessage}}
+                {{else}}
+                    <span class="fa fa-plus"></span> {{startAddMessage}}
+                {{/if}}
+            </button>
+        {{/if}}
+        {{yield}}
+    </div>
+    {{#if hideShow.isOpen}}
+        {{audio-recorder onFinish=(action _onAdd hideShow.actions.close)}}
+    {{/if}}
+{{/hide-show}}
+
+{{#audio-list audio=audio
+    maxNumToDisplay=listProps.maxNumToDisplay
+    sortPropName=listProps.sortPropName as |el index|}}
+    {{#if _showRemove}}
+        <button type="button"
+            class="audio-wrapper__control"
+            onclick={{action _onRemove el index}}>
+            <span class="fa fa-times"></span>
+        </button>
+    {{/if}}
+{{/audio-list}}

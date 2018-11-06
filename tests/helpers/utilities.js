@@ -37,6 +37,15 @@ export function mockValidMediaImage(store) {
   });
 }
 
+export function mockValidMediaAudio(store) {
+  return run(() => {
+    const el1 = store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: `${Math.random()}` });
+    el1.addVersion('audio/mpeg', VALID_MP3_URL_1);
+
+    return el1;
+  });
+}
+
 /* jshint ignore:start */
 export function mockModel(id, modelName, otherProps) {
   return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });

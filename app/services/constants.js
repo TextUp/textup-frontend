@@ -50,38 +50,22 @@ export default Ember.Service.extend({
       '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp'
   },
   INFINITE_SCROLL: {
-    DIRECTION: {
-      UP: 'up',
-      DOWN: 'down'
-    }
+    DIRECTION: { UP: 'up', DOWN: 'down' }
   },
   PREVIEW_BADGE: {
-    DISPLAY_MODE: {
-      OUTLINE: 'outline',
-      BACKGROUND: 'background'
-    }
+    DISPLAY_MODE: { OUTLINE: 'outline', BACKGROUND: 'background' }
   },
   PHOTO_CONTROL: {
-    DISPLAY: {
-      GRID: 'image-grid',
-      STACK: 'image-stack'
-    }
+    DISPLAY: { GRID: 'image-grid', STACK: 'image-stack' }
   },
-  IMAGE: {
-    DEFAULT_ALT: 'User provided image'
-  },
-  AUDIO: {
-    MAX_DURATION_IN_SECONDS: 180
-  },
+  IMAGE: { DEFAULT_ALT: 'User provided image' },
+  AUDIO: { MAX_DURATION_IN_SECONDS: 180 },
   FUTURE_MESSAGE: {
     TYPE: {
       CALL: 'CALL', // need to capitalized to match
       TEXT: 'TEXT'
     },
-    INTERVAL_SIZE: {
-      DAY: 1,
-      WEEK: 7
-    }
+    INTERVAL_SIZE: { DAY: 1, WEEK: 7 }
   },
   CONTACT: {
     STATUS: {
@@ -91,16 +75,14 @@ export default Ember.Service.extend({
       BLOCKED: 'BLOCKED'
     }
   },
-  SHARING_PERMISSION: {
-    DELEGATE: 'DELEGATE',
-    VIEW: 'VIEW'
-  },
+  SHARING_PERMISSION: { DELEGATE: 'DELEGATE', VIEW: 'VIEW' },
   ACTION: {
-    MEDIA: {
-      ADD: 'ADD',
-      REMOVE: 'REMOVE'
-    }
+    MEDIA: { ADD: 'ADD', REMOVE: 'REMOVE' }
   },
+  POP_OVER: {
+    POSITION: { TOP: 'top', BOTTOM: 'bottom' }
+  },
+  // TODO remove?
   HIDE_AWAY: {
     // [FUTURE] placeholder until we rewrite hide-away with prop types
     IGNORE_CLOSE_SELECTOR: {

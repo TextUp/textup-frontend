@@ -1,0 +1,135 @@
+.pop-over {
+    $caret-size: $spacing;
+
+    display: inline-block;
+
+    &__body {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s;
+        visibility: none;
+
+        &--opening {
+            display: initial;
+        }
+        &--open {
+            display: initial;
+            position: initial;
+            opacity: 1;
+            visibility: visible;
+        }
+        &--position {
+            @include mq($from: tablet) {
+                &-top {
+                    .pop-over__body__floating-container {
+                        transform: translateY(#{-1 * $caret-size});
+
+                        &:after {
+                            top: 100%;
+                            border-left-width: 1px;
+                            border-bottom-width: 1px;
+                        }
+                    }
+                }
+                &-bottom {
+                    .pop-over__body__floating-container {
+                        transform: translateY(#{$caret-size});
+
+                        &:after {
+                            top: 0;
+                            border-top-width: 1px;
+                            border-right-width: 1px;
+                        }
+                    }
+                }
+            }
+        }
+        &--align {
+            @include mq($from: tablet) {
+                &-left {
+                    .pop-over__body__floating-container:after {
+                        left: $caret-size;
+                        right: auto;
+                    }
+                }
+                &-right {
+                    .pop-over__body__floating-container:after {
+                        left: auto;
+                        right: $caret-size;
+                    }
+                }
+            }
+        }
+
+        &__floating-container {
+            @include mq($from: tablet) {
+                position: absolute;
+                z-index: 100;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    height: $caret-size;
+                    width: $caret-size;
+                    background-color: $bg-color;
+                    border: 0 solid $border-color;
+                    border-top-right-radius: $border-radius;
+                    border-bottom-left-radius: $border-radius;
+                    transform: translateY(-50%) rotate(-45deg);
+                }
+            }
+        }
+        &__dimension-container {
+            @include mq($from: tablet) {
+                overflow: scroll;
+
+                background-color: $bg-color;
+                border-radius: $border-radius;
+                border: 1px solid $border-color;
+
+                box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        @include mq($until: tablet) {
+            &--open &__contents {
+                max-height: 90vh;
+                overflow: scroll;
+            }
+        }
+        &__contents {
+            z-index: 10; // so contents are above the other half of the pop-over caret
+            outline: 0;
+
+            @include mq($until: tablet) {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                background-color: $bg-color;
+                box-shadow: 0 -1px 5px 0px rgba(0, 0, 0, 0.2);
+                transition: max-height 1s;
+                animation: fadeIn 0.05s;
+            }
+            @include mq($from: tablet) {
+                position: relative; // so keeps new stacking context
+            }
+        }
+        &__overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.05);
+            animation-delay: 1.5s;
+            animation: fadeIn 4s;
+
+            @include mq($from: tablet) {
+                background-color: transparent;
+            }
+        }
+    }
+}

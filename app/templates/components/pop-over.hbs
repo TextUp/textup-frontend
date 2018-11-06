@@ -1,0 +1,22 @@
+{{yield _publicAPI}}
+
+{{!-- body will be hoisted up to wormhole --}}
+<div class="pop-over__body
+    {{if _isOpening 'pop-over__body--opening'}}
+    {{if _publicAPI.isOpen 'pop-over__body--open'}}
+    {{if _bodyPositionTop 'pop-over__body--position-top' 'pop-over__body--position-bottom'}}
+    {{if _bodyAlignLeft 'pop-over__body--align-left' 'pop-over__body--align-right'}}">
+    <div class="pop-over__body__floating-container" style={{_safeBodyFloatStyles}}>
+        <div class="pop-over__body__dimension-container" style={{_safeBodyDimensionStyles}}>
+            <div class="pop-over__body__contents"
+                tabindex="-1"
+                onclick={{action _tryCloseOnBody}}
+                ontouchend={{action _tryCloseOnBody}}>
+                {{yield to="inverse"}}
+            </div>
+        </div>
+    </div>
+    <div class="pop-over__body__overlay"
+        onclick={{action _close}}
+        ontouchend={{action _close}}></div>
+</div>

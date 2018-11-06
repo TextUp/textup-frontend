@@ -6,18 +6,21 @@ import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
-  mockValidMediaImage
+  mockValidMediaImage,
+  mockValidMediaAudio
 } from 'textup-frontend/tests/helpers/utilities';
 
 const { typeOf } = Ember;
 
 moduleForComponent('image-stack', 'Integration | Component | image stack', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.inject.service('store');
+  }
 });
 
 test('inputs', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    itemClass = 'image-stack-test-inputs';
+  const itemClass = 'image-stack-test-inputs';
 
   this.render(hbs`{{image-stack}}`);
 
@@ -31,17 +34,32 @@ test('inputs', function(assert) {
   assert.notOk($el.hasClass('image-stack--multiple'), 'does NOT have multiple images');
   assert.equal(this.$(`.${itemClass}`).length, 1);
 
-  this.set('images', [mockValidMediaImage(store), mockValidMediaImage(store)]);
+  this.set('images', [mockValidMediaImage(this.store), mockValidMediaImage(this.store)]);
 
   assert.ok($el.hasClass('image-stack'));
   assert.ok($el.hasClass('image-stack--multiple'), 'DOES have multiple images');
   assert.equal(this.$(`.${itemClass}`).length, 1);
 });
 
+test('ignoring non-image media elements', function(assert) {
+  const image = mockValidMediaImage(this.store),
+    audio = mockValidMediaAudio(this.store);
+  this.setProperties({ onlyImage: [image], bothTypes: [audio, image] });
+
+  this.render(hbs`{{image-stack images=onlyImage}}`);
+
+  assert.ok(this.$('.image-stack').length, 'did render');
+  assert.notOk(this.$('.image-stack--multiple').length);
+
+  this.render(hbs`{{image-stack images=bothTypes}}`);
+
+  assert.ok(this.$('.image-stack').length, 'did render');
+  assert.notOk(this.$('.image-stack--multiple').length);
+});
+
 test('successfully loading an image', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    done = assert.async(1),
-    mockImage = mockValidMediaImage(store),
+  const done = assert.async(1),
+    mockImage = mockValidMediaImage(this.store),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1);
@@ -55,9 +73,8 @@ test('successfully loading an image', function(assert) {
 });
 
 test('failing to load image', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    done = assert.async(1),
-    mockImage = mockInvalidMediaImage(store),
+  const done = assert.async(1),
+    mockImage = mockInvalidMediaImage(this.store),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1, 'only try the first image');
@@ -66,7 +83,7 @@ test('failing to load image', function(assert) {
     };
 
   this.setProperties({
-    images: [mockImage, mockValidMediaImage(store), mockValidMediaImage(store)],
+    images: [mockImage, mockValidMediaImage(this.store), mockValidMediaImage(this.store)],
     onLoadEnd
   });
 
@@ -74,11 +91,10 @@ test('failing to load image', function(assert) {
 });
 
 test('rendering block form', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    testClassName = 'image-stack-block-form',
+  const testClassName = 'image-stack-block-form',
     images = Array(3)
       .fill()
-      .map(() => mockValidMediaImage(store)),
+      .map(() => mockValidMediaImage(this.store)),
     done = assert.async(),
     onClick = clickedImage => {
       assert.ok(clickedImage instanceof MediaElement);
@@ -106,11 +122,10 @@ test('rendering block form', function(assert) {
 });
 
 test('opening gallery when selecting item on top of stack', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    itemClass = 'image-stack-test-inputs',
+  const itemClass = 'image-stack-test-inputs',
     done = assert.async();
 
-  this.setProperties({ images: [mockValidMediaImage(store)], itemClass });
+  this.setProperties({ images: [mockValidMediaImage(this.store)], itemClass });
   this.render(hbs`{{image-stack images=images itemClass=itemClass}}`);
 
   assert.ok(this.$('.image-stack').length, 'component did render');

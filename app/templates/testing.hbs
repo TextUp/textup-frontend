@@ -1,0 +1,16 @@
+<div style="padding: 200px; background: white; ">
+    {{#pop-over position="top" bodyClickWillClose=false as |popOver|}}
+        <button type="button" onclick={{popOver.actions.toggle}}>Toggle pop over</button>
+    {{else}}
+        <div style="width: auto; height: auto; padding: 1em;">
+            <h1>Hi I'm the pop over body</h1>
+            <ul>
+                <li>Option 1</li>
+                <li>Option 2</li>
+                <li>Option 3</li>
+                <li>Option 4</li>
+                <li>Option 5</li>
+            </ul>
+        </div>
+    {{/pop-over}}
+</div>

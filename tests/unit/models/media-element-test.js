@@ -21,6 +21,25 @@ test('properties', function(assert) {
   });
 });
 
+test('checking type of media', function(assert) {
+  run(() => {
+    const obj = this.subject();
+
+    assert.notOk(obj.get('isImage'));
+    assert.notOk(obj.get('isAudio'));
+
+    obj.addVersion('audio/mpeg', 'base64;valid-audio-data');
+
+    assert.notOk(obj.get('isImage'));
+    assert.ok(obj.get('isAudio'));
+
+    obj.addVersion('image/jpeg', 'base64;valid-image-data');
+
+    assert.ok(obj.get('isImage'));
+    assert.ok(obj.get('isAudio'));
+  });
+});
+
 test('adding versions and rolling back', function(assert) {
   run(() => {
     const obj = this.subject(),

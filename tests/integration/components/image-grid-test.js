@@ -6,13 +6,17 @@ import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
-  mockValidMediaImage
+  mockValidMediaImage,
+  mockValidMediaAudio
 } from 'textup-frontend/tests/helpers/utilities';
 
 const { typeOf } = Ember;
 
 moduleForComponent('image-grid', 'Integration | Component | image grid', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.inject.service('store');
+  }
 });
 
 test('inputs', function(assert) {
@@ -28,17 +32,19 @@ test('inputs', function(assert) {
 });
 
 test('loading and reloading several images', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    done = assert.async(1),
+  const done = assert.async(1),
     validImages = Array(8)
       .fill()
-      .map(() => mockValidMediaImage(store)),
+      .map(() => mockValidMediaImage(this.store)),
     validImages2 = Array(2)
       .fill()
-      .map(() => mockValidMediaImage(store)),
+      .map(() => mockValidMediaImage(this.store)),
     invalidImages = Array(3)
       .fill()
-      .map(() => mockInvalidMediaImage(store)),
+      .map(() => mockInvalidMediaImage(this.store)),
+    audioElements = Array(2)
+      .fill()
+      .map(() => mockValidMediaAudio(this.store)),
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(
@@ -51,7 +57,10 @@ test('loading and reloading several images', function(assert) {
 
       // load 2
       this.setProperties({
-        images: [].pushObjects(validImages2).pushObjects(invalidImages),
+        images: []
+          .pushObjects(validImages2)
+          .pushObjects(invalidImages)
+          .pushObjects(audioElements),
         onLoadEnd: onLoadEnd2
       });
       this.render(hbs`{{image-grid images=images onLoadEnd=onLoadEnd}}`);
@@ -70,17 +79,22 @@ test('loading and reloading several images', function(assert) {
     };
 
   // load 1
-  this.setProperties({ images: [].pushObjects(validImages).pushObjects(invalidImages), onLoadEnd });
+  this.setProperties({
+    images: []
+      .pushObjects(validImages)
+      .pushObjects(invalidImages)
+      .pushObjects(audioElements),
+    onLoadEnd
+  });
   this.render(hbs`{{image-grid images=images onLoadEnd=onLoadEnd}}`);
 });
 
 test('rendering block form', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    testClassName = 'image-grid-block-form',
+  const testClassName = 'image-grid-block-form',
     itemClassName = 'image-grid-item-class-test',
     images = Array(5)
       .fill()
-      .map(() => mockValidMediaImage(store)),
+      .map(() => mockValidMediaImage(this.store)),
     done = assert.async(images.length),
     onClick = (clickedImage, index) => {
       assert.ok(clickedImage instanceof MediaElement);
@@ -107,11 +121,10 @@ test('rendering block form', function(assert) {
 });
 
 test('opening gallery when selecting any of the items in the grid', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
-    itemClass = 'image-grid-test-inputs',
+  const itemClass = 'image-grid-test-inputs',
     images = Array(8)
       .fill()
-      .map(() => mockValidMediaImage(store)),
+      .map(() => mockValidMediaImage(this.store)),
     done = assert.async();
 
   this.setProperties({ images, itemClass });

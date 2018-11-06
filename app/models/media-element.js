@@ -7,7 +7,15 @@ const { computed, isPresent } = Ember;
 
 export default MF.Fragment.extend({
   [MEDIA_ID_PROP_NAME]: DS.attr('string'),
+  whenCreated: DS.attr('date'),
   versions: computed.readOnly('_versions'),
+
+  isImage: computed('_versions.[]', function() {
+    return this.get('_versions').any(vers => vers.get('type').includes('image'));
+  }),
+  isAudio: computed('_versions.[]', function() {
+    return this.get('_versions').any(vers => vers.get('type').includes('audio'));
+  }),
 
   // Private properties
   // ------------------
