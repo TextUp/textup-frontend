@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 
   classNames: 'tab-container',
 
-  _hideAway: null,
+  _hideShow: null,
   _items: defaultIfAbsent([]),
 
   // Computed properties
@@ -71,20 +71,8 @@ export default Ember.Component.extend({
         this.get('_items').pushObject(item);
       });
     },
-    switchIfSelected: function() {
-      const switchIndex = this.get('_switchToIndex');
-      if (Ember.isPresent(switchIndex)) {
-        // actually begin the switching process
-        // after the dropdown has finished closing
-        this.switchTo(switchIndex);
-      }
-      this.set('_switchToIndex', null);
-    },
     switchTo: function(index) {
       this.switchTo(index);
-    },
-    storeSwitchToIndex: function(itemIndex) {
-      this.set('_switchToIndex', itemIndex);
     },
     next: function() {
       this.next();
@@ -104,30 +92,30 @@ export default Ember.Component.extend({
     this.switchTo(this.get('_currentIndex') - 1);
   },
   switchTo: function(index) {
+    if (!Ember.isPresent(index)) {
+      return;
+    }
     const itemIndex = this._normalizeIndex(index);
     if (this.get('_currentIndex') === itemIndex) {
       return;
     }
     const publicAPI = this.get('publicAPI'),
-      dropdown = this.get('_hideAway'),
       items = this.get('_items'),
       current = items.objectAt(this.get('_currentIndex')),
       target = items.objectAt(itemIndex),
-      animation = this.get('animation'),
-      doSwitch = function() {
-        current.actions.hide(animation).then(() => {
-          target.actions.show(animation).then(() => {
-            this.set('_currentIndex', itemIndex);
-            Ember.tryInvoke(this, 'onChanged', [current, target, publicAPI]);
-          });
-        });
-      }.bind(this);
+      animation = this.get('animation');
     Ember.tryInvoke(this, 'onChange', [current, target, publicAPI]);
-    if (dropdown.isOpen) {
-      dropdown.actions.close(null, true, doSwitch);
-    } else {
-      doSwitch();
-    }
+    this._doSwitch(animation, current, target, itemIndex);
+  },
+  _doSwitch(animation, current, target, itemIndex) {
+    const publicAPI = this.get('publicAPI');
+    current.actions
+      .hide(animation)
+      .then(() => target.actions.show(animation))
+      .then(() => {
+        this.set('_currentIndex', itemIndex);
+        Ember.tryInvoke(this, 'onChanged', [current, target, publicAPI]);
+      });
   },
 
   // Nav

@@ -1,11 +1,11 @@
-{{#sortable-group classNames='existing-numbers'
+{{#sortable-group classNames="existing-numbers"
     onChange="reorderNumbers" as |group|}}
     {{#each numbers as |num i|}}
-        {{#sortable-item classNames='input-group'
+        {{#sortable-item classNames="input-group"
             model=num group=group handle=".handle"}}
             {{#if (not readonly)}}
                 <div class="input-group-addon blend-in no-select">
-                    <button class="btn" type='button' {{action 'removeNumber' i}}>
+                    <button class="btn" type="button" {{action "removeNumber" i}}>
                         <span class="fa fa-trash"></span>
                     </button>
                 </div>
@@ -13,44 +13,44 @@
             {{#phone-control
                 number=(readonly num.number)
                 disabled=readonly
-                controlClass='blend-in handle'
-                controlButtonClass='btn-default'
-                onChange=(action 'updateNumber' num i)
-                onFocusLeave=(action 'removeIfEmpty' i)
+                controlClass="blend-in handle"
+                controlButtonClass="btn-default"
+                onChange=(action "updateNumber" num i)
+                onFocusLeave=(action "removeIfEmpty" i)
                 showControl=true}}
             {{else}}
-                <span class='fa fa-arrows-v'></span>
+                <span class="fa fa-arrows-v"></span>
             {{/phone-control}}
         {{/sortable-item}}
     {{/each}}
 {{/sortable-group}}
 {{#if (not readonly)}}
-    {{#hide-away classNames='margin-t'
-        tabindex=false
-        clickOutToClose=false
-        animation='fade'
+    {{#hide-show classNames="margin-t"
         startOpen=(if numbers false true)
-        bodyFocusOnOpenSelector='.phone-control'
-        onClose=(action (mut newNumber) '')
-        hideTriggerOnOpen=true as |hideAway|}}
-        <div class='input-group'>
-            {{#if hasNumbers}}
-                <span class="input-group-addon no-select">
-                    <button class='btn' type='button'
-                        onclick={{hideAway.actions.close}}>
-                        <span class="fa fa-times"></span>
-                    </button>
-                </span>
-            {{/if}}
-            {{phone-control number=newNumber
-                controlButtonClass='btn-success'
-                onChange=(action 'storeNewNumber')
-                onClick=(action 'addNewNumber')
-                onFocusLeave=(action 'addNewNumber')}}
-        </div>
-    {{else}}
-        <button class="btn btn-span" type='button'>
-            <span class="fa fa-plus"></span>
-        </button>
-    {{/hide-away}}
+        focusOnOpenSelector=".phone-control"
+        onClose=(action (mut newNumber) "") as |hideShow|}}
+        {{#if hideShow.isOpen}}
+            <div class="input-group">
+                {{#if hasNumbers}}
+                    <span class="input-group-addon no-select">
+                        <button class="btn" type="button"
+                            onclick={{hideShow.actions.close}}>
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </span>
+                {{/if}}
+                {{phone-control number=newNumber
+                    controlButtonClass="btn-success"
+                    onChange=(action "storeNewNumber")
+                    onClick=(action "addNewNumber")
+                    onFocusLeave=(action "addNewNumber")}}
+            </div>
+        {{else}}
+            <button class="btn btn-span"
+                type="button"
+                onclick={{hideShow.actions.open}}>
+                <span class="fa fa-plus"></span>
+            </button>
+        {{/if}}
+    {{/hide-show}}
 {{/if}}

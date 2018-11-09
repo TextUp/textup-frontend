@@ -1,17 +1,17 @@
-<div class="textup-container margin-b-half">
-    <div class="textup-container__item textup-container__item--grow">
+<div class="flex margin-b-half">
+    <div class="flex__item flex__item--grow">
         <p class="text-darken text-bold text-ellipsis">
             {{phone-number entity.identifier}}
         </p>
     </div>
-    <div class="textup-container__item textup-container__item--no-shrink text-right">
+    <div class="flex__item flex__item--no-shrink text-right">
         <p>
             {{moment-from-now entity.lastRecordActivity interval=10000}}
         </p>
     </div>
 </div>
-<div class="textup-container text-smaller">
-    <div class="textup-container__item textup-container__item--grow text-ellipsis">
+<div class="flex text-smaller">
+    <div class="flex__item flex__item--grow text-ellipsis">
         {{#if entity.isShared}}
             <span class="badge">
                 {{entity.sharedBy}}
@@ -30,7 +30,7 @@
             </span>
         {{/if}}
     </div>
-    <div class="textup-container__item textup-container__item--no-shrink text-right">
+    <div class="flex__item flex__item--no-shrink text-right">
         {{#if (and entity.isUnread entity.unreadInfo)}}
             <div class="text-big text-brand">
                 <span class="margin-l-half">{{entity.unreadInfo.numTexts}}</span>
@@ -41,11 +41,8 @@
                 <i class="fa fa-microphone margin-l-quarter" aria-hidden="true"></i>
             </div>
         {{else if entity.hasTags}}
-            {{preview-badge class="badge badge--constrain-width"
-                displayMode=constants.PREVIEW_BADGE.DISPLAY_MODE.OUTLINE
-                onlyShowFull=true
-                color=entity.tags.content.firstObject.hexColor
-                content=entity.tags.content.firstObject.name}}
+            {{color-badge color=entity.tags.content.firstObject.hexColor
+                text=entity.tags.content.firstObject.name}}
             {{#if (gt entity.tags.content.length 1)}}
                 <span class="badge">
                     +{{plus entity.tags.content.length -1}}

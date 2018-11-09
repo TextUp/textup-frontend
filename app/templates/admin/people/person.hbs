@@ -35,8 +35,9 @@
                             	'admin.people.person'
                                 constants.SLIDEOUT.OUTLET.DETAIL}}>
 							{{#each person.teams as |team|}}
-				                {{preview-badge classNames='clickable'
-				                	color=team.hexColor content=team.name}}
+				                {{color-badge classNames='clickable'
+                                    text=team.name
+                                    color=team.hexColor}}
 				            {{/each}}
                         </span>
                     </div>
@@ -46,30 +47,35 @@
                 full-height row">
                 <div class="horizontal-items pull-right">
 					{{#if (not person.isAuthUser)}}
-                        <span class='clear-badge no-space'>
-                            {{#hide-away/dropdown}}
-                                <li tabindex='0' class='dropdown-item'
-		            			onclick={{route-action 'resetPassword' person.username}}>
-									Send password reset
-								</li>
-								<li tabindex='0' class='dropdown-item'
-                                    {{action 'toggleSlideout'
-		                            	'slideouts/team/membership'
-		                            	'admin.people.person'
-                                        constants.SLIDEOUT.OUTLET.DETAIL}}>
-                                    Teams
-                                    <span class="badge">
-                                        {{person.teams.content.length}}
-                                    </span>
-                                </li>
-			                    <li class='dropdown-divider'>Status</li>
-			                    {{partial 'partials/staff/status'}}
-                            {{else}}
-                                <button class='btn' type='button'>
+                        <span class="clear-badge no-space">
+                            {{#pop-over as |popOver|}}
+                                <button class="btn"
+                                    type="button"
+                                    onclick={{popOver.actions.toggle}}>
                                     More
-                                    <span class='fa fa-caret-down'></span>
+                                    <span class="fa fa-caret-down"></span>
                                 </button>
-                            {{/hide-away/dropdown}}
+                            {{else}}
+                                <ul class="dropdown">
+                                    <li tabindex="0"
+                                        class="dropdown-item"
+                                        onclick={{route-action "resetPassword" person.username}}>
+                                        Send password reset
+                                    </li>
+                                    <li tabindex="0" class="dropdown-item"
+                                        {{action "toggleSlideout"
+                                            "slideouts/team/membership"
+                                            "admin.people.person"
+                                            constants.SLIDEOUT.OUTLET.DETAIL}}>
+                                        Teams
+                                        <span class="badge">
+                                            {{person.teams.content.length}}
+                                        </span>
+                                    </li>
+                                    <li class="dropdown-divider">Status</li>
+                                    {{partial "partials/staff/status"}}
+                                </ul>
+                            {{/pop-over}}
                         </span>
                     {{else}}
                     	<span class='clear-badge no-space'>

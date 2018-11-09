@@ -9,27 +9,29 @@
                     <span class="fa fa-chevron-left"></span>
                 </button>
             </span>
-            <span class='clear-badge no-space'>
-                {{#hide-away/dropdown horizontal='left'}}
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'selectAll'}}>
-                        All
-                    </li>
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'selectAllStaff'}}>
-                        Only staff
-                    </li>
-                    <li tabindex='0' class='dropdown-item'
-                        {{action 'leave'}}>
-                        None
-                    </li>
-                {{else}}
-                    <button class='btn' type='button'>
+            <span class="clear-badge no-space">
+                {{#pop-over as |popOver|}}
+                    <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                         <span class="display-xs">{{selected.length}} selected</span>
                         <span class="display-s display-m display-l">Select</span>
-                        <span class='fa fa-caret-down'></span>
+                        <span class="fa fa-caret-down"></span>
                     </button>
-                {{/hide-away/dropdown}}
+                {{else}}
+                    <ul class="dropdown">
+                        <li tabindex="0" class="dropdown-item"
+                            {{action "selectAll"}}>
+                            All
+                        </li>
+                        <li tabindex="0" class="dropdown-item"
+                            {{action "selectAllStaff"}}>
+                            Only staff
+                        </li>
+                        <li tabindex="0" class="dropdown-item"
+                            {{action "leave"}}>
+                            None
+                        </li>
+                    </ul>
+                {{/pop-over}}
 			</span>
             <span class='clear-badge display-s display-m display-l'>
                 {{#tool-tip classNames='btn-expand'
@@ -51,35 +53,39 @@
         {{#if selected}}
             <div class="horizontal-items xs-row-3 l-6-row-10 pull-right">
                 <span class='clear-badge no-space display-xs display-s display-m'>
-                    {{#hide-away/dropdown}}
-                        <li tabindex='0' class='dropdown-item'
-                            {{action 'toggleSlideout'
-                                'slideouts/team/membership'
-                                'admin/people/many'
-                                constants.SLIDEOUT.OUTLET.DETAIL}}>
-                            Edit teams
-                        </li>
-                        {{#if (not selectedMe)}}
-                            <li class='dropdown-divider'>Status</li>
-                            {{partial 'partials/staff/status'}}
-                        {{/if}}
-                    {{else}}
-                        <button class='btn' type='button'>
+                    {{#pop-over as |popOver|}}
+                        <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                             Actions
-                            <span class='fa fa-caret-down'></span>
+                            <span class="fa fa-caret-down"></span>
                         </button>
-                    {{/hide-away/dropdown}}
+                    {{else}}
+                        <ul class="dropdown">
+                            <li tabindex="0" class="dropdown-item"
+                                {{action "toggleSlideout"
+                                    "slideouts/team/membership"
+                                    "admin/people/many"
+                                    constants.SLIDEOUT.OUTLET.DETAIL}}>
+                                Edit teams
+                            </li>
+                            {{#if (not selectedMe)}}
+                                <li class="dropdown-divider">Status</li>
+                                {{partial "partials/staff/status"}}
+                            {{/if}}
+                        </ul>
+                    {{/pop-over}}
                 </span>
                 {{#if (not selectedMe)}}
-                    <span class='clear-badge no-space display-l'>
-                        {{#hide-away/dropdown}}
-                            {{partial 'partials/staff/status'}}
-                        {{else}}
-                            <button class='btn' type='button'>
+                    <span class="clear-badge no-space display-l">
+                        {{#pop-over as |popOver|}}
+                            <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                                 Status
-                                <span class='fa fa-caret-down'></span>
+                                <span class="fa fa-caret-down"></span>
                             </button>
-                        {{/hide-away/dropdown}}
+                        {{else}}
+                            <ul class="dropdown">
+                                {{partial 'partials/staff/status'}}
+                            </ul>
+                        {{/pop-over}}
                     </span>
                 {{/if}}
                 <span class='clear-badge display-l'>

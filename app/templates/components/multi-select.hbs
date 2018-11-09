@@ -1,56 +1,21 @@
-{{#hide-away
-	doRegister=(action (mut _dropdown))
-	onOpened=(action 'afterDropdownOpen')
-	onClosed=(action 'afterDropdownClose')
+{{#hide-show doRegister=(action (mut _dropdown))
+	onOpen=(action "afterDropdownOpen")
+	onClose=(action "afterDropdownClose")
 	disabled=disabled
-	scrollSelector=scrollSelector
-	animation=animation
-	openOn=openOn
-	floating=floating
-	floatHeightMax=floatHeightMax
-	floatMode=floatMode
-	horizontal=horizontal
-	vertical=vertical
-	throttleThreshold=throttleThreshold
-	autoOpen=false
-	bodyClickClose=false
-	focusOutClose=true
 	clickOutToClose=true
-	ignoreCloseSelectors=constants.HIDE_AWAY.IGNORE_CLOSE_SELECTOR.NONE}}
-	<div class="{{bodyClass}}">
-		{{#each _remainingResults as |item index|}}
-			<div class="multi-select-item multi-select-item-default {{itemClass}}"
-				data-index={{index}} onclick={{action 'selectItem' item index}}>
-				{{#if hasBlock}}
-					{{yield item publicAPI}}
-				{{else}}
-					<span class="text-bold">
-						{{if displayProperty (get item displayProperty) item}}
-					</span>
-				{{/if}}
-			</div>
-		{{else if isSearching}}
-			<div class="multi-select-item multi-select-item-default {{itemClass}}">
-				{{searchingMessage}} <span class="fa fa-circle-o-notch fa-spin"></span>
-			</div>
-		{{else}}
-			<div class="multi-select-item multi-select-item-default {{itemClass}}">
-				{{noResultsMessage}}
-			</div>
-		{{/each}}
-	</div>
-{{else}}
+	focusOutToClose=true
+	ignoreCloseSelector="" as |hideShow|}}
 	{{#if hasBlock}}
 		{{#component inputComponent data=selected
 			displayProperty=displayProperty
 			autoCloseEdit=false
 			itemClass=itemClass
 			doRegister=(action (mut _input))
-			onUpdate=(action 'update')
-			onInsert=(action 'insert')
-			onRemove=(action 'remove')
-			onInputStart=(action 'inputStart')
-			onInput=(action 'inputChange')
+			onUpdate=(action "update")
+			onInsert=(action "insert")
+			onRemove=(action "remove")
+			onInputStart=(action "inputStart")
+			onInput=(action "inputChange")
 			placeholder=searchPlaceholder as |selectedItem|}}
 			{{yield selectedItem publicAPI}}
 		{{/component}}
@@ -60,11 +25,36 @@
 			autoCloseEdit=false
 			itemClass=itemClass
 			doRegister=(action (mut _input))
-			onUpdate=(action 'update')
-			onInsert=(action 'insert')
-			onRemove=(action 'remove')
-			onInputStart=(action 'inputStart')
-			onInput=(action 'inputChange')
+			onUpdate=(action "update")
+			onInsert=(action "insert")
+			onRemove=(action "remove")
+			onInputStart=(action "inputStart")
+			onInput=(action "inputChange")
 			placeholder=searchPlaceholder}}
 	{{/if}}
-{{/hide-away}}
+	{{#if hideShow.isOpen}}
+		<div class={{bodyClass}}>
+			{{#each _remainingResults as |item index|}}
+				<div class="multi-select-item multi-select-item-default {{itemClass}}"
+					data-index={{index}}
+					onclick={{action "selectItem" item index}}>
+					{{#if hasBlock}}
+						{{yield item publicAPI}}
+					{{else}}
+						<span class="text-bold">
+							{{if displayProperty (get item displayProperty) item}}
+						</span>
+					{{/if}}
+				</div>
+			{{else if isSearching}}
+				<div class="multi-select-item multi-select-item-default {{itemClass}}">
+					{{searchingMessage}} <span class="fa fa-circle-o-notch fa-spin"></span>
+				</div>
+			{{else}}
+				<div class="multi-select-item multi-select-item-default {{itemClass}}">
+					{{noResultsMessage}}
+				</div>
+			{{/each}}
+		</div>
+	{{/if}}
+{{/hide-show}}

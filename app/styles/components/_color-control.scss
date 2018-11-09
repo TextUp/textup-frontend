@@ -5,11 +5,24 @@
 }
 .colpick {
 	border-width: 0;
-    border-radius: 0;
-	background-color: $bg-color;
+	border-radius: 0;
+	background-color: $bg-lightest-color;
 	height: 171px;
+	margin: 0 auto;
 
-	.colpick_new_color, .colpick_current_color, .colpick_hex_field {
+	& &_color {
+		outline-width: 0;
+		border: 1px solid $border-color;
+		border-radius: $border-radius;
+	}
+	& &_hue {
+		border-color: transparent;
+		border-radius: $border-radius;
+	}
+
+	&_new_color,
+	&_current_color,
+	&_hex_field {
 		display: none;
 	}
 }

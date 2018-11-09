@@ -1,5 +1,4 @@
 import * as BoundUtils from 'textup-frontend/utils/bounds';
-import sinon from 'sinon';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | bounds');
@@ -340,8 +339,6 @@ test('building floating and dimension styles for bottom/left', function(assert) 
   bodyEl = { scrollWidth: 2000, scrollHeight: 1000 };
   floatingStyles = BoundUtils.buildFloatingStyles.call(this, false, true, triggerEl, bodyEl);
   dimensionStyles = BoundUtils.buildDimensionStyles.call(this, false, true, triggerEl, bodyEl);
-
-  console.log('dimensionStyles', dimensionStyles);
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 2, 'overflow both directions');

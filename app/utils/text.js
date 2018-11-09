@@ -3,7 +3,7 @@ import Inflector from 'ember-inflector';
 
 const { isBlank, isPresent } = Ember;
 
-function pluralize(word, count) {
+export function pluralize(word, count) {
   const infl = Inflector.inflector;
   if (isNaN(count)) {
     return word;
@@ -11,11 +11,11 @@ function pluralize(word, count) {
   return parseInt(count) === 1 ? infl.singularize(word) : infl.pluralize(word);
 }
 
-function lowercase(word) {
+export function lowercase(word) {
   return isBlank(word) ? word : word.toLowerCase();
 }
 
-function capitalize(word, numToCap) {
+export function capitalize(word, numToCap) {
   if (isBlank(word)) {
     return word;
   }
@@ -29,7 +29,7 @@ function capitalize(word, numToCap) {
 // parameters, in order:
 //  - text to abbreviate
 //  - max length of abbreviate, if absent will take first letter of each word
-function abbreviate(content, maxLength) {
+export function abbreviate(content, maxLength) {
   if (isBlank(content)) {
     return content;
   }
@@ -42,5 +42,3 @@ function abbreviate(content, maxLength) {
     .toUpperCase();
   return isPresent(maxLength) ? abbrev.slice(0, maxLength) : abbrev;
 }
-
-export { pluralize, capitalize, lowercase, abbreviate };

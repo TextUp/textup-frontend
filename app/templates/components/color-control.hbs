@@ -1,27 +1,23 @@
 <div class="input-group">
-    <input type="text" class="form-control text-bold text-center" readonly=""
+    <input type="text"
+        class="form-control text-bold text-center"
+        readonly="readonly"
         placeholder={{placeholder}}
-        value={{hexColor}}
-        style='background-color:{{hexColor}}; color: {{complement}};'>
+        value={{_hexColor}}
+        style={{_inputStyle}}>
     <span class="input-group-addon blend-in">
-        {{#hide-away tabindex=false
-            disabled=disabled
-            bodyClickClose=false
-            floating=true
-            floatMode=floatMode
-            animation='fade'
-            ignoreCloseSelectors=constants.HIDE_AWAY.IGNORE_CLOSE_SELECTOR.NONE
-            scrollSelector=scrollSelector as |dropdown position|}}
-            <div class="dropdown {{position.vertical}} {{position.horizontal}}">
-                {{col-pick value=hexColor
-                    flat=true
-                    useHashtag=true}}
-            </div>
-        {{else}}
-            <button class="btn" type='button'
-                style='color:{{hexColor}};'>
-                <span class="fa fa-pencil-square"></span>
+        {{#pop-over bodyClickWillClose=false as |popOver|}}
+            <button class="btn"
+                type="button"
+                onclick={{popOver.actions.toggle}}>
+                {{#if popOver.isOpen}}
+                    <span class="fa fa-times"></span>
+                {{else}}
+                    <span class="fa fa-pencil"></span>
+                {{/if}}
             </button>
-        {{/hide-away}}
+        {{else}}
+            {{col-pick value=_hexColor flat=true useHashtag=true}}
+        {{/pop-over}}
     </span>
 </div>

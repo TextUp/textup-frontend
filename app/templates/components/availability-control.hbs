@@ -61,25 +61,28 @@
         schedule=entity.schedule.content
         onChange=(action "replaceRange" target=entity.schedule.content) as |info|}}
         {{#if others}}
-            {{#hide-away tabindex=false
-                hideTriggerOnOpen=false
-                bodyClickClose=false
-                clickOutToClose=false
-                animation="slide"
-                startOpen=false
-                classNames="margin-t-half"
-                bodyClass="pad-t pad-b-half pad-l pad-r bg-color relative-parent"}}
-                {{#each others as |_other|}}
-                    <div class="margin-b-half">
-                        {{availability-control/other entity=_other dayOfWeek=info.dayOfWeek}}
-                    </div>
-                {{/each}}
-            {{else}}
-                <button type="button" class="btn btn-span btn--keep-case btn-plain">
-                    Show team availability
-                    <span class="fa fa-angle-down"></span>
+            {{#hide-show as |hideShow|}}
+                <button type="button"
+                    class="btn btn-span btn--keep-case btn-plain"
+                    onclick={{hideShow.actions.toggle}}>
+                    {{#if hideShow.isOpen}}
+                        Hide team availability
+                        <span class="fa fa-angle-up"></span>
+                    {{else}}
+                        Show team availability
+                        <span class="fa fa-angle-down"></span>
+                    {{/if}}
                 </button>
-            {{/hide-away}}
+                {{#if hideShow.isOpen}}
+                    <div class="pad-t pad-b-half pad-l pad-r bg-color relative-parent">
+                        {{#each others as |_other|}}
+                            <div class="margin-b-half">
+                                {{availability-control/other entity=_other dayOfWeek=info.dayOfWeek}}
+                            </div>
+                        {{/each}}
+                    </div>
+                {{/if}}
+            {{/hide-show}}
         {{/if}}
     {{/schedule-control}}
 {{else}}

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MutationObserver from 'npm:mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -11,7 +12,7 @@ import {
 
 const { computed, RSVP, run, tryInvoke } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
+export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   constants: Ember.inject.service(),
 
   propTypes: {
@@ -119,7 +120,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
     this._adjustPosition().then(() => {
       const bodyContents = this.get('_bodyContents');
       if (bodyContents && bodyContents.length) {
-        bodyContents.focus();
+        run.scheduleOnce('afterRender', () => bodyContents.focus());
       }
       this.setProperties({ _isOpening: false, '_publicAPI.isOpen': true });
       tryInvoke(this, 'onOpen');
@@ -140,9 +141,10 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
       // so that we don't trigger the _open if we are clicking right on top of the trigger
       // but actually closing because of the overlay, not the trigger
       const counter = this.get('_closeCounter') + 1;
-      run.later(this._finishClosing.bind(this, counter, resolve), 10);
+      run.later(this._finishClosing.bind(this, counter, resolve), 500);
       run(() =>
         this.setProperties({
+          _isClosing: true, // intermediate state for closing animation
           _bodyPositionTop: null,
           _bodyAlignLeft: null,
           _bodyFloatStyles: null,
@@ -160,7 +162,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
     ) {
       return resolve();
     }
-    this.set('_publicAPI.isOpen', false);
+    this.setProperties({ _isClosing: false, '_publicAPI.isOpen': false });
     tryInvoke(this, 'onClose');
     resolve();
   },
@@ -227,8 +229,5 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   },
   _repositionOnChange() {
     run.debounce(this, this._reposition, 500);
-  },
-  _event(name = '') {
-    return `${name}.${this.elementId}`;
   }
 });

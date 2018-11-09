@@ -143,7 +143,6 @@ export default Ember.Component.extend({
     if (event.type.indexOf('key') !== -1) {
       this.set('_disableOpenUntilKeyup', true);
     }
-
     const val = this.get('inputObj').val();
     let result;
     if (this.get('hasSelected')) {

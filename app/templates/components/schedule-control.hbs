@@ -1,62 +1,59 @@
-{{#hide-away tabindex=false
-    hideTriggerOnOpen=true
-    bodyClickClose=false
-    clickOutToClose=false
-    animation="fade"
-    startOpen=false
-    classNames="margin-b-half"
-    triggerClass="pad-t-half pad-l pad-r"
-    bodyClass="pad-t-half pad-b pad-l pad-r bg-color"
-    onClosed=(action _resetNewProps) as |hideAway|}}
-    <div class="row margin-b-half">
-        <div class="xs-8-row-10">
-            <button type="button" class="btn btn--keep-case btn-plain relative-parent"
-                onclick={{hideAway.actions.close}}>
-                <span class="fa fa-times-circle text-brand text-biggest pull-left-to-edge"></span>
-                <span class="text-normal text-small margin-l text-ellipsis">Cancel adding new available time range</span>
-            </button>
+{{#hide-show classNames="margin-b-half" as |hideShow|}}
+    <div class="pad-t-half pad-b pad-l pad-r {{if hideShow.isOpen 'bg-color'}}">
+        <div class="row">
+            <div class="xs-8-row-10">
+                <button type="button"
+                    class="btn btn--keep-case btn-plain relative-parent"
+                    onclick={{hideShow.actions.toggle}}>
+                    {{#if hideShow.isOpen}}
+                        <span class="fa fa-times-circle text-brand text-biggest pull-left-to-edge"></span>
+                        <span class="text-normal text-small margin-l text-ellipsis">Cancel adding new available time range</span>
+                    {{else}}
+                        <span class="fa fa-plus-circle text-brand text-biggest pull-left-to-edge"></span>
+                        <span class="text-normal text-small margin-l">Add an available time range</span>
+                    {{/if}}
+                </button>
+            </div>
+            {{#if hideShow.isOpen}}
+                <div class="xs-2-row-10 text-right">
+                    <button type="button" class="btn btn-default schedule-add-range-btn"
+                        onclick={{action _handleAdd _newRangeDay _newRangeTimes hideShow.actions.close}}
+                        disabled={{if (and _newRangeDay (get _newRangeTimes "0") (get _newRangeTimes "1")) "" "disabled"}}>
+                        Add
+                    </button>
+                </div>
+            {{/if}}
         </div>
-        <div class="xs-2-row-10 text-right">
-            <button type="button" class="btn btn-default schedule-add-range-btn"
-                onclick={{action _handleAdd _newRangeDay _newRangeTimes hideAway.actions.close}}
-                disabled={{if (and _newRangeDay (get _newRangeTimes "0") (get _newRangeTimes "1")) "" "disabled"}}>
-                Add
-            </button>
-        </div>
+        {{#if hideShow.isOpen}}
+            <div class="row margin-t-half margin-b-half">
+                <div class="xs-2-row-10 text-center">
+                    <span class="control-text">on</span>
+                </div>
+                <div class="xs-4-row-10">
+                    <select name="add-new-schedule-range" class="form-control"
+                        onchange={{action (mut _newRangeDay) value="target.value"}}>
+                        <option value="">Select day of week</option>
+                        {{#each constants.DAYS_OF_WEEK as |_day|}}
+                            <option value={{_day}}
+                                selected={{if (eq _day _newRangeDay) "selected"}}>
+                                {{capitalize _day 1}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="xs-2-row-10 text-center">
+                    <span class="control-text">from</span>
+                </div>
+                <div class="xs-8-row-10">
+                    {{schedule-control/range data=_newRangeTimes
+                        onChange=(action (mut _newRangeTimes))}}
+                </div>
+            </div>
+        {{/if}}
     </div>
-    <div class="row margin-b-half">
-        <div class="xs-2-row-10 text-center">
-            <span class="control-text">on</span>
-        </div>
-        <div class="xs-4-row-10">
-            <select name="add-new-schedule-range" class="form-control"
-                onchange={{action (mut _newRangeDay) value="target.value"}}>
-                <option value="">Select day of week</option>
-                {{#each constants.DAYS_OF_WEEK as |_day|}}
-                    <option value={{_day}}
-                        selected={{if (eq _day _newRangeDay) "selected"}}>
-                        {{capitalize _day 1}}
-                    </option>
-                {{/each}}
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="xs-2-row-10 text-center">
-            <span class="control-text">from</span>
-        </div>
-        <div class="xs-8-row-10">
-            {{schedule-control/range data=_newRangeTimes
-                onChange=(action (mut _newRangeTimes))}}
-        </div>
-    </div>
-{{else}}
-    <button type="button" class="btn btn--keep-case btn-plain relative-parent">
-        <span class="fa fa-plus-circle text-brand text-biggest pull-left-to-edge"></span>
-        <span class="text-normal text-small margin-l">Add an available time range</span>
-    </button>
-{{/hide-away}}
-
+{{/hide-show}}
 <div class="{{scheduleClass}}">
     {{#each constants.DAYS_OF_WEEK as |_day|}}
         <div class="margin-b">

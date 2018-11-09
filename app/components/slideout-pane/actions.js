@@ -22,6 +22,6 @@ export default Ember.Component.extend(PropTypesMixin, {
     }).isRequired
   },
 
-  classNames: 'slideout-pane__footer textup-container',
+  classNames: 'slideout-pane__footer flex',
   classNameBindings: ['props.showFooter::slideout-pane__footer--hidden']
 });

@@ -77,21 +77,21 @@ test('displaying empty note', function(assert) {
     assert.notOk(this.$('.image-stack').length, 'no images');
     assert.notOk(this.$('.location-preview').length, 'no location');
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
     const text = this.$()
       .text()
       .toLowerCase();
     assert.ok(text.includes('no note contents'), 'if no note contents has a informational message');
 
-    this.$('.record-item__control .hide-away-trigger')
+    this.$('.record-item__control button')
       .first()
-      .triggerHandler('mousedown');
+      .triggerHandler('click');
 
     Ember.run.later(() => {
-      assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
+      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
 
-      const dropdownText = Ember.$('.hide-away-body').text();
+      const dropdownText = Ember.$('.pop-over__body--open').text();
       assert.ok(dropdownText.includes('Edit'), 'can edit');
       assert.notOk(dropdownText.includes('Restore'), 'no restore');
       assert.notOk(dropdownText.includes('history'), 'no revisions');
@@ -129,7 +129,7 @@ test('display note with note contents, media, and location', function(assert) {
       'do not show location it being edited to avoid too many request while editing'
     );
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
     const text = this.$()
       .text()
@@ -157,25 +157,25 @@ test('displaying note with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-    this.$('.record-item__control .hide-away-trigger')
+    this.$('.record-item__control button')
       .first()
-      .triggerHandler('mousedown');
+      .triggerHandler('click');
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-        assert.ok(Ember.$('.hide-away-body li').length === 2, 'dropdown body has two items');
+        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok(Ember.$('.pop-over__body--open li').length === 2, 'dropdown body has two items');
         assert.ok(onEdit.notCalled);
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.hide-away-body').text();
+        const dropdownText = Ember.$('.pop-over__body--open').text();
         assert.ok(dropdownText.includes('Edit'), 'can edit');
         assert.notOk(dropdownText.includes('Restore'), 'no restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.hide-away-body li')
+        Ember.$('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click edit
         return wait();
@@ -184,7 +184,7 @@ test('displaying note with revisions + actions', function(assert) {
         assert.ok(onEdit.calledOnce);
         assert.ok(onViewHistory.notCalled);
 
-        Ember.$('.hide-away-body li')
+        Ember.$('.pop-over__body--open li')
           .eq(1)
           .triggerHandler('click'); // click view history
         return wait();
@@ -217,25 +217,25 @@ test('displaying deleted note with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-    this.$('.record-item__control .hide-away-trigger')
+    this.$('.record-item__control button')
       .first()
-      .triggerHandler('mousedown');
+      .triggerHandler('click');
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-        assert.ok(Ember.$('.hide-away-body li').length === 2, 'dropdown body has two items');
+        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok(Ember.$('.pop-over__body--open li').length === 2, 'dropdown body has two items');
         assert.ok(onRestore.notCalled);
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.hide-away-body').text();
+        const dropdownText = Ember.$('.pop-over__body--open').text();
         assert.notOk(dropdownText.includes('Edit'), 'no edit');
         assert.ok(dropdownText.includes('Restore'), 'can restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.hide-away-body li')
+        Ember.$('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click restore
         return wait();
@@ -244,7 +244,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
         assert.ok(onRestore.calledOnce);
         assert.ok(onViewHistory.notCalled);
 
-        Ember.$('.hide-away-body li')
+        Ember.$('.pop-over__body--open li')
           .eq(1)
           .triggerHandler('click'); // click view history
         return wait();
@@ -273,24 +273,24 @@ test('readonly mode with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-    this.$('.record-item__control .hide-away-trigger')
+    this.$('.record-item__control button')
       .first()
-      .triggerHandler('mousedown');
+      .triggerHandler('click');
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-        assert.ok(Ember.$('.hide-away-body li').length === 1, 'dropdown body has one items');
+        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok(Ember.$('.pop-over__body--open li').length === 1, 'dropdown body has one items');
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.hide-away-body').text();
+        const dropdownText = Ember.$('.pop-over__body--open').text();
         assert.notOk(dropdownText.includes('Edit'), 'no edit');
         assert.notOk(dropdownText.includes('Restore'), 'no restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.hide-away-body li')
+        Ember.$('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click restore
         return wait();

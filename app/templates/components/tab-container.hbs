@@ -9,38 +9,49 @@
 			{{/each}}
 		</ul>
 		<div class="tab-container-nav-controls">
-			{{#hide-away doRegister=(action (mut _hideAway))
-				triggerClass='input-group'
-				bodyClickClose=true
-				ignoreTriggerSelectors='.input-group-addon.blend-in'
-				onClosed=(action 'switchIfSelected')}}
-	            <ul class="dropdown">
-	                {{#each _items as |item index|}}
-						<li tabindex='0'
-							class="dropdown-item {{if (eq _currentIndex index) 'active'}}"
-							{{action 'storeSwitchToIndex' index}}>
-							{{item.title}}
-						</li>
-					{{/each}}
-	            </ul>
-	        {{else}}
-	    		<span class="input-group-addon expand">
-	    			<button class="tab-container-nav-display" type='button'>
-	    				{{_currentItem.title}}
-						<span class="fa fa-caret-down pull-right"></span>
-	    			</button>
-				</span>
-				<span class="input-group-addon blend-in">
-					<button class="btn" type='button' {{action 'prev'}}>
-						<span class="fa fa-chevron-left"></span>
-					</button>
-				</span>
-				<span class="input-group-addon blend-in">
-					<button class="btn" type='button' {{action 'next'}}>
-						<span class="fa fa-chevron-right"></span>
-					</button>
-				</span>
-	        {{/hide-away}}
+			{{#hide-show as |hideShow|}}
+				<div class="flex border-b">
+					<div class="flex__item flex__item--no-spacing flex__item--grow">
+						<button class="tab-container-nav-display btn btn-expand flex flex--horizontal-spread"
+							type='button'
+							onclick={{hideShow.actions.toggle}}>
+							<span class="text-ellipsis flex__item--grow">
+								{{_currentItem.title}}
+							</span>
+	    					{{#if hideShow.isOpen}}
+								<span class="fa fa-caret-up"></span>
+	    					{{else}}
+	    						<span class="fa fa-caret-down"></span>
+	    					{{/if}}
+		    			</button>
+					</div>
+					<div class="flex__item flex__item--no-shrink flex__item--no-spacing">
+						<button class="btn btn-plain"
+							type='button'
+							onclick={{action 'prev'}}>
+							<span class="fa fa-chevron-left"></span>
+						</button>
+					</div>
+					<div class="flex__item flex__item--no-shrink flex__item--no-spacing">
+						<button class="btn btn-plain"
+							type='button'
+							onclick={{action 'next'}}>
+							<span class="fa fa-chevron-right"></span>
+						</button>
+					</div>
+				</div>
+				{{#if hideShow.isOpen}}
+					<ul class="dropdown border-b">
+		                {{#each _items as |item index|}}
+							<li tabindex='0'
+								class="dropdown-item {{if (eq _currentIndex index) 'active'}}"
+								onclick={{action hideShow.actions.closeThenCall (action "switchTo" index)}}>
+								{{item.title}}
+							</li>
+						{{/each}}
+		            </ul>
+				{{/if}}
+			{{/hide-show}}
 		</div>
 	</div>
 {{/if}}

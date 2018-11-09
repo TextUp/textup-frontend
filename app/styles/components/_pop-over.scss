@@ -5,9 +5,7 @@
 
     &__body {
         display: none;
-        opacity: 0;
-        transition: opacity 0.5s;
-        visibility: none;
+        visibility: hidden;
 
         &--opening {
             display: initial;
@@ -15,7 +13,6 @@
         &--open {
             display: initial;
             position: initial;
-            opacity: 1;
             visibility: visible;
         }
         &--position {
@@ -61,17 +58,22 @@
             }
         }
 
+        &--open &__floating-container {
+            opacity: 1;
+        }
         &__floating-container {
             @include mq($from: tablet) {
                 position: absolute;
-                z-index: 100;
+                z-index: 1500;
+                transition: opacity 0.3s;
+                opacity: 0;
 
                 &:after {
                     content: '';
                     position: absolute;
                     height: $caret-size;
                     width: $caret-size;
-                    background-color: $bg-color;
+                    background-color: $bg-lightest-color;
                     border: 0 solid $border-color;
                     border-top-right-radius: $border-radius;
                     border-bottom-left-radius: $border-radius;
@@ -83,7 +85,7 @@
             @include mq($from: tablet) {
                 overflow: scroll;
 
-                background-color: $bg-color;
+                background-color: $bg-lightest-color;
                 border-radius: $border-radius;
                 border: 1px solid $border-color;
 
@@ -93,12 +95,16 @@
 
         @include mq($until: tablet) {
             &--open &__contents {
-                max-height: 90vh;
+                max-height: 85vh;
                 overflow: scroll;
+            }
+            &--closing &__contents {
+                max-height: 0;
+                overflow: hidden;
             }
         }
         &__contents {
-            z-index: 10; // so contents are above the other half of the pop-over caret
+            z-index: 1500; // so contents are above the other half of the pop-over caret
             outline: 0;
 
             @include mq($until: tablet) {
@@ -108,13 +114,21 @@
                 width: 100%;
                 max-height: 0;
                 overflow: hidden;
-                background-color: $bg-color;
-                box-shadow: 0 -1px 5px 0px rgba(0, 0, 0, 0.2);
-                transition: max-height 1s;
-                animation: fadeIn 0.05s;
+                background-color: $bg-lightest-color;
+                box-shadow: 0 0px 5px 2px rgba(0, 0, 0, 0.1);
+                transition: max-height 0.5s;
             }
             @include mq($from: tablet) {
                 position: relative; // so keeps new stacking context
+            }
+        }
+
+        @include mq($until: tablet) {
+            &--open &__overlay {
+                opacity: 1;
+            }
+            &--closing &__overlay {
+                opacity: 0;
             }
         }
         &__overlay {
@@ -124,8 +138,9 @@
             height: 100%;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.05);
-            animation-delay: 1.5s;
-            animation: fadeIn 4s;
+            opacity: 0;
+            z-index: 1400;
+            transition: opacity 1.5s;
 
             @include mq($from: tablet) {
                 background-color: transparent;

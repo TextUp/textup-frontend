@@ -1,16 +1,49 @@
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
+import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { distance } from 'textup-frontend/utils/coordinate';
 
-const { computed, tryInvoke } = Ember;
+const { computed, tryInvoke, run, RSVP } = Ember,
+  TOUCH_TAP_MAX_DISTANCE_IN_PX = 20;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   propTypes: {
-    doRegister: PropTypes.func
+    doRegister: PropTypes.func,
+    onOpen: PropTypes.func,
+    onClose: PropTypes.func,
+    focusOnOpenSelector: PropTypes.string,
+    startOpen: PropTypes.bool,
+    clickOutToClose: PropTypes.bool,
+    ignoreCloseSelector: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    focusOutToClose: PropTypes.bool,
+    disabled: PropTypes.bool
+  },
+  getDefaultProps() {
+    return {
+      startOpen: false,
+      clickOutToClose: false,
+      ignoreCloseSelector: '.slideout-pane, .c-notification__container',
+      focusOutToClose: false,
+      disabled: false
+    };
   },
 
   didInitAttrs() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
+  didInsertElement() {
+    this._super(...arguments);
+    if (this.get('startOpen')) {
+      run.scheduleOnce('afterRender', this, this._open);
+    }
+    this._startCloseListeners();
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    this._stopCloseListeners();
   },
 
   // Internal properties
@@ -22,21 +55,128 @@ export default Ember.Component.extend(PropTypesMixin, {
       actions: {
         toggle: () => this._toggle(),
         open: () => this._open(),
-        close: () => this._close()
+        close: () => this._close(),
+        closeThenCall: action => this._closeThenCall(action)
       }
     };
   }),
+  _touchCoordinates: Ember.computed(() => Object.create(null)),
 
   // Internal handlers
   // -----------------
 
   _toggle() {
-    this.toggleProperty('_publicAPI.isOpen');
+    return this.get('_publicAPI.isOpen') ? this._close() : this._open();
   },
   _open() {
-    this.set('_publicAPI.isOpen', true);
+    return run(() => {
+      return new RSVP.Promise(resolve => {
+        if (this.get('_publicAPI.isOpen') || this.get('disabled')) {
+          return resolve();
+        }
+        this.setProperties({ '_publicAPI.isOpen': true });
+        run.scheduleOnce('afterRender', this, this._afterOpen.bind(this, resolve));
+      });
+    });
   },
+  _afterOpen(resolve) {
+    const focusSelector = this.get('focusOnOpenSelector');
+    if (focusSelector) {
+      Ember.$(focusSelector).focus();
+    }
+    tryInvoke(this, 'onOpen');
+    resolve();
+  },
+
   _close() {
-    this.set('_publicAPI.isOpen', false);
+    return new RSVP.Promise(resolve => {
+      if (!this.get('_publicAPI.isOpen') || this.get('disabled')) {
+        return resolve();
+      }
+      this.setProperties({ '_publicAPI.isOpen': false });
+      tryInvoke(this, 'onClose');
+      resolve();
+    });
+  },
+  _closeThenCall(action) {
+    return this._close().then(() => callIfPresent(null, action));
+  },
+  _tryCloseOnFocusout({ relatedTarget }) {
+    if (
+      this.get('isDestroying') ||
+      this.get('isDestroyed') ||
+      !this.get('focusOutToClose') ||
+      !relatedTarget
+    ) {
+      return;
+    }
+    const $el = this.$();
+    // only trigger close when the related target IS NOT within this component. This condition is
+    // fulfilled when the focus is actually leaving this element altogether
+    if (!Ember.$.contains($el[0], relatedTarget)) {
+      this._close();
+    }
+  },
+  _tryCloseOnClick({ target }) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    const closeClickOut = this.get('clickOutToClose');
+    if (!closeClickOut) {
+      return;
+    }
+    const $root = this.get('_root'),
+      $target = Ember.$(target),
+      $el = this.$();
+    // don't close if clicked inside body
+    if ($el.is($target) || Ember.$.contains($el[0], $target[0])) {
+      return;
+    }
+    // don't close if the clicked target is nonexistent
+    if (!$root.is($target) && !Ember.$.contains($root[0], $target[0])) {
+      return;
+    }
+    const ignoreCloseSelector = this.get('ignoreCloseSelector');
+    if (!ignoreCloseSelector || $target.closest(ignoreCloseSelector).length === 0) {
+      this._close();
+    }
+  },
+
+  _startCloseListeners() {
+    this.get('_root')
+      .on(this._event('click'), this._tryCloseOnClick.bind(this))
+      .on(this._event('touchstart'), this._handleTouchStart.bind(this))
+      .on(this._event('touchend'), this._handleTouchEnd.bind(this));
+    this.$().on(this._event('focusout'), this._tryCloseOnFocusout.bind(this));
+  },
+  _stopCloseListeners() {
+    this.get('_root').off(this._event());
+    this.$().off(this._event());
+  },
+
+  _handleTouchStart(event) {
+    const touches = event.originalEvent.changedTouches,
+      coords = this.get('_touchCoordinates');
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i];
+      coords[touch.identifier] = [touch.screenX, touch.screenY];
+    }
+  },
+  _handleTouchEnd(event) {
+    const touches = event.originalEvent.changedTouches,
+      coords = this.get('_touchCoordinates');
+    let shouldTryClose = false;
+    for (let i = 0; i < touches.length; i++) {
+      const touch = touches[i],
+        oldCoords = coords[touch.identifier];
+      if (!shouldTryClose && oldCoords) {
+        shouldTryClose =
+          distance(oldCoords, [touch.screenX, touch.screenY]) < TOUCH_TAP_MAX_DISTANCE_IN_PX;
+      }
+      delete coords[touch.identifier];
+    }
+    if (shouldTryClose) {
+      this._tryCloseOnClick(event);
+    }
   }
 });

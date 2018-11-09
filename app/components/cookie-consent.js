@@ -1,12 +1,13 @@
 // import CookieConsent to load the library
 import CookieConsent from 'npm:cookieconsent'; // jshint ignore:line
 import Ember from 'ember';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run } = Ember;
+const { run } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   propTypes: {
     theme: PropTypes.string,
     learnMoreLink: PropTypes.string
@@ -19,23 +20,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     run.scheduleOnce('afterRender', this._initCookieConsent.bind(this));
   },
 
-  // Internal properties
-  // -------------------
-
-  _$root: computed(function() {
-    const rootSelector = Ember.testing
-      ? '#ember-testing'
-      : Ember.getOwner(this).lookup('application:main').rootElement;
-    return Ember.$(rootSelector);
-  }),
-
   // Internal handlers
   // -----------------
 
   // cookieconsent is not exported and instead always added as an property on `window`
   _initCookieConsent() {
     window.cookieconsent.initialise({
-      container: this.get('_$root'),
+      container: this.get('_root'),
       content: { href: this.get('learnMoreLink') },
       theme: this.get('theme'),
       law: { countryCode: LocaleUtils.getCountryCode() }

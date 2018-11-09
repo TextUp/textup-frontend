@@ -20,7 +20,8 @@
         }
     }
     &__dropdown-trigger {
-        height: 100%;
+        margin-top: 2px;
+        border-width: 0;
 
         @include mq($from: tablet) {
             margin-right: $spacing * 0.5;

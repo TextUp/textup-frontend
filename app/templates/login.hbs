@@ -6,82 +6,84 @@
         <h3 class='text-white'>Log in</h3>
     </div>
     <div class="single-body">
-        {{#hide-away tabindex=false
-            animation='fade'
-            hideTriggerOnOpen=true
-            clickOutToClose=false
-            bodyClickClose=false
-            bodyFocusOnOpenSelector='.start-focus'
-            onClose=(action (mut resetUsername) null)
-            allowedTriggerSelectors='.forgot-password' as |hideAway|}}
+        {{#hide-show focusOnOpenSelectors=".form-control"
+            onClose=(action (mut resetUsername) null) as |hideShow|}}
             <div class="single-body-header">
-                <h5 class='text-center pad-b'>Forgot password?</h5>
-                <p class="text-justify">Don't worry! Happens to all of us. Just type in your username and we'll send a reset email to the email address associated with your account.</p>
+                {{#if hideShow.isOpen}}
+                    <h5 class='text-center pad-b'>Forgot password?</h5>
+                    <p class="text-justify">Don't worry! Happens to all of us. Just type in your username and we'll send a reset email to the email address associated with your account.</p>
+                {{else}}
+                    <h5 class='text-center'>Welcome back!</h5>
+                {{/if}}
             </div>
             <div class="single-body-content">
-                <div class="input-group">
-                    {{input value=resetUsername
-                        type="text"
-                        placeholder="Username"
-                        class="form-control start-focus"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        enter=(route-action 'resetPassword' resetUsername)}}
-                    <div class="input-group-addon">
-                        {{async-button classNames='btn btn-default'
-                            disableWhen=(not resetUsername)
-                            action=(route-action 'resetPassword' resetUsername)
-                            default='Send'
-                            pending='Sending...'}}
+                {{#if hideShow.isOpen}}
+                    <div class="input-group">
+                        {{input value=resetUsername
+                            type="text"
+                            placeholder="Username"
+                            class="form-control"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            enter=(route-action 'resetPassword' resetUsername)}}
+                        <div class="input-group-addon">
+                            {{async-button classNames='btn btn-default'
+                                disableWhen=(not resetUsername)
+                                action=(route-action 'resetPassword' resetUsername)
+                                default='Send'
+                                pending='Sending...'}}
+                        </div>
                     </div>
-                </div>
+                {{else}}
+                    <div class="form-element">
+                        <label for="Username">Username</label>
+                        {{input value=username
+                            type="text"
+                            placeholder="Username"
+                            class="form-control"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            enter=(route-action 'login' username password storeCredentials)}}
+                    </div>
+                    <div class="form-element">
+                        <label for="Password">Password</label>
+                        {{input value=password
+                            type="password"
+                            placeholder="Password"
+                            class="form-control"
+                            allowShowPassword=true
+                            enter=(route-action 'login' username password storeCredentials)}}
+                    </div>
+                    <div class="row form-element">
+                        <div class="xs-row-2">
+                            {{input type="checkbox" checked=storeCredentials}}
+                            <span class="emphasize pad-l-half">Remember Me</span>
+                        </div>
+                        <div class="xs-row-2 text-right">
+                            <button class="btn-link emphasize"
+                                type="button"
+                                onclick={{hideShow.actions.open}}>
+                                Forgot Password?
+                            </button>
+                        </div>
+                    </div>
+                {{/if}}
             </div>
             <div class="single-body-footer text-center">
-                <button class='btn btn-default' onclick={{hideAway.actions.close}}>
-                    Back
-                </button>
+                {{#if hideShow.isOpen}}
+                    <button class="btn btn-default"
+                        type="button"
+                        onclick={{hideShow.actions.close}}>
+                        Back
+                    </button>
+                {{else}}
+                    {{async-button classNames="btn btn-default"
+                        action=(route-action "login" username password storeCredentials)
+                        default="Log in"
+                        pending="Logging in..."}}
+                {{/if}}
             </div>
-        {{else}}
-            <div class="single-body-header">
-                <h5 class='text-center'>Welcome back!</h5>
-            </div>
-            <div class="single-body-content">
-                <div class="form-element">
-                    <label for="Username">Username</label>
-                    {{input value=username
-                        type="text"
-                        placeholder="Username"
-                        class="form-control"
-                        autocorrect="off"
-                        autocapitalize="off"
-                        enter=(route-action 'login' username password storeCredentials)}}
-                </div>
-                <div class="form-element">
-                    <label for="Password">Password</label>
-                    {{input value=password
-                        type="password"
-                        placeholder="Password"
-                        class="form-control"
-                        allowShowPassword=true
-                        enter=(route-action 'login' username password storeCredentials)}}
-                </div>
-                <div class="row form-element">
-                    <div class="xs-row-2">
-                        {{input type="checkbox" checked=storeCredentials}}
-                        <span class="emphasize pad-l-half">Remember Me</span>
-                    </div>
-                    <div class="xs-row-2 forgot-password text-right">
-                        <a href="#" class="emphasize" tabindex="-1">Forgot Password?</a>
-                    </div>
-                </div>
-            </div>
-            <div class="single-body-footer text-center">
-                {{async-button classNames='btn btn-default'
-                    action=(route-action 'login' username password storeCredentials)
-                    default='Log in'
-                    pending='Logging in...'}}
-            </div>
-        {{/hide-away}}
+        {{/hide-show}}
     </div>
     <div class="single-footer">
         <p class="emphasize text-white">Don't have an account?</p>

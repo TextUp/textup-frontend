@@ -149,27 +149,29 @@ test('adding a range', function(assert) {
 
   // assert that adding menu contents are not being shown currently
   assert.equal(
-    this.$('.hide-away select option').length,
+    this.$('.ember-view select option').length,
     0,
     'no add day of week options are shown'
   );
 
   // open adding menu
-  this.$('.hide-away-trigger').trigger('mousedown');
+  this.$('.ember-view button')
+    .first()
+    .triggerHandler('click');
 
-  assert.ok(this.$('.hide-away select option').length > 0, 'adding menu is now opened');
+  assert.ok(this.$('.ember-view select option').length > 0, 'adding menu is now opened');
 
   // select day of week
-  this.$('.hide-away select option')
+  this.$('.ember-view select option')
     .val(
-      this.$('.hide-away select option')
+      this.$('.ember-view select option')
         .eq(1)
         .val()
     )
     .trigger('change');
 
   // select start times
-  const startInput = this.$('.hide-away input').first();
+  const startInput = this.$('.ember-view input').first();
   startInput.click();
   Ember.$(`#${startInput.attr('aria-owns')} [data-pick="30"]`).click();
 
@@ -177,7 +179,7 @@ test('adding a range', function(assert) {
   const done = assert.async();
   setTimeout(function() {
     // set end time
-    const endInput = this.$('.hide-away input').eq(1);
+    const endInput = this.$('.ember-view input').eq(1);
     endInput.click();
     Ember.$(`#${endInput.attr('aria-owns')} [data-pick="330"]`).click();
 
@@ -191,11 +193,13 @@ test('adding a range', function(assert) {
     // give some time for the add menu to close after the action handler is triggered
     setTimeout(() => {
       // opening again preserves the day of week
-      assert.equal(this.$('.hide-away select option').length, 0, 'adding menu has closed');
-      this.$('.hide-away-trigger').trigger('mousedown');
-      assert.ok(this.$('.hide-away select option').length > 0, 'adding menu is now opened');
+      assert.equal(this.$('.ember-view select option').length, 0, 'adding menu has closed');
+      this.$('.ember-view button')
+        .first()
+        .triggerHandler('click');
+      assert.ok(this.$('.ember-view select option').length > 0, 'adding menu is now opened');
       assert.equal(
-        this.$('.hide-away select').val(),
+        this.$('.ember-view select').val(),
         'monday',
         'previously added day of week is preserved'
       );

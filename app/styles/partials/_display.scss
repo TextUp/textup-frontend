@@ -15,63 +15,25 @@
 // Dropdown
 // --------
 
-$dropdown-shadow-size: 1px;
-&.overflow {
-    .dropdown {
-        &.hide-away-body--left {
-            margin-left: $dropdown-shadow-size * 2;
-        }
-        &.hide-away-body--right {
-            margin-right: $dropdown-shadow-size * 2;
-        }
-    }
-}
 .dropdown {
     @extend .reset-list;
+
     background-color: $bg-lightest-color;
-    border: 1px solid $border-color;
-    border-radius: $border-radius;
     min-width: 200px;
     overflow: initial;
-    box-shadow: $dropdown-shadow-size $dropdown-shadow-size 6px 0 shade($border-color);
 
-    $triangle-size: $padding * 0.6;
-    &.hide-away-body--top {
-        @include triangle('bottom', $triangle-size, shade($border-color));
-        transform: translateY(-$triangle-size);
-
-        &.hide-away-body--left {
-            border-bottom-left-radius: 0;
-        }
-        &.hide-away-body--right {
-            border-bottom-right-radius: 0;
-        }
-    }
-    &.hide-away-body--bottom {
-        @include triangle('top', $triangle-size, shade($border-color));
-        transform: translateY($triangle-size);
-
-        &.hide-away-body--left {
-            border-top-left-radius: 0;
-        }
-        &.hide-away-body--right {
-            border-top-right-radius: 0;
-        }
-    }
-    &.hide-away-body--left:after {
-        left: 0;
-        right: auto;
-        transform: translateX(50%);
-    }
-    &.hide-away-body--right:after {
-        right: 0;
-        left: auto;
+    @include mq($from: desktop) {
+        min-width: 150px;
     }
 
-    .dropdown-item {
+    &-item {
         padding: $padding * 1.5;
         user-select: none;
         cursor: pointer;
+
+        @include mq($from: desktop) {
+            padding: $padding;
+        }
 
         &:not(:last-child) {
             border-bottom: 1px solid $border-color;
@@ -83,23 +45,15 @@ $dropdown-shadow-size: 1px;
             background-color: $bg-light-color;
         }
     }
-    .dropdown-divider {
+    &-divider {
         padding-top: $padding;
         padding-bottom: $padding * 0.5;
         background-color: $bg-color;
         font-weight: $font-weight-bold;
         padding-left: $padding;
         text-transform: uppercase;
-    }
-}
-@include mq($from: desktop) {
-    .dropdown {
-        min-width: 150px;
 
-        .dropdown-item {
-            padding: $padding;
-        }
-        .dropdown-divider {
+        @include mq($from: desktop) {
             padding: $padding $padding ($padding / 2);
             font-size: 0.8em;
         }

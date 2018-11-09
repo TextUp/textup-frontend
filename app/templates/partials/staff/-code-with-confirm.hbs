@@ -1,48 +1,56 @@
-{{#hide-away tabindex=false
+{{#hide-show classNames="form-element"
     doRegister=(action (mut codeDropdown))
-    classNames='form-element'
-    bodyFocusOnOpenSelector='.start-focus'
-    onOpened=(action (mut staff.lockCode) '')
-    onClose=(route-action 'revert' staff
-        (action (mut newCPassword) null))
-    bodyClass='pad-all' as |hideAway|}}
-    <div class='form-element'>
-        <label for='Your Password' class='control-label'>
-            {{authService.authUser.name}}'s Password
-        </label>
-        {{input type='password'
-            allowShowPassword=true
-            class='form-control start-focus'
-            placeholder='Your Password'
-            value=newCPassword}}
-    </div>
-    <div class='form-element'>
-        <label for='New Lock Code' class='control-label'>
-            New Lock Code for {{staff.name}}
-        </label>
-        {{lock-control val=staff.lockCode
-            lockOnMultipleFailure=false
-            numDigits=4
-            doUpdate=(action (mut staff.lockCode))}}
-    </div>
-    {{#if (and newCPassword staff.lockCode)}}
-        <div class="pad-t text-center">
-            <button class="btn" type='button'
-                onclick={{hideAway.actions.close}}>
-                Cancel
-            </button>
-            {{async-button classNames='btn btn-default'
-                disableWhen=(not (v-get staff 'isValid'))
-                action=(route-action 'validate'
-                        authService.authUser.username newCPassword
-                    (route-action 'persist' staff hideAway.actions.close))
-                default='Update'
-                pending='Updating...'}}
+    focusOnOpenSelector=".start-focus"
+    onOpen=(action (mut staff.lockCode) "")
+    onClose=(route-action "revert" staff
+        (action (mut newCPassword) null)) as |hideShow|}}
+    <button class="btn btn-span"
+        type="button"
+        onclick={{hideShow.actions.toggle}}>
+        {{#if hideShow.isOpen}}
+            Cancel updating lock code
+            <span class="fa fa-caret-up"></span>
+        {{else}}
+            Update lock code
+            <span class="fa fa-caret-down"></span>
+        {{/if}}
+    </button>
+    {{#if hideShow.isOpen}}
+        <div class="pad-all">
+            <div class="form-element">
+                <label for="Your Password" class="control-label">
+                    {{authService.authUser.name}}'s Password
+                </label>
+                {{input type="password"
+                    allowShowPassword=true
+                    class="form-control start-focus"
+                    placeholder="Your Password"
+                    value=newCPassword}}
+            </div>
+            <div class="form-element">
+                <label for="New Lock Code" class="control-label">
+                    New Lock Code for {{staff.name}}
+                </label>
+                {{lock-control val=staff.lockCode
+                    lockOnMultipleFailure=false
+                    numDigits=4
+                    doUpdate=(action (mut staff.lockCode))}}
+            </div>
+            {{#if (and newCPassword staff.lockCode)}}
+                <div class="pad-t text-center">
+                    <button class="btn" type="button"
+                        onclick={{hideShow.actions.close}}>
+                        Cancel
+                    </button>
+                    {{async-button classNames="btn btn-default"
+                        disableWhen=(not (v-get staff "isValid"))
+                        action=(route-action "validate"
+                                authService.authUser.username newCPassword
+                            (route-action "persist" staff hideShow.actions.close))
+                        default="Update"
+                        pending="Updating..."}}
+                </div>
+            {{/if}}
         </div>
     {{/if}}
-{{else}}
-    <button class="btn btn-span" type='button'>
-        Update lock code
-        <span class="fa fa-caret-down"></span>
-    </button>
-{{/hide-away}}
+{{/hide-show}}

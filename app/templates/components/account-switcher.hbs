@@ -1,77 +1,80 @@
-{{#hide-away tagName=containerTagName
-    tabindex=false
-    triggerClass='textup-account-switcher__display-container'
-    allowedTriggerSelectors=(concat '.' this.elementId '--toggle')
-    doRegister=doRegisterContainer
-    bodyClickClose=false}}
-    {{!-- pass identifiers and not resolved models to allow the logic
-    in the model hook to run --}}
-    <ul class="reset-list textup-account-switcher__accounts">
-        {{#if (and (not user.hasInactivePhone) user.phone.content)}}
-            {{#link-to 'main.contacts' user.urlIdentifier
-                tagName='li'
-                classNames='menu-item'
-                current-when='main'}}
-                <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                    <p class="text-bold text-ellipsis">{{user.name}}</p>
+{{#hide-show tagName=containerTagName
+    clickOutToClose=true
+    doRegister=doRegisterContainer as |hideShow|}}
+    <div class="textup-account-switcher__display-container">
+        <button type="button"
+            class="textup-account-switcher__display flex {{toggleClass}}"
+            onclick={{hideShow.actions.toggle}}>
+            <div class="offset-xs-row-10 flex__item text-left
+                flex__item--no-spacing flex__item--grow">
+                <h4 class="text-white text-ellipsis">{{activeOwner.name}}</h4>
+                {{#if activeOwner.phone.content.number}}
                     <p class="text-bold text-ellipsis">
-                        {{phone-number user.phone.content.number}}
+                        {{phone-number activeOwner.phone.content.number}}
                     </p>
-                </div>
-            {{/link-to}}
-        {{/if}}
-        {{#each user.teamsWithPhones as |team|}}
-            {{#if (and (not team.hasInactivePhone) team.phone.content)}}
-                {{#link-to 'main.contacts' team.urlIdentifier
+                {{/if}}
+            </div>
+            <div class="flex__item">
+                {{#if hideShow.isOpen}}
+                    <span class="fa fa-caret-up"></span>
+                {{else}}
+                    <span class="fa fa-caret-down"></span>
+                {{/if}}
+            </div>
+        </button>
+        {{yield}}
+    </div>
+    {{#if hideShow.isOpen}}
+        {{!-- pass identifiers not resolved models to allow the logic in the model hook to run --}}
+        <ul class="reset-list textup-account-switcher__accounts">
+            {{#if (and (not user.hasInactivePhone) user.phone.content)}}
+                {{#link-to 'main.contacts' user.urlIdentifier
                     tagName='li'
                     classNames='menu-item'
                     current-when='main'}}
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-ellipsis">{{user.name}}</p>
                         <p class="text-bold text-ellipsis">
-                            <span class="indicator margin-r-quarter"
-                                style='background-color:{{team.hexColor}};'></span>
-                            {{team.name}}
-                        </p>
-                        <p class="text-bold text-ellipsis">
-                            {{phone-number team.phone.content.number}}
+                            {{phone-number user.phone.content.number}}
                         </p>
                     </div>
                 {{/link-to}}
             {{/if}}
-        {{/each}}
-        {{#if user.isAdmin}}
-            {{#link-to 'admin.people'
-                tagName='li'
-                classNames='menu-item'
-                current-when='admin'}}
-                <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                    <p class="text-bold text-ellipsis">Admin</p>
-                </div>
-            {{/link-to}}
-        {{/if}}
-        <li class="menu-divider"></li>
-        <li class="menu-item" onclick={{doLogOut}}>
-            <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                <p class="text-bold text-ellipsis">Log Out</p>
-            </div>
-        </li>
-    </ul>
-{{else}}
-    <div class="{{this.elementId}}--toggle textup-account-switcher__display textup-container {{toggleClass}}">
-        <div class="offset-xs-row-10 textup-container__item
-            textup-container__item--no-spacing textup-container__item--grow">
-            <h4 class="text-white text-ellipsis">{{activeOwner.name}}</h4>
-            {{#if activeOwner.phone.content.number}}
-                <p class="text-bold text-ellipsis">
-                    {{phone-number activeOwner.phone.content.number}}
-                </p>
+            {{#each user.teamsWithPhones as |team|}}
+                {{#if (and (not team.hasInactivePhone) team.phone.content)}}
+                    {{#link-to 'main.contacts' team.urlIdentifier
+                        tagName='li'
+                        classNames='menu-item'
+                        current-when='main'}}
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">
+                                <span class="indicator margin-r-quarter"
+                                    style='background-color:{{team.hexColor}};'></span>
+                                {{team.name}}
+                            </p>
+                            <p class="text-bold text-ellipsis">
+                                {{phone-number team.phone.content.number}}
+                            </p>
+                        </div>
+                    {{/link-to}}
+                {{/if}}
+            {{/each}}
+            {{#if user.isAdmin}}
+                {{#link-to 'admin.people'
+                    tagName='li'
+                    classNames='menu-item'
+                    current-when='admin'}}
+                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <p class="text-bold text-ellipsis">Admin</p>
+                    </div>
+                {{/link-to}}
             {{/if}}
-        </div>
-        <div class="textup-container__item">
-            <buton class="btn btn-expand btn-plain">
-                <span class="fa fa-caret-down"></span>
-            </buton>
-        </div>
-    </div>
-    {{yield}}
-{{/hide-away}}
+            <li class="menu-divider"></li>
+            <li class="menu-item" onclick={{doLogOut}}>
+                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <p class="text-bold text-ellipsis">Log Out</p>
+                </div>
+            </li>
+        </ul>
+    {{/if}}
+{{/hide-show}}

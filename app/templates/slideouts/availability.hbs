@@ -18,28 +18,29 @@
         <div class="margin-b">
             TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
         </div>
-        {{#hide-away clickOutToClose=true
-            focusOutClose=true
-            bodyClickClose=false
-            animation='slide'
-            bodyClass='margin-t'
-            hideTriggerOnOpen=false
-            bodyFocusOnOpenSelector='textarea'}}
-            {{textarea rows="3"
-                autoresize=true
-                class="form-control"
-                maxlength=model.phone.content.awayMessageMaxLength
-                remaining='top'
-                value=model.phone.content.awayMessage
-                validateObj=model.phone.content
-                validateField='awayMessage'
-                validate='bottom'}}
-        {{else}}
-            <div class="form-control-minimal pad-all">
+        {{#hide-show focusOnOpenSelector="textarea"
+            clickOutToClose=true
+            focusOutToClose=true
+            ignoreCloseSelector="" as |hideShow|}}
+            {{#if hideShow.isOpen}}
+                {{textarea rows="3"
+                    autoresize=true
+                    class="form-control margin-b"
+                    maxlength=model.phone.content.awayMessageMaxLength
+                    remaining='top'
+                    value=model.phone.content.awayMessage
+                    validateObj=model.phone.content
+                    validateField='awayMessage'
+                    validate='bottom'}}
+            {{/if}}
+            <div class="form-control-minimal pad-all"
+                tabindex={{if hideShow.isOpen "" "0"}}
+                onfocus={{hideShow.actions.open}}
+                onclick={{hideShow.actions.toggle}}>
                 {{model.phone.content.awayMessage}}
                 <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
             </div>
-        {{/hide-away}}
+        {{/hide-show}}
     </div>
     <div class="form-element pad-l pad-r">
         <label for='Voicemail' class='control-label'>{{stateManager.owner.name}}'s Voicemail</label>
@@ -79,7 +80,7 @@
                 class="xs-18-row-20 s-19-row-20 control-text pad-l-half clickable">
                 <span class="text-normal">Use voicemail recording</span>
             </label>
-            <div class="xs-full-row control-text textup-container textup-container--horizontal-spread">
+            <div class="xs-full-row control-text flex flex--horizontal-spread">
                 {{#if (and
                     model.phone.content.media.content.hasElements
                     (not model.phone.content.shouldRedoVoicemailGreeting))}}

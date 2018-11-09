@@ -64,10 +64,7 @@
             {{/if}}
             <span class='clickable display-l' onclick={{action _onEditTagMembership}}>
                 {{#each contact.tags as |tag|}}
-                    {{preview-badge classNames='clickable'
-                        onlyShowFull=true
-                        color=tag.hexColor
-                        content=tag.name}}
+                    {{color-badge classNames='clickable' color=tag.hexColor text=tag.name}}
                 {{/each}}
             </span>
         </div>
@@ -76,33 +73,35 @@
 <div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
     full-height row">
     <div class="horizontal-items pull-right">
-        <span class='clear-badge no-space'>
-            {{#hide-away/dropdown}}
-                <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
-                    Details
-                </li>
-                {{#if (not contact.isShared)}}
-                    <li tabindex='0' class='dropdown-item' onclick={{action _onEditSharing}}>
-                        Share
-                        <span class="badge">
-                            {{contact.sharedWith.length}}
-                        </span>
-                    </li>
-                    <li tabindex='0' class='dropdown-item'
-                        onclick={{action _onEditTagMembership}}>
-                        Tags
-                        <span class="badge">{{contact.tags.content.length}}</span>
-                    </li>
-                {{/if}}
-                <li class='dropdown-divider'>Status</li>
-                {{record-owner-header/contact-status-list contacts=contact
-                    onChange=(action _onStatusChange)}}
-            {{else}}
-                <button class='btn' type='button'>
+        <span class="clear-badge no-space">
+            {{#pop-over as |popOver|}}
+                <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                     More
-                    <span class='fa fa-caret-down'></span>
+                    <span class="fa fa-caret-down"></span>
                 </button>
-            {{/hide-away/dropdown}}
+            {{else}}
+                <ul class="dropdown">
+                    <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
+                        Details
+                    </li>
+                    {{#if (not contact.isShared)}}
+                        <li tabindex='0' class='dropdown-item' onclick={{action _onEditSharing}}>
+                            Share
+                            <span class="badge">
+                                {{contact.sharedWith.length}}
+                            </span>
+                        </li>
+                        <li tabindex='0' class='dropdown-item'
+                            onclick={{action _onEditTagMembership}}>
+                            Tags
+                            <span class="badge">{{contact.tags.content.length}}</span>
+                        </li>
+                    {{/if}}
+                    <li class='dropdown-divider'>Status</li>
+                    {{record-owner-header/contact-status-list contacts=contact
+                        onChange=(action _onStatusChange)}}
+                </ul>
+            {{/pop-over}}
         </span>
         <span class="clear-badge display-m display-l">
             {{#link-to backRouteName}}

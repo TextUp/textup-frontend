@@ -23,30 +23,33 @@
         {{/if}}
     </div>
     {{#if (or (not readOnly) note.hasRevisions)}}
-        {{#hide-away/dropdown classNames="record-item__control"
-            containerClass="full-height"
-            triggerClass="full-height"}}
-            {{#if (not readOnly)}}
-                {{#if note.hasBeenDeleted}}
-                    <li tabindex='0' class='dropdown-item' onclick={{action _onRestore note}}>
-                        Restore
-                    </li>
-                {{else}}
-                    <li tabindex='0' class='dropdown-item' onclick={{action _onEdit note}}>
-                        Edit
+        {{#pop-over classNames="record-item__control"
+            position=constants.POP_OVER.POSITION.BOTTOM as |popOver|}}
+            <button class="btn btn-default btn-plain btn-expand"
+                type="button"
+                onclick={{popOver.actions.toggle}}>
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+        {{else}}
+            <ul class="dropdown">
+                {{#if (not readOnly)}}
+                    {{#if note.hasBeenDeleted}}
+                        <li tabindex="0" class="dropdown-item" onclick={{action _onRestore note}}>
+                            Restore
+                        </li>
+                    {{else}}
+                        <li tabindex="0" class="dropdown-item" onclick={{action _onEdit note}}>
+                            Edit
+                        </li>
+                    {{/if}}
+                {{/if}}
+                {{#if note.hasRevisions}}
+                    <li tabindex="0" class="dropdown-item" onclick={{action _onViewHistory note}}>
+                        See version history
                     </li>
                 {{/if}}
-            {{/if}}
-            {{#if note.hasRevisions}}
-                <li tabindex='0' class='dropdown-item' onclick={{action _onViewHistory note}}>
-                    See version history
-                </li>
-            {{/if}}
-        {{else}}
-            <button class='btn btn-default btn-plain btn-expand' type='button'>
-                <span class='fa fa-ellipsis-v'></span>
-            </button>
-        {{/hide-away/dropdown}}
+            </ul>
+        {{/pop-over}}
     {{/if}}
 </div>
 <div class="record-item__receipts text--deemphasize">

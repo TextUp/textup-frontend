@@ -1,16 +1,22 @@
 .tab-container .tab-container-nav {
 	.tab-container-nav-controls {
-		display: none;
+		visibility: hidden;
 	}
 	// After see if there is overflow in the nav list,
 	// apply either the inline or overflow styles to the nav
 	// the inline style will cause all nav items to float left
-	&.inline .tab-container-nav-list {
-		@extend %clearfix;
-		.tab-container-nav-item {
-			@extend .no-select;
-			cursor: pointer;
-			float: left;
+	&.inline {
+		.tab-container-nav-list {
+			@extend %clearfix;
+
+			.tab-container-nav-item {
+				@extend .no-select;
+				cursor: pointer;
+				float: left;
+			}
+		}
+		.tab-container-nav-controls {
+			display: none;
 		}
 	}
 	// the overflow style hides the list altogether and
@@ -20,7 +26,7 @@
 			display: none;
 		}
 		.tab-container-nav-controls {
-			display: block;
+			visibility: visible;
 		}
 	}
 }
@@ -33,8 +39,8 @@
 .tab-container .tab-container-nav-list {
 	width: 100%;
 	list-style-type: none;
-    padding: 0;
-    margin: 0;
+	padding: 0;
+	margin: 0;
 	overflow: hidden;
 	white-space: nowrap;
 

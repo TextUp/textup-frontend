@@ -25,23 +25,88 @@
         data=pendingStaff
         total=numPending
         doLoad=(action 'loadMore') as |selected|}}
-        {{#hide-away classNames='xs-full-row'
-        	triggerClass='bg-color bg-lightest pad-all border-all row'
-        	tabindex=false
-        	clickOutToClose=false
-			focusOutClose=false
-			bodyClickClose=false
+		{{#hide-show classNames='xs-full-row'
 			startOpen=selected.hasPhoneActionData
-			allowedTriggerSelectors='.add-phone-button'}}
-			<div class="bg-color bg-dark pad-all border-l border-r border-b row
-				{{if (eq selected.pendingAction 'reject') 'hidden'}}">
-				<div class="display-m display-l m-row-3 text-center">
-					<div class="control-text text-bold">
-						Add a TextUp Phone
-					</div>
+			onClose=(action (mut selected.phoneActionData) null) as |hideShow|}}
+			<div class="bg-color bg-lightest pad-all border-all row">
+				<div class="xs-full-row s-row-2 l-2-row-3 text-ellipsis horizontal-items">
+					<span class="text-bold control-text pad-r">
+						{{selected.name}}
+					</span>
+					<span class="text-normal control-text pad-r">
+						{{selected.email}}
+					</span>
+					{{#if (and selected.phoneActionData
+						(not (eq selected.pendingAction 'reject')))}}
+						<span class="text-bold control-text">
+							<span class="fa fa-phone pad-r-half"></span>
+							{{phone-number selected.phoneActionData.phoneNumber}}
+						</span>
+					{{/if}}
 				</div>
-				<div class="xs-full-row m-2-row-3 horizontal-items">
-					<div class="input-group">
+				<div class="display-xs">
+					<div class="margin-t"></div>
+				</div>
+				<div class="xs-full-row s-row-2 l-row-3 flex flex--justify-end">
+					{{#if selected.pendingAction}}
+						<div class="flex__item flex__item--no-shrink">
+							<button class="btn btn-plain btn-span" type='button'
+								onclick={{action (mut selected.pendingAction) null}}>
+								Undo
+							</button>
+						</div>
+						<div class="flex__item flex__item--no-shrink">
+							<button class="btn btn-plain btn-span
+								{{if (eq selected.pendingAction 'approve')
+									'btn-success'
+									'btn-danger'}}"
+								type='button'
+								{{action selected.pendingAction selected}}>
+								Confirm {{selected.pendingAction}}
+							</button>
+						</div>
+					{{else}}
+						{{#if (not selected.phoneActionData)}}
+							<div class="flex__item flex__item--no-spacing flex__item--grow">
+								<button class="btn btn-span"
+									type="button"
+									onclick={{hideShow.actions.toggle}}>
+									<span class="text-ellipsis">
+										{{#if hideShow.isOpen}}
+											Cancel add phone
+										{{else}}
+											<span class="fa fa-plus"></span> phone
+										{{/if}}
+									</span>
+								</button>
+							</div>
+						{{/if}}
+						<div class="flex__item flex__item--no-shrink">
+							<button class="btn btn-plain btn-success"
+								type='button'
+								onclick={{action (mut selected.pendingAction) 'approve'}}>
+								<span class="fa fa-check"></span>
+							</button>
+						</div>
+						<div class="flex__item flex__item--no-spacing flex__item--no-shrink">
+							<button class="btn btn-plain btn-danger"
+								type='button'
+								onclick={{action (mut selected.pendingAction) 'reject'}}>
+								<span class="fa fa-times"></span>
+							</button>
+						</div>
+					{{/if}}
+				</div>
+			</div>
+			{{#if hideShow.isOpen}}
+				<div class="bg-color bg-dark pad-all border-l border-r border-b flex flex--align-start
+					{{if (eq selected.pendingAction 'reject') 'hidden'}}">
+					<div class="display-m display-l pad-r-double flex__item flex__item--no-shrink">
+						<div class="control-text text-bold">
+							Select a phone number
+						</div>
+					</div>
+					<div class="input-group flex__item flex__item--grow">
 						<div class="input-group-element">
 			            	{{#single-select selected=selected.phoneActionData
 						        displayProperty='phoneNumber'
@@ -62,81 +127,18 @@
 						        </div>
 						    {{/single-select}}
 						</div>
-						{{#if selected.phoneActionData}}
-							<div class="input-group-addon">
-								<button class="btn" type='button'
-									onclick={{action (mut selected.phoneActionData) null}}>
-									Remove
-								</button>
-							</div>
-						{{/if}}
+						<div class="input-group-addon">
+							<button class="btn btn-default"
+								type='button'
+								disabled={{if selected.phoneActionData "" "disabled"}}
+								onclick={{action (mut selected.phoneActionData) null}}>
+								Choose another
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
-		{{else}}
-        	<div class="xs-full-row s-row-2 l-2-row-3 text-ellipsis horizontal-items">
-				<span class="text-bold control-text pad-r">
-					{{selected.name}}
-				</span>
-				<span class="text-normal control-text pad-r">
-					{{selected.email}}
-				</span>
-				{{#if (and selected.phoneActionData
-					(not (eq selected.pendingAction 'reject')))}}
-					<span class="text-bold control-text">
-						<span class="fa fa-phone pad-r-half"></span>
-						{{phone-number selected.phoneActionData.phoneNumber}}
-					</span>
-				{{/if}}
-			</div>
-			<div class="display-xs">
-				<div class="margin-t"></div>
-			</div>
-			<div class="xs-full-row s-row-2 l-row-3">
-				<div class="input-group">
-					{{#if selected.pendingAction}}
-						<div class="input-group-addon">
-							<button class="btn btn-plain btn-span" type='button'
-								onclick={{action (mut selected.pendingAction) null}}>
-								Undo
-							</button>
-						</div>
-						<div class="input-group-addon">
-							<button class="btn btn-plain btn-span
-								{{if (eq selected.pendingAction 'approve')
-									'btn-success'
-									'btn-danger'}}"
-								type='button'
-								{{action selected.pendingAction selected}}>
-								Confirm {{selected.pendingAction}}
-							</button>
-						</div>
-					{{else}}
-						{{#if (not selected.phoneActionData)}}
-							<div class="input-group-addon">
-								<button class="btn btn-plain add-phone-button" type='button'>
-									<span class="fa fa-plus"></span> Phone
-								</button>
-							</div>
-						{{/if}}
-						<div class="input-group-addon action-button">
-							<button class="btn btn-plain btn-span btn-success"
-								type='button'
-								onclick={{action (mut selected.pendingAction) 'approve'}}>
-								<span class="fa fa-check"></span>
-							</button>
-						</div>
-						<div class="input-group-addon action-button">
-							<button class="btn btn-plain btn-span btn-danger"
-								type='button'
-								onclick={{action (mut selected.pendingAction) 'reject'}}>
-								<span class="fa fa-times"></span>
-							</button>
-						</div>
-					{{/if}}
-				</div>
-			</div>
-        {{/hide-away}}
+			{{/if}}
+		{{/hide-show}}
     {{else}}
         <div class="no-results">No pending staff members right now.</div>
     {{/infinite-scroll}}

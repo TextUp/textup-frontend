@@ -1,32 +1,33 @@
 {{yield}} {{!-- for overlays --}}
 {{#record-actions-control/media-drawer images=images onRemoveImage=(action _onRemoveImage)}}
     <div class="record-actions-control__action-container">
-        {{#hide-away/dropdown containerClass="full-height"
-            triggerClass="record-actions-control__dropdown-trigger"
-            horizontal="left"}}
-            <li tabindex="0" class="dropdown-item" onclick={{action _scheduleMessage}}>
-                Schedule message
-            </li>
-            {{#if hasPersonalPhoneNumber}}
-                <li tabindex="0" class="dropdown-item" onclick={{action _startCall}}>
-                    Make call
-                </li>
-            {{/if}}
-            <li class="dropdown-divider">Documentation</li>
-            {{#if hasItemsInRecord}}
-                <li tabindex="0" class="dropdown-item" onclick={{action  _addNoteInPast}}>
-                    Add past note
-                </li>
-            {{/if}}
-            <li tabindex="0" class="dropdown-item" onclick={{action _addNoteNow}}>
-                Add note
-            </li>
-        {{else}}
-            <button class="btn btn-default btn-plain btn-expand"
-                type="button">
+        {{#pop-over as |popOver|}}
+            <button class="btn btn-default btn-plain record-actions-control__dropdown-trigger"
+                type="button"
+                onclick={{popOver.actions.toggle}}>
                 <span class="fa fa-plus"></span>
             </button>
-        {{/hide-away/dropdown}}
+        {{else}}
+            <ul class="dropdown">
+                <li tabindex="0" class="dropdown-item" onclick={{action _scheduleMessage}}>
+                    Schedule message
+                </li>
+                {{#if hasPersonalPhoneNumber}}
+                    <li tabindex="0" class="dropdown-item" onclick={{action _startCall}}>
+                        Make call
+                    </li>
+                {{/if}}
+                <li class="dropdown-divider">Documentation</li>
+                {{#if hasItemsInRecord}}
+                    <li tabindex="0" class="dropdown-item" onclick={{action  _addNoteInPast}}>
+                        Add past note
+                    </li>
+                {{/if}}
+                <li tabindex="0" class="dropdown-item" onclick={{action _addNoteNow}}>
+                    Add note
+                </li>
+            </ul>
+        {{/pop-over}}
         {{!-- manually create DDAU pattern for `contents` for now --}}
         {{record-actions-control/compose-text
             classNames="record-actions-control__action-item record-actions-control__action-item--grow"

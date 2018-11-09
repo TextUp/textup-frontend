@@ -1,18 +1,26 @@
-.textup-container {
+.flex {
     display: flex;
     align-items: center;
 
     &--direction-vertical {
         flex-direction: column;
     }
-    &--justify-center {
-        justify-content: center;
-    }
+
     &--stretch-items {
         align-items: stretch;
     }
+    &--align-start {
+        align-items: flex-start;
+    }
+
+    &--justify-center {
+        justify-content: center;
+    }
     &--horizontal-spread {
         justify-content: space-between;
+    }
+    &--justify-end {
+        justify-content: flex-end;
     }
 
     &__item {

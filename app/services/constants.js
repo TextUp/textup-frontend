@@ -47,13 +47,10 @@ export default Ember.Service.extend({
       ACTIONS: 'slideout-pane/actions'
     },
     DEFAULT_IGNORE_CLOSE_SELECTOR:
-      '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp'
+      '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp, .pop-over__body'
   },
   INFINITE_SCROLL: {
     DIRECTION: { UP: 'up', DOWN: 'down' }
-  },
-  PREVIEW_BADGE: {
-    DISPLAY_MODE: { OUTLINE: 'outline', BACKGROUND: 'background' }
   },
   PHOTO_CONTROL: {
     DISPLAY: { GRID: 'image-grid', STACK: 'image-stack' }
@@ -81,12 +78,5 @@ export default Ember.Service.extend({
   },
   POP_OVER: {
     POSITION: { TOP: 'top', BOTTOM: 'bottom' }
-  },
-  // TODO remove?
-  HIDE_AWAY: {
-    // [FUTURE] placeholder until we rewrite hide-away with prop types
-    IGNORE_CLOSE_SELECTOR: {
-      NONE: `do-not-ignore-anything-${Math.random()}`
-    }
   }
 });

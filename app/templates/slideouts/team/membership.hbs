@@ -19,7 +19,7 @@
         itemBucketProperty='teams'
         items=(if selected selected person)
         buckets=stateManager.owner.teams as |team|}}
-            {{preview-badge color=team.hexColor onlyShowFull=true content=team.name}}
+            {{color-badge color=team.hexColor text=team.name}}
     {{else}}
         <li class="no-results">No teams yet.</li>
     {{/multi-toggle/group-by-bucket}}

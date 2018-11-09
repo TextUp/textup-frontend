@@ -9,5 +9,5 @@ export default Ember.Component.extend(PropTypesMixin, {
     }).isRequired
   },
 
-  classNames: 'slideout-pane__header textup-container'
+  classNames: 'slideout-pane__header flex'
 });

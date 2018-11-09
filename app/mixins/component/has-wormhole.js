@@ -1,9 +1,10 @@
 import Ember from 'ember';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, isNone, assign } = Ember;
 
-export default Ember.Mixin.create(PropTypesMixin, {
+export default Ember.Mixin.create(PropTypesMixin, HasAppRoot, {
   propTypes: { wormholeClass: PropTypes.string },
   getDefaultProps() {
     return assign({ wormholeClass: '' }, this._super(...arguments));
@@ -11,7 +12,7 @@ export default Ember.Mixin.create(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    this.get('_$wormholeParent').append(this.get('_$wormhole'));
+    this.get('_root').append(this.get('_$wormhole'));
   },
   didInsertElement() {
     this._super(...arguments);
@@ -30,12 +31,6 @@ export default Ember.Mixin.create(PropTypesMixin, {
 
   _wormholeId: computed(function() {
     return `${this.elementId}--wormhole`;
-  }),
-  _$wormholeParent: computed(function() {
-    const rootSelector = Ember.testing
-      ? '#ember-testing'
-      : Ember.getOwner(this).lookup('application:main').rootElement;
-    return Ember.$(rootSelector);
   }),
   _$wormhole: computed('id', 'wormholeClass', function() {
     const id = this.get('_wormholeId'),

@@ -104,17 +104,17 @@ test('rendering for personal phone number and items in record', function(assert)
   );
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
-  assert.ok(this.$('.hide-away-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+  assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
+  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-  this.$('.hide-away-trigger')
+  this.$('.record-actions-control__dropdown-trigger')
     .first()
-    .triggerHandler('mousedown');
+    .triggerHandler('click');
   wait()
     .then(() => {
-      assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-      assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 2, 'two dropdown items');
-      const text = Ember.$('.hide-away-body .dropdown-item')
+      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+      assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 2, 'two dropdown items');
+      const text = Ember.$('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -126,9 +126,13 @@ test('rendering for personal phone number and items in record', function(assert)
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-      assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 3, 'three dropdown items');
-      const text = Ember.$('.hide-away-body .dropdown-item')
+      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+      assert.equal(
+        Ember.$('.pop-over__body--open .dropdown-item').length,
+        3,
+        'three dropdown items'
+      );
+      const text = Ember.$('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -140,9 +144,13 @@ test('rendering for personal phone number and items in record', function(assert)
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-      assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 4, 'four dropdown items');
-      const text = Ember.$('.hide-away-body .dropdown-item')
+      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+      assert.equal(
+        Ember.$('.pop-over__body--open .dropdown-item').length,
+        4,
+        'four dropdown items'
+      );
+      const text = Ember.$('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -212,27 +220,27 @@ test('trigger schedule message action', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
-  assert.ok(this.$('.hide-away-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+  assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
+  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-  this.$('.hide-away-trigger')
+  this.$('.record-actions-control__dropdown-trigger')
     .first()
-    .triggerHandler('mousedown');
+    .triggerHandler('click');
   // wait doesn't wait long enough for event listeners to bound to body
   Ember.run.later(() => {
-    assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-    assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 4, 'four dropdown items');
+    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.hide-away-body .dropdown-item')
-      .eq(0)
+    Ember.$('.pop-over__body--open .dropdown-item')
+      .first()
       .click();
     // wait doesn't wait long enough
     Ember.run.later(() => {
-      assert.notOk(Ember.$('.hide-away-body').length, 'dropdown closes on click');
+      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onScheduleMessage.calledOnce);
 
       done();
-    }, 500);
+    }, 1000);
   }, 500);
 });
 
@@ -248,26 +256,26 @@ test('trigger make call action', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
-  assert.ok(this.$('.hide-away-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+  assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
+  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-  this.$('.hide-away-trigger')
+  this.$('.record-actions-control__dropdown-trigger')
     .first()
-    .triggerHandler('mousedown');
+    .triggerHandler('click');
 
   Ember.run.later(() => {
-    assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-    assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 4, 'four dropdown items');
+    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.hide-away-body .dropdown-item')
+    Ember.$('.pop-over__body--open .dropdown-item')
       .eq(1)
       .click();
     Ember.run.later(() => {
-      assert.notOk(Ember.$('.hide-away-body').length, 'dropdown closes on click');
+      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onCall.calledOnce);
 
       done();
-    }, 500);
+    }, 1000);
   }, 500);
 });
 
@@ -283,25 +291,25 @@ test('trigger add note in past action', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
-  assert.ok(this.$('.hide-away-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+  assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
+  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-  this.$('.hide-away-trigger')
+  this.$('.record-actions-control__dropdown-trigger')
     .first()
-    .triggerHandler('mousedown');
+    .triggerHandler('click');
   Ember.run.later(() => {
-    assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-    assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 4, 'four dropdown items');
+    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.hide-away-body .dropdown-item')
+    Ember.$('.pop-over__body--open .dropdown-item')
       .eq(2)
       .click();
     Ember.run.later(() => {
-      assert.notOk(Ember.$('.hide-away-body').length, 'dropdown closes on click');
+      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onAddNoteInPast.calledOnce);
 
       done();
-    }, 500);
+    }, 1000);
   }, 500);
 });
 
@@ -317,25 +325,25 @@ test('trigger add note now action', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
-  assert.ok(this.$('.hide-away-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.hide-away-body').length, 'dropdown is closed');
+  assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
+  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
-  this.$('.hide-away-trigger')
+  this.$('.record-actions-control__dropdown-trigger')
     .first()
-    .triggerHandler('mousedown');
+    .triggerHandler('click');
   Ember.run.later(() => {
-    assert.ok(Ember.$('.hide-away-body').length, 'dropdown is open');
-    assert.equal(Ember.$('.hide-away-body .dropdown-item').length, 4, 'four dropdown items');
+    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.hide-away-body .dropdown-item')
+    Ember.$('.pop-over__body--open .dropdown-item')
       .eq(3)
       .click();
     Ember.run.later(() => {
-      assert.notOk(Ember.$('.hide-away-body').length, 'dropdown closes on click');
+      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onAddNote.calledOnce);
 
       done();
-    }, 500);
+    }, 1000);
   }, 500);
 });
 

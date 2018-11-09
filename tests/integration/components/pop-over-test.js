@@ -239,6 +239,7 @@ test('appropriate floating coordinations based on specified position', function(
         assert.ok(parseFloat(floatingLeft) < elementCoords.right);
       }
 
+      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
       this.set('position', this.constants.POP_OVER.POSITION.TOP);
       return wait();
     })
@@ -246,13 +247,13 @@ test('appropriate floating coordinations based on specified position', function(
       assert.ok(doRegister.calledOnce);
       assert.equal(onReposition.callCount, 1);
 
-      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
       const floatingTop = $floatingContainer.css('top');
 
       assert.ok(Ember.$('.pop-over__body--position-top').length);
       assert.notOk(Ember.$('.pop-over__body--position-bottom').length);
       assert.ok(parseFloat(floatingTop) < elementCoords.top);
 
+      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
       this.set('position', this.constants.POP_OVER.POSITION.BOTTOM);
       return wait();
     })
@@ -260,7 +261,6 @@ test('appropriate floating coordinations based on specified position', function(
       assert.ok(doRegister.calledOnce);
       assert.equal(onReposition.callCount, 2);
 
-      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
       const floatingTop = $floatingContainer.css('top');
 
       assert.notOk(Ember.$('.pop-over__body--position-top').length);

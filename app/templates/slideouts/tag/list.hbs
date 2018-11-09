@@ -11,44 +11,41 @@
         hideSecondary=(not model.phone.content.tags))
     doClose=(route-action "closeTagListSlideout")
     forceKeepOpen=newTag.isSaving as |slideout|}}
-    {{#hide-away clickOutToClose=false
-        animation='fade'
-        ignoreTriggerSelectors='.result-list'
-        bodyFocusOnOpenSelector='.start-focus'
+    {{#hide-show doRegister=(action (mut tagsListHideAway))
         startOpen=(if model.phone.content.tags false true)
-        doRegister=(action (mut tagsListHideAway))
-        onOpen=(route-action 'onOpenCreateTagInTagList')
-        onClosed=(route-action 'onCloseCreateTagInTagList')
-        tabindex=false
-        hideTriggerOnOpen=true as |hideAway|}}
-        {{form/tag-model classNames="pad-t pad-l pad-r" tag=newTag}}
-    {{else}}
-         <ul class="result-list">
-            {{#if model.phone.isFulfilled}}
-                {{#each model.phone.content.tags as |tag|}}
-                    <li class="result-item">
-                        <div class="row">
-                            {{#link-to 'main.tag' tag
-                                tagName='div'
-                                classNames='control-text'
-                                tabindex='0'}}
-                                <div class="horizontal-items clickable pad-all">
-                                    {{preview-badge color=tag.hexColor
-                                        onlyShowFull=true
-                                        content=tag.name}}
-                                    <span class="badge">
-                                        {{tag.numMembers}}
-                                        <span class="fa fa-user"></span>
-                                    </span>
-                                </div>
-                            {{/link-to}}
-                        </div>
-                    </li>
-                {{/each}}
-            {{/if}}
-        </ul>
-        <button class="btn btn-span" type='button'>
-            <span class="fa fa-plus"></span>
-        </button>
-    {{/hide-away}}
+        focusOnOpenSelector=".start-focus"
+        onOpen=(route-action "onOpenCreateTagInTagList")
+        onClose=(route-action "onCloseCreateTagInTagList") as |hideShow|}}
+        {{#if hideShow.isOpen}}
+            {{form/tag-model classNames="pad-t pad-l pad-r" tag=newTag}}
+        {{else}}
+            <ul class="result-list">
+                {{#if model.phone.isFulfilled}}
+                    {{#each model.phone.content.tags as |tag|}}
+                        <li class="result-item">
+                            <div class="row">
+                                {{#link-to 'main.tag' tag
+                                    tagName='div'
+                                    classNames='control-text'
+                                    tabindex='0'}}
+                                    <div class="horizontal-items clickable pad-all">
+                                        {{color-badge color=tag.hexColor text=tag.name}}
+                                        <span class="badge">
+                                            {{tag.numMembers}}
+                                            <span class="fa fa-user"></span>
+                                        </span>
+                                    </div>
+                                {{/link-to}}
+                            </div>
+                        </li>
+                    {{/each}}
+                {{/if}}
+            </ul>
+            <button class="btn btn-span"
+                type='button'
+                onclick={{hideShow.actions.open}}>
+                <span class="fa fa-plus"></span>
+            </button>
+        {{/if}}
+    {{/hide-show}}
 {{/slideout-pane}}

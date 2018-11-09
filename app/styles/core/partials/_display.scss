@@ -178,6 +178,7 @@ $bg-color-states: hover regular;
 .badge {
     @extend %border-box;
     min-height: $badge-height;
+    max-width: 12 * $padding;
 
     color: $font-color;
     background-color: $bg-color;
@@ -197,9 +198,6 @@ $bg-color-states: hover regular;
     padding: 0 $badge-h-space;
     margin-right: $badge-h-space;
 
-    &--constrain-width {
-        max-width: 12 * $padding;
-    }
     &--outline {
         background-color: transparent;
         border-color: $border-color;

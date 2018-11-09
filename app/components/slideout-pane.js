@@ -1,10 +1,11 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { $, getOwner, isNone, computed, run } = Ember;
+const { $, isNone, computed, run } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   constants: Ember.inject.service(),
 
   propTypes: {
@@ -37,12 +38,12 @@ export default Ember.Component.extend(PropTypesMixin, {
       startOpen: true,
       clickOutToClose: true,
       focusDelay: 500, // in ms
-      focusSelector: '',
+      focusSelector: '.slideout-pane__body',
       forceKeepOpen: false
     };
   },
 
-  classNames: 'slideout-pane textup-container textup-container--direction-vertical',
+  classNames: 'slideout-pane flex flex--direction-vertical',
   classNameBindings: [
     '_directionClass',
     'forceKeepOpen:slideout-pane--keep-open',
@@ -72,12 +73,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   }),
   _directionClass: computed('direction', function() {
     return `slideout-pane--direction-${this.get('direction')}`;
-  }),
-  _$appRoot: computed(function() {
-    const rootSelector = Ember.testing
-      ? '#ember-testing'
-      : getOwner(this).lookup('application:main').rootElement;
-    return $(rootSelector);
   }),
   _$el: computed(function() {
     return this.$();
@@ -111,7 +106,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     const ignoreCloseSelectors = this.get('ignoreCloseSelectors'),
-      $appRoot = this.get('_$appRoot'),
+      $appRoot = this.get('_root'),
       $overlay = this.get('_$overlay'),
       $target = $(event.target),
       targetStillInDOM = $appRoot.find($target).length > 0;

@@ -132,14 +132,14 @@ export default Ember.Component.extend({
     // Dropdown hooks
     // --------------
 
-    inputStart: function(val, event) {
+    inputStart: function(val) {
       Ember.run.cancel(this.get('_updateResultsTimer'));
       this.updateResults(val, true);
       if (this.get('_dropdown.isOpen') && this.get('_input.isCreating')) {
         this.get('_input.actions.stopEditing')();
       } else {
         Ember.run.scheduleOnce('afterRender', this, function() {
-          this.get('_dropdown.actions.open')(event, true);
+          this.get('_dropdown.actions.open')();
         });
       }
     },
@@ -233,7 +233,7 @@ export default Ember.Component.extend({
       this.updateResults(this.get('_input.currentVal'));
     }
     if (!creating && !editing) {
-      this.get('_dropdown.actions.close')(null, true);
+      this.get('_dropdown.actions.close')();
     }
   },
 
@@ -322,7 +322,6 @@ export default Ember.Component.extend({
         _results: [],
         _resultIds: Object.create(null)
       });
-
       this._doSyncResults(val);
       if (val === this.get('_prevSearchVal')) {
         this._restoreAsyncResults();

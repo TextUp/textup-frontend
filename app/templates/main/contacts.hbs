@@ -33,38 +33,7 @@
             {{/if}}
         </div>
     {{else}}
-        {{#hide-away tabindex=false
-            clickOutToClose=true
-            bodyClickClose=true
-            animation='slide'
-            allowedTriggerSelectors='.filter-button' as |hideAway|}}
-            <ul class="reset-list">
-                <li class="menu-item {{if (eq filter 'all') 'active'}}"
-                    {{action 'changeFilter' 'all'}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">All</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter 'unread') 'active'}}"
-                    {{action 'changeFilter' 'unread'}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Unread</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter 'archived') 'active'}}"
-                    {{action 'changeFilter' 'archived'}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Archived</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter 'blocked') 'active'}}"
-                    {{action 'changeFilter' 'blocked'}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Blocked</p>
-                    </div>
-                </li>
-            </ul>
-        {{else}}
+        {{#hide-show clickOutToClose=true as |hideShow|}}
             <div class="section-header">
                 <div class="contacts-title">
                     <div class="{{if (eq filter 'all')
@@ -96,16 +65,47 @@
                         </p>
                     </div>
                 </div>
-                <div class="pull-right-to-edge full-height
-                    display-l filter-button">
-                    {{#tool-tip title='Filter Contacts'
-                        tagName='button'
-                        classNames='btn btn-plain btn-expand'}}
-                        <span class="fa fa-filter"></span>
-                    {{/tool-tip}}
+                <div class="pull-right-to-edge full-height display-l">
+                    <button type="button"
+                        class="btn btn-plain btn-expand"
+                        onclick={{hideShow.actions.toggle}}>
+                        {{#if hideShow.isOpen}}
+                            <span class="fa fa-times"></span>
+                        {{else}}
+                            <span class="fa fa-filter"></span>
+                        {{/if}}
+                    </button>
                 </div>
             </div>
-        {{/hide-away}}
+            {{#if hideShow.isOpen}}
+                <ul class="reset-list">
+                    <li class="menu-item {{if (eq filter 'all') 'active'}}"
+                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'all')}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">All</p>
+                        </div>
+                    </li>
+                    <li class="menu-item {{if (eq filter 'unread') 'active'}}"
+                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'unread')}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">Unread</p>
+                        </div>
+                    </li>
+                    <li class="menu-item {{if (eq filter 'archived') 'active'}}"
+                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'archived')}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">Archived</p>
+                        </div>
+                    </li>
+                    <li class="menu-item {{if (eq filter 'blocked') 'active'}}"
+                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'blocked')}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">Blocked</p>
+                        </div>
+                    </li>
+                </ul>
+            {{/if}}
+        {{/hide-show}}
     {{/if}}
     {{#infinite-scroll classNames='section-body bg-color bg-dark'
         doRegister=(action (mut _contactsList))
@@ -128,11 +128,11 @@
     {{else}}
         {{#if (and (eq filter "all") (not tag))}}
             <div class="no-results">
-                <p class="margin-b">No contacts yet!</p>
+                <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
                 <button type="button"
                     class="btn btn-default btn-plain"
                     onclick={{route-action "startNewContactSlideout"}}>
-                    Get started by creating a new contact.
+                    Create contact
                 </button>
             </div>
         {{else if tag}}

@@ -14,7 +14,7 @@
         itemBucketProperty='tags'
         items=tagMembershipContacts
         buckets=tagMembershipTags as |tag|}}
-            {{preview-badge color=tag.hexColor onlyShowFull=true content=tag.name}}
+        {{color-badge color=tag.hexColor text=tag.name}}
     {{else}}
         <li class="no-results">No tags yet.</li>
     {{/multi-toggle/group-by-bucket}}

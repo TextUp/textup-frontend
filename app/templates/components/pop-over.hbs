@@ -3,6 +3,7 @@
 {{!-- body will be hoisted up to wormhole --}}
 <div class="pop-over__body
     {{if _isOpening 'pop-over__body--opening'}}
+    {{if _isClosing 'pop-over__body--closing'}}
     {{if _publicAPI.isOpen 'pop-over__body--open'}}
     {{if _bodyPositionTop 'pop-over__body--position-top' 'pop-over__body--position-bottom'}}
     {{if _bodyAlignLeft 'pop-over__body--align-left' 'pop-over__body--align-right'}}">

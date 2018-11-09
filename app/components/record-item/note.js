@@ -5,6 +5,8 @@ import RecordNote from 'textup-frontend/models/record-note';
 const { tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
+  constants: Ember.inject.service(),
+
   propTypes: {
     note: PropTypes.instanceOf(RecordNote).isRequired,
     onEdit: PropTypes.func,

@@ -8,12 +8,7 @@
     filterProperty='transferFilter'
     doSearch=(action 'search')
     onInsert=(action 'select')
-    onRemove=(action 'deselect')
-    floating=floating
-    floatHeightMax=floatHeightMax
-    floatMode=floatMode
-    horizontal=horizontal
-    vertical=vertical as |item select|}}
+    onRemove=(action 'deselect') as |item select|}}
     {{#if hasBlock}}
         {{yield item select}}
     {{else}}

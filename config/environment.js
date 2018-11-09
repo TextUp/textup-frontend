@@ -44,7 +44,7 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    // ENV.host = 'http://localhost:8080';
+    // ENV.host = 'http://localhost:8080'; // TODO
     ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 

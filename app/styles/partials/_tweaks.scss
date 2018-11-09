@@ -106,9 +106,6 @@
 		.clear-badge .fa {
 			margin-top: -3px;
 		}
-		.preview-badge {
-			height: $badge-height;
-		}
 	}
 	@include mq($until:desktop) {
 		// displaying shared status

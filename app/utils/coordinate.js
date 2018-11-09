@@ -2,8 +2,6 @@ import Ember from 'ember';
 
 const { get } = Ember;
 
-// TODO delete?
-
 export function distance(coord1, coord2) {
   const xDist = getX(coord1) - getX(coord2),
     yDist = getY(coord1) - getY(coord2);

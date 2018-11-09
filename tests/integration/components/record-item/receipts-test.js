@@ -205,7 +205,7 @@ test('viewing receipt details', function(assert) {
 
     assert.ok(this.$('.record-item__receipts').length, 'did render');
     assert.ok(this.$('.record-item__receipts__trigger__label').length, 'has trigger');
-    assert.notOk(this.$('.hide-away-body').length, 'receipt details are closed');
+    assert.notOk(this.$('.record-item__receipts__body').length, 'receipt details are closed');
 
     this.$('.record-item__receipts__trigger')
       .first()
