@@ -49,13 +49,13 @@
 				</div>
 				<div class="xs-full-row s-row-2 l-row-3 flex flex--justify-end">
 					{{#if selected.pendingAction}}
-						<div class="flex__item flex__item--no-shrink">
+						<div class="flex__item">
 							<button class="btn btn-plain btn-span" type='button'
 								onclick={{action (mut selected.pendingAction) null}}>
 								Undo
 							</button>
 						</div>
-						<div class="flex__item flex__item--no-shrink">
+						<div class="flex__item">
 							<button class="btn btn-plain btn-span
 								{{if (eq selected.pendingAction 'approve')
 									'btn-success'
@@ -67,7 +67,7 @@
 						</div>
 					{{else}}
 						{{#if (not selected.phoneActionData)}}
-							<div class="flex__item flex__item--no-spacing flex__item--grow">
+							<div class="flex__item flex__item--grow">
 								<button class="btn btn-span"
 									type="button"
 									onclick={{hideShow.actions.toggle}}>
@@ -81,14 +81,14 @@
 								</button>
 							</div>
 						{{/if}}
-						<div class="flex__item flex__item--no-shrink">
+						<div class="flex__item">
 							<button class="btn btn-plain btn-success"
 								type='button'
 								onclick={{action (mut selected.pendingAction) 'approve'}}>
 								<span class="fa fa-check"></span>
 							</button>
 						</div>
-						<div class="flex__item flex__item--no-spacing flex__item--no-shrink">
+						<div class="flex__item">
 							<button class="btn btn-plain btn-danger"
 								type='button'
 								onclick={{action (mut selected.pendingAction) 'reject'}}>
@@ -101,7 +101,7 @@
 			{{#if hideShow.isOpen}}
 				<div class="bg-color bg-dark pad-all border-l border-r border-b flex flex--align-start
 					{{if (eq selected.pendingAction 'reject') 'hidden'}}">
-					<div class="display-m display-l pad-r-double flex__item flex__item--no-shrink">
+					<div class="display-m display-l pad-r-double flex__item">
 						<div class="control-text text-bold">
 							Select a phone number
 						</div>

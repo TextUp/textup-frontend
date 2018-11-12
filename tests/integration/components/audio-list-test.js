@@ -20,12 +20,22 @@ test('properties', function(assert) {
 
   assert.ok(this.$('.ember-view').length);
 
-  this.render(hbs`{{audio-list audio=audioArray maxNumToDisplay=88 sortPropName="validPropName"}}`);
+  this.render(hbs`
+    {{audio-list audio=audioArray
+        maxNumToDisplay=88
+        sortPropName="validPropName"
+        sortLowToHigh=true}}
+  `);
 
   assert.ok(this.$('.ember-view').length);
 
   assert.throws(() => {
-    this.render(hbs`{{audio-list audio="not an array" maxNumToDisplay="hi" sortPropName=88}}`);
+    this.render(hbs`{{audio-list
+      audio="not an array"
+      maxNumToDisplay="hi"
+      sortPropName=88
+      sortLowToHigh=88}}
+    `);
   });
 });
 
@@ -63,20 +73,22 @@ test('ignores non-audio media elements', function(assert) {
     assert.ok(this.$('.ember-view').length);
     assert.notOk(this.$('.audio-control').length);
 
-    this.render(hbs`{{audio-list audio=allTypes}}`);
+    this.render(hbs`{{audio-list audio=allTypes itemClass="testing-item-class"}}`);
 
     assert.ok(this.$('.ember-view').length);
     assert.equal(this.$('.audio-control').length, this.get('onlyAudio.length'));
+    assert.equal(this.$('.testing-item-class').length, this.get('onlyAudio.length'));
   });
 });
 
-test('rendering block', function(assert) {
+test('rendering block + inverse', function(assert) {
   const nestedClass = 'audio-list-test',
     audioEl1 = mockValidMediaAudio(this.store),
     audioEl2 = mockValidMediaAudio(this.store),
     uid1 = audioEl1.get(MEDIA_ID_PROP_NAME),
-    uid2 = audioEl2.get(MEDIA_ID_PROP_NAME);
-  this.setProperties({ audio: [audioEl1, audioEl2], nestedClass });
+    uid2 = audioEl2.get(MEDIA_ID_PROP_NAME),
+    inverseBlockText = `${Math.random()}`;
+  this.setProperties({ audio: [audioEl1, audioEl2], nestedClass, inverseBlockText });
 
   this.render(hbs`{{audio-list audio=audio}}`);
 
@@ -87,6 +99,8 @@ test('rendering block', function(assert) {
   this.render(hbs`
       {{#audio-list audio=audio as |el|}}
         <span class="{{nestedClass}}">{{el.uid}}</span>
+      {{else}}
+        {{inverseBlockText}}
       {{/audio-list}}
     `);
 
@@ -96,6 +110,7 @@ test('rendering block', function(assert) {
   const text = this.$().text();
   assert.ok(text.indexOf(uid1) > -1);
   assert.ok(text.indexOf(uid2) > -1);
+  assert.ok(text.indexOf(inverseBlockText) > -1);
 });
 
 test('listing audio items in a certain order + specifying max num to show', function(assert) {
@@ -110,10 +125,10 @@ test('listing audio items in a certain order + specifying max num to show', func
     this.setProperties({ audio: [audioEl2, audioEl1], nestedClass });
 
     this.render(hbs`
-    {{#audio-list audio=audio as |el|}}
-      <span class={{nestedClass}}>{{el.uid}}</span>
-    {{/audio-list}}
-  `);
+      {{#audio-list audio=audio as |el|}}
+        <span class={{nestedClass}}>{{el.uid}}</span>
+      {{/audio-list}}
+    `);
 
     assert.ok(this.$('.ember-view').length);
     assert.equal(this.$('.audio-control').length, this.get('audio.length'));
@@ -135,10 +150,10 @@ test('listing audio items in a certain order + specifying max num to show', func
     );
 
     this.render(hbs`
-    {{#audio-list audio=audio sortPropName="whenCreated" as |el|}}
-      <span class={{nestedClass}}>{{el.uid}}</span>
-    {{/audio-list}}
-  `);
+      {{#audio-list audio=audio sortPropName="whenCreated" as |el|}}
+        <span class={{nestedClass}}>{{el.uid}}</span>
+      {{/audio-list}}
+    `);
 
     assert.equal(
       this.$(`.${nestedClass}`)
@@ -154,10 +169,29 @@ test('listing audio items in a certain order + specifying max num to show', func
     );
 
     this.render(hbs`
-    {{#audio-list audio=audio sortPropName="whenCreated" maxNumToDisplay=1 as |el|}}
-      <span class={{nestedClass}}>{{el.uid}}</span>
-    {{/audio-list}}
-  `);
+      {{#audio-list audio=audio sortPropName="whenCreated" sortLowToHigh=false as |el|}}
+        <span class={{nestedClass}}>{{el.uid}}</span>
+      {{/audio-list}}
+    `);
+
+    assert.equal(
+      this.$(`.${nestedClass}`)
+        .eq(0)
+        .text(),
+      audioEl2.get(MEDIA_ID_PROP_NAME)
+    );
+    assert.equal(
+      this.$(`.${nestedClass}`)
+        .eq(1)
+        .text(),
+      audioEl1.get(MEDIA_ID_PROP_NAME)
+    );
+
+    this.render(hbs`
+      {{#audio-list audio=audio sortPropName="whenCreated" maxNumToDisplay=1 as |el|}}
+        <span class={{nestedClass}}>{{el.uid}}</span>
+      {{/audio-list}}
+    `);
 
     assert.equal(this.$('.audio-control').length, 1);
     assert.equal(this.$(`.${nestedClass}`).length, 1);

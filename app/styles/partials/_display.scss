@@ -27,16 +27,17 @@
     }
 
     &-item {
-        padding: $padding * 1.5;
+        display: block;
+        padding: $baseunit * 1.5;
         user-select: none;
         cursor: pointer;
 
         @include mq($from: desktop) {
-            padding: $padding;
+            padding: $baseunit;
         }
 
-        &:not(:last-child) {
-            border-bottom: 1px solid $border-color;
+        &:not(:first-child) {
+            border-top: 1px solid $border-color;
         }
         &.active,
         &:hover,
@@ -45,18 +46,12 @@
             background-color: $bg-light-color;
         }
     }
+    &-divider + &-item {
+        border-top-width: 0;
+    }
     &-divider {
-        padding-top: $padding;
-        padding-bottom: $padding * 0.5;
+        padding-top: $baseunit * 0.5;
         background-color: $bg-color;
-        font-weight: $font-weight-bold;
-        padding-left: $padding;
-        text-transform: uppercase;
-
-        @include mq($from: desktop) {
-            padding: $padding $padding ($padding / 2);
-            font-size: 0.8em;
-        }
     }
 }
 

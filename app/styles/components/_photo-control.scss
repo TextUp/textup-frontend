@@ -27,25 +27,9 @@
         }
     }
     &__add-control {
-        cursor: pointer;
-        display: inline-block;
-        overflow: hidden;
-        width: 100%;
-        box-sizing: border-box;
-        padding: $padding;
+        @extend .button;
+        @extend .button--expand;
 
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-align: center;
-
-        background-color: $bg-color;
-        transition: all 0.5s;
-
-        &:hover,
-        &:active,
-        &:focus {
-            background-color: shade($bg-color);
-        }
         & * {
             pointer-events: none;
         }
@@ -58,8 +42,8 @@
             opacity: 0;
             z-index: -1;
             overflow: hidden;
-            width: 0.1px;
-            height: 0.1px;
+            width: 0.01px;
+            height: 0.01px;
         }
     }
 }

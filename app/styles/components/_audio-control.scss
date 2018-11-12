@@ -1,3 +1,21 @@
+.audio-wrapper {
+	&__control-container {
+		&:only-child {
+			justify-content: flex-end;
+		}
+		&:not(:only-child) {
+			justify-content: space-between;
+		}
+	}
+	&__player-item {
+		margin-bottom: $baseunit / 2;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
 .audio-control {
 	display: flex;
 
@@ -11,17 +29,11 @@
 		}
 	}
 	&--disabled {
-		opacity: 0.6;
+		opacity: 0.4;
 	}
 	&--error {
 		.audio-control__button {
-			border-color: $color-error-dark;
-			color: $color-error-dark;
-
-			&--active {
-				border-color: $color-error;
-				background-color: $color-error;
-			}
+			@extend .button--error;
 		}
 		.audio-control__display {
 			color: white;
@@ -35,27 +47,11 @@
 	&--unsupported {
 		display: none;
 	}
-	&__button {
-		height: $control-height;
-		min-width: $control-height;
-		color: $color-brand-dark;
-		background-color: transparent;
-
-		border: 1px solid $color-brand-dark;
-		border-radius: $border-radius;
-
-		&--active {
-			border-color: $color-brand;
-			background-color: $color-brand;
-			color: white;
-		}
-	}
 	&__display {
 		position: relative;
 		flex-grow: 1;
 		display: flex;
 		justify-content: flex-end;
-		height: $control-height;
 		line-height: $control-height;
 		min-width: $media-preview-height;
 		max-width: 100%;

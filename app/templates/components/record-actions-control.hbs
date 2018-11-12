@@ -1,5 +1,9 @@
 {{yield}} {{!-- for overlays --}}
-{{#record-actions-control/media-drawer images=images onRemoveImage=(action _onRemoveImage)}}
+{{#record-actions-control/media-drawer doRegister=(action (mut _mediaDrawer))
+    audio=audio
+    images=images
+    onAddAudio=(action _onAddAudio)
+    onRemoveMedia=(action _onRemoveMedia)}}
     <div class="record-actions-control__action-container">
         {{#pop-over as |popOver|}}
             <button class="btn btn-default btn-plain record-actions-control__dropdown-trigger"
@@ -17,7 +21,7 @@
                         Make call
                     </li>
                 {{/if}}
-                <li class="dropdown-divider">Documentation</li>
+                <li class="dropdown-divider"></li>
                 {{#if hasItemsInRecord}}
                     <li tabindex="0" class="dropdown-item" onclick={{action  _addNoteInPast}}>
                         Add past note
@@ -29,12 +33,38 @@
             </ul>
         {{/pop-over}}
         {{!-- manually create DDAU pattern for `contents` for now --}}
-        {{record-actions-control/compose-text
+        {{#record-actions-control/compose-text
             classNames="record-actions-control__action-item record-actions-control__action-item--grow"
-            hasMedia=_hasImages
+            numMedia=_numMedia
             contents=(mut _contents)
             onClearContents=(action _onContentChange '')
-            onSend=(action _onSendText)
-            onAddImage=(action _onAddImage)}}
+            onSend=(action _onSendText)}}
+            {{#if (can-record-audio)}}
+                {{#pop-over as |popOver|}}
+                    <button type="button"
+                        class="compose-text__control"
+                        onclick={{popOver.actions.toggle}}>
+                        {{#count-badge count=_numMedia}}
+                            <span class="fa fa-paperclip"></span>
+                        {{/count-badge}}
+                    </button>
+                {{else}}
+                    <ul class="dropdown">
+                        {{#photo-control/add tagName="li" labelClass="dropdown-item" onAdd=(action _onAddImage)}}
+                            Add images
+                        {{/photo-control/add}}
+                        <li tabindex="0" class="dropdown-item" onclick={{action _onStartAddAudio}}>
+                            Add recording
+                        </li>
+                    </ul>
+                {{/pop-over}}
+            {{else}}
+                {{#photo-control/add labelClass="compose-text__control" onAdd=(action _onAddImage)}}
+                    {{#count-badge count=_numMedia}}
+                        <span class="fa fa-picture-o"></span>
+                    {{/count-badge}}
+                {{/photo-control/add}}
+            {{/if}}
+        {{/record-actions-control/compose-text}}
     </div>
 {{/record-actions-control/media-drawer}}

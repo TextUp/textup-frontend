@@ -21,8 +21,11 @@ export default Ember.Mixin.create({
     onNoteAddImage() {
       return this.get('recordItemService').addImage(...arguments);
     },
-    onNoteRemoveImage() {
-      return this.get('recordItemService').removeImage(...arguments);
+    onNoteAddAudio() {
+      return this.get('recordItemService').addAudio(...arguments);
+    },
+    onNoteRemoveMedia() {
+      return this.get('recordItemService').removeMedia(...arguments);
     },
     onNoteAddLocation(rNote) {
       return this.get('recordItemService').addLocationToNote(rNote);

@@ -8,12 +8,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { typeOf } = Ember;
-let store;
 
 moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
   beforeEach() {
-    store = Ember.getOwner(this).lookup('service:store');
+    this.inject.service('store');
   }
 });
 
@@ -22,128 +21,74 @@ test('empty + invalid inputs', function(assert) {
 
   assert.ok(this.$('.care-record').length, 'no inputs is ok');
 
-  this.setProperties({
-    invalidCanAddToRecord: 88,
-    invalidCanModifyExistingInRecord: 88,
-    invalidNextFutureFire: 88,
-    invalidPersonalPhoneNumber: 88,
-    invalidRecordClusters: 88,
-    invalidNumRecordItems: 'not a number',
-    invalidTotalNumRecordItems: 'not a number',
-    invalidImages: 88,
-    invalidContents: 88,
-    invalidDoRegister: 88,
-    invalidOnEditNote: 88,
-    invalidOnRestoreNote: 88,
-    invalidOnViewNoteHistory: 88,
-    invalidOnLoadRecordItems: 88,
-    invalidOnRefreshRecordItems: 88,
-    invalidOnViewScheduledMessages: 88,
-    invalidOnContentChange: 88,
-    invalidOnAddImage: 88,
-    invalidOnRemoveImage: 88,
-    invalidOnAddNote: 88,
-    invalidOnCall: 88,
-    invalidOnText: 88,
-    invalidOnScheduleMessage: 88,
-    invalidNoRecordItemsMessage: 88,
-    invalidNoAddToRecordMessage: 88,
-    invalidStartCallMessage: 88,
-    invalidAddNoteInPastMessage: 88
-  });
-
   assert.throws(() => {
     this.render(hbs`
-    {{care-record canAddToRecord=invalidCanAddToRecord
-      canModifyExistingInRecord=invalidCanModifyExistingInRecord
-      nextFutureFire=invalidNextFutureFire
-      personalPhoneNumber=invalidPersonalPhoneNumber
-      recordClusters=invalidRecordClusters
-      numRecordItems=invalidNumRecordItems
-      totalNumRecordItems=invalidTotalNumRecordItems
-      images=invalidImages
-      contents=invalidContents
-      doRegister=invalidDoRegister
-      onEditNote=invalidOnEditNote
-      onRestoreNote=invalidOnRestoreNote
-      onViewNoteHistory=invalidOnViewNoteHistory
-      onLoadRecordItems=invalidOnLoadRecordItems
-      onRefreshRecordItems=invalidOnRefreshRecordItems
-      onViewScheduledMessages=invalidOnViewScheduledMessages
-      onContentChange=invalidOnContentChange
-      onAddImage=invalidOnAddImage
-      onRemoveImage=invalidOnRemoveImage
-      onAddNote=invalidOnAddNote
-      onCall=invalidOnCall
-      onText=invalidOnText
-      onScheduleMessage=invalidOnScheduleMessage
-      noRecordItemsMessage=invalidNoRecordItemsMessage
-      noAddToRecordMessage=invalidNoAddToRecordMessage
-      startCallMessage=invalidStartCallMessage
-      addNoteInPastMessage=invalidAddNoteInPastMessage}}
+    {{care-record canAddToRecord=88
+      canModifyExistingInRecord=88
+      nextFutureFire=88
+      personalPhoneNumber=88
+      recordClusters=88
+      numRecordItems="not a number"
+      totalNumRecordItems="not a number"
+      images=88
+      audio=88
+      contents=88
+      doRegister=88
+      onEditNote=88
+      onRestoreNote=88
+      onViewNoteHistory=88
+      onLoadRecordItems=88
+      onRefreshRecordItems=88
+      onViewScheduledMessages=88
+      onContentChange=88
+      onAddImage=88
+      onAddAudio=88
+      onRemoveMedia=88
+      onAddNote=88
+      onCall=88
+      onText=88
+      onScheduleMessage=88
+      noRecordItemsMessage=88
+      noAddToRecordMessage=88
+      startCallMessage=88
+      addNoteInPastMessage=88}}
   `);
   }, 'invalid types');
 });
 
 test('all valid inputs', function(assert) {
-  this.setProperties({
-    canAddToRecord: true,
-    canModifyExistingInRecord: true,
-    nextFutureFire: new Date(),
-    personalPhoneNumber: 'ok',
-    recordClusters: [],
-    numRecordItems: 88,
-    totalNumRecordItems: 88,
-    images: [],
-    contents: 'ok',
-    doRegister: () => null,
-    onEditNote: () => null,
-    onRestoreNote: () => null,
-    onViewNoteHistory: () => null,
-    onLoadRecordItems: () => null,
-    onRefreshRecordItems: () => null,
-    onViewScheduledMessages: () => null,
-    onContentChange: () => null,
-    onAddImage: () => null,
-    onRemoveImage: () => null,
-    onAddNote: () => null,
-    onCall: () => null,
-    onText: () => null,
-    onScheduleMessage: () => null,
-    noRecordItemsMessage: 'ok',
-    noAddToRecordMessage: 'ok',
-    startCallMessage: 'ok',
-    addNoteInPastMessage: 'ok'
-  });
+  this.setProperties({ date: new Date(), array: [], func: () => null });
 
   this.render(hbs`
-    {{care-record canAddToRecord=canAddToRecord
-      canModifyExistingInRecord=canModifyExistingInRecord
-      nextFutureFire=nextFutureFire
-      personalPhoneNumber=personalPhoneNumber
-      recordClusters=recordClusters
-      numRecordItems=numRecordItems
-      totalNumRecordItems=totalNumRecordItems
-      images=images
-      contents=contents
-      doRegister=doRegister
-      onEditNote=onEditNote
-      onRestoreNote=onRestoreNote
-      onViewNoteHistory=onViewNoteHistory
-      onLoadRecordItems=onLoadRecordItems
-      onRefreshRecordItems=onRefreshRecordItems
-      onViewScheduledMessages=onViewScheduledMessages
-      onContentChange=onContentChange
-      onAddImage=onAddImage
-      onRemoveImage=onRemoveImage
-      onAddNote=onAddNote
-      onCall=onCall
-      onText=onText
-      onScheduleMessage=onScheduleMessage
-      noRecordItemsMessage=noRecordItemsMessage
-      noAddToRecordMessage=noAddToRecordMessage
-      startCallMessage=startCallMessage
-      addNoteInPastMessage=addNoteInPastMessage}}
+    {{care-record canAddToRecord=true
+      canModifyExistingInRecord=true
+      nextFutureFire=date
+      personalPhoneNumber="hi"
+      recordClusters=array
+      numRecordItems=88
+      totalNumRecordItems=88
+      images=array
+      audio=array
+      contents="hi"
+      doRegister=func
+      onEditNote=func
+      onRestoreNote=func
+      onViewNoteHistory=func
+      onLoadRecordItems=func
+      onRefreshRecordItems=func
+      onViewScheduledMessages=func
+      onContentChange=func
+      onAddImage=func
+      onAddAudio=func
+      onRemoveMedia=func
+      onAddNote=func
+      onCall=func
+      onText=func
+      onScheduleMessage=func
+      noRecordItemsMessage="hi"
+      noAddToRecordMessage="hi"
+      startCallMessage="hi"
+      addNoteInPastMessage="hi"}}
   `);
 
   assert.ok(this.$('.care-record').length, 'did render');
@@ -235,7 +180,7 @@ test('no items yet in the record', function(assert) {
 
 // displays overlay + resets scroll position
 test('starting call', function(assert) {
-  const recordClusters = mockRecordClusters(store),
+  const recordClusters = mockRecordClusters(this.store),
     onCall = sinon.spy(),
     personalPhoneNumber = `${Math.random()}`,
     done = assert.async();
@@ -297,7 +242,7 @@ test('starting call', function(assert) {
 
 // resets scroll position
 test('sending text', function(assert) {
-  const recordClusters = mockRecordClusters(store),
+  const recordClusters = mockRecordClusters(this.store),
     onText = sinon.spy(),
     contents = `${Math.random()}`,
     done = assert.async();
@@ -344,7 +289,7 @@ test('sending text', function(assert) {
 });
 
 test('adding note in the past + cannot modify existing', function(assert) {
-  const recordClusters = mockRecordClusters(store, 40, 'record-note', { noteContents: 'hi' }),
+  const recordClusters = mockRecordClusters(this.store, 40, 'record-note', { noteContents: 'hi' }),
     done = assert.async();
   this.setProperties({ recordClusters, canModifyExistingInRecord: true });
 
@@ -408,7 +353,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
 });
 
 test('adding note in the past', function(assert) {
-  const recordClusters = mockRecordClusters(store, 40, 'record-note', { noteContents: 'hi' }),
+  const recordClusters = mockRecordClusters(this.store, 40, 'record-note', { noteContents: 'hi' }),
     onAddNote = sinon.spy(),
     done = assert.async();
   this.setProperties({ recordClusters, onAddNote, canModifyExistingInRecord: true });

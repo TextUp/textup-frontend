@@ -34,16 +34,29 @@
             &__media-container {
                 display: flex;
                 flex-grow: 1;
+                flex-wrap: wrap;
 
                 @include mq($from: desktop) {
                     flex-grow: 0;
+                    flex-wrap: nowrap;
                 }
             }
             &__media {
-                width: 100%;
+                width: 50%;
+
+                &--audio {
+                    width: 100%;
+                    padding: ($baseunit * 0.5) $baseunit;
+                }
 
                 @include mq($from: desktop) {
                     width: $media-preview-height;
+                    max-width: 100%;
+
+                    &--audio {
+                        width: $media-preview-height * 2;
+                        padding: $baseunit $baseunit 0 0;
+                    }
                 }
             }
             &__control {

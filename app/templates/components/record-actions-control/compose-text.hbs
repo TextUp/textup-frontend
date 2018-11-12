@@ -16,9 +16,7 @@
         <span class="fa fa-times"></span>
     </button>
 {{/if}}
-{{#photo-control/add classNames="compose-text__control" onAdd=(action _onAddImage)}}
-    <span class="fa fa-picture-o"></span>
-{{/photo-control/add}}
+{{yield}}
 {{#action-button classNames="compose-text__control btn-plain btn-default"
     disabled=_isInvalid
     onAction=(action _onSend)}}

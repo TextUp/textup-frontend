@@ -111,7 +111,9 @@ test('public API close then call', function(assert) {
   const doRegister = sinon.spy(),
     onClose = sinon.spy(),
     customAction = sinon.spy(),
-    done = assert.async();
+    done = assert.async(),
+    arg1 = Math.random(),
+    arg2 = Math.random();
   this.setProperties({ doRegister, onClose });
 
   this.render(hbs`{{hide-show doRegister=doRegister onClose=onClose}}`);
@@ -129,12 +131,13 @@ test('public API close then call', function(assert) {
       assert.ok(onClose.notCalled);
       assert.ok(customAction.notCalled);
 
-      return publicAPI.actions.closeThenCall(customAction);
+      return publicAPI.actions.closeThenCall(customAction, arg1, arg2);
     })
     .then(() => {
       assert.ok(doRegister.calledOnce);
       assert.ok(onClose.calledOnce);
       assert.ok(customAction.calledOnce);
+      assert.ok(customAction.calledWith(arg1, arg2));
 
       done();
     });

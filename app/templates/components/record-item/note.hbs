@@ -11,6 +11,11 @@
         {{/read-more}}
     </div>
     <div class="record-item__media-container">
+        {{#if (and (not note.media.content.isNew) note.media.content.displayedAudio)}}
+            <div class="record-item__media record-item__media--audio">
+                {{audio-list audio=note.media.content.displayedAudio}}
+            </div>
+        {{/if}}
         {{#if (and (not note.media.content.isNew) note.media.content.displayedImages.content)}}
             <div class="record-item__media">
                 {{image-stack images=note.media.content.displayedImages.content}}
@@ -23,8 +28,7 @@
         {{/if}}
     </div>
     {{#if (or (not readOnly) note.hasRevisions)}}
-        {{#pop-over classNames="record-item__control"
-            position=constants.POP_OVER.POSITION.BOTTOM as |popOver|}}
+        {{#pop-over classNames="record-item__control" as |popOver|}}
             <button class="btn btn-default btn-plain btn-expand"
                 type="button"
                 onclick={{popOver.actions.toggle}}>

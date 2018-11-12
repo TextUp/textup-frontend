@@ -31,10 +31,12 @@
 {{#record-actions-control hasPersonalPhoneNumber=_hasPersonalPhoneNumber
     hasItemsInRecord=_hasItemsInRecord
     images=images
+    audio=audio
     contents=contents
     onContentChange=(action _onContentChange)
     onAddImage=(action _onAddImage)
-    onRemoveImage=(action _onRemoveImage)
+    onAddAudio=(action _onAddAudio)
+    onRemoveMedia=(action _onRemoveMedia)
     onAddNoteInPast=(action (mut _isAddingNoteInPast) true)
     onAddNote=(action _addNoteNow)
     onCall=(action _onCall)

@@ -11,11 +11,13 @@ export default Ember.Component.extend(DisplaysImages, {
     onAdd: PropTypes.func,
     onRemove: PropTypes.func,
     imageDisplayComponent: PropTypes.string,
+    addComponentClass: PropTypes.string,
     readOnly: PropTypes.bool
   },
   getDefaultProps() {
     return {
       images: [],
+      addComponentClass: '',
       imageDisplayComponent: this.get('constants.PHOTO_CONTROL.DISPLAY.STACK'),
       readOnly: false
     };

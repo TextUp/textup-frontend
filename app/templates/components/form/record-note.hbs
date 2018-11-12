@@ -12,38 +12,43 @@
         validate="bottom"
         value=recordNote.noteContents}}
 </div>
-<div class="form-element">
+<div class="margin-b">
     {{photo-control images=recordNote.media.content.displayedImages.content
         imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
         readOnly=(or readOnly recordNote.isSaving)
+        addComponentClass="margin-l margin-r"
         onAdd=doAddImage
-        onRemove=doRemoveImage}}
+        onRemove=doRemoveMedia}}
 </div>
+<hr>
+<div class="form-element pad-l pad-r">
+    {{audio-control audio=recordNote.media.content.displayedAudio
+        readOnly=(or readOnly recordNote.isSaving)
+        onAdd=doAddAudio
+        onRemove=doRemoveMedia}}
+</div>
+<hr>
 {{#if (not readOnly)}}
     {{#if recordNote.location.content}}
         {{!-- can only remove location if is new --}}
         {{!-- [FUTURE] need to have a readonly-view for the location-control --}}
-        {{#if recordNote.location.content.isNew}}
-            <div class="form-element">
-                <label class="text-center clickable pad-all
-                    bg-color hover-bg-color hover-bg-dark"
-                    tabindex="0"
+        {{#if (and recordNote.location.content.isNew (not readOnly) (not recordNote.isSaving))}}
+            <div class="form-element pad-l pad-r">
+                <button type="button"
+                    class="button button--expand"
                     onclick={{doRemoveLocation}}>
-                    <span class="fa fa-minus"></span>
-                    <span class="margin-l-quarter">Remove location</span>
-                </label>
+                    Remove location
+                </button>
             </div>
         {{/if}}
         {{form/location-model entity=recordNote onLocationError=onLocationError}}
-    {{else}}
-        <div class="form-element">
-            <label class="text-center clickable pad-all
-                bg-color hover-bg-color hover-bg-dark"
-                tabindex="0"
+    {{else if (and (not readOnly) (not recordNote.isSaving))}}
+        <div class="form-element  pad-l pad-r">
+            <button type="button"
+                class="button button--expand"
                 onclick={{doAddLocation}}>
-                <span class="fa fa-plus"></span>
-                <span class="margin-l-quarter">Add location</span>
-            </label>
+                Add location
+            </button>
         </div>
     {{/if}}
 {{/if}}

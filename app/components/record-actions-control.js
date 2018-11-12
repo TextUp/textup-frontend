@@ -10,11 +10,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     hasPersonalPhoneNumber: PropTypes.bool,
     hasItemsInRecord: PropTypes.bool,
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
+    audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     contents: PropTypes.string,
     // content-related handlers
     onContentChange: PropTypes.func,
     onAddImage: PropTypes.func,
-    onRemoveImage: PropTypes.func,
+    onAddAudio: PropTypes.func,
+    onRemoveMedia: PropTypes.func,
     // record modification handlers
     onAddNoteInPast: PropTypes.func,
     onAddNote: PropTypes.func,
@@ -23,14 +25,17 @@ export default Ember.Component.extend(PropTypesMixin, {
     onScheduleMessage: PropTypes.func
   },
   getDefaultProps() {
-    return { images: [], hasPersonalPhoneNumber: false, hasItemsInRecord: false };
+    return { audio: [], images: [], hasPersonalPhoneNumber: false, hasItemsInRecord: false };
   },
   classNames: 'record-actions-control',
 
   // Internal properties
   // -------------------
 
-  _hasImages: computed.notEmpty('images'),
+  _mediaDrawer: null,
+  _numMedia: computed('images.[]', 'audio.[]', function() {
+    return (this.get('images.length') || 0) + (this.get('audio.length') || 0);
+  }),
   // [FUTURE] we haven't written a new textarea component that respects DDAU so we're artificially
   // creating DDAU in this component until we rewrite the textarea component
   _contents: computed('contents', {
@@ -53,8 +58,17 @@ export default Ember.Component.extend(PropTypesMixin, {
   _onAddImage() {
     tryInvoke(this, 'onAddImage', [...arguments]);
   },
-  _onRemoveImage() {
-    tryInvoke(this, 'onRemoveImage', [...arguments]);
+  _onStartAddAudio() {
+    const drawer = this.get('_mediaDrawer');
+    if (drawer && drawer.actions) {
+      tryInvoke(drawer.actions, 'startAddAudio');
+    }
+  },
+  _onAddAudio() {
+    tryInvoke(this, 'onAddAudio', [...arguments]);
+  },
+  _onRemoveMedia() {
+    tryInvoke(this, 'onRemoveMedia', [...arguments]);
   },
 
   // record modification handlers

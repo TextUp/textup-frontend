@@ -197,7 +197,7 @@ test('recording + reusing for another recording', function(assert) {
 
   assert.ok(this.$('.audio-control').length, 'did render');
   assert.ok(this.$('.audio-control--recording').length);
-  assert.notOk(this.$('button.audio-control__button--active').length, 'not recording yet');
+  assert.notOk(this.$('button.button--active').length, 'not recording yet');
   assert.ok(
     this.$()
       .text()
@@ -208,7 +208,7 @@ test('recording + reusing for another recording', function(assert) {
     .first()
     .triggerHandler('click');
   run.later(() => {
-    assert.ok(this.$('button.audio-control__button--active').length, 'is recording');
+    assert.ok(this.$('button.button--active').length, 'is recording');
     assert.ok(onError.notCalled, 'error handler not called');
     assert.ok(onFinish.notCalled, 'finish handler not called');
     assert.ok(
@@ -222,7 +222,7 @@ test('recording + reusing for another recording', function(assert) {
         .first()
         .triggerHandler('click');
       run.later(() => {
-        assert.notOk(this.$('button.audio-control__button--active').length, 'stopped recording');
+        assert.notOk(this.$('button.button--active').length, 'stopped recording');
         assert.ok(onError.notCalled);
         assert.ok(
           this.$()
@@ -238,7 +238,7 @@ test('recording + reusing for another recording', function(assert) {
           .first()
           .triggerHandler('click');
         wait().then(() => {
-          assert.ok(this.$('button.audio-control__button--active').length, 'is recording');
+          assert.ok(this.$('button.button--active').length, 'is recording');
           assert.ok(onError.notCalled);
           assert.ok(onFinish.calledOnce);
           assert.ok(

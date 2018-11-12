@@ -39,8 +39,14 @@ export default Ember.Mixin.create({
         ...arguments
       );
     },
-    onRemoveImage() {
-      return this.get('recordItemService').removeImage(
+    onAddAudio() {
+      return this.get('recordItemService').addAudio(
+        this.get('controller.careRecordText'),
+        ...arguments
+      );
+    },
+    onRemoveMedia() {
+      return this.get('recordItemService').removeMedia(
         this.get('controller.careRecordText'),
         ...arguments
       );

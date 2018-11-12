@@ -1,9 +1,37 @@
 {{#liquid-spacer}}
     {{yield}}
-    {{#if images}}
-        {{photo-control classNames="record-actions-control__media-drawer"
-            images=images
-            imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
-            onRemove=(action _onRemoveImage)}}
+    {{#if _shouldShowDrawer}}
+        {{#if (or audio _isAddingAudio)}}
+            {{#audio-list classNames="record-actions-control__media-drawer record-actions-control__media-drawer--audio"
+                itemClass="record-actions-control__media-drawer__item"
+                audio=audio
+                maxNumToDisplay=listProps.maxNumToDisplay
+                sortPropName=listProps.sortPropName
+                sortLowToHigh=listProps.sortLowToHigh as |audioElement index|}}
+                <button type="button"
+                    class="button"
+                    onclick={{action _onRemoveMedia audioElement index}}>
+                    <span class="fa fa-times"></span>
+                </button>
+            {{else}}
+                {{#if _isAddingAudio}}
+                    <div class="record-actions-control__media-drawer__item flex flex--spacing-between">
+                        {{audio-recorder classNames="flex__item flex__item--grow"
+                             onFinish=(action _finishAddingAudio)}}
+                        <button type="button"
+                            class="button"
+                            onclick={{action (mut _isAddingAudio) false}}>
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+                {{/if}}
+            {{/audio-list}}
+        {{/if}}
+        {{#if images}}
+            {{photo-control classNames="record-actions-control__media-drawer"
+                images=images
+                imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+                onRemove=(action _onRemoveMedia)}}
+        {{/if}}
     {{/if}}
 {{/liquid-spacer}}

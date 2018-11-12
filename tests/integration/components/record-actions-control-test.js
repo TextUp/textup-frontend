@@ -1,9 +1,12 @@
+import * as AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import RecordActionsControlComponent from 'textup-frontend/components/record-actions-control';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
+
+const { run } = Ember;
 
 moduleForComponent('record-actions-control', 'Integration | Component | record actions control', {
   integration: true
@@ -14,68 +17,43 @@ test('inputs', function(assert) {
 
   assert.ok(this.$('.record-actions-control').length, 'no inputs is valid');
 
-  const noOp = () => null;
-  this.setProperties({
-    hasPersonalPhoneNumber: true,
-    hasItemsInRecord: true,
-    images: [],
-    contents: 'hi',
-    onContentChange: noOp,
-    onAddImage: noOp,
-    onRemoveImage: noOp,
-    onAddNoteInPast: noOp,
-    onAddNote: noOp,
-    onCall: noOp,
-    onText: noOp,
-    onScheduleMessage: noOp
-  });
+  this.setProperties({ array: [], func: () => null });
 
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=hasPersonalPhoneNumber
-      hasItemsInRecord=hasItemsInRecord
-      images=images
+    {{record-actions-control hasPersonalPhoneNumber=true
+      hasItemsInRecord=true
+      images=array
+      audio=array
       contents=contents
-      onContentChange=onContentChange
-      onAddImage=onAddImage
-      onRemoveImage=onRemoveImage
-      onAddNoteInPast=onAddNoteInPast
-      onAddNote=onAddNote
-      onCall=onCall
-      onText=onText
-      onScheduleMessage=onScheduleMessage}}
+      onContentChange=func
+      onAddImage=func
+      onAddAudio=func
+      onRemoveMedia=func
+      onAddNoteInPast=func
+      onAddNote=func
+      onCall=func
+      onText=func
+      onScheduleMessage=func}}
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'all valid inputs');
 
-  this.setProperties({
-    invalidHasPersonalPhoneNumber: 88,
-    invalidHasItemsInRecord: 88,
-    invalidImages: 88,
-    invalidContents: [],
-    invalidOnContentChange: 'not function',
-    invalidOnAddImage: 'not function',
-    invalidOnRemoveImage: 'not function',
-    invalidOnAddNoteInPast: 'not function',
-    invalidOnAddNote: 'not function',
-    invalidOnCall: 'not function',
-    invalidOnText: 'not function',
-    invalidOnScheduleMessage: 'not function'
-  });
-
   assert.throws(() => {
     this.render(hbs`
-      {{record-actions-control hasPersonalPhoneNumber=invalidHasPersonalPhoneNumber
-        hasItemsInRecord=invalidHasItemsInRecord
-        images=invalidImages
-        contents=invalidContents
-        onContentChange=invalidOnContentChange
-        onAddImage=invalidOnAddImage
-        onRemoveImage=invalidOnRemoveImage
-        onAddNoteInPast=invalidOnAddNoteInPast
-        onAddNote=invalidOnAddNote
-        onCall=invalidOnCall
-        onText=invalidOnText
-        onScheduleMessage=invalidOnScheduleMessage}}
+      {{record-actions-control hasPersonalPhoneNumber=888
+        hasItemsInRecord=888
+        images=888
+        audio=888
+        contents=888
+        onContentChange=888
+        onAddImage=888
+        onAddAudio=888
+        onRemoveMedia=888
+        onAddNoteInPast=888
+        onAddNote=888
+        onCall=888
+        onText=888
+        onScheduleMessage=888}}
     `);
   }, 'invalid inputs');
 });
@@ -372,4 +350,54 @@ test('sending text', function(assert) {
 
     done();
   });
+});
+
+test('test adding media when audio recording is supported', function(assert) {
+  const done = assert.async(),
+    canRecordStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(true);
+
+  this.render(hbs`{{record-actions-control contents=contents onText=onText}}`);
+
+  assert.ok(this.$('.record-actions-control').length, 'did render');
+  assert.ok(this.$('.compose-text .pop-over').length, 'has media pop over in compose text');
+  assert.ok(this.$('.compose-text .pop-over button').length);
+  assert.notOk(Ember.$('.pop-over__body--open').length);
+
+  this.$('.compose-text .pop-over button')
+    .first()
+    .triggerHandler('click');
+  wait().then(() => {
+    assert.ok(Ember.$('.pop-over__body--open').length);
+    assert.ok(Ember.$('.pop-over__body--open .photo-control__add').length);
+    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 2);
+    assert.ok(Ember.$('.pop-over__body--open li.dropdown-item:not(.photo-control__add)').length);
+    assert.notOk(
+      this.$('.record-actions-control__media-drawer').length,
+      'media drawer is not open'
+    );
+
+    Ember.$('.pop-over__body--open li.dropdown-item:not(.photo-control__add)')
+      .first()
+      .click(); // actually trigger click so pop over body will close
+    run.later(() => {
+      assert.notOk(Ember.$('.pop-over__body--open').length, 'pop over is closed on click');
+      assert.ok(this.$('.record-actions-control__media-drawer').length, 'media drawer is open');
+      assert.ok(this.$('.record-actions-control__media-drawer .audio-control--recording').length);
+
+      canRecordStub.restore();
+      done();
+    }, 1000);
+  });
+});
+
+test('test adding images when audio recording is NOT supported', function(assert) {
+  const canRecordStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(false);
+
+  this.render(hbs`{{record-actions-control}}`);
+
+  assert.ok(this.$('.record-actions-control').length, 'did render');
+  assert.notOk(this.$('.compose-text .pop-over').length, 'do not have pop-over');
+  assert.ok(this.$('.compose-text .photo-control__add').length, 'has button to add media');
+
+  canRecordStub.restore();
 });

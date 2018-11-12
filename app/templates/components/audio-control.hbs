@@ -1,29 +1,34 @@
-{{#hide-show as |hideShow|}}
-    <div class="audio-wrapper__control-container">
-        {{#if _showAdd}}
-            <button type="button"
-                class="audio-wrapper__control"
-                onclick={{hideShow.actions.toggle}}>
-                {{#if hideShow.isOpen}}
-                    <span class="fa fa-minus"></span> {{cancelAddMessage}}
-                {{else}}
-                    <span class="fa fa-plus"></span> {{startAddMessage}}
-                {{/if}}
-            </button>
+<div class={{if audio.length "margin-b"}}>
+    {{#hide-show as |hideShow|}}
+        <div class="audio-wrapper__control-container {{if hideShow.isOpen 'margin-b-half'}}
+            flex flex--spacing-between">
+            {{yield hideShow}}
+            {{#if _showAdd}}
+                <div class="flex__item {{if (not hasBlock) 'flex__item--grow'}}">
+                    <button type="button"
+                        class="button {{if (not hasBlock) 'button--expand'}}"
+                        onclick={{hideShow.actions.toggle}}>
+                        {{#if hideShow.isOpen}}
+                            {{cancelAddMessage}}
+                        {{else}}
+                            {{startAddMessage}}
+                        {{/if}}
+                    </button>
+                </div>
+            {{/if}}
+        </div>
+        {{#if hideShow.isOpen}}
+            {{audio-recorder onFinish=(action hideShow.actions.closeThenCall (action _onAdd))}}
         {{/if}}
-        {{yield}}
-    </div>
-    {{#if hideShow.isOpen}}
-        {{audio-recorder onFinish=(action _onAdd hideShow.actions.close)}}
-    {{/if}}
-{{/hide-show}}
-
+    {{/hide-show}}
+</div>
 {{#audio-list audio=audio
     maxNumToDisplay=listProps.maxNumToDisplay
-    sortPropName=listProps.sortPropName as |el index|}}
+    sortPropName=listProps.sortPropName
+    sortLowToHigh=listProps.sortLowToHigh as |el index|}}
     {{#if _showRemove}}
         <button type="button"
-            class="audio-wrapper__control"
+            class="button"
             onclick={{action _onRemove el index}}>
             <span class="fa fa-times"></span>
         </button>

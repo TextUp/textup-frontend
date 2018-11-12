@@ -69,20 +69,20 @@ test('playing and pausing', function(assert) {
   assert.ok(this.$('.audio-control').children().length);
   assert.notOk(this.$('.audio-control--disabled').length);
   assert.notOk(this.$('button:disabled').length);
-  assert.notOk(this.$('button.audio-control__button--active').length);
+  assert.notOk(this.$('button.button--active').length);
 
   this.$('button')
     .first()
     .triggerHandler('click');
   wait().then(() => {
-    assert.ok(this.$('button.audio-control__button--active').length);
+    assert.ok(this.$('button.button--active').length);
 
     run.later(() => {
       this.$('button')
         .first()
         .triggerHandler('click');
       wait().then(() => {
-        assert.notOk(this.$('button.audio-control__button--active').length);
+        assert.notOk(this.$('button.button--active').length);
 
         done();
       });

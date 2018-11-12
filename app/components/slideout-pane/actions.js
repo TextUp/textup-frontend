@@ -22,6 +22,6 @@ export default Ember.Component.extend(PropTypesMixin, {
     }).isRequired
   },
 
-  classNames: 'slideout-pane__footer flex',
+  classNames: 'slideout-pane__footer flex flex--spacing-between',
   classNameBindings: ['props.showFooter::slideout-pane__footer--hidden']
 });

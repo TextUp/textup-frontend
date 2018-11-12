@@ -1,7 +1,7 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { isRecordingSupported } from 'textup-frontend/utils/audio';
 
 const { computed, tryInvoke } = Ember;
 
@@ -23,7 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       audio: [],
       readOnly: false,
       startAddMessage: 'Add recording',
-      cancelAddMessage: 'Cancel add'
+      cancelAddMessage: 'Cancel add recording'
     };
   },
   classNames: 'audio-wrapper',
@@ -32,7 +32,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _showAdd: computed('readOnly', 'onAdd', function() {
-    return !this.get('readOnly') && this.get('onAdd');
+    return !this.get('readOnly') && this.get('onAdd') && isRecordingSupported();
   }),
   _showRemove: computed('readOnly', 'onRemove', function() {
     return !this.get('readOnly') && this.get('onRemove');
@@ -41,9 +41,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal handlers
   // -----------------
 
-  _onAdd(closeHideShow) {
-    callIfPresent(null, closeHideShow);
-    tryInvoke(this, 'onAdd', [...arguments].slice(1)); // skip the first argument
+  _onAdd() {
+    tryInvoke(this, 'onAdd', [...arguments]);
   },
   _onRemove() {
     tryInvoke(this, 'onRemove', [...arguments]);

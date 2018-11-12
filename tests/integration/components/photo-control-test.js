@@ -13,7 +13,9 @@ moduleForComponent('photo-control', 'Integration | Component | photo control', {
   integration: true
 });
 
-test('inputs', function(assert) {
+test('inputs + rendering', function(assert) {
+  const addComponentClass = `${Math.random()}`;
+
   this.render(hbs`{{photo-control}}`);
 
   assert.ok(this.$('.photo-control').length, 'images can be null');
@@ -23,15 +25,24 @@ test('inputs', function(assert) {
 
   assert.ok(this.$('.photo-control').length, 'images can be an empty array');
 
-  this.setProperties({ images: [], onAdd: () => {}, onRemove: () => {} });
-  this.render(hbs`{{photo-control images=images onAdd=onAdd onRemove=onRemove}}`);
+  this.setProperties({ images: [], onAdd: () => {}, onRemove: () => {}, addComponentClass });
+  this.render(hbs`
+    {{photo-control images=images
+      addComponentClass=addComponentClass
+      onAdd=onAdd
+      onRemove=onRemove}}
+  `);
 
   assert.ok(this.$('.photo-control').length);
+  assert.ok(this.$(`.photo-control .${addComponentClass}`));
 
   this.setProperties({ images: [], onAdd: 'not a function', onRemove: 'not a function' });
 
   assert.throws(
-    () => this.render(hbs`{{photo-control images=images onAdd=onAdd onRemove=onRemove}}`),
+    () =>
+      this.render(
+        hbs`{{photo-control images=images addComponentClass=88 onAdd=onAdd onRemove=onRemove}}`
+      ),
     'add and removing handlers must be functions'
   );
 });

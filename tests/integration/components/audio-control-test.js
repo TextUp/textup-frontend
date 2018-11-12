@@ -1,3 +1,4 @@
+import * as AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -5,7 +6,7 @@ import wait from 'ember-test-helpers/wait';
 import { mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, typeOf } = Ember;
 
 moduleForComponent('audio-control', 'Integration | Component | audio control', {
   integration: true,
@@ -63,6 +64,28 @@ test('passing list display options to list component', function(assert) {
       source2
     );
 
+    this.render(hbs`
+      {{audio-control audio=audio
+        listProps=(hash sortPropName='whenCreated' sortLowToHigh=false)}}
+    `);
+
+    assert.ok(this.$('.audio-wrapper').length);
+    assert.ok(this.$('.audio-control').length, 2);
+    assert.ok(this.$('.audio-control source').length, 2);
+
+    assert.equal(
+      this.$('.audio-control source')
+        .eq(0)
+        .attr('src'),
+      source2
+    );
+    assert.equal(
+      this.$('.audio-control source')
+        .eq(1)
+        .attr('src'),
+      source1
+    );
+
     this.render(hbs`{{audio-control audio=audio listProps=(hash maxNumToDisplay=1)}}`);
 
     assert.ok(this.$('.audio-control').length, 1);
@@ -78,20 +101,45 @@ test('passing list display options to list component', function(assert) {
 });
 
 test('rendering block', function(assert) {
-  const blockClass = 'audio-control-test-class';
-  this.setProperties({ blockClass });
+  const blockClass = 'audio-control-test-class',
+    blockSpy = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ blockClass, blockSpy });
 
-  this.render(hbs`{{#audio-control}}<span class={{blockClass}}></span>{{/audio-control}}`);
+  this.render(hbs`
+    {{#audio-control as |hideShow|}}
+      <span class={{blockClass}} onclick={{action blockSpy hideShow}}></span>
+    {{/audio-control}}
+  `);
 
   assert.ok(this.$('.audio-wrapper').length);
   assert.equal(this.$(`.${blockClass}`).length, 1);
+  assert.ok(blockSpy.notCalled);
+
+  this.$(`.${blockClass}`)
+    .first()
+    .triggerHandler('click');
+  wait().then(() => {
+    assert.ok(blockSpy.calledOnce);
+
+    const blockObj = blockSpy.firstCall.args[0];
+    assert.equal(typeOf(blockObj), 'object');
+    assert.equal(blockObj.isOpen, false);
+    assert.equal(typeOf(blockObj.actions), 'object');
+    assert.equal(typeOf(blockObj.actions.open), 'function');
+    assert.equal(typeOf(blockObj.actions.close), 'function');
+    assert.equal(typeOf(blockObj.actions.toggle), 'function');
+    assert.equal(typeOf(blockObj.actions.closeThenCall), 'function');
+
+    done();
+  });
 });
 
 test('not readonly and no actions == readonly', function(assert) {
   this.render(hbs`{{audio-control readOnly=false}}`);
 
   assert.ok(this.$('.audio-wrapper').length);
-  assert.notOk(this.$('.audio-wrapper__control').length);
+  assert.notOk(this.$('.audio-wrapper button:not(.audio-control__button)').length);
 });
 
 test('readonly WITH actions', function(assert) {
@@ -99,7 +147,7 @@ test('readonly WITH actions', function(assert) {
   this.render(hbs`{{audio-control readOnly=true onAdd=func onRemove=func}}`);
 
   assert.ok(this.$('.audio-wrapper').length);
-  assert.notOk(this.$('.audio-wrapper__control').length);
+  assert.notOk(this.$('.audio-wrapper button:not(.audio-control__button)').length);
 });
 
 test('removing', function(assert) {
@@ -111,12 +159,12 @@ test('removing', function(assert) {
 
   assert.ok(this.$('.audio-wrapper').length);
   assert.equal(
-    this.$('.audio-wrapper__control').length,
+    this.$('.audio-wrapper button:not(.audio-control__button)').length,
     1,
     '1 remove button next to the one audio element'
   );
 
-  this.$('.audio-wrapper__control')
+  this.$('.audio-wrapper button:not(.audio-control__button)')
     .first()
     .triggerHandler('click');
   wait().then(() => {
@@ -127,9 +175,10 @@ test('removing', function(assert) {
   });
 });
 
-test('adding', function(assert) {
+test('adding when recording is supported', function(assert) {
   run(() => {
-    const done = assert.async(),
+    const isSupportedStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(true),
+      done = assert.async(),
       onAdd = sinon.spy(),
       startAddMessage = `${Math.random()}`,
       cancelAddMessage = `${Math.random()}`;
@@ -141,14 +190,18 @@ test('adding', function(assert) {
     `);
 
     assert.ok(this.$('.audio-wrapper').length);
-    assert.equal(this.$('.audio-wrapper__control').length, 1, '1 add button');
+    assert.equal(
+      this.$('.audio-wrapper button:not(.audio-control__button)').length,
+      1,
+      '1 add button'
+    );
     assert.ok(
       this.$()
         .text()
         .indexOf(startAddMessage) > -1
     );
 
-    this.$('.audio-wrapper__control')
+    this.$('.audio-wrapper button:not(.audio-control__button)')
       .first()
       .triggerHandler('click');
     wait().then(() => {
@@ -164,10 +217,10 @@ test('adding', function(assert) {
         .first()
         .triggerHandler('click');
       run.later(() => {
+        assert.ok(onAdd.notCalled);
         this.$('.audio-control--recording button')
           .first()
           .triggerHandler('click');
-        assert.ok(onAdd.notCalled);
 
         run.later(() => {
           assert.ok(onAdd.calledOnce);
@@ -184,9 +237,32 @@ test('adding', function(assert) {
               .indexOf(startAddMessage) > -1
           );
 
+          isSupportedStub.restore();
           done();
         }, 1000);
       }, 500);
     });
   });
+});
+
+test('trying to add when recording is not supported', function(assert) {
+  const isSupportedStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(false),
+    onAdd = sinon.spy(),
+    startAddMessage = `${Math.random()}`;
+  this.setProperties({ onAdd, startAddMessage });
+  this.render(hbs`{{audio-control onAdd=onAdd startAddMessage=startAddMessage}}`);
+
+  assert.ok(this.$('.audio-wrapper').length);
+  assert.equal(
+    this.$('.audio-wrapper button:not(.audio-control__button)').length,
+    0,
+    'no add button because not supported'
+  );
+  assert.ok(
+    this.$()
+      .text()
+      .indexOf(startAddMessage) === -1
+  );
+
+  isSupportedStub.restore();
 });

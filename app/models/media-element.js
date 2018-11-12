@@ -7,7 +7,7 @@ const { computed, isPresent } = Ember;
 
 export default MF.Fragment.extend({
   [MEDIA_ID_PROP_NAME]: DS.attr('string'),
-  whenCreated: DS.attr('date'),
+  whenCreated: DS.attr('date', { defaultValue: () => new Date() }),
   versions: computed.readOnly('_versions'),
 
   isImage: computed('_versions.[]', function() {

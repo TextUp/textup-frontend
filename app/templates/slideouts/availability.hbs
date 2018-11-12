@@ -80,39 +80,25 @@
                 class="xs-18-row-20 s-19-row-20 control-text pad-l-half clickable">
                 <span class="text-normal">Use voicemail recording</span>
             </label>
-            <div class="xs-full-row control-text flex flex--horizontal-spread">
-                {{#if (and
-                    model.phone.content.media.content.hasElements
-                    (not model.phone.content.shouldRedoVoicemailGreeting))}}
-                    <button type="button"
-                        class="btn-link"
-                        onclick={{route-action "redoVoicemailGreeting"}}>
-                        Redo recording
-                    </button>
-                {{else}}
-                    <button type="button"
-                        class="btn-link"
-                        onclick={{route-action "stopRedoingVoicemailGreeting"}}>
-                        Cancel redo
-                    </button>
-                    {{async-button classNames='btn-link'
-                        disabledWhen=(or
-                            (not (v-get model 'isValid'))
-                            (not authService.authUser.personalPhoneNumber))
-                        action=(route-action 'onRequestVoicemailGreetingCall' authService.authUser.personalPhoneNumber)
-                        default='Call me to record'
-                        pending='Calling your personal phone...'}}
-                {{/if}}
-            </div>
         </div>
         <div class="offset-s-row-20">
-            {{#if (and
-                model.phone.content.media.content.hasElements
-                (not model.phone.content.shouldRedoVoicemailGreeting))}}
-                {{audio-player audio=model.phone.content.media.content.displayedAudio.firstObject}}
-            {{else}}
-                {{audio-recorder onFinish=(route-action 'onFinishRecordingGreeting')}}
-            {{/if}}
+            {{#audio-control audio=model.phone.content.media.content.displayedAudio
+                listProps=(hash maxNumToDisplay=1 sortPropName="whenCreated" sortLowToHigh=false)
+                onAdd=(route-action "onFinishRecordingGreeting")
+                startAddMessage="Redo recording"
+                cancelAddMessage="Cancel redo" as |hideShow|}}
+                {{#if hideShow.isOpen}}
+                    <div class="flex__item">
+                        {{async-button classNames="button"
+                            disabledWhen=(or
+                                (not (v-get model 'isValid'))
+                                (not authService.authUser.personalPhoneNumber))
+                            action=(route-action 'onRequestVoicemailGreetingCall' authService.authUser.personalPhoneNumber)
+                            default='Call me to record'
+                            pending='Calling your personal phone...'}}
+                    </div>
+                {{/if}}
+            {{/audio-control}}
         </div>
     </div>
 

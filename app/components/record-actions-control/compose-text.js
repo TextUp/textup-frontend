@@ -5,23 +5,22 @@ const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    hasMedia: PropTypes.bool,
+    numMedia: PropTypes.number,
     placeholder: PropTypes.string,
     contents: PropTypes.string,
     onClearContents: PropTypes.func,
-    onSend: PropTypes.func,
-    onAddImage: PropTypes.func
+    onSend: PropTypes.func
   },
   getDefaultProps() {
-    return { hasMedia: false, placeholder: 'Enter your message...' };
+    return { numMedia: 0, placeholder: 'Enter your message...' };
   },
   classNames: ['compose-text'],
 
   // Internal properties
   // -------------------
 
-  _isInvalid: computed('hasMedia', 'contents', function() {
-    return !this.get('hasMedia') && !this.get('contents');
+  _isInvalid: computed('numMedia', 'contents', function() {
+    return !this.get('numMedia') && !this.get('contents');
   }),
   _$textarea: computed(function() {
     return this.$('textarea');
@@ -30,9 +29,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal handlers
   // -----------------
 
-  _onAddImage() {
-    tryInvoke(this, 'onAddImage', [...arguments]);
-  },
   _onClearContents() {
     tryInvoke(this, 'onClearContents', [...arguments]);
   },

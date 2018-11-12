@@ -12,52 +12,49 @@ moduleForComponent(
   }
 );
 
-test('inputs + rendering', function(assert) {
+test('inputs', function(assert) {
   this.render(hbs`{{record-actions-control/compose-text}}`);
 
   assert.ok(this.$('.compose-text').length, 'no inputs is valid');
-  assert.ok(this.$('.photo-control__add').length, 'has add image control');
 
-  const noOp = () => null;
-  this.setProperties({
-    hasMedia: true,
-    placeholder: 'hi',
-    contents: 'ok',
-    onClearContents: noOp,
-    onSend: noOp,
-    onAddImage: noOp
-  });
+  this.setProperties({ func: () => null });
 
   this.render(hbs`
-    {{record-actions-control/compose-text hasMedia=hasMedia
-      placeholder=placeholder
-      contents=contents
-      onClearContents=onClearContents
-      onSend=onSend
-      onAddImage=onAddImage}}
+    {{record-actions-control/compose-text numMedia=88
+      placeholder="hi"
+      contents="hi"
+      onClearContents=func
+      onSend=func}}
   `);
 
   assert.ok(this.$('.compose-text').length, 'valid inputs');
-  assert.ok(this.$('.photo-control__add').length, 'has add image control');
 
-  this.setProperties({
-    invalidHasMedia: 'hi',
-    invalidPlaceholder: 88,
-    invalidContents: [],
-    invalidOnClearContents: 'hi',
-    invalidOnSend: 'hi',
-    invalidOnAddImage: 'hi'
-  });
   assert.throws(() => {
     this.render(hbs`
-      {{record-actions-control/compose-text hasMedia=invalidHasMedia
-        placeholder=invalidPlaceholder
-        contents=invalidContents
-        onClearContents=invalidOnClearContents
-        onSend=invalidOnSend
-        onAddImage=invalidOnAddImage}}
+      {{record-actions-control/compose-text numMedia="hi"
+        placeholder=88
+        contents=88
+        onClearContents="hi"
+        onSend="hi"}}
     `);
   }, 'invalid props');
+});
+
+test('rendering block', function(assert) {
+  const blockText = `${Math.random()}`;
+  this.setProperties({ blockText });
+  this.render(hbs`
+    {{#record-actions-control/compose-text}}
+      {{blockText}}
+    {{/record-actions-control/compose-text}}
+  `);
+
+  assert.ok(this.$('.compose-text').length);
+  assert.ok(
+    this.$()
+      .text()
+      .indexOf(blockText) > -1
+  );
 });
 
 test('contents, placeholder, and clearing contents', function(assert) {
@@ -113,9 +110,9 @@ test('contents, placeholder, and clearing contents', function(assert) {
 
 test('when a text is valid and can be sent', function(assert) {
   const done = assert.async();
-  this.setProperties({ contents: '', hasMedia: false });
+  this.setProperties({ contents: '', numMedia: 0 });
 
-  this.render(hbs`{{record-actions-control/compose-text contents=contents hasMedia=hasMedia}}`);
+  this.render(hbs`{{record-actions-control/compose-text contents=contents numMedia=numMedia}}`);
 
   assert.ok(this.$('.compose-text').length, 'valid inputs');
   assert.ok(
@@ -123,18 +120,18 @@ test('when a text is valid and can be sent', function(assert) {
     'cannot send with neither contents nor media'
   );
 
-  this.setProperties({ contents: '', hasMedia: true });
+  this.setProperties({ contents: '', numMedia: 8 });
   wait()
     .then(() => {
       assert.notOk(this.$('.action-button:disabled').length, 'can send with only media');
 
-      this.setProperties({ contents: 'hi', hasMedia: false });
+      this.setProperties({ contents: 'hi', numMedia: 0 });
       return wait();
     })
     .then(() => {
       assert.notOk(this.$('.action-button:disabled').length, 'can send with only contents');
 
-      this.setProperties({ contents: 'hi', hasMedia: true });
+      this.setProperties({ contents: 'hi', numMedia: 8 });
       return wait();
     })
     .then(() => {

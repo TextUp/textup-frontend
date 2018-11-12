@@ -1,5 +1,5 @@
 <div style="padding: 200px; background: white; ">
-    {{#pop-over position="top" bodyClickWillClose=false as |popOver|}}
+    {{!-- {{#pop-over position="top" bodyClickWillClose=false as |popOver|}}
         <button type="button" onclick={{popOver.actions.toggle}}>Toggle pop over</button>
     {{else}}
         <div style="width: auto; height: auto; padding: 1em;">
@@ -12,5 +12,23 @@
                 <li>Option 5</li>
             </ul>
         </div>
-    {{/pop-over}}
+    {{/pop-over}} --}}
+
+    {{!-- {{#audio-control audio=audio
+        onAdd=(route-action "onAdd")
+        onRemove=(route-action "onRemove")}}
+        <div class="flex__item">
+            <button type="button" class="button">Call me to record</button>
+        </div>
+    {{/audio-control}} --}}
+
+    {{!-- {{audio-control audio=audio
+        onAdd=(route-action "onAdd")
+        onRemove=(route-action "onRemove")}} --}}
+
+    <button type="button" class="btn btn-plain">
+        {{#count-badge count=10}}
+            <span class="fa fa-paperclip"></span>
+        {{/count-badge}}
+    </button>
 </div>

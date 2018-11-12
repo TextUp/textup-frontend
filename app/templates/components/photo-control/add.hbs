@@ -8,13 +8,10 @@
         {{yield _isLoading _isLoadError}}
     {{else}}
         {{#if _isLoading}}
-            <span class="fa fa-plus"></span>
             <span class="margin-l-quarter">Adding images...</span>
         {{else if _isLoadError}}
-            <span class="fa fa-exclamation"></span>
             <span class="margin-l-quarter">Oops. Please try again.</span>
         {{else}}
-            <span class="fa fa-plus"></span>
             <span class="margin-l-quarter">Add images</span>
         {{/if}}
     {{/if}}

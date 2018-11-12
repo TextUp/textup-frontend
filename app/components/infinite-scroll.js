@@ -439,6 +439,9 @@ export default Ember.Component.extend({
       next(this, function() {
         this._afterAdd(shouldReset);
         scheduleOnce('afterRender', this, function() {
+          if (this.get('isDestroying') || this.get('isDestroyed')) {
+            return;
+          }
           this.set('_isDisplaying', false); // to fade in and unlock infinite items
           this.storePercentFromTop();
           this.loadMoreIfNeeded();

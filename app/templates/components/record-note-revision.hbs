@@ -15,6 +15,13 @@
         </div>
     </div>
 {{/if}}
+{{#if revision.media.content.displayedAudio}}
+    <div class="record-note-revision__asset">
+        <div class="record-note-revision__asset__item">
+            {{audio-list audio=revision.media.content.displayedAudio}}
+        </div>
+    </div>
+{{/if}}
 {{#if (or revision.media.content.displayedImages.content revision.location.content)}}
     <div class="record-note-revision__asset">
         {{#if revision.media.content.displayedImages.content}}

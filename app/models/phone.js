@@ -47,7 +47,6 @@ export default DS.Model.extend(Dirtiable, Validations, {
   media: DS.belongsTo('media'), // hasOne
   requestVoicemailGreetingCall: DS.attr(),
   useVoicemailRecordingIfPresent: DS.attr('boolean'),
-  shouldRedoVoicemailGreeting: DS.attr('boolean', { defaultValue: false }),
 
   availability: DS.belongsTo('availability'),
   others: DS.hasMany('availability'),

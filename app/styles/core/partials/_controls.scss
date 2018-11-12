@@ -111,6 +111,80 @@
     text-decoration: underline;
 }
 
+.button {
+    @extend .text-ellipsis;
+
+    display: inline-block;
+    line-height: $control-height;
+    min-width: $control-height;
+    color: $color-brand-dark;
+    background-color: $color-white;
+    border: 1px solid $color-brand-light;
+    border-radius: $border-radius;
+    padding: 0 $baseunit;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+    &--expand {
+        width: 100%;
+        height: 100%;
+    }
+
+    &:disabled,
+    &--disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        user-select: none;
+    }
+    &:visited,
+    &:hover,
+    &:focus {
+        background-color: $color-seafoam;
+        color: $color-brand-dark;
+        border-color: $color-brand-dark;
+        outline: 0;
+    }
+
+    &:active,
+    &--active {
+        &,
+        &:visited,
+        &:hover,
+        &:focus {
+            background-color: $color-brand;
+            color: $color-white;
+            border-color: $color-brand;
+        }
+    }
+
+    &--error {
+        border-color: $color-error-light;
+        color: $color-error-dark;
+
+        &:visited,
+        &:hover,
+        &:focus {
+            background-color: $color-error-lighter;
+            color: $color-error-dark;
+            border-color: $color-error-dark;
+            outline: 0;
+        }
+
+        &:active,
+        &.button--active {
+            &,
+            &:visited,
+            &:hover,
+            &:focus {
+                background-color: $color-error;
+                color: $color-white;
+                border-color: $color-error;
+            }
+        }
+    }
+}
+
 .btn {
     @extend %input-disabled;
     @include button-colors($bg-color);

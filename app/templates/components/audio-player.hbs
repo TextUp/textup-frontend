@@ -13,7 +13,7 @@
         {{/each}}
     </audio>
     <button type='button'
-        class="audio-control__button {{if _isPlaying 'audio-control__button--active'}}"
+        class="audio-control__button button {{if _isPlaying 'button--active'}}"
         onclick={{action _togglePlay}}
         disabled={{if disabled 'disabled'}}>
         {{#if _isLoading}}

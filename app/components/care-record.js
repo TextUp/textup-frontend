@@ -4,7 +4,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { computed, tryInvoke } = Ember;
+const { computed, tryInvoke, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
@@ -24,6 +24,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     totalNumRecordItems: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     // for creating a new text
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
+    audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     contents: PropTypes.string,
 
     // Handlers
@@ -41,7 +42,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     // content-related handlers
     onContentChange: PropTypes.func,
     onAddImage: PropTypes.func,
-    onRemoveImage: PropTypes.func,
+    onAddAudio: PropTypes.func,
+    onRemoveMedia: PropTypes.func,
     // record modification handlers
     onAddNote: PropTypes.func,
     onCall: PropTypes.func,
@@ -120,8 +122,11 @@ export default Ember.Component.extend(PropTypesMixin, {
   _onAddImage() {
     tryInvoke(this, 'onAddImage', [...arguments]);
   },
-  _onRemoveImage() {
-    tryInvoke(this, 'onRemoveImage', [...arguments]);
+  _onAddAudio() {
+    tryInvoke(this, 'onAddAudio', [...arguments]);
+  },
+  _onRemoveMedia() {
+    tryInvoke(this, 'onRemoveMedia', [...arguments]);
   },
 
   // record modification handlers

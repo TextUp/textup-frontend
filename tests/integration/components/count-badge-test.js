@@ -10,11 +10,11 @@ test('properties', function(assert) {
 
   assert.ok(this.$('.count-badge').length);
 
-  this.render(hbs`{{count-badge count=88}}`);
+  this.render(hbs`{{count-badge count=88 hideBadgeIfNone=false}}`);
 
   assert.ok(this.$('.count-badge').length);
 
-  assert.throws(() => this.render(hbs`{{count-badge count="hi"}}`));
+  assert.throws(() => this.render(hbs`{{count-badge count="hi" hideBadgeIfNone="hi"}}`));
 });
 
 test('rendering', function(assert) {
@@ -25,6 +25,24 @@ test('rendering', function(assert) {
 
   assert.ok(this.$('.count-badge').length);
   assert.ok(this.$('.count-badge__count').length);
+  assert.ok(this.$('.count-badge--no-badge').length);
+  assert.ok(
+    this.$()
+      .text()
+      .indexOf(badgeText) > -1
+  );
+  assert.equal(
+    this.$('.count-badge__count')
+      .text()
+      .trim(),
+    '0'
+  );
+
+  this.render(hbs`{{#count-badge hideBadgeIfNone=false}}{{badgeText}}{{/count-badge}}`);
+
+  assert.ok(this.$('.count-badge').length);
+  assert.ok(this.$('.count-badge__count').length);
+  assert.notOk(this.$('.count-badge--no-badge').length);
   assert.ok(
     this.$()
       .text()
@@ -39,6 +57,7 @@ test('rendering', function(assert) {
 
   this.render(hbs`{{#count-badge count=88}}{{badgeText}}{{/count-badge}}`);
 
+  assert.notOk(this.$('.count-badge--no-badge').length);
   assert.ok(
     this.$()
       .text()
@@ -53,6 +72,7 @@ test('rendering', function(assert) {
 
   this.render(hbs`{{#count-badge count=888}}{{badgeText}}{{/count-badge}}`);
 
+  assert.notOk(this.$('.count-badge--no-badge').length);
   assert.ok(
     this.$()
       .text()

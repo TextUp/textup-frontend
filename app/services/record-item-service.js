@@ -57,7 +57,17 @@ export default Ember.Service.extend({
       recordItem.set('media', media);
     });
   },
-  removeImage(recordItem, img) {
+  addAudio(recordItem, mimeType, data) {
+    if (!(recordItem instanceof RecordItem) || !mimeType || !data) {
+      return;
+    }
+    recordItem.get('media').then(foundMedia => {
+      const media = foundMedia || this.get('store').createRecord('media');
+      media.addAudio(mimeType, data);
+      recordItem.set('media', media);
+    });
+  },
+  removeMedia(recordItem, img) {
     if (!(recordItem instanceof RecordItem) || !(img instanceof MediaElement)) {
       return;
     }

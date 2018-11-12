@@ -8,7 +8,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     recordNote: PropTypes.instanceOf(RecordNote).isRequired,
     doAddImage: PropTypes.func.isRequired,
-    doRemoveImage: PropTypes.func.isRequired,
+    doAddAudio: PropTypes.func.isRequired,
+    doRemoveMedia: PropTypes.func.isRequired,
     doAddLocation: PropTypes.func.isRequired,
     doRemoveLocation: PropTypes.func.isRequired,
     onLocationError: PropTypes.func.isRequired,

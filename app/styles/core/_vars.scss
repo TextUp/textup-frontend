@@ -2,12 +2,19 @@
 $brand-color: #28a6de;
 $color-brand: $brand-color;
 $color-brand-dark: #145571;
+$color-brand-light: #89aab8;
 
 $danger-color: #c9302c;
 $color-error: $danger-color;
 $color-error-dark: #8c211e;
+$color-error-light: #d1a6a5;
+$color-error-lighter: #f3e8e8;
 
 $success-color: #56a556;
+
+$color-white: #ffffff;
+$color-light-seafoam: #f5f8f8;
+$color-seafoam: #e3eeef;
 
 // elements
 $bg-dark-color: #222222;
@@ -16,7 +23,7 @@ $overlay-light-color: rgba(255, 255, 255, 0.2);
 $bg-color: #f3f3f3;
 $bg-light-color: #f8f8f8;
 $bg-lightest-color: #fff;
-$border-color: #d3d3d3;
+$border-color: #dfdfdf;
 $incoming-color: #e9e9e9;
 $outgoing-color: #1c87b7;
 
@@ -30,6 +37,7 @@ $font-weight-bold: 700;
 
 // measurements
 $spacing: 1rem;
+$baseunit: 1rem;
 $border-radius: 3px;
 $spacing-scaling: (1: 'default', 0.5: 'half', 0.25: 'quarter', 2: 'double', 3: 'triple', 4: '4x');
 $directions-with-abbr: (left: 'l', right: 'r', top: 't', bottom: 'b');

@@ -10,22 +10,32 @@ export default Ember.Component.extend(PropTypesMixin, {
       PropTypes.null,
       PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
     ]),
+    itemClass: PropTypes.string,
     maxNumToDisplay: PropTypes.number,
-    sortPropName: PropTypes.string
+    sortPropName: PropTypes.string,
+    sortLowToHigh: PropTypes.bool
   },
   getDefaultProps() {
-    return { audio: [] };
+    return { audio: [], itemClass: '', sortLowToHigh: true };
   },
 
   // Internal properties
   // -------------------
 
   _audio: computed.filterBy('audio', 'isAudio', true),
-  _sortedAudio: computed('_audio.[]', 'sortPropName', function() {
+  _sortedAudio: computed('_audio.[]', 'sortPropName', 'sortLowToHigh', function() {
     const audio = this.get('_audio');
     if (audio) {
       const sortName = this.get('sortPropName');
-      return sortName ? audio.sortBy(sortName) : audio;
+      if (sortName) {
+        const audio2 = audio.sortBy(sortName),
+          sortedAudio = this.get('sortLowToHigh') ? audio2 : audio2.reverseObjects();
+        // Sort order is not reflected unless we keep this call to map by. Not sure why...
+        sortedAudio.mapBy(sortName);
+        return sortedAudio;
+      } else {
+        return audio;
+      }
     }
   }),
   _displayedAudio: computed('_sortedAudio.[]', 'maxNumToDisplay', function() {

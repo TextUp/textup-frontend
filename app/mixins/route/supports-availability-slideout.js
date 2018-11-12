@@ -34,14 +34,6 @@ export default Ember.Mixin.create({
       return this.get('availabilitySlideoutService').ensureScheduleIsPresent(scheduleOwner);
     },
 
-    redoVoicemailGreeting() {
-      const phone = this.get('currentModel.phone.content');
-      this.get('availabilitySlideoutService').startRedoVoicemailGreeting(phone);
-    },
-    stopRedoingVoicemailGreeting() {
-      const phone = this.get('currentModel.phone.content');
-      this.get('availabilitySlideoutService').cancelRedoVoicemailGreeting(phone);
-    },
     onFinishRecordingGreeting(mimeType, data) {
       const phone = this.get('currentModel.phone.content');
       this.get('availabilitySlideoutService').onAddAudio(phone, mimeType, data);

@@ -56,7 +56,8 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
         toggle: () => this._toggle(),
         open: () => this._open(),
         close: () => this._close(),
-        closeThenCall: action => this._closeThenCall(action)
+        // call bind instead of using an arrow function so we can access `arguments`
+        closeThenCall: this._closeThenCall.bind(this)
       }
     };
   }),
@@ -99,7 +100,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     });
   },
   _closeThenCall(action) {
-    return this._close().then(() => callIfPresent(null, action));
+    return this._close().then(() => callIfPresent(null, action, [...arguments].slice(1)));
   },
   _tryCloseOnFocusout({ relatedTarget }) {
     if (

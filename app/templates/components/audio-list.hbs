@@ -1,10 +1,8 @@
 {{#each _displayedAudio as |audio index|}}
-    <div>
-        <div>
-            {{audio-player audio=audio}}
-        </div>
-        <div>
-            {{yield audio index}}
-        </div>
+    <div class="audio-wrapper__player-item flex flex--spacing-between {{itemClass}}">
+        {{audio-player classNames="flex__item flex__item--grow" audio=audio}}
+        {{yield audio index}}
     </div>
 {{/each}}
+
+{{yield to="inverse"}}

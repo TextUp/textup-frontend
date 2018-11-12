@@ -1,0 +1,21 @@
+.count-badge {
+    position: relative;
+
+    &--no-badge &__count {
+        display: none;
+    }
+    &__count {
+        position: absolute;
+        top: calc(50% - #{0.6 * $baseunit});
+        left: 100%;
+        line-height: 0.8 * $baseunit;
+        width: 0.8 * $baseunit;
+        border-radius: 100%;
+        background-color: $color-brand;
+        color: $color-white;
+        text-align: center;
+        font-size: 0.5 * $baseunit;
+        font-weight: $font-weight-bold;
+        transform: translate(-50%, -50%);
+    }
+}

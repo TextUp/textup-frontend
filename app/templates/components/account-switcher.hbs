@@ -3,10 +3,9 @@
     doRegister=doRegisterContainer as |hideShow|}}
     <div class="textup-account-switcher__display-container">
         <button type="button"
-            class="textup-account-switcher__display flex {{toggleClass}}"
+            class="textup-account-switcher__display flex flex--spacing-all {{toggleClass}}"
             onclick={{hideShow.actions.toggle}}>
-            <div class="offset-xs-row-10 flex__item text-left
-                flex__item--no-spacing flex__item--grow">
+            <div class="flex__item text-left flex__item--grow">
                 <h4 class="text-white text-ellipsis">{{activeOwner.name}}</h4>
                 {{#if activeOwner.phone.content.number}}
                     <p class="text-bold text-ellipsis">
@@ -32,7 +31,7 @@
                     tagName='li'
                     classNames='menu-item'
                     current-when='main'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <div class="xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">{{user.name}}</p>
                         <p class="text-bold text-ellipsis">
                             {{phone-number user.phone.content.number}}
@@ -46,7 +45,7 @@
                         tagName='li'
                         classNames='menu-item'
                         current-when='main'}}
-                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                        <div class="xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">
                                 <span class="indicator margin-r-quarter"
                                     style='background-color:{{team.hexColor}};'></span>
@@ -64,14 +63,14 @@
                     tagName='li'
                     classNames='menu-item'
                     current-when='admin'}}
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                    <div class="xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Admin</p>
                     </div>
                 {{/link-to}}
             {{/if}}
             <li class="menu-divider"></li>
             <li class="menu-item" onclick={{doLogOut}}>
-                <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                <div class="xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">Log Out</p>
                 </div>
             </li>

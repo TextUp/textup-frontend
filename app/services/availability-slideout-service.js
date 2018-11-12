@@ -26,31 +26,19 @@ export default Ember.Service.extend({
     });
   },
 
-  startRedoVoicemailGreeting(phone) {
-    if (typeOf(phone) !== 'instance') {
-      return;
-    }
-    const media = phone.get('media.content');
-    if (media) {
-      media.rollbackAttributes();
-    }
-    phone.set('shouldRedoVoicemailGreeting', true);
-  },
-  cancelRedoVoicemailGreeting(phone) {
-    if (typeOf(phone) !== 'instance') {
-      return;
-    }
-    phone.set('shouldRedoVoicemailGreeting', false);
-  },
   onAddAudio(phone, mimeType, data) {
     return new RSVP.Promise((resolve, reject) => {
       if (typeOf(phone) !== 'instance' || !mimeType || !data) {
         reject('Must provide all required information to add audio');
       }
       phone.get('media').then(foundMedia => {
+        // so we're not also sending all of the prior attempts too
+        if (foundMedia) {
+          foundMedia.rollbackAttributes();
+        }
         const media = foundMedia || this.get('store').createRecord('media');
         media.addAudio(mimeType, data);
-        phone.setProperties({ media, shouldRedoVoicemailGreeting: false });
+        phone.setProperties({ media });
         resolve();
       }, reject);
     });
