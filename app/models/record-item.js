@@ -1,8 +1,8 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import HasAuthor from '../mixins/model/has-author';
-import PhoneNumber from '../utils/phone-number';
+import HasAuthor from 'textup-frontend/mixins/model/has-author';
+import PhoneNumber from 'textup-frontend/utils/phone-number';
 
 const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 

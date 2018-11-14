@@ -4,6 +4,7 @@ import Ember from 'ember';
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
   futureMessageService: Ember.inject.service(),
+  mediaService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);

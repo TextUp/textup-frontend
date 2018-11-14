@@ -1,5 +1,7 @@
+{{!-- [FUTURE] fix keyboard tabbinb issues introduced when onmouseup -> onclick so that single
+selects can open in slideouts --}}
 <button class="single-select-input-display {{itemClass}}" type='button'
-	onmousedown={{action 'startInput'}}
+	onclick={{action 'startInput'}}
 	onkeyup={{action 'startInput'}}>
 	{{#if (and hasBlock hasSelected)}}
 		{{yield selected publicAPI}}

@@ -13,7 +13,7 @@
         (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving
     focusSelector='.start-focus' as |slideout|}}
-    <div class="pad-t">
+    <div class="form">
         {{partial 'partials/team/create-edit'}}
     </div>
     {{form/location-model entity=newTeam onLocationError=(route-action 'mapError')}}

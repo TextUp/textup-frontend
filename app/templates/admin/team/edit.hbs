@@ -68,20 +68,20 @@
 		</div>
     {{else}}
     	<div class="section-body bg-color bg-lightest">
-		    <div class="pad-t">
+		    <div class="form">
 		    	{{#with team as |newTeam|}}
 		    		{{partial 'partials/team/create-edit'}}
 		    	{{/with}}
 		    </div>
 	    	{{#if (or team.hasDirtyAttributes team.hasManualChanges)}}
-	    		<div class="pad-t form-element horizontal-items text-center">
-			        <div class="clear-badge no-space">
+	    		<div class="flex flex--justify-center flex--spacing-between">
+			        <div class="flex__item">
 			            <button class="btn" type='button'
 			                onclick={{route-action 'revert' team}}>
 			                Cancel
 			            </button>
 			        </div>
-			        <div class="clear-badge no-space">
+			        <div class="flex__item">
 			            {{async-button classNames='btn btn-default'
 	                        disableWhen=(not (v-get team 'isValid'))
 	                        action=(route-action 'persistWithPhone' team)

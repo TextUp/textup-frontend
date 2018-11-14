@@ -1,5 +1,4 @@
 {{#if (or text.contents text.hasAwayMessage)}}
-
     <div class="record-item__body">
         {{#read-more classNames=(if text.outgoing "read-more--outgoing" "read-more--incoming")}}
             {{text.contents}}
@@ -11,7 +10,13 @@
         {{/if}}
     </div>
 {{/if}}
-{{#if text.media.content.displayedImages.isFulfilled}}
+{{#if text.media.content.displayedAudio}}
+    <div class="record-item__media record-item__media--audio">
+        {{audio-list itemClass=(if text.outgoing "audio-wrapper__player-item--dark")
+            audio=text.media.content.displayedAudio}}
+    </div>
+{{/if}}
+{{#if text.media.content.displayedImages.content}}
     <div class="record-item__media">
         {{image-stack images=text.media.content.displayedImages.content}}
     </div>

@@ -12,93 +12,94 @@
     doClose=(route-action "cancelAvailabilitySlideout")
     forceKeepOpen=(or model.isSaving authService.authUser.isSaving
         model.isDirty authService.authUser.isDirty) as |slideout|}}
-
-    <div class="form-element pad-t pad-l pad-r">
-        <label for='Away Message' class='control-label'>{{stateManager.owner.name}}'s Away Message</label>
-        <div class="margin-b">
-            TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
-        </div>
-        {{#hide-show focusOnOpenSelector="textarea"
-            clickOutToClose=true
-            focusOutToClose=true
-            ignoreCloseSelector="" as |hideShow|}}
-            {{#if hideShow.isOpen}}
-                {{textarea rows="3"
-                    autoresize=true
-                    class="form-control margin-b"
-                    maxlength=model.phone.content.awayMessageMaxLength
-                    remaining='top'
-                    value=model.phone.content.awayMessage
-                    validateObj=model.phone.content
-                    validateField='awayMessage'
-                    validate='bottom'}}
-            {{/if}}
-            <div class="form-control-minimal pad-all"
-                tabindex={{if hideShow.isOpen "" "0"}}
-                onfocus={{hideShow.actions.open}}
-                onclick={{hideShow.actions.toggle}}>
-                {{model.phone.content.awayMessage}}
-                <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
-            </div>
-        {{/hide-show}}
-    </div>
-    <div class="form-element pad-l pad-r">
-        <label for='Voicemail' class='control-label'>{{stateManager.owner.name}}'s Voicemail</label>
-        <div class="row margin-t">
-            <div class="xs-2-row-20 s-row-20 control-text">
-                <input id="use-voicemail-recording-false"
-                    type="radio"
-                    checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) 'checked'}}
-                    onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) false}}>
-            </div>
-            <label for="use-voicemail-recording-false"
-                class="xs-18-row-20 s-9-row-20 control-text pad-l-half pad-r-half clickable">
-                <span class="text-normal">Read away message</span>
-            </label>
-            {{#multi-toggle classNames='xs-full-row s-row-2'
-                selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
-                    onSelect=(action (mut model.phone.content.voice) 'MALE')}}
-                    Male voice
-                {{/multi-toggle/item}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
-                    onSelect=(action (mut model.phone.content.voice) 'FEMALE')}}
-                    Female voice
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
-        </div>
-        <div class="row margin-t margin-b-half margin-r-half">
-            <div class="xs-2-row-20 s-row-20 control-text">
-                <input id="use-voicemail-recording-true"
-                    type="radio"
-                    checked={{if model.phone.content.useVoicemailRecordingIfPresent 'checked'}}
-                    onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) true}}>
-            </div>
-            <label for="use-voicemail-recording-true"
-                class="xs-18-row-20 s-19-row-20 control-text pad-l-half clickable">
-                <span class="text-normal">Use voicemail recording</span>
-            </label>
-        </div>
-        <div class="offset-s-row-20">
-            {{#audio-control audio=model.phone.content.media.content.displayedAudio
-                listProps=(hash maxNumToDisplay=1 sortPropName="whenCreated" sortLowToHigh=false)
-                onAdd=(route-action "onFinishRecordingGreeting")
-                startAddMessage="Redo recording"
-                cancelAddMessage="Cancel redo" as |hideShow|}}
+    <div class="form">
+        <div class="form__group">
+            <label for='Away Message' class='form__label form__label--emphasize'>{{stateManager.owner.name}}'s Away Message</label>
+            <span class="form__label form__label--multiline">
+                TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
+            </span>
+            {{#hide-show focusOnOpenSelector="textarea"
+                clickOutToClose=true
+                focusOutToClose=true
+                ignoreCloseSelector="" as |hideShow|}}
                 {{#if hideShow.isOpen}}
-                    <div class="flex__item">
-                        {{async-button classNames="button"
-                            disabledWhen=(or
-                                (not (v-get model 'isValid'))
-                                (not authService.authUser.personalPhoneNumber))
-                            action=(route-action 'onRequestVoicemailGreetingCall' authService.authUser.personalPhoneNumber)
-                            default='Call me to record'
-                            pending='Calling your personal phone...'}}
-                    </div>
+                    {{textarea rows="3"
+                        autoresize=true
+                        class="form-control margin-b"
+                        maxlength=model.phone.content.awayMessageMaxLength
+                        remaining='top'
+                        value=model.phone.content.awayMessage
+                        validateObj=model.phone.content
+                        validateField='awayMessage'
+                        validate='bottom'}}
                 {{/if}}
-            {{/audio-control}}
+                <div class="form-control-minimal pad-all"
+                    tabindex={{if hideShow.isOpen "" "0"}}
+                    onfocus={{hideShow.actions.open}}
+                    onclick={{hideShow.actions.toggle}}>
+                    {{model.phone.content.awayMessage}}
+                    <b>{{model.phone.content.mandatoryEmergencyMessage}}</b>
+                </div>
+            {{/hide-show}}
+        </div>
+        <div class="form__group">
+            <label for='Voicemail' class='form__label form__label--emphasize'>{{stateManager.owner.name}}'s Voicemail</label>
+            <div class="row margin-t">
+                <div class="xs-2-row-20 s-row-20 control-text">
+                    <input id="use-voicemail-recording-false"
+                        type="radio"
+                        checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) 'checked'}}
+                        onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) false}}>
+                </div>
+                <label for="use-voicemail-recording-false"
+                    class="xs-18-row-20 s-9-row-20 control-text pad-l-half pad-r-half clickable">
+                    <span class="text-normal">Read away message</span>
+                </label>
+                {{#multi-toggle classNames='xs-full-row s-row-2'
+                    selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=constants.COLOR.LIGHT_BLUE
+                        onSelect=(action (mut model.phone.content.voice) 'MALE')}}
+                        Male voice
+                    {{/multi-toggle/item}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=constants.COLOR.BRAND
+                        onSelect=(action (mut model.phone.content.voice) 'FEMALE')}}
+                        Female voice
+                    {{/multi-toggle/item}}
+                {{/multi-toggle}}
+            </div>
+            <div class="row margin-t margin-b-half margin-r-half">
+                <div class="xs-2-row-20 s-row-20 control-text">
+                    <input id="use-voicemail-recording-true"
+                        type="radio"
+                        checked={{if model.phone.content.useVoicemailRecordingIfPresent 'checked'}}
+                        onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) true}}>
+                </div>
+                <label for="use-voicemail-recording-true"
+                    class="xs-18-row-20 s-19-row-20 control-text pad-l-half clickable">
+                    <span class="text-normal">Use voicemail recording</span>
+                </label>
+            </div>
+            <div class="offset-s-row-20">
+                {{#audio-control audio=model.phone.content.media.content.displayedAudio
+                    listProps=(hash maxNumToDisplay=1 sortPropName="whenCreated" sortLowToHigh=false)
+                    onAdd=(route-action "onFinishRecordingGreeting")
+                    startAddMessage="Redo recording"
+                    cancelAddMessage="Cancel redo" as |hideShow|}}
+                    {{#if hideShow.isOpen}}
+                        <div class="flex__item">
+                            {{async-button classNames="button"
+                                disabledWhen=(or
+                                    (not (v-get model 'isValid'))
+                                    (not authService.authUser.personalPhoneNumber))
+                                action=(route-action 'onRequestVoicemailGreetingCall' authService.authUser.personalPhoneNumber)
+                                default='Call me to record'
+                                pending='Calling your personal phone...'}}
+                        </div>
+                    {{/if}}
+                {{/audio-control}}
+            </div>
         </div>
     </div>
 

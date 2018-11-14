@@ -15,7 +15,7 @@ body {
 #menu,
 #body {
 	@extend %liquid-fire-full-height;
-	@extend %border-box;
+	box-sizing: border-box;
 	float: left;
 }
 #body {
@@ -27,7 +27,7 @@ body {
 
 	.content,
 	.details {
-		@extend %border-box;
+		box-sizing: border-box;
 		width: 100%;
 	}
 	.content {
@@ -46,7 +46,7 @@ body {
 }
 .full-viewport-height {
 	@extend %liquid-fire-full-height;
-	@extend %border-box;
+	box-sizing: border-box;
 }
 
 // Menu
@@ -63,7 +63,7 @@ body {
 .menu-item {
 	@extend %clearfix;
 	@extend .text-ellipsis;
-	@extend %border-box;
+	box-sizing: border-box;
 	@include button-colors($bg-dark-color);
 	padding: $padding;
 	cursor: pointer;
@@ -330,7 +330,7 @@ img.brand {
 	@extend %no-results;
 
 	.result-item {
-		@extend %border-box;
+		box-sizing: border-box;
 		position: relative;
 		border-bottom: 1px solid $border-color;
 		background-color: $bg-lightest-color;
@@ -341,7 +341,7 @@ img.brand {
 		}
 		.active:after,
 		.unread:after {
-			@extend %border-box;
+			box-sizing: border-box;
 			position: absolute;
 			content: ' ';
 			height: 1em;
@@ -363,7 +363,7 @@ img.brand {
 }
 .tile-list {
 	@extend %clearfix;
-	@extend %border-box;
+	box-sizing: border-box;
 	@extend %vertical-scroll;
 	@extend %no-results;
 	width: 100%;
@@ -374,7 +374,7 @@ img.brand {
 	.tile-list-item {
 		@extend .text-ellipsis;
 		@extend .text-bold;
-		@extend %border-box;
+		box-sizing: border-box;
 		position: relative;
 		padding: $padding ($padding * 2);
 		margin: $padding * 0.5;
@@ -405,7 +405,7 @@ img.brand {
 @include split(height, '.section-header' '.section-body', $header-height);
 .section-header,
 .section-footer {
-	@extend %border-box;
+	box-sizing: border-box;
 	background-color: $bg-lightest-color;
 	position: relative;
 }
@@ -415,7 +415,7 @@ img.brand {
 	z-index: 1;
 }
 .section-body {
-	@extend %border-box;
+	box-sizing: border-box;
 	@extend %vertical-scroll;
 }
 .section-footer {

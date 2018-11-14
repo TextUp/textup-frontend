@@ -13,5 +13,8 @@
     doClose=(route-action "cancelNewScheduleMessageSlideout") as |slideout|}}
     {{form/future-message classNames="pad-t"
         futureMessage=newFutureMessage
-        personalPhoneNumber=authService.authUser.personalPhoneNumber}}
+        personalPhoneNumber=authService.authUser.personalPhoneNumber
+        onAddImage=(route-action "onAddImage" newFutureMessage)
+        onAddAudio=(route-action "onAddAudio" newFutureMessage)
+        onRemoveMedia=(route-action "onRemoveMedia" newFutureMessage)}}
 {{/slideout-pane}}

@@ -1,9 +1,4 @@
 @font-face {
-    font-family: 'Bitter';
-    src: url('fonts/Bitter.woff2') format('woff2'), url('fonts/Bitter.woff') format('woff'),
-        url('fonts/Bitter.ttf') format('truetype');
-}
-@font-face {
     font-family: 'Lato';
     src: url('fonts/Lato-Regular.woff2') format('woff2'),
         url('fonts/Lato-Regular.woff') format('woff'),
@@ -76,8 +71,8 @@ h5 {
 // ----------------
 
 .text-heading {
-    font-family: 'Bitter', helvetica, arial, sans-serif;
-    text-transform: uppercase;
+    font-family: 'Lato', helvetica, arial, sans-serif;
+    text-transform: none;
 }
 
 .match-color {

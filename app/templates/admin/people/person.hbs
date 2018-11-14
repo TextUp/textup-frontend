@@ -107,38 +107,40 @@
     		animation='fade' as |tabContainer doRegister|}}
 			{{#tab-container/item doRegister=doRegister
 				title="Details"}}
-				<div class='pad-t pad-b'>
-					{{#with person as |staff|}}
-						{{partial 'partials/staff/edit'}}
-					{{/with}}
-					{{#if person.isDirty}}
-						{{!-- separate if loops to prevent multiple-set deprecation --}}
-                    	{{#if (and (not usernameDropdown.isOpen)
-	                    	(not passwordDropdown.isOpen)
-	                    	(not codeDropdown.isOpen))}}
-                    		<div class="pad-t text-center">
-						        <button class="btn" type='button'
-						        	onclick={{route-action 'revert' person
-						        		(action (mut person.phoneAction) null)}}>
-						            Cancel
-						        </button>
-						        {{async-button classNames='btn btn-default'
-				                    disableWhen=(not (v-get person 'isValid'))
-				                    action=(route-action 'persistWithPhone' person)
-				                    default='Update'
-				                    pending='Updating...'}}
-							</div>
-                    	{{/if}}
-					{{/if}}
-				</div>
+                <div class="form">
+                    {{#with person as |staff|}}
+                        {{partial 'partials/staff/edit'}}
+                    {{/with}}
+                    {{#if person.isDirty}}
+                        {{!-- separate if loops to prevent multiple-set deprecation --}}
+                        {{#if (and (not usernameDropdown.isOpen)
+                            (not passwordDropdown.isOpen)
+                            (not codeDropdown.isOpen))}}
+                            <div class="flex flex--justify-center flex--spacing-between">
+                                <div class="flex__item">
+                                    <button class="btn" type='button'
+                                        onclick={{route-action 'revert' person
+                                            (action (mut person.phoneAction) null)}}>
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div class="flex__item">
+                                    {{async-button classNames='btn btn-default'
+                                        disableWhen=(not (v-get person 'isValid'))
+                                        action=(route-action 'persistWithPhone' person)
+                                        default='Update'
+                                        pending='Updating...'}}
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/if}}
+                </div>
 				<hr>
-				<div class="pad-l pad-r pad-b">
-					{{#with person as |staff|}}
-						{{partial 'partials/staff/code-with-confirm'}}
-						{{partial 'partials/staff/username-with-confirm'}}
-						{{partial 'partials/staff/password-with-confirm'}}
-					{{/with}}
-				</div>
+				{{#with person as |staff|}}
+					{{partial 'partials/staff/code-with-confirm'}}
+					{{partial 'partials/staff/username-with-confirm'}}
+					{{partial 'partials/staff/password-with-confirm'}}
+				{{/with}}
 			{{/tab-container/item}}
 			{{#tab-container/item doRegister=doRegister
 				title="Default Availability"}}
@@ -148,14 +150,14 @@
                     onManualAvailabilityChange=(action (mut person.isAvailable))
                     onScheduleAvailabilityChange=(action "replaceRange" target=person.schedule.content)}}
 				{{#if person.isDirty}}
-			        <div class="horizontal-items text-center margin-t margin-b">
-			            <div class="clear-badge no-space">
+			        <div class="flex flex--justify-center flex--spacing-between">
+			            <div class="flex__item">
 			                <button class="btn" type='button'
 			                    onclick={{route-action 'revert' person}}>
 			                    Cancel
 			                </button>
 			            </div>
-			            <div class="clear-badge no-space">
+			            <div class="flex__item">
 			            	{{async-button classNames='btn btn-default'
 			                    action=(route-action 'persist' person)
 			                    default='Update'

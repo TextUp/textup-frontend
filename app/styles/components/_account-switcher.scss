@@ -22,11 +22,7 @@
         font-size: 0.8em;
 
         .menu-item {
-            padding-left: $baseunit;
-
-            @include mq($from: desktop) {
-                padding-left: $baseunit * 2;
-            }
+            padding-left: $baseunit * 2;
         }
     }
 }

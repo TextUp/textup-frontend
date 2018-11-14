@@ -94,6 +94,6 @@ export function humanizeMediaError(error) {
     case window.MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
       return 'Media is in an unsupported format';
     default:
-      return 'Unknown media has occurred';
+      return 'Unknown media error has occurred';
   }
 }

@@ -10,9 +10,9 @@
     doClose=(route-action "cancelComposeSlideout")
     forceKeepOpen=(or composeMessage composeHasRecipients)
     focusSelector='.multi-select-new-input' as |slideout|}}
-	<div class="pad-t pad-l pad-r">
+	<div class="form">
 		{{#if model.phone.isFulfilled}}
-			<div class="form-element">
+			<div class="form__group">
 				{{#multi-select data=model.phone.content.tags
 			    	selected=composeRecipients
 			    	displayProperty='identifier'
@@ -49,10 +49,10 @@
 				{{/multi-select}}
 			</div>
 		{{/if}}
-		<div class="form-element">
+		<div class="form__group">
 			{{textarea rows="3"
 				autoresize=true
-				class="form-control"
+				class="form__input form__input--multiline"
 				maxlength="320"
 				remaining='bottom'
 				value=composeMessage

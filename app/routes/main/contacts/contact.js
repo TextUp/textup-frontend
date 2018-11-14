@@ -3,6 +3,7 @@ import ManagesCareRecord from 'textup-frontend/mixins/route/manages-care-record'
 import ManagesContactAttributes from 'textup-frontend/mixins/route/manages-contact-attributes';
 import ManagesExistingContact from 'textup-frontend/mixins/route/manages-existing-contact';
 import ManagesFutureMessages from 'textup-frontend/mixins/route/manages-future-messages';
+import ManagesMediaOwner from 'textup-frontend/mixins/route/manages-media-owner';
 import ManagesRecordNotes from 'textup-frontend/mixins/route/manages-record-notes';
 import ManagesTagMembership from 'textup-frontend/mixins/route/manages-tag-membership';
 
@@ -11,6 +12,7 @@ export default Ember.Route.extend(
   ManagesContactAttributes,
   ManagesExistingContact,
   ManagesFutureMessages,
+  ManagesMediaOwner,
   ManagesRecordNotes,
   ManagesTagMembership,
   {

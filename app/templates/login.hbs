@@ -6,61 +6,58 @@
         <h3 class='text-white'>Log in</h3>
     </div>
     <div class="single-body">
-        {{#hide-show focusOnOpenSelectors=".form-control"
+        {{#hide-show focusOnOpenSelectors=".form__input"
             onClose=(action (mut resetUsername) null) as |hideShow|}}
             <div class="single-body-header">
                 {{#if hideShow.isOpen}}
-                    <h5 class='text-center pad-b'>Forgot password?</h5>
+                    <h4 class='text-center pad-b'>Forgot password?</h4>
                     <p class="text-justify">Don't worry! Happens to all of us. Just type in your username and we'll send a reset email to the email address associated with your account.</p>
                 {{else}}
-                    <h5 class='text-center'>Welcome back!</h5>
+                    <h4 class='text-center'>Welcome back!</h4>
                 {{/if}}
             </div>
-            <div class="single-body-content">
+            <div class="form">
                 {{#if hideShow.isOpen}}
-                    <div class="input-group">
+                    <div class="form__group">
+                        <label class="form__label" for="Username">Username</label>
                         {{input value=resetUsername
                             type="text"
                             placeholder="Username"
-                            class="form-control"
+                            class="form__input"
                             autocorrect="off"
                             autocapitalize="off"
                             enter=(route-action 'resetPassword' resetUsername)}}
-                        <div class="input-group-addon">
-                            {{async-button classNames='btn btn-default'
-                                disableWhen=(not resetUsername)
-                                action=(route-action 'resetPassword' resetUsername)
-                                default='Send'
-                                pending='Sending...'}}
-                        </div>
                     </div>
                 {{else}}
-                    <div class="form-element">
-                        <label for="Username">Username</label>
+                    <div class="form__group">
+                        <label class="form__label" for="Username">Username</label>
                         {{input value=username
                             type="text"
                             placeholder="Username"
-                            class="form-control"
+                            class="form__input"
                             autocorrect="off"
                             autocapitalize="off"
                             enter=(route-action 'login' username password storeCredentials)}}
                     </div>
-                    <div class="form-element">
-                        <label for="Password">Password</label>
+                    <div class="form__group">
+                        <label class="form__label" for="Password">Password</label>
                         {{input value=password
                             type="password"
                             placeholder="Password"
-                            class="form-control"
+                            class="form__input"
                             allowShowPassword=true
                             enter=(route-action 'login' username password storeCredentials)}}
                     </div>
-                    <div class="row form-element">
-                        <div class="xs-row-2">
-                            {{input type="checkbox" checked=storeCredentials}}
-                            <span class="emphasize pad-l-half">Remember Me</span>
+                    <div class="form__group">
+                        <div class="xs-row-2 flex flex--align-center">
+                            {{input id="log-in-remember-me" type="checkbox" checked=storeCredentials}}
+                            <label class="form__label form__label--emphasize form__label--no-spacing"
+                                for="log-in-remember-me">
+                                Remember Me
+                            </label>
                         </div>
-                        <div class="xs-row-2 text-right">
-                            <button class="btn-link emphasize"
+                        <div class="xs-row-2 text-right flex flex--align-center flex--justify-end">
+                            <button class="form__label form__label--emphasize btn-link"
                                 type="button"
                                 onclick={{hideShow.actions.open}}>
                                 Forgot Password?
@@ -69,18 +66,29 @@
                     </div>
                 {{/if}}
             </div>
-            <div class="single-body-footer text-center">
+            <div class="single-body-footer flex flex--spacing-between flex--justify-center">
                 {{#if hideShow.isOpen}}
-                    <button class="btn btn-default"
-                        type="button"
-                        onclick={{hideShow.actions.close}}>
-                        Back
-                    </button>
+                    <div class="flex__item">
+                        <button class="btn"
+                            type="button"
+                            onclick={{hideShow.actions.close}}>
+                            Back
+                        </button>
+                    </div>
+                    <div class="flex__item">
+                        {{async-button classNames='btn btn-default'
+                            disableWhen=(not resetUsername)
+                            action=(route-action 'resetPassword' resetUsername)
+                            default='Send reset'
+                            pending='Sending...'}}
+                    </div>
                 {{else}}
-                    {{async-button classNames="btn btn-default"
-                        action=(route-action "login" username password storeCredentials)
-                        default="Log in"
-                        pending="Logging in..."}}
+                    <div class="flex__item">
+                        {{async-button classNames="btn btn-default"
+                            action=(route-action "login" username password storeCredentials)
+                            default="Log in"
+                            pending="Logging in..."}}
+                    </div>
                 {{/if}}
             </div>
         {{/hide-show}}

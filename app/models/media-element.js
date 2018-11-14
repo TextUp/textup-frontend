@@ -1,3 +1,4 @@
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import MF from 'model-fragments';
@@ -5,7 +6,10 @@ import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed, isPresent } = Ember;
 
-export default MF.Fragment.extend({
+export default MF.Fragment.extend(Dirtiable, {
+  // Properties
+  // ----------
+
   [MEDIA_ID_PROP_NAME]: DS.attr('string'),
   whenCreated: DS.attr('date', { defaultValue: () => new Date() }),
   versions: computed.readOnly('_versions'),

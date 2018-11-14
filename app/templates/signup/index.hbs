@@ -27,21 +27,21 @@
             </div>
         {{/single-select}}
     </div>
-    <div class="single-body-footer text-center">
-        {{#if selected}}
-            <span>
-                <button class="btn" type='button'
-                    onclick={{action (mut selected) null}}>
-                    Pick another
-                </button>
-            </span>
-        {{/if}}
-        <span>
+    <div class="single-body-footer text-center flex flex--justify-center flex--spacing-between">
+        <div class="flex__item">
+            <button class="btn"
+                type='button'
+                disabled={{if (not selected) "disabled"}}
+                onclick={{action (mut selected) null}}>
+                Pick another
+            </button>
+        </div>
+        <div class="flex__item">
             {{link-to "Next" "signup.account"
                 tagName="button"
                 classNames="btn btn-default"
                 disabledWhen=(not selected)}}
-        </span>
+        </div>
     </div>
 </div>
 <div class="single-footer">

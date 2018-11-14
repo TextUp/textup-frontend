@@ -7,11 +7,11 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   propTypes: {
     recordNote: PropTypes.instanceOf(RecordNote).isRequired,
-    doAddImage: PropTypes.func.isRequired,
-    doAddAudio: PropTypes.func.isRequired,
-    doRemoveMedia: PropTypes.func.isRequired,
-    doAddLocation: PropTypes.func.isRequired,
-    doRemoveLocation: PropTypes.func.isRequired,
+    onAddImage: PropTypes.func.isRequired,
+    onAddAudio: PropTypes.func.isRequired,
+    onRemoveMedia: PropTypes.func.isRequired,
+    onAddLocation: PropTypes.func.isRequired,
+    onRemoveLocation: PropTypes.func.isRequired,
     onLocationError: PropTypes.func.isRequired,
     contentsClass: PropTypes.string,
     readOnly: PropTypes.bool
@@ -19,5 +19,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   getDefaultProps() {
     return { readOnly: false };
   },
-  tagName: 'form'
+  tagName: 'form',
+  classNames: 'form'
 });

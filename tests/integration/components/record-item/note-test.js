@@ -75,6 +75,7 @@ test('displaying empty note', function(assert) {
 
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
+    assert.notOk(this.$('.audio-wrapper__player-item').length, 'no images');
     assert.notOk(this.$('.location-preview').length, 'no location');
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
     assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
@@ -122,7 +123,11 @@ test('display note with note contents, media, and location', function(assert) {
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(
       this.$('.image-stack').length,
-      'do not show media it being edited to avoid too many request while editing'
+      'do not show images it being edited to avoid too many request while editing'
+    );
+    assert.notOk(
+      this.$('.audio-wrapper__player-item').length,
+      'do not show audio it being edited to avoid too many request while editing'
     );
     assert.notOk(
       this.$('.location-preview').length,

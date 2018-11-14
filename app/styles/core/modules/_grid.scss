@@ -71,36 +71,34 @@
 }
 @mixin spacing-tweaks($property, $name-root, $scaling-options: $spacing-scaling) {
 	@each $scaling, $scaling-abbr in $scaling-options {
-	    @if ($scaling == 1) {
-	        .#{$name-root}-all {
-	        	@extend %border-box;
-	            #{$property}: $padding;
-	        }
-	    }
-	    @else {
-	        .#{$name-root}-all-#{$scaling-abbr} {
-	        	@extend %border-box;
-	            #{$property}: $padding * $scaling;
-	        }
-	    }
-	    @each $direction, $abbr in $directions-with-abbr {
-	        @if ($scaling == 1) {
-	            .#{$name-root}-#{$abbr} {
-	                @extend %border-box;
-	                #{$property}-#{$direction}: $padding;
-	            }
-	        }
-	        @else {
-	            .#{$name-root}-#{$scaling-abbr}.#{$name-root}-#{$abbr} {
-	            	@extend %border-box;
-	                #{$property}-#{$direction}: $padding * $scaling;
-	            }
-	            .#{$name-root}-#{$abbr}-#{$scaling-abbr},
-	            .#{$name-root}-#{$abbr}-#{$scaling-abbr}.#{$name-root}-#{$abbr} {
-	            	@extend %border-box;
-	                #{$property}-#{$direction}: $padding * $scaling;
-	            }
-	        }
-	    }
+		@if ($scaling == 1) {
+			.#{$name-root}-all {
+				box-sizing: border-box;
+				#{$property}: $padding;
+			}
+		} @else {
+			.#{$name-root}-all-#{$scaling-abbr} {
+				box-sizing: border-box;
+				#{$property}: $padding * $scaling;
+			}
+		}
+		@each $direction, $abbr in $directions-with-abbr {
+			@if ($scaling == 1) {
+				.#{$name-root}-#{$abbr} {
+					box-sizing: border-box;
+					#{$property}-#{$direction}: $padding;
+				}
+			} @else {
+				.#{$name-root}-#{$scaling-abbr}.#{$name-root}-#{$abbr} {
+					box-sizing: border-box;
+					#{$property}-#{$direction}: $padding * $scaling;
+				}
+				.#{$name-root}-#{$abbr}-#{$scaling-abbr},
+				.#{$name-root}-#{$abbr}-#{$scaling-abbr}.#{$name-root}-#{$abbr} {
+					box-sizing: border-box;
+					#{$property}-#{$direction}: $padding * $scaling;
+				}
+			}
+		}
 	}
 }

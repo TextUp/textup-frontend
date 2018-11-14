@@ -23,7 +23,8 @@
 		visibility: hidden; // add hidden visibility to avoid focus bypassing lockout
 	}
 }
-.form-error .lock-control, .lock-control.form-error {
+.form-error .lock-control,
+.lock-control.form-error {
 	.indicator {
 		border-color: tint($danger-color, 2);
 		background-color: tint($danger-color, 4);
@@ -33,7 +34,8 @@
 		}
 	}
 }
-.form-disabled .lock-control, .lock-control.form-disabled {
+.form-disabled .lock-control,
+.lock-control.form-disabled {
 	.indicator {
 		border-color: $border-color;
 		background-color: tint($border-color);
@@ -53,10 +55,10 @@
 	padding-bottom: $padding;
 
 	.indicator {
-	    margin: 0 (0.2 * $padding);
-	    height: $padding;
-	    width: $padding;
-	    border: 1px solid $border-color;
+		margin: 0 (0.2 * $padding);
+		height: $padding;
+		width: $padding;
+		border: 1px solid $border-color;
 		background-color: shade($bg-color);
 
 		&.active {
@@ -66,7 +68,7 @@
 	}
 	.dial-pad {
 		@extend %clearfix;
-		@extend %border-box;
+		box-sizing: border-box;
 		position: relative;
 		width: 100%;
 		list-style-type: none;

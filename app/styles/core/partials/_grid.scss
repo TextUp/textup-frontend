@@ -2,7 +2,7 @@
 // stack items for distributing items vertically
 .row {
 	@extend %clearfix;
-	@extend %border-box;
+	box-sizing: border-box;
 	display: block;
 	width: 100%;
 	position: relative;
@@ -27,10 +27,9 @@ $abbrs: map-values($breakpoint-abbrs);
 			box-sizing: border-box;
 			float: left;
 		}
-		@include responsive-display("display", $abbr, $abbrs);
-		@include responsive-clear("new-row", $abbr, $abbrs);
-	}
-	@else {
+		@include responsive-display('display', $abbr, $abbrs);
+		@include responsive-clear('new-row', $abbr, $abbrs);
+	} @else {
 		@include mq($from: $breakpoint) {
 			.#{$abbr}-full-row {
 				box-sizing: border-box;
@@ -40,8 +39,8 @@ $abbrs: map-values($breakpoint-abbrs);
 				box-sizing: border-box;
 				float: left;
 			}
-			@include responsive-display("display", $abbr, $abbrs);
-			@include responsive-clear("new-row", $abbr, $abbrs);
+			@include responsive-display('display', $abbr, $abbrs);
+			@include responsive-clear('new-row', $abbr, $abbrs);
 		}
 	}
 }

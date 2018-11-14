@@ -5,21 +5,22 @@
         {{/read-more}}
     {{/if}}
     {{#if call.media.content.displayedAudio.firstObject}}
-        {{audio-player audio=call.media.content.displayedAudio.firstObject}}
-    {{else}}
-        <div class="text-small text-wrap">
-            {{#if call.durationInSeconds}}
-                <span class="fa fa-phone margin-r-half"></span>
-                <span class="selectable-text">Call lasting {{moment-duration call.durationInSeconds 'seconds'}}</span>
-            {{else if (date/is-same-day call.whenCreated (now))}}
-                <span class="fa fa-circle-o-notch fa-spin margin-r-half"></span>
-                <span class="selectable-text">Call in progress</span>
-            {{else}}
-                <span class="fa fa-times margin-r-half"></span>
-                <span class="selectable-text">Call could not be completed</span>
-            {{/if}}
-        </div>
+        {{audio-list classNames="margin-b-half"
+            itemClass=(if call.outgoing "audio-wrapper__player-item--dark")
+            audio=call.media.content.displayedAudio}}
     {{/if}}
+    <div class="text-small text-wrap">
+        {{#if call.durationInSeconds}}
+            <span class="fa fa-phone margin-r-half"></span>
+            <span class="selectable-text">Call lasting {{moment-duration call.durationInSeconds 'seconds'}}</span>
+        {{else if (date/is-same-day call.whenCreated (now))}}
+            <span class="fa fa-circle-o-notch fa-spin margin-r-half"></span>
+            <span class="selectable-text">Call in progress</span>
+        {{else}}
+            <span class="fa fa-times margin-r-half"></span>
+            <span class="selectable-text">Call could not be completed</span>
+        {{/if}}
+    </div>
 </div>
 {{#if call.media.content.displayedImages.content}}
     <div class="record-item__media">

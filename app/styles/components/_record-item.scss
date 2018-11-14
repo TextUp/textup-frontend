@@ -3,6 +3,10 @@
     &--call {
         .record-item__media {
             width: 100%;
+
+            &--audio {
+                padding: ($baseunit / 2) $baseunit;
+            }
         }
     }
     &--note {
@@ -23,12 +27,12 @@
             }
             &__body {
                 width: 100%;
-                padding: ($spacing / 2) $spacing;
+                padding: ($baseunit / 2) $baseunit;
                 padding-right: $min-control-width;
 
                 @include mq($from: desktop) {
                     width: auto;
-                    padding-right: $spacing;
+                    padding-right: $baseunit;
                 }
             }
             &__media-container {
@@ -43,6 +47,7 @@
             }
             &__media {
                 width: 50%;
+                flex-grow: 1;
 
                 &--audio {
                     width: 100%;
@@ -50,10 +55,13 @@
                 }
 
                 @include mq($from: desktop) {
+                    display: flex;
+                    align-items: center;
                     width: $media-preview-height;
                     max-width: 100%;
 
                     &--audio {
+                        display: initial;
                         width: $media-preview-height * 2;
                         padding: $baseunit $baseunit 0 0;
                     }
@@ -76,7 +84,7 @@
 
         width: 100%;
         margin: 0 auto;
-        padding: ($spacing * 0.3) ($spacing * 0.5);
+        padding: ($baseunit * 0.3) ($baseunit * 0.5);
         border: 1px solid lightgray;
         border-radius: $border-radius;
         text-align: center;
@@ -96,21 +104,21 @@
     }
     &__body {
         flex-grow: 1;
-        padding: ($spacing / 2) $spacing;
+        padding: ($baseunit / 2) $baseunit;
     }
     &__metadata {
         @extend .text-ellipsis;
 
-        padding: ($spacing * 0.25) 0;
+        padding: ($baseunit * 0.25) 0;
         user-select: none;
     }
     &__receipts {
         @extend %vertical-scroll;
         @extend .text-small;
 
-        max-height: $spacing * 10;
+        max-height: $baseunit * 10;
         background-color: $overlay-light-color;
-        padding: 0 $spacing;
+        padding: 0 $baseunit;
         user-select: none;
 
         &--disabled {
@@ -140,7 +148,7 @@
                 @extend .text-ellipsis;
 
                 display: none;
-                margin-left: $spacing / 2;
+                margin-left: $baseunit / 2;
                 text-decoration: underline;
 
                 @include mq($from: tablet) {
@@ -149,15 +157,15 @@
             }
         }
         &__body {
-            padding: ($spacing * 0.6) 0 ($spacing * 0.1);
+            padding: ($baseunit * 0.6) 0 ($baseunit * 0.1);
         }
         &__label {
             font-weight: $font-weight-bold;
         }
         &__list {
-            padding-left: $spacing;
+            padding-left: $baseunit;
             column-count: 2;
-            column-gap: $spacing * 2;
+            column-gap: $baseunit * 2;
         }
     }
 }

@@ -5,13 +5,13 @@
         <h5 class="text-center pad-b">Create a new organization</h5>
         <p class="text-center">If you can't find your organization, create a new organization with name and location.</p>
     </div>
-    <div class='single-body-content border-b'>
-        <div class="form-element no-space">
-            <label for='Organization Name'>Organization Name</label>
+    <div class='form border-b'>
+        <div class="form__group">
+            <label class="form__label" for='Organization Name'>Organization Name</label>
             {{input value=org.name
                 type='text'
                 placeholder='Organization Name'
-                class='form-control'
+                class='form__input'
                 autocorrect='off'
                 autocapitalize='off'
                 validateObj=org

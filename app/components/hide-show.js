@@ -83,7 +83,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   _afterOpen(resolve) {
     const focusSelector = this.get('focusOnOpenSelector');
     if (focusSelector) {
-      Ember.$(focusSelector).focus();
+      this.$(focusSelector).focus();
     }
     tryInvoke(this, 'onOpen');
     resolve();
@@ -102,6 +102,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   _closeThenCall(action) {
     return this._close().then(() => callIfPresent(null, action, [...arguments].slice(1)));
   },
+  // for target vs relatedTarget: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
   _tryCloseOnFocusout({ relatedTarget }) {
     if (
       this.get('isDestroying') ||

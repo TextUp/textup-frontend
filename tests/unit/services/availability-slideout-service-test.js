@@ -69,31 +69,6 @@ test('ensuring that schedule is present on the record owner', function(assert) {
   });
 });
 
-test('start redoing and cancelling redo for voicemail greeting', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      phone = Ember.Object.create({ shouldRedoVoicemailGreeting: false }),
-      mediaRollbackSpy = sinon.spy();
-
-    service.startRedoVoicemailGreeting(); // does not throw error
-    service.startRedoVoicemailGreeting('not a phone'); // does not throw error
-    service.startRedoVoicemailGreeting(phone);
-
-    assert.equal(phone.get('shouldRedoVoicemailGreeting'), true);
-
-    phone.set('media', { content: { rollbackAttributes: mediaRollbackSpy } });
-    service.startRedoVoicemailGreeting(phone);
-
-    assert.ok(mediaRollbackSpy.calledOnce);
-
-    service.cancelRedoVoicemailGreeting(); // does not throw error
-    service.cancelRedoVoicemailGreeting('not a phone'); // does not throw error
-    service.cancelRedoVoicemailGreeting(phone);
-
-    assert.equal(phone.get('shouldRedoVoicemailGreeting'), false);
-  });
-});
-
 test('adding processed audio to media', function(assert) {
   run(() => {
     const done = assert.async(),
@@ -111,20 +86,20 @@ test('adding processed audio to media', function(assert) {
       })
       .then(() => {
         assert.equal(this.store.peekAll('media').get('length'), mBaseline + 1);
+        assert.ok(phone.get('media.content') instanceof Media);
+        assert.equal(phone.get('media.content.pendingChanges.length'), 1);
+
+        return service.onAddAudio(phone, 'audio/mpeg', 'base64;valid-data-here');
+      })
+      .then(() => {
+        assert.equal(
+          this.store.peekAll('media').get('length'),
+          mBaseline + 0,
+          'found media is rolled back to avoid sending all prior attempts -- in this test rolling back deletes the unsaved media'
+        );
 
         assert.ok(phone.get('media.content') instanceof Media);
         assert.equal(phone.get('media.content.pendingChanges.length'), 1);
-        assert.equal(phone.get('shouldRedoVoicemailGreeting'), false);
-
-        phone.set('shouldRedoVoicemailGreeting', true);
-        return service.onAddAudio(phone, 'audio/mpeg', 'base64;validdatahere');
-      })
-      .then(() => {
-        assert.equal(this.store.peekAll('media').get('length'), mBaseline + 1);
-
-        assert.ok(phone.get('media.content') instanceof Media);
-        assert.equal(phone.get('media.content.pendingChanges.length'), 2);
-        assert.equal(phone.get('shouldRedoVoicemailGreeting'), false);
 
         done();
       });

@@ -5,62 +5,62 @@
         <h5 class="text-center pad-b">You've selected {{selected.name}}!</h5>
         <p class="text-center">We need a little bit more information about you before we can create your account.</p>
     </div>
-    <div class="single-body-content">
-        <div class="form-element">
-            <label for="Your Name">Your Name</label>
+    <div class="form">
+        <div class="form__group">
+            <label class="form__label" for="Your Name">Your Name</label>
             {{input value=staff.name
                 type="text"
                 placeholder="Your Name"
-                class="form-control start-focus"
+                class="form__input start-focus"
                 validateObj=staff
                 validateField='name'
                 validate='bottom'}}
         </div>
-        <div class="form-element">
-            <label for="Username">Username</label>
+        <div class="form__group">
+            <label class="form__label" for="Username">Username</label>
             {{input value=staff.username
                 type="text"
                 placeholder="Username"
-                class="form-control"
+                class="form__input"
                 autocorrect="off"
                 autocapitalize="off"
                 validateObj=staff
                 validateField='username'
                 validate='bottom'}}
         </div>
-        <div class="form-element">
-            <label for="Email">Email</label>
+        <div class="form__group">
+            <label class="form__label" for="Email">Email</label>
             {{input value=staff.email
                 type="email"
                 placeholder="Email"
-                class="form-control"
+                class="form__input"
                 validateObj=staff
                 validateField='email'
                 validate='bottom'}}
         </div>
-        <div class="form-element">
-            <label for="Password">Password</label>
+        <div class="form__group">
+            <label class="form__label" for="Password">Password</label>
             {{input value=staff.password
                 type="password"
                 allowShowPassword=true
                 placeholder="Password"
-                class="form-control"}}
+                class="form__input"}}
         </div>
-        <div class="form-element">
-            <label for="Confirm Password">Confirm Password</label>
+        <div class="form__group">
+            <label class="form__label" for="Confirm Password">Confirm Password</label>
             {{input value=confirmPassword
                 type="password"
                 allowShowPassword=true
                 placeholder="Confirm Password"
-                class=(concat "form-control "
+                class=(concat "form__input "
                     (if (and confirmPassword (not (eq staff.password confirmPassword)))
                         'form-error'))}}
             {{#if (and confirmPassword (not (eq staff.password confirmPassword)))}}
                 <p class="form-error">Passwords must match.</p>
             {{/if}}
         </div>
-        <div class='form-element no-space'>
-            <label for='Lock Code' class='control-label'>Lock Code</label>
+        <div class='form__group form__group--no-vertical-space'>
+            <label for='Lock Code' class='form__label'>Lock Code</label>
             {{lock-control val=staff.lockCode
                 lockOnMultipleFailure=false
                 numDigits=4
@@ -77,8 +77,8 @@
     </div>
     <div class="single-body-content">
         <div class="flex flex--spacing-between flex--align-stretch">
-            {{input type="checkbox" checked=didAcceptPolicies}}
-            <span class="emphasize margin-l">
+            {{input id="signup-account-accept-policies" type="checkbox" checked=didAcceptPolicies}}
+            <label class="form__label form__label--no-spacing form__label--emphasize" for="signup-account-accept-policies">
                 I have read and accept the
                 <button class="btn-link"
                     type="button"
@@ -87,7 +87,7 @@
                 <button class="btn-link"
                     type="button"
                     onclick={{action (mut showPrivacyPolicy) true}}>Privacy Policy</button>
-            </span>
+            </label>
         </div>
         {{message-modal url=config.links.termsOfUse
             display=showTermsOfUse

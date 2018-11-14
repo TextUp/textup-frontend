@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
+  mediaService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
   setupController(controller) {
@@ -18,15 +19,6 @@ export default Ember.Mixin.create({
       this.get('dataService').persist(rNote);
     },
 
-    onNoteAddImage() {
-      return this.get('recordItemService').addImage(...arguments);
-    },
-    onNoteAddAudio() {
-      return this.get('recordItemService').addAudio(...arguments);
-    },
-    onNoteRemoveMedia() {
-      return this.get('recordItemService').removeMedia(...arguments);
-    },
     onNoteAddLocation(rNote) {
       return this.get('recordItemService').addLocationToNote(rNote);
     },

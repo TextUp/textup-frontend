@@ -44,13 +44,12 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    // ENV.host = 'http://localhost:8080'; // TODO
+    // ENV.host = 'http://localhost:8080';
     ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
-    // TODO
-    ENV.lock.lockOnHidden = false;
-    // ENV.manifest = { enabled: true };
+    // ENV.lock.lockOnHidden = false;
+    ENV.manifest = { enabled: true };
     ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
     ENV.links = {
       privacyPolicy: 'http://staging-static.textup.org/privacy-policy/',

@@ -33,14 +33,17 @@
         {{#with stateManager.ownerAsOrg as |org|}}
             {{#tab-container/item doRegister=doRegister
                 title=org.name}}
-                <div class="pad-t pad-b">
-                    <div class="form-element pad-l pad-r">
-                        <label for="Your Name">Organization Name</label>
-                        {{input value=org.name type="text" placeholder="Organization Name" class="form-control"}}
+                <div class="form">
+                    <div class="form__group">
+                        <label class="form__label" for="Your Name">Organization Name</label>
+                        {{input value=org.name
+                            type="text"
+                            placeholder="Organization Name"
+                            class="form__input"}}
                     </div>
-                    <div class="form-element pad-l pad-r row">
+                    <div class="form__group">
                         <div class="xs-2-row-3 control-text">
-                            <label for="Lock Timeout" class='text-ellipsis'>
+                            <label class='form__label' for="Lock Timeout">
                                 Lock Timeout
                             </label>
                         </div>
@@ -80,7 +83,7 @@
         {{#with stateManager.ownerAsTeam as |team|}}
             {{#tab-container/item doRegister=doRegister
                 title=team.name}}
-                <div class="pad-t pad-b">
+                <div class="form">
                     {{partial 'partials/team/settings'}}
                     {{form/location-model entity=team onLocationError=(route-action 'mapError')}}
                 </div>
@@ -88,18 +91,14 @@
         {{/with}}
         {{#tab-container/item doRegister=doRegister
             title="My Account"}}
-            <div class="pad-t pad-b">
+            <div class="form">
                 {{#with authService.authUser as |staff|}}
-                    <div class="pad-l pad-r">
-                        {{partial 'partials/staff/settings'}}
-                    </div>
+                    {{partial 'partials/staff/settings'}}
                     {{partial 'partials/staff/personal-number'}}
                     <hr>
-                    <div class="pad-l pad-r">
-                        {{partial 'partials/staff/code-with-confirm'}}
-                        {{partial 'partials/staff/username-with-confirm'}}
-                        {{partial 'partials/staff/password-with-confirm'}}
-                    </div>
+                    {{partial 'partials/staff/code-with-confirm'}}
+                    {{partial 'partials/staff/username-with-confirm'}}
+                    {{partial 'partials/staff/password-with-confirm'}}
                 {{/with}}
             </div>
         {{/tab-container/item}}

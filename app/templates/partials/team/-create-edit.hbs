@@ -1,19 +1,17 @@
-<div class="pad-l pad-r form-element">
-    <label for="Your Name">Team Name</label>
+<div class="form__group">
+    <label class="form__label" for="Your Name">Team Name</label>
     {{input value=newTeam.name
         type="text"
         placeholder="Team Name"
-        class="form-control start-focus"
+        class="form__input start-focus"
         validateObj=newTeam
         validateField='name'
         validate='bottom'}}
 </div>
-<div class="pad-l pad-r form-element">
-    <label for="Your Name">Team Color</label>
+<div class="form__group">
+    <label class="form__label" for="Your Name">Team Color</label>
     {{color-control color=newTeam.hexColor}}
 </div>
 {{#with newTeam as |owner|}}
-    <div class="pad-l pad-r">
-        {{partial 'partials/change-number'}}
-    </div>
+    {{partial 'partials/change-number'}}
 {{/with}}

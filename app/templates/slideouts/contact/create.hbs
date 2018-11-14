@@ -11,8 +11,7 @@
     doClose=(route-action "cancelNewContactSlideout")
     forceKeepOpen=newContact.isSaving
     focusSelector=".start-focus" as |slideout|}}
-    {{form/contact-model classNames="pad-t pad-l pad-r"
-        contact=newContact
+    {{form/contact-model contact=newContact
         onGoToDuplicates=(route-action "goToDuplicateContact")
         onAddNumber=(route-action "onAddNumber")
         onRemoveNumber=(route-action "onRemoveNumber")}}

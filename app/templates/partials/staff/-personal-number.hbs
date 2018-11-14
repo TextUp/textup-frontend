@@ -1,6 +1,6 @@
-<div class="form-element pad-l pad-r row">
+<div class="form__group">
     <div class="xs-2-row-3 control-text">
-        <label for="Notifications" class='text-ellipsis'>
+        <label class="form__label" for="Notifications">
             Notifications
         </label>
     </div>
@@ -12,37 +12,39 @@
         trueString='On'}}
 </div>
 {{#if staff.enableNotifications}}
-    <div class='form-element bg-color pad-all'>
-        <label for='Personal Phone' class='control-label'>Personal Phone</label>
-        {{#hide-show classNames='input-group-element'
-            focusOnOpenSelector=".phone-control" as |hideShow|}}
-            {{#if hideShow.isOpen}}
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <button class='btn' type='button' onclick={{hideShow.actions.close}}>
-                            <span class="fa fa-times"></span>
-                        </button>
-                    </span>
-                    {{#phone-control/mutable-validated number=staff.personalPhoneNumber
-                        controlClass='blend-in'
-                        forceDefaultValidate=true
-                        onValidateSuccess=(route-action 'persist' staff hideShow.actions.close)}}
-                    {{else}}
-                        <span class='fa fa-arrow-right'></span>
-                    {{/phone-control/mutable-validated}}
-                </div>
-            {{else}}
-                <div tabindex="0"
-                    onfocus={{hideShow.actions.open}}
-                    onclick={{hideShow.actions.open}}>
-                    {{#phone-control number=staff.personalPhoneNumber
-                        showControl=true
-                        controlClass='blend-in'}}
-                    {{else}}
-                        <span class='fa fa-pencil'></span>
-                    {{/phone-control}}
-                </div>
-            {{/if}}
-        {{/hide-show}}
+    <div class='bg-color pad-t pad-b'>
+        <div class="form__group form__group--no-vertical-space">
+            <label class="form__label" for='Personal Phone'>Personal Phone</label>
+            {{#hide-show classNames='input-group-element'
+                focusOnOpenSelector=".phone-control" as |hideShow|}}
+                {{#if hideShow.isOpen}}
+                    <div class="input-group">
+                        <span class="input-group-addon blend-in">
+                            <button class='btn' type='button' onclick={{hideShow.actions.close}}>
+                                <span class="fa fa-times"></span>
+                            </button>
+                        </span>
+                        {{#phone-control/mutable-validated number=staff.personalPhoneNumber
+                            controlClass='blend-in'
+                            forceDefaultValidate=true
+                            onValidateSuccess=(route-action 'persist' staff hideShow.actions.close)}}
+                        {{else}}
+                            <span class='fa fa-arrow-right'></span>
+                        {{/phone-control/mutable-validated}}
+                    </div>
+                {{else}}
+                    <div tabindex="0"
+                        onfocus={{hideShow.actions.open}}
+                        onclick={{hideShow.actions.open}}>
+                        {{#phone-control number=staff.personalPhoneNumber
+                            showControl=true
+                            controlClass='blend-in'}}
+                        {{else}}
+                            <span class='fa fa-pencil'></span>
+                        {{/phone-control}}
+                    </div>
+                {{/if}}
+            {{/hide-show}}
+        </div>
     </div>
 {{/if}}

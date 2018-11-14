@@ -1,19 +1,19 @@
-<div class='form-element pad-l pad-r'>
-    <label for='Staff Name' class='control-label'>Staff Name</label>
+<div class='form__group'>
+    <label for='Staff Name' class='form__label'>Staff Name</label>
     {{input value=staff.name
         type='text'
         placeholder='Staff Name'
-        class='form-control'
+        class='form__input'
         validateObj=staff
         validateField='name'
         validate='bottom'}}
 </div>
-<div class='form-element pad-l pad-r'>
-    <label for='Staff Email' class='control-label'>Staff Email</label>
+<div class='form__group'>
+    <label for='Staff Email' class='form__label'>Staff Email</label>
     {{input value=staff.email
         type='email'
         placeholder='Staff Email'
-        class='form-control'
+        class='form__input'
         validateObj=staff
         validateField='email'
         validate='bottom'}}
@@ -21,7 +21,5 @@
 {{partial 'partials/staff/personal-number'}}
 <hr>
 {{#with staff as |owner|}}
-    <div class="pad-l pad-r">
-        {{partial 'partials/change-number'}}
-    </div>
+    {{partial 'partials/change-number'}}
 {{/with}}

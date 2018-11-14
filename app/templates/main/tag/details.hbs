@@ -32,9 +32,9 @@
 
 	        images=careRecordText.media.content.displayedImages.content
 	        audio=careRecordText.media.content.displayedAudio.content
-	        onAddImage=(route-action "onAddImage")
-	        onAddAudio=(route-action "onAddAudio")
-	        onRemoveMedia=(route-action "onRemoveMedia")
+	        onAddImage=(route-action "onAddImage" careRecordText)
+	        onAddAudio=(route-action "onAddAudio" careRecordText)
+	        onRemoveMedia=(route-action "onRemoveMedia" careRecordText)
 
 	        doRegister=(action (mut careRecordRef))
 	        onLoadRecordItems=(route-action "onLoadRecordItems")

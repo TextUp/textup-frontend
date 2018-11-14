@@ -13,12 +13,12 @@
     focusSelector=".start-focus" as |slideout|}}
     {{form/record-note class="pad-t"
         recordNote=newRecordNote
-        doAddImage=(route-action "onNoteAddImage" newRecordNote)
-        doAddAudio=(route-action "onNoteAddAudio" newRecordNote)
-        doRemoveMedia=(route-action "onNoteRemoveMedia" newRecordNote)
-        doAddLocation=(route-action "onNoteAddLocation" newRecordNote)
-        doRemoveLocation=(route-action "onNoteRemoveLocation" newRecordNote)
+        onAddImage=(route-action "onAddImage" newRecordNote)
+        onAddAudio=(route-action "onAddAudio" newRecordNote)
+        onRemoveMedia=(route-action "onRemoveMedia" newRecordNote)
+        onAddLocation=(route-action "onNoteAddLocation" newRecordNote)
+        onRemoveLocation=(route-action "onNoteRemoveLocation" newRecordNote)
         onLocationError=(route-action "onLocationError")
-        contentsClass="form-control start-focus"
+        contentsClass="start-focus"
         readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
 {{/slideout-pane}}

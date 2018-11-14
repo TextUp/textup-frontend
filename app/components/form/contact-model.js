@@ -14,6 +14,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     onRemoveNumber: PropTypes.func
   },
 
+  classNames: 'form',
+
   // Internal handlers
   // -----------------
 

@@ -1,52 +1,51 @@
-<div class="form-element pad-l pad-r">
-    <label for="Contents">Contents</label>
+<div class="form__group">
+    <label class="form__label" for="Contents">Contents</label>
     {{textarea rows="3"
         autoresize=true
         readonly=(if readOnly "readonly")
         remaining="bottom"
-        class=(if contentsClass contentsClass "form-control")
+        class=(concat contentsClass " form__input form__input--multiline")
         maxlength="1000"
         validateFreq=1000
         validateObj=recordNote
+        placeholder="Enter note..."
         validateField="noteContents"
         validate="bottom"
         value=recordNote.noteContents}}
 </div>
-<div class="margin-b">
+<div class="form__group form__group--full-width">
     {{photo-control images=recordNote.media.content.displayedImages.content
         imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
         readOnly=(or readOnly recordNote.isSaving)
         addComponentClass="margin-l margin-r"
-        onAdd=doAddImage
-        onRemove=doRemoveMedia}}
+        onAdd=onAddImage
+        onRemove=onRemoveMedia}}
 </div>
-<hr>
-<div class="form-element pad-l pad-r">
+<div class="form__group">
     {{audio-control audio=recordNote.media.content.displayedAudio
         readOnly=(or readOnly recordNote.isSaving)
-        onAdd=doAddAudio
-        onRemove=doRemoveMedia}}
+        onAdd=onAddAudio
+        onRemove=onRemoveMedia}}
 </div>
-<hr>
 {{#if (not readOnly)}}
     {{#if recordNote.location.content}}
         {{!-- can only remove location if is new --}}
         {{!-- [FUTURE] need to have a readonly-view for the location-control --}}
         {{#if (and recordNote.location.content.isNew (not readOnly) (not recordNote.isSaving))}}
-            <div class="form-element pad-l pad-r">
+            <div class="form__group">
                 <button type="button"
                     class="button button--expand"
-                    onclick={{doRemoveLocation}}>
+                    onclick={{onRemoveLocation}}>
                     Remove location
                 </button>
             </div>
         {{/if}}
         {{form/location-model entity=recordNote onLocationError=onLocationError}}
     {{else if (and (not readOnly) (not recordNote.isSaving))}}
-        <div class="form-element  pad-l pad-r">
+        <div class="form__group">
             <button type="button"
                 class="button button--expand"
-                onclick={{doAddLocation}}>
+                onclick={{onAddLocation}}>
                 Add location
             </button>
         </div>

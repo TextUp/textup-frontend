@@ -96,34 +96,6 @@ test('delegating availability entity switch', function(assert) {
   assert.ok(route.availabilitySlideoutService.ensureScheduleIsPresent.calledWith(argVal));
 });
 
-test('delegating redoing voicemail greeting', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
-    phoneSpy = sinon.spy();
-  route.setProperties({
-    availabilitySlideoutService: { startRedoVoicemailGreeting: sinon.spy() },
-    currentModel: { phone: { content: phoneSpy } }
-  });
-
-  route.actions.redoVoicemailGreeting.call(route);
-
-  assert.ok(route.availabilitySlideoutService.startRedoVoicemailGreeting.calledOnce);
-  assert.ok(route.availabilitySlideoutService.startRedoVoicemailGreeting.calledWith(phoneSpy));
-});
-
-test('delegating stopping redoing voicemail greeting', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
-    phoneSpy = sinon.spy();
-  route.setProperties({
-    availabilitySlideoutService: { cancelRedoVoicemailGreeting: sinon.spy() },
-    currentModel: { phone: { content: phoneSpy } }
-  });
-
-  route.actions.stopRedoingVoicemailGreeting.call(route);
-
-  assert.ok(route.availabilitySlideoutService.cancelRedoVoicemailGreeting.calledOnce);
-  assert.ok(route.availabilitySlideoutService.cancelRedoVoicemailGreeting.calledWith(phoneSpy));
-});
-
 test('delegating finishing recording greeting', function(assert) {
   const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
     phoneSpy = sinon.spy(),

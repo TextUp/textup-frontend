@@ -1,13 +1,11 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import Tag from 'textup-frontend/models/tag';
+import FutureMessage from 'textup-frontend/models/future-message';
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),
 
   propTypes: {
-    tag: PropTypes.instanceOf(Tag)
-  },
-
-  classNames: 'form'
+    message: PropTypes.instanceOf(FutureMessage).isRequired
+  }
 });

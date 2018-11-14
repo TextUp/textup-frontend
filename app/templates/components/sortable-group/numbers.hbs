@@ -32,7 +32,7 @@
         {{#if hideShow.isOpen}}
             <div class="input-group">
                 {{#if hasNumbers}}
-                    <span class="input-group-addon no-select">
+                    <span class="input-group-addon blend-in no-select">
                         <button class="btn" type="button"
                             onclick={{hideShow.actions.close}}>
                             <span class="fa fa-times"></span>
@@ -46,10 +46,10 @@
                     onFocusLeave=(action "addNewNumber")}}
             </div>
         {{else}}
-            <button class="btn btn-span"
+            <button class="button button--expand"
                 type="button"
                 onclick={{hideShow.actions.open}}>
-                <span class="fa fa-plus"></span>
+                Add another number
             </button>
         {{/if}}
     {{/hide-show}}

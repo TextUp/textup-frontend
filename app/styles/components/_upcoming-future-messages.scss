@@ -1,5 +1,5 @@
 .upcoming-future-messages {
-    @extend %border-box;
+    box-sizing: border-box;
 
     // so that this won't collapse as we are composing a long message
     flex-shrink: 0;

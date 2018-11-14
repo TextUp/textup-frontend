@@ -13,7 +13,7 @@
 	.multi-toggle-item {
 		@extend .no-select;
 		@extend .control-text;
-		@extend %border-box;
+		box-sizing: border-box;
 
 		display: inline-block;
 		width: 100%;
@@ -52,12 +52,14 @@
 }
 
 .multi-toggle {
-	&.has-left .left-toggle, &.has-right .right-toggle {
+	&.has-left .left-toggle,
+	&.has-right .right-toggle {
 		display: block;
 	}
-	.left-toggle, .right-toggle {
+	.left-toggle,
+	.right-toggle {
 		@extend .control-text;
-		@extend %border-box;
+		box-sizing: border-box;
 
 		cursor: pointer;
 		display: none;

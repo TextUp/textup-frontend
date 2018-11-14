@@ -4,6 +4,7 @@ const { tryInvoke } = Ember;
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
+  mediaService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
   setupController: function(controller) {
@@ -31,25 +32,6 @@ export default Ember.Mixin.create({
       return this.get('recordItemService').loadRecordItems(this.get('currentModel'), {
         refresh: true
       });
-    },
-
-    onAddImage() {
-      return this.get('recordItemService').addImage(
-        this.get('controller.careRecordText'),
-        ...arguments
-      );
-    },
-    onAddAudio() {
-      return this.get('recordItemService').addAudio(
-        this.get('controller.careRecordText'),
-        ...arguments
-      );
-    },
-    onRemoveMedia() {
-      return this.get('recordItemService').removeMedia(
-        this.get('controller.careRecordText'),
-        ...arguments
-      );
     },
 
     onCall() {

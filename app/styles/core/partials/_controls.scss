@@ -3,42 +3,68 @@
     line-height: $control-height;
 }
 
+%control-base {
+    background-color: $color-white;
+    border: 1px solid $color-brand-light;
+    border-radius: $border-radius;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+    &:visited,
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: $color-brand-dark;
+        outline: 0;
+    }
+}
+%control-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    user-select: none;
+}
+%control-error {
+    border-color: $color-error-light;
+    color: $color-error-dark;
+
+    &:visited,
+    &:hover,
+    &:focus,
+    &:active {
+        color: $color-error-dark;
+        border-color: $color-error-dark;
+        outline: 0;
+    }
+}
 %input-disabled {
     &:disabled,
     &.disabled {
         outline: 0;
         background-color: $bg-lightest-color;
         color: $font-color;
-        border-bottom-color: $border-color;
+        border-color: $border-color;
         opacity: 1; // mobile safari makes disabled items translucent
 
         &.btn {
-            border-color: tint($border-color);
-            border-bottom-color: $border-color;
+            border-color: $border-color;
         }
     }
 }
 %input-decoration {
     @extend %input-disabled;
-    @extend %border-box;
+    box-sizing: border-box;
     box-shadow: none;
     border-radius: $border-radius;
     background-color: $bg-lightest-color;
-    border: 1px solid tint($border-color);
-    border-bottom: $button-accent-size solid tint($brand-color);
+    border: 1px solid $color-brand-light;
     // for removing top inset shadow on mobile browsers
     appearance: none;
 
-    &:hover:not(.disabled) {
-        border-color: $border-color;
-        border-bottom-color: $brand-color;
-    }
+    &:hover:not(.disabled),
     &:active:not(.disabled),
     &:focus:not(.disabled),
     &.focus:not(.disabled) {
         outline: 0;
-        border-color: shade($border-color);
-        border-bottom-color: shade($brand-color);
+        border-color: $color-brand-dark;
     }
     &.silent {
         border-color: transparent;
@@ -53,47 +79,44 @@
         }
     }
     &.form-error {
-        @extend %form-error;
+        @extend %control-error;
     }
-    &.form-disabled {
-        @extend %form-disabled;
+    &.form-disabled,
+    &:disabled {
+        @extend %control-disabled;
     }
     &:disabled {
-        @extend %form-disabled;
+        @extend %control-disabled;
     }
 }
-%form-error {
+.form-error,
+.form-error %input-decoration {
+    border-color: $color-error-light;
+
     color: tint($danger-color);
-    border-bottom-color: tint($danger-color);
+    border-color: tint($danger-color);
 
     &:hover {
         color: $danger-color;
-        border-bottom-color: $danger-color;
+        border-color: $danger-color;
     }
     &:active,
     &:focus {
         color: shade($danger-color);
-        border-bottom-color: shade($danger-color);
+        border-color: shade($danger-color);
     }
 }
-%form-disabled {
+.form-disabled,
+.form-disabled %input-decoration {
     color: shade($border-color, 2);
-    border-bottom-color: $border-color;
+    border-color: $border-color;
 
     &:hover,
     &:active,
     &:focus {
         color: shade($border-color, 2);
-        border-bottom-color: $border-color;
+        border-color: $border-color;
     }
-}
-.form-error,
-.form-error %input-decoration {
-    @extend %form-error;
-}
-.form-disabled,
-.form-disabled %input-decoration {
-    @extend %form-disabled;
 }
 
 // Buttons
@@ -113,18 +136,23 @@
 
 .button {
     @extend .text-ellipsis;
+    @extend %control-base;
 
     display: inline-block;
     line-height: $control-height;
     min-width: $control-height;
-    color: $color-brand-dark;
-    background-color: $color-white;
-    border: 1px solid $color-brand-light;
-    border-radius: $border-radius;
     padding: 0 $baseunit;
+    color: $color-brand-dark;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+    &:visited,
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $color-seafoam;
+        color: $color-brand-dark;
+    }
 
     &--expand {
         width: 100%;
@@ -133,19 +161,8 @@
 
     &:disabled,
     &--disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        user-select: none;
+        @extend %control-disabled;
     }
-    &:visited,
-    &:hover,
-    &:focus {
-        background-color: $color-seafoam;
-        color: $color-brand-dark;
-        border-color: $color-brand-dark;
-        outline: 0;
-    }
-
     &:active,
     &--active {
         &,
@@ -158,19 +175,19 @@
         }
     }
 
+    &--dark {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
     &--error {
-        border-color: $color-error-light;
-        color: $color-error-dark;
+        @extend %control-error;
 
         &:visited,
         &:hover,
-        &:focus {
+        &:focus,
+        &:active {
             background-color: $color-error-lighter;
-            color: $color-error-dark;
-            border-color: $color-error-dark;
-            outline: 0;
         }
-
         &:active,
         &.button--active {
             &,
@@ -192,7 +209,7 @@
     box-sizing: border-box;
     flex-shrink: 0;
     min-width: $min-control-width;
-    padding: ($padding * 0.5) ($padding * 0.8);
+    padding: ($baseunit * 0.5) ($baseunit * 0.8);
     font-size: 1em;
     font-weight: $font-weight-bold;
     text-transform: uppercase;
@@ -266,53 +283,123 @@ input[type='checkbox'],
 input[type='radio'] {
     position: relative;
     transform: translateY(1px);
+    margin-right: $baseunit;
+    margin-left: 2px;
 
     &:before,
     &:checked:after {
         content: '';
-        display: inline-block;
-        width: 12px;
-        height: 12px;
         position: absolute;
-        top: -2px;
-        left: -2px;
-
+        top: 50%;
+        width: 100%;
+        height: 100%;
         cursor: pointer;
+        transform: translate(-1px, -50%);
     }
 
     &:before {
-        border: 3px solid $brand-color;
+        border: 1px solid $color-brand-dark;
         border-radius: $border-radius;
         background-color: $bg-light-color;
     }
 
     &:checked:after {
-        @extend .center;
-
-        content: ' ';
-        background-color: $brand-color;
-        height: $padding / 2;
-        width: $padding / 2;
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: $color-brand;
+        height: $baseunit / 2;
+        width: $baseunit / 2;
+        transform: translate(-50%, -50%);
     }
 }
 input[type='radio'] {
-    $radio-adjustment: 3px;
-
-    margin-left: $radio-adjustment;
-
     &:before,
     &:checked:after {
         border-radius: 100%;
-        top: $radio-adjustment * -1;
-        left: $radio-adjustment * -1;
     }
 }
 
 // Form
 // ----
 
+.form {
+    padding-top: $baseunit; 
+
+    &__group {
+        @extend %clearfix;
+
+        margin: 0 $baseunit $baseunit;
+
+        &--full-width {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        &--no-vertical-space {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+    &__item {
+        &--constrain-width {
+            margin-left: $baseunit;
+            margin-right: $baseunit;
+        }
+    }
+    &__label {
+        @extend .text-ellipsis;
+        @extend .text-small;
+
+        display: block;
+        font-weight: $font-weight-std;
+        margin-bottom: $baseunit * 0.3;
+        padding-left: $baseunit * 0.5;
+
+        &--emphasize {
+            font-weight: $font-weight-bold;
+            font-size: 1em; 
+        }
+        &--no-spacing {
+            margin-bottom: 0;
+            padding-left: 0;
+        }
+        &--multiline {
+            @extend .text-wrap; 
+
+            white-space: normal; 
+        }
+    }
+    &__input {
+        @extend %control-base;
+
+        height: $control-height;
+        width: 100%;
+        padding: 0 ($baseunit * 0.5);
+        color: $font-color;
+        box-shadow: none; 
+
+        &--multiline {
+            height: auto;
+            line-height: normal;
+            resize: none;
+            overflow: auto;
+            padding: $baseunit * 0.5;
+        }
+
+        &:disabled,
+        &--disabled {
+            @extend %control-disabled;
+        }
+        &--error {
+            @extend %control-error;
+        }
+    }
+}
+
 .form-element {
     margin-bottom: $form-v-space * 2;
+
     label {
         font-size: 1.1em;
         font-weight: $font-weight-bold;
@@ -322,9 +409,10 @@ input[type='radio'] {
 }
 .form-control {
     @extend %input-decoration;
+
     height: $control-height;
     width: 100%;
-    padding: 0 $padding;
+    padding: 0 $baseunit;
     transition: border-color 0.5s;
 
     &--only-bottom {
@@ -344,7 +432,7 @@ textarea.form-control {
     line-height: normal;
     resize: none;
     overflow: auto;
-    padding: ($padding * 0.5) $padding;
+    padding: ($baseunit * 0.5) $baseunit;
 }
 select.form-control {
     appearance: menulist;
@@ -359,7 +447,7 @@ select.form-control {
 
     @include mq($until: desktop) {
         input.form-control:not(:first-child) {
-            padding: 0 (0.2 * $padding);
+            padding: 0 (0.2 * $baseunit);
         }
     }
     .input-group {
@@ -385,7 +473,7 @@ select.form-control {
     & > .input-group-text {
         @extend %inline-item;
         line-height: $control-height - em(2px);
-        padding: 0 ($padding * 0.7);
+        padding: 0 ($baseunit * 0.7);
         border: 1px solid $border-color;
         border-radius: $border-radius;
     }
@@ -396,14 +484,14 @@ select.form-control {
         width: 1%;
 
         &:first-child {
-            padding-left: $padding / 2;
+            padding-left: $baseunit / 2;
         }
         // changing font size induces scaling issues on mobile
         @include mq($from: desktop) {
             font-size: 1.5em;
 
             &:first-child {
-                padding-left: $padding;
+                padding-left: $baseunit;
             }
         }
     }
@@ -418,6 +506,7 @@ select.form-control {
         &.blend-in .btn:not(:disabled) {
             @extend %input-decoration;
             color: $font-color;
+            border-width: 0;
 
             &:hover {
                 background-color: $bg-color;

@@ -13,6 +13,10 @@
 		&:last-child {
 			margin-bottom: 0;
 		}
+
+		&--dark .audio-control {
+			@extend .audio-control--dark;
+		}
 	}
 }
 
@@ -30,6 +34,14 @@
 	}
 	&--disabled {
 		opacity: 0.4;
+	}
+	&--dark {
+		.button {
+			@extend .button--dark;
+		}
+		.audio-control__display {
+			border: 1px solid rgba(255, 255, 255, 0.5);
+		}
 	}
 	&--error {
 		.audio-control__button {

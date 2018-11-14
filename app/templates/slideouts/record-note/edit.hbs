@@ -17,11 +17,11 @@
     forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
     {{form/record-note class="pad-t"
         recordNote=editingRecordNote
-        doAddImage=(route-action "onNoteAddImage" editingRecordNote)
-        doAddAudio=(route-action "onNoteAddAudio" editingRecordNote)
-        doRemoveMedia=(route-action "onNoteRemoveMedia" editingRecordNote)
-        doAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
-        doRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
+        onAddImage=(route-action "onAddImage" editingRecordNote)
+        onAddAudio=(route-action "onAddAudio" editingRecordNote)
+        onRemoveMedia=(route-action "onRemoveMedia" editingRecordNote)
+        onAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
+        onRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
         onLocationError=(route-action "onLocationError")
         readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
 {{/slideout-pane}}

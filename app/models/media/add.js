@@ -1,3 +1,4 @@
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import md5 from 'npm:blueimp-md5';
@@ -6,7 +7,7 @@ import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed } = Ember;
 
-export default MF.Fragment.extend({
+export default MF.Fragment.extend(Dirtiable, {
   // Properties
   // ----------
 

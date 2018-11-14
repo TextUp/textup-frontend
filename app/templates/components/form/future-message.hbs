@@ -1,41 +1,54 @@
-<div class="form-element pad-l pad-r">
-    <label for="Scheduled Message">Message</label>
-    {{textarea class='form-control start-focus'
+<div class="form__group">
+    <label class="form__label" for="Scheduled Message">Message</label>
+    {{textarea class='form__input form__input--multiline start-focus'
         disabled=futureMessage.isDeleted
         maxlength='320'
         remaining='top'
         autoresize=true
         rows='1'
         value=futureMessage.message
+        placeholder="Enter message..."
         validateObj=futureMessage
         validateField='message'
         validate='bottom'}}
 </div>
-{{#liquid-if futureMessage.message class='animate-slide-from-top'}}
-    <div class="form-element pad-l pad-r">
-        <label for="Start Date">
-            {{if futureMessage.isRepeating 'Start' 'Send'}}
-            Date
-        </label>
-        {{#if futureMessage.isNew}}
-            {{!-- if the startDate has been rounded down such that it less than the
-            unrounded time right now, use the unbounded startDate as the minimum --}}
-            {{datetime-control
-                onSelect=(action (mut futureMessage.startDate))
-                timeInterval=constants.DEFAULT_TIME_INTERVAL_IN_MINUTES
-                value=futureMessage.startDate
-                min=(if (gt (now) (unbound futureMessage.startDate)) (unbound futureMessage.startDate) now)}}
-        {{else}}
-            {{datetime-control
-                onSelect=(action (mut futureMessage.startDate))
-                value=futureMessage.startDate
-                disabled=true}}
-        {{/if}}
-    </div>
-{{/liquid-if}}
-<div class="form-element row pad-l pad-r">
+<div class="form__group form__group--full-width">
+    {{photo-control images=futureMessage.media.content.displayedImages.content
+        imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+        readOnly=futureMessage.isSaving
+        addComponentClass="form__item--constrain-width"
+        onAdd=(action _onAddImage)
+        onRemove=(action _onRemoveMedia)}}
+</div>
+<div class="form__group">
+    {{audio-control audio=futureMessage.media.content.displayedAudio
+        readOnly=futureMessage.isSaving
+        onAdd=(action _onAddAudio)
+        onRemove=(action _onRemoveMedia)}}
+</div>
+<div class="form__group">
+    <label class="form__label" for="Start Date">
+        {{if futureMessage.isRepeating 'Start' 'Send'}}
+        Date
+    </label>
+    {{#if futureMessage.isNew}}
+        {{!-- if the startDate has been rounded down such that it less than the
+        unrounded time right now, use the unbounded startDate as the minimum --}}
+        {{datetime-control
+            onSelect=(action (mut futureMessage.startDate))
+            timeInterval=constants.DEFAULT_TIME_INTERVAL_IN_MINUTES
+            value=futureMessage.startDate
+            min=(if (gt (now) (unbound futureMessage.startDate)) (unbound futureMessage.startDate) now)}}
+    {{else}}
+        {{datetime-control
+            onSelect=(action (mut futureMessage.startDate))
+            value=futureMessage.startDate
+            disabled=true}}
+    {{/if}}
+</div>
+<div class="form__group">
     <div class="xs-2-row-3 control-text">
-        <label for="Type" class='text-ellipsis'>
+        <label class="form__label" for="Type">
             Send As
         </label>
     </div>
@@ -51,13 +64,13 @@
 </div>
 {{#liquid-if (eq futureMessage.type constants.FUTURE_MESSAGE.TYPE.CALL)
     class='animate-slide-from-top'}}
-    <div class="form-element row pad-l pad-r">
+    <div class="form__group">
         <div class="xs-2-row-3 control-text">
-            <label for="Start Date">
+            <label class="form__label" for="Start Date">
                 Language
             </label>
         </div>
-        <select name="scheduled-message-language" class="xs-row-3 form-control"
+        <select name="scheduled-message-language" class="xs-row-3 form__input"
             onchange={{action (mut futureMessage.language) value="target.value"}}>
             {{#each constants.LANGUAGES as |_lang|}}
                 <option value={{_lang}}
@@ -68,9 +81,9 @@
         </select>
     </div>
 {{/liquid-if}}
-<div class="form-element row pad-l pad-r">
+<div class="form__group">
     <div class="xs-2-row-3 control-text">
-        <label for="Notify Self" class='text-ellipsis'>
+        <label class="form__label" for="Notify Self">
             Notify me also?
             {{#if (not personalPhoneNumber)}}
                 {{#tool-tip title='Notifications disabled'
@@ -86,9 +99,9 @@
         value=futureMessage.notifySelf}}
 </div>
 {{#if futureMessage.isNew}}
-    <div class="form-element row pad-l pad-r">
+    <div class="form__group">
         <div class="xs-2-row-3 control-text">
-            <label for="Repeat" class='text-ellipsis'>
+            <label class="form__label" for="Repeat">
                 Repeat?
             </label>
         </div>
@@ -99,14 +112,14 @@
 {{/if}}
 {{#if futureMessage.isRepeating}}
     <div class="pad-t-double bg-color">
-        <div class="form-element row pad-l pad-r">
+        <div class="form__group">
             <div class="xs-row-3 control-text">
-                <label for="Repeat" class='text-ellipsis'>
+                <label class="form__label" for="Repeat">
                     Repeat Every
                 </label>
             </div>
             <div class="xs-row-3 pad-r-half">
-                {{input class='form-control'
+                {{input class='form__input'
                     disabled=futureMessage.isDeleted
                     type='number'
                     min='1'
@@ -126,9 +139,9 @@
                 falseString=(pluralize 'Day' futureMessage.repeatInterval)
                 trueString=(pluralize 'Week' futureMessage.repeatInterval)}}
         </div>
-        <div class="form-element row pad-l pad-r">
+        <div class="form__group">
             <div class="xs-2-row-3 control-text">
-                <label for="Repeat" class='text-ellipsis'>
+                <label class="form__label" for="Repeat">
                     Stop After
                 </label>
             </div>
@@ -142,7 +155,7 @@
         </div>
         <div class="pad-b pad-t pad-l pad-r bg-color bg-dark">
             {{#if futureMessage.hasEndDate}}
-                <div class="form-element row no-space">
+                <div class="form__group form__group--no-vertical-space">
                     <div class="xs-row-3 control-text">
                         <label for="End Date">End On</label>
                     </div>
@@ -155,12 +168,12 @@
                         showTime=false}}
                 </div>
             {{else}}
-                <div class="form-element row no-space">
+                <div class="form__group form__group--no-vertical-space">
                     <div class="xs-row-3 control-text">
-                        <label for="Repeat Count">Repeat</label>
+                        <label class="form__label" for="Repeat Count">Repeat</label>
                     </div>
                     <div class="xs-row-3 pad-r-half">
-                        {{input class='form-control'
+                        {{input class='form__input'
                             disabled=futureMessage.isDeleted
                             type='number'
                             min='1'

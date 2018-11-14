@@ -108,7 +108,7 @@
             outline: 0;
 
             @include mq($until: tablet) {
-                position: absolute;
+                position: fixed;
                 bottom: 0;
                 left: 0;
                 width: 100%;
@@ -133,7 +133,7 @@
             }
         }
         &__overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             height: 100%;

@@ -1,6 +1,6 @@
-<div class="form-element">
-    <label for="Tag Name">Tag Name</label>
-    {{input class="start-focus form-control"
+<div class="form__group">
+    <label class="form__label" for="Tag Name">Tag Name</label>
+    {{input class="start-focus form__input"
         disabled=tag.isDeleted
         value=tag.name
         type="text"
@@ -9,18 +9,18 @@
         validateField='name'
         validate='bottom'}}
 </div>
-<div class="form-element">
-    <label for="Tag Color">Tag Color</label>
+<div class="form__group">
+    <label class="form__label" for="Tag Color">Tag Color</label>
     {{color-control color=tag.hexColor
         disabled=tag.isDeleted}}
 </div>
-<div class="form-element row">
+<div class="form__group">
     <div class="xs-2-row-3 control-text">
-        <label for="Language">
+        <label  class="form__label"for="Language">
             Tag Language
         </label>
     </div>
-    <select name="tag-language" class="xs-row-3 form-control"
+    <select name="tag-language" class="xs-row-3 form__input"
         onchange={{action (mut tag.language) value="target.value"}}>
         {{#each constants.LANGUAGES as |_lang|}}
             <option value={{_lang}}

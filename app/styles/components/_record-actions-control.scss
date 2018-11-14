@@ -7,7 +7,7 @@
         display: flex;
         align-items: stretch;
         margin: $baseunit * 0.3;
-        border: 1px solid $color-seafoam;
+        border: 1px solid tint($color-brand-light);
         border-radius: $border-radius;
 
         @include mq($from: tablet) {

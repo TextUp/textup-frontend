@@ -15,8 +15,7 @@ const { computed, get, tryInvoke, getWithDefault } = Ember,
         validator('length', { max: 320 }),
         validator('has-any', {
           also: ['media.hasElements'],
-          // [FUTURE] add images too here. We are not supporting images in the UI for this release
-          description: 'message body'
+          description: 'message body, images, or audio recordings'
         })
       ]
     },
@@ -61,6 +60,10 @@ export default DS.Model.extend(Dirtiable, Validations, {
   rollbackAttributes: function() {
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
     return this._super(...arguments);
+  },
+  didUpdate() {
+    this._super(...arguments);
+    this.rollbackAttributes();
   },
   hasManualChanges: computed('media.isDirty', function() {
     return !!this.get('media.isDirty');

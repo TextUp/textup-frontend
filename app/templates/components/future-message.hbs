@@ -1,0 +1,64 @@
+<div class="bg-color flex flex--align-stretch">
+    <div class="flex__item flex__item--grow">
+        <div class="text-wrap pad-all">
+            {{message.message}}
+        </div>
+        {{#if message.media.content.displayedAudio}}
+            {{audio-list classNames="pad-l pad-r pad-b-half"
+                audio=message.media.content.displayedAudio}}
+        {{/if}}
+        {{#if message.media.content.displayedImages.content}}
+            {{image-stack images=message.media.content.displayedImages.content}}
+        {{/if}}
+    </div>
+    {{yield}}
+</div>
+<div class="row text-center">
+    <div class="xs-6-row-20 s-4-row-20 control-text border-r">
+        <span class="badge bg-color bg-dark">
+            {{#if (eq message.type constants.FUTURE_MESSAGE.TYPE.TEXT)}}
+                {{#tool-tip title='Send via text'}}
+                    <span class="fa fa-paper-plane-o"></span>
+                {{/tool-tip}}
+            {{else}}
+                {{#tool-tip title='Send via phone call'}}
+                    <span class="fa fa-phone"></span>
+                {{/tool-tip}}
+            {{/if}}
+        </span>
+        <span class="badge {{if message.notifySelf 'bg-color bg-dark'}}">
+            {{#tool-tip title=(if message.notifySelf 'Notify myself via text' 'Do not notify me')}}
+                <span class="fa fa-user
+                    {{if (not message.notifySelf) 'fa-inverse'}}"></span>
+            {{/tool-tip}}
+        </span>
+    </div>
+    {{#if message.isDone}}
+        <div class="xs-4-row-20 s-8-row-20 control-text border-r text-ellipsis">
+            <span class="text-bold">Done</span>
+        </div>
+        <div class="xs-10-row-20 s-8-row-20 control-text text-ellipsis">
+            <span class="text-bold">Started</span>
+            {{moment-format message.startDate 'MMM D, Y'}}
+        </div>
+    {{else}}
+        <div class="xs-14-row-20 s-8-row-20 control-text border-r text-ellipsis">
+            <span class="text-bold">Next</span>
+            {{moment-format message.nextFireDate 'MMM D h:mm A'}}
+        </div>
+        <div class="display-s display-m display-l s-8-row-20 control-text text-ellipsis">
+            {{#if message.isRepeating}}
+                <span class="text-bold">Stop</span>
+                {{#if message.hasEndDate}}
+                    {{moment-format message.endDate 'MMM D, Y'}}
+                {{else}}
+                    after {{message.repeatCount}}
+                    {{pluralize 'times' message.repeatCount}}
+                {{/if}}
+            {{else}}
+                <span class="text-bold">Created</span>
+                {{moment-format message.whenCreated 'MMM D, Y'}}
+            {{/if}}
+        </div>
+    {{/if}}
+</div>

@@ -1,35 +1,35 @@
-<div class='form-element'>
-    <label for='Your Name' class='control-label'>Your Name</label>
+<div class='form__group'>
+    <label class="form__label" for='Your Name'>Your Name</label>
     {{input value=staff.name
         type='text'
         placeholder='Your Name'
-        class='form-control'
+        class='form__input'
         validateObj=staff
         validateField='name'
         validate='bottom'}}
 </div>
-<div class='form-element'>
-    <label for='Email' class='control-label'>Email</label>
+<div class='form__group'>
+    <label class="form__label" for='Email'>Email</label>
     {{input value=staff.email
         type='email'
         placeholder='Email'
-        class='form-control'
+        class='form__input'
         validateObj=staff
         validateField='email'
         validate='bottom'}}
 </div>
 {{#if (and staff.phone.isFulfilled staff.phone.content.number)}}
-    <div class='form-element'>
-        <label for='TextUp Phone' class='control-label'>TextUp Phone</label>
+    <div class='form__group'>
+        <label class="form__label" for='TextUp Phone'>TextUp Phone</label>
         {{phone-control number=staff.phone.content.number}}
     </div>
-    <div class="form-element row">
+    <div class="form__group">
         <div class="xs-2-row-3 control-text">
-            <label for="Default Language" class='text-ellipsis'>
+            <label class="form__label" for="Default Language">
                 Default Language
             </label>
         </div>
-        <select name="scheduled-message-language" class="xs-row-3 form-control"
+        <select name="scheduled-message-language" class="xs-row-3 form__input"
             onchange={{action (mut staff.phone.content.language) value="target.value"}}>
             {{#each constants.LANGUAGES as |_lang|}}
                 <option value={{_lang}}

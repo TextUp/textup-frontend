@@ -15,7 +15,7 @@ export function lowercase(word) {
   return isBlank(word) ? word : word.toLowerCase();
 }
 
-export function capitalize(word, numToCap) {
+export function capitalize(word, numToCap = 1) {
   if (isBlank(word)) {
     return word;
   }

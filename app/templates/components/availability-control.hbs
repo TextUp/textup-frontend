@@ -1,6 +1,6 @@
-<div class="row pad-l pad-r pad-b">
+<div class="form__group">
     <div class="xs-row-2 control-text">
-        <label for="Availability" class='text-ellipsis'>
+        <label for="Availability" class='form__label'>
             Set availability
         </label>
     </div>
@@ -19,37 +19,35 @@
     {{/multi-toggle}}
 </div>
 {{#if entity.manualSchedule}}
-    <div class="pad-b pad-l pad-r">
-        <div class="row">
-            <div class="xs-row-2 control-text">
-                <label for="Availability" class='text-ellipsis'>
-                    Available now?
-                </label>
-            </div>
-            {{#multi-toggle classNames='xs-row-2'
-                selectIndex=(if entity.isAvailable 0 1) as |toggle doRegister|}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
-                    onSelect=(action 'handleManualAvailability' true)}}
-                    Yes
-                {{/multi-toggle/item}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
-                    onSelect=(action 'handleManualAvailability' false)}}
-                    No
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
+    <div class="form__group">
+        <div class="xs-row-2 control-text">
+            <label for="Availability" class='form__label'>
+                Available now?
+            </label>
         </div>
+        {{#multi-toggle classNames='xs-row-2'
+            selectIndex=(if entity.isAvailable 0 1) as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.BRAND
+                onSelect=(action 'handleManualAvailability' true)}}
+                Yes
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.LIGHT_BLUE
+                onSelect=(action 'handleManualAvailability' false)}}
+                No
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
     </div>
     {{#if others}}
-        <div class="form-element pad-l pad-r pad-t">
-            <label for="Team Member Availabilities" class='text-ellipsis'>
+        <div class="form__group">
+            <label for="Team Member Availabilities" class='form__label'>
                 Team Members
             </label>
         </div>
-        <div class="bg-color pad-t pad-l pad-r">
+        <div class="bg-color pad-all">
             {{#each others as |_other|}}
-                <div class="row pad-b">
+                <div class="row form__label">
                     {{availability-control/other entity=_other}}
                 </div>
             {{/each}}

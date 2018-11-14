@@ -17,7 +17,7 @@
         onOpen=(route-action "onOpenCreateTagInTagList")
         onClose=(route-action "onCloseCreateTagInTagList") as |hideShow|}}
         {{#if hideShow.isOpen}}
-            {{form/tag-model classNames="pad-t pad-l pad-r" tag=newTag}}
+            {{form/tag-model tag=newTag}}
         {{else}}
             <ul class="result-list">
                 {{#if model.phone.isFulfilled}}

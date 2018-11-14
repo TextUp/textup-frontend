@@ -46,7 +46,7 @@
 
 	.tab-container-nav-item {
 		@extend .text-ellipsis;
-		@extend %border-box;
+		box-sizing: border-box;
 
 		cursor: pointer;
 		text-align: center;

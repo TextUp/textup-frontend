@@ -1,9 +1,6 @@
 import Ember from 'ember';
-import MediaElement from 'textup-frontend/models/media-element';
-import RecordItem from 'textup-frontend/models/record-item';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
-const { get, isArray, isNone } = Ember;
+const { isArray } = Ember;
 
 export default Ember.Service.extend({
   constants: Ember.inject.service(),
@@ -44,40 +41,6 @@ export default Ember.Service.extend({
     return rNote;
   },
 
-  addImage(recordItem, newImages) {
-    if (!(recordItem instanceof RecordItem) || !isArray(newImages)) {
-      return;
-    }
-    recordItem.get('media').then(foundMedia => {
-      const media = foundMedia || this.get('store').createRecord('media');
-      newImages.forEach(imageObj => {
-        const { mimeType, data, width, height } = imageObj;
-        media.addImage(mimeType, data, width, height);
-      });
-      recordItem.set('media', media);
-    });
-  },
-  addAudio(recordItem, mimeType, data) {
-    if (!(recordItem instanceof RecordItem) || !mimeType || !data) {
-      return;
-    }
-    recordItem.get('media').then(foundMedia => {
-      const media = foundMedia || this.get('store').createRecord('media');
-      media.addAudio(mimeType, data);
-      recordItem.set('media', media);
-    });
-  },
-  removeMedia(recordItem, img) {
-    if (!(recordItem instanceof RecordItem) || !(img instanceof MediaElement)) {
-      return;
-    }
-    recordItem.get('media').then(media => {
-      if (isNone(media)) {
-        return;
-      }
-      media.removeElement(get(img, MEDIA_ID_PROP_NAME));
-    });
-  },
   addLocationToNote(rNote) {
     rNote.set('location', this.get('store').createRecord('location'));
   },

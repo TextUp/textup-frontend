@@ -4,7 +4,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { computed, tryInvoke, run } = Ember;
+const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   constants: Ember.inject.service(),

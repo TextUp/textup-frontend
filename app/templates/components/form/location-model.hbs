@@ -1,9 +1,9 @@
 {{#if entity.location.isFulfilled}}
-    <div class="form-element">
-        <label for="Your Name" class='pad-l pad-r'>Location</label>
-        {{location-control/mutable hideSidebar=true
-            location=(mut entity.location.content.latLng)
-            description=(mut entity.location.content.address)
-            onError=onLocationError}}
+    <div class="form__group">
+        <label class="form__label" for="Location">Location</label>
     </div>
+    {{location-control/mutable hideSidebar=true
+        location=(mut entity.location.content.latLng)
+        description=(mut entity.location.content.address)
+        onError=onLocationError}}
 {{/if}}

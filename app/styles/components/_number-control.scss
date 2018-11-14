@@ -1,4 +1,5 @@
-.form-error .number-control, .number-control.form-error {
+.form-error .number-control,
+.number-control.form-error {
     .number-control-label {
         color: $font-color;
     }
@@ -6,7 +7,7 @@
 
 .number-control {
     @extend %clearfix;
-    @extend %border-box;
+    box-sizing: border-box;
     position: relative;
     width: 100%;
     list-style-type: none;
@@ -16,7 +17,9 @@
     &.form-disabled .number-control-item {
         cursor: not-allowed;
 
-        &:hover, &:focus, &:active {
+        &:hover,
+        &:focus,
+        &:active {
             border-bottom: 1px solid $border-color;
             background-color: transparent;
             opacity: 1;
@@ -46,7 +49,9 @@
         background-color: transparent;
         border-bottom: 1px solid $border-color;
 
-        &:hover, &:focus, &:active {
+        &:hover,
+        &:focus,
+        &:active {
             border-radius: $border-radius;
             border-bottom: 1px solid transparent;
         }
@@ -57,7 +62,8 @@
                 color: $font-color;
             }
         }
-        &:focus, &:active {
+        &:focus,
+        &:active {
             color: white;
             background-color: shade($brand-color, 2);
             opacity: 0.8;

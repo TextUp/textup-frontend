@@ -20,36 +20,37 @@
         </p>
     </div>
 {{/if}}
-<div class="form-element">
-    <label for="Name">Name</label>
+<div class="form__group">
+    <label class="form__label" for="Name">Name</label>
     {{input value=contact.name
         validateObj=contact
         validateField='name'
         validate='bottom'
         disabled=(if (not contact.allowEdits) 'disabled')
-        type="text" placeholder="Name" class="form-control"
+        type="text" placeholder="Name" class="form__input"
         autocorrect="off"}}
 </div>
-<div class="form-element">
-    <label for="Note">Note</label>
+<div class="form__group">
+    <label class="form__label" for="Note">Note</label>
     {{textarea rows="3"
+        placeholder="Enter notes here..."
         disabled=(if (not contact.allowEdits) 'disabled')
         autoresize=true
         remaining='bottom'
-        class="form-control"
+        class="form__input form__input--multiline"
         maxlength="1000"
         validateObj=contact
         validateField='note'
         validate='bottom'
         value=contact.note}}
 </div>
-<div class="form-element row">
+<div class="form__group">
     <div class="xs-2-row-3 control-text">
-        <label for="Language">
+        <label class="form__label" for="Language">
             Language
         </label>
     </div>
-    <select name="contact-language" class="xs-row-3 form-control"
+    <select name="contact-language" class="xs-row-3 form__input"
         onchange={{action (mut contact.language) value="target.value"}}
         disabled={{if (not contact.allowEdits) "disabled"}}>
         {{#each constants.LANGUAGES as |_lang|}}
@@ -60,8 +61,8 @@
         {{/each}}
     </select>
 </div>
-<div class="form-element">
-    <label for="Numbers">Numbers</label>
+<div class="form__group">
+    <label class="form__label" for="Numbers">Numbers</label>
     {{#if contact.numberDuplicates}}
         <div class="bg-color margin-b border-radius-all pad-t pad-l pad-r pad-b-half">
             {{#each contact.numberDuplicates as |dupObj|}}

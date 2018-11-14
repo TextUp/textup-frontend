@@ -2,7 +2,7 @@ import * as LocationUtils from 'textup-frontend/utils/location';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
+import { mockValidMediaImage, mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 const { run } = Ember;
@@ -63,6 +63,7 @@ test('rendering with only note', function(assert) {
     assert.ok(this.$('.record-note-revision').length, 'did render');
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
+    assert.notOk(this.$('.audio-wrapper__player-item').length, 'no audio');
     assert.notOk(this.$('.location-preview').length, 'no location');
     const text = this.$().text();
     assert.ok(text.includes(noteContents), 'block contents did render');
@@ -72,7 +73,10 @@ test('rendering with only note', function(assert) {
 test('rendering with location and media', function(assert) {
   run(() => {
     const validRevision = store.createRecord('record-note-revision', {
-        media: store.createRecord('media', { images: [mockValidMediaImage(store)] }),
+        media: store.createRecord('media', {
+          images: [mockValidMediaImage(store)],
+          audio: [mockValidMediaAudio(store)]
+        }),
         location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } })
       }),
       buildUrlStub = sinon
@@ -85,6 +89,7 @@ test('rendering with location and media', function(assert) {
     assert.ok(this.$('.record-note-revision').length, 'did render');
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.ok(this.$('.image-stack').length, 'has images');
+    assert.ok(this.$('.audio-wrapper__player-item').length, 'has audio');
     assert.ok(this.$('.location-preview').length, 'has location');
 
     buildUrlStub.restore();

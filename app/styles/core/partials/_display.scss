@@ -176,7 +176,7 @@ $bg-color-states: hover regular;
     }
 }
 .badge {
-    @extend %border-box;
+    box-sizing: border-box;
     min-height: $badge-height;
     max-width: 12 * $padding;
 

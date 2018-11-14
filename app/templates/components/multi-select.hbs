@@ -37,6 +37,7 @@
 			{{#each _remainingResults as |item index|}}
 				<div class="multi-select-item multi-select-item-default {{itemClass}}"
 					data-index={{index}}
+					tabindex="-1"
 					onclick={{action "selectItem" item index}}>
 					{{#if hasBlock}}
 						{{yield item publicAPI}}

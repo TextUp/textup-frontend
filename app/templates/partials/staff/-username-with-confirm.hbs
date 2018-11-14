@@ -1,57 +1,63 @@
-{{#hide-show classNames="form-element"
-    doRegister=(action (mut usernameDropdown))
+{{#hide-show doRegister=(action (mut usernameDropdown))
     focusOnOpenSelector=".start-focus"
     onOpen=(action (mut storedUsername) authService.authUser.username)
     onClose=(route-action "revert" staff
         (action (mut newUPassword) null)
         (action (mut storedUsername) null)) as |hideShow|}}
-    <button class="btn btn-span"
-        type="button"
-        onclick={{hideShow.actions.toggle}}>
-        {{#if hideShow.isOpen}}
-            Cancel updating username
-            <span class="fa fa-caret-up"></span>
-        {{else}}
-            Update username
-            <span class="fa fa-caret-down"></span>
-        {{/if}}
-    </button>
-    {{#if hideShow.isOpen}}
-        <div class="pad-all">
-            {{#if (eq storedUsername (unbound staff.username))}}
-                <div class="form-element">
-                    Changing your own username will require logging back in.
-                </div>
+    <div class="form__group">
+        <button class="button button--expand"
+            type="button"
+            onclick={{hideShow.actions.toggle}}>
+            {{#if hideShow.isOpen}}
+                Cancel updating username
+                <span class="margin-l fa fa-caret-up"></span>
+            {{else}}
+                Update username
+                <span class="margin-l fa fa-caret-down"></span>
             {{/if}}
-            <div class="form-element">
-                <label for="Your Password" class="control-label">
-                    {{authService.authUser.name}}'s Password
-                </label>
-                {{input type="password"
-                    allowShowPassword=true
-                    class="form-control start-focus"
-                    placeholder="Your Password"
-                    value=newUPassword}}
+        </button>
+    </div>
+    {{#if hideShow.isOpen}}
+        {{#if (eq storedUsername (unbound staff.username))}}
+            <div class="form__group">
+                <span class="form__label form__label--multiline">
+                    Changing your own username will require logging back in.
+                </span>
             </div>
-            <div class="form-element">
-                <label for="New Username" class="control-label">
-                    New Username for {{staff.name}}
-                </label>
-                {{input type="text"
-                    class="form-control"
-                    placeholder="New Username"
-                    value=staff.username
-                    validateObj=staff
-                    validateField="username"
-                    validate="bottom"}}
-            </div>
-            {{!-- use the hidden class instead of the handlebars if helper so that the unbound value
-                can be the starting value --}}
-            <div class="pad-t text-center {{if (and newUPassword staff.hasDirtyAttributes) '' 'hidden'}}">
-                <button class="btn" type="button"
+        {{/if}}
+        <div class="form__group">
+            <label class="form__label" for="Your Password">
+                {{authService.authUser.name}}'s Password
+            </label>
+            {{input type="password"
+                allowShowPassword=true
+                class="form__input start-focus"
+                placeholder="Your Password"
+                value=newUPassword}}
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="New Username">
+                New Username for {{staff.name}}
+            </label>
+            {{input type="text"
+                class="form__input"
+                placeholder="New Username"
+                value=staff.username
+                validateObj=staff
+                validateField="username"
+                validate="bottom"}}
+        </div>
+        {{!-- use the hidden class instead of the handlebars if helper so that the unbound value
+            can be the starting value --}}
+        <div class="form__group flex flex--justify-center flex--spacing-between
+            {{if (and newUPassword staff.hasDirtyAttributes) '' 'hidden'}}">
+            <div class="flex__item">
+                 <button class="btn" type="button"
                     onclick={{hideShow.actions.close}}>
                     Cancel
                 </button>
+            </div>
+            <div class="flex__item">
                 {{#if (eq storedUsername (unbound staff.username))}}
                     {{async-button classNames="btn btn-default"
                         disableWhen=(not (v-get staff "isValid"))
