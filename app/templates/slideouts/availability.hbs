@@ -45,7 +45,7 @@
         <div class="form__group">
             <label for='Voicemail' class='form__label form__label--emphasize'>{{stateManager.owner.name}}'s Voicemail</label>
             <div class="row margin-t">
-                <div class="xs-2-row-20 s-row-20 control-text">
+                <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-false"
                         type="radio"
                         checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) 'checked'}}
@@ -70,7 +70,7 @@
                 {{/multi-toggle}}
             </div>
             <div class="row margin-t margin-b-half margin-r-half">
-                <div class="xs-2-row-20 s-row-20 control-text">
+                <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-true"
                         type="radio"
                         checked={{if model.phone.content.useVoicemailRecordingIfPresent 'checked'}}
@@ -82,7 +82,8 @@
                 </label>
             </div>
             <div class="offset-s-row-20">
-                {{#audio-control audio=model.phone.content.media.content.displayedAudio
+                {{#audio-control showAddIfNone=true
+                    audio=model.phone.content.media.content.displayedAudio
                     listProps=(hash maxNumToDisplay=1 sortPropName="whenCreated" sortLowToHigh=false)
                     onAdd=(route-action "onFinishRecordingGreeting")
                     startAddMessage="Redo recording"

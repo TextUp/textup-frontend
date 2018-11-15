@@ -23,12 +23,16 @@ test('properties', function(assert) {
 
     assert.ok(this.$('.audio-wrapper').length);
 
-    this.render(hbs`{{audio-control audio=audio onAdd=func onRemove=func readOnly=true}}`);
+    this.render(
+      hbs`{{audio-control showAddIfNone=true audio=audio onAdd=func onRemove=func readOnly=true}}`
+    );
 
     assert.ok(this.$('.audio-wrapper').length);
 
     assert.throws(() => {
-      this.render(hbs`{{audio-control audio="bad" onAdd="bad" onRemove="bad" readOnly="bad"}}`);
+      this.render(
+        hbs`{{audio-control showAddIfNone="bad" audio="bad" onAdd="bad" onRemove="bad" readOnly="bad"}}`
+      );
     });
   });
 });
@@ -179,14 +183,12 @@ test('adding when recording is supported', function(assert) {
   run(() => {
     const isSupportedStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(true),
       done = assert.async(),
-      el1 = mockValidMediaAudio(this.store),
       onAdd = sinon.spy(),
       startAddMessage = `${Math.random()}`,
       cancelAddMessage = `${Math.random()}`;
-    this.setProperties({ onAdd, startAddMessage, cancelAddMessage, audio: [el1] });
+    this.setProperties({ onAdd, startAddMessage, cancelAddMessage });
     this.render(hbs`
-      {{audio-control audio=audio
-          onAdd=onAdd
+      {{audio-control onAdd=onAdd
           startAddMessage=startAddMessage
           cancelAddMessage=cancelAddMessage}}
     `);
@@ -270,7 +272,7 @@ test('trying to add when recording is not supported', function(assert) {
 });
 
 test('handling no audio initially', function(assert) {
-  this.render(hbs`{{audio-control}}`);
+  this.render(hbs`{{audio-control showAddIfNone=true}}`);
 
   assert.ok(this.$('.audio-wrapper').length);
   assert.notOk(
@@ -287,7 +289,7 @@ test('handling no audio on subsequent update', function(assert) {
       el1 = mockValidMediaAudio(this.store);
 
     this.setProperties({ audio: [el1], onAdd });
-    this.render(hbs`{{audio-control audio=audio onAdd=onAdd}}`);
+    this.render(hbs`{{audio-control showAddIfNone=true audio=audio onAdd=onAdd}}`);
 
     assert.ok(this.$('.audio-wrapper').length);
     assert.ok(

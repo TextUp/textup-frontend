@@ -1,6 +1,6 @@
 .compose-text {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     min-height: $control-height;
 
     @include mq($from: tablet) {

@@ -1,6 +1,9 @@
 .control-text {
-    @extend .text-ellipsis;
     line-height: $control-height;
+
+    &:not(&--no-ellipsis) {
+        @extend .text-ellipsis;
+    }
 }
 
 %control-base {
@@ -381,7 +384,7 @@ input[type='radio'] {
 
         // removes inset shadow on mobile Safari
         // see https://stackoverflow.com/a/3078353
-        &:not([type='checkbox']):not([type='radio']) {
+        &:not([type='checkbox']):not([type='radio']):not(select) {
             appearance: none;
         }
 

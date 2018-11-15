@@ -15,6 +15,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     onAdd: PropTypes.func,
     onRemove: PropTypes.func,
     readOnly: PropTypes.bool,
+    showAddIfNone: PropTypes.bool,
     startAddMessage: PropTypes.string,
     cancelAddMessage: PropTypes.string
   },
@@ -22,6 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     return {
       audio: [],
       readOnly: false,
+      showAddIfNone: false,
       startAddMessage: 'Add recording',
       cancelAddMessage: 'Cancel add recording'
     };
@@ -30,7 +32,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   didReceiveAttrs() {
     this._super(...arguments);
-    if (this.get('_noAudio')) {
+    if (this.get('_openIfNoAudio')) {
       run.scheduleOnce('afterRender', this, this._startAdding);
     }
   },
@@ -39,15 +41,21 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _addHideShow: null,
-  _showAdd: computed('readOnly', 'onAdd', '_noAudio', function() {
+  _showAdd: computed('readOnly', 'onAdd', '_openIfNoAudio', function() {
     return (
-      !this.get('readOnly') && !this.get('_noAudio') && this.get('onAdd') && isRecordingSupported()
+      !this.get('readOnly') &&
+      !this.get('_openIfNoAudio') &&
+      this.get('onAdd') &&
+      isRecordingSupported()
     );
   }),
   _showRemove: computed('readOnly', 'onRemove', function() {
     return !this.get('readOnly') && this.get('onRemove');
   }),
   _noAudio: computed.empty('audio'),
+  _openIfNoAudio: computed('_noAudio', 'showAddIfNone', function() {
+    return this.get('_noAudio') && this.get('showAddIfNone');
+  }),
 
   // Internal handlers
   // -----------------
