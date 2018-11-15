@@ -3,7 +3,7 @@ import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { isRecordingSupported } from 'textup-frontend/utils/audio';
 
-const { computed, tryInvoke } = Ember;
+const { computed, tryInvoke, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -28,19 +28,36 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   classNames: 'audio-wrapper',
 
+  didReceiveAttrs() {
+    this._super(...arguments);
+    if (this.get('_noAudio')) {
+      run.scheduleOnce('afterRender', this, this._startAdding);
+    }
+  },
+
   // Internal properties
   // -------------------
 
-  _showAdd: computed('readOnly', 'onAdd', function() {
-    return !this.get('readOnly') && this.get('onAdd') && isRecordingSupported();
+  _addHideShow: null,
+  _showAdd: computed('readOnly', 'onAdd', '_noAudio', function() {
+    return (
+      !this.get('readOnly') && !this.get('_noAudio') && this.get('onAdd') && isRecordingSupported()
+    );
   }),
   _showRemove: computed('readOnly', 'onRemove', function() {
     return !this.get('readOnly') && this.get('onRemove');
   }),
+  _noAudio: computed.empty('audio'),
 
   // Internal handlers
   // -----------------
 
+  _startAdding() {
+    const hideShow = this.get('_addHideShow');
+    if (hideShow) {
+      hideShow.actions.open();
+    }
+  },
   _onAdd() {
     tryInvoke(this, 'onAdd', [...arguments]);
   },

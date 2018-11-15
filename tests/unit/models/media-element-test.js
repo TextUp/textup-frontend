@@ -3,7 +3,7 @@ import MediaElementVersion from 'textup-frontend/models/media-element-version';
 import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, typeOf } = Ember;
 
 moduleForModel('media-element', 'Unit | Model | media element', {
   needs: ['model:media-element-version']
@@ -17,6 +17,7 @@ test('properties', function(assert) {
     obj.set(MEDIA_ID_PROP_NAME, randVal1);
 
     assert.equal(obj.get(MEDIA_ID_PROP_NAME), randVal1);
+    assert.equal(typeOf(obj.get('isDirty')), 'boolean');
     assert.throws(() => obj.set('versions', []), 'must use method to add versions');
   });
 });

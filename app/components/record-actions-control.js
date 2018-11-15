@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
+import MutationObserver from 'npm:mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke } = Ember;
+const { computed, tryInvoke, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -12,6 +13,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     contents: PropTypes.string,
+    // other handlers
+    onHeightChange: PropTypes.func,
     // content-related handlers
     onContentChange: PropTypes.func,
     onAddImage: PropTypes.func,
@@ -29,9 +32,20 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   classNames: 'record-actions-control',
 
+  didInsertElement() {
+    this._super(...arguments);
+    run.scheduleOnce('afterRender', this, this._attachListeners);
+    run.scheduleOnce('afterRender', this, this._storeInitialHeight);
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    this._removeListeners();
+  },
+
   // Internal properties
   // -------------------
 
+  _mutationObserver: null,
   _mediaDrawer: null,
   _numMedia: computed('images.[]', 'audio.[]', function() {
     return (this.get('images.length') || 0) + (this.get('audio.length') || 0);
@@ -47,9 +61,41 @@ export default Ember.Component.extend(PropTypesMixin, {
       return value;
     }
   }),
+  _previousHeight: null,
 
   // Internal handlers
   // -----------------
+
+  _attachListeners() {
+    const observer = new MutationObserver(this._notifyMutation.bind(this));
+    observer.observe(this.element, { childList: true, subtree: true });
+    this.set('_mutationObserver', observer);
+  },
+  _removeListeners() {
+    const observer = this.get('_mutationObserver');
+    if (observer) {
+      observer.disconnect();
+      this.set('_mutationObserver', null);
+    }
+  },
+
+  _storeInitialHeight() {
+    this.set('_previousHeight', this.$().innerHeight());
+  },
+  _notifyMutation() {
+    run.debounce(this, this._onHeightChange, 500);
+  },
+  _onHeightChange() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    const prevHeight = this.get('_previousHeight'),
+      currHeight = this.$().innerHeight();
+    if (!prevHeight || currHeight !== prevHeight) {
+      tryInvoke(this, 'onHeightChange', [currHeight]);
+    }
+    this.set('_previousHeight', currHeight);
+  },
 
   // content-related handlers
   _onContentChange(newVal) {

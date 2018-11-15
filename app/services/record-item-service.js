@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { isArray } = Ember;
+const { isArray, get } = Ember;
 
 export default Ember.Service.extend({
   constants: Ember.inject.service(),
@@ -17,7 +17,7 @@ export default Ember.Service.extend({
       this.get('store')
         .query('record-item', query)
         .then(results => {
-          model.set('totalNumRecordItems', results.get('meta.total'));
+          model.set('totalNumRecordItems', get(results, 'meta.total'));
           resolve(results);
         }, this.get('dataService').buildErrorHandler(reject));
     });
@@ -35,7 +35,7 @@ export default Ember.Service.extend({
     return rText;
   },
   createNewNote(recipient, addAfterRecordItem = null) {
-    const rNote = this.get('store').createRecord('recordNote');
+    const rNote = this.get('store').createRecord('record-note');
     rNote.addRecipient(recipient);
     rNote.addAfter(addAfterRecordItem);
     return rNote;

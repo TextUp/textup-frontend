@@ -25,6 +25,7 @@ test('inputs', function(assert) {
       images=array
       audio=array
       contents=contents
+      onHeightChange=func
       onContentChange=func
       onAddImage=func
       onAddAudio=func
@@ -45,6 +46,7 @@ test('inputs', function(assert) {
         images=888
         audio=888
         contents=888
+        onHeightChange=888
         onContentChange=888
         onAddImage=888
         onAddAudio=888
@@ -354,14 +356,17 @@ test('sending text', function(assert) {
 
 test('test adding media when audio recording is supported', function(assert) {
   const done = assert.async(),
+    onHeightChange = sinon.spy(),
     canRecordStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(true);
 
-  this.render(hbs`{{record-actions-control contents=contents onText=onText}}`);
+  this.setProperties({ onHeightChange });
+  this.render(hbs`{{record-actions-control onHeightChange=onHeightChange}}`);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.compose-text .pop-over').length, 'has media pop over in compose text');
   assert.ok(this.$('.compose-text .pop-over button').length);
   assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.ok(onHeightChange.notCalled);
 
   this.$('.compose-text .pop-over button')
     .first()
@@ -383,6 +388,7 @@ test('test adding media when audio recording is supported', function(assert) {
       assert.notOk(Ember.$('.pop-over__body--open').length, 'pop over is closed on click');
       assert.ok(this.$('.record-actions-control__media-drawer').length, 'media drawer is open');
       assert.ok(this.$('.record-actions-control__media-drawer .audio-control--recording').length);
+      assert.ok(onHeightChange.calledOnce);
 
       canRecordStub.restore();
       done();

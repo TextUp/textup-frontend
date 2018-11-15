@@ -325,7 +325,7 @@ input[type='radio'] {
 // ----
 
 .form {
-    padding-top: $baseunit; 
+    padding-top: $baseunit;
 
     &__group {
         @extend %clearfix;
@@ -358,16 +358,16 @@ input[type='radio'] {
 
         &--emphasize {
             font-weight: $font-weight-bold;
-            font-size: 1em; 
+            font-size: 1em;
         }
         &--no-spacing {
             margin-bottom: 0;
             padding-left: 0;
         }
         &--multiline {
-            @extend .text-wrap; 
+            @extend .text-wrap;
 
-            white-space: normal; 
+            white-space: normal;
         }
     }
     &__input {
@@ -377,7 +377,13 @@ input[type='radio'] {
         width: 100%;
         padding: 0 ($baseunit * 0.5);
         color: $font-color;
-        box-shadow: none; 
+        box-shadow: none;
+
+        // removes inset shadow on mobile Safari
+        // see https://stackoverflow.com/a/3078353
+        &:not([type='checkbox']):not([type='radio']) {
+            appearance: none;
+        }
 
         &--multiline {
             height: auto;

@@ -5,7 +5,7 @@
     onAddAudio=(action _onAddAudio)
     onRemoveMedia=(action _onRemoveMedia)}}
     <div class="record-actions-control__action-container">
-        {{#pop-over as |popOver|}}
+        {{#pop-over classNames="full-height" as |popOver|}}
             <button class="btn btn-default btn-plain record-actions-control__dropdown-trigger"
                 type="button"
                 onclick={{popOver.actions.toggle}}>
@@ -40,7 +40,7 @@
             onClearContents=(action _onContentChange '')
             onSend=(action _onSendText)}}
             {{#if (can-record-audio)}}
-                {{#pop-over as |popOver|}}
+                {{#pop-over classNames="full-height" as |popOver|}}
                     <button type="button"
                         class="compose-text__control"
                         onclick={{popOver.actions.toggle}}>

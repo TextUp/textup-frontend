@@ -47,7 +47,7 @@ export function mockValidMediaAudio(store) {
 }
 
 /* jshint ignore:start */
-export function mockModel(id, modelName, otherProps) {
+export function mockModel(id, modelName, otherProps = {}) {
   return Ember.Object.create({ id, constructor: { modelName }, ...otherProps });
 }
 /* jshint ignore:end */

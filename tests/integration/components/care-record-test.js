@@ -7,7 +7,7 @@ import { mockRecordClusters } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { typeOf } = Ember;
+const { typeOf, run } = Ember;
 
 moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
@@ -205,7 +205,7 @@ test('starting call', function(assert) {
   this.$('.record-actions-control__action-container button')
     .first()
     .triggerHandler('click');
-  Ember.run.later(() => {
+  run.later(() => {
     const originalScrollPosition = this.$('.care-record__body').scrollTop();
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
     this.$('.care-record__body').scrollTop(0); // scroll record to top
@@ -221,7 +221,7 @@ test('starting call', function(assert) {
     Ember.$('.pop-over__body--open .dropdown-item')
       .eq(1)
       .triggerHandler('click');
-    Ember.run.later(() => {
+    run.later(() => {
       assert.ok(onCall.calledOnce);
       assert.equal(this.$('.record-actions-control__overlay--open').length, 1, '1 overlay open');
 
@@ -268,7 +268,7 @@ test('sending text', function(assert) {
   );
   assert.ok(this.$('.compose-text .action-button').length, 'send text button is ACTIVE');
 
-  Ember.run.later(() => {
+  run.later(() => {
     const originalScrollPosition = this.$('.care-record__body').scrollTop();
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
     this.$('.care-record__body').scrollTop(0); // scroll record to top
@@ -311,7 +311,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
   this.$('.record-actions-control__action-container button')
     .first()
     .triggerHandler('click');
-  Ember.run.later(() => {
+  run.later(() => {
     assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
       Ember.$('.pop-over__body--open .dropdown-item').length,
@@ -324,7 +324,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
     Ember.$('.pop-over__body--open .dropdown-item')
       .eq(1) // with three items, the second one is to add note in the past
       .triggerHandler('click');
-    Ember.run.later(() => {
+    run.later(() => {
       assert.equal(
         this.$('.care-record__add-note__button').length,
         recordClusters.length,
@@ -370,7 +370,7 @@ test('adding note in the past', function(assert) {
   this.$('.record-actions-control__action-container button')
     .first()
     .triggerHandler('click');
-  Ember.run.later(() => {
+  run.later(() => {
     assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
       Ember.$('.pop-over__body--open .dropdown-item').length,
@@ -383,7 +383,7 @@ test('adding note in the past', function(assert) {
     Ember.$('.pop-over__body--open .dropdown-item')
       .eq(1) // with three items, the second one is to add note in the past
       .triggerHandler('click');
-    Ember.run.later(() => {
+    run.later(() => {
       assert.equal(
         this.$('.care-record__add-note__button').length,
         recordClusters.length,
@@ -402,7 +402,7 @@ test('adding note in the past', function(assert) {
       this.$('.care-record__add-note__button')
         .first()
         .triggerHandler('click');
-      Ember.run.later(() => {
+      run.later(() => {
         assert.notOk(this.$('.care-record__add-note__button').length, 'all buttons are hidden');
         assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
 
@@ -410,4 +410,38 @@ test('adding note in the past', function(assert) {
       }, 500);
     }, 500);
   }, 500);
+});
+
+test('record item position is preserved with changing actions control height', function(assert) {
+  const recordClusters = mockRecordClusters(this.store),
+    done = assert.async();
+  this.setProperties({ recordClusters });
+
+  this.render(hbs`
+    {{care-record canAddToRecord=true
+      canModifyExistingInRecord=true
+      recordClusters=recordClusters}}
+  `);
+
+  assert.ok(this.$('.care-record').length, 'did render');
+  assert.ok(this.$('.record-actions-control').length);
+
+  wait().then(() => {
+    const originalScrollPosition = this.$('.care-record__body').scrollTop();
+    assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
+
+    // simulate changing height of the media drawer
+    this.$('.care-record__body').height(50);
+    // trigger mutation observers
+    this.$('.record-actions-control').append('<div style="height: 100px;">Test</div>');
+    run.later(() => {
+      const newScrollPosition = this.$('.care-record__body').scrollTop();
+      assert.ok(
+        newScrollPosition !== originalScrollPosition,
+        'scroll position adjusted based on actions container height change'
+      );
+
+      done();
+    }, 1000);
+  });
 });

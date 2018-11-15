@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, typeOf } = Ember;
 
 moduleForModel('media-element-version', 'Unit | Model | media element version', {});
 
@@ -10,6 +10,7 @@ test('default values', function(assert) {
 
   assert.equal(obj.get('width'), null);
   assert.equal(obj.get('height'), null);
+  assert.equal(typeOf(obj.get('isDirty')), 'boolean');
 });
 
 test('aliasing link to more-applicable source', function(assert) {

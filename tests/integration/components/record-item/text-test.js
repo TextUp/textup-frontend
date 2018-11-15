@@ -2,7 +2,7 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
+import { VALID_IMAGE_DATA_URL, VALID_MP3_URL_1 } from 'textup-frontend/tests/helpers/utilities';
 
 const { run } = Ember;
 let store;
@@ -72,6 +72,7 @@ test('text with only contents', function(assert) {
 
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
+    assert.notOk(this.$('.record-item__media--audio').length, 'no audio');
     assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
 
     const text = this.$().text();
@@ -87,6 +88,7 @@ test('text with media and away message', function(assert) {
       media: store.createRecord('media')
     });
     rText.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
+    rText.get('media.content').addAudio('audio/mpeg', VALID_MP3_URL_1);
     this.setProperties({ rText });
 
     this.render(hbs`{{record-item/text text=rText}}`);
@@ -96,6 +98,7 @@ test('text with media and away message', function(assert) {
 
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.ok(this.$('.image-stack').length, 'has images');
+    assert.ok(this.$('.record-item__media--audio').length, 'has audio');
     assert.ok(this.$('.record-item__receipts').length, 'has receipts tray');
 
     const text = this.$().text();

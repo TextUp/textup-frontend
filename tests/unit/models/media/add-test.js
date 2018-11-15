@@ -3,7 +3,7 @@ import MediaElement from 'textup-frontend/models/media-element';
 import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run } = Ember;
+const { run, typeOf } = Ember;
 
 moduleForModel('media/add', 'Unit | Model | media/add', {
   needs: ['model:media-element', 'model:media-element-version']
@@ -22,7 +22,7 @@ test('computed properties', function(assert) {
 
     assert.equal(obj.get('dataNoHeader'), randVal1 + '');
     assert.ok(obj.get('checksum'));
-
+    assert.equal(typeOf(obj.get('isDirty')), 'boolean');
     assert.ok(
       obj.get(MEDIA_ID_PROP_NAME),
       'unique id for this add change is automatically generated upon request'

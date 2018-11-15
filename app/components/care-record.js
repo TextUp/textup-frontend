@@ -115,6 +115,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onViewScheduledMessages', [...arguments]);
   },
 
+  _onControlsHeightChange() {
+    const scrollEl = this.get('_recordClustersScroll');
+    if (scrollEl && scrollEl.actions) {
+      tryInvoke(scrollEl.actions, 'restorePosition');
+    }
+  },
+
   // content-related handlers
   _onContentChange() {
     tryInvoke(this, 'onContentChange', [...arguments]);

@@ -1,5 +1,5 @@
-<div class={{if audio.length "margin-b"}}>
-    {{#hide-show as |hideShow|}}
+<div class={{if (not _noAudio) "margin-b"}}>
+    {{#hide-show doRegister=(action (mut _addHideShow)) as |hideShow|}}
         <div class="audio-wrapper__control-container {{if hideShow.isOpen 'margin-b-half'}}
             flex flex--spacing-between">
             {{yield hideShow}}

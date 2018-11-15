@@ -95,9 +95,8 @@ export default Ember.Component.extend({
       _version: this.get('_version'),
       actions: {
         loadMore: this.loadMoreIfNeeded.bind(this, true),
-        resetPosition: function() {
-          scheduleOnce('afterRender', this, this._afterAdd, true);
-        }.bind(this)
+        resetPosition: () => scheduleOnce('afterRender', this, this._restorePosition, true, true),
+        restorePosition: () => scheduleOnce('afterRender', this, this._restorePosition, false, true)
       }
     };
   }),
@@ -137,10 +136,7 @@ export default Ember.Component.extend({
       this._setup(true);
       // bind event handlers
       const elId = this.elementId;
-      $(window).on(
-        `orientationchange.${elId} resize.${elId}`,
-        this.restorePercentFromTop.bind(this)
-      );
+      $(window).on(`orientationchange.${elId} resize.${elId}`, this._restorePosition.bind(this));
       this.get('_$container')
         .on(`scroll.${elId}`, this.onScroll.bind(this))
         .on(`touchstart.${elId}`, this.startTouch.bind(this))
@@ -216,20 +212,39 @@ export default Ember.Component.extend({
   // Preserve location
   // -----------------
 
-  storePercentFromTop: function() {
+  _storePosition() {
+    const container = this.get('_$container')[0];
+    this.setProperties({
+      _previousClientHeight: container.clientHeight,
+      _previousScrollHeight: container.scrollHeight,
+      _previousScrollTop: container.scrollTop
+    });
+  },
+  _restorePosition(shouldReset = false, userTriggered = false) {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
-    const container = this.get('_$container')[0],
-      percentFromTop = container.scrollTop / container.scrollHeight;
-    this.set('_percentFromTop', percentFromTop);
-    return percentFromTop;
-  },
-  restorePercentFromTop: function() {
-    const container = this.get('_$container')[0],
-      percentFromTop = this.get('_percentFromTop');
-    if (isPresent(percentFromTop)) {
-      container.scrollTop = container.scrollHeight * percentFromTop;
+    const $container = this.get('_$container'),
+      container = $container[0],
+      isUp = this.get('_isUp');
+    let newScrollTop;
+    if (shouldReset) {
+      newScrollTop = isUp ? container.scrollHeight - container.clientHeight : 0;
+    } else if (isUp) {
+      const prevScrollHeight = this.get('_previousScrollHeight'),
+        prevClientHeight = this.get('_previousClientHeight'),
+        prevScrollTop = this.get('_previousScrollTop'),
+        scrollHeightAdjustment = container.scrollHeight - prevScrollHeight,
+        clientHeightAdjustment = prevClientHeight - container.clientHeight;
+      newScrollTop = scrollHeightAdjustment + clientHeightAdjustment + prevScrollTop;
+    }
+    if (newScrollTop) {
+      // animate if user triggered
+      if (userTriggered) {
+        this.get('_$container').animate({ scrollTop: newScrollTop }, 200);
+      } else {
+        container.scrollTop = newScrollTop;
+      }
     }
   },
 
@@ -243,7 +258,7 @@ export default Ember.Component.extend({
     throttle(
       this,
       function() {
-        this.storePercentFromTop();
+        this._storePosition();
         this.loadMoreIfNeeded();
       },
       this.get('throttleThreshold')
@@ -430,40 +445,23 @@ export default Ember.Component.extend({
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
-    this._beforeAdd();
+    this._storePosition();
     run(() => {
       const items = this.get('_items');
       items.clear();
       items.pushObjects(this.get('data'));
       this.set('_isDisplaying', true); // to fade out and lock infinite items
       next(this, function() {
-        this._afterAdd(shouldReset);
+        this._restorePosition(shouldReset);
         scheduleOnce('afterRender', this, function() {
           if (this.get('isDestroying') || this.get('isDestroyed')) {
             return;
           }
           this.set('_isDisplaying', false); // to fade in and unlock infinite items
-          this.storePercentFromTop();
+          this._storePosition();
           this.loadMoreIfNeeded();
         });
       });
     });
-  },
-  _beforeAdd: function() {
-    const container = this.get('_$container')[0];
-    this.set('_prevHeightLeft', container.scrollHeight - container.scrollTop);
-  },
-  _afterAdd: function(shouldReset = false) {
-    if (this.isDestroying || this.isDestroyed) {
-      return;
-    }
-    const container = this.get('_$container')[0],
-      isUp = this.get('_isUp');
-    if (shouldReset) {
-      container.scrollTop = isUp ? container.scrollHeight - container.clientHeight : 0;
-    } else if (isUp) {
-      const prevHeightLeft = this.get('_prevHeightLeft');
-      container.scrollTop = container.scrollHeight - prevHeightLeft;
-    }
   }
 });

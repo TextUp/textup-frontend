@@ -124,7 +124,7 @@ test('rendering block', function(assert) {
 
     const blockObj = blockSpy.firstCall.args[0];
     assert.equal(typeOf(blockObj), 'object');
-    assert.equal(blockObj.isOpen, false);
+    assert.equal(typeOf(blockObj.isOpen), 'boolean');
     assert.equal(typeOf(blockObj.actions), 'object');
     assert.equal(typeOf(blockObj.actions.open), 'function');
     assert.equal(typeOf(blockObj.actions.close), 'function');
@@ -179,12 +179,14 @@ test('adding when recording is supported', function(assert) {
   run(() => {
     const isSupportedStub = sinon.stub(AudioUtils, 'isRecordingSupported').returns(true),
       done = assert.async(),
+      el1 = mockValidMediaAudio(this.store),
       onAdd = sinon.spy(),
       startAddMessage = `${Math.random()}`,
       cancelAddMessage = `${Math.random()}`;
-    this.setProperties({ onAdd, startAddMessage, cancelAddMessage });
+    this.setProperties({ onAdd, startAddMessage, cancelAddMessage, audio: [el1] });
     this.render(hbs`
-      {{audio-control onAdd=onAdd
+      {{audio-control audio=audio
+          onAdd=onAdd
           startAddMessage=startAddMessage
           cancelAddMessage=cancelAddMessage}}
     `);
@@ -265,4 +267,44 @@ test('trying to add when recording is not supported', function(assert) {
   );
 
   isSupportedStub.restore();
+});
+
+test('handling no audio initially', function(assert) {
+  this.render(hbs`{{audio-control}}`);
+
+  assert.ok(this.$('.audio-wrapper').length);
+  assert.notOk(
+    this.$('.audio-wrapper button:not(.audio-control__button)').length,
+    'add button is hidden'
+  );
+  assert.ok(this.$('.audio-control--recording').length, 'recorder is shown');
+});
+
+test('handling no audio on subsequent update', function(assert) {
+  run(() => {
+    const done = assert.async(),
+      onAdd = sinon.spy(),
+      el1 = mockValidMediaAudio(this.store);
+
+    this.setProperties({ audio: [el1], onAdd });
+    this.render(hbs`{{audio-control audio=audio onAdd=onAdd}}`);
+
+    assert.ok(this.$('.audio-wrapper').length);
+    assert.ok(
+      this.$('.hide-show button:not(.audio-control__button)').length,
+      'add button is shown'
+    );
+    assert.notOk(this.$('.audio-control--recording').length, 'recorder is not shown');
+
+    this.set('audio', []);
+    wait().then(() => {
+      assert.notOk(
+        this.$('.hide-show button:not(.audio-control__button)').length,
+        'add button is hidden'
+      );
+      assert.ok(this.$('.audio-control--recording').length, 'recorder is shown');
+
+      done();
+    });
+  });
 });

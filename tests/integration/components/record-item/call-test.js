@@ -71,7 +71,7 @@ test('finished call', function(assert) {
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
-    assert.notOk(this.$('.audio-control').length, 'no voicemail');
+    assert.notOk(this.$('.audio-control').length, 'no audio');
 
     const text = this.$().text();
     assert.ok(text.includes('lasting'), 'is finished when we get passed the duration in seconds');
@@ -92,7 +92,7 @@ test('in-progress call', function(assert) {
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
-    assert.notOk(this.$('.audio-control').length, 'no voicemail');
+    assert.notOk(this.$('.audio-control').length, 'no audio');
 
     const text = this.$().text();
     assert.ok(text.includes('in progress'), 'in progress = created today + no success');
@@ -112,7 +112,7 @@ test('failed call', function(assert) {
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
-    assert.notOk(this.$('.audio-control').length, 'no voicemail');
+    assert.notOk(this.$('.audio-control').length, 'no audio');
 
     const text = this.$().text();
     assert.ok(text.includes('could not'), 'failed = created before today + no success');
@@ -134,17 +134,18 @@ test('call with notes and media', function(assert) {
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.ok(this.$('.image-stack').length, 'has images');
-    assert.notOk(this.$('.audio-control').length, 'no voicemail');
+    assert.notOk(this.$('.audio-control').length, 'no audio');
 
     const text = this.$().text();
     assert.ok(text.includes(rCall.get('noteContents')), 'note contents rendered');
   });
 });
 
-test('voicemail', function(assert) {
+test('displaying audio', function(assert) {
   run(() => {
     const media = store.createRecord('media'),
       rCall = store.createRecord('record-call', { media });
+    media.addAudio('audio/mpeg', VALID_MP3_URL_1);
     media.addAudio('audio/mpeg', VALID_MP3_URL_1);
 
     this.setProperties({ rCall });
@@ -155,6 +156,6 @@ test('voicemail', function(assert) {
     assert.ok(this.$('.record-item--call').length);
     assert.ok(this.$('.record-item__metadata').length, 'has metadata');
     assert.notOk(this.$('.image-stack').length, 'no images');
-    assert.ok(this.$('.audio-control').length, 'has voicemail');
+    assert.equal(this.$('.audio-control').length, 2);
   });
 });
