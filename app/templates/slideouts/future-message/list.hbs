@@ -6,8 +6,9 @@
         {{#each model.futureMessages as |existingFutureMessage|}}
             {{#hide-show tagName="li" as |hideShow|}}
                 {{#future-message classNames="border-b" message=existingFutureMessage}}
-                    {{#if (and model.allowEdits (not existingFutureMessage.isDone))}}
-                        <div class="border-l flex__item">
+                    {{#if (and (or (eq model.constructor.modelName constants.MODEL.TAG) model.allowEdits)
+                        (not existingFutureMessage.isDone))}}
+                        <div class="border-l flex__item flex__item--no-shrink">
                             <button class="btn-span btn btn-plain full-height"
                                 type="button"
                                 onclick={{if hideShow.isOpen
