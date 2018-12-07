@@ -9,6 +9,7 @@ export default Ember.Service.extend({
   authService: Ember.inject.service(),
   constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
+  stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
 
   loadRecordItems(model, { refresh } = { refresh: false }) {
@@ -33,6 +34,7 @@ export default Ember.Service.extend({
     return new Ember.RSVP.Promise((resolve, reject) => {
       const constants = this.get('constants'),
         query = {
+          teamId: this.get('stateManager.ownerAsTeam.id'),
           format: constants.EXPORT.FORMAT.PDF,
           max: constants.EXPORT.LARGEST_MAX,
           since: moment(dateStart).toISOString(),
