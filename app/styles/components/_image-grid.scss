@@ -10,7 +10,8 @@
         width: 100%;
         box-sizing: border-box;
         overflow-y: hidden;
-        overflow-x: auto;
+        overflow-x: scroll; // overflow scroll MUCH smoother on mobile safari
+        -webkit-overflow-scrolling: touch;
         white-space: nowrap;
         transition: height 0.1s;
     }

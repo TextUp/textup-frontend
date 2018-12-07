@@ -1,0 +1,33 @@
+{{#slideout-pane
+    headerProps=(hash title=(concat 'Exporting ' model.identifier))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action "finishExportSlideout")
+        disablePrimary=(or (not exportStartDate) (not exportEndDate))
+        primaryLabel="Export"
+        primaryProgressLabel="Exporting...")
+    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    doClose=(route-action "cancelExportSlideout") as |slideout|}}
+    <div class="form">
+        <div class="form__group">
+            <label for="Availability" class='form__label'>
+                Start date
+            </label>
+            {{datetime-control value=exportStartDate
+                showTime=false
+                max=(now)
+                onSelect=(action (mut exportStartDate))}}
+        </div>
+        <div class="form__group">
+            <label for="Availability" class='form__label'>
+                End date
+            </label>
+            {{datetime-control value=exportEndDate
+                showTime=false
+                max=(now)
+                onSelect=(action (mut exportEndDate))}}
+        </div>
+    </div>
+{{/slideout-pane}}
+

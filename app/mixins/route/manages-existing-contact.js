@@ -28,10 +28,10 @@ export default Ember.Mixin.create({
       this.transitionTo(this.get('routeName'), dupId);
     },
     onAddNumber() {
-      this.get('contactService').checkNumberDuplicate(this.get('currentModel'));
+      this.get('contactService').checkNumberDuplicate(this.get('currentModel'), ...arguments);
     },
     onRemoveNumber() {
-      this.get('contactService').removeNumberDuplicate(this.get('currentModel'));
+      this.get('contactService').removeNumberDuplicate(this.get('currentModel'), ...arguments);
     }
   }
 });

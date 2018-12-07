@@ -6,6 +6,7 @@ import ManagesFutureMessages from 'textup-frontend/mixins/route/manages-future-m
 import ManagesMediaOwner from 'textup-frontend/mixins/route/manages-media-owner';
 import ManagesRecordNotes from 'textup-frontend/mixins/route/manages-record-notes';
 import ManagesTagMembership from 'textup-frontend/mixins/route/manages-tag-membership';
+import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 
 export default Ember.Route.extend(
   ManagesCareRecord,
@@ -15,6 +16,7 @@ export default Ember.Route.extend(
   ManagesMediaOwner,
   ManagesRecordNotes,
   ManagesTagMembership,
+  SupportsExportSlideout,
   {
     templateName: 'main/contacts/contact',
     backRouteName: 'main.contacts',

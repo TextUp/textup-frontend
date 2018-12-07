@@ -11,6 +11,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     onEdit: PropTypes.func,
     onEditSharing: PropTypes.func,
     onEditTagMembership: PropTypes.func,
+    onExport: PropTypes.func,
     onStatusChange: PropTypes.func
   },
 
@@ -25,6 +26,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onEditTagMembership() {
     tryInvoke(this, 'onEditTagMembership', [...arguments]);
+  },
+  _onExport() {
+    tryInvoke(this, 'onExport', [...arguments]);
   },
   _onStatusChange() {
     tryInvoke(this, 'onStatusChange', [...arguments]);

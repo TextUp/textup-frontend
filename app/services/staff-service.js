@@ -10,7 +10,6 @@ export default Ember.Service.extend({
   notifications: Ember.inject.service(),
   stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
-
   loadStaffForSharing: function(model) {
     const shareQuery = Object.create(null);
     shareQuery.max = 100;
@@ -26,7 +25,6 @@ export default Ember.Service.extend({
         this.get('stateManager').set('relevantStaffs', result.toArray());
       }, this.get('dataService').buildErrorHandler());
   },
-
   startVerifyPersonalPhone(num) {
     return new RSVP.Promise((resolve, reject) => {
       this.get('authService')

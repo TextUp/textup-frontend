@@ -8,7 +8,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     tag: PropTypes.instanceOf(Tag).isRequired,
     backRouteName: PropTypes.string.isRequired,
-    onEdit: PropTypes.func
+    onEdit: PropTypes.func,
+    onExport: PropTypes.func
   },
 
   // Internal handlers
@@ -16,5 +17,8 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _onEdit() {
     tryInvoke(this, 'onEdit', [...arguments]);
+  },
+  _onExport() {
+    tryInvoke(this, 'onExport', [...arguments]);
   }
 });

@@ -4,11 +4,13 @@ import ManagesExistingTag from 'textup-frontend/mixins/route/manages-existing-ta
 import ManagesFutureMessages from 'textup-frontend/mixins/route/manages-future-messages';
 import ManagesMediaOwner from 'textup-frontend/mixins/route/manages-media-owner';
 import ManagesRecordNotes from 'textup-frontend/mixins/route/manages-record-notes';
+import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 
 export default Ember.Route.extend(
   ManagesCareRecord,
   ManagesExistingTag,
   ManagesFutureMessages,
   ManagesMediaOwner,
-  ManagesRecordNotes
+  ManagesRecordNotes,
+  SupportsExportSlideout
 );

@@ -1,6 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
+  MIME_TYPE: {
+    PDF: 'application/pdf'
+  },
+  EXPORT: {
+    FORMAT: { PDF: 'pdf' },
+    LARGEST_MAX: 5000,
+    TYPE: { SINGLE: 'singleStream', GROUPED: 'groupByEntity' }
+  },
   LANGUAGES: [
     'CHINESE',
     'ENGLISH',

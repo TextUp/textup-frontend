@@ -5,7 +5,8 @@
 		{{record-owner-header/tag classNames="row full-height"
 			tag=model
 			backRouteName=backRouteName
-            onEdit=(route-action "startExistingTagSlideout")}}
+            onEdit=(route-action "startExistingTagSlideout")
+        	onExport=(route-action "startSingleExportSlideout" model)}}
 	</div>
 	{{#if model.isDeleted}}
 		<div class="section-body row">

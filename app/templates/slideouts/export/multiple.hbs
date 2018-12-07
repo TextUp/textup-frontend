@@ -1,0 +1,105 @@
+{{!-- TODO finish --}}
+{{!-- {{#slideout-pane
+    headerProps=(hash title=(concat 'Export records'))
+    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerProps=(hash
+        showFooter=true
+        doPrimary=(route-action "finishExportSlideout")
+        disablePrimary=(or (not exportStartDate) (not exportEndDate))
+        primaryLabel="Export"
+        primaryProgressLabel="Exporting...")
+    doClose=(route-action "cancelExportSlideout")
+    focusSelector='.multi-toggle' as |slideout|}}
+    <div class="form">
+        <div class="form__group">
+            <label for="export-scope" class='form__label'>
+                Export records for
+            </label>
+            {{#multi-toggle selectIndex=(if exportForEntirePhone 0 1) as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=constants.COLOR.BRAND
+                    onSelect=(action (mut exportForEntirePhone) true)}}
+                    all of {{stateManager.owner.name}}
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=constants.COLOR.LIGHT_BLUE
+                    onSelect=(action (mut exportForEntirePhone) false)}}
+                    selected contacts and tags
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
+        {{#if (and model.phone.isFulfilled (not exportForEntirePhone))}}
+            <div class="form__group">
+                {{#multi-select data=model.phone.content.tags
+                    selected=exportRecordOwners
+                    displayProperty='identifier'
+                    identityProperty='uniqueIdentifier'
+                    doSearch=(route-action "composeDoSearch")
+                    doCreate=(route-action "composeCreateRecipient")
+                    onInsert=(route-action "composeInsertRecipient")
+                    onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
+                    <span class="horizontal-items">
+                        <span class="clear-badge">
+                            {{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
+                                <span class="fa fa-tag"></span>
+                            {{else if (eq recipient.constructor.modelName constants.MODEL.CONTACT)}}
+                                {{#if recipient.isShared}}
+                                    {{#tool-tip title=(concat 'Shared by ' recipient.sharedBy)}}
+                                        <span class="fa fa-share"></span>
+                                    {{/tool-tip}}
+                                {{else}}
+                                    <span class="fa fa-user"></span>
+                                {{/if}}
+                            {{else}}
+                                <span class="fa fa-asterisk"></span>
+                            {{/if}}
+                        </span>
+                        <span class="clear-badge text-bold">
+                            {{phone-number recipient.identifier}}
+                            {{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
+                                <span class="margin-l-half halo halo-sm bg-color bg-dark">
+                                    {{recipient.numMembers}}
+                                </span>
+                            {{/if}}
+                        </span>
+                    </span>
+                {{/multi-select}}
+            </div>
+        {{/if}}
+
+        <div class="form__group">
+            <label for="Availability" class='form__label'>
+                Start date
+            </label>
+            {{datetime-control value=exportStartDate
+                showTime=false
+                onSelect=(action (mut exportStartDate))}}
+        </div>
+        <div class="form__group">
+            <label for="Availability" class='form__label'>
+                End date
+            </label>
+            {{datetime-control value=exportEndDate
+                showTime=false
+                onSelect=(action (mut exportEndDate))}}
+        </div>
+        <div class="form__group">
+            <label for="export-format-type" class='form__label'>
+                Export multiple records
+            </label>
+            {{#multi-toggle selectIndex=(if exportAsGrouped 0 1) as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=constants.COLOR.BRAND
+                    onSelect=(action (mut exportAsGrouped) true)}}
+                    as separate pages
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=constants.COLOR.LIGHT_BLUE
+                    onSelect=(action (mut exportAsGrouped) false)}}
+                    all together ordered by timestamp
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
+    </div>
+{{/slideout-pane}}
+ --}}

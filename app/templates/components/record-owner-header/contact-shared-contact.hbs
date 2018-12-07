@@ -97,6 +97,9 @@
                             <span class="badge">{{contact.tags.content.length}}</span>
                         </li>
                     {{/if}}
+                    <li tabindex='0' class='dropdown-item' onclick={{action _onExport}}>
+                        Export records
+                    </li>
                     <li class='dropdown-divider'></li>
                     {{record-owner-header/contact-status-list contacts=contact
                         onChange=(action _onStatusChange)}}

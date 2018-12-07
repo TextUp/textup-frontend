@@ -1,6 +1,6 @@
+import config from 'textup-frontend/config/environment';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import Ember from 'ember';
-import defaultIfAbsent from '../../utils/default-if-absent';
-import config from '../../config/environment';
 
 const { get } = Ember;
 
