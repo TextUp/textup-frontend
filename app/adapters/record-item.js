@@ -4,7 +4,9 @@ export default ApplicationAdapter.extend({
   pathForType() {
     return this._super('record');
   },
+  // always add team id if present
   buildURL: function(modelName, id, snapshot, requestType) {
-    return this._addTeamIdIfCreate(this._super(...arguments), requestType);
+    // TODO test
+    return this._tryAddTeamId(this._super(...arguments), requestType);
   }
 });

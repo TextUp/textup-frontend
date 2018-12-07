@@ -19,11 +19,15 @@ export default DS.RESTAdapter.extend({
 
   _addTeamIdIfCreate: function(url, requestType) {
     if (requestType === 'createRecord') {
-      const team = this.get('stateManager.ownerAsTeam');
-      return this._addQueryParam(url, 'teamId', team && team.get('id'));
+      return this._tryAddTeamId(url);
     } else {
       return url;
     }
+  },
+  _tryAddTeamId(url) {
+    // TODO test
+    const team = this.get('stateManager.ownerAsTeam');
+    return this._addQueryParam(url, 'teamId', team && team.get('id'));
   },
   _addQueryParam: function(url, queryKey, queryVal) {
     if (url && queryKey && queryVal) {
