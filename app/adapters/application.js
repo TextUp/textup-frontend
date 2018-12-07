@@ -25,7 +25,6 @@ export default DS.RESTAdapter.extend({
     }
   },
   _tryAddTeamId(url) {
-    // TODO test
     const team = this.get('stateManager.ownerAsTeam');
     return this._addQueryParam(url, 'teamId', team && team.get('id'));
   },

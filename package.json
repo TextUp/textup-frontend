@@ -78,6 +78,7 @@
         "ember-string-ishtmlsafe-polyfill": "2.0.2",
         "ember-truth-helpers": "1.2.0",
         "ember-wormhole": "0.3.5",
+        "file-saver": "^2.0.0",
         "g": "2.0.1",
         "human-id": "^1.0.2",
         "inobounce": "^0.1.6",

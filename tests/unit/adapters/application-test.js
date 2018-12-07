@@ -46,6 +46,22 @@ test('adding query parameter helper', function(assert) {
   );
 });
 
+test('adding team id as query param to url', function(assert) {
+  const obj = this.subject(),
+    url = `${Math.random()}`,
+    tId = `${Math.random()}`;
+
+  assert.equal(obj._tryAddTeamId(null), null);
+
+  obj.set('stateManager', { ownerAsTeam: Ember.Object.create({ id: null }) });
+
+  assert.equal(obj._tryAddTeamId(url), url);
+
+  obj.set('stateManager.ownerAsTeam.id', tId);
+
+  assert.equal(obj._tryAddTeamId(url), `${url}?teamId=${tId}`);
+});
+
 test('adding team id if creating a record for team', function(assert) {
   const obj = this.subject(),
     url = `${Math.random()}`,

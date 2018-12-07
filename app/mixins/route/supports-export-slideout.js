@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import moment from 'moment';
 
+const { isArray } = Ember;
+
 export default Ember.Mixin.create({
+  composeSlideoutService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
   setupController: function(controller) {
@@ -10,8 +13,11 @@ export default Ember.Mixin.create({
   },
 
   actions: {
-    startSingleExportSlideout(model) {
-      this._initializeProperties(this.get('controller'), [model]);
+    startSingleExportSlideout(recordOwners) {
+      this._initializeProperties(this.get('controller'), [recordOwners]);
+
+      console.log("startSingleExportSlideout this.get('routeName')", this.get('routeName'));
+
       this.send(
         'toggleSlideout',
         'slideouts/export/single',
@@ -19,9 +25,11 @@ export default Ember.Mixin.create({
         this.get('constants.SLIDEOUT.OUTLET.DETAIL')
       );
     },
-    // TODO integrate
-    startMultipleExportSlideout(selectedModels = []) {
-      this._initializeProperties(this.get('controller'), selectedModels);
+    startMultipleExportSlideout(selectedRecordOwnersOrEvent) {
+      this._initializeProperties(this.get('controller'), selectedRecordOwnersOrEvent);
+
+      console.log("startMultipleExportSlideout this.get('routeName')", this.get('routeName'));
+
       this.send(
         'toggleSlideout',
         'slideouts/export/multiple',
@@ -46,10 +54,18 @@ export default Ember.Mixin.create({
         .then(() => this.send('closeSlideout'));
     },
 
-    // TODO finish
-    exportDoSearch() {},
-    exportInsertRecordOwner() {},
-    exportRemoveRecordOwner() {}
+    exportDoSearch() {
+      return this.get('composeSlideoutService').doSearch(...arguments);
+    },
+    exportInsertRecordOwner(index, recordOwner) {
+      return new Ember.RSVP.Promise(resolve => {
+        this.get('controller.exportRecordOwners').replace(index, 1, [recordOwner]);
+        resolve();
+      });
+    },
+    exportRemoveRecordOwner(recordOwner) {
+      this.get('controller.exportRecordOwners').removeObject(recordOwner);
+    }
   },
 
   _initializeProperties(controller, models) {
@@ -60,7 +76,7 @@ export default Ember.Mixin.create({
       exportEndDate: moment().toDate(),
       exportForEntirePhone: false,
       exportAsGrouped: false,
-      exportRecordOwners: models
+      exportRecordOwners: isArray(models) ? models : []
     });
   }
 });

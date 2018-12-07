@@ -41,9 +41,11 @@ export default Ember.Component.extend({
   anyRemainingResults: Ember.computed.notEmpty('_remainingResults'),
   checkIdentity: Ember.computed.notEmpty('identityProperty'),
   dataIds: Ember.computed('identityProperty', 'data.[]', function() {
+    console.log("this.get('data')", this.get('data'));
     return this.buildIds(this.get('data'));
   }),
   selectedIds: Ember.computed('identityProperty', 'selected.[]', function() {
+    console.log("this.get('selected')", this.get('selected'));
     return this.buildIds(this.get('selected'));
   }),
   publicAPI: Ember.computed(function() {

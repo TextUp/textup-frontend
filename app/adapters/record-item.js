@@ -6,7 +6,6 @@ export default ApplicationAdapter.extend({
   },
   // always add team id if present
   buildURL: function(modelName, id, snapshot, requestType) {
-    // TODO test
     return this._tryAddTeamId(this._super(...arguments), requestType);
   }
 });

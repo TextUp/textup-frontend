@@ -39,9 +39,9 @@
 			padding-left: 0.3em;
 
 			.display-multi-select-input-item > .btn {
-		        height: inherit;
-		        min-width: auto;
-		        padding: 0.2em 0.5em 0 0;
+				height: inherit;
+				min-width: auto;
+				padding: 0.2em 0.5em 0 0;
 			}
 		}
 		& > input {
@@ -58,7 +58,11 @@
 			}
 		}
 	}
-	input.multi-select-input-item, input.edit-multi-select-input-item {
+	.multi-select-new-input {
+		width: 100%;
+	}
+	input.multi-select-input-item,
+	input.edit-multi-select-input-item {
 		@extend %input-decoration.silent;
 	}
 }

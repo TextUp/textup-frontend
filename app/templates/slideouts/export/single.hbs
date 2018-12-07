@@ -1,5 +1,5 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat 'Exporting ' model.identifier))
+    headerProps=(hash title=(concat "Exporting " model.identifier))
     footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=true
@@ -11,7 +11,7 @@
     doClose=(route-action "cancelExportSlideout") as |slideout|}}
     <div class="form">
         <div class="form__group">
-            <label for="Availability" class='form__label'>
+            <label for="export-start-date" class="form__label">
                 Start date
             </label>
             {{datetime-control value=exportStartDate
@@ -20,7 +20,7 @@
                 onSelect=(action (mut exportStartDate))}}
         </div>
         <div class="form__group">
-            <label for="Availability" class='form__label'>
+            <label for="export-end-date" class="form__label">
                 End date
             </label>
             {{datetime-control value=exportEndDate

@@ -93,20 +93,22 @@ export default Ember.Service.extend({
       contactIds = [],
       sharedContactIds = [],
       tagIds = [];
-    models.forEach(model => {
-      switch (model.get('constructor.modelName')) {
-        case constants.MODEL.CONTACT:
-          if (model.get('isShared')) {
-            sharedContactIds.pushObject(model.get('id'));
-          } else {
-            contactIds.pushObject(model.get('id'));
-          }
-          break;
-        case constants.MODEL.TAG:
-          tagIds.pushObject(model.get('id'));
-          break;
-      }
-    });
+    if (isArray(models)) {
+      models.forEach(model => {
+        switch (model.get('constructor.modelName')) {
+          case constants.MODEL.CONTACT:
+            if (model.get('isShared')) {
+              sharedContactIds.pushObject(model.get('id'));
+            } else {
+              contactIds.pushObject(model.get('id'));
+            }
+            break;
+          case constants.MODEL.TAG:
+            tagIds.pushObject(model.get('id'));
+            break;
+        }
+      });
+    }
     return { contactIds, sharedContactIds, tagIds };
   },
 

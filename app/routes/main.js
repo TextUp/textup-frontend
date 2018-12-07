@@ -7,19 +7,21 @@ import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import SupportsAvailabilitySlideout from 'textup-frontend/mixins/route/supports-availability-slideout';
 import SupportsCallSlideout from 'textup-frontend/mixins/route/supports-call-slideout';
 import SupportsComposeSlideout from 'textup-frontend/mixins/route/supports-compose-slideout';
+import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
 
 const { isNone, computed } = Ember;
 
 export default Ember.Route.extend(
   HasSlideoutOutlet,
+  IsAuthenticated,
   ManagesNewContacts,
   ManagesNewTags,
-  IsAuthenticated,
   RequiresSetup,
   SupportsAvailabilitySlideout,
   SupportsCallSlideout,
   SupportsComposeSlideout,
+  SupportsExportSlideout,
   SupportsFeedbackSlideout,
   {
     slideoutOutlet: computed.alias('constants.SLIDEOUT.OUTLET.DETAIL'),

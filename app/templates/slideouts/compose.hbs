@@ -21,31 +21,7 @@
 			    	doCreate=(route-action "composeCreateRecipient")
 			    	onInsert=(route-action "composeInsertRecipient")
 					onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
-					<span class="horizontal-items">
-						<span class="clear-badge">
-							{{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
-								<span class="fa fa-tag"></span>
-							{{else if (eq recipient.constructor.modelName constants.MODEL.CONTACT)}}
-								{{#if recipient.isShared}}
-									{{#tool-tip title=(concat 'Shared by ' recipient.sharedBy)}}
-							            <span class="fa fa-share"></span>
-							        {{/tool-tip}}
-								{{else}}
-									<span class="fa fa-user"></span>
-								{{/if}}
-							{{else}}
-								<span class="fa fa-asterisk"></span>
-							{{/if}}
-						</span>
-						<span class="clear-badge text-bold">
-							{{phone-number recipient.identifier}}
-							{{#if (eq recipient.constructor.modelName constants.MODEL.TAG)}}
-								<span class="margin-l-half halo halo-sm bg-color bg-dark">
-									{{recipient.numMembers}}
-								</span>
-							{{/if}}
-						</span>
-					</span>
+					{{multi-select/display-badge entity=recipient}}
 				{{/multi-select}}
 			</div>
 		{{/if}}

@@ -79,6 +79,10 @@
                                     Share
                                 </li>
                             {{/if}}
+                            <li tabindex="0" class="dropdown-item"
+                                onclick={{route-action "startMultipleExportSlideout" selected}}>
+                                Export records
+                            </li>
                             <li class="dropdown-divider"></li>
                             {{record-owner-header/contact-status-list contacts=selected
                                 onChange=(route-action "onContactStatusChange" selected)}}
@@ -123,6 +127,13 @@
                         </button>
                     </span>
                 {{/if}}
+                <span class="display-l clear-badge no-space">
+                    <button class="btn"
+                        type="button"
+                        onclick={{route-action "startMultipleExportSlideout" selected}}>
+                        Export
+                    </button>
+                </span>
                 {{!-- close button on larger screens --}}
                 <span class="clear-badge display-m display-l">
                     <button class="btn btn-plain" type="button"

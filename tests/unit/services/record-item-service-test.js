@@ -1,14 +1,15 @@
 import Ember from 'ember';
+import FileUtils from 'textup-frontend/utils/file';
 import Location from 'textup-frontend/models/location';
+import moment from 'moment';
 import RecordCall from 'textup-frontend/models/record-call';
 import RecordNote from 'textup-frontend/models/record-note';
 import RecordText from 'textup-frontend/models/record-text';
 import sinon from 'sinon';
-// import { mockModel } from 'textup-frontend/tests/helpers/utilities'; // TODO
+import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
-// const { typeOf, RSVP, run } = Ember; // TODO
-const { run } = Ember;
+const { typeOf, RSVP, run } = Ember;
 
 moduleFor('service:record-item-service', 'Unit | Service | record item service', {
   needs: [
@@ -40,10 +41,53 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
   }
 });
 
-// // TODO
-// test('building required query parameters for particular record owner', function(assert) {});
+// TODO
+// test('building required query parameters for particular record owners', function(assert) {
+//   const service = this.subject(),
+//     emptyResult = { contactIds: [], sharedContactIds: [], tagIds: [] },
+//     mockTag = mockModel(Math.random(), this.constants.MODEL.TAG),
+//     mockContact = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: false }),
+//     mockShared = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: true });
 
-// TODO fix
+//   assert.deepEqual(service._buildQueryFor(), emptyResult);
+//   assert.deepEqual(service._buildQueryFor(null), emptyResult);
+//   assert.deepEqual(service._buildQueryFor('not an array'), emptyResult);
+//   assert.deepEqual(service._buildQueryFor({}), emptyResult);
+//   assert.deepEqual(service._buildQueryFor([]), emptyResult);
+
+//   let resObj = service._buildQueryFor([mockTag, mockContact, mockShared]);
+//   assert.deepEqual(resObj.contactIds, [mockContact.id]);
+//   assert.deepEqual(resObj.sharedContactIds, [mockShared.id]);
+//   assert.deepEqual(resObj.tagIds, [mockTag.id]);
+// });
+
+// test('handling export outcome', function(assert) {
+//   const service = this.subject(),
+//     resolveSpy = sinon.spy(),
+//     rejectSpy = sinon.spy(),
+//     getFileNameStub = sinon.stub(FileUtils, 'tryGetFileNameFromXHR'),
+//     downloadStub = sinon.stub(FileUtils, 'download'),
+//     response = Math.random();
+
+//   service._handleExportOutcome({ status: 'not 200', response }, resolveSpy, rejectSpy);
+
+//   assert.ok(resolveSpy.notCalled);
+//   assert.ok(getFileNameStub.notCalled);
+//   assert.ok(downloadStub.notCalled);
+//   assert.ok(rejectSpy.calledOnce);
+
+//   service._handleExportOutcome({ status: 200, response }, resolveSpy, rejectSpy);
+
+//   assert.ok(resolveSpy.calledOnce);
+//   assert.ok(getFileNameStub.calledOnce);
+//   assert.ok(downloadStub.calledOnce);
+//   assert.equal(downloadStub.firstCall.args[0], response);
+//   assert.ok(rejectSpy.calledOnce);
+
+//   getFileNameStub.restore();
+//   downloadStub.restore();
+// });
+
 // test('loading more record items for contact', function(assert) {
 //   const done = assert.async(),
 //     service = this.subject(),
@@ -59,7 +103,9 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 //     assert.ok(queryStub.calledOnce);
 //     assert.equal(queryStub.firstCall.args[0], 'record-item');
 //     assert.deepEqual(queryStub.firstCall.args[1], {
-//       contactId: model.id,
+//       contactIds: [model.id],
+//       sharedContactIds: [],
+//       tagIds: [],
 //       max: 20,
 //       offset: numRecordItems
 //     });
@@ -69,7 +115,6 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 //   });
 // });
 
-// TODO fix
 // test('loading more record items for tag', function(assert) {
 //   const done = assert.async(),
 //     service = this.subject(),
@@ -85,7 +130,9 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 //     assert.ok(queryStub.calledOnce);
 //     assert.equal(queryStub.firstCall.args[0], 'record-item');
 //     assert.deepEqual(queryStub.firstCall.args[1], {
-//       tagId: model.id,
+//       tagIds: [model.id],
+//       sharedContactIds: [],
+//       contactIds: [],
 //       max: 20,
 //       offset: numRecordItems
 //     });
@@ -95,7 +142,6 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 //   });
 // });
 
-// TODO fix
 // test('refreshing all record items', function(assert) {
 //   const done = assert.async(),
 //     service = this.subject(),
@@ -120,89 +166,98 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 //   });
 // });
 
-test('make call', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      cBaseline = this.store.peekAll('record-call').get('length'),
-      retVal = Math.random();
+test('exporting record items', function(assert) {
+  const fakeXhr = sinon.useFakeXMLHttpRequest(),
+    requests = [];
+  fakeXhr.onCreate(req1 => requests.pushObject(req1));
 
-    service.setProperties({ dataService: { persist: sinon.stub().returns(retVal) } });
-
-    assert.equal(service.makeCall('111 222 3333'), retVal);
-
-    assert.equal(this.store.peekAll('record-call').get('length'), cBaseline + 1);
-
-    assert.ok(service.dataService.persist.calledOnce);
-    assert.ok(service.dataService.persist.firstCall.args[0] instanceof RecordCall);
-    assert.equal(service.dataService.persist.firstCall.args[0].get('numRecipients'), 1);
-  });
+  const start = moment().subtract(2, 'days'),
+    end = moment().add(1, 'day');
 });
 
-test('creating new text', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      tBaseline = this.store.peekAll('record-text').get('length');
+// test('make call', function(assert) {
+//   run(() => {
+//     const service = this.subject(),
+//       cBaseline = this.store.peekAll('record-call').get('length'),
+//       retVal = Math.random();
 
-    let rText = service.createNewText('111 222 3333');
-    assert.ok(rText instanceof RecordText);
+//     service.setProperties({ dataService: { persist: sinon.stub().returns(retVal) } });
 
-    assert.equal(this.store.peekAll('record-text').get('length'), tBaseline + 1);
-    assert.equal(rText.get('numRecipients'), 1);
+//     assert.equal(service.makeCall('111 222 3333'), retVal);
 
-    rText = service.createNewText(['111 222 3333', '111 222 8889']);
-    assert.ok(rText instanceof RecordText);
+//     assert.equal(this.store.peekAll('record-call').get('length'), cBaseline + 1);
 
-    assert.equal(this.store.peekAll('record-text').get('length'), tBaseline + 2);
-    assert.equal(rText.get('numRecipients'), 2);
-  });
-});
+//     assert.ok(service.dataService.persist.calledOnce);
+//     assert.ok(service.dataService.persist.firstCall.args[0] instanceof RecordCall);
+//     assert.equal(service.dataService.persist.firstCall.args[0].get('numRecipients'), 1);
+//   });
+// });
 
-test('creating new note', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      nBaseline = this.store.peekAll('record-note').get('length');
+// test('creating new text', function(assert) {
+//   run(() => {
+//     const service = this.subject(),
+//       tBaseline = this.store.peekAll('record-text').get('length');
 
-    let rNote = service.createNewNote('111 222 3333');
-    assert.ok(rNote instanceof RecordNote);
+//     let rText = service.createNewText('111 222 3333');
+//     assert.ok(rText instanceof RecordText);
 
-    assert.equal(this.store.peekAll('record-note').get('length'), nBaseline + 1);
-    assert.equal(rNote.get('numRecipients'), 1);
-    assert.notOk(rNote.get('addAfterDate'));
+//     assert.equal(this.store.peekAll('record-text').get('length'), tBaseline + 1);
+//     assert.equal(rText.get('numRecipients'), 1);
 
-    const addAfterObj = { whenCreated: Math.random() };
-    rNote = service.createNewNote('111 222 3333', addAfterObj);
-    assert.ok(rNote instanceof RecordNote);
+//     rText = service.createNewText(['111 222 3333', '111 222 8889']);
+//     assert.ok(rText instanceof RecordText);
 
-    assert.equal(this.store.peekAll('record-note').get('length'), nBaseline + 2);
-    assert.equal(rNote.get('numRecipients'), 1);
-    assert.equal(rNote.get('addAfterDate'), addAfterObj.whenCreated);
-  });
-});
+//     assert.equal(this.store.peekAll('record-text').get('length'), tBaseline + 2);
+//     assert.equal(rText.get('numRecipients'), 2);
+//   });
+// });
 
-test('adding location to note', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      lBaseline = this.store.peekAll('location').get('length'),
-      mockNote = Ember.Object.create();
+// test('creating new note', function(assert) {
+//   run(() => {
+//     const service = this.subject(),
+//       nBaseline = this.store.peekAll('record-note').get('length');
 
-    service.addLocationToNote(mockNote);
+//     let rNote = service.createNewNote('111 222 3333');
+//     assert.ok(rNote instanceof RecordNote);
 
-    assert.ok(mockNote.get('location') instanceof Location);
-    assert.equal(this.store.peekAll('location').get('length'), lBaseline + 1);
-  });
-});
+//     assert.equal(this.store.peekAll('record-note').get('length'), nBaseline + 1);
+//     assert.equal(rNote.get('numRecipients'), 1);
+//     assert.notOk(rNote.get('addAfterDate'));
 
-test('removing location from note', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      rollbackSpy = sinon.spy(),
-      mockNote = Ember.Object.create({
-        location: { content: { rollbackAttributes: rollbackSpy } }
-      });
+//     const addAfterObj = { whenCreated: Math.random() };
+//     rNote = service.createNewNote('111 222 3333', addAfterObj);
+//     assert.ok(rNote instanceof RecordNote);
 
-    service.removeLocationFromNote(mockNote);
+//     assert.equal(this.store.peekAll('record-note').get('length'), nBaseline + 2);
+//     assert.equal(rNote.get('numRecipients'), 1);
+//     assert.equal(rNote.get('addAfterDate'), addAfterObj.whenCreated);
+//   });
+// });
 
-    assert.notOk(mockNote.get('location'));
-    assert.ok(rollbackSpy.calledOnce);
-  });
-});
+// test('adding location to note', function(assert) {
+//   run(() => {
+//     const service = this.subject(),
+//       lBaseline = this.store.peekAll('location').get('length'),
+//       mockNote = Ember.Object.create();
+
+//     service.addLocationToNote(mockNote);
+
+//     assert.ok(mockNote.get('location') instanceof Location);
+//     assert.equal(this.store.peekAll('location').get('length'), lBaseline + 1);
+//   });
+// });
+
+// test('removing location from note', function(assert) {
+//   run(() => {
+//     const service = this.subject(),
+//       rollbackSpy = sinon.spy(),
+//       mockNote = Ember.Object.create({
+//         location: { content: { rollbackAttributes: rollbackSpy } }
+//       });
+
+//     service.removeLocationFromNote(mockNote);
+
+//     assert.notOk(mockNote.get('location'));
+//     assert.ok(rollbackSpy.calledOnce);
+//   });
+// });

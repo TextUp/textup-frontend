@@ -53,7 +53,11 @@ test('building url', function(assert) {
 
   obj.set('stateManager', { ownerAsTeam: Ember.Object.create({ id: tId }) });
 
-  assert.equal(obj.buildURL('record-item', 8, null, 'valid type'), '/v1/records/8');
+  assert.equal(
+    obj.buildURL('record-item', 8, null, 'valid type'),
+    `/v1/records/8?teamId=${tId}`,
+    'team id is always added'
+  );
   assert.equal(
     obj.buildURL('record-item', null, null, 'createRecord'),
     `/v1/records?teamId=${tId}`,
