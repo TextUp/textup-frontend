@@ -171,6 +171,7 @@ test('exporting record items', function(assert) {
     end = moment().add(1, 'day'),
     teamId = Math.random(),
     tagId = Math.random(),
+    tz = Math.random(),
     mockTag = mockModel(tagId, this.constants.MODEL.TAG);
   // build mocks
   const done = assert.async(),
@@ -179,7 +180,11 @@ test('exporting record items', function(assert) {
     requests = [],
     handleExportOutcomeStub = sinon.stub(service, '_handleExportOutcome');
   fakeXhr.onCreate = req1 => requests.pushObject(req1);
-  service.set('stateManager', Ember.Object.create({ ownerAsTeam: { id: teamId } }));
+
+  service.setProperties({
+    stateManager: Ember.Object.create({ ownerAsTeam: { id: teamId } }),
+    authService: Ember.Object.create({ timezone: tz })
+  });
 
   // call done to ensure to promise return value is respected
   service.exportRecordItems(start, end, true, [mockTag]).then(done);
@@ -191,6 +196,7 @@ test('exporting record items', function(assert) {
   assert.ok(requests[0].requestHeaders['Authorization'].indexOf('Bearer') > -1);
 
   assert.ok(requests[0].url.indexOf(encodeURI(`teamId=${teamId}`) > -1));
+  assert.ok(requests[0].url.indexOf(encodeURI(`timezone=${tz}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`format=${this.constants.EXPORT.FORMAT.PDF}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`max=${this.constants.EXPORT.LARGEST_MAX}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`since=${start.toISOString()}`) > -1));

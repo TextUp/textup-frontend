@@ -35,6 +35,7 @@ export default Ember.Service.extend({
       const constants = this.get('constants'),
         query = {
           teamId: this.get('stateManager.ownerAsTeam.id'),
+          timezone: this.get('authService.timezone'),
           format: constants.EXPORT.FORMAT.PDF,
           max: constants.EXPORT.LARGEST_MAX,
           since: moment(dateStart).toISOString(),
