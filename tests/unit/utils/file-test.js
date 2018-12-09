@@ -5,21 +5,6 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | file');
 
-test('if downloading is supported', function(assert) {
-  const getterStub = sinon.stub(),
-    downloadPrototypeStub = sinon.stub(HTMLAnchorElement.prototype, 'download').get(getterStub);
-
-  getterStub.returns(true);
-  assert.equal(FileUtils.isDownloadingSupported(), true);
-  assert.ok(getterStub.calledOnce);
-
-  getterStub.returns(false);
-  assert.equal(FileUtils.isDownloadingSupported(), false);
-  assert.ok(getterStub.calledTwice);
-
-  downloadPrototypeStub.restore();
-});
-
 test('getting file name from xhr response', function(assert) {
   const responseName = `${Math.random()}`,
     fallbackName = `${Math.random()}`,
@@ -50,7 +35,7 @@ test('downloading file', function(assert) {
   FileUtils.download(data, contentType, fileName);
 
   assert.ok(saveAsStub.calledOnce);
-  assert.ok(saveAsStub.firstCall.args[0] instanceof Blob);
+  assert.ok(saveAsStub.firstCall.args[0] instanceof window.Blob);
   assert.equal(saveAsStub.firstCall.args[0].type, contentType);
   assert.equal(saveAsStub.firstCall.args[1], fileName);
 

@@ -5,6 +5,7 @@ const { isArray } = Ember;
 
 export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
+  constants: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
   setupController: function(controller) {
@@ -13,11 +14,8 @@ export default Ember.Mixin.create({
   },
 
   actions: {
-    startSingleExportSlideout(recordOwners) {
-      this._initializeProperties(this.get('controller'), [recordOwners]);
-
-      console.log("startSingleExportSlideout this.get('routeName')", this.get('routeName'));
-
+    startSingleExportSlideout(recordOwner) {
+      this._initializeProperties(this.get('controller'), [recordOwner]);
       this.send(
         'toggleSlideout',
         'slideouts/export/single',
@@ -27,9 +25,6 @@ export default Ember.Mixin.create({
     },
     startMultipleExportSlideout(selectedRecordOwnersOrEvent) {
       this._initializeProperties(this.get('controller'), selectedRecordOwnersOrEvent);
-
-      console.log("startMultipleExportSlideout this.get('routeName')", this.get('routeName'));
-
       this.send(
         'toggleSlideout',
         'slideouts/export/multiple',
@@ -49,9 +44,15 @@ export default Ember.Mixin.create({
         exportRecordOwners = controller.get('exportForEntirePhone')
           ? [] // pass no record owners if we want to export entire phone
           : controller.get('exportRecordOwners');
-      return this.get('recordItemService')
-        .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
-        .then(() => this.send('closeSlideout'));
+
+      return new Ember.RSVP.Promise((resolve, reject) => {
+        this.get('recordItemService')
+          .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
+          .then(() => {
+            this.send('closeSlideout');
+            resolve();
+          }, reject);
+      });
     },
 
     exportDoSearch() {

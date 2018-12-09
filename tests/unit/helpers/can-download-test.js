@@ -1,8 +1,7 @@
 import FileUtils from 'textup-frontend/utils/file';
+import sinon from 'sinon';
 import { canDownload } from 'textup-frontend/helpers/can-download';
 import { module, test } from 'qunit';
-
-// TODO integrate
 
 module('Unit | Helper | can download');
 

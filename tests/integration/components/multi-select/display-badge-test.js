@@ -1,6 +1,7 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent(
   'multi-select/display-badge',

@@ -27,21 +27,27 @@
     <div class="horizontal-items pull-right">
         {{#if (not tag.isDeleted)}}
             <span class="clear-badge no-space">
-                {{#pop-over as |popOver|}}
-                    <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
-                        More
-                        <span class="fa fa-caret-down"></span>
-                    </button>
+                {{#if (can-download)}}
+                    {{#pop-over as |popOver|}}
+                        <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
+                            More
+                            <span class="fa fa-caret-down"></span>
+                        </button>
+                    {{else}}
+                        <ul class="dropdown">
+                            <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
+                                Details
+                            </li>
+                            <li tabindex='0' class='dropdown-item' onclick={{action _onExport}}>
+                                Export records
+                            </li>
+                        </ul>
+                    {{/pop-over}}
                 {{else}}
-                    <ul class="dropdown">
-                        <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
-                            Details
-                        </li>
-                        <li tabindex='0' class='dropdown-item' onclick={{action _onExport}}>
-                            Export records
-                        </li>
-                    </ul>
-                {{/pop-over}}
+                    <button class="btn" type="button" onclick={{action _onEdit}}>
+                        Details
+                    </button>
+                {{/if}}
             </span>
         {{/if}}
         <span class="clear-badge display-m display-l">

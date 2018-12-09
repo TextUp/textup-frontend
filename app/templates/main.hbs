@@ -116,20 +116,22 @@
             <span>Call</span>
         </div>
     </li>
-    <li class='menu-item menu-slideout display-l'
-        onclick={{route-action "startMultipleExportSlideout"}}>
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Export'
-            classNames='btn-expand'}}
-            <span class="fa fa-file"></span>
-        {{/tool-tip}}
-    </li>
-    <li class='menu-item menu-slideout display-xs display-s display-m'
-        onclick={{route-action "startMultipleExportSlideout"}}>
-        <div class="btn-expand">
-            <span>Export</span>
-        </div>
-    </li>
+    {{#if (can-download)}}
+        <li class='menu-item menu-slideout display-l'
+            onclick={{route-action "startMultipleExportSlideout"}}>
+            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                title='Export'
+                classNames='btn-expand'}}
+                <span class="fa fa-file"></span>
+            {{/tool-tip}}
+        </li>
+        <li class='menu-item menu-slideout display-xs display-s display-m'
+            onclick={{route-action "startMultipleExportSlideout"}}>
+            <div class="btn-expand">
+                <span>Export</span>
+            </div>
+        </li>
+    {{/if}}
 
     {{!-- contacts --}}
 
