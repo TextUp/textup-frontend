@@ -3,6 +3,7 @@ import Ember from 'ember';
 const { alias } = Ember.computed;
 
 export default Ember.Controller.extend({
+  constants: Ember.inject.service(),
   adminController: Ember.inject.controller('admin'),
 
   pendingStaff: alias('adminController.pending'),
@@ -12,7 +13,7 @@ export default Ember.Controller.extend({
     approve: function(staff) {
       staff.set('status', 'STAFF');
       if (staff.get('hasPhoneActionData')) {
-        staff.set('phoneAction', 'number');
+        staff.set('phoneAction', this.get('constants.PHONE.ACTION.CHANGE_NUMBER'));
       }
       this._handlePending(staff);
     },

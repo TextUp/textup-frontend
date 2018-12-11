@@ -82,7 +82,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   startDate: DS.attr('date', {
     defaultValue: model => {
       const momentObj = moment(),
-        defaultInterval = model.get('constants.DEFAULT_TIME_INTERVAL_IN_MINUTES');
+        defaultInterval = model.get('constants.DEFAULT.TIME_INTERVAL_IN_MINUTES');
       return momentObj
         .minutes(Math.floor(momentObj.minutes() / defaultInterval) * defaultInterval)
         .toDate();

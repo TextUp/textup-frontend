@@ -1,23 +1,12 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import OwnsPhone from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const {
-    isPresent,
-    isArray,
-    computed,
-    computed: { equal: eq, alias, or, notEmpty },
-    RSVP,
-    inject,
-    RSVP: { Promise },
-    String: { dasherize }
-  } = Ember,
+const { isPresent, isArray, computed, RSVP, String, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
-    name: {
-      description: 'Name',
-      validators: [validator('presence', true)]
-    },
+    name: { description: 'Name', validators: [validator('presence', true)] },
     username: {
       description: 'Username',
       validators: [
@@ -31,104 +20,73 @@ const {
     },
     lockCode: {
       description: 'Lock Code',
-      validators: [
-        validator('length', {
-          is: 4,
-          allowNone: true,
-          allowBlank: true
-        })
-      ]
+      validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })]
     },
-    email: {
-      description: 'Email',
-      validators: [
-        validator('format', {
-          type: 'email'
-        })
-      ]
-    },
-    phone: {
-      description: 'Phone',
-      validators: [validator('belongs-to')]
-    }
+    email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
+    phone: { description: 'Phone', validators: [validator('belongs-to')] }
   });
 
-export default DS.Model.extend(Dirtiable, Validations, {
-  authService: inject.service(),
+export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
+  constants: Ember.inject.service(),
+  authService: Ember.inject.service(),
 
-  rollbackAttributes: function() {
-    this._super(...arguments);
+  // Overrides
+  // ---------
+
+  rollbackAttributes() {
     this.set('isSelected', false);
-    this.set('phoneAction', null);
-    this.set('phoneActionData', null);
     this.set('enableNotifications', isPresent(this.get('personalPhoneNumber')));
-    this.get('phone').then(phone => phone && phone.rollbackAttributes());
-    this.get('schedule').then(sched => sched && sched.rollbackAttributes());
+    tryInvoke(getWithDefault(this, 'schedule.content', {}), 'rollbackAttributes');
+    return this._super(...arguments);
   },
-
-  // Events
-  // ------
-
-  didUpdate: function() {
-    // reset manually-managed state after receiving the latest updates from the server
+  didUpdate() {
+    this._super(...arguments);
     this.rollbackAttributes();
   },
+  hasManualChanges: computed('ownsPhoneHasManualChanges', 'schedule.isDirty', function() {
+    return this.get('ownsPhoneHasManualChanges') || !!this.get('schedule.isDirty');
+  }),
 
-  // Attributes
+  // Properties
   // ----------
 
   username: DS.attr('string'),
   name: DS.attr('string'),
   // usually blank, for account creation or password change
-  password: DS.attr('string', {
-    defaultValue: ''
-  }),
+  password: DS.attr('string', { defaultValue: '' }),
   // usually blank, for account creation or lockCode change
-  lockCode: DS.attr('string', {
-    defaultValue: ''
-  }),
+  lockCode: DS.attr('string', { defaultValue: '' }),
   // usually blank, for account creation
-  captcha: DS.attr('string', {
-    defaultValue: ''
-  }),
-
+  captcha: DS.attr('string', { defaultValue: '' }),
   email: DS.attr('string'),
-  status: DS.attr('string'),
-  personalPhoneNumber: DS.attr('phone-number'),
-
   org: DS.belongsTo('organization'),
-  phone: DS.belongsTo('phone'),
-  hasInactivePhone: DS.attr('boolean'),
-  schedule: DS.belongsTo('schedule'),
-
-  manualSchedule: DS.attr('boolean', {
-    defaultValue: true
-  }),
-  isAvailable: DS.attr('boolean', {
-    defaultValue: true
-  }),
-
-  teams: DS.hasMany('team'),
-
-  // Not attributes
-  // --------------
-
-  type: 'staff',
+  type: computed.readOnly('constants.MODEL.STAFF'),
   isSelected: false,
-  phoneAction: null, // one of number, transfer, deactivate
-  phoneActionData: null,
 
-  // Computed properties
-  // -------------------
+  urlIdentifier: computed('username', function() {
+    return String.dasherize(this.get('username') || '');
+  }),
+  sharingId: computed.alias('phone.content.id'), // for building share actions
+  transferFilter: computed('name', 'username', 'email', function() {
+    const name = this.get('name'),
+      username = this.get('username'),
+      email = this.get('email');
+    return `${name},${username},${email}`;
+  }),
+  isAuthUser: computed('authService.authUser', function() {
+    return this.get('authService.authUser.id') === this.get('id');
+  }),
 
-  hasPhoneAction: notEmpty('phoneAction'),
-  hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
-  hasManualChanges: or('phone.isDirty', 'schedule.isDirty', 'hasPhoneAction'),
+  schedule: DS.belongsTo('schedule'),
+  manualSchedule: DS.attr('boolean', { defaultValue: true }),
+  isAvailable: DS.attr('boolean', { defaultValue: true }),
+
+  personalPhoneNumber: DS.attr('phone-number'),
   enableNotifications: computed('personalPhoneNumber', {
-    get: function() {
+    get() {
       return isPresent(this.get('personalPhoneNumber'));
     },
-    set: function(key, value) {
+    set(key, value) {
       if (this.get('isDeleted') === false) {
         if (value === false) {
           this.set('personalPhoneNumber', '');
@@ -143,29 +101,17 @@ export default DS.Model.extend(Dirtiable, Validations, {
     }
   }),
 
-  urlIdentifier: computed('username', function() {
-    return dasherize(this.get('username') || '');
-  }),
-  sharingId: alias('phone.content.id'), // for building share actions
-  transferId: computed('id', function() {
-    return `staff-${this.get('id')}`;
-  }),
-  transferFilter: computed('name', 'username', 'email', function() {
-    const name = this.get('name'),
-      username = this.get('username'),
-      email = this.get('email');
-    return `${name},${username},${email}`;
-  }),
+  status: DS.attr('string'),
+  isBlocked: computed.equal('status', 'BLOCKED'),
+  isPending: computed.equal('status', 'PENDING'),
+  isStaff: computed.equal('status', 'STAFF'),
+  isAdmin: computed.equal('status', 'ADMIN'),
 
-  isBlocked: eq('status', 'BLOCKED'),
-  isPending: eq('status', 'PENDING'),
-  isStaff: eq('status', 'STAFF'),
-  isAdmin: eq('status', 'ADMIN'),
-
-  hasTeams: notEmpty('teams'),
+  teams: DS.hasMany('team'),
+  hasTeams: computed.notEmpty('teams'),
   teamsWithPhones: computed('teams.[]', function() {
     return DS.PromiseArray.create({
-      promise: new Promise((resolve, reject) => {
+      promise: new RSVP.Promise((resolve, reject) => {
         this.get('teams').then(teams => {
           RSVP.all(teams.mapBy('phone.content')).then(phones => {
             const teamsWithPhones = [];
@@ -181,7 +127,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
     });
   }),
   isNone: computed('isBlocked', 'isPending', 'teamsWithPhones', 'phone', function() {
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       this.get('teamsWithPhones').then(teams => {
         this.get('phone').then(phone => {
           const isBlocked = this.get('isBlocked'),
@@ -196,29 +142,26 @@ export default DS.Model.extend(Dirtiable, Validations, {
       }, reject);
     });
   }),
-  isAuthUser: computed('authService.authUser', function() {
-    return this.get('authService.authUser.id') === this.get('id');
-  }),
 
-  // Helper methods
-  // --------------
+  // Methods
+  // -------
 
-  isAnyStatus: function(raw) {
+  isAnyStatus(raw) {
     return (isArray(raw) ? raw : [raw])
       .map(stat => String(stat).toLowerCase())
       .contains(String(this.get('status')).toLowerCase());
   },
-  makeStaff: function() {
+  makeStaff() {
     if (!this.get('isAuthUser')) {
       this.set('status', 'STAFF');
     }
   },
-  makeAdmin: function() {
+  makeAdmin() {
     if (!this.get('isAuthUser')) {
       this.set('status', 'ADMIN');
     }
   },
-  block: function() {
+  block() {
     if (!this.get('isAuthUser')) {
       this.set('status', 'BLOCKED');
     }

@@ -5,8 +5,8 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
   attrs: {
     number: { serialize: false },
     tags: { deserialize: 'records', serialize: false },
-    mandatoryEmergencyMessage: { serialize: false },
     availability: { deserialize: 'records', serialize: 'records' },
-    others: { deserialize: 'records', serialize: false }
+    others: { deserialize: 'records', serialize: false },
+    awayMessageMaxLength: { serialize: false }
   }
 });

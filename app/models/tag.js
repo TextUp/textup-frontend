@@ -25,9 +25,11 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
     this.clearMembershipChanges();
   },
   didCreate() {
+    this._super(...arguments);
     this.rollbackAttributes();
   },
   didUpdate() {
+    this._super(...arguments);
     this.rollbackAttributes();
   },
 

@@ -23,6 +23,9 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
     'validator:number',
     'validator:presence'
   ],
+  beforeEach() {
+    this.inject.service('store');
+  },
   subject() {
     // The scope here is the module, so we have access to the registration stuff.
     // Define and register our phony host model.
@@ -31,7 +34,7 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
     // Once our model is registered, we create it via the store in the
     // usual way and return it. Since createRecord is async, we need
     // an Ember.run.
-    return Ember.run(() => {
+    return run(() => {
       const store = Ember.getOwner(this).lookup('service:store');
       return store.createRecord('owns-record-items-mixin-model');
     });
@@ -40,14 +43,13 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
 
 test('record items relationship is polymorphic', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
-      obj = this.subject(),
-      rItem1 = store.createRecord('record-item', { id: '1' }),
-      rText1 = store.createRecord('record-text', { id: '2' }),
-      rCall1 = store.createRecord('record-call', { id: '3' }),
-      rNote1 = store.createRecord('record-note', { id: '4' }),
+    const obj = this.subject(),
+      rItem1 = this.store.createRecord('record-item', { id: '1' }),
+      rText1 = this.store.createRecord('record-text', { id: '2' }),
+      rCall1 = this.store.createRecord('record-call', { id: '3' }),
+      rNote1 = this.store.createRecord('record-note', { id: '4' }),
       validItems = [rItem1, rText1, rCall1, rNote1],
-      rev1 = store.createRecord('record-note-revision');
+      rev1 = this.store.createRecord('record-note-revision');
 
     assert.equal(obj.get('numRecordItems'), 0);
     assert.deepEqual(obj.get('recordItems'), []);
@@ -67,12 +69,11 @@ test('record items relationship is polymorphic', function(assert) {
 
 test('adding record items ignores duplicate, invalid, and falsy values', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
-      obj = this.subject(),
+    const obj = this.subject(),
       rItems1 = Array(8)
         .fill()
         .map(() =>
-          store.createRecord('record-item', {
+          this.store.createRecord('record-item', {
             id: `${Math.random()}`
           })
         );
@@ -109,13 +110,12 @@ test('adding record items ignores duplicate, invalid, and falsy values', functio
 
 test('getting record items and record clusters', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
-      obj = this.subject(),
+    const obj = this.subject(),
       numItems = 4,
       rItems1 = Array(numItems)
         .fill()
         .map(() =>
-          store.createRecord('record-item', {
+          this.store.createRecord('record-item', {
             id: `${Math.random()}`,
             whenCreated: new Date(Date.now() - 1000)
           })
@@ -123,7 +123,7 @@ test('getting record items and record clusters', function(assert) {
       rItems2 = Array(numItems)
         .fill()
         .map(() =>
-          store.createRecord('record-item', {
+          this.store.createRecord('record-item', {
             id: `${Math.random()}`,
             whenCreated: new Date(Date.now() + 1000)
           })
@@ -132,7 +132,10 @@ test('getting record items and record clusters', function(assert) {
       rNotes = Array(numNotes)
         .fill()
         .map(() =>
-          store.createRecord('record-note', { id: `${Math.random()}`, whenCreated: new Date() })
+          this.store.createRecord('record-note', {
+            id: `${Math.random()}`,
+            whenCreated: new Date()
+          })
         );
 
     assert.equal(obj.get('totalNumRecordItems'), null);

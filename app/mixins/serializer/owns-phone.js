@@ -1,81 +1,55 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 
-const { get } = Ember;
+const { get, merge } = Ember;
 
-export default Ember.Mixin.create({
-  serialize: function(snapshot) {
+export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
+  constants: Ember.inject.service(),
+
+  attrs: {
+    hasInactivePhone: { serialize: false },
+    phone: { deserialize: 'records', serialize: 'records' }
+  },
+
+  serialize(snapshot) {
     const json = this._super(...arguments),
-      rec = snapshot.record,
-      action = rec.get('phoneAction'),
+      constants = this.get('constants'),
+      rec1 = snapshot.record,
+      data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : Object.create(null),
       doActions = [];
-    const data = rec.get('hasPhoneActionData') ? rec.get('phoneActionData') : Object.create(null);
-    // deactivate and change number are mutually exclusive
-    if (action === 'number') {
-      this._changeToNewNumber(doActions, data);
-    } else if (action === 'deactivate') {
-      this._deactivate(doActions);
-    } else if (action === 'transfer') {
-      this._transfer(doActions, data);
+    switch (rec1.get('phoneAction')) {
+      case constants.PHONE.ACTION.CHANGE_NUMBER:
+        doActions.pushObject(changeToNewNumber(data));
+        break;
+      case constants.PHONE.ACTION.DEACTIVATE:
+        doActions.pushObject(deactivate());
+        break;
+      case constants.PHONE.ACTION.TRANSFER:
+        doActions.pushObject(transfer(data, this.get('constants.MODEL.STAFF')));
+        break;
     }
-
     if (doActions.length) {
-      json.phone = Ember.merge(json.phone || Object.create(null), {
-        doPhoneActions: doActions
-      });
+      json.phone = merge(json.phone || Object.create(null), { doPhoneActions: doActions });
     }
-    rec.set('phoneAction', null);
-    rec.set('phoneActionData', null);
-
-    // trim whitespace on the away message, but let the backend handle re-appending the
-    // mandatory away message, if needed. We do this to remain backwards compatible with existing
-    // away messages, which may be too long. If we re-appended here, updating a staff/team account
-    // might generate a cryptic error message about the away message being too long.
-    const phoneJson = json.phone;
-    if (phoneJson && phoneJson.awayMessage) {
-      // trim whitespace on away message
-      phoneJson.awayMessage = phoneJson.awayMessage.replace(/^\s+|\s+$/g, '');
-    }
-
     return json;
-  },
-
-  normalize(model, json) {
-    const phoneJson = json.phone;
-    if (phoneJson) {
-      const awayMessage = phoneJson.awayMessage,
-        mandatoryAddendum = phoneJson.mandatoryEmergencyMessage;
-      if (awayMessage && mandatoryAddendum) {
-        phoneJson.awayMessage = awayMessage.replace(mandatoryAddendum, '');
-      }
-    }
-    return this._super(...arguments);
-  },
-
-  _changeToNewNumber: function(actions, data) {
-    const actionItem = Object.create(null);
-    if (data.sid) {
-      actionItem.action = 'NUMBYID';
-      actionItem.numberId = data.sid;
-      actions.pushObject(actionItem);
-    } else if (data.phoneNumber) {
-      actionItem.action = 'NUMBYNUM';
-      actionItem.number = data.phoneNumber;
-      actions.pushObject(actionItem);
-    }
-  },
-
-  _deactivate: function(actions) {
-    const actionItem = Object.create(null);
-    actionItem.action = 'DEACTIVATE';
-    actions.pushObject(actionItem);
-  },
-
-  _transfer: function(actions, data) {
-    const actionItem = Object.create(null),
-      type = get(data, 'type') === 'staff' ? 'INDIVIDUAL' : 'GROUP';
-    actionItem.action = 'TRANSFER';
-    actionItem.id = get(data, 'id');
-    actionItem.type = type;
-    actions.pushObject(actionItem);
   }
 });
+
+function changeToNewNumber(data) {
+  if (get(data, 'sid')) {
+    return { action: 'NUMBYID', numberId: get(data, 'sid') };
+  } else if (get(data, 'phoneNumber')) {
+    return { action: 'NUMBYNUM', number: get(data, 'phoneNumber') };
+  } else {
+    return Object.create(null);
+  }
+}
+
+function deactivate() {
+  return { action: 'DEACTIVATE' };
+}
+
+function transfer(data, staffType) {
+  const type = get(data, 'type') === staffType ? 'INDIVIDUAL' : 'GROUP';
+  return { action: 'TRANSFER', id: get(data, 'id'), type };
+}

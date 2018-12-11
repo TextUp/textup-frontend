@@ -1,90 +1,63 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import OwnsPhone from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed } = Ember,
+const { computed, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
-    name: {
-      description: 'Name',
-      validators: [validator('presence', true)]
-    },
-    hexColor: {
-      description: 'Color',
-      validators: [validator('presence', true)]
-    },
-    phone: {
-      description: 'Phone',
-      validators: [validator('belongs-to')]
-    },
+    name: { description: 'Name', validators: [validator('presence', true)] },
+    hexColor: { description: 'Color', validators: [validator('presence', true)] },
+    phone: { description: 'Phone', validators: [validator('belongs-to')] },
     location: {
       description: 'Location',
       validators: [validator('presence', true), validator('belongs-to')]
     }
   });
 
-export default DS.Model.extend(Dirtiable, Validations, {
-  init: function() {
-    this._super(...arguments);
-    this.set('actions', []);
-  },
-  rollbackAttributes: function() {
-    this._super(...arguments);
+export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
+  constants: Ember.inject.service(),
+
+  // Overrides
+  // ---------
+
+  rollbackAttributes() {
     this.get('actions').clear();
-    this.set('phoneAction', null);
-    this.set('phoneActionData', null);
-    this.get('phone').then(phone => phone && phone.rollbackAttributes());
-    this.get('location').then(loc => loc && loc.rollbackAttributes());
+    tryInvoke(getWithDefault(this, 'location.content', {}), 'rollbackAttributes');
+    return this._super(...arguments);
   },
-
-  // Events
-  // ------
-
   didUpdate() {
-    // reset manually-managed state after receiving the latest updates from the server
+    this._super(...arguments);
     this.rollbackAttributes();
   },
+  hasManualChanges: computed(
+    'ownsPhoneHasManualChanges',
+    'hasActions',
+    'location.isDirty',
+    function() {
+      return (
+        this.get('ownsPhoneHasManualChanges') ||
+        this.get('hasActions') ||
+        !!this.get('location.isDirty')
+      );
+    }
+  ),
 
-  // Attributes
+  // Properties
   // ----------
 
   name: DS.attr('string'),
-  hexColor: DS.attr('string', {
-    defaultValue: '#3399cc'
-  }),
+  hexColor: DS.attr('string', { defaultValue: model => model.get('constants.COLOR.BRAND') }),
   numMembers: DS.attr('number'),
-
   org: DS.belongsTo('organization'),
-  hasInactivePhone: DS.attr('boolean'),
-  phone: DS.belongsTo('phone'),
   location: DS.belongsTo('location'),
+  type: computed.readOnly('constants.MODEL.TEAM'),
 
-  // Not attributes
-  // --------------
-
-  type: 'team',
-  actions: null,
-  phoneAction: null, // one of number, transfer, deactivate
-  phoneActionData: null,
-
-  // Computed properties
-  // -------------------
-
-  hasPhoneAction: computed.notEmpty('phoneAction'),
-  hasPhoneActionData: computed.notEmpty('phoneActionData'), // not all actions have data!
+  actions: computed(() => []),
   hasActions: computed.notEmpty('actions'),
-  hasManualChanges: computed.or(
-    'hasActions',
-    'phone.isDirty',
-    'hasPhoneAction',
-    'location.isDirty'
-  ),
 
   urlIdentifier: computed('name', function() {
     return Ember.String.dasherize(this.get('name') || '');
-  }),
-  transferId: computed('id', function() {
-    return `team-${this.get('id')}`;
   }),
   transferFilter: computed('name', 'location.content.address', function() {
     const name = this.get('name'),

@@ -1,9 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
-  MIME_TYPE: {
-    PDF: 'application/pdf'
-  },
+  MIME_TYPE: { PDF: 'application/pdf' },
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
     LARGEST_MAX: 5000,
@@ -26,7 +24,10 @@ export default Ember.Service.extend({
     LIGHT_BLUE: '#76c9ec',
     LIGHT_GRAY: '#d3d3d3'
   },
-  DEFAULT_TIME_INTERVAL_IN_MINUTES: 15,
+  DEFAULT: {
+    LANGUAGE: 'ENGLISH',
+    TIME_INTERVAL_IN_MINUTES: 15
+  },
   DAYS_OF_WEEK: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   MODEL: {
     STAFF: 'staff',
@@ -78,6 +79,20 @@ export default Ember.Service.extend({
       ACTIVE: 'ACTIVE',
       ARCHIVED: 'ARCHIVED',
       BLOCKED: 'BLOCKED'
+    }
+  },
+  ORGANIZATION: {
+    STATUS: {
+      REJECTED: 'REJECTED',
+      PENDING: 'PENDING',
+      APPROVED: 'APPROVED'
+    }
+  },
+  PHONE: {
+    ACTION: {
+      DEACTIVATE: 'deactivate',
+      TRANSFER: 'transfer',
+      CHANGE_NUMBER: 'number'
     }
   },
   SHARING_PERMISSION: { DELEGATE: 'DELEGATE', VIEW: 'VIEW' },

@@ -1,13 +1,15 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
-import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import humanId from 'npm:human-id';
+import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 
 const { get, computed } = Ember;
 
 export default Ember.Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSetup, {
+  constants: Ember.inject.service(),
+
   slideoutOutlet: computed.alias('constants.SLIDEOUT.OUTLET.DETAIL'),
 
   beforeModel: function() {
@@ -157,7 +159,8 @@ export default Ember.Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSe
     // -----
 
     persistWithPhone: function(withPhone, then) {
-      const isTransfer = withPhone.get('phoneAction') === 'transfer',
+      const isTransfer =
+          withPhone.get('phoneAction') === this.get('constants.PHONE.ACTION.TRANSFER'),
         data = withPhone.get('phoneActionData'),
         targetId = isTransfer ? get(data, 'id') : null,
         // if transfer, one of 'staff' or 'team', see phone-serializer.js mixin for

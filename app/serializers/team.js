@@ -1,47 +1,33 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 
+const { assign, typeOf } = Ember;
+
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
-    org: {
-      serialize: 'ids'
-    },
-    location: {
-      deserialize: 'records',
-      serialize: 'records'
-    },
-    phone: {
-      deserialize: 'records',
-      serialize: 'records'
-    },
-    numMembers: {
-      serialize: false
-    },
-    hasInactivePhone: {
-      serialize: false
-    }
+    numMembers: { serialize: false },
+    org: { serialize: 'ids' }, // org is passed as id only for teams to avoid circular json
+    location: { deserialize: 'records', serialize: 'records' }
   },
 
   serialize: function(snapshot) {
     const json = this._super(...arguments),
       actions = snapshot.record.get('actions');
-    if (actions) {
-      json.doTeamActions = actions.map(this._convertToTeamAction);
-      actions.clear();
+    if (typeOf(actions) === 'array') {
+      json.doTeamActions = actions.map(convertToTeamAction);
     }
     return json;
-  },
-
-  // Helpers
-  // -------
-
-  _convertToTeamAction: function(action) {
-    if (!action) {
-      return action;
-    }
-    action.id = action.itemId;
-    delete action.bucketId;
-    delete action.itemId;
-    return action;
   }
 });
+
+function convertToTeamAction(action) {
+  if (!action) {
+    return action;
+  }
+  const copiedAction = assign({}, action);
+  copiedAction.id = copiedAction.itemId;
+  delete copiedAction.bucketId;
+  delete copiedAction.itemId;
+  return copiedAction;
+}
