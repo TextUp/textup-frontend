@@ -4,7 +4,7 @@ import Ember from 'ember';
 import OwnsPhone from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isPresent, isArray, computed, RSVP, String, tryInvoke, getWithDefault } = Ember,
+const { isPresent, isArray, computed, RSVP, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
     name: { description: 'Name', validators: [validator('presence', true)] },
     username: {
@@ -64,7 +64,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
   isSelected: false,
 
   urlIdentifier: computed('username', function() {
-    return String.dasherize(this.get('username') || '');
+    return Ember.String.dasherize(this.get('username') || '');
   }),
   sharingId: computed.alias('phone.content.id'), // for building share actions
   transferFilter: computed('name', 'username', 'email', function() {

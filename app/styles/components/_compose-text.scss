@@ -27,11 +27,6 @@
                 padding-left: $spacing;
             }
         }
-        .remaining-indicator.top {
-            bottom: calc(100% - #{$spacing / 2});
-            border-radius: $border-radius;
-            padding: ($spacing * 0.01) ($spacing * 0.3);
-        }
     }
     &__control {
         display: flex;

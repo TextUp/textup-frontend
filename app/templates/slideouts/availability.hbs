@@ -1,12 +1,12 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat stateManager.owner.name ' Availability'))
+    headerProps=(hash title=(concat stateManager.owner.name " Availability"))
     footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
     footerProps=(hash
         showFooter=(or model.isDirty authService.authUser.isDirty)
         doPrimary=(route-action "finishAvailabilitySlideout")
         disablePrimary=(or
-            (not (v-get model 'isValid'))
-            (not (v-get authService.authUser 'isValid')))
+            (not (v-get model "isValid"))
+            (not (v-get authService.authUser "isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     doClose=(route-action "cancelAvailabilitySlideout")
@@ -14,9 +14,9 @@
         model.isDirty authService.authUser.isDirty) as |slideout|}}
     <div class="form">
         <div class="form__group">
-            <label for='Away Message' class='form__label form__label--emphasize'>{{stateManager.owner.name}}'s Away Message</label>
+            <label for="Away Message" class="form__label form__label--emphasize">{{stateManager.owner.name}}'s Away Message</label>
             <span class="form__label form__label--multiline">
-                TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam 'no one is' 'you are not'}} available. TextUp automatically adds an emergency disclaimer to your custom message.
+                TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam "no one is" "you are not"}} available. TextUp automatically adds an emergency disclaimer to your custom message.
             </span>
             {{#hide-show focusOnOpenSelector="textarea"
                 clickOutToClose=true
@@ -25,13 +25,14 @@
                 {{#if hideShow.isOpen}}
                     {{textarea rows="3"
                         autoresize=true
-                        class="form-control margin-b"
-                        maxlength=model.phone.content.awayMessageMaxLength
-                        remaining='top'
+                        maxLengthContainerClass="margin-b"
+                        class="form-control"
+                        maxLength=model.phone.content.awayMessageMaxLength
+                        maxLengthPosition=constants.MAX_LENGTH.POSITION.BOTTOM
                         value=model.phone.content.awayMessage
                         validateObj=model.phone.content
-                        validateField='awayMessage'
-                        validate='bottom'}}
+                        validateField="awayMessage"
+                        validate="bottom"}}
                 {{/if}}
                 <div class="form-control-minimal pad-all"
                     tabindex={{if hideShow.isOpen "" "0"}}
@@ -43,28 +44,28 @@
             {{/hide-show}}
         </div>
         <div class="form__group">
-            <label for='Voicemail' class='form__label form__label--emphasize'>{{stateManager.owner.name}}'s Voicemail</label>
+            <label for="Voicemail" class="form__label form__label--emphasize">{{stateManager.owner.name}}'s Voicemail</label>
             <div class="row margin-t">
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-false"
                         type="radio"
-                        checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) 'checked'}}
+                        checked={{if (not model.phone.content.useVoicemailRecordingIfPresent) "checked"}}
                         onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) false}}>
                 </div>
                 <label for="use-voicemail-recording-false"
                     class="xs-18-row-20 s-9-row-20 control-text pad-l-half pad-r-half clickable">
                     <span class="text-normal">Read away message</span>
                 </label>
-                {{#multi-toggle classNames='xs-full-row s-row-2'
-                    selectIndex=(if (eq model.phone.content.voice 'MALE') 0 1) as |toggle doRegister|}}
+                {{#multi-toggle classNames="xs-full-row s-row-2"
+                    selectIndex=(if (eq model.phone.content.voice "MALE") 0 1) as |toggle doRegister|}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=constants.COLOR.LIGHT_BLUE
-                        onSelect=(action (mut model.phone.content.voice) 'MALE')}}
+                        onSelect=(action (mut model.phone.content.voice) "MALE")}}
                         Male voice
                     {{/multi-toggle/item}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=constants.COLOR.BRAND
-                        onSelect=(action (mut model.phone.content.voice) 'FEMALE')}}
+                        onSelect=(action (mut model.phone.content.voice) "FEMALE")}}
                         Female voice
                     {{/multi-toggle/item}}
                 {{/multi-toggle}}
@@ -73,7 +74,7 @@
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-true"
                         type="radio"
-                        checked={{if model.phone.content.useVoicemailRecordingIfPresent 'checked'}}
+                        checked={{if model.phone.content.useVoicemailRecordingIfPresent "checked"}}
                         onclick={{action (mut model.phone.content.useVoicemailRecordingIfPresent) true}}>
                 </div>
                 <label for="use-voicemail-recording-true"
@@ -92,11 +93,11 @@
                         <div class="flex__item">
                             {{async-button classNames="button"
                                 disabledWhen=(or
-                                    (not (v-get model 'isValid'))
+                                    (not (v-get model "isValid"))
                                     (not authService.authUser.personalPhoneNumber))
-                                action=(route-action 'onRequestVoicemailGreetingCall' authService.authUser.personalPhoneNumber)
-                                default='Call me to record'
-                                pending='Calling your personal phone...'}}
+                                action=(route-action "onRequestVoicemailGreetingCall" authService.authUser.personalPhoneNumber)
+                                default="Call me to record"
+                                pending="Calling your personal phone..."}}
                         </div>
                     {{/if}}
                 {{/audio-control}}
@@ -109,7 +110,7 @@
 	<div class="pad-l pad-r pad-b">
         {{#if (not authService.authUser.enableNotifications)}}
             <div class="bg-color pad-all margin-b border-radius-all">
-                You have turned notifications off <span class="link" {{action slideout.actions.close (route-action 'toggleSlideout' 'slideouts/account' 'main')}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
+                You have turned notifications off <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
             </div>
         {{/if}}
         {{!-- choice of availability source only available for team phones --}}

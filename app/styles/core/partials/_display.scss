@@ -176,9 +176,11 @@ $bg-color-states: hover regular;
     }
 }
 .badge {
+    @extend .text-ellipsis;
+
     box-sizing: border-box;
     min-height: $badge-height;
-    max-width: 12 * $padding;
+    max-width: 100%;
 
     color: $font-color;
     background-color: $bg-color;

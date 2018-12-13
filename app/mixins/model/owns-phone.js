@@ -15,7 +15,7 @@ const { computed, getWithDefault, tryInvoke } = Ember,
       validators: [
         validator('inclusion', {
           allowBlank: true,
-          in: model => Object.values(model.get('constants.PHONE.ACTION'))
+          in: model => Object.values(model.get('constants.ACTION.PHONE'))
         })
       ]
     },

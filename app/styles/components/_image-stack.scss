@@ -38,6 +38,16 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        &__count {
+            position: absolute;
+            right: $baseunit * 0.5;
+            bottom: $baseunit * 0.5;
+            padding: ($baseunit * 0.2) ($baseunit * 0.5);
+            border-radius: $border-radius;
+            background-color: $border-color;
+            color: $font-color;
+            font-weight: $font-weight-bold;
+        }
     }
 
     // Complexities of z-index and 3d-transforms documented

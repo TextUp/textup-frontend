@@ -1,244 +1,276 @@
 {{title stateManager.owner.name prepend=false separator=" - "}}
 {{message-modal url=appMessageEndpoint
     display=shouldShowAppMessage
-    onClose=(action 'closeAppUpdateMessage')}}
+    onClose=(action "closeAppUpdateMessage")}}
 
-{{#sliding-drawer contentsId='menu'
+{{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
-    allowCloseContentsSelector='.menu-item'
-    ignoreCloseContentsSelector='.menu-slideout, .header-slideout, .menu-header'
-    bodyId='body'
+    allowCloseContentsSelector=".menu-item"
+    ignoreCloseContentsSelector=".menu-slideout, .header-slideout, .menu-header"
+    bodyId="body"
     doRegister=(action (mut slidingMenu))
     as |drawer|}}
     <span class="display-xs display-s display-m menu-toggle">
         <button class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}}>
             {{#if stateManager.ownerIsTeam}}
-                <p class='halo halo-sm text-heading'
-                    style='background-color:{{stateManager.owner.hexColor}};
-                        color:{{contrast-color stateManager.owner.hexColor}};'>
+                <p class="halo halo-sm text-heading"
+                    style="background-color:{{stateManager.owner.hexColor}};
+                        color:{{contrast-color stateManager.owner.hexColor}};">
                     {{abbreviate stateManager.owner.name 1}}
                 </p>
             {{else}}
-                <span class='halo halo-sm bg-color bg-brand text-heading'>
+                <span class="halo halo-sm bg-color bg-brand text-heading">
                     <span class="fa fa-user"></span>
                 </span>
             {{/if}}
         </button>
     </span>
     {{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DETAIL)
-        class='animate-slide-from-right animated-overflow'}}
+        class="animate-slide-from-right animated-overflow"}}
         {{outlet constants.SLIDEOUT.OUTLET.DETAIL}}
     {{/liquid-if}}
     {{outlet}}
 {{else}}
-    {{#account-switcher class='display-xs display-s display-m'
-        activeOwner=stateManager.owner
-        user=authService.authUser
-        doLogOut=(route-action 'logout')
-        containerTagName='li'
-        doRegisterContainer=(action (mut accountSwitcher))
-        toggleClass='xs-8-row-10'}}
-        <button class="xs-2-row-10 textup-account-switcher__display"
-            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'main' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            <span class="fa fa-cog"></span>
-        </button>
-    {{/account-switcher}}
-    {{#if stateManager.ownerIsTeam}}
-        <li class='menu-item menu-header display-l'
-            style='background-color:{{stateManager.owner.hexColor}};
-                color:{{contrast-color stateManager.owner.hexColor}};'
-            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'main' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                title=(concat 'Account (' stateManager.owner.name ')')
-                classNames='btn-expand'}}
-                <h4 class='match-color'>{{abbreviate stateManager.owner.name 1}}</h4>
-            {{/tool-tip}}
-        </li>
-    {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
-        <li class='menu-item menu-header display-l'
-            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'main' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                title=(concat 'Account (' stateManager.owner.name ')')
-                classNames='btn-expand'}}
-                <span class="fa fa-user"></span>
-            {{/tool-tip}}
-        </li>
-    {{/if}}
-    {{#if stateManager.owner.phone.isFulfilled}}
-        <li class='menu-item menu-slideout display-l
-                {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}'
-            onclick={{route-action "startAvailabilitySlideout"}}>
-            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                title='Availability'
-                classNames='btn-expand'}}
-                {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
-                    <span class="fa fa-calendar-check-o"></span>
-                {{else}}
-                    <span class="fa fa-calendar-times-o"></span>
+    <div class="menu">
+        <div class="menu__section">
+            <div class="display-xs display-s display-m">
+                {{#account-switcher
+                    activeOwner=stateManager.owner
+                    user=authService.authUser
+                    doLogOut=(route-action "logout")
+                    doRegisterContainer=(action (mut accountSwitcher))
+                    toggleClass="xs-8-row-10"}}
+                    <button class="xs-2-row-10 textup-account-switcher__display"
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        <span class="fa fa-cog"></span>
+                    </button>
+                {{/account-switcher}}
+            </div>
+            <div class="display-l">
+                {{#if stateManager.ownerIsTeam}}
+                    <div class="menu-item menu-header"
+                        style="background-color:{{stateManager.owner.hexColor}};
+                            color:{{contrast-color stateManager.owner.hexColor}};"
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                            title=(concat "Account (" stateManager.owner.name ")")
+                            classNames="btn-expand"}}
+                            <h4 class="match-color">{{abbreviate stateManager.owner.name 1}}</h4>
+                        {{/tool-tip}}
+                    </div>
+                {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
+                    <div class="menu-item menu-header"
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                            title=(concat "Account (" stateManager.owner.name ")")
+                            classNames="btn-expand"}}
+                            <span class="fa fa-user"></span>
+                        {{/tool-tip}}
+                    </div>
                 {{/if}}
-            {{/tool-tip}}
-        </li>
-        <li class='menu-item menu-slideout display-xs display-s display-m
-                {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}'
-            onclick={{route-action "startAvailabilitySlideout"}}>
-            <div class="btn-expand">
-                <span>Availability</span>
             </div>
-        </li>
-    {{/if}}
-    <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout display-l'
-        onclick={{route-action "startComposeSlideout"}}>
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Compose'
-            classNames='btn-expand'}}
-            <span class="fa fa-comments"></span>
-        {{/tool-tip}}
-    </li>
-    <li class='menu-item menu-slideout display-xs display-s display-m'
-        onclick={{route-action "startComposeSlideout"}}>
-        <div class="btn-expand">
-            <span>Compose</span>
-        </div>
-    </li>
-    <li class='menu-item menu-slideout display-l'
-        onclick={{route-action "startCallSlideout"}}>
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Call'
-            classNames='btn-expand'}}
-            <span class="fa fa-phone"></span>
-        {{/tool-tip}}
-    </li>
-    <li class='menu-item menu-slideout display-xs display-s display-m'
-        onclick={{route-action "startCallSlideout"}}>
-        <div class="btn-expand">
-            <span>Call</span>
-        </div>
-    </li>
-    {{#if (can-download)}}
-        <li class='menu-item menu-slideout display-l'
-            onclick={{route-action "startMultipleExportSlideout"}}>
-            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                title='Export'
-                classNames='btn-expand'}}
-                <span class="fa fa-file"></span>
-            {{/tool-tip}}
-        </li>
-        <li class='menu-item menu-slideout display-xs display-s display-m'
-            onclick={{route-action "startMultipleExportSlideout"}}>
-            <div class="btn-expand">
-                <span>Export</span>
+            {{#if stateManager.owner.phone.isFulfilled}}
+                <div class="display-xs display-s display-m">
+                    <div class="menu-item menu-slideout
+                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        onclick={{route-action "startAvailabilitySlideout"}}>
+                        <div class="btn-expand">
+                            <span>Availability</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="display-l">
+                    <div class="menu-item menu-slideout
+                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        onclick={{route-action "startAvailabilitySlideout"}}>
+                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                            title="Availability"
+                            classNames="btn-expand"}}
+                            {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
+                                <span class="fa fa-calendar-check-o"></span>
+                            {{else}}
+                                <span class="fa fa-calendar-times-o"></span>
+                            {{/if}}
+                        {{/tool-tip}}
+                    </div>
+                </div>
+            {{/if}}
+            <div class="display-xs display-s display-m">
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startComposeSlideout"}}>
+                    <div class="btn-expand">
+                        <span>Compose</span>
+                    </div>
+                </div>
             </div>
-        </li>
-    {{/if}}
+            <div class="display-l">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startComposeSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Compose"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-comments"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+            <div class="display-xs display-s display-m">
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startCallSlideout"}}>
+                    <div class="btn-expand">
+                        <span>Call</span>
+                    </div>
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startCallSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Call"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-phone"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+            {{#if (can-download)}}
+                <div class="display-xs display-s display-m">
+                    <div class="menu-item menu-slideout"
+                        onclick={{route-action "startMultipleExportSlideout"}}>
+                        <div class="btn-expand">
+                            <span>Export</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="display-l">
+                    <div class="menu-item menu-slideout"
+                        onclick={{route-action "startMultipleExportSlideout"}}>
+                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                            title="Export"
+                            classNames="btn-expand"}}
+                            <span class="fa fa-file"></span>
+                        {{/tool-tip}}
+                    </div>
+                </div>
+            {{/if}}
 
-    {{!-- contacts --}}
+            {{!-- contacts --}}
 
-    <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout display-l'
-        onclick={{route-action "startNewContactSlideout"}}>
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Add Contact'
-            classNames='btn-expand'}}
-            <span class="fa fa-user-plus"></span>
-        {{/tool-tip}}
-    </li>
-    {{#link-to 'main.search' tagName='li' classNames='menu-item display-l'}}
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Search Contacts'
-            classNames='btn-expand'}}
-            <span class="fa fa-search"></span>
-        {{/tool-tip}}
-    {{/link-to}}
-    {{#link-to 'main.contacts' tagName='li' classNames='menu-item display-l'}}
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Contacts'
-            classNames='btn-expand'}}
-            <span class="fa fa-user"></span>
-        {{/tool-tip}}
-    {{/link-to}}
-    <li class="menu-divider display-xs display-s display-m">
-        Contacts
-        <button class="btn btn-plain v-center-right"
-            type="button"
-            onclick={{route-action "startNewContactSlideout"}}>
-            <span class="fa fa-plus"></span>
-        </button >
-    </li>
-    <li class="menu-item display-xs display-s display-m
-        {{if (and stateManager.viewingContacts (eq filter 'all')) 'active'}}"
-        {{action 'changeFilter' 'all'}}>
-        <span>All</span>
-    </li>
-    <li class="menu-item display-xs display-s display-m
-        {{if (and stateManager.viewingContacts (eq filter 'unread')) 'active'}}"
-        {{action 'changeFilter' 'unread'}}>
-        <span>Unread</span>
-    </li>
-    <li class="menu-item display-xs display-s display-m
-        {{if (and stateManager.viewingContacts (eq filter 'archived')) 'active'}}"
-        {{action 'changeFilter' 'archived'}}>
-        <span>Archived</span>
-    </li>
-    <li class="menu-item display-xs display-s display-m
-        {{if (and stateManager.viewingContacts (eq filter 'blocked')) 'active'}}"
-        {{action 'changeFilter' 'blocked'}}>
-        <span>Blocked</span>
-    </li>
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider">
+                    Contacts
+                    <button class="btn btn-plain v-center-right"
+                        type="button"
+                        onclick={{route-action "startNewContactSlideout"}}>
+                        <span class="fa fa-plus"></span>
+                    </button >
+                </div>
+                <div class="menu-item
+                    {{if (and stateManager.viewingContacts (eq filter "all")) "active"}}"
+                    {{action "changeFilter" "all"}}>
+                    <span>All</span>
+                </div>
+                <div class="menu-item
+                    {{if (and stateManager.viewingContacts (eq filter "unread")) "active"}}"
+                    {{action "changeFilter" "unread"}}>
+                    <span>Unread</span>
+                </div>
+                <div class="menu-item
+                    {{if (and stateManager.viewingContacts (eq filter "archived")) "active"}}"
+                    {{action "changeFilter" "archived"}}>
+                    <span>Archived</span>
+                </div>
+                <div class="menu-item
+                    {{if (and stateManager.viewingContacts (eq filter "blocked")) "active"}}"
+                    {{action "changeFilter" "blocked"}}>
+                    <span>Blocked</span>
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startNewContactSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Add Contact"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-user-plus"></span>
+                    {{/tool-tip}}
+                </div>
+                {{#link-to "main.search" tagName="div" classNames="menu-item"}}
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Search Contacts"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-search"></span>
+                    {{/tool-tip}}
+                {{/link-to}}
+                {{#link-to "main.contacts" tagName="div" classNames="menu-item"}}
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Contacts"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-user"></span>
+                    {{/tool-tip}}
+                {{/link-to}}
+            </div>
 
-    {{!-- tags --}}
+            {{!-- tags --}}
 
-    <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout display-l' onclick={{route-action "startTagListSlideout"}}>
-        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-            title='Tags'
-            classNames='btn-expand'}}
-            <span class="fa fa-tags"></span>
-        {{/tool-tip}}
-    </li>
-    <li class="menu-divider display-xs display-s display-m">
-        Tags
-        <button class="btn btn-plain v-center-right"
-            type="button"
-            onclick={{route-action "startNewTagSlideout"}}>
-            <span class="fa fa-plus"></span>
-        </button >
-    </li>
-    {{#if model.phone.isFulfilled}}
-        {{#each model.phone.content.tags as |tag|}}
-            {{#link-to 'main.tag' tag tagName='li'
-                classNames='menu-item display-xs display-s display-m'}}
-                <span>
-                    <span class="indicator margin-r-quarter"
-                        style="background-color:{{tag.hexColor}};"></span>
-                    {{tag.name}}
-                </span>
-                <span class="badge dark">{{tag.numMembers}}</span>
-            {{/link-to}}
-        {{else}}
-            <li class='text-bold display-xs display-s display-m'>
-                <div class="pad-t pad-b">No tags yet.</div>
-            </li>
-        {{/each}}
-    {{/if}}
-
-    {{!-- feedback --}}
-
-    <li class="menu-divider display-xs display-s display-m"></li>
-    <li class='menu-item menu-slideout display-xs display-s display-m'
-        onclick={{route-action "startFeedbackSlideout"}}>
-        <span>Feedback</span>
-    </li>
-
-    <li class='menu-footer display-l'>
-        <li class='border-t menu-item menu-slideout'
-            onclick={{route-action "startFeedbackSlideout"}}>
-            {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                title='Feedback'
-                classNames='btn-expand'}}
-                <span class="fa fa-question-circle"></span>
-            {{/tool-tip}}
-        </li>
-    </li>
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider">
+                    Tags
+                    <button class="btn btn-plain v-center-right"
+                        type="button"
+                        onclick={{route-action "startNewTagSlideout"}}>
+                        <span class="fa fa-plus"></span>
+                    </button >
+                </div>
+                {{#if model.phone.isFulfilled}}
+                    {{#each model.phone.content.tags as |tag|}}
+                        {{#link-to "main.tag" tag tagName="div"
+                            classNames="menu-item"}}
+                            <span>
+                                <span class="indicator margin-r-quarter"
+                                    style="background-color:{{tag.hexColor}};"></span>
+                                {{tag.name}}
+                            </span>
+                            <span class="badge dark">{{tag.numMembers}}</span>
+                        {{/link-to}}
+                    {{else}}
+                        <div class="text-bold">
+                            <div class="pad-t pad-b">No tags yet.</div>
+                        </div>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <div class="display-l">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startTagListSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Tags"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-tags"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+        </div>
+        <div class="menu__section">
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startFeedbackSlideout"}}>
+                    <span>Feedback</span>
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="border-t menu-item menu-slideout"
+                    onclick={{route-action "startFeedbackSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Feedback"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-question-circle"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+        </div>
+    </div>
 {{/sliding-drawer}}

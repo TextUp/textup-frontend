@@ -2,8 +2,7 @@
     <label class="form__label" for="Scheduled Message">Message</label>
     {{textarea class='form__input form__input--multiline start-focus'
         disabled=futureMessage.isDeleted
-        maxlength='320'
-        remaining='top'
+        maxLength=320
         autoresize=true
         rows='1'
         value=futureMessage.message

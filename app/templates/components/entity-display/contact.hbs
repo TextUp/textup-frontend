@@ -10,8 +10,8 @@
         </p>
     </div>
 </div>
-<div class="flex text-smaller">
-    <div class="flex__item flex__item--grow text-ellipsis">
+<div class="flex flex--spacing-between text-smaller">
+    <div class="flex__item flex__item--no-shrink flex__item--grow">
         {{#if entity.isShared}}
             <span class="badge">
                 {{entity.sharedBy}}
@@ -30,7 +30,7 @@
             </span>
         {{/if}}
     </div>
-    <div class="flex__item text-right">
+    <div class="flex__item flex__item--single-line text-right">
         {{#if (and entity.isUnread entity.unreadInfo)}}
             <div class="text-big text-brand">
                 <span class="margin-l-half">{{entity.unreadInfo.numTexts}}</span>

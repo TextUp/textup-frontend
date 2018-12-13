@@ -53,11 +53,9 @@ body {
 // ----
 
 #menu {
-	@extend .reset-list;
 	text-align: center;
 	border-right: 1px solid shade($border-color, 3);
 	width: $collapsed-menu-width;
-	max-width: 90%;
 	z-index: $menu-z-index;
 }
 .menu-item {
@@ -178,15 +176,13 @@ body {
 			color: $danger-color;
 		}
 	}
-	.menu-footer {
-		position: absolute;
-		left: 50%;
-		bottom: 0;
-		transform: translateX(-50%);
-		width: 100%;
-		z-index: -1; // position behind items on scroll
-		img.brand {
-			width: 95%;
+	.menu {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		height: 100%;
+
+		&__section {
 		}
 	}
 

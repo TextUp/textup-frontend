@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import ModelOwnsPhoneMixin from 'textup-frontend/mixins/model/owns-phone';
+import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
 const { run } = Ember,
@@ -36,7 +37,7 @@ test('dirty checking', function(assert) {
 
   obj.setProperties({
     'phone.content': { isDirty: true },
-    phoneAction: this.constants.PHONE.ACTION.DEACTIVATE
+    phoneAction: this.constants.ACTION.PHONE.DEACTIVATE
   });
   assert.equal(obj.get('hasManualChanges'), true);
   assert.equal(obj.get('ownsPhoneHasManualChanges'), true);
@@ -91,7 +92,7 @@ test('validating phone', function(assert) {
     const done = assert.async(),
       obj = this.subject();
 
-    obj.validate().then(({ model, validations }) => {
+    obj.validate().then(({ model }) => {
       assert.equal(
         model.get('validations.attrs.phone.isValid'),
         true,
@@ -110,7 +111,7 @@ test('validating phone action', function(assert) {
 
     obj
       .validate()
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.phoneAction.isValid'),
           true,
@@ -120,17 +121,17 @@ test('validating phone action', function(assert) {
         model.setProperties({ phoneAction: 'blah' });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.phoneAction.isValid'),
           false,
           'phoneAction not in specified list'
         );
 
-        model.setProperties({ phoneAction: this.constants.PHONE.ACTION.DEACTIVATE });
+        model.setProperties({ phoneAction: this.constants.ACTION.PHONE.DEACTIVATE });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.phoneAction.isValid'),
           true,
@@ -149,7 +150,7 @@ test('validating transfer filter', function(assert) {
 
     obj
       .validate()
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.transferFilter.isValid'),
           false,
@@ -159,7 +160,7 @@ test('validating transfer filter', function(assert) {
         model.setProperties({ transferFilter: 'any value here' });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.transferFilter.isValid'),
           true,

@@ -36,9 +36,8 @@
         placeholder="Enter notes here..."
         disabled=(if (not contact.allowEdits) 'disabled')
         autoresize=true
-        remaining='bottom'
         class="form__input form__input--multiline"
-        maxlength="1000"
+        maxLength=1000
         validateObj=contact
         validateField='note'
         validate='bottom'

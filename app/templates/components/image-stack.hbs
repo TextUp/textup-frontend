@@ -5,6 +5,9 @@
             versions=_coverImage.versions.content
             onSuccess=(action _onSuccess)
             onFailure=(action _onFailure)}}
+        {{#if _numImages}}
+            <span class="image-stack__preview__count">{{_numImages}}</span>
+        {{/if}}
         {{yield _coverImage}}
     </div>
 {{/responsive-image-gallery}}

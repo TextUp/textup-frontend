@@ -64,6 +64,14 @@ test('successfully loading an image', function(assert) {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1);
       assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], true);
+
+      assert.ok(this.$('.image-stack__preview__count').length);
+      assert.ok(
+        this.$('.image-stack__preview__count')
+          .text()
+          .indexOf(this.get('images.length')) > -1
+      );
+
       done();
     };
 
@@ -79,6 +87,14 @@ test('failing to load image', function(assert) {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1, 'only try the first image');
       assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], false);
+
+      assert.ok(this.$('.image-stack__preview__count').length);
+      assert.ok(
+        this.$('.image-stack__preview__count')
+          .text()
+          .indexOf(this.get('images.length')) > -1
+      );
+
       done();
     };
 

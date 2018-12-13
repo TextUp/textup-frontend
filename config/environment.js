@@ -48,8 +48,7 @@ module.exports = function(environment) {
     ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
-    // ENV.lock.lockOnHidden = false;
-    ENV.manifest = { enabled: true };
+    ENV.lock.lockOnHidden = false;
     ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
     ENV.links = {
       privacyPolicy: 'http://staging-static.textup.org/privacy-policy/',

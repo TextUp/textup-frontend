@@ -57,5 +57,8 @@
         &--no-shrink {
             flex-shrink: 0;
         }
+        &--single-line {
+            display: flex; // default no-wrap
+        }
     }
 }

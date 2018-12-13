@@ -22,11 +22,13 @@ export default Ember.Service.extend({
   COLOR: {
     BRAND: '#1ba5e0',
     LIGHT_BLUE: '#76c9ec',
+    MEDIUM_BLUE: '#6ab4d4',
     LIGHT_GRAY: '#d3d3d3'
   },
   DEFAULT: {
     LANGUAGE: 'ENGLISH',
-    TIME_INTERVAL_IN_MINUTES: 15
+    TIME_INTERVAL_IN_MINUTES: 15,
+    OUTGOING_TEXT_NUM_CHARACTERS: 160 * 10
   },
   DAYS_OF_WEEK: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   MODEL: {
@@ -64,6 +66,9 @@ export default Ember.Service.extend({
   PHOTO_CONTROL: {
     DISPLAY: { GRID: 'image-grid', STACK: 'image-stack' }
   },
+  MAX_LENGTH: {
+    POSITION: { TOP: 'top', BOTTOM: 'bottom' }
+  },
   IMAGE: { DEFAULT_ALT: 'User provided image' },
   AUDIO: { MAX_DURATION_IN_SECONDS: 180 },
   FUTURE_MESSAGE: {
@@ -88,16 +93,14 @@ export default Ember.Service.extend({
       APPROVED: 'APPROVED'
     }
   },
-  PHONE: {
-    ACTION: {
-      DEACTIVATE: 'deactivate',
-      TRANSFER: 'transfer',
-      CHANGE_NUMBER: 'number'
-    }
-  },
   SHARING_PERMISSION: { DELEGATE: 'DELEGATE', VIEW: 'VIEW' },
   ACTION: {
-    MEDIA: { ADD: 'ADD', REMOVE: 'REMOVE' }
+    MEDIA: { ADD: 'ADD', REMOVE: 'REMOVE' },
+    PHONE: {
+      DEACTIVATE: 'DEACTIVATE',
+      TRANSFER: 'TRANSFER',
+      CHANGE_NUMBER: 'NUMBER'
+    }
   },
   POP_OVER: {
     POSITION: { TOP: 'top', BOTTOM: 'bottom' }

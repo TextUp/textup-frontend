@@ -29,7 +29,7 @@ test('dirty checking', function(assert) {
   assert.equal(obj.get('isDirty'), true);
   assert.equal(obj.get('hasManualChanges'), false);
 
-  obj.set('phoneAction', this.constants.PHONE.ACTION.DEACTIVATE);
+  obj.set('phoneAction', this.constants.ACTION.PHONE.DEACTIVATE);
 
   assert.equal(obj.get('hasManualChanges'), true);
 

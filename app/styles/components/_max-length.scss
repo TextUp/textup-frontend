@@ -1,0 +1,33 @@
+.max-length {
+	position: relative;
+
+	&__indicator {
+		@extend .text-smaller;
+
+		position: absolute;
+		padding: ($baseunit * 0.01) ($baseunit * 0.3);
+		border-radius: $border-radius;
+		background-color: $color-brand-dark;
+		color: contrast-color($color-brand-dark);
+		font-weight: $font-weight-bold;
+		opacity: 0;
+		transition: opacity 0.2s;
+
+		&--visible {
+			opacity: 1;
+		}
+		&--position {
+			$vertical-adjustment: 0.05 * $baseunit;
+			&-top {
+				top: 0;
+				left: 50%;
+				transform: translate(-50%, calc(-50% + #{$vertical-adjustment}));
+			}
+			&-bottom {
+				bottom: 0;
+				left: 50%;
+				transform: translate(-50%, calc(50% - #{$vertical-adjustment}));
+			}
+		}
+	}
+}

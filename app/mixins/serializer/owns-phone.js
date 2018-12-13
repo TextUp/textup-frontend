@@ -18,13 +18,13 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
       data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : Object.create(null),
       doActions = [];
     switch (rec1.get('phoneAction')) {
-      case constants.PHONE.ACTION.CHANGE_NUMBER:
+      case constants.ACTION.PHONE.CHANGE_NUMBER:
         doActions.pushObject(changeToNewNumber(data));
         break;
-      case constants.PHONE.ACTION.DEACTIVATE:
+      case constants.ACTION.PHONE.DEACTIVATE:
         doActions.pushObject(deactivate());
         break;
-      case constants.PHONE.ACTION.TRANSFER:
+      case constants.ACTION.PHONE.TRANSFER:
         doActions.pushObject(transfer(data, this.get('constants.MODEL.STAFF')));
         break;
     }

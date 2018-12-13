@@ -20,107 +20,140 @@
     {{/liquid-if}}
     {{outlet}}
 {{else}}
-    {{#account-switcher class='display-xs display-s display-m'
-        activeOwner=stateManager.owner
-        user=authService.authUser
-        doLogOut=(route-action 'logout')
-        containerTagName='li'
-        doRegisterContainer=(action (mut accountSwitcher))
-        toggleClass='xs-8-row-10'}}
-        <button class="xs-2-row-10 textup-account-switcher__display"
-            onclick={{route-action 'toggleSlideout' 'slideouts/account' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            <span class="fa fa-cog"></span>
-        </button>
-    {{/account-switcher}}
-    <li class='menu-item menu-header menu-header-light display-l'
-        {{action 'toggleSlideout' 'slideouts/account' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-        {{#tool-tip classNames='btn-expand'
-            title=(concat 'Admin (' stateManager.owner.name ')')
-            side=constants.TOOLTIP.SIDE.RIGHT}}
-            <span class="fa fa-home"></span>
-        {{/tool-tip}}
-    </li>
-    {{#if numPending}}
-        {{#link-to 'admin.pending' tagName='li' classNames='menu-item'}}
-            {{#tool-tip classNames='btn-expand display-l'
-                title=(concat 'Pending (' numPending ')')
-                side=constants.TOOLTIP.SIDE.RIGHT}}
-                <span class="fa fa-clock-o"></span>
-            {{/tool-tip}}
-            <div class="btn-expand display-xs display-s display-m">
-                <span>Pending</span>
-                <span class="badge dark">{{numPending}}</span>
+    <div class="menu">
+        <div class="menu__section">
+            <div class="display-xs display-s display-m">
+                {{#account-switcher activeOwner=stateManager.owner
+                    user=authService.authUser
+                    doLogOut=(route-action "logout")
+                    doRegisterContainer=(action (mut accountSwitcher))
+                    toggleClass="xs-8-row-10"}}
+                    <button class="xs-2-row-10 textup-account-switcher__display"
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        <span class="fa fa-cog"></span>
+                    </button>
+                {{/account-switcher}}
             </div>
-        {{/link-to}}
-    {{/if}}
-    <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout display-l'
-        {{action 'toggleSlideout' 'slideouts/staff/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-        {{#tool-tip classNames='btn-expand' title='Add Staff' side=constants.TOOLTIP.SIDE.RIGHT}}
-            <span class="fa fa-user-plus"></span>
-        {{/tool-tip}}
-    </li>
-    {{#link-to 'admin.people' tagName='li' classNames='menu-item display-l'}}
-        {{#tool-tip classNames='btn-expand' title='People' side=constants.TOOLTIP.SIDE.RIGHT}}
-            <span class="fa fa-user"></span>
-        {{/tool-tip}}
-    {{/link-to}}
-    <li class="menu-divider display-l"></li>
-    <li class='menu-item menu-slideout display-l'
-        {{action 'toggleSlideout' 'slideouts/team/list' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-        {{#tool-tip classNames='btn-expand' title='Teams' side=constants.TOOLTIP.SIDE.RIGHT}}
-            <span class="fa fa-users"></span>
-        {{/tool-tip}}
-    </li>
+            <div class="display-l">
+                <div class="menu-item menu-header menu-header-light"
+                    {{action "toggleSlideout" "slideouts/account" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                    {{#tool-tip classNames="btn-expand"
+                        title=(concat "Admin (" stateManager.owner.name ")")
+                        side=constants.TOOLTIP.SIDE.RIGHT}}
+                        <span class="fa fa-home"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+            {{#if numPending}}
+                {{#link-to "admin.pending" tagName="div" classNames="menu-item"}}
+                    <div class="display-xs display-s display-m">
+                        <div class="btn-expand">
+                            <span>Pending</span>
+                            <span class="badge dark">{{numPending}}</span>
+                        </div>
+                    </div>
+                    <div class="display-l">
+                        {{#tool-tip classNames="btn-expand"
+                            title=(concat "Pending (" numPending ")")
+                            side=constants.TOOLTIP.SIDE.RIGHT}}
+                            <span class="fa fa-clock-o"></span>
+                        {{/tool-tip}}
+                    </div>
+                {{/link-to}}
+                <div class="display-l">
+                    <div class="menu-divider"></div>
+                </div>
+            {{/if}}
 
-    {{!-- staff members --}}
+            {{!-- staff members --}}
 
-    <li class="menu-divider display-xs display-s display-m">
-        People
-        <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/staff/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            <span class="fa fa-plus"></span>
-        </button >
-    </li>
-    <li class="menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTeam) (eq filter 'active')) 'active'}}"
-        {{action 'changeFilter' 'active'}}>
-        <span>Active</span>
-    </li>
-    <li class='menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTeam) (eq filter 'admins')) 'active'}}'
-        {{action 'changeFilter' 'admins'}}>
-        <span>Admins</span>
-    </li>
-    <li class='menu-item display-xs display-s display-m
-        {{if (and (not stateManager.viewingTeam) (eq filter 'deactivated')) 'active'}}'
-        {{action 'changeFilter' 'deactivated'}}>
-        <span>Deactivated</span>
-    </li>
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider">
+                    People
+                    <button class="btn btn-plain v-center-right"
+                        {{action "toggleSlideout" "slideouts/staff/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        <span class="fa fa-plus"></span>
+                    </button >
+                </div>
+                <div class="menu-item
+                    {{if (and (not stateManager.viewingTeam) (eq filter "active")) "active"}}"
+                    {{action "changeFilter" "active"}}>
+                    <span>Active</span>
+                </div>
+                <div class="menu-item
+                    {{if (and (not stateManager.viewingTeam) (eq filter "admins")) "active"}}"
+                    {{action "changeFilter" "admins"}}>
+                    <span>Admins</span>
+                </div>
+                <div class="menu-item
+                    {{if (and (not stateManager.viewingTeam) (eq filter "deactivated")) "active"}}"
+                    {{action "changeFilter" "deactivated"}}>
+                    <span>Deactivated</span>
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="menu-item menu-slideout"
+                    {{action "toggleSlideout" "slideouts/staff/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                    {{#tool-tip classNames="btn-expand" title="Add Staff" side=constants.TOOLTIP.SIDE.RIGHT}}
+                        <span class="fa fa-user-plus"></span>
+                    {{/tool-tip}}
+                </div>
+                {{#link-to "admin.people" tagName="div" classNames="menu-item"}}
+                    {{#tool-tip classNames="btn-expand" title="People" side=constants.TOOLTIP.SIDE.RIGHT}}
+                        <span class="fa fa-user"></span>
+                    {{/tool-tip}}
+                {{/link-to}}
+            </div>
 
-    {{!-- teams --}}
+            {{!-- teams --}}
 
-    <li class="menu-divider display-xs display-s display-m">
-        Teams
-        <button class="btn btn-plain v-center-right"
-            {{action 'toggleSlideout' 'slideouts/team/create' 'admin' constants.SLIDEOUT.OUTLET.DEFAULT}}>
-            <span class="fa fa-plus"></span>
-        </button >
-    </li>
-    {{#each model.teams as |team|}}
-        {{#link-to 'admin.team' team tagName='li'
-            classNames='menu-item display-xs display-s display-m'}}
-            <span>{{team.name}}</span>
-            <span class="badge dark">{{team.numMembers}}</span>
-            <span class="indicator" style="background-color:{{team.hexColor}};"></span>
-        {{/link-to}}
-    {{else}}
-        <li class='display-xs display-s display-m'>
-            <div class="pad-t pad-b">No teams yet.</div>
-        </li>
-    {{/each}}
-
-    <li class='menu-footer display-l pad-l-half pad-r-half pad-b'>
-        <img class="brand" src='assets/images/logo.png' />
-    </li>
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider">
+                    Teams
+                    <button class="btn btn-plain v-center-right"
+                        {{action "toggleSlideout" "slideouts/team/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        <span class="fa fa-plus"></span>
+                    </button >
+                </div>
+                {{#each model.teams as |team|}}
+                    {{#link-to "admin.team" team tagName="div"
+                        classNames="menu-item"}}
+                        <span>{{team.name}}</span>
+                        <span class="badge dark">{{team.numMembers}}</span>
+                        <span class="indicator" style="background-color:{{team.hexColor}};"></span>
+                    {{/link-to}}
+                {{else}}
+                    <div class="pad-t pad-b">No teams yet.</div>
+                {{/each}}
+            </div>
+            <div class="display-l">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    {{action "toggleSlideout" "slideouts/team/list" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                    {{#tool-tip classNames="btn-expand" title="Teams" side=constants.TOOLTIP.SIDE.RIGHT}}
+                        <span class="fa fa-users"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+        </div>
+        <div class="menu__section">
+            <div class="display-xs display-s display-m">
+                <div class="menu-divider"></div>
+                <div class="menu-item menu-slideout"
+                    onclick={{route-action "startFeedbackSlideout"}}>
+                    <span>Feedback</span>
+                </div>
+            </div>
+            <div class="display-l">
+                <div class="border-t menu-item menu-slideout"
+                    onclick={{route-action "startFeedbackSlideout"}}>
+                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        title="Feedback"
+                        classNames="btn-expand"}}
+                        <span class="fa fa-question-circle"></span>
+                    {{/tool-tip}}
+                </div>
+            </div>
+        </div>
+    </div>
 {{/sliding-drawer}}

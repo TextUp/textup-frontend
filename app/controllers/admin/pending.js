@@ -13,7 +13,7 @@ export default Ember.Controller.extend({
     approve: function(staff) {
       staff.set('status', 'STAFF');
       if (staff.get('hasPhoneActionData')) {
-        staff.set('phoneAction', this.get('constants.PHONE.ACTION.CHANGE_NUMBER'));
+        staff.set('phoneAction', this.get('constants.ACTION.PHONE.CHANGE_NUMBER'));
       }
       this._handlePending(staff);
     },

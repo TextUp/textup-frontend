@@ -4,6 +4,8 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
+  constants: Ember.inject.service(),
+
   propTypes: {
     numMedia: PropTypes.number,
     placeholder: PropTypes.string,

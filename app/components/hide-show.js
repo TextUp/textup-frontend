@@ -4,6 +4,7 @@ import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { distance } from 'textup-frontend/utils/coordinate';
+import { isOrContainsElement } from 'textup-frontend/utils/element';
 
 const { computed, tryInvoke, run, RSVP } = Ember,
   TOUCH_TAP_MAX_DISTANCE_IN_PX = 20;
@@ -76,7 +77,9 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
           return resolve();
         }
         this.setProperties({ '_publicAPI.isOpen': true });
-        run.scheduleOnce('afterRender', this, this._afterOpen.bind(this, resolve));
+        // needs more a delay than 'afterRender' to ensure that initialization work
+        // when opening the hide-show has completed
+        run.next(this, this._afterOpen.bind(this, resolve));
       });
     });
   },
@@ -129,13 +132,13 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     }
     const $root = this.get('_root'),
       $target = Ember.$(target),
-      $el = this.$();
+      thisEl = this.element;
     // don't close if clicked inside body
-    if ($el.is($target) || Ember.$.contains($el[0], $target[0])) {
+    if (isOrContainsElement(thisEl, target)) {
       return;
     }
     // don't close if the clicked target is nonexistent
-    if (!$root.is($target) && !Ember.$.contains($root[0], $target[0])) {
+    if (!isOrContainsElement($root[0], target)) {
       return;
     }
     const ignoreCloseSelector = this.get('ignoreCloseSelector');

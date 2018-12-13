@@ -7,7 +7,7 @@
         background-color: shade($bg-color);
     }
     &__body {
-        background-color: $color-light-seafoam;
+        background-color: $bg-color;
 
         &__message {
             margin: $baseunit $baseunit 0;

@@ -41,7 +41,7 @@ test('changing phone number', function(assert) {
     phoneNumber = Math.random();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.PHONE.ACTION.CHANGE_NUMBER })
+    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER })
   });
 
   assert.equal(typeOf(json), 'object');
@@ -49,7 +49,7 @@ test('changing phone number', function(assert) {
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.PHONE.ACTION.CHANGE_NUMBER,
+      phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER,
       hasPhoneActionData: true,
       phoneActionData: { sid }
     })
@@ -60,7 +60,7 @@ test('changing phone number', function(assert) {
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.PHONE.ACTION.CHANGE_NUMBER,
+      phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER,
       hasPhoneActionData: true,
       phoneActionData: { phoneNumber }
     })
@@ -71,12 +71,10 @@ test('changing phone number', function(assert) {
 });
 
 test('deactivating phone', function(assert) {
-  const obj = this.subject(),
-    sid = Math.random(),
-    phoneNumber = Math.random();
+  const obj = this.subject();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.PHONE.ACTION.DEACTIVATE })
+    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.DEACTIVATE })
   });
 
   assert.equal(typeOf(json), 'object');
@@ -88,7 +86,7 @@ test('transfering phone', function(assert) {
     id = Math.random();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.PHONE.ACTION.TRANSFER })
+    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.TRANSFER })
   });
 
   assert.equal(typeOf(json), 'object');
@@ -98,7 +96,7 @@ test('transfering phone', function(assert) {
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.PHONE.ACTION.TRANSFER,
+      phoneAction: this.constants.ACTION.PHONE.TRANSFER,
       hasPhoneActionData: true,
       phoneActionData: { id, type: this.constants.MODEL.STAFF }
     })

@@ -140,7 +140,7 @@ test('validating name and location', function(assert) {
 
     obj
       .validate()
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(model.get('validations.attrs.name.isValid'), false, 'name must be specified');
         assert.equal(
           model.get('validations.attrs.location.isValid'),
@@ -154,7 +154,7 @@ test('validating name and location', function(assert) {
         });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(model.get('validations.attrs.name.isValid'), true, 'name isvalid');
         assert.equal(
           model.get('validations.attrs.location.isValid'),
@@ -174,7 +174,7 @@ test('validating timeout', function(assert) {
 
     obj
       .validate()
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.timeout.isValid'),
           false,
@@ -184,19 +184,19 @@ test('validating timeout', function(assert) {
         model.setProperties({ timeout: model.get('timeoutMin') - 100 });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(model.get('validations.attrs.timeout.isValid'), false, 'timeout is too small');
 
         model.setProperties({ timeout: model.get('timeoutMax') * 2 });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(model.get('validations.attrs.timeout.isValid'), false, 'timeout is too large');
 
         model.setProperties({ timeout: model.get('timeoutMax') - 10 });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(model.get('validations.attrs.timeout.isValid'), true, 'timeout is valid');
 
         done();
@@ -211,7 +211,7 @@ test('validating away message suffix', function(assert) {
 
     obj
       .validate()
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.awayMessageSuffix.isValid'),
           true,
@@ -226,7 +226,7 @@ test('validating away message suffix', function(assert) {
         });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.awayMessageSuffix.isValid'),
           false,
@@ -236,7 +236,7 @@ test('validating away message suffix', function(assert) {
         model.setProperties({ awayMessageSuffix: 'i am a reasonable suffix addendum' });
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.awayMessageSuffix.isValid'),
           true,

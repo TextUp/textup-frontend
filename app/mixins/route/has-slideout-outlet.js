@@ -8,12 +8,7 @@ export default Ember.Mixin.create({
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => {
-      this.get('slideoutService').registerOutlet(
-        this.get('templateName') || this.get('routeName'),
-        this.get('slideoutOutlet')
-      );
-    });
+    run.scheduleOnce('afterRender', this, this._registerOutlet);
   },
   setupController(controller) {
     this._super(...arguments);
@@ -24,6 +19,9 @@ export default Ember.Mixin.create({
     didTransition() {
       this._super(...arguments);
       this._closeSlideout();
+      // need to re-register outlet because we need to update the template name to outlet name
+      // mapping in the case that we have multiple outlets of the same name
+      this._registerOutlet();
       return true;
     },
     toggleSlideout() {
@@ -37,6 +35,12 @@ export default Ember.Mixin.create({
   // Internal methods
   // ----------------
 
+  _registerOutlet() {
+    this.get('slideoutService').registerOutlet(
+      this.get('templateName') || this.get('routeName'),
+      this.get('slideoutOutlet')
+    );
+  },
   _toggleSlideout(slideoutName, myController = null, myOutlet = null) {
     const outletName = myOutlet || this.get('slideoutOutlet'),
       controllerName = myController || this.get('controllerName') || this.get('routeName');
