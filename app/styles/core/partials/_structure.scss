@@ -4,6 +4,10 @@
 
     &--direction-vertical {
         flex-direction: column;
+
+        & > .flex__item {
+            min-height: 0px;
+        }
     }
     &--spacing {
         &-between .flex__item {

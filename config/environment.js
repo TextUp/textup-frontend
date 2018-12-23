@@ -22,9 +22,10 @@ module.exports = function(environment) {
     storage: { namespace: 'textup' },
     appMessage: {
       messageEndpoint: 'https://static.textup.org/latest-message/',
-      oldestMessageInDays: 30
+      oldestMessageInDays: 14
     },
     links: {
+      supportHub: 'https://www.textup.org/embedded-search',
       privacyPolicy: 'https://static.textup.org/privacy-policy/',
       termsOfUse: 'https://static.textup.org/terms-of-use/'
     },
@@ -50,10 +51,8 @@ module.exports = function(environment) {
 
     ENV.lock.lockOnHidden = false;
     ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
-    ENV.links = {
-      privacyPolicy: 'http://staging-static.textup.org/privacy-policy/',
-      termsOfUse: 'http://staging-static.textup.org/terms-of-use/'
-    };
+    ENV.links.privacyPolicy = 'http://staging-static.textup.org/privacy-policy/';
+    ENV.links.termsOfUse = 'http://staging-static.textup.org/terms-of-use/';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

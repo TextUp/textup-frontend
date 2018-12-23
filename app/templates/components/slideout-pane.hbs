@@ -1,6 +1,6 @@
 {{component headerComponent doClose=(action 'forceClose') props=headerProps}}
 
-<div class="slideout-pane__body" tabindex="-1">
+<div class="slideout-pane__body {{bodyClass}}" tabindex="-1">
     {{yield publicAPI}}
 </div>
 

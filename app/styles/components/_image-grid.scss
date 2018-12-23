@@ -14,6 +14,10 @@
         -webkit-overflow-scrolling: touch;
         white-space: nowrap;
         transition: height 0.1s;
+
+        @include mq($from: desktop) {
+            overflow-x: auto;
+        }
     }
     &__item {
         display: inline-block;

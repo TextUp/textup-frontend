@@ -1,4 +1,4 @@
-# Textup Frontend
+# TextUp Frontend
 
 This is the frontend Ember app that connects to the [TextUp Grails backend](https://github.com/TextUp/textup-backend).
 

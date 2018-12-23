@@ -16,6 +16,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
     footerComponent: PropTypes.string,
     footerProps: PropTypes.object,
 
+    bodyClass: '',
     direction: PropTypes.string,
     ignoreCloseSelectors: PropTypes.string,
     startOpen: PropTypes.bool,
@@ -35,6 +36,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
       footerProps: {},
       direction: this.get('constants.SLIDEOUT.DIRECTION.LEFT'),
       ignoreCloseSelectors: this.get('constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR'),
+      bodyClass: '',
       startOpen: true,
       clickOutToClose: true,
       focusDelay: 500, // in ms

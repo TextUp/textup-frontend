@@ -91,6 +91,9 @@
 
                 box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.15);
             }
+            @include mq($from: desktop) {
+                overflow: auto;
+            }
         }
 
         @include mq($until: tablet) {
@@ -101,6 +104,11 @@
             &--closing &__contents {
                 max-height: 0;
                 overflow: hidden;
+            }
+        }
+        @include mq($from: desktop) {
+            &--open &__contents {
+                overflow: auto;
             }
         }
         &__contents {

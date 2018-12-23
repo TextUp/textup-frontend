@@ -40,6 +40,10 @@
         overflow: scroll;
         cursor: default;
         user-select: none;
+
+        @include mq($from: desktop) {
+            overflow: auto;
+        }
     }
     &__image {
         position: relative;

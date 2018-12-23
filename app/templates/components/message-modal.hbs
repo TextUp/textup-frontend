@@ -13,6 +13,8 @@
             {{/if}}
             <iframe class="textup-modal__body__contents"
                 src={{url}}
+                referrerpolicy="no-referrer"
+                sandbox="allow-popups allow-popups-to-escape-sandbox"
                 frameborder="0"
                 onload={{action _onLoad}}></iframe>
         </div>
