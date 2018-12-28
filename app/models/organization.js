@@ -14,6 +14,7 @@ const { isPresent, computed, RSVP } = Ember,
       description: 'Lock timeout',
       validators: [
         validator('number', {
+          allowBlank: true,
           gte: model => model.get('timeoutMin'),
           lte: model => model.get('timeoutMax')
         })
