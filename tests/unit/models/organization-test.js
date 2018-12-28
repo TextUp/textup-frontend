@@ -13,7 +13,8 @@ moduleForModel('organization', 'Unit | Model | organization', {
     'validator:presence',
     'validator:belongs-to',
     'validator:number',
-    'validator:length'
+    'validator:length',
+    'validator:inclusion'
   ],
   beforeEach() {
     this.inject.service('constants');
@@ -177,8 +178,8 @@ test('validating timeout', function(assert) {
       .then(({ model }) => {
         assert.equal(
           model.get('validations.attrs.timeout.isValid'),
-          false,
-          'timeout must be specified'
+          true,
+          'timeout can be null, such as when the organization is newly created'
         );
 
         model.setProperties({ timeout: model.get('timeoutMin') - 100 });
