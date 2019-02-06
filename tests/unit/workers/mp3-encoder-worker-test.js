@@ -10,7 +10,7 @@ module('Unit | Worker | mp3 encoder worker', {
   beforeEach() {
     encoderWorker = new window.Worker('/workers/mp3-encoder-worker.js');
     encoderWorker.onmessage = sinon.spy();
-    encoderWorker.onerror = sinon.spy();
+    encoderWorker.onerror = sinon.stub().callsFake((ev) => ev.preventDefault());
     encoderWorker.onmessageerror = sinon.spy();
   },
   afterEach() {
