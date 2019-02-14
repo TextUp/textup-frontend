@@ -6,7 +6,11 @@ import OwnsRecordItems from '../mixins/model/owns-record-items';
 import { validate as validateNumber } from '../utils/phone-number';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
+const {
+    isEmpty,
+    isPresent,
+    computed: { notEmpty, equal: eq },
+  } = Ember,
   Validations = buildValidations({
     name: { description: 'Name', validators: [validator('presence', true)] },
     note: { description: 'Note', validators: [validator('length', { max: 1000 })] },
@@ -21,11 +25,11 @@ const { isEmpty, isPresent, computed: { notEmpty, equal: eq } } = Ember,
           for: 'every',
           test: function(numObj) {
             return validateNumber(Ember.get(numObj, 'number'));
-          }
+          },
         }),
-        validator('length', { min: 1, message: 'Contact must have at least {min} phone number.' })
-      ]
-    }
+        validator('length', { min: 1, message: 'Contact must have at least {min} phone number.' }),
+      ],
+    },
   });
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
@@ -48,7 +52,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
   name: DS.attr('string', { defaultValue: '' }),
   note: DS.attr('string', { defaultValue: '' }),
   status: DS.attr('string', {
-    defaultValue: model => model.get('constants.CONTACT.STATUS.ACTIVE')
+    defaultValue: model => model.get('constants.CONTACT.STATUS.ACTIVE'),
   }),
   numbers: DS.attr('collection', { defaultValue: () => [] }),
   phone: DS.belongsTo('phone'),
@@ -89,6 +93,21 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
       numbers = this.get('numbers').mapBy('number');
     return `${name} ${numbers.join(', ')}`;
   }),
+  intStatus: Ember.computed('status', function() {
+    const statuses = this.get('constants.CONTACT.STATUS');
+    switch (this.get('status')) {
+      case statuses.UNREAD:
+        return 0;
+      case statuses.ACTIVE:
+        return 1;
+      case statuses.ARCHIVED:
+        return 2;
+      case statuses.BLOCKED:
+        return 4;
+      default:
+        return 3;
+    }
+  }),
 
   hasTags: notEmpty('tags'),
   isShared: notEmpty('sharedBy'),
@@ -115,7 +134,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
     this.removeDuplicatesForNumber(num);
     this.get('numberDuplicates').pushObject({
       number: num,
-      duplicates: dups
+      duplicates: dups,
     });
   },
   removeDuplicatesForNumber: function(num) {
@@ -133,5 +152,5 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
     return (Ember.isArray(raw) ? raw : [raw])
       .map(stat => String(stat).toLowerCase())
       .contains(String(this.get('status')).toLowerCase());
-  }
+  },
 });

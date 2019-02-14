@@ -15,6 +15,8 @@
         outline: 0;
     }
     &__body {
+        @extend %clearfix;
+
         padding: $record-item-space 0;
         margin-bottom: $record-item-space;
         background-color: $bg-color;

@@ -1,98 +1,67 @@
 import Ember from 'ember';
+import * as TextUtils from 'textup-frontend/utils/text';
 
-const { computed: { alias }, run } = Ember;
+const { computed } = Ember;
 
 export default Ember.Controller.extend({
-  mainController: Ember.inject.controller('main'),
-
   queryParams: ['filter'],
-  // alias the filter property of main for displaying active menu items
-  filter: alias('mainController.filter'),
-  // store contacts on mainController so we can add new contacts for display
-  contacts: alias('mainController.contacts'),
-  // contacts array on mainController is an alias of the owner's contacts
-  // so when we are switching to admin, we are changing owner and switching to
-  // an owner that doesn't have contacts becuase owner is now an organization
-  _transitioning: alias('mainController._transitioning'),
-
-  numContacts: '--',
+  filter: null,
   tag: null,
+  contactsList: null,
 
-  // Computed properties
-  // -------------------
-
-  statuses: Ember.computed('filter', function() {
-    return this._translateFilter(this.get('filter'));
+  phone: computed.alias('stateManager.owner.phone.content'),
+  filterName: computed('phone.contactsFilter', function() {
+    return TextUtils.capitalize(this.get('phone.contactsFilter'));
   }),
 
-  // Observers
-  // ---------
-
-  filterContactsByStatus: Ember.on(
-    'init',
-    Ember.observer('contacts', function() {
-      const contacts = this.get('contacts');
-      if (!contacts) {
-        return;
-      }
-      const statuses = this.get('statuses'),
-        hasStatus = contacts.filter(cont => cont.isAnyStatus(statuses));
-      // set contacts to with new array to trigger rebuild of infinite scroll
-      this.set('contacts', hasStatus);
-    })
-  ),
-
-  actions: {
-    refresh: function() {
-      const contacts = this.get('contacts');
-      return this._loadMore().then(results => {
-        run(() => {
-          contacts.clear();
-          contacts.pushObjects(results.toArray());
-        });
-      });
-    },
-    loadMore: function() {
-      const contacts = this.get('contacts');
-      return this._loadMore(contacts.length).then(results => {
-        contacts.pushObjects(results.toArray());
-      });
+  setup(newTag = null) {
+    const contactsList = this.get('contactsList');
+    if (contactsList) {
+      contactsList.actions.resetPosition();
     }
+    if (newTag && newTag.get('constructor.modelName') === this.get('constants.MODEL.TAG')) {
+      this.set('tag', newTag);
+    } else {
+      this.set('tag', null);
+    }
+    this.get('phone').clearContacts();
   },
 
-  _loadMore: function(offset = 0) {
+  doRefreshContacts() {
+    const phone = this.get('phone');
+    phone.clearContacts();
+    this.doLoadMoreContacts();
+  },
+
+  doLoadMoreContacts() {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      if (this.get('_transitioning')) {
-        return resolve();
+      const team = this.get('stateManager.ownerAsTeam'),
+        tag = this.get('tag'),
+        phone = this.get('phone');
+      // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
+      if (phone) {
+        const query = {
+          max: 20,
+          status: phone.get('contactStatuses'),
+          offset: phone.get('contacts.length'),
+        };
+        if (tag) {
+          query.tagId = tag.get('id');
+          delete query.status; // ignore filter if viewing a tag
+        }
+        if (team) {
+          query.teamId = team.get('id');
+        }
+        this.get('store')
+          .query('contact', query)
+          .then(results => {
+            phone.set('totalNumContacts', results.get('meta.total'));
+            phone.addContacts(results.toArray());
+            resolve();
+          }, this.get('dataService').buildErrorHandler(reject));
+      } else {
+        resolve();
       }
-      const query = Object.create(null),
-        team = this.get('stateManager.ownerAsTeam'),
-        tag = this.get('tag');
-      // build query
-      query.max = 20;
-      query.status = this.get('statuses');
-      query.offset = offset;
-      if (tag) {
-        // one or the other, can't be both
-        query.tagId = tag.get('id');
-        delete query.status;
-      } else if (team) {
-        query.teamId = team.get('id');
-      }
-      // execute query
-      this.store.query('contact', query).then(results => {
-        this.set('numContacts', results.get('meta.total'));
-        resolve(results);
-      }, this.get('dataService').buildErrorHandler(reject));
     });
   },
-  _translateFilter: function(filter) {
-    const options = {
-      all: ['unread', 'active'],
-      unread: ['unread'],
-      archived: ['archived'],
-      blocked: ['blocked']
-    };
-    return filter ? options[filter.toLowerCase()] : options['all'];
-  }
 });

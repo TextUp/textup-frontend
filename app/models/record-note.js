@@ -44,7 +44,6 @@ export default RecordItem.extend(Validations, {
   // ----------
 
   whenChanged: DS.attr('date'),
-  hasBeenDeleted: DS.attr('boolean'),
   isReadOnly: DS.attr('boolean'),
 
   location: DS.belongsTo('location'), // hasOne

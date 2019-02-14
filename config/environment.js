@@ -14,7 +14,7 @@ module.exports = function(environment) {
     locationPreview: {
       host: 'https://api.mapbox.com/v4/mapbox.streets',
       maxWidth: 1280,
-      maxHeight: 1280
+      maxHeight: 1280,
     },
     lock: { lockOnHidden: true },
     moment: { includeTimezone: 'subset', outputFormat: 'llll' },
@@ -22,16 +22,16 @@ module.exports = function(environment) {
     storage: { namespace: 'textup' },
     appMessage: {
       messageEndpoint: 'https://static.textup.org/latest-message/',
-      oldestMessageInDays: 14
+      oldestMessageInDays: 14,
     },
     links: {
       supportHub: 'https://www.textup.org/embedded-search',
       privacyPolicy: 'https://static.textup.org/privacy-policy/',
-      termsOfUse: 'https://static.textup.org/terms-of-use/'
+      termsOfUse: 'https://static.textup.org/terms-of-use/',
     },
     state: {
       ignoreTracking: ['reset', 'setup', 'notify'],
-      ignoreLock: ['setup', 'notify']
+      ignoreLock: ['setup', 'notify'],
     },
     events: {
       auth: { success: 'authSuccess', clear: 'authClear' },
@@ -39,9 +39,9 @@ module.exports = function(environment) {
       visibility: {
         change: 'visibilityChange',
         visible: 'visibilityVisible',
-        hidden: 'visibilityHidden'
-      }
-    }
+        hidden: 'visibilityHidden',
+      },
+    },
   };
 
   if (environment === 'development') {
@@ -84,10 +84,10 @@ module.exports = function(environment) {
             name: 'GoogleAnalytics',
             config: {
               id: process.env.TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS,
-              set: { anonymizeIp: true }
-            }
-          }
-        ]
+              set: { anonymizeIp: true },
+            },
+          },
+        ],
       };
     } else {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_STAGING;

@@ -24,7 +24,7 @@
                     {{#each model.phone.content.tags as |tag|}}
                         <li class="result-item">
                             <div class="row">
-                                {{#link-to 'main.tag' tag
+                                {{#link-to 'main.tag' tag.urlIdentifier
                                     tagName='div'
                                     classNames='control-text'
                                     tabindex='0'}}

@@ -13,17 +13,17 @@ export default Ember.Route.extend(ManagesContactAttributes, ManagesTagMembership
   },
 
   actions: {
-    willTransition: function() {
+    willTransition() {
       this._super(...arguments);
       this.controller._deselectAll();
       return true;
     },
-    didTransition: function() {
+    didTransition() {
       this._super(...arguments);
       if (this.controller.get('selected').length === 0) {
         this.transitionTo(this.get('backRouteName'));
       }
       return true; // for closing slideouts
-    }
-  }
+    },
+  },
 });

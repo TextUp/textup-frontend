@@ -32,6 +32,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   whenCreated: DS.attr('date'),
   outgoing: DS.attr('boolean'),
   hasAwayMessage: DS.attr('boolean'),
+  hasBeenDeleted: DS.attr('boolean'),
   noteContents: DS.attr('string', { defaultValue: '' }),
 
   receipts: DS.attr('record-item-status'), // now a json object with no id

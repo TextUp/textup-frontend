@@ -39,7 +39,7 @@ export default Ember.Service.extend({
         auth
           .authRequest({
             type: 'GET',
-            url: `${config.host}/v1/numbers?search=${search}`
+            url: `${config.host}/v1/numbers?search=${search}`,
           })
           .then(({ numbers = [] }) => {
             numbers.forEach(num => {
@@ -48,7 +48,7 @@ export default Ember.Service.extend({
             resolve(numbers);
           }, this.get('dataService').buildErrorHandler(reject));
       });
-    }
+    },
   },
 
   // Routing
@@ -128,7 +128,7 @@ export default Ember.Service.extend({
           }
         });
         return staffsWithPhones;
-      })
+      }),
     });
   }),
 
@@ -143,18 +143,16 @@ export default Ember.Service.extend({
       authEndpoint: `${config.host}/v1/sockets`,
       auth: {
         headers: {
-          Authorization: `Bearer ${this.get('authService.token')}`
-        }
-      }
+          Authorization: `Bearer ${this.get('authService.token')}`,
+        },
+      },
     });
-    Ember.RSVP
-      .all([
-        socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
-        socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
-        socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
-        socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this))
-      ])
-      .catch(this.get('dataService').buildErrorHandler());
+    Ember.RSVP.all([
+      socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
+      socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
+      socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
+      socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this)),
+    ]).catch(this.get('dataService').buildErrorHandler());
   },
   _unbindSocketEvents() {
     this.get('socket').disconnect();
@@ -189,5 +187,5 @@ export default Ember.Service.extend({
         'query'
       );
     store.push(normalized);
-  }
+  },
 });

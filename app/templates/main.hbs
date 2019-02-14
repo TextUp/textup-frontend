@@ -166,23 +166,27 @@
                     </button >
                 </div>
                 <div class="menu-item
-                    {{if (and stateManager.viewingContacts (eq filter "all")) "active"}}"
-                    {{action "changeFilter" "all"}}>
+                    {{if (and stateManager.viewingContacts
+                        (eq filter constants.CONTACT.FILTER.ALL)) "active"}}"
+                    {{action "showFilteredContacts" constants.CONTACT.FILTER.ALL}}>
                     <span>All</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateManager.viewingContacts (eq filter "unread")) "active"}}"
-                    {{action "changeFilter" "unread"}}>
+                    {{if (and stateManager.viewingContacts
+                        (eq filter constants.CONTACT.FILTER.UNREAD)) "active"}}"
+                    {{action "showFilteredContacts" constants.CONTACT.FILTER.UNREAD}}>
                     <span>Unread</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateManager.viewingContacts (eq filter "archived")) "active"}}"
-                    {{action "changeFilter" "archived"}}>
+                    {{if (and stateManager.viewingContacts
+                        (eq filter constants.CONTACT.FILTER.ARCHIVED)) "active"}}"
+                    {{action "showFilteredContacts" constants.CONTACT.FILTER.ARCHIVED}}>
                     <span>Archived</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateManager.viewingContacts (eq filter "blocked")) "active"}}"
-                    {{action "changeFilter" "blocked"}}>
+                    {{if (and stateManager.viewingContacts
+                        (eq filter constants.CONTACT.FILTER.BLOCKED)) "active"}}"
+                    {{action "showFilteredContacts" constants.CONTACT.FILTER.BLOCKED}}>
                     <span>Blocked</span>
                 </div>
             </div>
@@ -225,7 +229,8 @@
                 </div>
                 {{#if model.phone.isFulfilled}}
                     {{#each model.phone.content.tags as |tag|}}
-                        {{#link-to "main.tag" tag tagName="div"
+                        {{#link-to "main.tag" tag.urlIdentifier
+                            tagName="div"
                             classNames="menu-item"}}
                             <span>
                                 <span class="indicator margin-r-quarter"

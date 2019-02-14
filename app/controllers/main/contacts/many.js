@@ -1,14 +1,14 @@
 import Ember from 'ember';
 
-const { filterBy, empty, alias } = Ember.computed;
+const { computed } = Ember;
 
 export default Ember.Controller.extend({
-  contactsController: Ember.inject.controller('main.contacts'),
+  phone: computed.alias('stateManager.owner.phone.content'),
 
   // routes that want to use this controller but do not reuse the
   // contacts controller can override these properties
-  selected: filterBy('contactsController.contacts', 'isSelected', true),
-  allContacts: alias('contactsController.contacts'),
+  selected: computed.filterBy('phone.contacts', 'isSelected', true),
+  allContacts: computed.alias('phone.contacts'),
 
   // can message when no shared with me select OR all
   // of the shared with me selected are DELEGATE permission
@@ -18,16 +18,16 @@ export default Ember.Controller.extend({
       this.get('sharedWithMeSelected').every(contact => contact.get('isSharedDelegate'))
     );
   }),
-  sharedWithMeSelected: filterBy('selected', 'isShared', true),
-  noSharedWithMeSelected: empty('sharedWithMeSelected'),
+  sharedWithMeSelected: computed.filterBy('selected', 'isShared', true),
+  noSharedWithMeSelected: computed.empty('sharedWithMeSelected'),
 
   actions: {
-    selectAll: function() {
+    selectAll() {
       this.get('allContacts').forEach(contact => {
         contact.set('isSelected', true);
       });
     },
-    selectAllMyContacts: function() {
+    selectAllMyContacts() {
       this.get('allContacts').forEach(contact => {
         if (contact.get('isShared')) {
           contact.set('isSelected', false);
@@ -36,7 +36,7 @@ export default Ember.Controller.extend({
         }
       });
     },
-    deselect: function(contact) {
+    deselect(contact) {
       contact.set('isSelected', false);
       Ember.run.next(this, function() {
         if (this.get('selected.length') === 0) {
@@ -44,21 +44,21 @@ export default Ember.Controller.extend({
         }
       });
     },
-    leave: function() {
+    leave() {
       this._deselectAll();
       this._exitMany();
-    }
+    },
   },
 
   // Helpers
   // -------
 
-  _deselectAll: function() {
+  _deselectAll() {
     this.get('selected').forEach(contact => {
       contact.set('isSelected', false);
     });
   },
-  _exitMany: function() {
+  _exitMany() {
     this.transitionToRoute(this.get('backRouteName'));
-  }
+  },
 });

@@ -57,7 +57,7 @@ export default Ember.Route.extend(
     },
     serialize: function(model) {
       return {
-        main_identifier: model.get('urlIdentifier')
+        main_identifier: model.get('urlIdentifier'),
       };
     },
     model: function(params) {
@@ -156,11 +156,6 @@ export default Ember.Route.extend(
         }
         contact.toggleProperty('isSelected');
       },
-      willTransition: function() {
-        this._super(...arguments);
-        this.controller.set('_transitioning', true);
-        return true;
-      },
       didTransition: function() {
         this._super(...arguments);
         // close account slideout and drawer after transition
@@ -172,10 +167,8 @@ export default Ember.Route.extend(
         if (slidingMenu) {
           slidingMenu.actions.close();
         }
-        // see main.contacts controller for explanation
-        this.controller.set('_transitioning', false);
         return true;
-      }
-    }
+      },
+    },
   }
 );

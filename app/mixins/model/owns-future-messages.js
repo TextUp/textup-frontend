@@ -1,6 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import uniqBy from '../../utils/uniq-by';
+import uniqBy from 'textup-frontend/utils/uniq-by';
 
 const { computed, typeOf } = Ember;
 
@@ -60,5 +60,5 @@ export default Ember.Mixin.create({
     }
     this.get('_futureMessages').pushObject(fMsg);
     return true;
-  }
+  },
 });

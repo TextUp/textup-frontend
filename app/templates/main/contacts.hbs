@@ -1,5 +1,5 @@
 {{#if tag}}
-    {{title tag.name separator=' - '}}
+    {{title tag.name separator=" - "}}
 {{/if}}
 
 <div class="content">
@@ -7,7 +7,7 @@
         <div class="section-header">
             <span class="display-l">
                 <span class="indicator pull-left"
-                    style='background-color:{{tag.hexColor}};'></span>
+                    style="background-color:{{tag.hexColor}};"></span>
             </span>
             <div class="tag-title">
                 <h4 class="text-ellipsis">
@@ -15,18 +15,18 @@
                 </h4>
                 {{#if (not tag.isDeleted)}}
                     <p>
-                        {{numContacts}}
-                        {{pluralize 'contact' numContacts}}
+                        {{phone.totalNumContacts}}
+                        {{pluralize "contact" phone.totalNumContacts}}
                     </p>
                 {{/if}}
             </div>
             {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
-                {{#link-to 'main.tag.details'
-                    classNames='pull-right-to-edge full-height'
-                    activeClass='bg-color bg-dark'}}
-                    {{#tool-tip title='View Tag Details'
-                        tagName='button'
-                        classNames='btn btn-plain btn-expand'}}
+                {{#link-to "main.tag.details"
+                    classNames="pull-right-to-edge full-height"
+                    activeClass="bg-color bg-dark"}}
+                    {{#tool-tip title="View Tag Details"
+                        tagName="button"
+                        classNames="btn btn-plain btn-expand"}}
                         <span class="fa fa-sliders"></span>
                     {{/tool-tip}}
                 {{/link-to}}
@@ -36,32 +36,27 @@
         {{#hide-show clickOutToClose=true as |hideShow|}}
             <div class="section-header">
                 <div class="contacts-title">
-                    <div class="{{if (eq filter 'all')
-                        'display-xs display-s display-m'
-                        'hidden'}}">
+                    <div class="display-xs display-s display-m">
                         <div class="margin-r-4x">
-                            <h4 class="text-ellipsis">
-                                {{capitalize filter}}
-                            </h4>
+                            <h4 class="text-ellipsis">{{filterName}}</h4>
                             <p>
-                                {{numContacts}}
-                                {{if (eq numContacts 1) 'contact' 'contacts'}}
+                                {{phone.totalNumContacts}}
+                                {{pluralize "contact" phone.totalNumContacts}}
                             </p>
                         </div>
                         <div class="pull-right-to-edge full-height">
-                            {{#link-to 'main.search' tagName='button'
-                                classNames='btn btn-plain btn-expand'}}
+                            {{#link-to "main.search"
+                                tagName="button"
+                                classNames="btn btn-plain btn-expand"}}
                                 <span class="fa fa-search"></span>
                             {{/link-to}}
                         </div>
                     </div>
-                    <div class="{{if (eq filter 'all') 'display-l'}}">
-                        <h4 class="text-ellipsis">
-                            {{capitalize filter}}
-                        </h4>
+                    <div class="display-l">
+                        <h4 class="text-ellipsis">{{filterName}}</h4>
                         <p>
-                            {{numContacts}}
-                            {{if (eq numContacts 1) 'contact' 'contacts'}}
+                            {{phone.totalNumContacts}}
+                            {{pluralize "contact" phone.totalNumContacts}}
                         </p>
                     </div>
                 </div>
@@ -79,26 +74,30 @@
             </div>
             {{#if hideShow.isOpen}}
                 <ul class="reset-list">
-                    <li class="menu-item {{if (eq filter 'all') 'active'}}"
-                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'all')}}>
+                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ALL) "active"}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ALL)}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">All</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter 'unread') 'active'}}"
-                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'unread')}}>
+                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.UNREAD) "active"}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.UNREAD)}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Unread</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter 'archived') 'active'}}"
-                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'archived')}}>
+                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ARCHIVED) "active"}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ARCHIVED)}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Archived</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter 'blocked') 'active'}}"
-                        onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'blocked')}}>
+                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.BLOCKED) "active"}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.BLOCKED)}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Blocked</p>
                         </div>
@@ -107,26 +106,26 @@
             {{/if}}
         {{/hide-show}}
     {{/if}}
-    {{#infinite-scroll classNames='section-body bg-color bg-dark'
-        doRegister=(action (mut _contactsList))
-        containerClass='bg-color bg-lightest'
-        itemsClass='result-list'
-        direction='down'
-        data=contacts
-        total=numContacts
-        doLoad=(action 'loadMore')
-        doRefresh=(action 'refresh') as |contact|}}
+    {{#infinite-scroll classNames="section-body bg-color bg-dark"
+        doRegister=(action (mut contactsList))
+        containerClass="bg-color bg-lightest"
+        itemsClass="result-list"
+        direction=constants.INFINITE_SCROLL.DIRECTION.DOWN
+        data=phone.contacts
+        total=phone.totalNumContacts
+        doLoad=(action doLoadMoreContacts)
+        doRefresh=(action doRefreshContacts) as |contact|}}
         {{#entity-display class="result-item"
             entityIdentifier=contact.identifier
-            linkTarget=(if tag 'main.tag.contact' 'main.contacts.contact')
+            linkTarget=(if tag "main.tag.contact" "main.contacts.contact")
             linkParam=contact.id
-            bodyClass=(if contact.isUnread 'unread')
+            bodyClass=(if contact.isUnread constants.CONTACT.FILTER.UNREAD)
             isSelected=contact.isSelected
-            onSelect=(route-action 'toggleSelected' contact)}}
+            onSelect=(route-action "toggleSelected" contact)}}
             {{entity-display/contact entity=contact}}
         {{/entity-display}}
     {{else}}
-        {{#if (and (eq filter "all") (not tag))}}
+        {{#if (and (eq filter constants.CONTACT.FILTER.ALL) (not tag))}}
             <div class="no-results">
                 <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
                 <button type="button"

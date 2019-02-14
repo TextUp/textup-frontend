@@ -8,7 +8,7 @@ const {
   computed: { equal: eq },
   run,
   run: { scheduleOnce, next, once, throttle, later, cancel },
-  RSVP: { Promise }
+  RSVP: { Promise },
 } = Ember;
 
 export default Ember.Component.extend({
@@ -55,7 +55,7 @@ export default Ember.Component.extend({
     '_isLoading:loading',
     '_isDone:done',
     '_isRefreshing:refreshing',
-    '_isPulling:pulling'
+    '_isPulling:pulling',
   ],
   classNames: 'infinite-scroll',
 
@@ -96,8 +96,9 @@ export default Ember.Component.extend({
       actions: {
         loadMore: this.loadMoreIfNeeded.bind(this, true),
         resetPosition: () => scheduleOnce('afterRender', this, this._restorePosition, true, true),
-        restorePosition: () => scheduleOnce('afterRender', this, this._restorePosition, false, true)
-      }
+        restorePosition: () =>
+          scheduleOnce('afterRender', this, this._restorePosition, false, true),
+      },
     };
   }),
   _isUp: eq('direction', 'up'),
@@ -176,7 +177,7 @@ export default Ember.Component.extend({
       _isDisplaying: false,
       _isPulling: false,
       _items: [],
-      _prevData: this.get('data')
+      _prevData: this.get('data'),
     });
     this._resetPull();
     this.incrementProperty('_version');
@@ -217,7 +218,7 @@ export default Ember.Component.extend({
     this.setProperties({
       _previousClientHeight: container.clientHeight,
       _previousScrollHeight: container.scrollHeight,
-      _previousScrollTop: container.scrollTop
+      _previousScrollTop: container.scrollTop,
     });
   },
   _restorePosition(shouldReset = false, userTriggered = false) {
@@ -345,12 +346,12 @@ export default Ember.Component.extend({
     if (this.get('_isUp')) {
       $refreshing.css({
         top: '',
-        bottom: `${position}px`
+        bottom: `${position}px`,
       });
     } else {
       $refreshing.css({
         bottom: '',
-        top: `${position}px`
+        top: `${position}px`,
       });
     }
     $refreshing.fadeIn();
@@ -366,7 +367,7 @@ export default Ember.Component.extend({
       prop = `translateY(${overscroll * direction}px)`;
     $container.css({
       transform: prop,
-      '-webkit-transform': prop
+      '-webkit-transform': prop,
     });
   },
   _resetPull: function() {
@@ -375,7 +376,7 @@ export default Ember.Component.extend({
     this.set('_pullNow', null);
     this.get('_$container').css({
       transform: '',
-      '-webkit-transform': ''
+      '-webkit-transform': '',
     });
     this.get('_$refreshing').hide();
   },
@@ -398,7 +399,7 @@ export default Ember.Component.extend({
         if (versionWhenCalled === this.get('_version')) {
           this.setProperties({
             _isLoading: false,
-            _hasError: !isSuccess
+            _hasError: !isSuccess,
           });
         }
       };
@@ -463,5 +464,5 @@ export default Ember.Component.extend({
         });
       });
     });
-  }
+  },
 });

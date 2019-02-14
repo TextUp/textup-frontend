@@ -1,46 +1,28 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  queryParams: {
-    filter: {
-      refreshModel: true
-    }
-  },
+  queryParams: { filter: { refreshModel: true } },
 
-  setupController: function() {
+  _changedFilter: false,
+
+  setupController(controller, model) {
     this._super(...arguments);
-    this._resetController();
+    controller.setup(model);
   },
 
   actions: {
-    didTransition: function() {
+    didTransition() {
       this._super(...arguments);
-      if (!this.get('stateManager.viewingContacts') || this.get('_changedFilter')) {
-        this._resetController();
+      if (this.get('_changedFilter')) {
+        this.get('controller').setup(this.get('currentModel'));
       }
       this.set('_changedFilter', false);
-      // return true to allow bubbling to close slideout handler
-      return true;
+      return true; // propagate to close slideout handler
     },
-    changeFilter: function(filter) {
+    showFilteredContacts(filter) {
       this.set('_changedFilter', true);
-      this.transitionTo({
-        queryParams: {
-          filter: filter
-        }
-      });
-    }
+      this.get('controller.phone').set('contactsFilter', filter);
+      this.transitionTo('main.contacts', { queryParams: { filter } });
+    },
   },
-
-  _resetController: function() {
-    const controller = this.controller;
-    controller.set('tag', null);
-    controller.set('contacts', []);
-    // don't know total until loaded
-    controller.set('numContacts', '--');
-    const contactsList = controller.get('_contactsList');
-    if (contactsList) {
-      contactsList.actions.resetPosition();
-    }
-  }
 });

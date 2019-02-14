@@ -38,9 +38,11 @@ export default Ember.Mixin.create({
       contactsArray.forEach(contact => contact.set('status', newStatus));
       this.get('dataService')
         .persist(contactsArray)
-        .then(updatedContacts => {
+        .then(() => {
           this.get('controller').notifyPropertyChange('contacts');
-          updatedContacts.forEach(contact => contact.set('isSelected', false));
+          // want to reset `isSelected` flag on all contacts, not just the ones we've updated
+          // to give the impression that all have been updated.
+          contactsArray.forEach(contact => contact.set('isSelected', false));
         })
         // try to start observing the single contact's status again once we are done manually
         // updating the contact's status. Note that this action should ONLY be to start observing
@@ -68,7 +70,7 @@ export default Ember.Mixin.create({
       return this.get('dataService')
         .persist(this.get('controller.sharingContacts'))
         .then(() => this.send('cancelContactSharingSlideout'));
-    }
+    },
   },
 
   // Internal properties
@@ -115,5 +117,5 @@ export default Ember.Mixin.create({
         this.get('dataService').persist(contact);
       }
     }
-  }
+  },
 });

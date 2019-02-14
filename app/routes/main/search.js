@@ -1,12 +1,18 @@
 import Ember from 'ember';
 
-const { $, isBlank, isNone, isPresent, computed: { match } } = Ember;
+const {
+  $,
+  isBlank,
+  isNone,
+  isPresent,
+  computed: { match },
+} = Ember;
 
 export default Ember.Route.extend({
   queryParams: {
     searchQuery: {
-      refreshModel: true
-    }
+      refreshModel: true,
+    },
   },
 
   storage: Ember.inject.service(),
@@ -50,6 +56,11 @@ export default Ember.Route.extend({
     // Hooks
     // -----
 
+    willTransition: function() {
+      this._super(...arguments);
+      this.set('_isTransitioning', true);
+      return true;
+    },
     didTransition: function() {
       this._super(...arguments);
       const query = this.controller.get('searchQuery');
@@ -60,14 +71,15 @@ export default Ember.Route.extend({
           $('.search-input').focus();
         });
       }
+      this.set('_isTransitioning', false);
       return true;
     },
     // for changing filter on the mobile slideout menu
     changeFilter: function(filter) {
       this.transitionTo('main.contacts', {
         queryParams: {
-          filter: filter
-        }
+          filter: filter,
+        },
       });
     },
 
@@ -91,8 +103,8 @@ export default Ember.Route.extend({
         // results when we are performing a new search
         this.transitionTo('main.search', {
           queryParams: {
-            searchQuery: val
-          }
+            searchQuery: val,
+          },
         });
       }
     },
@@ -106,7 +118,7 @@ export default Ember.Route.extend({
     },
     loadMore: function() {
       return this._loadMore();
-    }
+    },
   },
 
   _resetController: function() {
@@ -124,13 +136,13 @@ export default Ember.Route.extend({
   _loadMore: function() {
     return new Ember.RSVP.Promise((resolve, reject) => {
       const query = Object.create(null),
-        controller = this.controller,
+        controller = this.get('controller'),
         team = this.get('stateManager.ownerAsTeam'),
         searchResults = controller.get('searchResults'),
         searchQuery = controller.get('searchQuery');
       // short circuit without returning error if no search query
       // or if we are currently transitioning to a new search term
-      if (controller.get('_transitioning') || isBlank(searchQuery)) {
+      if (this.get('_isTransitioning') || isBlank(searchQuery)) {
         return resolve();
       }
       query.search = searchQuery;
@@ -148,5 +160,5 @@ export default Ember.Route.extend({
         resolve();
       }, this.get('dataService').buildErrorHandler(reject));
     });
-  }
+  },
 });

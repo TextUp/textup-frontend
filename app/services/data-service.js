@@ -18,8 +18,7 @@ export default Ember.Service.extend({
       }
       // start loading
       this.get('loadingSlider').startLoading();
-      Ember.RSVP
-        .all(changedModels.map(model => model.save()))
+      Ember.RSVP.all(changedModels.map(model => model.save()))
         .then(success => resolve(isArray ? success : success[0]))
         .catch(this.buildErrorHandler(reject))
         .finally(() => this.get('loadingSlider').endLoading());
@@ -63,7 +62,7 @@ export default Ember.Service.extend({
         `Could not perform action. Please try again later. The error is: ${failure}`,
         { clearDuration: 10000 }
       );
-      Ember.debug('data.handleError: unspecified error: ' + failure);
+      Ember.debug('data.handleError: unspecified error: ' + failure.stack);
     }
   },
 
@@ -91,5 +90,5 @@ export default Ember.Service.extend({
       failure === status ||
       (failure && failure.errors && failure.errors[0] && failure.errors[0].status === `${status}`)
     );
-  }
+  },
 });
