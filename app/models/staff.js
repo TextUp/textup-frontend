@@ -6,26 +6,29 @@ import { validator, buildValidations } from 'ember-cp-validations';
 
 const { isPresent, isArray, computed, RSVP, tryInvoke, getWithDefault, assign } = Ember,
   Validations = buildValidations(
-    assign(OwnsPhoneValidations, {
-      name: { description: 'Name', validators: [validator('presence', true)] },
-      username: {
-        description: 'Username',
-        validators: [
-          validator('presence', true),
-          validator('format', {
-            regex: /^[-_=@.,;A-Za-z0-9]+$/,
-            message:
-              'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;',
-          }),
-        ],
+    assign(
+      {
+        name: { description: 'Name', validators: [validator('presence', true)] },
+        username: {
+          description: 'Username',
+          validators: [
+            validator('presence', true),
+            validator('format', {
+              regex: /^[-_=@.,;A-Za-z0-9]+$/,
+              message:
+                'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;',
+            }),
+          ],
+        },
+        lockCode: {
+          description: 'Lock Code',
+          validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
+        },
+        email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
+        phone: { description: 'Phone', validators: [validator('belongs-to')] },
       },
-      lockCode: {
-        description: 'Lock Code',
-        validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
-      },
-      email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
-      phone: { description: 'Phone', validators: [validator('belongs-to')] },
-    })
+      OwnsPhoneValidations
+    )
   );
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 
-// [TODO] finish testing this model
+// [TODO] finish testing this model, including that validation.attrs isn't shared with team
 
 const { run } = Ember;
 
@@ -18,11 +18,11 @@ moduleForModel('staff', 'Unit | Model | staff', {
     'model:organization',
     'model:schedule',
     'model:phone',
-    'transform:phone-number'
+    'transform:phone-number',
   ],
   beforeEach() {
     this.inject.service('constants');
-  }
+  },
 });
 
 test('dirty checking', function(assert) {
@@ -37,7 +37,7 @@ test('dirty checking', function(assert) {
 
   obj.setProperties({
     phoneAction: null,
-    'schedule.content': { isDirty: true }
+    'schedule.content': { isDirty: true },
   });
 
   assert.equal(obj.get('hasManualChanges'), true);

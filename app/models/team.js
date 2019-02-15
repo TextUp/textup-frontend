@@ -6,15 +6,18 @@ import { validator, buildValidations } from 'ember-cp-validations';
 
 const { computed, tryInvoke, getWithDefault, assign } = Ember,
   Validations = buildValidations(
-    assign(OwnsPhoneValidations, {
-      name: { description: 'Name', validators: [validator('presence', true)] },
-      hexColor: { description: 'Color', validators: [validator('presence', true)] },
-      phone: { description: 'Phone', validators: [validator('belongs-to')] },
-      location: {
-        description: 'Location',
-        validators: [validator('presence', true), validator('belongs-to')],
+    assign(
+      {
+        name: { description: 'Name', validators: [validator('presence', true)] },
+        hexColor: { description: 'Color', validators: [validator('presence', true)] },
+        phone: { description: 'Phone', validators: [validator('belongs-to')] },
+        location: {
+          description: 'Location',
+          validators: [validator('presence', true), validator('belongs-to')],
+        },
       },
-    })
+      OwnsPhoneValidations
+    )
   );
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
