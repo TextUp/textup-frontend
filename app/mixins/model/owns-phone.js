@@ -1,31 +1,33 @@
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import Ember from 'ember';
 import DS from 'ember-data';
-import { validator, buildValidations } from 'ember-cp-validations';
+import { validator } from 'ember-cp-validations';
 
-const { computed, getWithDefault, tryInvoke } = Ember,
-  // Validations are ininheritable: https://github.com/offirgolan/ember-cp-validations/issues/111
-  Validations = buildValidations({
-    phone: {
-      description: 'Phone',
-      validators: [validator('belongs-to')]
-    },
-    phoneAction: {
-      description: 'Change going to be made to this phone',
-      validators: [
-        validator('inclusion', {
-          allowBlank: true,
-          in: model => Object.values(model.get('constants.ACTION.PHONE'))
-        })
-      ]
-    },
-    transferFilter: {
-      description: 'Data for the change going to be made to this phone',
-      validators: [validator('presence', true)]
-    }
-  });
+const { computed, getWithDefault, tryInvoke } = Ember;
+// Validations are ininheritable: https://github.com/offirgolan/ember-cp-validations/issues/111
+// [NOTE] don't mix into this mixin because of a bug where all classes that mix in this class
+// will have their own validations overriden with the last class that mixed in this mixin
+export const OwnsPhoneValidations = {
+  phone: {
+    description: 'Phone',
+    validators: [validator('belongs-to')],
+  },
+  phoneAction: {
+    description: 'Change going to be made to this phone',
+    validators: [
+      validator('inclusion', {
+        allowBlank: true,
+        in: model => Object.values(model.get('constants.ACTION.PHONE')),
+      }),
+    ],
+  },
+  transferFilter: {
+    description: 'Data for the change going to be made to this phone',
+    validators: [validator('presence', true)],
+  },
+};
 
-export default Ember.Mixin.create(Dirtiable, Validations, {
+export default Ember.Mixin.create(Dirtiable, {
   constants: Ember.inject.service(),
 
   // Overrides
@@ -66,5 +68,5 @@ export default Ember.Mixin.create(Dirtiable, Validations, {
     return `${this.get('constructor.modelName')}-${this.get('id')}`;
   }),
   // Models that own a phone must implement `transferFilter`
-  transferFilter: null
+  transferFilter: null,
 });

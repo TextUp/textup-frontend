@@ -1,19 +1,21 @@
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import OwnsPhone from 'textup-frontend/mixins/model/owns-phone';
+import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, tryInvoke, getWithDefault } = Ember,
-  Validations = buildValidations({
-    name: { description: 'Name', validators: [validator('presence', true)] },
-    hexColor: { description: 'Color', validators: [validator('presence', true)] },
-    phone: { description: 'Phone', validators: [validator('belongs-to')] },
-    location: {
-      description: 'Location',
-      validators: [validator('presence', true), validator('belongs-to')]
-    }
-  });
+const { computed, tryInvoke, getWithDefault, assign } = Ember,
+  Validations = buildValidations(
+    assign(OwnsPhoneValidations, {
+      name: { description: 'Name', validators: [validator('presence', true)] },
+      hexColor: { description: 'Color', validators: [validator('presence', true)] },
+      phone: { description: 'Phone', validators: [validator('belongs-to')] },
+      location: {
+        description: 'Location',
+        validators: [validator('presence', true), validator('belongs-to')],
+      },
+    })
+  );
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
   constants: Ember.inject.service(),
@@ -63,5 +65,5 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
     const name = this.get('name'),
       address = this.get('location.content.address');
     return `${name},${address}`;
-  })
+  }),
 });

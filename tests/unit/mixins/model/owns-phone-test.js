@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import ModelOwnsPhoneMixin from 'textup-frontend/mixins/model/owns-phone';
+import ModelOwnsPhoneMixin, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
+import { buildValidations } from 'ember-cp-validations';
 
 const { run } = Ember,
   TEST_CLASS_NAME = 'owns-phone-mixin-model';
@@ -12,10 +13,13 @@ moduleFor('mixin:model/owns-phone', 'Unit | Mixin | model/owns phone', {
     'model:phone',
     'validator:belongs-to',
     'validator:inclusion',
-    'validator:presence'
+    'validator:presence',
   ],
   beforeEach() {
-    const OwnsPhoneMixinModel = DS.Model.extend(ModelOwnsPhoneMixin);
+    const OwnsPhoneMixinModel = DS.Model.extend(
+      buildValidations(OwnsPhoneValidations),
+      ModelOwnsPhoneMixin
+    );
     this.register(`model:${TEST_CLASS_NAME}`, OwnsPhoneMixinModel);
 
     this.inject.service('constants');
@@ -25,7 +29,7 @@ moduleFor('mixin:model/owns-phone', 'Unit | Mixin | model/owns phone', {
       const store = Ember.getOwner(this).lookup('service:store');
       return store.createRecord(TEST_CLASS_NAME);
     });
-  }
+  },
 });
 
 test('dirty checking', function(assert) {
@@ -37,7 +41,7 @@ test('dirty checking', function(assert) {
 
   obj.setProperties({
     'phone.content': { isDirty: true },
-    phoneAction: this.constants.ACTION.PHONE.DEACTIVATE
+    phoneAction: this.constants.ACTION.PHONE.DEACTIVATE,
   });
   assert.equal(obj.get('hasManualChanges'), true);
   assert.equal(obj.get('ownsPhoneHasManualChanges'), true);
@@ -58,7 +62,7 @@ test('rolling back attributes', function(assert) {
   obj.setProperties({
     'phone.content': { rollbackAttributes: rollbackSpy },
     phoneAction: 'hi',
-    phoneActionData: 'hi'
+    phoneActionData: 'hi',
   });
 
   obj.rollbackAttributes();

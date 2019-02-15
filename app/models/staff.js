@@ -1,30 +1,32 @@
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import OwnsPhone from 'textup-frontend/mixins/model/owns-phone';
+import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isPresent, isArray, computed, RSVP, tryInvoke, getWithDefault } = Ember,
-  Validations = buildValidations({
-    name: { description: 'Name', validators: [validator('presence', true)] },
-    username: {
-      description: 'Username',
-      validators: [
-        validator('presence', true),
-        validator('format', {
-          regex: /^[-_=@.,;A-Za-z0-9]+$/,
-          message:
-            'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;'
-        })
-      ]
-    },
-    lockCode: {
-      description: 'Lock Code',
-      validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })]
-    },
-    email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
-    phone: { description: 'Phone', validators: [validator('belongs-to')] }
-  });
+const { isPresent, isArray, computed, RSVP, tryInvoke, getWithDefault, assign } = Ember,
+  Validations = buildValidations(
+    assign(OwnsPhoneValidations, {
+      name: { description: 'Name', validators: [validator('presence', true)] },
+      username: {
+        description: 'Username',
+        validators: [
+          validator('presence', true),
+          validator('format', {
+            regex: /^[-_=@.,;A-Za-z0-9]+$/,
+            message:
+              'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;',
+          }),
+        ],
+      },
+      lockCode: {
+        description: 'Lock Code',
+        validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
+      },
+      email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
+      phone: { description: 'Phone', validators: [validator('belongs-to')] },
+    })
+  );
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
   constants: Ember.inject.service(),
@@ -98,7 +100,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
         }
       }
       return value;
-    }
+    },
   }),
 
   status: DS.attr('string'),
@@ -123,7 +125,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
             resolve(teamsWithPhones);
           });
         }, reject);
-      })
+      }),
     });
   }),
   isNone: computed('isBlocked', 'isPending', 'teamsWithPhones', 'phone', function() {
@@ -165,5 +167,5 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
     if (!this.get('isAuthUser')) {
       this.set('status', 'BLOCKED');
     }
-  }
+  },
 });
