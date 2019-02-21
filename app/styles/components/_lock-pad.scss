@@ -1,0 +1,40 @@
+.lock-pad {
+  text-align: center;
+  padding-top: $padding / 2;
+  padding-bottom: $padding * 2;
+
+  &--error &__indicator {
+    border-color: tint($danger-color, 2);
+    background-color: tint($danger-color, 4);
+  }
+
+  &__indicator {
+    margin: 0 (0.2 * $padding);
+    height: $padding;
+    width: $padding;
+    border: 1px solid $border-color;
+    background-color: shade($bg-color);
+    display: inline-block;
+    border-radius: 100%;
+
+    &--filled {
+      border-color: $brand-color;
+      background-color: $brand-color;
+    }
+  }
+
+  &__indicator-container {
+    padding-top: $padding;
+    padding-bottom: $padding;
+  }
+
+  &__dial-pad {
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    padding-top: $padding;
+  }
+}

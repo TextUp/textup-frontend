@@ -1,0 +1,20 @@
+{{#if _hasCordova}}
+  <a href={{src}}
+    target="_blank"
+    rel="noopener noreferrer"
+    alt="TextUp feature voting page"
+    class="button button--expand">
+    Search the TextUp Support Hub
+  </a>
+{{else}}
+  <div class="form__group form__group--no-vertical-space">
+    <span class="form__label form__label--multiline">
+      {{text}}
+    </span>
+  </div>
+  <iframe class={{"flex__item--grow full-height"}}
+        src={{src}}
+        frameborder="0"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+{{/if}}

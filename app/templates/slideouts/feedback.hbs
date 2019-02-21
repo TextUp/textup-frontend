@@ -57,16 +57,12 @@
 				<input type="hidden" name="fbzx" value="487974052139568420">
 			</form>
 			<hr>
-			<div class="form__group form__group--no-vertical-space">
-				<span class="form__label form__label--multiline">
-					Search the TextUp Support Hub
-				</span>
-			</div>
 		</div>
-		<iframe class="flex__item flex__item--grow"
-			src={{config.links.supportHub}}
-            frameborder="0"
-            referrerpolicy="no-referrer"
-            sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+		{{feedback-switcher
+			src=config.links.supportHub
+			text='Search the TextUp Support Hub'
+			hasCordovaClasses="flex__item flex__item--grow flex--direction-vertical flex--align-stretch flex"
+			noCordovaClasses="form__group"
+		}}
 	</div>
 {{/slideout-pane}}

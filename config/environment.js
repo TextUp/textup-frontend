@@ -9,6 +9,7 @@ module.exports = function(environment) {
     EmberENV: { FEATURES: {} },
     APP: {},
 
+    hasCordova: process.argv.some(obj => obj === '--cordova'),
     apiKeys: { mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX },
     gReCaptcha: { siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA },
     locationPreview: {

@@ -4,7 +4,13 @@ import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-const { $, isArray, get, isPresent, run: { later, cancel } } = Ember;
+const {
+  $,
+  isArray,
+  get,
+  isPresent,
+  run: { later, cancel },
+} = Ember;
 
 export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   attemptedTransition: null,
@@ -212,7 +218,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     error: function(reason, transition) {
       this.get('authService').set('attemptedTransition', transition);
       this.get('dataService').handleError(reason);
-    }
+    },
   },
 
   // Lock helpers
@@ -263,5 +269,5 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     } else {
       return doAction(data);
     }
-  }
+  },
 });
