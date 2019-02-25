@@ -8,31 +8,15 @@
 {{/liquid-if}}
 
 <div id="container">
-	{{#if isLocked}}
-		<div class="single-container single-container-small">
-			<div class="single-header">
-				<img class="brand" src='assets/images/logo.png' />
-		        <h3 class='text-white'>Enter lock code</h3>
-			</div>
-			<div class="single-body">
-				{{lock-control val=lockCode
-					lockTarget=authService.authUser.username
-					numDigits=4
-					doUpdate=(route-action 'updateLockCode')
-					doSubmit=(route-action 'verifyLockCode')}}
-			</div>
-			<div class="single-footer">
-				<p class="emphasize text-white">Not {{authService.authUser.name}}?</p>
-		        <h4>
-		        	<a href="" onclick={{route-action 'logout'}} class='text-white'>
-		        		Log Out
-		        	</a>
-		    	</h4>
-			</div>
-		</div>
-	{{else}}
-		{{liquid-outlet}}
-	{{/if}}
+	{{#lock-container
+	  val= lockCode
+	  doUpdateVal= (action (mut lockCode))
+	  doValidate=(route-action 'verifyLockCode')
+	  timeout= authService.authUser.org.content.timeout
+	  username= authService.authUser.name
+	}}
+	  {{liquid-outlet}}
+	{{/lock-container}}
 </div>
 
 {{notification-container notifications=notifications}}

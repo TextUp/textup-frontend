@@ -20,7 +20,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   getDefaultProps() {
     return {
-      lockOnHidden: true,
+      lockOnHidden: config.lock.lockOnHidden,
       lockOnInit: true,
       isMaxAttempt: true,
       timeout: 15000,
