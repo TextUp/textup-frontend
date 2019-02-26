@@ -9,12 +9,12 @@ export function initialize(/* appInstance */) {
   }
 
   function onDeviceReady() {
-    window.open = cordova.InAppBrowser.open;
+    window.open = window.cordova.InAppBrowser.open;
 
     $(document).on('click', 'a[target="_system"],a[target="_blank"]', function(e) {
       e.preventDefault();
       var url = this.href;
-      cordova.InAppBrowser.open(
+      window.cordova.InAppBrowser.open(
         url,
         '_blank',
         'footer=yes,closebuttoncolor=#28a6de,location=no,navigationbuttoncolor=#28a6de'

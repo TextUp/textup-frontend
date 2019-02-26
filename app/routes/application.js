@@ -4,13 +4,7 @@ import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-const {
-  $,
-  isArray,
-  get,
-  isPresent,
-  run: { later, cancel },
-} = Ember;
+const { isArray, get } = Ember;
 
 export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   attemptedTransition: null,
@@ -108,40 +102,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Slideout
     // --------
 
-    willTransition: function(transition) {
-      this._super(...arguments);
-      const targetName = transition.targetName,
-        url = this.get('storage').getItem('currentUrl'),
-        ignoreLock = config.state.ignoreLock;
-      if (this.controller.get('isLocked')) {
-        const allowTransition = ignoreLock.any(loc => {
-          return targetName.indexOf(loc) > -1;
-        });
-        if (allowTransition) {
-          this.doUnlock();
-        } else {
-          transition.abort();
-          // Manual fix for the problem of URL getting out of sync
-          // when pressing the back button even though we are aborting
-          // the transition.
-          // http://stackoverflow.com/questions/17738923/
-          //    url-gets-updated-when-using-transition-
-          //    abort-on-using-browser-back
-          if (window.history) {
-            window.history.forward();
-          }
-        }
-      } else if (this.get('authService.isLoggedIn')) {
-        // otherwise, if logged in and we are coming from one of the ignoreLock
-        // locations, then we need to re-lock
-        const shouldRelock = ignoreLock.any(loc => {
-          return url.indexOf(loc) > -1;
-        });
-        if (shouldRelock) {
-          this.doLock();
-        }
-      }
-    },
     didTransition: function() {
       this._super(...arguments);
       // initializer
@@ -252,5 +212,16 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
       key = this.get('_numAttemptsKey'),
       existing = parseInt(storage.getItem(key));
     return isNaN(existing) ? 0 : existing;
+  },
+
+  // Helpers
+  // -------
+
+  _doForOneOrMany: function(data, doAction) {
+    if (Ember.isArray(data)) {
+      return data.forEach(doAction);
+    } else {
+      return doAction(data);
+    }
   },
 });

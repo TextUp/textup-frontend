@@ -29,6 +29,7 @@
     <allow-navigation href="https://www.textup.org/*" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
     <platform name="ios">
         <icon height="1024" src="res/icon/ios/icon-1024.png" width="1024" />
         <icon height="29" src="res/icon/ios/icon-small.png" width="29" />
@@ -73,6 +74,9 @@
         <splash density="port-xxhdpi" src="res/screen/android/splash-port-xxhdpi.png" />
         <splash density="port-xxxhdpi" src="res/screen/android/splash-port-xxxhdpi.png" />
     </platform>
+    <plugin name="cordova-plugin-fingerprint-aio" spec="^1.6.0">
+        <variable name="FACEID_USAGE_DESCRIPTION" value=" " />
+    </plugin>
     <engine name="ios" spec="^4.5.5" />
     <engine name="android" spec="^7.1.4" />
 </widget>

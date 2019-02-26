@@ -11,11 +11,12 @@ export default Ember.Component.extend(PropTypesMixin, {
     val: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
     doUpdateVal: PropTypes.func.isRequired,
     doValidate: PropTypes.func.isRequired,
+    username: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
 
     lockOnHidden: PropTypes.bool,
     lockOnInit: PropTypes.bool,
+    fingerprint: PropTypes.bool,
     timeout: PropTypes.number,
-    username: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
   },
 
   getDefaultProps() {
@@ -24,6 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       lockOnInit: true,
       isMaxAttempt: true,
       timeout: 15000,
+      fingerprint: true,
     };
   },
 
@@ -70,6 +72,18 @@ export default Ember.Component.extend(PropTypesMixin, {
     this._doUnlock();
   },
 
+  _doFingerprint() {
+    window.Fingerprint.show(
+      {
+        clientId: 'Textup',
+        clientSecret: 'password',
+      },
+      () => {
+        this._doSuccess();
+      }
+    );
+  },
+
   // Lock Helpers
   // ------------
 
@@ -78,6 +92,14 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     this.set('_isLocked', true);
+
+    if (config.hasCordova) {
+      if (window.Fingerprint && this.get('fingerprint')) {
+        window.Fingerprint.isAvailable(() => {
+          this._doFingerprint();
+        });
+      }
+    }
   },
 
   _doUnlock() {
@@ -88,9 +110,26 @@ export default Ember.Component.extend(PropTypesMixin, {
   // ----------------
 
   _bindLockEvents() {
-    this.get('visibility')
-      .on(config.events.visibility.hidden, this, this._updateLastActive)
-      .on(config.events.visibility.visible, this, this._checkInactiveTime);
+    if (config.hasCordova) {
+      document.addEventListener(
+        'pause',
+        () => {
+          run.debounce(this, this._updateLastActive, 10);
+        },
+        false
+      );
+      document.addEventListener(
+        'resume',
+        () => {
+          run.debounce(this, this._checkInactiveTime, 10);
+        },
+        false
+      );
+    } else {
+      this.get('visibility')
+        .on(config.events.visibility.hidden, this, this._updateLastActive)
+        .on(config.events.visibility.visible, this, this._checkInactiveTime);
+    }
   },
   _clearLockEvents() {
     this.get('visibility')
