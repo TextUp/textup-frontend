@@ -77,6 +77,12 @@
     <plugin name="cordova-plugin-fingerprint-aio" spec="^1.6.0">
         <variable name="FACEID_USAGE_DESCRIPTION" value=" " />
     </plugin>
+    <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
+    <edit-config file="*-Info.plist" mode="merge" target="NSContactsUsageDescription">
+        <string>need contacts access to search friends</string>
+    </edit-config>
+    <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
+    <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <engine name="ios" spec="^4.5.5" />
     <engine name="android" spec="^7.1.4" />
 </widget>

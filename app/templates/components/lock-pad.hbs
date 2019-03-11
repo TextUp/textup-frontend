@@ -4,9 +4,11 @@
 {{/if}}
 
 <div class="lock-pad__indicator-container">
-  {{#each _valIndices as |val index|}}
-    {{lock-pad/indicator indicatorNum=(plus index 1) numFilled=_valLength}}
-  {{/each}}
+  {{#unless _isLoading}}
+    {{#each _valIndices as |val index|}}
+      {{lock-pad/indicator indicatorNum=(plus index 1) numFilled=_valLength}}
+    {{/each}}
+  {{/unless}}
 </div>
 
 {{number-control val=val

@@ -3,6 +3,8 @@ import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MutationObserver from 'npm:mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { isIOS } from 'textup-frontend/utils/native-platform';
+
 import {
   hasMoreViewportSpaceOnTop,
   shouldAlignToLeftEdge,
@@ -130,7 +132,12 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
 
   _tryCloseOnBody() {
     if (this.get('bodyClickWillClose')) {
-      this._close();
+      // on iOS event order is different
+      if (isIOS()){
+        run.later(this, this._close, 400);
+      } else {
+        this._close();
+      }
     }
   },
   _close() {

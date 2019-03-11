@@ -12,7 +12,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     onEditSharing: PropTypes.func,
     onEditTagMembership: PropTypes.func,
     onExport: PropTypes.func,
-    onStatusChange: PropTypes.func
+    onStatusChange: PropTypes.func,
   },
 
   // Internal handlers
@@ -32,5 +32,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onStatusChange() {
     tryInvoke(this, 'onStatusChange', [...arguments]);
-  }
+  },
 });

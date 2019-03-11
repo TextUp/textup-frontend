@@ -15,7 +15,6 @@ export default Ember.Component.extend(PropTypesMixin, {
 
     lockOnHidden: PropTypes.bool,
     lockOnInit: PropTypes.bool,
-    fingerprint: PropTypes.bool,
     timeout: PropTypes.number,
   },
 
@@ -25,22 +24,14 @@ export default Ember.Component.extend(PropTypesMixin, {
       lockOnInit: true,
       isMaxAttempt: true,
       timeout: 15000,
-      fingerprint: true,
     };
   },
 
   classNames: ['lock-container'],
 
-  didReceiveAttrs() {
-    if (Ember.isNone(this.get('username'))) {
-      this._clearLockEvents();
-    } else {
-      this._bindLockEvents();
-    }
-  },
-
   init() {
     this._super(...arguments);
+    this._bindLockEvents();
     if (!Ember.isNone(this.get('username')) && this.get('lockOnInit')) {
       this._doLock();
     }
@@ -88,17 +79,23 @@ export default Ember.Component.extend(PropTypesMixin, {
   // ------------
 
   _doLock() {
-    if (!this.get('lockOnHidden')) {
+    // if lockOnHidden is false or no user is logged in do not lock
+    if (!this.get('lockOnHidden') || Ember.isNone(this.get('username'))) {
       return;
     }
     this.set('_isLocked', true);
 
     if (config.hasCordova) {
-      if (window.Fingerprint && this.get('fingerprint')) {
-        window.Fingerprint.isAvailable(() => {
-          this._doFingerprint();
-        });
-      }
+      const fingerprint = () => {
+        if (window.Fingerprint) {
+          window.Fingerprint.isAvailable(() => {
+            this._doFingerprint();
+          });
+        }
+      };
+      // if locking on init wait for device ready to request fingerprint
+      // if device is ready callback will fire immediatly
+      document.addEventListener('deviceready', fingerprint, false);
     }
   },
 
@@ -111,30 +108,27 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _bindLockEvents() {
     if (config.hasCordova) {
-      document.addEventListener(
-        'pause',
-        () => {
-          run.debounce(this, this._updateLastActive, 10);
-        },
-        false
-      );
-      document.addEventListener(
-        'resume',
-        () => {
-          run.debounce(this, this._checkInactiveTime, 10);
-        },
-        false
-      );
+      document.addEventListener('deviceready', () => {
+        document.addEventListener(
+          'pause',
+          () => {
+            this._updateLastActive();
+          },
+          false
+        );
+        document.addEventListener(
+          'resume',
+          () => {
+            this._checkInactiveTime();
+          },
+          false
+        );
+      });
     } else {
       this.get('visibility')
         .on(config.events.visibility.hidden, this, this._updateLastActive)
         .on(config.events.visibility.visible, this, this._checkInactiveTime);
     }
-  },
-  _clearLockEvents() {
-    this.get('visibility')
-      .off(config.events.visibility.hidden, this)
-      .off(config.events.visibility.visible, this);
   },
 
   // Inactive Time Helpers
