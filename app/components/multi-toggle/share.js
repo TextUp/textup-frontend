@@ -1,31 +1,40 @@
+import Constants from 'textup-frontend/constants';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import Ember from 'ember';
-import defaultIfAbsent from '../../utils/default-if-absent';
 
 export default Ember.Component.extend({
-	singleOptions: defaultIfAbsent([{
-		display: 'Not Shared',
-		command: 'STOP',
-		color: '#d3d3d3'
-	}, {
-		display: 'View',
-		command: 'VIEW',
-		color: '#76c9ec'
-	}, {
-		display: 'Collaborate',
-		command: 'DELEGATE',
-		color: '#1BA5E0'
-	}]),
-	multipleOptions: defaultIfAbsent([{
-		display: 'Stop Sharing',
-		command: 'STOP',
-		color: '#c9302c'
-	}, {
-		display: 'View',
-		command: 'VIEW',
-		color: '#76c9ec'
-	}, {
-		display: 'Collaborate',
-		command: 'DELEGATE',
-		color: '#1BA5E0'
-	}]),
+  singleOptions: defaultIfAbsent([
+    {
+      display: 'Not Shared',
+      command: Constants.ACTION.SHARE.STOP,
+      color: Constants.COLOR.LIGHT_GRAY,
+    },
+    {
+      display: 'View',
+      command: Constants.SHARING_PERMISSION.VIEW,
+      color: Constants.COLOR.LIGHT_BLUE,
+    },
+    {
+      display: 'Collaborate',
+      command: Constants.SHARING_PERMISSION.DELEGATE,
+      color: Constants.COLOR.BRAND,
+    },
+  ]),
+  multipleOptions: defaultIfAbsent([
+    {
+      display: 'Stop Sharing',
+      command: Constants.ACTION.SHARE.STOP,
+      color: Constants.COLOR.RED,
+    },
+    {
+      display: 'View',
+      command: Constants.SHARING_PERMISSION.VIEW,
+      color: Constants.COLOR.LIGHT_BLUE,
+    },
+    {
+      display: 'Collaborate',
+      command: Constants.SHARING_PERMISSION.DELEGATE,
+      color: Constants.COLOR.BRAND,
+    },
+  ]),
 });

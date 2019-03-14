@@ -19,15 +19,15 @@ export default Ember.Component.extend({
       actions: {
         initialize: this.initialize.bind(this),
         hide: this.hide.bind(this),
-        show: this.show.bind(this)
-      }
+        show: this.show.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
@@ -35,7 +35,7 @@ export default Ember.Component.extend({
   // Helpers
   // -------
 
-  initialize: function(animation, shouldShow) {
+  initialize(animation, shouldShow) {
     const $el = this.$();
     if (animation === 'slide') {
       // set height for showing action
@@ -44,7 +44,7 @@ export default Ember.Component.extend({
       // start with 0 width to allow for sliding in
       $el.css({
         width: 0,
-        height: height
+        height: height,
       });
     }
     if (shouldShow) {
@@ -59,7 +59,7 @@ export default Ember.Component.extend({
       });
     }
   },
-  show: function(animation) {
+  show(animation) {
     const $el = this.$();
     return new Ember.RSVP.Promise(resolve => {
       if (animation === 'fade') {
@@ -71,13 +71,13 @@ export default Ember.Component.extend({
         $el.css('height', this.get('_height'));
         $el.animate(
           {
-            width: '100%'
+            width: '100%',
           },
           {
-            complete: function() {
+            complete() {
               $el.css('height', 'auto');
               resolve();
-            }
+            },
           }
         );
       } else {
@@ -88,7 +88,7 @@ export default Ember.Component.extend({
       }
     });
   },
-  hide: function(animation) {
+  hide(animation) {
     const $el = this.$();
     return new Ember.RSVP.Promise(resolve => {
       if (animation === 'fade') {
@@ -104,13 +104,13 @@ export default Ember.Component.extend({
         Ember.run.next(this, function() {
           $el.animate(
             {
-              width: '0'
+              width: '0',
             },
             {
-              complete: function() {
+              complete() {
                 $el.css('height', 0);
                 resolve();
-              }
+              },
             }
           );
         });
@@ -121,5 +121,5 @@ export default Ember.Component.extend({
           .done(resolve);
       }
     });
-  }
+  },
 });

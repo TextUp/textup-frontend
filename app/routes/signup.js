@@ -3,17 +3,15 @@ import IsPublic from 'textup-frontend/mixins/route/is-public';
 import config from '../config/environment';
 
 export default Ember.Route.extend(IsPublic, {
-  model: function() {
-    return Ember.$
-      .ajax({
-        type: 'GET',
-        url: `${config.host}/v1/public/organizations?status[]=approved`
-      })
-      .then(({ organizations = [] }) => {
-        return organizations.map(org => {
-          return this.store.push(this.store.normalize('organization', org));
-        });
+  model() {
+    return Ember.$.ajax({
+      type: 'GET',
+      url: `${config.host}/v1/public/organizations?status[]=approved`,
+    }).then(({ organizations = [] }) => {
+      return organizations.map(org => {
+        return this.store.push(this.store.normalize('organization', org));
       });
+    });
   },
   setupController(controller) {
     this._super(...arguments);
@@ -32,5 +30,5 @@ export default Ember.Route.extend(IsPublic, {
       selected.get('location.content').rollbackAttributes();
       selected.rollbackAttributes();
     }
-  }
+  },
 });

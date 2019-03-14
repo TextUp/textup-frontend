@@ -14,14 +14,14 @@ export default Ember.Route.extend({
       this.set('_newModel', team);
     }
   },
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     controller.set('team', this.get('_newModel'));
   },
-  deactivate: function() {
+  deactivate() {
     const team = this.controller.get('team');
     if (team.get('hasDirtyAttributes')) {
       team.rollbackAttributes();
     }
-  }
+  },
 });

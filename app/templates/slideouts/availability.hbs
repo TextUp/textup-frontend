@@ -107,35 +107,15 @@
 
     <hr>
 
-	<div class="pad-l pad-r pad-b">
-        {{#if (not authService.authUser.enableNotifications)}}
-            <div class="bg-color pad-all margin-b border-radius-all">
-                You have turned notifications off <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>in your account settings</span>. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">the away message will be sent</span> as if you were not available.
-            </div>
-        {{/if}}
-        {{!-- choice of availability source only available for team phones --}}
-        {{#if (and
-                (type/is-team model)
-                (or (gt authService.authUser.teamsWithPhones.length 1)
-                    authService.authUser.phone.content))}}
-            {{multi-toggle/binary value=model.phone.content.availability.content.useStaffAvailability
-                falseColor=(constant "COLOR.LIGHT_BLUE")
-                trueColor=(constant "COLOR.BRAND")
-                falseString="Custom availability"
-                trueString="Default availability"}}
-        {{/if}}
-	</div>
-
-    {{#with (if model.phone.content.availability.content.useStaffAvailability
-            authService.authUser
-            model.phone.content.availability.content) as |entity|}}
-        {{availability-control
-            entity=entity
-            entityIdentityProp="constructor.modelName"
-            onEntityDidChange=(route-action "onAvailabilityEntitySwitch")
-            others=model.phone.content.others.content
-            onTypeChange=(action (mut entity.manualSchedule))
-            onManualAvailabilityChange=(action (mut entity.isAvailable))
-            onScheduleAvailabilityChange=(action "replaceRange" target=entity.schedule.content)}}
-    {{/with}}
+    {{#if (not authService.authUser.hasPersonalNumber)}}
+        <div class="bg-color pad-all margin-b border-radius-all">
+            You have connected a personal phone number to your account. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">an away message will be sent</span> as if you were not available. <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>Please add a personal phone number to your account.</span>
+        </div>
+    {{/if}}
+    {{availability-control
+        self=model.phone.content.self
+        others=model.phone.content.others
+        onAvailabilityTypeChange=(action (mut model.phone.content.self.schedule.manual))
+        onManualAvailabilityChange=(action (mut model.phone.content.self.schedule.manualIsAvailable))
+        onScheduleAvailabilityChange=(action "replaceRange" target=model.phone.content.self.schedule)}}
 {{/slideout-pane}}

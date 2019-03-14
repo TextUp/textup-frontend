@@ -10,9 +10,10 @@ export default Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    Ember.$
-      .get(this.get('config.appMessage.messageEndpoint'))
-      .then(this._onMessageSuccess.bind(this), this._onMessageFailure.bind(this));
+    Ember.$.get(this.get('config.appMessage.messageEndpoint')).then(
+      this._onMessageSuccess.bind(this),
+      this._onMessageFailure.bind(this)
+    );
   },
 
   // Internal properties
@@ -55,5 +56,5 @@ export default Ember.Component.extend({
   _updateViewed(timestamp, data) {
     this.get('storage').trySet(localStorage, this.get('_lastViewedKey'), timestamp.toISOString());
     this.set('_data', data);
-  }
+  },
 });

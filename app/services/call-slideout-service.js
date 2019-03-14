@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import {
   validate as validateNumber,
-  clean as cleanNumber
+  clean as cleanNumber,
 } from 'textup-frontend/utils/phone-number';
 
 const { isPresent, run, RSVP } = Ember;
@@ -12,7 +12,7 @@ export default Ember.Service.extend({
   recordItemService: Ember.inject.service(),
   store: Ember.inject.service(),
 
-  validateAndCheckForName: function(number, { ctx }) {
+  validateAndCheckForName(number, { ctx }) {
     run.debounce(this, this._validateAndCheckForName, number, ctx, 250);
   },
   makeCall() {
@@ -35,13 +35,13 @@ export default Ember.Service.extend({
       this.get('contactService')
         .searchContactsByNumber(cleaned, { max: maxNum })
         .then(results => {
-          const noViewOnlyContacts = results.toArray().filterBy('isSharedView', false),
+          const noViewOnlyContacts = results.toArray().filterBy('isViewPermission', false),
             total = noViewOnlyContacts.length;
           ctx.setProperties({
             callByNumber: cleaned,
             callByNumberContact: noViewOnlyContacts.get('firstObject'),
             callByNumberMoreNum: Math.max(total - 1, 0), // this is an approx total
-            callByNumberIsValid: true
+            callByNumberIsValid: true,
           });
         });
     } else {
@@ -49,7 +49,7 @@ export default Ember.Service.extend({
         callByNumber: cleaned,
         callByNumberContact: null,
         callByNumberIsValid: false,
-        callByNumberMoreNum: 0
+        callByNumberMoreNum: 0,
       });
     }
   },
@@ -64,5 +64,5 @@ export default Ember.Service.extend({
           .then(() => resolve(newContact), reject);
       }
     });
-  }
+  },
 });

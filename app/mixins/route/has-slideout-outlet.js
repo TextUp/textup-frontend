@@ -1,7 +1,7 @@
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { computed, run } = Ember;
+const { run } = Ember;
 
 export default Ember.Mixin.create({
   slideoutService: Ember.inject.service(),

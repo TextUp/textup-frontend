@@ -76,18 +76,18 @@
                     </button >
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "active")) "active"}}"
-                    {{action "changeFilter" "active"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.ACTIVE"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.ACTIVE")}}>
                     <span>Active</span>
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "admins")) "active"}}"
-                    {{action "changeFilter" "admins"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.ADMINS"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.ADMINS")}}>
                     <span>Admins</span>
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "deactivated")) "active"}}"
-                    {{action "changeFilter" "deactivated"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.DEACTIVATED"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.DEACTIVATED")}}>
                     <span>Deactivated</span>
                 </div>
             </div>

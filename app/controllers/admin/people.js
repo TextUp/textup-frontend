@@ -1,21 +1,22 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { computed: { alias }, run } = Ember;
+const { computed, run } = Ember;
 
 export default Ember.Controller.extend({
   adminController: Ember.inject.controller('admin'),
 
   queryParams: ['filter'],
-  filter: alias('adminController.filter'),
+  filter: computed.alias('adminController.filter'),
 
-  people: alias('adminController.people'),
+  people: computed.alias('adminController.people'),
   numPeople: '--',
   team: null,
 
   // Computed properties
   // -------------------
 
-  statuses: Ember.computed('filter', function() {
+  statuses: computed('filter', function() {
     return this._translateFilter(this.get('filter'));
   }),
 
@@ -37,7 +38,7 @@ export default Ember.Controller.extend({
   ),
 
   actions: {
-    refresh: function() {
+    refresh() {
       const people = this.get('people');
       return this._loadMore().then(results => {
         run(() => {
@@ -46,38 +47,37 @@ export default Ember.Controller.extend({
         });
       });
     },
-    loadMore: function() {
+    loadMore() {
       const people = this.get('people');
       return this._loadMore(people.length).then(results => {
         people.pushObjects(results.toArray());
       });
-    }
+    },
   },
 
-  _loadMore: function(offset = 0) {
+  _loadMore(offset = 0) {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      const query = Object.create(null),
-        org = this.get('stateManager.ownerAsOrg'),
+      const org = this.get('stateManager.ownerAsOrg'),
         team = this.get('team');
-      query.status = this.get('statuses');
-      query.offset = offset;
-      if (team) {
-        query.teamId = team.get('id');
-      } else if (org) {
-        query.organizationId = org.get('id');
-      }
-      this.store.query('staff', query).then(results => {
-        this.set('numPeople', results.get('meta.total'));
-        resolve(results);
-      }, this.get('dataService').buildErrorHandler(reject));
+      this.store
+        .query('staff', {
+          offset,
+          status: this.get('statuses'),
+          teamId: team ? team.get('id') : null,
+          organizationId: org ? org.get('id') : null,
+        })
+        .then(results => {
+          this.set('numPeople', results.get('meta.total'));
+          resolve(results);
+        }, this.get('dataService').buildErrorHandler(reject));
     });
   },
-  _translateFilter: function(filter) {
+  _translateFilter(filter) {
     const options = {
-      active: ['staff', 'admin'],
-      admins: ['admin'],
-      deactivated: ['blocked']
+      [Constants.STAFF.FILTER.ACTIVE]: [Constants.STAFF.STATUS.STAFF, Constants.STAFF.STATUS.ADMIN],
+      [Constants.STAFF.FILTER.ADMINS]: [Constants.STAFF.STATUS.ADMIN],
+      [Constants.STAFF.FILTER.DEACTIVATED]: [Constants.STAFF.STATUS.BLOCKED],
     };
-    return filter ? options[filter.toLowerCase()] : options['active'];
-  }
+    return filter ? options[filter.toLowerCase()] : options[Constants.STAFF.FILTER.ACTIVE];
+  },
 });

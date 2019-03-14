@@ -1,7 +1,7 @@
 {{#multi-toggle/group-by-item anyChanges=anyChanges
-	itemBucketProperty='sharedWith'
-    itemBucketCommandProperty='permission'
-    bucketIdentityProperty='sharingId'
+	itemBucketProperty=(constant "PROP_NAME.SHARING_PHONE_ID_BUCKETS")
+    itemBucketCommandProperty=(constant "PROP_NAME.SHARING_PERMISSION")
+    bucketIdentityProperty=(constant "PROP_NAME.SHARING_IDENT")
     singleOptions=singleOptions
     multipleOptions=multipleOptions
     items=contacts

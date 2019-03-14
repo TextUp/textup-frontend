@@ -2,7 +2,7 @@
     <div class="form__group">
         <div class="xs-2-row-3 control-text">
             <label class="form__label" for="TextUp phone">
-                {{#if owner.hasInactivePhone}}
+                {{#if (and owner.phone.content (not owner.phone.content.isActive))}}
                     Reactivate TextUp phone?
                 {{else}}
                     Set up a TextUp phone?

@@ -7,7 +7,7 @@ import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
 
-const { get, computed } = Ember;
+const { get } = Ember;
 
 export default Ember.Route.extend(
   HasSlideoutOutlet,
@@ -17,7 +17,7 @@ export default Ember.Route.extend(
   {
     slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
-    beforeModel: function() {
+    beforeModel() {
       this._super(...arguments);
       const user = this.get('authService.authUser');
       return user.get('org').then(org => {
@@ -28,17 +28,17 @@ export default Ember.Route.extend(
         }
       });
     },
-    model: function() {
+    model() {
       return this.get('authService.authUser.org');
     },
-    afterModel: function(org) {
+    afterModel(org) {
       this.get('stateManager').set('owner', org);
     },
-    setupController: function(controller, org) {
+    setupController(controller, org) {
       this._super(...arguments);
       this._loadPending(org);
     },
-    redirect: function(model, transition) {
+    redirect(model, transition) {
       this._super(...arguments);
       if (transition.targetName === 'admin.index') {
         this.transitionTo('admin.people');
@@ -46,7 +46,7 @@ export default Ember.Route.extend(
     },
 
     actions: {
-      toggleSelected: function(staff) {
+      toggleSelected(staff) {
         if (!this.get('stateManager.viewingMany')) {
           if (this.get('stateManager.viewingTeam')) {
             this.transitionTo('admin.team.many');
@@ -60,7 +60,7 @@ export default Ember.Route.extend(
       // Staff
       // -----
 
-      initializeNewStaff: function() {
+      initializeNewStaff() {
         this.controller.set(
           'newStaff',
           this.store.createRecord('staff', {
@@ -70,14 +70,14 @@ export default Ember.Route.extend(
           })
         );
       },
-      cleanNewStaff: function(staff, then = undefined) {
+      cleanNewStaff(staff, then = undefined) {
         // set to false to prevent adding new phone toggle
         // from showing true when reinitializing this slideout
         // after it is closed with with phoneAction set to true
         staff.set('phoneAction', null);
         callIfPresent(this, then);
       },
-      createStaff: function(staff, then = undefined) {
+      createStaff(staff, then = undefined) {
         return this.get('dataService')
           .persist(staff)
           .then(() => {
@@ -89,7 +89,7 @@ export default Ember.Route.extend(
             callIfPresent(this, then);
           });
       },
-      resetPassword: function(username) {
+      resetPassword(username) {
         return this.get('authService')
           .resetPassword(username)
           .then(
@@ -103,17 +103,17 @@ export default Ember.Route.extend(
             }
           );
       },
-      markStaff: function(data) {
+      markStaff(data) {
         const people = Ember.isArray(data) ? data : [data];
         people.forEach(person => person.makeStaff());
         this._changeStaffStatus(people);
       },
-      markAdmin: function(data) {
+      markAdmin(data) {
         const people = Ember.isArray(data) ? data : [data];
         people.forEach(person => person.makeAdmin());
         this._changeStaffStatus(people);
       },
-      markBlocked: function(data) {
+      markBlocked(data) {
         const people = Ember.isArray(data) ? data : [data];
         people.forEach(person => person.block());
         this._changeStaffStatus(people);
@@ -122,7 +122,7 @@ export default Ember.Route.extend(
       // Team
       // ----
 
-      initializeNewTeam: function() {
+      initializeNewTeam() {
         const org = this.get('currentModel');
         this.controller.set(
           'newTeam',
@@ -136,7 +136,7 @@ export default Ember.Route.extend(
           })
         );
       },
-      createTeam: function(team, then = undefined) {
+      createTeam(team, then = undefined) {
         return this.get('dataService')
           .persist(team)
           .then(persistedTeam => {
@@ -148,7 +148,7 @@ export default Ember.Route.extend(
             callIfPresent(this, then);
           });
       },
-      updateTeamMemberships: function(teams, person, then = undefined) {
+      updateTeamMemberships(teams, person, then = undefined) {
         const people = Ember.isArray(person) ? person : [person];
         return this.get('dataService')
           .persist(teams)
@@ -163,7 +163,7 @@ export default Ember.Route.extend(
       // Phone
       // -----
 
-      persistWithPhone: function(withPhone, then) {
+      persistWithPhone(withPhone, then) {
         const isTransfer = withPhone.get('phoneAction') === Constants.ACTION.PHONE.TRANSFER,
           data = withPhone.get('phoneActionData'),
           targetId = isTransfer ? get(data, 'id') : null,
@@ -189,7 +189,7 @@ export default Ember.Route.extend(
     // Helpers
     // -------
 
-    _changeStaffStatus: function(people) {
+    _changeStaffStatus(people) {
       this.get('dataService')
         .persist(people)
         .then(updatedPeople => {
@@ -197,11 +197,11 @@ export default Ember.Route.extend(
           updatedPeople.forEach(per => per.set('isSelected', false));
         });
     },
-    _loadPending: function(org) {
+    _loadPending(org) {
       this.store
         .query('staff', {
           organizationId: org.get('id'),
-          status: ['pending'],
+          status: [Constants.STAFF.STATUS.PENDING],
         })
         .then(success => {
           this.controller.set('pending', success.toArray());

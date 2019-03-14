@@ -1,10 +1,8 @@
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 export default DS.JSONSerializer.extend({
-  attrs: { [MEDIA_ID_PROP_NAME]: { key: 'uid', serialize: true } },
+  attrs: { [Constants.PROP_NAME.MEDIA_ID]: { key: 'uid', serialize: true } },
 
   serialize() {
     const json = this._super(...arguments);

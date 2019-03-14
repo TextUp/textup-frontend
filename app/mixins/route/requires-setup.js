@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
-  beforeModel: function() {
+  beforeModel() {
     this._super(...arguments);
     const user = this.get('authService.authUser'),
       hasSkippedSetup = this.get('stateManager.hasSkippedSetup');

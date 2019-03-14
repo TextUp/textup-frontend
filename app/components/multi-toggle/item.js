@@ -33,15 +33,15 @@ export default Ember.Component.extend({
       complement: this.get('complement'),
       actions: {
         select: this.select.bind(this),
-        deselect: this.deselect.bind(this)
-      }
+        deselect: this.deselect.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
@@ -49,13 +49,13 @@ export default Ember.Component.extend({
   // Actions
   // -------
 
-  select: function(skipNotify = false) {
+  select(skipNotify = false) {
     this.set('isSelected', true);
     if (!skipNotify) {
       Ember.tryInvoke(this, 'onSelect');
     }
   },
-  deselect: function() {
+  deselect() {
     this.set('isSelected', false);
-  }
+  },
 });

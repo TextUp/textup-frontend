@@ -1,7 +1,9 @@
 import Constants from 'textup-frontend/constants';
-import Dirtiable from '../mixins/model/dirtiable';
-import Ember from 'ember';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
+import Ember from 'ember';
+import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const { isPresent, computed, RSVP } = Ember,
@@ -33,7 +35,7 @@ const { isPresent, computed, RSVP } = Ember,
     },
   });
 
-export default DS.Model.extend(Dirtiable, Validations, {
+export default DS.Model.extend(Dirtiable, HasReadableIdentifier, HasUrlIdentifier, Validations, {
   // Overrides
   // ---------
 
@@ -49,15 +51,9 @@ export default DS.Model.extend(Dirtiable, Validations, {
   location: DS.belongsTo('location'),
 
   status: DS.attr('string'),
-  isRejected: computed('status', function() {
-    return this.get('status') === Constants.ORGANIZATION.STATUS.REJECTED;
-  }),
-  isPending: computed('status', function() {
-    return this.get('status') === Constants.ORGANIZATION.STATUS.PENDING;
-  }),
-  isApproved: computed('status', function() {
-    return this.get('status') === Constants.ORGANIZATION.STATUS.APPROVED;
-  }),
+  isRejected: computed.equal('status', Constants.ORGANIZATION.STATUS.REJECTED),
+  isPending: computed.equal('status', Constants.ORGANIZATION.STATUS.PENDING),
+  isApproved: computed.equal('status', Constants.ORGANIZATION.STATUS.APPROVED),
 
   teams: DS.hasMany('team'),
   existingTeams: computed('teams.[]', function() {

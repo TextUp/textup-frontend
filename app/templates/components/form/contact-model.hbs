@@ -3,20 +3,20 @@
         pad-t pad-l pad-r pad-b-half">
         <p class='margin-b-half'>
             <span class="text-bold">
-                {{phone-number contact.sharedBy}}
+                {{phone-number contact.sharedByName}}
             </span>
-            {{#if contact.isSharedDelegate}}
+            {{#if contact.isDelegatePermission}}
                 has been collaborating with you on
-            {{else if contact.isSharedView}}
+            {{else if contact.isViewPermission}}
                 has allowed you to view
             {{else}}
                 has shared
             {{/if}}
             <span class="text-bold">
-                {{phone-number contact.identifier}}
+                {{phone-number contact.name}}
             </span>
             since
-            {{moment-from-now contact.startedSharing interval=10000}}
+            {{moment-from-now contact.whenCreated interval=10000}}
         </p>
     </div>
 {{/if}}

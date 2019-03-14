@@ -22,16 +22,16 @@ export default Ember.Component.extend({
   }),
 
   actions: {
-    select: function(transferTarget) {
+    select(transferTarget) {
       return new Ember.RSVP.Promise(resolve => {
         this.set('selected', transferTarget);
         resolve();
       });
     },
-    deselect: function() {
+    deselect() {
       this.set('selected', null);
     },
-    search: function(val) {
+    search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         this.get('authService')
           .authRequest({
@@ -55,7 +55,7 @@ export default Ember.Component.extend({
   // Helper methods
   // --------------
 
-  _excludeOwner: function(array) {
+  _excludeOwner(array) {
     const owner = this.get('phoneOwner'),
       identProp = this.get('identityProperty'),
       ownerIdent = get(owner, identProp);

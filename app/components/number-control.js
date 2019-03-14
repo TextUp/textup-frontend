@@ -1,7 +1,11 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-const { $, computed, run: { scheduleOnce } } = Ember;
+const {
+  $,
+  computed,
+  run: { scheduleOnce },
+} = Ember;
 
 export default Ember.Component.extend({
   val: defaultIfAbsent(''),
@@ -26,7 +30,7 @@ export default Ember.Component.extend({
   classNameBindings: [
     'disabled:form-disabled',
     'hasError:form-error',
-    'showAlphabet:show-alphabet'
+    'showAlphabet:show-alphabet',
   ],
   attributeBindings: ['tabindex:tabIndex'],
 
@@ -45,33 +49,33 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     const elId = this.elementId,
       events = `click.${elId} touchend.${elId}`;
     this.$('.number-control-item').on(events, this.addFromUserInput.bind(this));
     this.$('.number-control-remove').on(events, this.removeByUserInput.bind(this));
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     this._super(...arguments);
     const elId = this.elementId,
       events = `click.${elId} touchend.${elId}`;
     this.$('.number-control-item').off(events);
     this.$('.number-control-remove').off(events);
   },
-  didUpdateAttrs: function() {
+  didUpdateAttrs() {
     if (this.get('_isFull')) {
       scheduleOnce('afterRender', this, this.handleOnFull);
     }
   },
-  keyDown: function(event) {
+  keyDown(event) {
     // disable going back in history for backspace
     if (!this.get('disabled') && event.which === 8) {
       event.preventDefault();
       return false;
     }
   },
-  keyUp: function(event) {
+  keyUp(event) {
     if (event.which >= 48 && event.which <= 57) {
       // numeric keys
       this.appendToVal(String.fromCharCode(event.which));
@@ -87,14 +91,14 @@ export default Ember.Component.extend({
   // Modify value
   // ------------
 
-  addFromUserInput: function(event) {
+  addFromUserInput(event) {
     const val = $(event.currentTarget).attr('data-value');
     this.appendToVal(val);
     // stop click event from being called if touchend is called first
     event.stopImmediatePropagation();
     return false;
   },
-  removeByUserInput: function(event) {
+  removeByUserInput(event) {
     this.removeLastFromVal();
     // stop click event from being called if touchend is called first
     event.stopImmediatePropagation();
@@ -104,7 +108,7 @@ export default Ember.Component.extend({
   // Hooks
   // -----
 
-  appendToVal: function(char) {
+  appendToVal(char) {
     if (this.get('disabled')) {
       return;
     }
@@ -114,22 +118,22 @@ export default Ember.Component.extend({
       Ember.tryInvoke(this, 'doChange', [val + char]);
     }
   },
-  removeLastFromVal: function() {
+  removeLastFromVal() {
     if (this.get('disabled')) {
       return;
     }
     Ember.tryInvoke(this, 'doChange', [this.get('val').slice(0, -1)]);
   },
-  handleOnFull: function() {
+  handleOnFull() {
     if (this.get('disabled')) {
       return;
     }
     Ember.tryInvoke(this, 'onFull', [this.get('val')]);
   },
-  handleOnSubmit: function() {
+  handleOnSubmit() {
     if (this.get('disabled')) {
       return;
     }
     Ember.tryInvoke(this, 'onSubmit', [this.get('val')]);
-  }
+  },
 });

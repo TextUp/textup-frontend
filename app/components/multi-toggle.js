@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 export default Ember.Component.extend({
   tabindex: defaultIfAbsent(0),
@@ -40,15 +40,15 @@ export default Ember.Component.extend({
       currentIndex: null, // set during initialization
       actions: {
         moveLeft: this.moveLeft.bind(this),
-        moveRight: this.moveRight.bind(this)
-      }
+        moveRight: this.moveRight.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didUpdateAttrs: function() {
+  didUpdateAttrs() {
     this._super(...arguments);
     Ember.run.next(this, this._setup.bind(this));
   },
@@ -66,7 +66,7 @@ export default Ember.Component.extend({
       });
     }
   },
-  _setup: function() {
+  _setup() {
     const items = this.get('_items');
     if (items.length > 0) {
       let selectIndex = this.get('selectIndex');
@@ -94,7 +94,7 @@ export default Ember.Component.extend({
   // Handlers
   // --------
 
-  click: function(event) {
+  click(event) {
     const $t = Ember.$(event.target);
     if ($t.hasClass('left-toggle') || $t.closest('.left-toggle').length) {
       this.moveLeft();
@@ -102,7 +102,7 @@ export default Ember.Component.extend({
       this.moveRight();
     }
   },
-  keyUp: function(event) {
+  keyUp(event) {
     if (event.which === 37) {
       // left arrow key
       this.moveLeft();
@@ -116,22 +116,22 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    registerItem: function(item) {
+    registerItem(item) {
       Ember.run.scheduleOnce('afterRender', this, function() {
         this.get('_items').pushObject(item);
       });
-    }
+    },
   },
 
   // Indicator bar
   // -------------
 
-  build$Indicators: function(items) {
+  build$Indicators(items) {
     const numItems = items.length,
       $indicators = items.map(this._buildIndicator.bind(this, numItems));
     return $indicators;
   },
-  _buildIndicator: function(numItems, item) {
+  _buildIndicator(numItems, item) {
     const indClass = this.get('indicatorClass'),
       color = Ember.get(item, 'complement');
     return Ember.$(`<div class='${indClass}'
@@ -142,17 +142,17 @@ export default Ember.Component.extend({
   // Helpers
   // -------
 
-  moveLeft: function() {
+  moveLeft() {
     if (this.get('canLeft')) {
       this.slideToAndSetIndex(this.get('_selectedIndex') - 1);
     }
   },
-  moveRight: function() {
+  moveRight() {
     if (this.get('canRight')) {
       this.slideToAndSetIndex(this.get('_selectedIndex') + 1);
     }
   },
-  slideToAndSetIndex: function(index, skipNotify = false) {
+  slideToAndSetIndex(index, skipNotify = false) {
     // short circuit if disabled and NOT skip notify
     // do NOT short circuit if skip notify because this means that
     // we are calling this method internally, not from user input
@@ -175,17 +175,17 @@ export default Ember.Component.extend({
     // update stored index
     this.setProperties({
       _selectedIndex: normalized,
-      'publicAPI.currentIndex': normalized
+      'publicAPI.currentIndex': normalized,
     });
     // shift item container to display selected object
     this.get('$itemContainer').css('left', `-${normalized * 100}%`);
     // update toggles
     this._setToggles(normalized);
   },
-  _setToggles: function(normalized) {
+  _setToggles(normalized) {
     this.setProperties({
       canRight: true,
-      canLeft: true
+      canLeft: true,
     });
     if (this.get('wrapAround')) {
       return;
@@ -197,7 +197,7 @@ export default Ember.Component.extend({
       this.set('canLeft', false);
     }
   },
-  _normalizeIndex: function(index) {
+  _normalizeIndex(index) {
     const numItems = this.get('_items.length');
     if (index < 0) {
       return numItems + index;
@@ -206,5 +206,5 @@ export default Ember.Component.extend({
     } else {
       return index;
     }
-  }
+  },
 });

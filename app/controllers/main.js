@@ -7,9 +7,6 @@ export default Ember.Controller.extend({
   // displaying active menu items
   filter: computed.alias('stateManager.owner.phone.content.contactsFilter'),
 
-  appMessageEndpoint: computed(function() {
-    return get(config, 'appMessage.messageEndpoint');
-  }),
   shouldShowAppMessage: computed(function() {
     return get(config, 'appMessage.oldestMessageInDays');
   }),

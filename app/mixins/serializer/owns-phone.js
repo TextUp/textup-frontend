@@ -6,7 +6,6 @@ const { get, merge } = Ember;
 
 export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
   attrs: {
-    hasInactivePhone: { serialize: false },
     phone: { deserialize: 'records', serialize: 'records' },
   },
 

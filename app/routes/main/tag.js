@@ -1,6 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import MainContactsRoute from 'textup-frontend/routes/main/contacts';
-import { URL_IDENT_PROP_NAME } from 'textup-frontend/mixins/model/has-url-identifier';
 
 const { computed } = Ember;
 
@@ -12,11 +12,11 @@ export default MainContactsRoute.extend({
   phone: computed.alias('stateManager.owner.phone.content'),
 
   serialize(model) {
-    return { tag_identifier: model.get(URL_IDENT_PROP_NAME) };
+    return { tag_identifier: model.get(Constants.PROP_NAME.URL_IDENT) };
   },
   model({ tag_identifier: tagIdent }) {
     const tags = this.get('phone.tags'),
-      tag = tags.findBy(URL_IDENT_PROP_NAME, tagIdent);
+      tag = tags.findBy(Constants.PROP_NAME.URL_IDENT, tagIdent);
     return tag ? tag : this.transitionTo('main.contacts');
   },
   setupController() {

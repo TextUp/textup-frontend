@@ -1,7 +1,13 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../../utils/default-if-absent';
 
-const { $, isEmpty, isBlank, computed, run: { next, scheduleOnce } } = Ember;
+const {
+  $,
+  isEmpty,
+  isBlank,
+  computed,
+  run: { next, scheduleOnce },
+} = Ember;
 
 export default Ember.Component.extend({
   displayProperty: null,
@@ -50,32 +56,23 @@ export default Ember.Component.extend({
       isEditing: false,
       currentlyEditing: null,
       actions: {
-        clear: function() {
-          this.clearInput(this.get('inputObj'));
-        }.bind(this),
+        clear: this.clearInput.bind(this, this.get('inputObj')),
         insert: this.insert.bind(this),
-        update: function(event) {
-          if (this.get('publicAPI.isEditing')) {
-            const $input = this.get('_$editingInput'),
-              $node = $input.closest('.tag-item'),
-              object = this.get('publicAPI.currentlyEditing');
-            this.update(object, $input, $node, event);
-          }
-        }.bind(this),
+        update: this.updateOnEvent.bind(this),
         focus: this.ensureFocus.bind(this),
-        stopEditing: this.resetEditing.bind(this)
-      }
+        stopEditing: this.resetEditing.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     this.$()
       // this event handles setting the focus class
@@ -105,7 +102,7 @@ export default Ember.Component.extend({
         function(event) {
           this.setProperties({
             'publicAPI.isCreating': true,
-            'publicAPI.currentVal': this.$(event.target).val()
+            'publicAPI.currentVal': this.$(event.target).val(),
           });
         }.bind(this)
       )
@@ -116,18 +113,18 @@ export default Ember.Component.extend({
         }.bind(this)
       );
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     this._super(...arguments);
     this.get('inputObj').off(`.${this.elementId}`);
     this.$().off(`.${this.elementId}`);
   },
-  focusOut: function() {
+  focusOut() {
     // any time this element or any of its children lose focus,
     // remove all focus classes for a clean slate
     this.$().removeClass('focus');
     this._findFocusedNode().removeClass('focus');
   },
-  focusIn: function() {
+  focusIn() {
     this.ensureFocus();
   },
 
@@ -135,11 +132,11 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    removeViaButton: function(event) {
+    removeViaButton(event) {
       const { node: $node, object } = this._getDataFromEvent(event);
       this.remove(object, $node);
     },
-    handleUpdateInput: function(event) {
+    handleUpdateInput(event) {
       const { node: $node, object } = this._getDataFromEvent(event),
         $input = $(event.target),
         inputVal = $input.val(),
@@ -159,7 +156,7 @@ export default Ember.Component.extend({
         this._inputChange(inputVal, event);
       }
     },
-    handlePastedInput: function(event) {
+    handlePastedInput(event) {
       // need to schedule next because when the paste event fires on iOS safari,
       // the value of the input field has not yet been updated
       next(
@@ -172,7 +169,7 @@ export default Ember.Component.extend({
         event
       );
     },
-    handleNewInput: function(event) {
+    handleNewInput(event) {
       const $input = this.get('inputObj'),
         inputVal = $input.val(),
         inputEmpty = isEmpty(inputVal),
@@ -204,20 +201,28 @@ export default Ember.Component.extend({
       } else {
         this._inputChange(inputVal, event);
       }
-    }
+    },
   },
 
   // Hook handlers
   // -------------
 
-  insert: function(event) {
+  insert(event) {
     const $input = this.get('inputObj'),
       result = Ember.tryInvoke(this, 'onInsert', [$input.val(), event]);
     if (result && result.then) {
       result.then(() => this.clearInput($input));
     }
   },
-  update: function(object, $input, $node, event) {
+  updateOnEvent(event) {
+    if (this.get('publicAPI.isEditing')) {
+      const $input = this.get('_$editingInput'),
+        $node = $input.closest('.tag-item'),
+        object = this.get('publicAPI.currentlyEditing');
+      this.update(object, $input, $node, event);
+    }
+  },
+  update(object, $input, $node, event) {
     const inputVal = $input.val(),
       isValEmpty = isEmpty(inputVal);
     if (isValEmpty || inputVal === this.get('_originalBeforeEdits')) {
@@ -237,7 +242,7 @@ export default Ember.Component.extend({
       }
     }
   },
-  remove: function(object, $node) {
+  remove(object, $node) {
     if (object) {
       // ignore if only the input field remaining
       // run next to allow click out to close handler to run first
@@ -253,17 +258,17 @@ export default Ember.Component.extend({
       });
     }
   },
-  _inputStart: function(event) {
+  _inputStart(event) {
     this.set('_lastInputValue', event.target.value);
     Ember.tryInvoke(this, 'onInputStart', [event.target.value, event]);
   },
-  _inputChange: function(inputVal, event) {
+  _inputChange(inputVal, event) {
     if (this.get('_lastInputValue') !== inputVal) {
       Ember.tryInvoke(this, 'onInput', [inputVal, event]);
     }
     this.set('_lastInputValue', inputVal);
   },
-  clearInput: function($input) {
+  clearInput($input) {
     $input.val('');
     this.set('publicAPI.currentVal', '');
   },
@@ -271,7 +276,7 @@ export default Ember.Component.extend({
   // Keyboard navigation
   // -------------------
 
-  _suppressBack: function(event) {
+  _suppressBack(event) {
     const creating = this.get('publicAPI.isCreating'),
       editing = this.get('publicAPI.isEditing');
     // stop default behavior on backspace which is to go back a page
@@ -279,7 +284,7 @@ export default Ember.Component.extend({
       event.preventDefault();
     }
   },
-  _handleNonInputKeyUp: function(event) {
+  _handleNonInputKeyUp(event) {
     if (!this.get('publicAPI.isEditing')) {
       if (event.which === 13) {
         //start editing on enter
@@ -297,12 +302,12 @@ export default Ember.Component.extend({
       }
     }
   },
-  _focusIn: function(event) {
+  _focusIn(event) {
     const $el = this.$();
     $el.addClass('focus');
     this._getDataFromEvent(event).node.addClass('focus');
   },
-  _startEditing: function(event) {
+  _startEditing(event) {
     const { node: $node, object } = this._getDataFromEvent(event),
       $edit = $node.find('input.edit-multi-select-input-item'),
       original = $edit.val();
@@ -313,7 +318,7 @@ export default Ember.Component.extend({
       'publicAPI.isEditing': true,
       _$editingInput: $edit,
       _originalBeforeEdits: original,
-      _shouldRestoreOriginal: false
+      _shouldRestoreOriginal: false,
     });
     scheduleOnce('afterRender', this, function() {
       $edit.focus();
@@ -328,13 +333,13 @@ export default Ember.Component.extend({
       }
     });
   },
-  _stopEditing: function($edit, $node) {
+  _stopEditing($edit, $node) {
     this.resetEditing();
     scheduleOnce('afterRender', this, function() {
       $node.focus();
     });
   },
-  resetEditing: function() {
+  resetEditing() {
     if (this.isDestroying) {
       return;
     }
@@ -349,56 +354,56 @@ export default Ember.Component.extend({
       'publicAPI.isEditing': false,
       _$editingInput: null,
       _originalBeforeEdits: null,
-      _shouldRestoreOriginal: false
+      _shouldRestoreOriginal: false,
     });
   },
 
   // Focus methods
   // -------------
 
-  ensureFocus: function() {
+  ensureFocus() {
     // if none of the tag items are selected, select the input object
     if (!this._findFocusedNode().length) {
       this.get('inputObj').focus();
     }
   },
-  _focusBefore: function() {
+  _focusBefore() {
     const $prev = this._getPrevItem(this._findFocusedNode());
     if ($prev && $prev.length) {
       $prev.focus();
     }
   },
-  _focusAfter: function() {
+  _focusAfter() {
     const $next = this._getNextItem(this._findFocusedNode());
     if ($next && $next.length) {
       $next.focus();
     }
   },
-  _findFocusedNode: function() {
+  _findFocusedNode() {
     return this.$().children('.multi-select-input-item.focus');
   },
 
   // Helper methods
   // --------------
 
-  _getPrevItem: function($node) {
+  _getPrevItem($node) {
     return $node.prev('.multi-select-input-item');
   },
-  _getNextItem: function($node) {
+  _getNextItem($node) {
     return $node.next('.multi-select-input-item');
   },
-  _getObjectFromNode: function($node) {
+  _getObjectFromNode($node) {
     const arrayIndex = $node.attr('data-index');
     return this.get('data')[arrayIndex];
   },
-  _getDataFromEvent: function(event) {
+  _getDataFromEvent(event) {
     const $target = $(event.target),
       $node = $target.hasClass('multi-select-input-item')
         ? $target
         : $target.closest('.multi-select-input-item');
     return {
       node: $node,
-      object: this._getObjectFromNode($node)
+      object: this._getObjectFromNode($node),
     };
-  }
+  },
 });

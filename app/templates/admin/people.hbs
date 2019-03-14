@@ -53,20 +53,20 @@
         </div>
         {{#if hideShow.isOpen}}
             <ul class="reset-list">
-                <li class="menu-item {{if (eq filter 'active') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'active')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ACTIVE")) 'active'}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' (constant "STAFF.FILTER.ACTIVE"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Active</p>
                     </div>
                 </li>
-                <li class="menu-item {{if (eq filter 'admins') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'admins')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ADMINS")) 'active'}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' (constant "STAFF.FILTER.ADMINS"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Admins</p>
                     </div>
                 </li>
-                <li class="menu-item {{if (eq filter 'deactivated') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'deactivated')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.DEACTIVATED")) 'active'}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' (constant "STAFF.FILTER.DEACTIVATED"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Deactivated</p>
                     </div>

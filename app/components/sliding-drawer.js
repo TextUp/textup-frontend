@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 export default Ember.Component.extend({
   closeOnBodyClick: defaultIfAbsent(true),
@@ -28,15 +28,15 @@ export default Ember.Component.extend({
       actions: {
         toggle: this._toggle.bind(this),
         open: this._open.bind(this),
-        close: this._close.bind(this)
-      }
+        close: this._close.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
@@ -44,14 +44,14 @@ export default Ember.Component.extend({
   // Private methods
   // ---------------
 
-  _toggle: function() {
+  _toggle() {
     if (this.get('publicAPI.isOpen')) {
       this._close();
     } else {
       this._open();
     }
   },
-  _open: function() {
+  _open() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -73,7 +73,7 @@ export default Ember.Component.extend({
     }
     this.set('publicAPI.isOpen', true);
   },
-  _close: function() {
+  _close() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -89,7 +89,7 @@ export default Ember.Component.extend({
     this.addContentsListenersTimer = null;
   },
 
-  _addBodyListeners: function() {
+  _addBodyListeners() {
     this.get('$body').on(
       `click.${this.elementId}`,
       function() {
@@ -99,7 +99,7 @@ export default Ember.Component.extend({
       }.bind(this)
     );
   },
-  _addContentsListeners: function() {
+  _addContentsListeners() {
     this.get('$contents').on(
       `click.${this.elementId}`,
       function(event) {
@@ -110,7 +110,7 @@ export default Ember.Component.extend({
       }.bind(this)
     );
   },
-  _shouldIgnoreInContents: function(event) {
+  _shouldIgnoreInContents(event) {
     const $target = Ember.$(event.target),
       ignore = this.get('ignoreCloseContentsSelector'),
       allowed = this.get('allowCloseContentsSelector');
@@ -123,8 +123,8 @@ export default Ember.Component.extend({
       return shouldIgnore;
     }
   },
-  _removeListeners: function() {
+  _removeListeners() {
     this.get('$body').off(`.${this.elementId}`);
     this.get('$contents').off(`.${this.elementId}`);
-  }
+  },
 });

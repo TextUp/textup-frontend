@@ -2,16 +2,16 @@ import Ember from 'ember';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
 
 export default Ember.Route.extend(IsPublic, {
-  deactivate: function() {
+  deactivate() {
     this._super(...arguments);
     this.controller.setProperties({
       username: null,
       password: null,
-      resetUsername: null
+      resetUsername: null,
     });
   },
   actions: {
-    login: function(un, pwd, doStore) {
+    login(un, pwd, doStore) {
       const auth = this.get('authService');
       return auth.login(un, pwd, doStore).then(
         () => {
@@ -24,7 +24,7 @@ export default Ember.Route.extend(IsPublic, {
         }
       );
     },
-    resetPassword: function(un) {
+    resetPassword(un) {
       return this.get('authService')
         .resetPassword(un)
         .then(
@@ -37,6 +37,6 @@ export default Ember.Route.extend(IsPublic, {
           you provided. Please try again.`);
           }
         );
-    }
-  }
+    },
+  },
 });

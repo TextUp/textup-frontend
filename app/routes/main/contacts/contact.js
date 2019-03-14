@@ -21,7 +21,7 @@ export default Ember.Route.extend(
     templateName: 'main/contacts/contact',
     backRouteName: 'main.contacts',
 
-    model: function({ id }) {
+    model({ id }) {
       if (id) {
         const found = this.store.peekRecord('contact', id);
         return found
@@ -34,6 +34,6 @@ export default Ember.Route.extend(
     setupController(controller) {
       this._super(...arguments);
       controller.set('backRouteName', this.get('backRouteName'));
-    }
+    },
   }
 );

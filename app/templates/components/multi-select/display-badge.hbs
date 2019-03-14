@@ -14,7 +14,7 @@
     {{/if}}
 </span>
 <span class="clear-badge text-bold">
-    {{phone-number entity.identifier}}
+    {{phone-number (get entity (constant "PROP_NAME.READABLE_IDENT"))}}
     {{#if (type/is-tag entity)}}
         <span class="margin-l-half halo halo-sm bg-color bg-dark">
             {{entity.numMembers}}

@@ -3,15 +3,15 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   queryParams: {
     token: {
-      refreshModel: true
-    }
+      refreshModel: true,
+    },
   },
   errors: null,
 
   // Events
   // ------
 
-  model: function(params) {
+  model(params) {
     this._super(...arguments);
     const token = params.token;
     if (token) {
@@ -29,11 +29,11 @@ export default Ember.Route.extend({
       this.transitionTo('login');
     }
   },
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     controller.set('errors', this.get('errors'));
   },
-  deactivate: function() {
+  deactivate() {
     this.set('errors', null);
     this.controller.set('errors', null);
   },
@@ -42,7 +42,7 @@ export default Ember.Route.extend({
   // -------
 
   actions: {
-    openInApp: function(notification) {
+    openInApp(notification) {
       const ownerUrlId = notification.get('ownerUrlIdentifier'),
         otherUrlId = notification.get('otherUrlIdentifier'),
         isOtherTag = notification.get('isOtherTag');
@@ -51,6 +51,6 @@ export default Ember.Route.extend({
       } else {
         this.transitionTo('main.contacts.contact', ownerUrlId, otherUrlId);
       }
-    }
-  }
+    },
+  },
 });

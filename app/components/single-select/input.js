@@ -39,8 +39,8 @@ export default Ember.Component.extend({
         insert: this.insertOrUpdate.bind(this),
         update: this.insertOrUpdate.bind(this),
         focus: this.ensureFocus.bind(this),
-        stopEditing: this.stopInput.bind(this)
-      }
+        stopEditing: this.stopInput.bind(this),
+      },
     };
   }),
   isInputting: Ember.computed.or('publicAPI.isCreating', 'publicAPI.isEditing'),
@@ -49,11 +49,11 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     this.cleanupAutocloseHandler();
   },
 
@@ -61,7 +61,7 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    startInput: function(event) {
+    startInput(event) {
       if (this.get('_disableOpenUntilKeyup')) {
         this.set('_disableOpenUntilKeyup', false);
         return;
@@ -75,7 +75,7 @@ export default Ember.Component.extend({
         this.startInput(event);
       }
     },
-    handleInput: function(event) {
+    handleInput(event) {
       const val = event.target.value,
         isEmpty = Ember.isEmpty(val),
         isBlank = Ember.isBlank(val);
@@ -92,15 +92,15 @@ export default Ember.Component.extend({
         this.removeAndClearInput();
       }
     },
-    removeAndClearInput: function() {
+    removeAndClearInput() {
       this.removeAndClearInput();
-    }
+    },
   },
 
   // Input
   // -----
 
-  startInput: function(event) {
+  startInput(event) {
     const $el = this.$(),
       $input = this.get('inputObj'),
       val = $input.val();
@@ -111,19 +111,19 @@ export default Ember.Component.extend({
     this.setProperties({
       'publicAPI.currentVal': val,
       _originalVal: val,
-      _shouldRestoreOriginal: true
+      _shouldRestoreOriginal: true,
     });
     if (this.get('hasSelected')) {
       this.setProperties({
         'publicAPI.isCreating': false,
         'publicAPI.isEditing': true,
-        'publicAPI.currentlyEditing': this.get('selected')
+        'publicAPI.currentlyEditing': this.get('selected'),
       });
     } else {
       this.setProperties({
         'publicAPI.isCreating': true,
         'publicAPI.isEditing': false,
-        'publicAPI.currentlyEditing': null
+        'publicAPI.currentlyEditing': null,
       });
     }
 
@@ -139,7 +139,7 @@ export default Ember.Component.extend({
       );
     }
   },
-  insertOrUpdate: function(event) {
+  insertOrUpdate(event) {
     if (event.type.indexOf('key') !== -1) {
       this.set('_disableOpenUntilKeyup', true);
     }
@@ -160,7 +160,7 @@ export default Ember.Component.extend({
       this.stopInput();
     }
   },
-  removeAndClearInput: function() {
+  removeAndClearInput() {
     // run next to allow click out to close handler to run first
     Ember.run.next(this, function() {
       this.get('inputObj').val('');
@@ -174,11 +174,11 @@ export default Ember.Component.extend({
         'publicAPI.isEditing': false,
         'publicAPI.currentlyEditing': null,
         _shouldRestoreOriginal: false,
-        _originalVal: ''
+        _originalVal: '',
       });
     });
   },
-  stopInput: function() {
+  stopInput() {
     const $el = this.$(),
       $input = this.get('inputObj');
     this.cleanupAutocloseHandler();
@@ -191,7 +191,7 @@ export default Ember.Component.extend({
       'publicAPI.isEditing': false,
       'publicAPI.currentlyEditing': null,
       _shouldRestoreOriginal: false,
-      _originalVal: ''
+      _originalVal: '',
     });
     Ember.run.scheduleOnce('afterRender', this, this.ensureFocus);
   },
@@ -199,7 +199,7 @@ export default Ember.Component.extend({
   // Focus
   // -----
 
-  ensureFocus: function() {
+  ensureFocus() {
     if (this.get('isInputting')) {
       this.get('inputObj').focus();
     } else {
@@ -210,7 +210,7 @@ export default Ember.Component.extend({
   // Helpers
   // -------
 
-  cleanupAutocloseHandler: function() {
+  cleanupAutocloseHandler() {
     Ember.$(document).off(`.${this.elementId}`);
-  }
+  },
 });

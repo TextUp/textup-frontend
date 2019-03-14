@@ -8,7 +8,6 @@ export default Ember.Route.extend(IsAuthenticated, RequiresSetup, {
 
   beforeModel() {
     this._super(...arguments);
-    // TODO will this result in an infinite loop?
     AppAccessUtils.determineAppropriatePosition(this, this.get('authService'));
   },
   afterModel() {

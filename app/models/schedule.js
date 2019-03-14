@@ -1,13 +1,20 @@
 import Constants from 'textup-frontend/constants';
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import { stringToIntervals, intervalsToString } from '../utils/schedule';
+import MF from 'model-fragments';
+import { stringToIntervals, intervalsToString } from 'textup-frontend/utils/schedule';
 
 const { defineProperty, computed, on } = Ember;
 
-export default DS.Model.extend(Dirtiable, {
+export default MF.Fragment.extend(Dirtiable, {
+  // this is a read-only value that represents the integrated value
+  // for whether or not this schedule is availability right now
   isAvailableNow: DS.attr('boolean'),
+
+  manual: DS.attr('boolean', { defaultValue: true }),
+  manualIsAvailable: DS.attr('boolean', { defaultValue: true }),
+
   nextAvailable: DS.attr('date'),
   nextUnavailable: DS.attr('date'),
 
@@ -29,10 +36,10 @@ export default DS.Model.extend(Dirtiable, {
         this,
         dayOfWeek,
         computed(stringProp, {
-          get: function() {
+          get() {
             return stringToIntervals(this.get(stringProp));
           },
-          set: function(key, intervals) {
+          set(key, intervals) {
             this.set(stringProp, intervalsToString(intervals));
             return intervals;
           },

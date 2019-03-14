@@ -30,10 +30,6 @@ export default Ember.Mixin.create({
         .then(() => this.send('closeSlideout'));
     },
 
-    onAvailabilityEntitySwitch(scheduleOwner) {
-      return this.get('availabilitySlideoutService').ensureScheduleIsPresent(scheduleOwner);
-    },
-
     onFinishRecordingGreeting(mimeType, data) {
       const phone = this.get('currentModel.phone.content');
       this.get('availabilitySlideoutService').onAddAudio(phone, mimeType, data);

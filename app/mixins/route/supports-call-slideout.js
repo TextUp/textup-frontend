@@ -47,7 +47,7 @@ export default Ember.Mixin.create({
         });
     },
 
-    onCallNumberChange: function(number) {
+    onCallNumberChange(number) {
       const controller = this.get('controller'),
         callSlideoutService = this.get('callSlideoutService');
       controller.set('callByNumber', number);
@@ -66,7 +66,7 @@ export default Ember.Mixin.create({
   },
   _afterStartCall(contact) {
     this.notifications.success(
-      `Calling your personal phone number to connect you to ${contact.get('identifier')}.`
+      `Calling your personal phone number to connect you to ${contact.get('name')}.`
     );
   },
 });

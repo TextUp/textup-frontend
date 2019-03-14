@@ -1,22 +1,22 @@
-{{#if entity.manualSchedule}}
+{{#if policy.schedule.manual}}
     <p>
-        <b class="margin-r">{{entity.name}}</b>
-        {{if entity.isAvailable 'available all day' 'not available'}}
+        <b class="margin-r">{{policy.name}}</b>
+        {{if policy.schedule.manualIsAvailable 'available all day' 'not available'}}
     </p>
-{{else if entity.schedule.isFulfilled}}
+{{else}}
     {{#if _showAllDays}}
         <p>
-            <b class="margin-r">{{entity.name}}</b>
-            {{if entity.isAvailableNow 'currently available' 'currently not available'}}
+            <b class="margin-r">{{policy.name}}</b>
+            {{if policy.schedule.isAvailableNow 'currently available' 'currently not available'}}
         </p>
         <ul class="textup-list">
             {{#each (constant "DAYS_OF_WEEK") as |_day|}}
                 <li class="textup-list__item">
                     <i>{{capitalize _day 1}}</i>
-                    {{#if (get entity.schedule.content _day)}}
+                    {{#if (get policy.schedule _day)}}
                         <span class="margin-l">available from</span>
                         <ul class="textup-list">
-                            {{#each (get entity.schedule.content _day) as |_range|}}
+                            {{#each (get policy.schedule _day) as |_range|}}
                                 <li class="textup-list__item">{{display-schedule-range _range}}</li>
                             {{/each}}
                         </ul>
@@ -28,13 +28,13 @@
         </ul>
     {{else}}
         <p>
-            <b class="margin-r">{{entity.name}}</b>
-            {{if (gt (get (get entity.schedule.content dayOfWeek) 'length') 0)
+            <b class="margin-r">{{policy.name}}</b>
+            {{if (gt (get (get policy.schedule dayOfWeek) 'length') 0)
                 'available from'
                 'not available'}}
         </p>
         <ul class="textup-list">
-            {{#each (get entity.schedule.content dayOfWeek) as |_range|}}
+            {{#each (get policy.schedule dayOfWeek) as |_range|}}
                 <li class="textup-list__item">{{display-schedule-range _range}}</li>
             {{/each}}
         </ul>

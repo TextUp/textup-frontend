@@ -1,7 +1,7 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import HasAuthor from '../mixins/model/has-author';
+import HasAuthor from 'textup-frontend/mixins/model/has-author';
 
 const { computed } = Ember;
 
@@ -20,5 +20,5 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   noteContents: DS.attr('string'),
 
   location: DS.belongsTo('location'), // hasOne
-  media: DS.belongsTo('media') // hasOne
+  media: DS.belongsTo('media'), // hasOne
 });

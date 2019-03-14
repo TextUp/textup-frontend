@@ -1,5 +1,5 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat "Exporting " model.identifier))
+    headerProps=(hash title=(concat "Exporting " (get model (constant "PROP_NAME.READABLE_IDENT"))))
     footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true

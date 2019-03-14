@@ -1,12 +1,13 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import Schedule from 'textup-frontend/models/schedule';
 
 const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    schedule: PropTypes.EmberObject.isRequired,
+    schedule: PropTypes.instanceOf(Schedule).isRequired,
     scheduleClass: PropTypes.string,
     onChange: PropTypes.func,
   },
@@ -25,9 +26,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _resetNewProps() {
     // don't clear day to insert to streamline inserting multiple ranges
-    this.setProperties({
-      _newRangeTimes: [],
-    });
+    this.setProperties({ _newRangeTimes: [] });
   },
   _handleAdd(dayOfWeek, timeRange, then) {
     Ember.tryInvoke(this, 'onChange', [

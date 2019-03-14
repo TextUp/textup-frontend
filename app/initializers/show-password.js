@@ -1,6 +1,6 @@
 import '../overrides/show-password-toggle';
 
 export default {
-    name: 'show-password',
-    initialize: function() {}
+  name: 'show-password',
+  initialize() {},
 };

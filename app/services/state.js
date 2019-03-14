@@ -1,3 +1,4 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
 import config from 'textup-frontend/config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -78,14 +79,14 @@ export default Ember.Service.extend({
   // may be the logged-in user or a team that the user is on
   owner: null,
   ownerIsTeam: computed('owner', function() {
-    return TypeUtils.isTeam(this.get("owner"));
-  })
+    return TypeUtils.isTeam(this.get('owner'));
+  }),
   ownerAsTeam: computed('owner', 'ownerIsTeam', function() {
     return this.get('ownerIsTeam') ? this.get('owner') : null;
   }),
   ownerIsOrg: computed('owner', function() {
-    return TypeUtils.isOrg(this.get("owner"));
-  })
+    return TypeUtils.isOrg(this.get('owner'));
+  }),
   ownerAsOrg: computed('owner', 'ownerIsOrg', function() {
     return this.get('ownerIsOrg') ? this.get('owner') : null;
   }),

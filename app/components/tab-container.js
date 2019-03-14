@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 export default Ember.Component.extend({
   startIndex: defaultIfAbsent(0),
@@ -35,19 +35,19 @@ export default Ember.Component.extend({
       currentIndex: this.get('_currentIndex'),
       actions: {
         next: this.next.bind(this),
-        prev: this.prev.bind(this)
-      }
+        prev: this.prev.bind(this),
+      },
     };
   }),
 
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     Ember.run.next(this, function() {
       // initialize all items
@@ -66,32 +66,32 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    registerItem: function(item) {
+    registerItem(item) {
       Ember.run.scheduleOnce('afterRender', this, function() {
         this.get('_items').pushObject(item);
       });
     },
-    switchTo: function(index) {
+    switchTo(index) {
       this.switchTo(index);
     },
-    next: function() {
+    next() {
       this.next();
     },
-    prev: function() {
+    prev() {
       this.prev();
-    }
+    },
   },
 
   // Switch tabs
   // -----------
 
-  next: function() {
+  next() {
     this.switchTo(this.get('_currentIndex') + 1);
   },
-  prev: function() {
+  prev() {
     this.switchTo(this.get('_currentIndex') - 1);
   },
-  switchTo: function(index) {
+  switchTo(index) {
     if (!Ember.isPresent(index)) {
       return;
     }
@@ -121,7 +121,7 @@ export default Ember.Component.extend({
   // Nav
   // ---
 
-  setupNav: function() {
+  setupNav() {
     const $navlist = this.get('$navlist'),
       navlist = $navlist[0],
       displayWidth = navlist.clientWidth,
@@ -142,13 +142,13 @@ export default Ember.Component.extend({
   // Helpers
   // -------
 
-  indexIsValid: function(index) {
+  indexIsValid(index) {
     if (isNaN(index)) {
       return false;
     }
     return index >= 0 && index < this.get('_items.length');
   },
-  _normalizeIndex: function(index) {
+  _normalizeIndex(index) {
     const numItems = this.get('_items.length');
     if (index < 0) {
       return numItems + index;
@@ -157,5 +157,5 @@ export default Ember.Component.extend({
     } else {
       return index;
     }
-  }
+  },
 });

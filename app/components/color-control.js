@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import tc from 'npm:tinycolor2';
 
 const { computed } = Ember;
@@ -18,10 +18,10 @@ export default Ember.Component.extend({
   // -------------------
 
   _hexColor: computed('color', {
-    get: function() {
+    get() {
       return Ember.String.htmlSafe(tc(this.get('color')).toHexString());
     },
-    set: function(key, value) {
+    set(key, value) {
       this.set('color', value);
       return value;
     },

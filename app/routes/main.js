@@ -11,9 +11,6 @@ import SupportsCallSlideout from 'textup-frontend/mixins/route/supports-call-sli
 import SupportsComposeSlideout from 'textup-frontend/mixins/route/supports-compose-slideout';
 import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
-import { URL_IDENT_PROP_NAME } from 'textup-frontend/mixins/model/has-url-identifier';
-
-const { isNone, computed } = Ember;
 
 export default Ember.Route.extend(
   HasSlideoutOutlet,
@@ -33,7 +30,7 @@ export default Ember.Route.extend(
     // Events
     // ------
 
-    beforeModel(transition) {
+    beforeModel() {
       this._super(...arguments);
       // unload contacts that might duplicate between different phones because of sharing
       // [NOTE] this line must be BEFORE the model hook to avoid invalidating contacts
@@ -41,12 +38,12 @@ export default Ember.Route.extend(
       this.store.unloadAll('contact');
     },
     serialize(model) {
-      return { main_identifier: model.get(URL_IDENT_PROP_NAME) };
+      return { main_identifier: model.get(Constants.PROP_NAME.URL_IDENT) };
     },
     // `model` hook will not be called if the model object is already provided
     model(params) {
       this._super(...arguments);
-      const authUser = authService.get('authService.authUser');
+      const authUser = this.get('authService.authUser');
       return AppAccessUtils.tryFindPhoneOwnerFromUrl(authUser, params.main_identifier);
     },
     afterModel(model = null) {

@@ -1,11 +1,9 @@
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 
-const { isNone, getWithDefault } = Ember;
+const { getWithDefault } = Ember;
 
-export function buildPreviewUrl(config, lat, lng, size) {
-  if (isNone(config)) {
-    return;
-  }
+export function buildPreviewUrl(lat, lng, size) {
   const url = getWithDefault(config, 'locationPreview.host', ''),
     token = getWithDefault(config, 'apiKeys.mapbox', ''),
     marker = 'pin-m',

@@ -3,17 +3,17 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   queryParams: {
     filter: {
-      refreshModel: true
-    }
+      refreshModel: true,
+    },
   },
 
-  setupController: function() {
+  setupController() {
     this._super(...arguments);
     this._resetController();
   },
 
   actions: {
-    didTransition: function() {
+    didTransition() {
       this._super(...arguments);
       if (!this.get('stateManager.viewingPeople') || this.get('_changedFilter')) {
         this._resetController();
@@ -22,12 +22,12 @@ export default Ember.Route.extend({
       // return true to allow bubbling to close slideout handler
       return true;
     },
-    changeFilter: function(filter) {
+    changeFilter(filter) {
       this.set('_changedFilter', true);
       this.transitionTo({
         queryParams: {
-          filter: filter
-        }
+          filter: filter,
+        },
       });
     },
     // need to do this because a bug with context setting on action helper using `target`
@@ -36,10 +36,10 @@ export default Ember.Route.extend({
     // currently being viewed
     replaceRangeForSchedule(schedule, dayOfWeek, newRanges) {
       schedule.actions.replaceRange.call(schedule, dayOfWeek, newRanges);
-    }
+    },
   },
 
-  _resetController: function() {
+  _resetController() {
     const controller = this.controller;
     controller.set('team', null);
     controller.set('people', []);
@@ -48,5 +48,5 @@ export default Ember.Route.extend({
     if (peopleList) {
       peopleList.actions.resetPosition();
     }
-  }
+  },
 });

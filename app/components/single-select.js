@@ -17,8 +17,8 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    select: function(index, number, event) {
+    select(index, number, event) {
       return Ember.tryInvoke(this, 'onInsert', [number, event]);
-    }
-  }
+    },
+  },
 });

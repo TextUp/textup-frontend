@@ -1,3 +1,4 @@
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import Location from 'textup-frontend/models/location';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -11,7 +12,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     onSuccess: PropTypes.func,
     onFailure: PropTypes.func,
     loadingMessage: PropTypes.string,
-    errorMessage: PropTypes.string
+    errorMessage: PropTypes.string,
   },
   getDefaultProps() {
     return { loadingMessage: 'Loading', errorMessage: 'Could not load preview' };
@@ -20,7 +21,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   classNameBindings: [
     '_isShowingAddress:location-preview--overlay',
     '_isLoading:location-preview--overlay',
-    '_isError:location-preview--overlay'
+    '_isError:location-preview--overlay',
   ],
 
   didInsertElement() {
@@ -53,11 +54,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     if (typeOf(latLng) !== 'object' || !latLng.lat || !latLng.lng) {
       return;
     }
-    const { lat, lng } = latLng,
-      config = Ember.getOwner(this).resolveRegistration('config:environment');
+    const { lat, lng } = latLng;
     // schedule this method call so we don't try to modify classes multiple times in a single render
     run.scheduleOnce('actions', this._startLoadProps.bind(this));
-    return [{ source: buildPreviewUrl(config, lat, lng, this._getLargestDimension(config)) }];
+    return [{ source: buildPreviewUrl(lat, lng, this._getLargestDimension()) }];
   }),
   _shouldLoad: false,
   _isLoading: false,
@@ -87,11 +87,11 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
     this.setProperties({ _isLoading: false, _isError: !isSuccess });
   },
-  _getLargestDimension: function(config) {
+  _getLargestDimension() {
     const { maxHeight, maxWidth } = config.locationPreview,
       // may be null if haven't rendered component yet
       clientHeight = getWithDefault(this, 'element.clientHeight', maxHeight),
       clientWidth = getWithDefault(this, 'element.clientWidth', maxWidth);
     return Math.max(Math.min(clientHeight, maxHeight), Math.min(clientWidth, maxWidth));
-  }
+  },
 });

@@ -1,5 +1,6 @@
+import * as PhoneNumberUtils from 'textup-frontend/utils/phone-number';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import { validate as validateNumber, clean as cleanNumber } from '../utils/phone-number';
 
 const { isBlank, RSVP } = Ember;
 
@@ -7,7 +8,7 @@ export default Ember.Service.extend({
   stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
 
-  doSearch: function(searchString) {
+  doSearch(searchString) {
     return new RSVP.Promise((resolve, reject) => {
       if (isBlank(searchString)) {
         return resolve([]);
@@ -25,10 +26,10 @@ export default Ember.Service.extend({
         }, reject);
     });
   },
-  createRecipient: function(val) {
-    if (validateNumber(val)) {
-      const num = cleanNumber(val);
-      return { uniqueIdentifier: num, identifier: num };
+  createRecipient(val) {
+    if (PhoneNumberUtils.validate(val)) {
+      const num = PhoneNumberUtils.clean(val);
+      return { [Constants.PROP_NAME.URL_IDENT]: num, [Constants.PROP_NAME.READABLE_IDENT]: num };
     }
-  }
+  },
 });

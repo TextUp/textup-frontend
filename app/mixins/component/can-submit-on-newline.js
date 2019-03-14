@@ -8,7 +8,7 @@ export default Ember.Mixin.create({
   submitOnNewline: defaultIfAbsent(false),
   action: defaultIfAbsent(null), // triggered by browser
 
-  keyDown: function(event) {
+  keyDown(event) {
     if (this.get('submitOnNewline')) {
       if (event.which === 13 && !event.shiftKey) {
         // if we press enter without the shift modifier, then
@@ -17,7 +17,7 @@ export default Ember.Mixin.create({
       }
     }
   },
-  insertNewline: function(event) {
+  insertNewline(event) {
     if (this.get('submitOnNewline')) {
       // if we do not press the shift key, then submit
       // if we DO press the shift key, then insert newline
@@ -25,5 +25,5 @@ export default Ember.Mixin.create({
         this._super(event);
       }
     }
-  }
+  },
 });

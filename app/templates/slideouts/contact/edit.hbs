@@ -1,5 +1,5 @@
 {{#slideout-pane
-    headerProps=(hash title=(phone-number model.identifier))
+    headerProps=(hash title=(phone-number (get model (constant "PROP_NAME.READABLE_IDENT"))))
     footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true

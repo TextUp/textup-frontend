@@ -1,12 +1,12 @@
 import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import moment from 'moment';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, get, tryInvoke, getWithDefault } = Ember,
+const { computed, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
     type: validator('inclusion', {
       in: Object.values(Constants.FUTURE_MESSAGE.TYPE),
@@ -57,7 +57,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides
   // ---------
 
-  rollbackAttributes: function() {
+  rollbackAttributes() {
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
     return this._super(...arguments);
   },
@@ -80,7 +80,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   isRepeating: DS.attr('boolean', { defaultValue: false }),
   repeatCount: DS.attr('number'),
   startDate: DS.attr('date', {
-    defaultValue: model => {
+    defaultValue: () => {
       const momentObj = moment(),
         defaultInterval = Constants.DEFAULT.TIME_INTERVAL_IN_MINUTES;
       return momentObj

@@ -3,7 +3,7 @@ import CollectionValidator from 'ember-cp-validations/validators/collection';
 export default CollectionValidator.extend({
   _test: null,
 
-  buildOptions: function() {
+  buildOptions() {
     const options = this._super(...arguments);
     if (options.for && !/^(every|any)$/i.test(options.for)) {
       options.for = 'every';
@@ -18,7 +18,7 @@ export default CollectionValidator.extend({
 
     return options;
   },
-  validate: function(value, options) {
+  validate(value, options) {
     const result = this._super(...arguments);
     if (result === true && options.for) {
       const doTest = this.get('_test');
@@ -30,5 +30,5 @@ export default CollectionValidator.extend({
     } else {
       return result;
     }
-  }
+  },
 });

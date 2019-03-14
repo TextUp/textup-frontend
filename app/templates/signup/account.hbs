@@ -89,10 +89,10 @@
                     onclick={{action (mut showPrivacyPolicy) true}}>Privacy Policy</button>
             </label>
         </div>
-        {{message-modal url=config.links.termsOfUse
+        {{message-modal url=(config "links.termsOfUse")
             display=showTermsOfUse
             onClose=(action (mut showTermsOfUse) false)}}
-        {{message-modal url=config.links.privacyPolicy
+        {{message-modal url=(config "links.privacyPolicy")
             display=showPrivacyPolicy
             onClose=(action (mut showPrivacyPolicy) false)}}
     </div>

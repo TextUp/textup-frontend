@@ -8,7 +8,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     this._initializeProperties(controller);
   },

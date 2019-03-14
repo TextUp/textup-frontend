@@ -1,5 +1,5 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { get, isArray, isNone, typeOf, RSVP } = Ember;
 
@@ -44,9 +44,9 @@ export default Ember.Service.extend({
         if (isNone(media)) {
           return;
         }
-        media.removeElement(get(element, MEDIA_ID_PROP_NAME));
+        media.removeElement(get(element, Constants.PROP_NAME.MEDIA_ID));
         resolve();
       }, reject);
     });
-  }
+  },
 });

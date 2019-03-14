@@ -8,17 +8,17 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
     numMembers: { serialize: false },
     org: { serialize: 'ids' }, // org is passed as id only for teams to avoid circular json
-    location: { deserialize: 'records', serialize: 'records' }
+    location: { deserialize: 'records', serialize: 'records' },
   },
 
-  serialize: function(snapshot) {
+  serialize(snapshot) {
     const json = this._super(...arguments),
       actions = snapshot.record.get('actions');
     if (typeOf(actions) === 'array') {
       json.doTeamActions = actions.map(convertToTeamAction);
     }
     return json;
-  }
+  },
 });
 
 function convertToTeamAction(action) {

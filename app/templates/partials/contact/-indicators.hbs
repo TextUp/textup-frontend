@@ -5,9 +5,9 @@
     <span class="display-l">
         {{#tool-tip tagName='span'
             classNames='badge text-smaller'
-            title=(concat (if contact.isSharedDelegate
+            title=(concat (if contact.isDelegatePermission
                 'Collaborating with '
-                (if contact.isSharedView 'Viewing only from ' 'Shared by')) contact.sharedBy)}}
+                (if contact.isViewPermission 'Viewing only from ' 'Shared by')) contact.sharedBy)}}
             Shared
         {{/tool-tip}}
     </span>

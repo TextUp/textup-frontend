@@ -2,7 +2,7 @@ import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { computed, isArray, run } = Ember;
+const { isArray, run } = Ember;
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),

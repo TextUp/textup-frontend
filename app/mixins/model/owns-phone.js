@@ -55,8 +55,6 @@ export default Ember.Mixin.create(Dirtiable, HasUrlIdentifier, {
   // Properties
   // ----------
 
-  // // TODO remove
-  // hasInactivePhone: DS.attr('boolean'),
   phone: DS.belongsTo('phone'), // hasOne
 
   hasPhoneAction: computed.notEmpty('phoneAction'),

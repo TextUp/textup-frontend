@@ -1,5 +1,5 @@
 {{title stateManager.owner.name prepend=false separator=" - "}}
-{{message-modal url=appMessageEndpoint
+{{message-modal url=(config "appMessage.messageEndpoint")
     display=shouldShowAppMessage
     onClose=(action "closeAppUpdateMessage")}}
 
@@ -73,7 +73,7 @@
             {{#if stateManager.owner.phone.isFulfilled}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        {{if stateManager.owner.phone.content.self.schedule.isAvailableNow "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
                             <span>Availability</span>
@@ -82,12 +82,12 @@
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        {{if stateManager.owner.phone.content.self.schedule.isAvailableNow "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Availability"
                             classNames="btn-expand"}}
-                            {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
+                            {{#if stateManager.owner.phone.content.self.schedule.isAvailableNow}}
                                 <span class="fa fa-calendar-check-o"></span>
                             {{else}}
                                 <span class="fa fa-calendar-times-o"></span>
@@ -229,7 +229,7 @@
                 </div>
                 {{#if model.phone.isFulfilled}}
                     {{#each model.phone.content.tags as |tag|}}
-                        {{#link-to "main.tag" tag.urlIdentifier
+                        {{#link-to "main.tag" (get tag (constant "PROP_NAME.URL_IDENT"))
                             tagName="div"
                             classNames="menu-item"}}
                             <span>

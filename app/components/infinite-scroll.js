@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 const {
   $,
@@ -128,11 +128,11 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInitAttrs: function() {
+  didInitAttrs() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
-  didInsertElement: function() {
+  didInsertElement() {
     scheduleOnce('afterRender', this, function() {
       this._setup(true);
       // bind event handlers
@@ -149,12 +149,12 @@ export default Ember.Component.extend({
         .on(`mouseleave.${elId}`, this.endPull.bind(this));
     });
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     this.get('_$container').off(`.${this.elementId}`);
     $(window).off(`.${this.elementId}`);
     this._stopObserve();
   },
-  didUpdateAttrs: function() {
+  didUpdateAttrs() {
     const timers = this.get('_displayTimers');
     // only rerun setup if the data array has been changed to another array
     if (this.get('_prevData') !== this.get('data')) {
@@ -166,7 +166,7 @@ export default Ember.Component.extend({
     }
     timers.clear();
   },
-  _setup: function(shouldReset = false) {
+  _setup(shouldReset = false) {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -188,18 +188,18 @@ export default Ember.Component.extend({
   // Observe data
   // ------------
 
-  _startObserve: function() {
+  _startObserve() {
     const shouldObserve = this.get('observeData'),
       observeProp = this.get('dataObserveProperty');
     if (shouldObserve) {
       this.addObserver(observeProp, this, this._tryDisplayItems);
     }
   },
-  _stopObserve: function() {
+  _stopObserve() {
     const observeProp = this.get('dataObserveProperty');
     this.removeObserver(observeProp, this, this._tryDisplayItems);
   },
-  _tryDisplayItems: function() {
+  _tryDisplayItems() {
     // add to a timers queue so cancel when we've completely swapped out arrays
     // and are doing a setup instead of just a re-display
     const timers = this.get('_displayTimers');
@@ -252,7 +252,7 @@ export default Ember.Component.extend({
   // Refreshing
   // ----------
 
-  onScroll: function(event) {
+  onScroll(event) {
     if (this.get('_isDisplaying')) {
       event.preventDefault();
     }
@@ -265,13 +265,13 @@ export default Ember.Component.extend({
       this.get('throttleThreshold')
     );
   },
-  startTouch: function(event) {
+  startTouch(event) {
     this._startPull(event.originalEvent.targetTouches[0].pageY);
   },
-  startMouse: function(event) {
+  startMouse(event) {
     this._startPull(event.pageY);
   },
-  moveTouch: function(event) {
+  moveTouch(event) {
     if (this.get('_isDisplaying')) {
       event.preventDefault();
     }
@@ -282,14 +282,14 @@ export default Ember.Component.extend({
       this.get('throttleThreshold')
     );
   },
-  moveMouse: function(event) {
+  moveMouse(event) {
     if (this.get('_isDisplaying')) {
       event.preventDefault();
     }
     throttle(this, this._continuePull, event.pageY, this.get('throttleThreshold'));
   },
 
-  _startPull: function(position) {
+  _startPull(position) {
     if (
       !this.get('doRefresh') ||
       this.get('_isRefreshing') ||
@@ -301,7 +301,7 @@ export default Ember.Component.extend({
     this.set('_pullStart', position);
     this.set('_isPulling', true);
   },
-  _continuePull: function(position) {
+  _continuePull(position) {
     if (
       !this.get('doRefresh') ||
       this.get('_isRefreshing') ||
@@ -314,7 +314,7 @@ export default Ember.Component.extend({
     this.set('_isPulling', true);
     this._doOverscroll(this.get('_pullLength'));
   },
-  endPull: function() {
+  endPull() {
     if (
       !this.get('doRefresh') ||
       this.get('_isRefreshing') ||
@@ -340,7 +340,7 @@ export default Ember.Component.extend({
       this._resetPull();
     }
   },
-  _showRefreshingMessage: function() {
+  _showRefreshingMessage() {
     const $refreshing = this.get('_$refreshing'),
       position = this.get('refreshThreshold') / 2;
     if (this.get('_isUp')) {
@@ -356,7 +356,7 @@ export default Ember.Component.extend({
     }
     $refreshing.fadeIn();
   },
-  _doOverscroll: function(length) {
+  _doOverscroll(length) {
     if (!isPresent(length) || this.get('_pullIsWrongDirection')) {
       return;
     }
@@ -370,7 +370,7 @@ export default Ember.Component.extend({
       '-webkit-transform': prop,
     });
   },
-  _resetPull: function() {
+  _resetPull() {
     this.set('_isRefreshing', false);
     this.set('_pullStart', null);
     this.set('_pullNow', null);
@@ -384,7 +384,7 @@ export default Ember.Component.extend({
   // Loading
   // -------
 
-  loadMoreIfNeeded: function(forceLoad = false) {
+  loadMoreIfNeeded(forceLoad = false) {
     if (
       !forceLoad &&
       (this.get('_isDone') || this.get('_isLoading') || (this._canScroll() && !this._isNearEdge()))
@@ -405,7 +405,7 @@ export default Ember.Component.extend({
       };
     this._loadMore().then(after.bind(this, true), after.bind(this, false));
   },
-  _loadMore: function() {
+  _loadMore() {
     this.set('_isLoading', true);
     return new Promise((resolve, reject) => {
       const loadResult = this.get('doLoad')();
@@ -416,7 +416,7 @@ export default Ember.Component.extend({
       }
     });
   },
-  _isNearEdge: function() {
+  _isNearEdge() {
     const container = this.get('_$container')[0],
       sTop = container.scrollTop,
       sHeight = container.scrollHeight,
@@ -424,7 +424,7 @@ export default Ember.Component.extend({
       proximity = this.get('loadProximity');
     return this.get('_isUp') ? sTop < proximity : sTop + cHeight + proximity > sHeight;
   },
-  _isAtStart: function() {
+  _isAtStart() {
     if (!this._canScroll()) {
       return true;
     }
@@ -434,7 +434,7 @@ export default Ember.Component.extend({
       cHeight = container.clientHeight;
     return this.get('_isUp') ? sTop + cHeight >= sHeight : sTop === 0;
   },
-  _canScroll: function() {
+  _canScroll() {
     const container = this.get('_$container')[0];
     return container.scrollHeight > container.clientHeight;
   },
@@ -442,7 +442,7 @@ export default Ember.Component.extend({
   // Managing items
   // --------------
 
-  displayItems: function(shouldReset = false) {
+  displayItems(shouldReset = false) {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }

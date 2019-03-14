@@ -1,6 +1,6 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import * as TypeUtils from 'textup-frontend/utils/type';
 
 const { typeOf, copy, get } = Ember;
 
@@ -36,7 +36,9 @@ export default Ember.Mixin.create({
       // in the multi-select in the future.
       const contents = this.get('controller.composeMessage'),
         recipients = this.get('controller.composeRecipients').map(recipient => {
-          return TypeUtils.isAnyModel(recipient) ? recipient : get(recipient, 'identifier');
+          return TypeUtils.isAnyModel(recipient)
+            ? recipient
+            : get(recipient, Constants.PROP_NAME.READABLE_IDENT);
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
       return this.get('dataService')

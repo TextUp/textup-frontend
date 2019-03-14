@@ -1,4 +1,4 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 
@@ -25,5 +25,5 @@ export default DS.Model.extend(Dirtiable, {
   }),
   otherUrlIdentifier: Ember.computed('otherId', function() {
     return Ember.String.dasherize(this.get('otherId') || '');
-  })
+  }),
 });

@@ -1,10 +1,11 @@
 import Constants from 'textup-frontend/constants';
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
-import OwnsFutureMessages from '../mixins/model/owns-future-messages';
-import OwnsRecordItems from '../mixins/model/owns-record-items';
+import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-messages';
+import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const { alias, notEmpty, equal: eq } = Ember.computed,
@@ -14,19 +15,20 @@ const { alias, notEmpty, equal: eq } = Ember.computed,
 
 export default DS.Model.extend(
   Dirtiable,
-  Validations,
+  HasReadableIdentifier,
   HasUrlIdentifier,
-  OwnsRecordItems,
   OwnsFutureMessages,
+  OwnsRecordItems,
+  Validations,
   {
     // Overrides
-    // ------
+    // ---------
 
-    init: function() {
+    init() {
       this._super(...arguments);
       this.set('actions', []);
     },
-    rollbackAttributes: function() {
+    rollbackAttributes() {
       this._super(...arguments);
       this.clearMembershipChanges();
     },
@@ -58,7 +60,6 @@ export default DS.Model.extend(
     isEmpty: eq('numMembers', 0),
     hasManualChanges: notEmpty('actions'),
     identifier: alias('name'),
-    uniqueIdentifier: alias('name'),
 
     // Methods
     // -------

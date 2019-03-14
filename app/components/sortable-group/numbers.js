@@ -33,18 +33,18 @@ export default Ember.Component.extend(SupportsValidation, {
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     Ember.run.scheduleOnce('afterRender', this, this._deepCopyNumbers);
   },
-  didUpdateAttrs: function() {
+  didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('_prevNumbers') !== this.get('numbers')) {
       Ember.run.scheduleOnce('afterRender', this, this._deepCopyNumbers);
     }
   },
   // need to do this to trigger changedAttributes for numbers
-  _deepCopyNumbers: function() {
+  _deepCopyNumbers() {
     if (this.get('inPlace') || this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -59,13 +59,13 @@ export default Ember.Component.extend(SupportsValidation, {
   // -------
 
   actions: {
-    storeNewNumber: function(val) {
+    storeNewNumber(val) {
       this.set('newNumber', val);
     },
-    addNewNumber: function(val, isValid) {
+    addNewNumber(val, isValid) {
       if (isValid && isPresent(val)) {
         this.get('numbers').pushObject({
-          number: val
+          number: val,
         });
         // call hook after change
         Ember.tryInvoke(this, 'onAdd', [val]);
@@ -73,7 +73,7 @@ export default Ember.Component.extend(SupportsValidation, {
         this.set('newNumber', '');
       }
     },
-    removeNumber: function(index) {
+    removeNumber(index) {
       const nums = this.get('numbers'),
         numToRemove = nums.objectAt(index);
       nums.removeAt(index);
@@ -81,16 +81,16 @@ export default Ember.Component.extend(SupportsValidation, {
       Ember.tryInvoke(this, 'onRemove', [numToRemove.number]);
       this.doValidate();
     },
-    removeIfEmpty: function(index, val) {
+    removeIfEmpty(index, val) {
       if (Ember.isBlank(val)) {
         this.send('removeNumber', index);
       }
     },
-    updateNumber: function(numObj, index, newVal) {
+    updateNumber(numObj, index, newVal) {
       Ember.set(numObj, 'number', newVal);
     },
-    reorderNumbers: function(itemModels) {
+    reorderNumbers(itemModels) {
       this.set('numbers', itemModels);
-    }
-  }
+    },
+  },
 });

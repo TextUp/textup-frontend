@@ -12,14 +12,14 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
     hasEndDate: { serialize: false },
     contact: { serialize: false },
     tag: { serialize: false },
-    _repeatIntervalInDays: { key: 'repeatIntervalInDays', serialize: true }
+    _repeatIntervalInDays: { key: 'repeatIntervalInDays', serialize: true },
   },
 
-  payloadKeyFromModelName: function(modelName) {
+  payloadKeyFromModelName(modelName) {
     return Ember.String.dasherize(modelName);
   },
 
-  serialize: function(snapshot) {
+  serialize(snapshot) {
     const json = this._super(...arguments),
       model = snapshot.record;
 
@@ -36,5 +36,5 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
     }
 
     return json;
-  }
+  },
 });

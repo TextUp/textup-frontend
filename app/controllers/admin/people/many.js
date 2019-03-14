@@ -16,12 +16,12 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-    selectAll: function() {
+    selectAll() {
       this.get('peopleController.people').forEach(person => {
         person.set('isSelected', true);
       });
     },
-    selectAllStaff: function() {
+    selectAllStaff() {
       this.get('peopleController.people').forEach(person => {
         if (person.get('isStaff')) {
           person.set('isSelected', true);
@@ -30,7 +30,7 @@ export default Ember.Controller.extend({
         }
       });
     },
-    deselect: function(person) {
+    deselect(person) {
       person.set('isSelected', false);
       Ember.run.next(this, function() {
         if (this.get('selected.length') === 0) {
@@ -38,23 +38,23 @@ export default Ember.Controller.extend({
         }
       });
     },
-    leave: function() {
+    leave() {
       this._deselectAll();
       this._exitMany();
-    }
+    },
   },
 
   // Helpers
   // -------
 
-  _deselectAll: function() {
+  _deselectAll() {
     this.get('selected').forEach(person => person.set('isSelected', false));
   },
-  _exitMany: function() {
+  _exitMany() {
     if (this.get('stateManager.viewingTeam')) {
       this.transitionToRoute('admin.team');
     } else {
       this.transitionToRoute('admin.people');
     }
-  }
+  },
 });

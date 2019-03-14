@@ -31,11 +31,11 @@ export default Ember.Service.extend(Ember.Evented, {
   // Events
   // ------
 
-  init: function() {
+  init() {
     this._super(...arguments);
     Ember.$.ajaxPrefilter(this._renewTokenOnError.bind(this));
   },
-  willDestroy: function() {
+  willDestroy() {
     this._super(...arguments);
     this.get('storage').off(config.events.storage.updated, this);
   },
@@ -43,12 +43,12 @@ export default Ember.Service.extend(Ember.Evented, {
   // Methods
   // -------
 
-  setupFromStorage: function() {
+  setupFromStorage() {
     return this.get('storage')
       .sync()
       .then(this._doSetup.bind(this));
   },
-  validate: function(username, password) {
+  validate(username, password) {
     return new RSVP.Promise((resolve, reject) => {
       if (!username || !password) {
         return reject();
@@ -59,7 +59,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }).then(resolve, reject);
     });
   },
-  validateLockCode: function(username, code) {
+  validateLockCode(username, code) {
     return new RSVP.Promise((resolve, reject) => {
       if (!username || !code) {
         return reject();
@@ -70,7 +70,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }).then(resolve, reject);
     });
   },
-  login: function(username, password, storeCredentials = false) {
+  login(username, password, storeCredentials = false) {
     return new RSVP.Promise((resolve, reject) => {
       if (!username || !password) {
         return reject();
@@ -87,12 +87,12 @@ export default Ember.Service.extend(Ember.Evented, {
       }, reject);
     });
   },
-  logout: function() {
+  logout() {
     this._doAuthClear();
     this.get('store').unloadAll();
     this.get('router').transitionTo('index');
   },
-  resetPassword: function(username) {
+  resetPassword(username) {
     return new RSVP.Promise((resolve, reject) => {
       if (!username) {
         return reject();
@@ -107,7 +107,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }).then(resolve, reject);
     });
   },
-  completeResetPassword: function(token, password) {
+  completeResetPassword(token, password) {
     return new RSVP.Promise((resolve, reject) => {
       if (!token || !password) {
         return reject();
@@ -123,7 +123,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }).then(resolve, reject);
     });
   },
-  retryAttemptedTransition: function(fallback) {
+  retryAttemptedTransition(fallback) {
     const transition = this.get('attemptedTransition');
     if (transition) {
       this.set('attemptedTransition', null);
@@ -140,7 +140,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // Utility methods
   // ---------------
 
-  authRequest: function(options = {}) {
+  authRequest(options = {}) {
     return new RSVP.Promise((resolve, reject) => {
       Ember.$.ajax(
         Ember.merge(
@@ -161,7 +161,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // Helper methods
   // --------------
 
-  _handleStorageChange: function() {
+  _handleStorageChange() {
     const storage = this.get('storage');
     if (storage.getItem('token') === this.get('token')) {
       return;
@@ -177,7 +177,7 @@ export default Ember.Service.extend(Ember.Evented, {
       this.logout();
     }
   },
-  _sendCredentials: function(endpoint, payload) {
+  _sendCredentials(endpoint, payload) {
     return Ember.$.ajax({
       type: 'POST',
       url: `${config.host}/${endpoint}`,
@@ -185,7 +185,7 @@ export default Ember.Service.extend(Ember.Evented, {
       data: JSON.stringify(payload),
     });
   },
-  _doSetup: function() {
+  _doSetup() {
     return new RSVP.Promise((resolve, reject) => {
       const storage = this.get('storage'),
         token = storage.getItem('token'),
@@ -227,7 +227,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }
     });
   },
-  _doAuthSuccess: function(token, refreshToken, staff = undefined) {
+  _doAuthSuccess(token, refreshToken, staff = undefined) {
     // storing appropriate items
     const storage = this.get('storage');
     storage.setItem('token', token);
@@ -247,7 +247,7 @@ export default Ember.Service.extend(Ember.Evented, {
       this.trigger(config.events.auth.success);
     }
   },
-  _doAuthClear: function() {
+  _doAuthClear() {
     // clear auth items
     const storage = this.get('storage');
     storage.removeItem('token');
@@ -266,7 +266,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // Refreshing token
   // ----------------
 
-  _renewTokenOnError: function(options, originalOptions) {
+  _renewTokenOnError(options, originalOptions) {
     // Don't try to override error handler to try to renew token if
     // (1) we've already overriden handler
     // (2) no error handler is attached
@@ -306,7 +306,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }
     }.bind(this);
   },
-  _doRenewToken: function(onSuccess, onError) {
+  _doRenewToken(onSuccess, onError) {
     Ember.$.ajax({
       _alreadyOverriden: true, // short circuit _renewTokenOnError
       type: 'POST',
@@ -317,13 +317,13 @@ export default Ember.Service.extend(Ember.Evented, {
         refresh_token: this.get('refreshToken'),
       },
       // use traditional function syntax with bind so arguments will work
-      success: function(data) {
+      success: data => {
         const store = this.get('store'),
           staff = store.peekRecord('staff', data.staff.id);
         // staff may be null if it hasn't been loaded yet
         this._doAuthSuccess(data.access_token, data.refresh_token, staff);
         callIfPresent(this, onSuccess, [...arguments]);
-      }.bind(this),
+      },
       error: onError,
     });
   },

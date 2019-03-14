@@ -2,7 +2,7 @@ import Ember from 'ember';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
 export default Ember.Mixin.create(Loading, {
-  beforeModel: function(transition) {
+  beforeModel(transition) {
     this._super(...arguments);
     const auth = this.get('authService');
     if (!auth.get('isLoggedIn')) {
@@ -10,5 +10,5 @@ export default Ember.Mixin.create(Loading, {
       this.notifications.info('Please log in first.');
       this.transitionTo('login');
     }
-  }
+  },
 });

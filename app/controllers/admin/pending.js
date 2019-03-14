@@ -10,19 +10,19 @@ export default Ember.Controller.extend({
   numPending: computed.alias('adminController.numPending'),
 
   actions: {
-    approve: function(staff) {
+    approve(staff) {
       staff.set('status', 'STAFF');
       if (staff.get('hasPhoneActionData')) {
         staff.set('phoneAction', Constants.ACTION.PHONE.CHANGE_NUMBER);
       }
       this._handlePending(staff);
     },
-    reject: function(staff) {
+    reject(staff) {
       staff.set('phoneAction', null);
       staff.set('status', 'BLOCKED');
       this._handlePending(staff);
     },
-    loadMore: function() {
+    loadMore() {
       return new Ember.RSVP.Promise((resolve, reject) => {
         const query = Object.create(null),
           pending = this.get('pendingStaff');
@@ -40,7 +40,7 @@ export default Ember.Controller.extend({
     },
   },
 
-  _handlePending: function(staff) {
+  _handlePending(staff) {
     this.get('dataService')
       .persist(staff)
       .then(() => {

@@ -1,7 +1,8 @@
 import Constants from 'textup-frontend/constants';
-import Dirtiable from '../mixins/model/dirtiable';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import MF from 'model-fragments';
 import uniqBy from 'textup-frontend/utils/uniq-by';
 import { validator, buildValidations } from 'ember-cp-validations';
 
@@ -39,26 +40,28 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // Properties
   // ----------
 
+  awayMessage: DS.attr('string', { defaultValue: '' }),
+  awayMessageMaxLength: DS.attr('number', { defaultValue: 320 }),
+
   number: DS.attr('phone-number'),
-  tags: DS.hasMany('tag'),
-
-  totalNumContacts: '--',
-  contacts: computed.readOnly('_sortedContacts'),
-  contactsFilter: null,
-  contactStatuses: computed.readOnly('_contactStatuses'),
-
+  isActive: DS.attr('boolean'),
   voice: DS.attr('string'),
   language: DS.attr('string', { defaultValue: Constants.DEFAULT.LANGUAGE }),
 
   media: DS.belongsTo('media'), // hasOne
   requestVoicemailGreetingCall: DS.attr(),
   useVoicemailRecordingIfPresent: DS.attr('boolean'),
+  allowSharingWithOtherTeams: DS.attr('boolean'),
 
-  availability: DS.belongsTo('availability'),
-  others: DS.hasMany('availability'),
+  tags: DS.hasMany('tag'),
 
-  awayMessage: DS.attr('string', { defaultValue: '' }),
-  awayMessageMaxLength: DS.attr('number', { defaultValue: 320 }),
+  self: MF.fragment('owner-policy'),
+  others: MF.fragmentArray('owner-policy'),
+
+  totalNumContacts: '--',
+  contacts: computed.readOnly('_sortedContacts'),
+  contactsFilter: null,
+  contactStatuses: computed.readOnly('_contactStatuses'),
 
   // Private properties
   // ------------------

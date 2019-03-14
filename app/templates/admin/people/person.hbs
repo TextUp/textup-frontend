@@ -142,8 +142,11 @@
 					{{partial 'partials/staff/password-with-confirm'}}
 				{{/with}}
 			{{/tab-container/item}}
+
 			{{#tab-container/item doRegister=doRegister
 				title="Default Availability"}}
+
+                {{!-- TODO do we remove this or do we build this out more?  --}}
 				{{availability-control class="margin-t"
                     entity=person
                     onTypeChange=(action (mut person.manualSchedule))

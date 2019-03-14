@@ -1,6 +1,5 @@
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 
 export default DS.JSONSerializer.extend({
   attrs: { mimeType: { serialize: true } },

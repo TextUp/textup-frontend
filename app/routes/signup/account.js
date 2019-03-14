@@ -2,16 +2,16 @@ import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  setupController: function(controller) {
+  setupController(controller) {
     const signupController = this.controllerFor('signup'),
       newStaff = signupController.get('staff'),
       selected = signupController.get('selected');
     if (!selected || !newStaff) {
       this.transitionTo('signup.index');
     }
-    controller.setProperties({ config, selected, staff: newStaff });
+    controller.setProperties({ selected, staff: newStaff });
   },
-  deactivate: function() {
+  deactivate() {
     this.controller.set('confirmPassword', null);
   },
 
@@ -19,7 +19,7 @@ export default Ember.Route.extend({
     // Captcha
     // -------
 
-    clearCaptcha: function(staff) {
+    clearCaptcha(staff) {
       const captcha = this.controller.get('gRecaptcha');
       if (captcha) {
         captcha.resetReCaptcha.call(captcha);
@@ -30,7 +30,7 @@ export default Ember.Route.extend({
     // Creating new staff
     // ------------------
 
-    createStaff: function(data) {
+    createStaff(data) {
       const { name, username, email, password, lockCode, captcha } = data.toJSON(),
         org = this.controller.get('selected'),
         toBeSaved = {
@@ -40,17 +40,17 @@ export default Ember.Route.extend({
             password: password,
             email: email,
             lockCode: lockCode,
-            captcha: captcha
-          }
+            captcha: captcha,
+          },
         };
       // build org based on if new or existing
       toBeSaved.staff.org = org.get('isNew')
         ? {
             name: org.get('name'),
-            location: org.get('location.content').toJSON()
+            location: org.get('location.content').toJSON(),
           }
         : {
-            id: org.get('id')
+            id: org.get('id'),
           };
       // make the request
       return new Ember.RSVP.Promise((resolve, reject) => {
@@ -62,25 +62,23 @@ export default Ember.Route.extend({
           this.send('clearCaptcha', data);
           reject(failure);
         };
-        Ember.$
-          .ajax({
-            type: 'POST',
-            url: `${config.host}/v1/public/staff`,
-            contentType: 'application/json',
-            data: JSON.stringify(toBeSaved)
-          })
-          .then(result => {
-            this.notifications.success(`Almost done creating your account...`);
-            const staff = this.store.push(this.store.normalize('staff', result.staff));
-            this.get('authService')
-              .login(staff.get('username'), password)
-              .then(() => {
-                this.notifications.success(`Success! Welcome ${staff.get('name')}!`);
-                this.transitionTo('none');
-              }, onFail);
-            resolve(result);
-          }, onFail);
+        Ember.$.ajax({
+          type: 'POST',
+          url: `${config.host}/v1/public/staff`,
+          contentType: 'application/json',
+          data: JSON.stringify(toBeSaved),
+        }).then(result => {
+          this.notifications.success(`Almost done creating your account...`);
+          const staff = this.store.push(this.store.normalize('staff', result.staff));
+          this.get('authService')
+            .login(staff.get('username'), password)
+            .then(() => {
+              this.notifications.success(`Success! Welcome ${staff.get('name')}!`);
+              this.transitionTo('none');
+            }, onFail);
+          resolve(result);
+        }, onFail);
       });
-    }
-  }
+    },
+  },
 });

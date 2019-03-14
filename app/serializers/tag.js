@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import OwnsFutureMessages from '../mixins/serializer/owns-future-messages';
-import OwnsRecordItems from '../mixins/serializer/owns-record-items';
+import OwnsFutureMessages from 'textup-frontend/mixins/serializer/owns-future-messages';
+import OwnsRecordItems from 'textup-frontend/mixins/serializer/owns-record-items';
 
 export default DS.RESTSerializer.extend(
   DS.EmbeddedRecordsMixin,
@@ -10,10 +10,10 @@ export default DS.RESTSerializer.extend(
   {
     attrs: {
       numMembers: { serialize: false },
-      phone: { serialize: false }
+      phone: { serialize: false },
     },
 
-    serialize: function(snapshot) {
+    serialize(snapshot) {
       const json = this._super(...arguments),
         actions = snapshot.record.get('actions');
       if (Ember.isPresent(actions)) {
@@ -25,7 +25,7 @@ export default DS.RESTSerializer.extend(
     // Helpers
     // -------
 
-    _convertToTagAction: function(action) {
+    _convertToTagAction(action) {
       if (!action) {
         return action;
       }
@@ -35,6 +35,6 @@ export default DS.RESTSerializer.extend(
       delete convertedAction.bucketId;
       delete convertedAction.itemId;
       return convertedAction;
-    }
+    },
   }
 );

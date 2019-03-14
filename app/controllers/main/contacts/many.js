@@ -15,7 +15,7 @@ export default Ember.Controller.extend({
   selectedCanMessage: Ember.computed('selected', function() {
     return (
       this.get('noSharedWithMeSelected') ||
-      this.get('sharedWithMeSelected').every(contact => contact.get('isSharedDelegate'))
+      this.get('sharedWithMeSelected').every(contact => contact.get('isDelegatePermission'))
     );
   }),
   sharedWithMeSelected: computed.filterBy('selected', 'isShared', true),

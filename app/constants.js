@@ -1,4 +1,13 @@
 export default {
+  PROP_NAME: {
+    MEDIA_ID: 'uid',
+    MODEL_NAME: 'constructor.modelName',
+    READABLE_IDENT: 'readableIdentifier',
+    SHARING_IDENT: 'sharingIdentifier',
+    SHARING_PERMISSION: 'permission',
+    SHARING_PHONE_ID_BUCKETS: 'sharedWith',
+    URL_IDENT: 'urlIdentifier',
+  },
   MIME_TYPE: { PDF: 'application/pdf' },
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
@@ -20,8 +29,9 @@ export default {
   COLOR: {
     BRAND: '#1ba5e0',
     LIGHT_BLUE: '#76c9ec',
-    MEDIUM_BLUE: '#6ab4d4',
     LIGHT_GRAY: '#d3d3d3',
+    MEDIUM_BLUE: '#6ab4d4',
+    RED: '#c9302c',
   },
   DEFAULT: {
     LANGUAGE: 'ENGLISH',
@@ -101,6 +111,11 @@ export default {
       PENDING: 'PENDING',
       STAFF: 'STAFF',
     },
+    FILTER: {
+      ACTIVE: 'active',
+      ADMINS: 'admins',
+      DEACTIVATED: 'deactivated',
+    },
   },
   ORGANIZATION: {
     STATUS: {
@@ -117,6 +132,8 @@ export default {
       TRANSFER: 'TRANSFER',
       CHANGE_NUMBER: 'NUMBER',
     },
+    SHARE: { STOP: 'STOP', MERGE: 'MERGE' },
+    NUMBER: { DELETE: 'DELETE', MERGE: 'MERGE' },
   },
   POP_OVER: {
     POSITION: { TOP: 'top', BOTTOM: 'bottom' },

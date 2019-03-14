@@ -8,7 +8,7 @@ export default Ember.Service.extend({
   authService: Ember.inject.service(),
   router: Ember.inject.service(),
 
-  persist: function(data) {
+  persist(data) {
     return new Ember.RSVP.Promise((resolve, reject) => {
       const isArray = Ember.isArray(data),
         models = isArray ? data : [data],
@@ -24,7 +24,7 @@ export default Ember.Service.extend({
         .finally(() => this.get('loadingSlider').endLoading());
     });
   },
-  markForDelete: function(data) {
+  markForDelete(data) {
     const models = Ember.isArray(data) ? data : [data];
     models.forEach(model => {
       if (model.get('isNew')) {
@@ -35,7 +35,7 @@ export default Ember.Service.extend({
     });
   },
 
-  buildErrorHandler: function(then = undefined) {
+  buildErrorHandler(then = undefined) {
     return function(failure) {
       this.handleError(failure);
       callIfPresent(this, then, [failure]);
@@ -44,7 +44,7 @@ export default Ember.Service.extend({
   handleMapError() {
     this.notifications.error(`Sorry! We are having trouble loading the map. Please try again.`);
   },
-  handleError: function(failure) {
+  handleError(failure) {
     // log out if unauthorized
     if (this.checkForStatus(failure, 401)) {
       this.get('authService').logout();
@@ -69,7 +69,7 @@ export default Ember.Service.extend({
   // Utility methods
   // ---------------
 
-  displayErrors: function(json) {
+  displayErrors(json) {
     const failure = json.responseJSON || json;
     let numMessages = 0;
     if (failure && failure.errors) {
@@ -85,7 +85,7 @@ export default Ember.Service.extend({
     }
     return numMessages;
   },
-  checkForStatus: function(failure, status) {
+  checkForStatus(failure, status) {
     return (
       failure === status ||
       (failure && failure.errors && failure.errors[0] && failure.errors[0].status === `${status}`)

@@ -8,9 +8,9 @@
     <div class="single-body-content">
         {{#single-select data=orgs
             selected=selected
-            filterProperty='name'
-            displayProperty='name'
-            identityProperty='id'
+            filterProperty=(constant "PROP_NAME.READABLE_IDENT")
+            displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+            identityProperty=(constant "PROP_NAME.URL_IDENT")
             allowCreate=false
             searchPlaceholder='Search existing organizations'
             noResultsMessage='Could not find anything. Why not create a new organization?'

@@ -8,10 +8,8 @@ export default Ember.Service.extend({
   authService: Ember.inject.service(),
   dataService: Ember.inject.service(),
   notifications: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
-  store: Ember.inject.service(),
 
-  startVerifyPersonalPhone(num) {
+  start(num) {
     return new RSVP.Promise((resolve, reject) => {
       this.get('authService')
         .authRequest({
@@ -25,7 +23,7 @@ export default Ember.Service.extend({
         }, this.get('dataService').buildErrorHandler(reject));
     });
   },
-  finishVerifyPersonalPhone(num, validationCode) {
+  finish(num, validationCode) {
     return new RSVP.Promise((resolve, reject) => {
       const notifications = this.get('notifications');
       this.get('authService')

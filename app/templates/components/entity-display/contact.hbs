@@ -1,7 +1,7 @@
 <div class="flex flex--spacing-between margin-b-half">
     <div class="flex__item flex__item--grow">
         <p class="text-darken text-bold text-ellipsis">
-            {{phone-number entity.identifier}}
+            {{phone-number (get entity (constant "PROP_NAME.READABLE_IDENT"))}}
         </p>
     </div>
     <div class="flex__item text-right">
@@ -14,11 +14,11 @@
     <div class="flex__item flex__item--no-shrink flex__item--grow">
         {{#if entity.isShared}}
             <span class="badge">
-                {{entity.sharedBy}}
+                {{entity.sharedByName}}
             </span>
-        {{else if entity.sharedWith.content.length}}
+        {{else if (get entity (constant "PROP_NAME.SHARING_PHONE_ID_BUCKETS"))}}
             <span class="badge">
-                Shared with {{entity.sharedWith.content.length}}
+                Shared with {{get (get entity (constant "PROP_NAME.SHARING_PHONE_ID_BUCKETS")) "length"}}
             </span>
         {{else if (eq entity.numbers.length 1)}}
             <span class="text-bold">
@@ -31,7 +31,7 @@
         {{/if}}
     </div>
     <div class="flex__item flex__item--single-line text-right">
-        {{#if (and entity.isUnread entity.unreadInfo)}}
+        {{#if entity.unreadInfo}}
             <div class="text-big text-brand">
                 <span class="margin-l-half">{{entity.unreadInfo.numTexts}}</span>
                 <i class="fa fa-commenting margin-l-quarter" aria-hidden="true"></i>

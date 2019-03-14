@@ -1,9 +1,9 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import md5 from 'npm:blueimp-md5';
 import MF from 'model-fragments';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed } = Ember;
 
@@ -23,7 +23,7 @@ export default MF.Fragment.extend(Dirtiable, {
   dataNoHeader: computed('mediaData', function() {
     return (this.get('mediaData') || '').split(',')[1];
   }),
-  [MEDIA_ID_PROP_NAME]: computed(function() {
+  [Constants.PROP_NAME.MEDIA_ID]: computed(function() {
     return Ember.guidFor(this);
   }),
 
@@ -32,7 +32,7 @@ export default MF.Fragment.extend(Dirtiable, {
 
   toMediaElement() {
     const el = this.get('store').createFragment('media-element', {
-      [MEDIA_ID_PROP_NAME]: this.get(MEDIA_ID_PROP_NAME)
+      [Constants.PROP_NAME.MEDIA_ID]: this.get(Constants.PROP_NAME.MEDIA_ID),
     });
     el.addVersion(
       this.get('mimeType'),
@@ -41,5 +41,5 @@ export default MF.Fragment.extend(Dirtiable, {
       this.get('height')
     );
     return el;
-  }
+  },
 });

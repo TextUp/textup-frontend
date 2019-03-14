@@ -1,14 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     const signupController = this.controllerFor('signup');
     if (signupController.get('selected')) {
       controller.set('org', signupController.get('selected'));
     } else {
       const newOrg = this.store.createRecord('organization', {
-        location: this.store.createRecord('location')
+        location: this.store.createRecord('location'),
       });
       controller.set('org', newOrg);
       // set next so that setting select is not overwritten
@@ -36,6 +36,6 @@ export default Ember.Route.extend({
           signupController.set('selected', null);
         }
       }
-    }
-  }
+    },
+  },
 });

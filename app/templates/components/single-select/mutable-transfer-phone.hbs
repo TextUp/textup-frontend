@@ -1,7 +1,7 @@
 {{#single-select data=dataExcludingSelf
     selected=selected
-    displayProperty='name'
-    identityProperty='urlIdentifier'
+    displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+    identityProperty=(constant "PROP_NAME.URL_IDENT")
     allowCreate=false
     searchPlaceholder='Pick who to transfer to'
     noResultsMessage='Could not find anything.'
@@ -22,19 +22,20 @@
 			        <span class="fa fa-users"></span>
 			    {{/tool-tip}}
             {{/if}}
-            {{#if (and (not item.hasInactivePhone) item.phone.content)}}
-            	{{#tool-tip class='pad-l'
-			        tagName='span'
-			        title=(concat 'TextUp Phone ' (phone-number item.phone.content.number))}}
-			        <span class="fa fa-phone"></span>
-			    {{/tool-tip}}
-            {{/if}}
-            {{#if item.hasInactivePhone}}
-            	{{#tool-tip class='pad-l text-lighten'
-			        tagName='span'
-			        title='Has inactive phone'}}
-			        <span class="fa fa-phone"></span>
-			    {{/tool-tip}}
+            {{#if item.phone.content}}
+                {{#if item.phone.content.isActive}}
+                    {{#tool-tip class='pad-l'
+                        tagName='span'
+                        title=(concat 'TextUp Phone ' (phone-number item.phone.content.number))}}
+                        <span class="fa fa-phone"></span>
+                    {{/tool-tip}}
+                {{else}}
+                    {{#tool-tip class='pad-l text-lighten'
+                        tagName='span'
+                        title='Has inactive phone'}}
+                        <span class="fa fa-phone"></span>
+                    {{/tool-tip}}
+                {{/if}}
             {{/if}}
         </div>
     {{/if}}

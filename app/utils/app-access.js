@@ -1,14 +1,11 @@
 import * as TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
-import { URL_IDENT_PROP_NAME } from 'textup-frontend/mixins/model/has-url-identifier';
-
-const { RSVP } = Ember;
+import Constants from 'textup-frontend/constants';
 
 export function tryFindPhoneOwnerFromUrl(authUser, urlIdent) {
-  if (urlIdent === authUser.get(URL_IDENT_PROP_NAME)) {
+  if (urlIdent === authUser.get(Constants.PROP_NAME.URL_IDENT)) {
     return authUser;
   } else {
-    return authUser.get('teamsWithPhones').findBy(URL_IDENT_PROP_NAME, urlIdent);
+    return authUser.get('teamsWithPhones').findBy(Constants.PROP_NAME.URL_IDENT, urlIdent);
   }
 }
 

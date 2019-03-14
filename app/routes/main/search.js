@@ -22,7 +22,7 @@ export default Ember.Route.extend({
   _prevUrl: null,
   _prevUrlIsSearch: match('_prevUrl', /main\/.*\/search/),
 
-  afterModel: function() {
+  afterModel() {
     this._super(...arguments);
     // usually would call resetController in the setupController hook
     // when we are resetting the search list for a new search. However,
@@ -31,7 +31,7 @@ export default Ember.Route.extend({
     // a model associated with this route.
     this.set('_scheduledResetJob', Ember.run.next(this, this._resetController));
   },
-  setupController: function() {
+  setupController() {
     this._super(...arguments);
     // the setupController hook is called on the initial entry into this route
     // Therefore, on the initial entry, we want to cancel the job so we don't
@@ -44,11 +44,11 @@ export default Ember.Route.extend({
     // and after we cancel the job, we want to synchronously setup controller here
     this._resetController();
   },
-  activate: function() {
+  activate() {
     const storage = this.get('storage');
     this.set('_prevUrl', storage.getItem('currentUrl'));
   },
-  deactivate: function() {
+  deactivate() {
     this.controller.set('searchQuery', null);
   },
 
@@ -56,12 +56,12 @@ export default Ember.Route.extend({
     // Hooks
     // -----
 
-    willTransition: function() {
+    willTransition() {
       this._super(...arguments);
       this.set('_isTransitioning', true);
       return true;
     },
-    didTransition: function() {
+    didTransition() {
       this._super(...arguments);
       const query = this.controller.get('searchQuery');
       // focus the search input if the search query is blank,
@@ -75,7 +75,7 @@ export default Ember.Route.extend({
       return true;
     },
     // for changing filter on the mobile slideout menu
-    changeFilter: function(filter) {
+    changeFilter(filter) {
       this.transitionTo('main.contacts', {
         queryParams: {
           filter: filter,
@@ -86,7 +86,7 @@ export default Ember.Route.extend({
     // Search functions
     // ----------------
 
-    closeSearch: function() {
+    closeSearch() {
       const prevUrl = this.get('_prevUrl'),
         prevUrlIsSearch = this.get('_prevUrlIsSearch');
       // only transition to stored previous url if it is present
@@ -97,7 +97,7 @@ export default Ember.Route.extend({
         this.transitionTo('main.contacts');
       }
     },
-    triggerSearch: function(val) {
+    triggerSearch(val) {
       if (!isBlank(val)) {
         // transition to main.search to close any open search
         // results when we are performing a new search
@@ -112,16 +112,16 @@ export default Ember.Route.extend({
     // Performing search
     // -----------------
 
-    refresh: function() {
+    refresh() {
       this.controller.get('searchResults').clear();
       return this._loadMore();
     },
-    loadMore: function() {
+    loadMore() {
       return this._loadMore();
     },
   },
 
-  _resetController: function() {
+  _resetController() {
     // if controller still has not been set, schedule for next runloop
     // until the controller is set and this method can be called
     if (isNone(this.controller)) {
@@ -133,7 +133,7 @@ export default Ember.Route.extend({
       this.controller.set('numResults', '--');
     }
   },
-  _loadMore: function() {
+  _loadMore() {
     return new Ember.RSVP.Promise((resolve, reject) => {
       const query = Object.create(null),
         controller = this.get('controller'),

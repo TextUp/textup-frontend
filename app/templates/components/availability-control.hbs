@@ -5,20 +5,20 @@
         </label>
     </div>
     {{#multi-toggle classNames='xs-row-2'
-        selectIndex=(if entity.manualSchedule 0 1) as |toggle doRegister|}}
+        selectIndex=(if self.schedule.manual 0 1) as |toggle doRegister|}}
         {{#multi-toggle/item doRegister=doRegister
             color=(constant "COLOR.BRAND")
-            onSelect=(action 'handleType' true)}}
+            onSelect=(action _handleType true)}}
             Manually
         {{/multi-toggle/item}}
         {{#multi-toggle/item doRegister=doRegister
             color=(constant "COLOR.LIGHT_BLUE")
-            onSelect=(action 'handleType' false)}}
+            onSelect=(action _handleType false)}}
             By schedule
         {{/multi-toggle/item}}
     {{/multi-toggle}}
 </div>
-{{#if entity.manualSchedule}}
+{{#if self.schedule.manual}}
     <div class="form__group">
         <div class="xs-row-2 control-text">
             <label for="Availability" class='form__label'>
@@ -26,15 +26,15 @@
             </label>
         </div>
         {{#multi-toggle classNames='xs-row-2'
-            selectIndex=(if entity.isAvailable 0 1) as |toggle doRegister|}}
+            selectIndex=(if self.schedule.manualIsAvailable 0 1) as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.BRAND")
-                onSelect=(action 'handleManualAvailability' true)}}
+                onSelect=(action _handleManualAvailability true)}}
                 Yes
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.LIGHT_BLUE")
-                onSelect=(action 'handleManualAvailability' false)}}
+                onSelect=(action _handleManualAvailability false)}}
                 No
             {{/multi-toggle/item}}
         {{/multi-toggle}}
@@ -48,16 +48,16 @@
         <div class="bg-color pad-all">
             {{#each others as |_other|}}
                 <div class="row form__label">
-                    {{availability-control/other entity=_other}}
+                    {{availability-control/other policy=_other}}
                 </div>
             {{/each}}
         </div>
     {{/if}}
-{{else if (and entity.schedule.isFulfilled entity.schedule.content)}}
+{{else}}
     {{#schedule-control
         scheduleClass="pad-l pad-r"
-        schedule=entity.schedule.content
-        onChange=(action "replaceRange" target=entity.schedule.content) as |info|}}
+        schedule=self.schedule
+        onChange=(action _handleScheduleAvailability) as |info|}}
         {{#if others}}
             {{#hide-show as |hideShow|}}
                 <button type="button"
@@ -75,7 +75,7 @@
                     <div class="pad-t pad-b-half pad-l pad-r bg-color relative-parent">
                         {{#each others as |_other|}}
                             <div class="margin-b-half">
-                                {{availability-control/other entity=_other dayOfWeek=info.dayOfWeek}}
+                                {{availability-control/other policy=_other dayOfWeek=info.dayOfWeek}}
                             </div>
                         {{/each}}
                     </div>
@@ -83,9 +83,4 @@
             {{/hide-show}}
         {{/if}}
     {{/schedule-control}}
-{{else}}
-    <div class="text-center">
-        Loading
-        <span class="fa fa-circle-o-notch fa-spin"></span>
-    </div>
 {{/if}}

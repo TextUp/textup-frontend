@@ -34,8 +34,8 @@
                 </label>
                 {{#multi-select data=model.phone.content.tags
                     selected=exportRecordOwners
-                    displayProperty="identifier"
-                    identityProperty="uniqueIdentifier"
+                    displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+                    identityProperty=(constant "PROP_NAME.URL_IDENT")
                     doSearch=(route-action "exportDoSearch")
                     onInsert=(route-action "exportInsertRecordOwner")
                     onRemove=(route-action "exportRemoveRecordOwner") as |recipient select|}}
