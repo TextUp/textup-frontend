@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { run } = Ember;
@@ -17,7 +18,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/call',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelCallSlideout() {
@@ -40,7 +41,7 @@ export default Ember.Mixin.create({
           this.send('closeSlideout');
           run.next(() => {
             this.transitionTo('main.contacts.contact', contact.get('id'), {
-              queryParams: { filter: 'all' }
+              queryParams: { filter: 'all' },
             }).then(() => this._afterStartCall(contact));
           });
         });
@@ -51,7 +52,7 @@ export default Ember.Mixin.create({
         callSlideoutService = this.get('callSlideoutService');
       controller.set('callByNumber', number);
       callSlideoutService.validateAndCheckForName(number, { ctx: controller });
-    }
+    },
   },
 
   _initialCallSlideoutProps() {
@@ -60,12 +61,12 @@ export default Ember.Mixin.create({
       callByNumberContact: null,
       callByNumberIsValid: false,
       callByNumberMoreNum: 0,
-      isCallingForNumber: false
+      isCallingForNumber: false,
     };
   },
   _afterStartCall(contact) {
     this.notifications.success(
       `Calling your personal phone number to connect you to ${contact.get('identifier')}.`
     );
-  }
+  },
 });

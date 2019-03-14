@@ -1,4 +1,5 @@
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -14,12 +15,12 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/feedback',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     finishFeedbackSlideout() {
       this.send('closeSlideout');
       this.controller.set('feedbackMessage', null);
-    }
-  }
+    },
+  },
 });

@@ -8,7 +8,7 @@ export default Ember.Route.extend(IsAuthenticated, {
   redirect() {
     this._super(...arguments);
     const user = this.get('authService.authUser');
-    if (Ember.isPresent(user.get('personalPhoneNumber'))) {
+    if (Ember.isPresent(user.get('personalNumber'))) {
       this.transitionTo('main', user);
     }
   },
@@ -16,7 +16,7 @@ export default Ember.Route.extend(IsAuthenticated, {
     this._super(...arguments);
     controller.setProperties({
       personalNumber: this.get('storage').getItem(this._buildStorageKeyForStaff()),
-      verificationCode: null
+      verificationCode: null,
     });
   },
   actions: {
@@ -32,7 +32,7 @@ export default Ember.Route.extend(IsAuthenticated, {
           this.get('storage').removeItem(this._buildStorageKeyForStaff());
 
           const staff = this.get('authService.authUser');
-          staff.set('personalPhoneNumber', personalNumber);
+          staff.set('personalNumber', personalNumber);
           return this.get('dataService')
             .persist(staff)
             .then(() => {
@@ -43,7 +43,7 @@ export default Ember.Route.extend(IsAuthenticated, {
     skipSetup() {
       this.get('stateManager').skipSetup();
       this.transitionTo('main', this.get('authService.authUser'));
-    }
+    },
   },
 
   // Internal methods
@@ -51,5 +51,5 @@ export default Ember.Route.extend(IsAuthenticated, {
 
   _buildStorageKeyForStaff() {
     return this.get('authService.authUser.username') + '-personal-number';
-  }
+  },
 });

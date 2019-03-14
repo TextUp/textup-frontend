@@ -1,4 +1,5 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -6,8 +7,6 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { $, isNone, computed, run } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     doClose: PropTypes.func.isRequired,
 
@@ -26,7 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
     // if true then calling close on the slideout has no effect used to disable closing, for
     // example when performing a longer process that hasn't finished yet.
     forceKeepOpen: PropTypes.bool,
-    onOpen: PropTypes.func
+    onOpen: PropTypes.func,
   },
   getDefaultProps() {
     return {
@@ -34,14 +33,14 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
       headerProps: {},
       footerComponent: '',
       footerProps: {},
-      direction: this.get('constants.SLIDEOUT.DIRECTION.LEFT'),
-      ignoreCloseSelectors: this.get('constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR'),
+      direction: Constants.SLIDEOUT.DIRECTION.LEFT,
+      ignoreCloseSelectors: Constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR,
       bodyClass: '',
       startOpen: true,
       clickOutToClose: true,
       focusDelay: 500, // in ms
       focusSelector: '.slideout-pane__body',
-      forceKeepOpen: false
+      forceKeepOpen: false,
     };
   },
 
@@ -49,7 +48,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   classNameBindings: [
     '_directionClass',
     'forceKeepOpen:slideout-pane--keep-open',
-    '_isOpen:slideout-pane--open'
+    '_isOpen:slideout-pane--open',
   ],
 
   // Private properties
@@ -69,8 +68,8 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
       actions: {
         open: this._open.bind(this),
         // can pass as many closures to execute subsequently as we like
-        close: this._close.bind(this, true)
-      }
+        close: this._close.bind(this, true),
+      },
     };
   }),
   _directionClass: computed('direction', function() {
@@ -97,7 +96,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   actions: {
     forceClose() {
       this._close(true);
-    }
+    },
   },
 
   // Event handlers
@@ -188,5 +187,5 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   },
   _build$Overlay() {
     return $(`<div class='slideout-pane__overlay'></div>`);
-  }
+  },
 });

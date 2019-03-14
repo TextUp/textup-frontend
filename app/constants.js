@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-export default Ember.Service.extend({
+export default {
   MIME_TYPE: { PDF: 'application/pdf' },
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
@@ -32,10 +30,14 @@ export default Ember.Service.extend({
   },
   DAYS_OF_WEEK: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   MODEL: {
-    STAFF: 'staff',
-    TEAM: 'team',
     CONTACT: 'contact',
+    ORG: 'organization',
+    RECORD_CALL: 'record-call',
+    RECORD_NOTE: 'record-note',
+    RECORD_TEXT: 'record-text',
+    STAFF: 'staff',
     TAG: 'tag',
+    TEAM: 'team',
   },
   TOOLTIP: {
     SIDE: {
@@ -92,6 +94,14 @@ export default Ember.Service.extend({
       BLOCKED: 'blocked',
     },
   },
+  STAFF: {
+    STATUS: {
+      ADMIN: 'ADMIN',
+      BLOCKED: 'BLOCKED',
+      PENDING: 'PENDING',
+      STAFF: 'STAFF',
+    },
+  },
   ORGANIZATION: {
     STATUS: {
       REJECTED: 'REJECTED',
@@ -111,4 +121,4 @@ export default Ember.Service.extend({
   POP_OVER: {
     POSITION: { TOP: 'top', BOTTOM: 'bottom' },
   },
-});
+};

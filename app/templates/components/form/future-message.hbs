@@ -13,7 +13,7 @@
 </div>
 <div class="form__group form__group--full-width">
     {{photo-control images=futureMessage.media.content.displayedImages.content
-        imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+        imageDisplayComponent=(constant "PHOTO_CONTROL.DISPLAY.GRID")
         readOnly=futureMessage.isSaving
         addComponentClass="form__item--constrain-width"
         onAdd=(action _onAddImage)
@@ -35,7 +35,7 @@
         unrounded time right now, use the unbounded startDate as the minimum --}}
         {{datetime-control
             onSelect=(action (mut futureMessage.startDate))
-            timeInterval=constants.DEFAULT.TIME_INTERVAL_IN_MINUTES
+            timeInterval=(constant "DEFAULT.TIME_INTERVAL_IN_MINUTES")
             value=futureMessage.startDate
             min=(if (gt (now) (unbound futureMessage.startDate)) (unbound futureMessage.startDate) now)}}
     {{else}}
@@ -53,15 +53,15 @@
     </div>
     {{multi-toggle/binary classNames='xs-row-3'
         disabled=futureMessage.isDeleted
-        value=(eq futureMessage.type constants.FUTURE_MESSAGE.TYPE.CALL)
-        onFalse=(action (mut futureMessage.type) constants.FUTURE_MESSAGE.TYPE.TEXT)
-        onTrue=(action (mut futureMessage.type) constants.FUTURE_MESSAGE.TYPE.CALL)
-        falseColor=constants.COLOR.LIGHT_BLUE
-        trueColor=constants.COLOR.BRAND
+        value=(eq futureMessage.type (constant "FUTURE_MESSAGE.TYPE.CALL"))
+        onFalse=(action (mut futureMessage.type) (constant "FUTURE_MESSAGE.TYPE.TEXT"))
+        onTrue=(action (mut futureMessage.type) (constant "FUTURE_MESSAGE.TYPE.CALL"))
+        falseColor=(constant "COLOR.LIGHT_BLUE")
+        trueColor=(constant "COLOR.BRAND")
         falseString='Text'
         trueString='Call'}}
 </div>
-{{#liquid-if (eq futureMessage.type constants.FUTURE_MESSAGE.TYPE.CALL)
+{{#liquid-if (eq futureMessage.type (constant "FUTURE_MESSAGE.TYPE.CALL"))
     class='animate-slide-from-top'}}
     <div class="form__group">
         <div class="xs-2-row-3 control-text">
@@ -71,7 +71,7 @@
         </div>
         <select name="scheduled-message-language" class="xs-row-3 form__input"
             onchange={{action (mut futureMessage.language) value="target.value"}}>
-            {{#each constants.LANGUAGES as |_lang|}}
+            {{#each (constant "LANGUAGES") as |_lang|}}
                 <option value={{_lang}}
                     selected={{if (eq _lang futureMessage.language) "selected"}}>
                     {{capitalize (lowercase _lang) 1}}
@@ -84,7 +84,7 @@
     <div class="xs-2-row-3 control-text">
         <label class="form__label" for="Notify Self">
             Notify me also?
-            {{#if (not personalPhoneNumber)}}
+            {{#if (not personalNumber)}}
                 {{#tool-tip title='Notifications disabled'
                     classNames='margin-l-quarter'
                     tagName='span'}}
@@ -94,7 +94,7 @@
         </label>
     </div>
     {{multi-toggle/binary classNames='xs-row-3'
-        disabled=(or futureMessage.isDeleted (not personalPhoneNumber))
+        disabled=(or futureMessage.isDeleted (not personalNumber))
         value=futureMessage.notifySelf}}
 </div>
 {{#if futureMessage.isNew}}
@@ -133,8 +133,8 @@
                 value=(eq futureMessage.intervalSize 7)
                 onFalse=(action (mut futureMessage.intervalSize) 1)
                 onTrue=(action (mut futureMessage.intervalSize) 7)
-                falseColor=constants.COLOR.LIGHT_BLUE
-                trueColor=constants.COLOR.BRAND
+                falseColor=(constant "COLOR.LIGHT_BLUE")
+                trueColor=(constant "COLOR.BRAND")
                 falseString=(pluralize 'Day' futureMessage.repeatInterval)
                 trueString=(pluralize 'Week' futureMessage.repeatInterval)}}
         </div>
@@ -147,8 +147,8 @@
             {{multi-toggle/binary classNames='xs-row-3'
                 disabled=futureMessage.isDeleted
                 value=futureMessage.hasEndDate
-                falseColor=constants.COLOR.LIGHT_BLUE
-                trueColor=constants.COLOR.BRAND
+                falseColor=(constant "COLOR.LIGHT_BLUE")
+                trueColor=(constant "COLOR.BRAND")
                 falseString='Number'
                 trueString='Date'}}
         </div>

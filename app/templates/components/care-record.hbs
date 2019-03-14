@@ -2,7 +2,7 @@
     containerClass="care-record__body"
     itemsClass="care-record__body__items"
     doRegister=(action (mut _recordClustersScroll))
-    direction=constants.INFINITE_SCROLL.DIRECTION.UP
+    direction=(constant "INFINITE_SCROLL.DIRECTION.UP")
     data=recordClusters
     dataLength=numRecordItems
     total=totalNumRecordItems
@@ -28,7 +28,7 @@
 
 {{upcoming-future-messages nextFutureFire=nextFutureFire onClick=(action _onViewScheduledMessages)}}
 
-{{#record-actions-control hasPersonalPhoneNumber=_hasPersonalPhoneNumber
+{{#record-actions-control hasPersonalNumber=_hasPersonalNumber
     hasItemsInRecord=_hasItemsInRecord
     images=images
     audio=audio

@@ -5,7 +5,7 @@
         activeOwner=stateManager.owner
         user=authService.authUser
         doLogOut=(route-action "logout"))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=(and (or stateManager.owner.isDirty authService.authUser.isDirty)
                 (not usernameDropdown.isOpen)
@@ -53,23 +53,23 @@
                                     (if org.isTimeout60 2 3)))
                             wrapAround=true as |toggle doRegister|}}
                             {{#multi-toggle/item doRegister=doRegister
-                                color=constants.COLOR.LIGHT_BLUE
+                                color=(constant "COLOR.LIGHT_BLUE")
                                 onSelect=(action (mut org.timeoutInSeconds) 15)}}
                                 15 seconds
                             {{/multi-toggle/item}}
                             {{#multi-toggle/item doRegister=doRegister
-                                color=constants.COLOR.MEDIUM_BLUE
+                                color=(constant "COLOR.MEDIUM_BLUE")
                                 onSelect=(action (mut org.timeoutInSeconds) 30)}}
                                 30 seconds
                             {{/multi-toggle/item}}
                             {{#multi-toggle/item doRegister=doRegister
-                                color=constants.COLOR.BRAND
+                                color=(constant "COLOR.BRAND")
                                 onSelect=(action (mut org.timeoutInSeconds) 60)}}
                                 1 minute
                             {{/multi-toggle/item}}
                             {{#if (not (unbound org.isTimeoutStandard))}}
                                 {{#multi-toggle/item doRegister=doRegister
-                                    color=constants.COLOR.LIGHT_GRAY
+                                    color=(constant "COLOR.LIGHT_GRAY")
                                     onSelect=(route-action "revertAttribute" org "timeout")}}
                                     {{org.timeoutInSeconds}} seconds
                                 {{/multi-toggle/item}}

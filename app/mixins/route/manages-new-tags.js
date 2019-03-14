@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { tryInvoke } = Ember;
@@ -9,7 +10,7 @@ export default Ember.Mixin.create({
     this._super(...arguments);
     controller.setProperties({
       tagsListHideAway: null,
-      newTag: null
+      newTag: null,
     });
   },
 
@@ -20,7 +21,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/tag/create',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelNewTagSlideout() {
@@ -38,7 +39,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/tag/list',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     closeTagListSlideout() {
@@ -60,7 +61,7 @@ export default Ember.Mixin.create({
       return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => this._tryCloseTagsListHideAway());
-    }
+    },
   },
 
   _tryRevertNewTag() {
@@ -74,5 +75,5 @@ export default Ember.Mixin.create({
     if (tagsListHideAway && tagsListHideAway.actions) {
       tryInvoke(tagsListHideAway.actions, 'close');
     }
-  }
+  },
 });

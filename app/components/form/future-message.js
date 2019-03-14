@@ -5,14 +5,12 @@ import FutureMessage from 'textup-frontend/models/future-message';
 const { tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     futureMessage: PropTypes.instanceOf(FutureMessage).isRequired,
-    personalPhoneNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    personalNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     onAddImage: PropTypes.func,
     onAddAudio: PropTypes.func,
-    onRemoveMedia: PropTypes.func
+    onRemoveMedia: PropTypes.func,
   },
 
   classNames: 'form',
@@ -28,5 +26,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onRemoveMedia() {
     return tryInvoke(this, 'onRemoveMedia', [...arguments]);
-  }
+  },
 });

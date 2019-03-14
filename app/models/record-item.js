@@ -1,3 +1,4 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -7,8 +8,6 @@ import PhoneNumber from 'textup-frontend/utils/phone-number';
 const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
-  constants: Ember.inject.service(),
-
   // Overrides
   // ---------
 
@@ -77,23 +76,19 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   },
   removeRecipient(obj) {
     return removeRecipientFor(obj, getListFor(this, obj));
-  }
+  },
 });
 
 function getListFor(ctx, obj) {
-  const constants = ctx.get('constants');
   let list;
   if (typeOf(obj) === 'string') {
     list = ctx.get('_newNumberRecipients');
-  } else if (typeOf(obj) === 'instance') {
-    const type = get(obj, 'constructor.modelName');
-    if (type === constants.MODEL.CONTACT) {
-      list = get(obj, 'isShared')
-        ? ctx.get('_sharedContactRecipients')
-        : ctx.get('_contactRecipients');
-    } else if (type === constants.MODEL.TAG) {
-      list = ctx.get('_tagRecipients');
-    }
+  } else if (TypeUtils.isContact(obj)) {
+    list = get(obj, 'isShared')
+      ? ctx.get('_sharedContactRecipients')
+      : ctx.get('_contactRecipients');
+  } else if (TypeUtils.isTag(obj)) {
+    list = ctx.get('_tagRecipients');
   }
   return list;
 }

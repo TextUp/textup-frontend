@@ -3,7 +3,7 @@ import config from '../config/environment';
 import Ember from 'ember';
 import LocaleUtils from 'textup-frontend/utils/locale';
 
-const { $, computed: { notEmpty, and }, RSVP: { Promise } } = Ember;
+const { computed, RSVP } = Ember;
 
 export default Ember.Service.extend(Ember.Evented, {
   store: Ember.inject.service(),
@@ -19,16 +19,12 @@ export default Ember.Service.extend(Ember.Evented, {
   // Computed properties
   // -------------------
 
-  hasRefreshToken: notEmpty('refreshToken'),
-  hasToken: notEmpty('token'),
-  hasAuthUser: notEmpty('authUser'),
-  isLoggedIn: and('hasToken', 'hasAuthUser'),
-  channelName: Ember.computed('authUser', function() {
-    const user = this.get('authUser');
-    return user ? `private-${user.get('username')}` : null;
-  }),
+  hasRefreshToken: computed.notEmpty('refreshToken'),
+  hasToken: computed.notEmpty('token'),
+  hasAuthUser: computed.notEmpty('authUser'),
+  isLoggedIn: computed.and('hasToken', 'hasAuthUser'),
 
-  timezone: Ember.computed(function() {
+  timezone: computed(function() {
     return LocaleUtils.getTimezone();
   }),
 
@@ -53,35 +49,35 @@ export default Ember.Service.extend(Ember.Evented, {
       .then(this._doSetup.bind(this));
   },
   validate: function(username, password) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (!username || !password) {
         return reject();
       }
       this._sendCredentials('validate', {
         username: username,
-        password: password
+        password: password,
       }).then(resolve, reject);
     });
   },
   validateLockCode: function(username, code) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (!username || !code) {
         return reject();
       }
       this._sendCredentials('validate', {
         username: username,
-        lockCode: code
+        lockCode: code,
       }).then(resolve, reject);
     });
   },
   login: function(username, password, storeCredentials = false) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (!username || !password) {
         return reject();
       }
       this._sendCredentials(`login?timezone=${this.get('timezone')}`, {
         username: username,
-        password: password
+        password: password,
       }).then(data => {
         this.get('storage').set('persist', storeCredentials);
         const store = this.get('store'),
@@ -97,38 +93,34 @@ export default Ember.Service.extend(Ember.Evented, {
     this.get('router').transitionTo('index');
   },
   resetPassword: function(username) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (!username) {
         return reject();
       }
-      Ember.$
-        .ajax({
-          type: 'POST',
-          url: `${config.host}/reset`,
-          contentType: 'application/json',
-          data: JSON.stringify({
-            username: username
-          })
-        })
-        .then(resolve, reject);
+      Ember.$.ajax({
+        type: 'POST',
+        url: `${config.host}/reset`,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          username: username,
+        }),
+      }).then(resolve, reject);
     });
   },
   completeResetPassword: function(token, password) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (!token || !password) {
         return reject();
       }
-      Ember.$
-        .ajax({
-          type: 'PUT',
-          url: `${config.host}/reset`,
-          contentType: 'application/json',
-          data: JSON.stringify({
-            token,
-            password
-          })
-        })
-        .then(resolve, reject);
+      Ember.$.ajax({
+        type: 'PUT',
+        url: `${config.host}/reset`,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          token,
+          password,
+        }),
+      }).then(resolve, reject);
     });
   },
   retryAttemptedTransition: function(fallback) {
@@ -149,8 +141,8 @@ export default Ember.Service.extend(Ember.Evented, {
   // ---------------
 
   authRequest: function(options = {}) {
-    return new Promise((resolve, reject) => {
-      $.ajax(
+    return new RSVP.Promise((resolve, reject) => {
+      Ember.$.ajax(
         Ember.merge(
           {
             contentType: 'application/json',
@@ -158,7 +150,7 @@ export default Ember.Service.extend(Ember.Evented, {
               if (this.get('hasToken')) {
                 request.setRequestHeader('Authorization', `Bearer ${this.get('token')}`);
               }
-            }
+            },
           },
           options
         )
@@ -190,11 +182,11 @@ export default Ember.Service.extend(Ember.Evented, {
       type: 'POST',
       url: `${config.host}/${endpoint}`,
       contentType: 'application/json',
-      data: JSON.stringify(payload)
+      data: JSON.stringify(payload),
     });
   },
   _doSetup: function() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       const storage = this.get('storage'),
         token = storage.getItem('token'),
         refreshToken = storage.getItem('refreshToken'),
@@ -265,7 +257,7 @@ export default Ember.Service.extend(Ember.Evented, {
     this.setProperties({
       token: null,
       refreshToken: null,
-      authUser: null
+      authUser: null,
     });
     // trigger this event after all work has been done
     this.trigger(config.events.auth.clear);
@@ -322,7 +314,7 @@ export default Ember.Service.extend(Ember.Evented, {
       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
       data: {
         grant_type: 'refresh_token',
-        refresh_token: this.get('refreshToken')
+        refresh_token: this.get('refreshToken'),
       },
       // use traditional function syntax with bind so arguments will work
       success: function(data) {
@@ -332,7 +324,7 @@ export default Ember.Service.extend(Ember.Evented, {
         this._doAuthSuccess(data.access_token, data.refresh_token, staff);
         callIfPresent(this, onSuccess, [...arguments]);
       }.bind(this),
-      error: onError
+      error: onError,
     });
-  }
+  },
 });

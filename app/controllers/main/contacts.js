@@ -1,5 +1,6 @@
-import Ember from 'ember';
 import * as TextUtils from 'textup-frontend/utils/text';
+import * as TypeUtils from 'textup-frontend/utils/type';
+import Ember from 'ember';
 
 const { computed } = Ember;
 
@@ -19,11 +20,7 @@ export default Ember.Controller.extend({
     if (contactsList) {
       contactsList.actions.resetPosition();
     }
-    if (newTag && newTag.get('constructor.modelName') === this.get('constants.MODEL.TAG')) {
-      this.set('tag', newTag);
-    } else {
-      this.set('tag', null);
-    }
+    this.set('tag', TypeUtils.isTag(newTag) ? newTag : null);
     this.get('phone').clearContacts();
   },
 

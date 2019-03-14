@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title=(concat 'Edit ' editingTag.name))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action "finishExistingTagSlideout")
@@ -12,7 +12,7 @@
         doSecondary=(if editingTag.isDeleted (route-action "onTagUndoDelete"))
         showDelete=(not editingTag.isDeleted)
         doMarkForDelete=(route-action "onTagMarkForDelete"))
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "cancelExistingTagSlideout")
     forceKeepOpen=editingTag.isSaving
     focusSelector='.start-focus' as |slideout|}}

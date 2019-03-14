@@ -14,7 +14,7 @@
 </div>
 <div class="form__group form__group--full-width">
     {{photo-control images=recordNote.media.content.displayedImages.content
-        imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+        imageDisplayComponent=(constant "PHOTO_CONTROL.DISPLAY.GRID")
         readOnly=(or readOnly recordNote.isSaving)
         addComponentClass="margin-l margin-r"
         onAdd=onAddImage

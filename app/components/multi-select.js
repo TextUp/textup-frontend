@@ -2,8 +2,6 @@ import Ember from 'ember';
 import defaultIfAbsent from '../utils/default-if-absent';
 
 export default Ember.Component.extend({
-  constants: Ember.inject.service(),
-
   displayProperty: null,
   identityProperty: null,
   filterProperty: null,
@@ -54,7 +52,7 @@ export default Ember.Component.extend({
         clearHighlight: this.clearHighlight.bind(this),
         maintainOrHighlightFirst: this.maintainOrHighlightFirst.bind(this),
         highlightUp: this.highlightUp.bind(this),
-        highlightDown: this.highlightDown.bind(this)
+        highlightDown: this.highlightDown.bind(this),
       };
       return {
         isOpen: dropdown.isOpen,
@@ -62,7 +60,7 @@ export default Ember.Component.extend({
         isCreating: input.isCreating,
         isEditing: input.isEditing,
         currentlyEditing: input.currentlyEditing,
-        actions: Ember.merge(Ember.merge(myActions, dropdown.actions), input.actions)
+        actions: Ember.merge(Ember.merge(myActions, dropdown.actions), input.actions),
       };
     } else {
       return {};
@@ -171,7 +169,7 @@ export default Ember.Component.extend({
     remove: function(item) {
       Ember.tryInvoke(this, 'onRemove', [item]);
       Ember.run.next(this, this.setupResults);
-    }
+    },
   },
 
   // Tag manipulation
@@ -217,7 +215,7 @@ export default Ember.Component.extend({
       object: Ember.get(this.get('_remainingResults'), String(index)),
       node: this.$()
         .find('.multi-select-item')
-        .eq(index)
+        .eq(index),
     };
   },
   setupResults: function(skipFocus = false) {
@@ -320,7 +318,7 @@ export default Ember.Component.extend({
     } else {
       this.setProperties({
         _results: [],
-        _resultIds: Object.create(null)
+        _resultIds: Object.create(null),
       });
       this._doSyncResults(val);
       if (val === this.get('_prevSearchVal')) {
@@ -333,7 +331,7 @@ export default Ember.Component.extend({
   _handleBlankInput: function() {
     this.setProperties({
       _results: this.get('data'),
-      _resultIds: this.get('dataIds')
+      _resultIds: this.get('dataIds'),
     });
   },
   _doSyncResults: function(val) {
@@ -367,7 +365,7 @@ export default Ember.Component.extend({
           isSearching: false,
           _prevSearchVal: val,
           _prevSearchResults: newResults,
-          _prevSearchResultIds: newIds
+          _prevSearchResultIds: newIds,
         });
         this._listMergeInto(this.get('_results'), newResults);
         this._objectMergeInto(this.get('_resultIds'), newIds);
@@ -382,7 +380,7 @@ export default Ember.Component.extend({
       matching = this._filter(data, val, resultIds);
     return {
       resultIds: this.buildIds(matching, resultIds),
-      results: matching
+      results: matching,
     };
   },
   buildIds: function(data, existingIds = Object.create(null)) {
@@ -436,5 +434,5 @@ export default Ember.Component.extend({
   },
   _objectMergeInto: function(target, toBeMerged) {
     Ember.$.extend(target, toBeMerged);
-  }
+  },
 });

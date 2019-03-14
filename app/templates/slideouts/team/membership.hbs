@@ -2,7 +2,7 @@
     headerProps=(hash title=(if selected
         (concat 'Teams (' selected.length ' selected)')
         (concat person.name ' Teams')))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=teamsHaveActions
         doPrimary=(route-action 'updateTeamMemberships'
@@ -12,7 +12,7 @@
                 (route-action "closeSlideout")))
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action 'clearList' stateManager.owner.teams 'actions'
         (route-action "closeSlideout")) as |slideout|}}
     {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)

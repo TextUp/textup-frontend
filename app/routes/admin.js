@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
@@ -14,9 +15,7 @@ export default Ember.Route.extend(
   RequiresSetup,
   SupportsFeedbackSlideout,
   {
-    constants: Ember.inject.service(),
-
-    slideoutOutlet: computed.alias('constants.SLIDEOUT.OUTLET.DETAIL'),
+    slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
     beforeModel: function() {
       this._super(...arguments);
@@ -67,7 +66,7 @@ export default Ember.Route.extend(
           this.store.createRecord('staff', {
             org: this.get('currentModel'),
             status: 'STAFF',
-            password: humanId({ separator: '-', capitalize: false })
+            password: humanId({ separator: '-', capitalize: false }),
           })
         );
       },
@@ -132,8 +131,8 @@ export default Ember.Route.extend(
             location: this.store.createRecord('location', {
               address: org.get('location.address'),
               lat: org.get('location.lat'),
-              lon: org.get('location.lon')
-            })
+              lng: org.get('location.lng'),
+            }),
           })
         );
       },
@@ -165,8 +164,7 @@ export default Ember.Route.extend(
       // -----
 
       persistWithPhone: function(withPhone, then) {
-        const isTransfer =
-            withPhone.get('phoneAction') === this.get('constants.ACTION.PHONE.TRANSFER'),
+        const isTransfer = withPhone.get('phoneAction') === Constants.ACTION.PHONE.TRANSFER,
           data = withPhone.get('phoneActionData'),
           targetId = isTransfer ? get(data, 'id') : null,
           // if transfer, one of 'staff' or 'team', see phone-serializer.js mixin for
@@ -178,14 +176,14 @@ export default Ember.Route.extend(
             if (targetId && targetClass) {
               return this.store
                 .findRecord(targetClass, targetId, {
-                  reload: true
+                  reload: true,
                 })
                 .then(() => callIfPresent(this, then));
             } else {
               callIfPresent(this, then);
             }
           });
-      }
+      },
     },
 
     // Helpers
@@ -203,12 +201,12 @@ export default Ember.Route.extend(
       this.store
         .query('staff', {
           organizationId: org.get('id'),
-          status: ['pending']
+          status: ['pending'],
         })
         .then(success => {
           this.controller.set('pending', success.toArray());
           this.controller.set('numPending', success.get('meta.total'));
         }, this.get('dataService').buildErrorHandler());
-    }
+    },
   }
 );

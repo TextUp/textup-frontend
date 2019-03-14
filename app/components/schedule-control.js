@@ -5,12 +5,10 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     schedule: PropTypes.EmberObject.isRequired,
     scheduleClass: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
   },
   getDefaultProps() {
     return { scheduleClass: '' };
@@ -28,13 +26,13 @@ export default Ember.Component.extend(PropTypesMixin, {
   _resetNewProps() {
     // don't clear day to insert to streamline inserting multiple ranges
     this.setProperties({
-      _newRangeTimes: []
+      _newRangeTimes: [],
     });
   },
   _handleAdd(dayOfWeek, timeRange, then) {
     Ember.tryInvoke(this, 'onChange', [
       dayOfWeek,
-      [...this._copyDayOfWeekRanges(dayOfWeek), timeRange]
+      [...this._copyDayOfWeekRanges(dayOfWeek), timeRange],
     ]);
     callIfPresent(this, then);
   },
@@ -55,5 +53,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   _copyDayOfWeekRanges(dayOfWeek) {
     const ranges = this.get(`schedule.${dayOfWeek}`);
     return ranges ? [...ranges] : [];
-  }
+  },
 });

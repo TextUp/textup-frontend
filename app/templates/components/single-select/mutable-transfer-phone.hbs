@@ -1,7 +1,7 @@
 {{#single-select data=dataExcludingSelf
     selected=selected
     displayProperty='name'
-    identityProperty='transferId'
+    identityProperty='urlIdentifier'
     allowCreate=false
     searchPlaceholder='Pick who to transfer to'
     noResultsMessage='Could not find anything.'
@@ -15,7 +15,7 @@
         <div class="text-ellipsis">
             <span class="text-bold">{{item.name}}</span>
             <span class='pad-l-half'>{{item.username}}</span>
-            {{#if (eq item.constructor.modelName constants.MODEL.TEAM)}}
+            {{#if (type/is-team item)}}
 				{{#tool-tip class='pad-l'
 			        tagName='span'
 			        title=(concat 'Team of ' item.numMembers)}}

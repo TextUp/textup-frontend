@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -6,8 +7,6 @@ import { stringToIntervals, intervalsToString } from '../utils/schedule';
 const { defineProperty, computed, on } = Ember;
 
 export default DS.Model.extend(Dirtiable, {
-  constants: Ember.inject.service(),
-
   isAvailableNow: DS.attr('boolean'),
   nextAvailable: DS.attr('date'),
   nextUnavailable: DS.attr('date'),
@@ -24,7 +23,7 @@ export default DS.Model.extend(Dirtiable, {
   // -------------------
 
   defineProperties: on('init', function() {
-    this.get('constants.DAYS_OF_WEEK').forEach(dayOfWeek => {
+    Constants.DAYS_OF_WEEK.forEach(dayOfWeek => {
       const stringProp = `${dayOfWeek}String`;
       defineProperty(
         this,
@@ -36,7 +35,7 @@ export default DS.Model.extend(Dirtiable, {
           set: function(key, intervals) {
             this.set(stringProp, intervalsToString(intervals));
             return intervals;
-          }
+          },
         })
       );
     });
@@ -47,10 +46,10 @@ export default DS.Model.extend(Dirtiable, {
 
   actions: {
     replaceRange(dayOfWeek, newRanges) {
-      if (!this.get('constants.DAYS_OF_WEEK').contains(dayOfWeek)) {
+      if (!Constants.DAYS_OF_WEEK.contains(dayOfWeek)) {
         return;
       }
       this.set(dayOfWeek, newRanges);
-    }
-  }
+    },
+  },
 });

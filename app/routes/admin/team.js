@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { URL_IDENT_PROP_NAME } from 'textup-frontend/mixins/model/has-url-identifier';
 
 export default Ember.Route.extend({
   controllerName: 'admin/people',
@@ -6,13 +7,13 @@ export default Ember.Route.extend({
 
   serialize: function(model) {
     return {
-      team_identifier: model.get('urlIdentifier')
+      team_identifier: model.get(URL_IDENT_PROP_NAME),
     };
   },
   model: function(params) {
     const id = params.team_identifier,
       teams = this.modelFor('admin').get('teams'),
-      team = teams.findBy('urlIdentifier', id);
+      team = teams.findBy(URL_IDENT_PROP_NAME, id);
     if (team) {
       return team;
     } else {
@@ -39,14 +40,14 @@ export default Ember.Route.extend({
     changeFilter: function(filter) {
       this.transitionTo('admin.people', {
         queryParams: {
-          filter: filter
-        }
+          filter: filter,
+        },
       });
-    }
+    },
   },
 
   _resetController: function(team) {
     this.controller.set('people', []);
     this.controller.set('numPeople', team.get('numMembers'));
-  }
+  },
 });

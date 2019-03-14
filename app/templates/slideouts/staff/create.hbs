@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title='New Staff')
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action 'createStaff' newStaff

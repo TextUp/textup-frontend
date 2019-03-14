@@ -1,13 +1,13 @@
 {{#slideout-pane
     headerProps=(hash title='New Contact')
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action "finishNewContactSlideout")
         disablePrimary=(not (v-get newContact "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    direction=constants.SLIDEOUT.DIRECTION.LEFT
+    direction=(constant "SLIDEOUT.DIRECTION.LEFT")
     doClose=(route-action "cancelNewContactSlideout")
     forceKeepOpen=newContact.isSaving
     focusSelector=".start-focus" as |slideout|}}

@@ -1,4 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import * as TypeUtils from 'textup-frontend/utils/type';
 
 const { typeOf, copy, get } = Ember;
 
@@ -21,7 +23,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/compose',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelComposeSlideout() {
@@ -34,7 +36,7 @@ export default Ember.Mixin.create({
       // in the multi-select in the future.
       const contents = this.get('controller.composeMessage'),
         recipients = this.get('controller.composeRecipients').map(recipient => {
-          return get(recipient, 'constructor.modelName') ? recipient : get(recipient, 'identifier');
+          return TypeUtils.isAnyModel(recipient) ? recipient : get(recipient, 'identifier');
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
       return this.get('dataService')
@@ -59,7 +61,7 @@ export default Ember.Mixin.create({
     composeRemoveRecipient(recipient) {
       this.get('controller.composeRecipients').removeObject(recipient);
       this._checkComposeHasRecipients();
-    }
+    },
   },
 
   _initialComposeProps() {
@@ -68,5 +70,5 @@ export default Ember.Mixin.create({
   _checkComposeHasRecipients() {
     const controller = this.get('controller');
     controller.set('composeHasRecipients', controller.get('composeRecipients.length') > 0);
-  }
+  },
 });

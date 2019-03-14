@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title=(concat "Export records"))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action "finishExportSlideout")
@@ -16,12 +16,12 @@
             </label>
             {{#multi-toggle selectIndex=(if exportForEntirePhone 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
+                    color=(constant "COLOR.BRAND")
                     onSelect=(action (mut exportForEntirePhone) true)}}
                     all of {{stateManager.owner.name}}
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
+                    color=(constant "COLOR.LIGHT_BLUE")
                     onSelect=(action (mut exportForEntirePhone) false)}}
                     selected contacts and tags
                 {{/multi-toggle/item}}
@@ -65,12 +65,12 @@
             </label>
             {{#multi-toggle selectIndex=(if exportAsGrouped 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
+                    color=(constant "COLOR.BRAND")
                     onSelect=(action (mut exportAsGrouped) true)}}
                     as separate pages
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
+                    color=(constant "COLOR.LIGHT_BLUE")
                     onSelect=(action (mut exportAsGrouped) false)}}
                     all together ordered by timestamp
                 {{/multi-toggle/item}}

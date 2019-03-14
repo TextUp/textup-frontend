@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title=(if model.teams "Teams" "New Team"))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=teamsListHideAway.isOpen
         doPrimary=(route-action "createTeam" newTeam teamsListHideAway.actions.close)

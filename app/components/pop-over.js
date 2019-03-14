@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
@@ -7,21 +8,19 @@ import {
   hasMoreViewportSpaceOnTop,
   shouldAlignToLeftEdge,
   buildFloatingStyles,
-  buildDimensionStyles
+  buildDimensionStyles,
 } from 'textup-frontend/utils/bounds';
 
 const { computed, RSVP, run, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     doRegister: PropTypes.func,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
     onReposition: PropTypes.func,
     bodyClickWillClose: PropTypes.bool,
-    position: PropTypes.oneOfType([PropTypes.null, PropTypes.string])
+    position: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
   },
   getDefaultProps() {
     return { bodyClickWillClose: true };
@@ -67,8 +66,8 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
         open: this._open.bind(this),
         close: this._close.bind(this),
         toggle: this._toggle.bind(this),
-        reposition: this._reposition.bind(this)
-      }
+        reposition: this._reposition.bind(this),
+      },
     };
   }),
   _previousPosition: null,
@@ -149,7 +148,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
           _bodyAlignLeft: null,
           _bodyFloatStyles: null,
           _bodyDimesionStyles: null,
-          _closeCounter: counter
+          _closeCounter: counter,
         })
       );
     });
@@ -192,18 +191,17 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
           _bodyPositionTop: isTop,
           _bodyAlignLeft: alignLeft,
           _bodyFloatStyles: floatStyles,
-          _bodyDimesionStyles: dimensionStyles
+          _bodyDimesionStyles: dimensionStyles,
         });
       });
       resolve();
     });
   },
   _determineIsTop() {
-    const position = this.get('position'),
-      constants = this.get('constants');
-    if (position === constants.POP_OVER.POSITION.TOP) {
+    const position = this.get('position');
+    if (position === Constants.POP_OVER.POSITION.TOP) {
       return true;
-    } else if (position === constants.POP_OVER.POSITION.BOTTOM) {
+    } else if (position === Constants.POP_OVER.POSITION.BOTTOM) {
       return false;
     } else {
       return hasMoreViewportSpaceOnTop(this.element);
@@ -229,5 +227,5 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   },
   _repositionOnChange() {
     run.debounce(this, this._reposition, 500);
-  }
+  },
 });

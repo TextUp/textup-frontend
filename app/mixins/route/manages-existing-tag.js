@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -15,7 +16,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/tag/edit',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelExistingTagSlideout() {
@@ -36,7 +37,7 @@ export default Ember.Mixin.create({
     },
     onTagUndoDelete() {
       this._tryRollbackText();
-    }
+    },
   },
 
   _tryRollbackText() {
@@ -44,5 +45,5 @@ export default Ember.Mixin.create({
     if (editingTag) {
       editingTag.rollbackAttributes();
     }
-  }
+  },
 });

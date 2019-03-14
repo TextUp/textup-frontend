@@ -1,38 +1,36 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import DS from 'ember-data';
 
 const { get, merge } = Ember;
 
 export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
-  constants: Ember.inject.service(),
-
   attrs: {
     hasInactivePhone: { serialize: false },
-    phone: { deserialize: 'records', serialize: 'records' }
+    phone: { deserialize: 'records', serialize: 'records' },
   },
 
   serialize(snapshot) {
     const json = this._super(...arguments),
-      constants = this.get('constants'),
       rec1 = snapshot.record,
       data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : Object.create(null),
       doActions = [];
     switch (rec1.get('phoneAction')) {
-      case constants.ACTION.PHONE.CHANGE_NUMBER:
+      case Constants.ACTION.PHONE.CHANGE_NUMBER:
         doActions.pushObject(changeToNewNumber(data));
         break;
-      case constants.ACTION.PHONE.DEACTIVATE:
+      case Constants.ACTION.PHONE.DEACTIVATE:
         doActions.pushObject(deactivate());
         break;
-      case constants.ACTION.PHONE.TRANSFER:
-        doActions.pushObject(transfer(data, this.get('constants.MODEL.STAFF')));
+      case Constants.ACTION.PHONE.TRANSFER:
+        doActions.pushObject(transfer(data, Constants.MODEL.STAFF));
         break;
     }
     if (doActions.length) {
       json.phone = merge(json.phone || Object.create(null), { doPhoneActions: doActions });
     }
     return json;
-  }
+  },
 });
 
 function changeToNewNumber(data) {

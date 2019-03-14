@@ -1,4 +1,5 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -21,7 +22,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/future-message/create',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelNewScheduleMessageSlideout() {
@@ -39,7 +40,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/future-message/list',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     finishViewScheduledMessagesSlideout() {
@@ -60,7 +61,7 @@ export default Ember.Mixin.create({
       return this.get('dataService')
         .persist(fMessage)
         .then(() => callIfPresent(this, doClose));
-    }
+    },
   },
 
   _initialFutureMessageProps() {
@@ -71,5 +72,5 @@ export default Ember.Mixin.create({
     if (newFutureMessage) {
       newFutureMessage.rollbackAttributes();
     }
-  }
+  },
 });

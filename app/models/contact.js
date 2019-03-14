@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -33,8 +34,6 @@ const {
   });
 
 export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
-  constants: Ember.inject.service(),
-
   init: function() {
     this._super(...arguments);
     this.set('actions', []);
@@ -51,9 +50,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
 
   name: DS.attr('string', { defaultValue: '' }),
   note: DS.attr('string', { defaultValue: '' }),
-  status: DS.attr('string', {
-    defaultValue: model => model.get('constants.CONTACT.STATUS.ACTIVE'),
-  }),
+  status: DS.attr('string', { defaultValue: Constants.CONTACT.STATUS.ACTIVE }),
   numbers: DS.attr('collection', { defaultValue: () => [] }),
   phone: DS.belongsTo('phone'),
   unreadInfo: DS.attr(),
@@ -94,7 +91,7 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutu
     return `${name} ${numbers.join(', ')}`;
   }),
   intStatus: Ember.computed('status', function() {
-    const statuses = this.get('constants.CONTACT.STATUS');
+    const statuses = Constants.CONTACT.STATUS;
     switch (this.get('status')) {
       case statuses.UNREAD:
         return 0;

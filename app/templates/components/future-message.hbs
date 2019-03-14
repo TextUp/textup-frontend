@@ -16,7 +16,7 @@
 <div class="row text-center">
     <div class="xs-6-row-20 s-4-row-20 control-text border-r">
         <span class="badge bg-color bg-dark">
-            {{#if (eq message.type constants.FUTURE_MESSAGE.TYPE.TEXT)}}
+            {{#if (eq message.type (constant "FUTURE_MESSAGE.TYPE.TEXT"))}}
                 {{#tool-tip title='Send via text'}}
                     <span class="fa fa-paper-plane-o"></span>
                 {{/tool-tip}}

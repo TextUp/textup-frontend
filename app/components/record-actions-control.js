@@ -8,7 +8,7 @@ const { computed, tryInvoke, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     // read-only data attributes passed in
-    hasPersonalPhoneNumber: PropTypes.bool,
+    hasPersonalNumber: PropTypes.bool,
     hasItemsInRecord: PropTypes.bool,
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
@@ -25,10 +25,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     onAddNote: PropTypes.func,
     onCall: PropTypes.func,
     onText: PropTypes.func,
-    onScheduleMessage: PropTypes.func
+    onScheduleMessage: PropTypes.func,
   },
   getDefaultProps() {
-    return { audio: [], images: [], hasPersonalPhoneNumber: false, hasItemsInRecord: false };
+    return { audio: [], images: [], hasPersonalNumber: false, hasItemsInRecord: false };
   },
   classNames: 'record-actions-control',
 
@@ -59,7 +59,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     set(key, value) {
       this._onContentChange(value);
       return value;
-    }
+    },
   }),
   _previousHeight: null,
 
@@ -132,5 +132,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _scheduleMessage() {
     tryInvoke(this, 'onScheduleMessage');
-  }
+  },
 });

@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title="Edit Note")
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action "finishEditNoteSlideout")
@@ -12,7 +12,7 @@
         doSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
         showDelete=(not editingRecordNote.hasBeenDeleted)
         doMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "cancelEditNoteSlideout")
     forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
     {{form/record-note class="pad-t"
@@ -23,5 +23,5 @@
         onAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
         onRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
         onLocationError=(route-action "onLocationError")
-        readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
+        readOnly=(and (type/is-contact model) (not model.allowEdits))}}
 {{/slideout-pane}}

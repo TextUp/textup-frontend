@@ -1,19 +1,19 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { alias } = Ember.computed;
+const { computed } = Ember;
 
 export default Ember.Controller.extend({
-  constants: Ember.inject.service(),
   adminController: Ember.inject.controller('admin'),
 
-  pendingStaff: alias('adminController.pending'),
-  numPending: alias('adminController.numPending'),
+  pendingStaff: computed.alias('adminController.pending'),
+  numPending: computed.alias('adminController.numPending'),
 
   actions: {
     approve: function(staff) {
       staff.set('status', 'STAFF');
       if (staff.get('hasPhoneActionData')) {
-        staff.set('phoneAction', this.get('constants.ACTION.PHONE.CHANGE_NUMBER'));
+        staff.set('phoneAction', Constants.ACTION.PHONE.CHANGE_NUMBER);
       }
       this._handlePending(staff);
     },
@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
           resolve();
         }, this.get('dataService').buildErrorHandler(reject));
       });
-    }
+    },
   },
 
   _handlePending: function(staff) {
@@ -48,5 +48,5 @@ export default Ember.Controller.extend({
         const pending = this.get('pendingStaff').removeObject(staff);
         this.set('pendingStaff', Ember.copy(pending));
       });
-  }
+  },
 });

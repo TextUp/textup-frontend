@@ -1,12 +1,12 @@
 {{#if (or _contactsIsAlreadyArray _singleContactIsActive)}}
     <li tabindex='0' class='dropdown-item'
-        onclick={{action _onChange constants.CONTACT.STATUS.UNREAD}}>
+        onclick={{action _onChange (constant "CONTACT.STATUS.UNREAD")}}>
         Mark as unread
     </li>
 {{/if}}
 {{#if (or _contactsIsAlreadyArray (not _singleContactIsActive))}}
     <li tabindex='0' class='dropdown-item'
-        onclick={{action _onChange constants.CONTACT.STATUS.ACTIVE}}>
+        onclick={{action _onChange (constant "CONTACT.STATUS.ACTIVE")}}>
         {{#if _singleContactIsArchived}}
             Unarchive
         {{else if _singleContactIsBlocked}}
@@ -18,13 +18,13 @@
 {{/if}}
 {{#if (or _contactsIsAlreadyArray _singleContactIsUnread _singleContactIsActive)}}
     <li tabindex='0' class='dropdown-item'
-        onclick={{action _onChange constants.CONTACT.STATUS.ARCHIVED}}>
+        onclick={{action _onChange (constant "CONTACT.STATUS.ARCHIVED")}}>
         Archive
     </li>
 {{/if}}
 {{#if (or _contactsIsAlreadyArray (not _singleContactIsBlocked))}}
     <li tabindex='0' class='dropdown-item'
-        onclick={{action _onChange constants.CONTACT.STATUS.BLOCKED}}>
+        onclick={{action _onChange (constant "CONTACT.STATUS.BLOCKED")}}>
         Block
     </li>
 {{/if}}

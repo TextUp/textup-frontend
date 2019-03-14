@@ -2,13 +2,13 @@
     headerProps=(hash title=(if (gt sharingContacts.length 1)
         (concat 'Share (' sharingContacts.length ' selected)')
         (concat 'Sharing ' sharingContacts.firstObject.name)))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=contactAnySharingChange
         doPrimary=(route-action "finishContactSharingSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "cancelContactSharingSlideout") as |slideout|}}
     {{#if stateManager.shareCandidates.isFulfilled}}
         {{multi-toggle/share anyChanges=(mut contactAnySharingChange)

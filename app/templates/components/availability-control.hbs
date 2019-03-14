@@ -7,12 +7,12 @@
     {{#multi-toggle classNames='xs-row-2'
         selectIndex=(if entity.manualSchedule 0 1) as |toggle doRegister|}}
         {{#multi-toggle/item doRegister=doRegister
-            color=constants.COLOR.BRAND
+            color=(constant "COLOR.BRAND")
             onSelect=(action 'handleType' true)}}
             Manually
         {{/multi-toggle/item}}
         {{#multi-toggle/item doRegister=doRegister
-            color=constants.COLOR.LIGHT_BLUE
+            color=(constant "COLOR.LIGHT_BLUE")
             onSelect=(action 'handleType' false)}}
             By schedule
         {{/multi-toggle/item}}
@@ -28,12 +28,12 @@
         {{#multi-toggle classNames='xs-row-2'
             selectIndex=(if entity.isAvailable 0 1) as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
-                color=constants.COLOR.BRAND
+                color=(constant "COLOR.BRAND")
                 onSelect=(action 'handleManualAvailability' true)}}
                 Yes
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
-                color=constants.COLOR.LIGHT_BLUE
+                color=(constant "COLOR.LIGHT_BLUE")
                 onSelect=(action 'handleManualAvailability' false)}}
                 No
             {{/multi-toggle/item}}

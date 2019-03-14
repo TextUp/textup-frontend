@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { isArray } = Ember;
@@ -16,13 +17,13 @@ export default Ember.Mixin.create({
     startTagMembershipSlideout(contacts) {
       this.get('controller').setProperties({
         tagMembershipContacts: isArray(contacts) ? contacts : [contacts],
-        tagMembershipTags: this.get('stateManager.owner.phone.content.tags')
+        tagMembershipTags: this.get('stateManager.owner.phone.content.tags'),
       });
       this.send(
         'toggleSlideout',
         'slideouts/tag/membership',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelTagMembershipSlideout() {
@@ -38,7 +39,7 @@ export default Ember.Mixin.create({
           controller.get('tagMembershipContacts')
         )
         .then(() => this.send('cancelTagMembershipSlideout'));
-    }
+    },
   },
   _initialTagMembershipProps() {
     return { tagMembershipContacts: null, tagMembershipTags: null };
@@ -48,5 +49,5 @@ export default Ember.Mixin.create({
     if (isArray(tags)) {
       tags.forEach(tag => tag.clearMembershipChanges());
     }
-  }
+  },
 });

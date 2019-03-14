@@ -52,7 +52,7 @@
     <select name="contact-language" class="xs-row-3 form__input"
         onchange={{action (mut contact.language) value="target.value"}}
         disabled={{if (not contact.allowEdits) "disabled"}}>
-        {{#each constants.LANGUAGES as |_lang|}}
+        {{#each (constant "LANGUAGES") as |_lang|}}
             <option value={{_lang}}
                 selected={{if (eq _lang contact.language) "selected"}}>
                 {{capitalize (lowercase _lang) 1}}

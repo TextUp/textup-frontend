@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
 
@@ -5,7 +6,6 @@ const { isArray } = Ember;
 
 export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
   setupController: function(controller) {
@@ -20,7 +20,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/export/single',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     startMultipleExportSlideout(selectedRecordOwnersOrEvent) {
@@ -29,7 +29,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/export/multiple',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
 
@@ -66,7 +66,7 @@ export default Ember.Mixin.create({
     },
     exportRemoveRecordOwner(recordOwner) {
       this.get('controller.exportRecordOwners').removeObject(recordOwner);
-    }
+    },
   },
 
   _initializeProperties(controller, models) {
@@ -77,7 +77,7 @@ export default Ember.Mixin.create({
       exportEndDate: moment().toDate(),
       exportForEntirePhone: false,
       exportAsGrouped: false,
-      exportRecordOwners: isArray(models) ? models : []
+      exportRecordOwners: isArray(models) ? models : [],
     });
-  }
+  },
 });

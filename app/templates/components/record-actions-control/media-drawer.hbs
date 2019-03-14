@@ -30,7 +30,7 @@
         {{#if images}}
             {{photo-control classNames="record-actions-control__media-drawer"
                 images=images
-                imageDisplayComponent=constants.PHOTO_CONTROL.DISPLAY.GRID
+                imageDisplayComponent=(constant "PHOTO_CONTROL.DISPLAY.GRID")
                 onRemove=(action _onRemoveMedia)}}
         {{/if}}
     {{/if}}

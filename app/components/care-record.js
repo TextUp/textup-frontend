@@ -7,8 +7,6 @@ import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     // Properties
     // ----------
@@ -17,7 +15,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     canAddToRecord: PropTypes.bool,
     canModifyExistingInRecord: PropTypes.bool,
     nextFutureFire: PropTypes.oneOfType([PropTypes.null, PropTypes.date]),
-    personalPhoneNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    personalNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     // for displaying existing items
     recordClusters: PropTypes.arrayOf(PropTypes.instanceOf(RecordCluster)),
     numRecordItems: PropTypes.number,
@@ -56,7 +54,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     noRecordItemsMessage: PropTypes.string,
     noAddToRecordMessage: PropTypes.string,
     startCallMessage: PropTypes.string,
-    addNoteInPastMessage: PropTypes.string
+    addNoteInPastMessage: PropTypes.string,
   },
   getDefaultProps() {
     return {
@@ -65,8 +63,8 @@ export default Ember.Component.extend(PropTypesMixin, {
       recordClusters: [],
       noRecordItemsMessage: 'Nothing in the record yet!',
       noAddToRecordMessage: "You don't have permission to add to this record.",
-      startCallMessage: `Calling your personal phone at ${format(this.get('personalPhoneNumber'))}`,
-      addNoteInPastMessage: "Choose your note's place"
+      startCallMessage: `Calling your personal phone at ${format(this.get('personalNumber'))}`,
+      addNoteInPastMessage: "Choose your note's place",
     };
   },
   classNames: 'care-record',
@@ -84,7 +82,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     return { actions: { reset: () => this._tryResetScroll() } };
   }),
 
-  _hasPersonalPhoneNumber: computed.notEmpty('personalPhoneNumber'),
+  _hasPersonalNumber: computed.notEmpty('personalNumber'),
   _hasItemsInRecord: computed.notEmpty('recordClusters'),
 
   _hasStartedCall: false,
@@ -165,5 +163,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   _afterStartCall() {
     this.set('_hasStartedCall', true);
     this._tryResetScroll();
-  }
+  },
 });

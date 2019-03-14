@@ -3,7 +3,7 @@
     team.phone.content)}}
     <span class="badge">
         {{#tool-tip tagName='span'
-            side=constants.TOOLTIP.SIDE.RIGHT
+            side=(constant "TOOLTIP.SIDE.RIGHT")
             title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
             <span class="fa fa-phone"></span>
         {{/tool-tip}}
@@ -13,7 +13,7 @@
     <span class="badge">
         {{#tool-tip tagName='span'
             class='text-lighten'
-            side=constants.TOOLTIP.SIDE.RIGHT
+            side=(constant "TOOLTIP.SIDE.RIGHT")
             title='Has inactive phone'}}
             <span class="fa fa-phone"></span>
         {{/tool-tip}}

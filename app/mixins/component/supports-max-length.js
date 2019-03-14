@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -7,7 +8,7 @@ import {
   wrapElement,
   unwrapElement,
   insertElementsWithin,
-  removeElement
+  removeElement,
 } from 'textup-frontend/utils/element';
 
 const { assign, computed, run, typeOf } = Ember,
@@ -19,8 +20,6 @@ const { assign, computed, run, typeOf } = Ember,
   INDICATOR_POSITION_CLASS_ROOT = 'max-length__indicator--position';
 
 export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     maxLength: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     maxLengthPosition: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
@@ -29,14 +28,14 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
     // and the threshold is at 90, then we would show the indicator at length 90+ but not below 90
     showMaxLengthPercentThreshold: PropTypes.number,
     maxLengthContainerClass: PropTypes.string,
-    maxLengthIndicatorClass: PropTypes.string
+    maxLengthIndicatorClass: PropTypes.string,
   },
   getDefaultProps() {
     return assign(
       {
         showMaxLengthPercentThreshold: DEFAULT_PERCENT_THRESHOLD,
         maxLengthContainerClass: '',
-        maxLengthIndicatorClass: ''
+        maxLengthIndicatorClass: '',
       },
       this._super(...arguments)
     );
@@ -80,10 +79,9 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
   }),
   _originalMaxLengthPosition: null,
   _maxLengthPositionToClassName: computed(function() {
-    const constants = this.get('constants');
     return {
-      [constants.MAX_LENGTH.POSITION.TOP]: `${INDICATOR_POSITION_CLASS_ROOT}-top`,
-      [constants.MAX_LENGTH.POSITION.BOTTOM]: `${INDICATOR_POSITION_CLASS_ROOT}-bottom`
+      [Constants.MAX_LENGTH.POSITION.TOP]: `${INDICATOR_POSITION_CLASS_ROOT}-top`,
+      [Constants.MAX_LENGTH.POSITION.BOTTOM]: `${INDICATOR_POSITION_CLASS_ROOT}-bottom`,
     };
   }),
   _maxLengthPositionClass: computed(
@@ -91,8 +89,7 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
     'maxLengthPosition',
     function() {
       const positionMap = this.get('_maxLengthPositionToClassName'),
-        positionVal =
-          this.get('maxLengthPosition') || this.get('constants.MAX_LENGTH.POSITION.TOP');
+        positionVal = this.get('maxLengthPosition') || Constants.MAX_LENGTH.POSITION.TOP;
       return positionMap[positionVal];
     }
   ),
@@ -103,7 +100,7 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
       : DEFAULT_PERCENT_THRESHOLD;
   }),
   _maxLengthThresholdValue: computed('maxLength', '_showMaxLengthPercentThreshold', function() {
-    return this.get('maxLength') * this.get('_showMaxLengthPercentThreshold') / 100;
+    return (this.get('maxLength') * this.get('_showMaxLengthPercentThreshold')) / 100;
   }),
   _maxLengthIndicator: null,
 
@@ -199,5 +196,5 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
     // every time we update the max length indicator, also check to see if we should show
     // or hide the indicator while we are in the process of typing
     this._tryShowMaxLengthIndicator(indicatorEl);
-  }
+  },
 });

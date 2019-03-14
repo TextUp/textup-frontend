@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerProps=(hash title=(if model.phone.content.tags 'Tags' 'New Tag'))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=tagsListHideAway.isOpen
         doPrimary=(route-action "finishCreateTagInTagList")

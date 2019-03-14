@@ -74,30 +74,30 @@
             </div>
             {{#if hideShow.isOpen}}
                 <ul class="reset-list">
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ALL) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ALL")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ALL)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.ALL"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">All</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.UNREAD) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.UNREAD")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.UNREAD)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Unread</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ARCHIVED) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ARCHIVED")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ARCHIVED)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Archived</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.BLOCKED) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.BLOCKED")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.BLOCKED)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Blocked</p>
                         </div>
@@ -110,7 +110,7 @@
         doRegister=(action (mut contactsList))
         containerClass="bg-color bg-lightest"
         itemsClass="result-list"
-        direction=constants.INFINITE_SCROLL.DIRECTION.DOWN
+        direction=(constant "INFINITE_SCROLL.DIRECTION.DOWN")
         data=phone.contacts
         total=phone.totalNumContacts
         doLoad=(action doLoadMoreContacts)
@@ -119,13 +119,13 @@
             entityIdentifier=contact.identifier
             linkTarget=(if tag "main.tag.contact" "main.contacts.contact")
             linkParam=contact.id
-            bodyClass=(if contact.isUnread constants.CONTACT.FILTER.UNREAD)
+            bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
             isSelected=contact.isSelected
             onSelect=(route-action "toggleSelected" contact)}}
             {{entity-display/contact entity=contact}}
         {{/entity-display}}
     {{else}}
-        {{#if (and (eq filter constants.CONTACT.FILTER.ALL) (not tag))}}
+        {{#if (and (eq filter (constant "CONTACT.FILTER.ALL")) (not tag))}}
             <div class="no-results">
                 <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
                 <button type="button"

@@ -1,0 +1,27 @@
+import Ember from 'ember';
+import Constants from 'textup-frontend/constants';
+import * as TypeUtils from 'textup-frontend/utils/type';
+
+const { RSVP } = Ember;
+
+export default Ember.Service.extend({
+  dataService: Ember.inject.service(),
+  store: Ember.inject.service(),
+
+  loadStaffForSharing: function(phoneOwner) {
+    return new RSVP.Promise((resolve, reject) => {
+      const ownerId = phoneOwner.get('id');
+      this.get('store')
+        .query('staff', {
+          max: 100,
+          statuses: [Constants.STAFF.STATUS.ADMIN, Constants.STAFF.STATUS.STAFF],
+          teamId: TypeUtils.isTeam(phoneOwner) ? ownerId : null,
+          canShareStaffId: TypeUtils.isStaff(phoneOwner) ? ownerId : null,
+        })
+        .then(
+          results => resolve(results.toArray()),
+          this.get('dataService').buildErrorHandler(reject)
+        );
+    });
+  },
+});

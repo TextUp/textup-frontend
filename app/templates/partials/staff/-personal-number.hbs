@@ -24,7 +24,7 @@
                                 <span class="fa fa-times"></span>
                             </button>
                         </span>
-                        {{#phone-control/mutable-validated number=staff.personalPhoneNumber
+                        {{#phone-control/mutable-validated number=staff.personalNumber
                             controlClass='blend-in'
                             forceDefaultValidate=true
                             onValidateSuccess=(route-action 'persist' staff hideShow.actions.close)}}
@@ -36,7 +36,7 @@
                     <div tabindex="0"
                         onfocus={{hideShow.actions.open}}
                         onclick={{hideShow.actions.open}}>
-                        {{#phone-control number=staff.personalPhoneNumber
+                        {{#phone-control number=staff.personalNumber
                             showControl=true
                             controlClass='blend-in'}}
                         {{else}}

@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -19,8 +20,6 @@ const Validations = buildValidations({
   { computed, getWithDefault, tryInvoke, isArray, isPresent, get } = Ember;
 
 export default DS.Model.extend(Dirtiable, Validations, {
-  constants: Ember.inject.service(),
-
   // Overrides
   // ---------
 
@@ -49,7 +48,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   contactStatuses: computed.readOnly('_contactStatuses'),
 
   voice: DS.attr('string'),
-  language: DS.attr('string', { defaultValue: model => model.get('constants.DEFAULT.LANGUAGE') }),
+  language: DS.attr('string', { defaultValue: Constants.DEFAULT.LANGUAGE }),
 
   media: DS.belongsTo('media'), // hasOne
   requestVoicemailGreetingCall: DS.attr(),
@@ -65,8 +64,8 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // ------------------
 
   _contactStatuses: computed('contactsFilter', function() {
-    const filters = this.get('constants.CONTACT.FILTER'),
-      statuses = this.get('constants.CONTACT.STATUS'),
+    const filters = Constants.CONTACT.FILTER,
+      statuses = Constants.CONTACT.STATUS,
       thisFilter = this.get('contactsFilter') || '';
     switch (thisFilter) {
       case filters.UNREAD:
@@ -92,7 +91,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // -------
 
   resetContactsFilter() {
-    this.set('contactsFilter', this.get('constants.CONTACT.FILTER.ALL'));
+    this.set('contactsFilter', Constants.CONTACT.FILTER.ALL);
   },
 
   addContacts(contacts) {

@@ -77,11 +77,15 @@ export default Ember.Service.extend({
   // the current owner in the current application state
   // may be the logged-in user or a team that the user is on
   owner: null,
-  ownerIsTeam: computed.equal('owner.constructor.modelName', 'team'),
+  ownerIsTeam: computed('owner', function() {
+    return TypeUtils.isTeam(this.get("owner"));
+  })
   ownerAsTeam: computed('owner', 'ownerIsTeam', function() {
     return this.get('ownerIsTeam') ? this.get('owner') : null;
   }),
-  ownerIsOrg: computed.equal('owner.constructor.modelName', 'organization'),
+  ownerIsOrg: computed('owner', function() {
+    return TypeUtils.isOrg(this.get("owner"));
+  })
   ownerAsOrg: computed('owner', 'ownerIsOrg', function() {
     return this.get('ownerIsOrg') ? this.get('owner') : null;
   }),
@@ -137,7 +141,7 @@ export default Ember.Service.extend({
 
   _bindSocketEvents() {
     const socket = this.get('socket'),
-      channelName = this.get('authService.channelName');
+      channelName = this.get('authService.authUser.channelName');
     socket.connect({
       encrypted: true,
       authEndpoint: `${config.host}/v1/sockets`,

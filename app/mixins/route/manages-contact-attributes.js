@@ -1,9 +1,10 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { computed, isArray, run } = Ember;
 
 export default Ember.Mixin.create({
-  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
 
   setupController(controller) {
@@ -58,7 +59,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/contact/share',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelContactSharingSlideout() {
@@ -73,15 +74,6 @@ export default Ember.Mixin.create({
     },
   },
 
-  // Internal properties
-  // -------------------
-
-  _isViewingSingleContact: computed('controller.model.constructor.modelName', function() {
-    return (
-      this.get('controller.model.constructor.modelName') === this.get('constants.MODEL.CONTACT')
-    );
-  }),
-
   // Internal methods
   // ----------------
 
@@ -94,7 +86,7 @@ export default Ember.Mixin.create({
 
   // only want to observe status when we are viewing a SINGLE contact
   _tryStartObserveContactStatus() {
-    if (this.get('_isViewingSingleContact')) {
+    if (TypeUtils.isContact(this.get('controller.model'))) {
       // and add an observer for future changes to the status
       this.addObserver('controller.model.status', this, '_currentContactStatusObserver');
     }
@@ -110,12 +102,10 @@ export default Ember.Mixin.create({
   // the contact is also marked as `unread` but should be re-marked as `active`
   // since the user is already viewing the contact and reading the messages
   _tryCheckCurrentContactStatus() {
-    if (this.get('_isViewingSingleContact')) {
-      const contact = this.get('controller.model');
-      if (contact.get('status') === this.get('constants.CONTACT.STATUS.UNREAD')) {
-        contact.set('status', this.get('constants.CONTACT.STATUS.ACTIVE'));
-        this.get('dataService').persist(contact);
-      }
+    const contact = this.get('controller.model');
+    if (TypeUtils.isContact(contact) && contact.get('status') === Constants.CONTACT.STATUS.UNREAD) {
+      contact.set('status', Constants.CONTACT.STATUS.ACTIVE);
+      this.get('dataService').persist(contact);
     }
   },
 });

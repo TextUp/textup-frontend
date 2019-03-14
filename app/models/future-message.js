@@ -1,3 +1,5 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
+import Constants from 'textup-frontend/constants';
 import Dirtiable from '../mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -7,7 +9,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 const { computed, get, tryInvoke, getWithDefault } = Ember,
   Validations = buildValidations({
     type: validator('inclusion', {
-      in: model => Object.values(model.get('constants.FUTURE_MESSAGE.TYPE'))
+      in: Object.values(Constants.FUTURE_MESSAGE.TYPE),
     }),
     message: {
       description: 'Message',
@@ -15,9 +17,9 @@ const { computed, get, tryInvoke, getWithDefault } = Ember,
         validator('length', { max: 320 }),
         validator('has-any', {
           also: ['media.hasElements'],
-          description: 'message body, images, or audio recordings'
-        })
-      ]
+          description: 'message body, images, or audio recordings',
+        }),
+      ],
     },
     intervalSize: {
       disabled(model) {
@@ -25,7 +27,7 @@ const { computed, get, tryInvoke, getWithDefault } = Ember,
       },
       dependentKeys: ['isRepeating'],
       description: 'Repeat interval size in days',
-      validators: [validator('number', { allowString: true, gt: 0 })]
+      validators: [validator('number', { allowString: true, gt: 0 })],
     },
     repeatInterval: {
       disabled(model) {
@@ -33,7 +35,7 @@ const { computed, get, tryInvoke, getWithDefault } = Ember,
       },
       dependentKeys: ['isRepeating'],
       description: 'Repeat interval',
-      validators: [validator('number', { allowString: true, gt: 0 })]
+      validators: [validator('number', { allowString: true, gt: 0 })],
     },
     repeatCount: {
       disabled(model) {
@@ -45,15 +47,13 @@ const { computed, get, tryInvoke, getWithDefault } = Ember,
         validator('number', { allowBlank: true, allowString: true, gt: 0 }),
         validator('has-any', {
           also: ['endDate'],
-          description: 'number of times or end date to stop after'
-        })
-      ]
-    }
+          description: 'number of times or end date to stop after',
+        }),
+      ],
+    },
   });
 
 export default DS.Model.extend(Dirtiable, Validations, {
-  constants: Ember.inject.service(),
-
   // Overrides
   // ---------
 
@@ -82,16 +82,16 @@ export default DS.Model.extend(Dirtiable, Validations, {
   startDate: DS.attr('date', {
     defaultValue: model => {
       const momentObj = moment(),
-        defaultInterval = model.get('constants.DEFAULT.TIME_INTERVAL_IN_MINUTES');
+        defaultInterval = Constants.DEFAULT.TIME_INTERVAL_IN_MINUTES;
       return momentObj
         .minutes(Math.floor(momentObj.minutes() / defaultInterval) * defaultInterval)
         .toDate();
-    }
+    },
   }),
   hasEndDate: DS.attr('boolean', { defaultValue: false }),
   endDate: DS.attr('date'),
   type: DS.attr('string', {
-    defaultValue: model => model.get('constants.FUTURE_MESSAGE.TYPE.TEXT')
+    defaultValue: Constants.FUTURE_MESSAGE.TYPE.TEXT,
   }),
   language: DS.attr('string'),
   message: DS.attr('string'),
@@ -105,17 +105,16 @@ export default DS.Model.extend(Dirtiable, Validations, {
       return this.get('tag.content') ? this.get('tag') : this.get('contact');
     },
     set(key, value) {
-      const modelName = get(value || {}, 'constructor.modelName');
-      if (modelName === this.get('constants.MODEL.CONTACT')) {
+      if (TypeUtils.isContact(value)) {
         this.setProperties({ contact: value, tag: null });
         return this.get('contact');
-      } else if (modelName === this.get('constants.MODEL.TAG')) {
+      } else if (TypeUtils.isTag(value)) {
         this.setProperties({ contact: null, tag: value });
         return this.get('tag');
       } else {
         return value;
       }
-    }
+    },
   }),
 
   intervalSize: computed('_intervalSize', {
@@ -127,11 +126,11 @@ export default DS.Model.extend(Dirtiable, Validations, {
       if (!this.get('isDeleted') && !isNaN(size)) {
         this.setProperties({
           _repeatIntervalInDays: buildNewIntervalInDays(this.get('repeatInterval'), size),
-          _intervalSize: size
+          _intervalSize: size,
         });
       }
       return rawSize; // avoid NaN error messages that may happen with returning `size`
-    }
+    },
   }),
   repeatInterval: computed('_repeatInterval', {
     get() {
@@ -142,11 +141,11 @@ export default DS.Model.extend(Dirtiable, Validations, {
       if (!this.get('isDeleted') && !isNaN(interval)) {
         this.setProperties({
           _repeatIntervalInDays: buildNewIntervalInDays(interval, this.get('intervalSize')),
-          _repeatInterval: interval
+          _repeatInterval: interval,
         });
       }
       return rawInterval; // avoid NaN error messages that may happen with returning `interval`
-    }
+    },
   }),
 
   // Private Properties
@@ -156,9 +155,9 @@ export default DS.Model.extend(Dirtiable, Validations, {
     return this.get('_repeatIntervalInDays');
   }),
   _intervalSize: computed(function() {
-    return this.get('constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY');
+    return Constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY;
   }),
-  _repeatIntervalInDays: DS.attr('number')
+  _repeatIntervalInDays: DS.attr('number'),
 });
 
 function buildNewIntervalInDays(interval, intervalSize) {

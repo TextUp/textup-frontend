@@ -33,7 +33,7 @@
                     <select name="add-new-schedule-range" class="form-control"
                         onchange={{action (mut _newRangeDay) value="target.value"}}>
                         <option value="">Select day of week</option>
-                        {{#each constants.DAYS_OF_WEEK as |_day|}}
+                        {{#each (constant "DAYS_OF_WEEK") as |_day|}}
                             <option value={{_day}}
                                 selected={{if (eq _day _newRangeDay) "selected"}}>
                                 {{capitalize _day 1}}
@@ -55,7 +55,7 @@
     </div>
 {{/hide-show}}
 <div class="{{scheduleClass}}">
-    {{#each constants.DAYS_OF_WEEK as |_day|}}
+    {{#each (constant "DAYS_OF_WEEK") as |_day|}}
         <div class="margin-b">
             <p>
                 <b>{{capitalize _day 1}}</b>

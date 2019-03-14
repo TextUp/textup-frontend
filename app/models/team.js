@@ -1,6 +1,8 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
@@ -20,9 +22,7 @@ const { computed, tryInvoke, getWithDefault, assign } = Ember,
     )
   );
 
-export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
-  constants: Ember.inject.service(),
-
+export default DS.Model.extend(Dirtiable, Validations, HasUrlIdentifier, OwnsPhone, {
   // Overrides
   // ---------
 
@@ -52,18 +52,14 @@ export default DS.Model.extend(Dirtiable, Validations, OwnsPhone, {
   // ----------
 
   name: DS.attr('string'),
-  hexColor: DS.attr('string', { defaultValue: model => model.get('constants.COLOR.BRAND') }),
+  hexColor: DS.attr('string', { defaultValue: Constants.COLOR.BRAND }),
   numMembers: DS.attr('number'),
   org: DS.belongsTo('organization'),
   location: DS.belongsTo('location'),
-  type: computed.readOnly('constants.MODEL.TEAM'),
 
   actions: computed(() => []),
   hasActions: computed.notEmpty('actions'),
 
-  urlIdentifier: computed('name', function() {
-    return Ember.String.dasherize(this.get('name') || '');
-  }),
   transferFilter: computed('name', 'location.content.address', function() {
     const name = this.get('name'),
       address = this.get('location.content.address');

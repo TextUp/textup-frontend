@@ -10,7 +10,7 @@
             {{if entity.isAvailableNow 'currently available' 'currently not available'}}
         </p>
         <ul class="textup-list">
-            {{#each constants.DAYS_OF_WEEK as |_day|}}
+            {{#each (constant "DAYS_OF_WEEK") as |_day|}}
                 <li class="textup-list__item">
                     <i>{{capitalize _day 1}}</i>
                     {{#if (get entity.schedule.content _day)}}

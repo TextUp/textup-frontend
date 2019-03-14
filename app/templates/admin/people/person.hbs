@@ -33,7 +33,7 @@
                             onclick={{route-action 'toggleSlideout'
                             	'slideouts/team/membership'
                             	'admin.people.person'
-                                constants.SLIDEOUT.OUTLET.DETAIL}}>
+                                (constant "SLIDEOUT.OUTLET.DETAIL")}}>
 							{{#each person.teams as |team|}}
 				                {{color-badge classNames='clickable'
                                     text=team.name
@@ -66,7 +66,7 @@
                                         {{action "toggleSlideout"
                                             "slideouts/team/membership"
                                             "admin.people.person"
-                                            constants.SLIDEOUT.OUTLET.DETAIL}}>
+                                            (constant "SLIDEOUT.OUTLET.DETAIL")}}>
                                         Teams
                                         <span class="badge">
                                             {{person.teams.content.length}}
@@ -83,7 +83,7 @@
                                 {{action 'toggleSlideout'
 	                            	'slideouts/team/membership'
 	                            	'admin.people.person'
-                                    constants.SLIDEOUT.OUTLET.DETAIL}}>
+                                    (constant "SLIDEOUT.OUTLET.DETAIL")}}>
                                 Teams
                                 <span class="badge tint">
                                     {{person.teams.content.length}}

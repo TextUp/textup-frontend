@@ -1,13 +1,13 @@
 {{#slideout-pane
     headerProps=(hash title=(concat "Exporting " model.identifier))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
+    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
     footerProps=(hash
         showFooter=true
         doPrimary=(route-action "finishExportSlideout")
         disablePrimary=(or (not exportStartDate) (not exportEndDate))
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "cancelExportSlideout") as |slideout|}}
     <div class="form">
         <div class="form__group">

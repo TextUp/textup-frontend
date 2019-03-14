@@ -6,7 +6,6 @@ const { get } = Ember;
 
 export default Ember.Component.extend({
   authService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
   store: Ember.inject.service('store'),
 
@@ -37,7 +36,7 @@ export default Ember.Component.extend({
         this.get('authService')
           .authRequest({
             type: 'GET',
-            url: `${config.host}/v1/staff?search=${val}`
+            url: `${config.host}/v1/staff?search=${val}`,
           })
           .then(data => {
             const store = this.get('store'),
@@ -50,7 +49,7 @@ export default Ember.Component.extend({
             resolve(this._excludeOwner(models));
           }, this.get('dataService').buildErrorHandler(reject));
       });
-    }
+    },
   },
 
   // Helper methods
@@ -61,5 +60,5 @@ export default Ember.Component.extend({
       identProp = this.get('identityProperty'),
       ownerIdent = get(owner, identProp);
     return (array || []).filter(item => get(item, identProp) !== ownerIdent);
-  }
+  },
 });

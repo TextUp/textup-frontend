@@ -1,10 +1,11 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { computed, run } = Ember;
 
 export default Ember.Mixin.create({
   slideoutService: Ember.inject.service(),
-  slideoutOutlet: computed.alias('constants.SLIDEOUT.OUTLET.DEFAULT'),
+  slideoutOutlet: Constants.SLIDEOUT.OUTLET.DEFAULT,
 
   init() {
     this._super(...arguments);
@@ -29,7 +30,7 @@ export default Ember.Mixin.create({
     },
     closeSlideout() {
       this._closeSlideout(...arguments);
-    }
+    },
   },
 
   // Internal methods
@@ -55,7 +56,7 @@ export default Ember.Mixin.create({
     this.render(slideoutName, {
       into: slideoutService.getTemplateNameFromOutlet(outletName),
       controller: controllerName,
-      outlet: outletName
+      outlet: outletName,
     });
     run.scheduleOnce('afterRender', () => slideoutService.showForOutlet(outletName, slideoutName));
   },
@@ -66,5 +67,5 @@ export default Ember.Mixin.create({
     } else {
       slideoutService.hideForAll();
     }
-  }
+  },
 });

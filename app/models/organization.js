@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from '../mixins/model/dirtiable';
 import Ember from 'ember';
 import DS from 'ember-data';
@@ -8,7 +9,7 @@ const { isPresent, computed, RSVP } = Ember,
     name: { description: 'Name', validators: [validator('presence', true)] },
     location: {
       description: 'Location',
-      validators: [validator('presence', true), validator('belongs-to')]
+      validators: [validator('presence', true), validator('belongs-to')],
     },
     timeout: {
       description: 'Lock timeout',
@@ -16,9 +17,9 @@ const { isPresent, computed, RSVP } = Ember,
         validator('number', {
           allowBlank: true,
           gte: model => model.get('timeoutMin'),
-          lte: model => model.get('timeoutMax')
-        })
-      ]
+          lte: model => model.get('timeoutMax'),
+        }),
+      ],
     },
     awayMessageSuffix: {
       description: 'Message to add to end of all away messages',
@@ -26,15 +27,13 @@ const { isPresent, computed, RSVP } = Ember,
         validator('length', {
           allowNone: true,
           allowBlank: true,
-          max: model => model.get('awayMessageSuffixMaxLength')
-        })
-      ]
-    }
+          max: model => model.get('awayMessageSuffixMaxLength'),
+        }),
+      ],
+    },
   });
 
 export default DS.Model.extend(Dirtiable, Validations, {
-  constants: Ember.inject.service(),
-
   // Overrides
   // ---------
 
@@ -51,13 +50,13 @@ export default DS.Model.extend(Dirtiable, Validations, {
 
   status: DS.attr('string'),
   isRejected: computed('status', function() {
-    return this.get('status') === this.get('constants.ORGANIZATION.STATUS.REJECTED');
+    return this.get('status') === Constants.ORGANIZATION.STATUS.REJECTED;
   }),
   isPending: computed('status', function() {
-    return this.get('status') === this.get('constants.ORGANIZATION.STATUS.PENDING');
+    return this.get('status') === Constants.ORGANIZATION.STATUS.PENDING;
   }),
   isApproved: computed('status', function() {
-    return this.get('status') === this.get('constants.ORGANIZATION.STATUS.APPROVED');
+    return this.get('status') === Constants.ORGANIZATION.STATUS.APPROVED;
   }),
 
   teams: DS.hasMany('team'),
@@ -65,7 +64,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
     return DS.PromiseArray.create({
       promise: new RSVP.Promise((resolve, reject) => {
         this.get('teams').then(teams => resolve(teams.filterBy('isNew', false)), reject);
-      })
+      }),
     });
   }),
 
@@ -81,7 +80,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
         this.set('timeout', value * 1000);
       }
       return value;
-    }
+    },
   }),
   isTimeout15: computed.equal('timeoutInSeconds', 15),
   isTimeout30: computed.equal('timeoutInSeconds', 30),
@@ -89,5 +88,5 @@ export default DS.Model.extend(Dirtiable, Validations, {
   isTimeoutStandard: computed.or('isTimeout15', 'isTimeout30', 'isTimeout60'),
 
   awayMessageSuffix: DS.attr('string', { defaultValue: '' }),
-  awayMessageSuffixMaxLength: DS.attr('number', { defaultValue: 159 })
+  awayMessageSuffixMaxLength: DS.attr('number', { defaultValue: 159 }),
 });

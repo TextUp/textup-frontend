@@ -19,7 +19,7 @@
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color="#76c9ec"
-                onSelect=(action (mut owner.phoneAction) constants.ACTION.PHONE.CHANGE_NUMBER)}}
+                onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
                 Yes
             {{/multi-toggle/item}}
         {{/multi-toggle}}
@@ -37,8 +37,8 @@
         </div>
         {{#multi-toggle classNames="xs-row-3"
             selectIndex=(if (eq owner.phoneAction null) 0
-                (if (eq owner.phoneAction constants.ACTION.PHONE.CHANGE_NUMBER) 1
-                    (if (eq owner.phoneAction constants.ACTION.PHONE.TRANSFER) 2 3)))
+                (if (eq owner.phoneAction (constant "ACTION.PHONE.CHANGE_NUMBER")) 1
+                    (if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER")) 2 3)))
             wrapAround=true as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
                 color="#d3d3d3"
@@ -47,12 +47,12 @@
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color="#76c9ec"
-                onSelect=(action (mut owner.phoneAction) constants.ACTION.PHONE.CHANGE_NUMBER)}}
+                onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
                 Change Number
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color="#1BA5E0"
-                onSelect=(action (mut owner.phoneAction) constants.ACTION.PHONE.TRANSFER)}}
+                onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.TRANSFER"))}}
                 Transfer
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
@@ -62,14 +62,14 @@
             {{/multi-toggle/item}}
         {{/multi-toggle}}
     </div>
-    {{#if (eq owner.phoneAction constants.ACTION.PHONE.TRANSFER)}}
+    {{#if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER"))}}
         {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
             phoneOwner=owner
             selected=(mut owner.phoneActionData)
             classNames="form__group"}}
     {{else if (or
         (eq owner.phoneAction "deactivateBeforeConfirm")
-        (eq owner.phoneAction constants.ACTION.PHONE.DEACTIVATE))}}
+        (eq owner.phoneAction (constant "ACTION.PHONE.DEACTIVATE")))}}
         <div class="form__group">
             <div class="form__label form__label--multiline form__label--emphasize">
                 Deactivating a TextUp phone preserves information, but <span class="text-bold">you will lose the TextUp phone"s number</span>. Are you sure you want to deactivate?
@@ -82,7 +82,7 @@
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
                     color="#76c9ec"
-                    onSelect=(action (mut owner.phoneAction) constants.ACTION.PHONE.DEACTIVATE)}}
+                    onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.DEACTIVATE"))}}
                     Yes
                 {{/multi-toggle/item}}
             {{/multi-toggle}}
@@ -90,7 +90,7 @@
     {{/if}}
 {{/if}}
 
-{{#if (eq owner.phoneAction constants.ACTION.PHONE.CHANGE_NUMBER)}}
+{{#if (eq owner.phoneAction (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
     <div class="form__group">
         {{#single-select selected=owner.phoneActionData
             displayProperty="phoneNumber"

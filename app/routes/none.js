@@ -1,3 +1,4 @@
+import * as AppAccessUtils from 'textup-frontend/utils/app-access';
 import Ember from 'ember';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
@@ -5,21 +6,12 @@ import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 export default Ember.Route.extend(IsAuthenticated, RequiresSetup, {
   controllerName: 'main',
 
-  beforeModel: function() {
+  beforeModel() {
     this._super(...arguments);
-    const user = this.get('authService.authUser');
-    return user.get('isNone').then(isNone => {
-      const orgIsApproved = user.get('org.content.isApproved');
-      if (orgIsApproved) {
-        if (!isNone) {
-          this.transitionTo('main', user);
-        } else if (user.get('isAdmin')) {
-          this.transitionTo('admin');
-        }
-      }
-    });
+    // TODO will this result in an infinite loop?
+    AppAccessUtils.determineAppropriatePosition(this, this.get('authService'));
   },
-  afterModel: function() {
+  afterModel() {
     this.get('stateManager').set('owner', null);
-  }
+  },
 });

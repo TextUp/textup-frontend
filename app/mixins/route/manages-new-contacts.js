@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -15,7 +16,7 @@ export default Ember.Mixin.create({
         'toggleSlideout',
         'slideouts/contact/create',
         this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelNewContactSlideout() {
@@ -30,7 +31,7 @@ export default Ember.Mixin.create({
       return this.get('contactService')
         .persistNew(this.get('controller.newContact'), {
           displayedList: this.get('controller.contacts'),
-          currentFilter: this.get('controller.filter')
+          currentFilter: this.get('controller.filter'),
         })
         .then(() => {
           this.send('closeSlideout');
@@ -46,7 +47,7 @@ export default Ember.Mixin.create({
     },
     onRemoveNumber() {
       this.get('contactService').removeNumberDuplicate(this.get('controller.newContact'));
-    }
+    },
   },
 
   _tryRevertNewContact() {
@@ -54,5 +55,5 @@ export default Ember.Mixin.create({
     if (newContact) {
       newContact.rollbackAttributes();
     }
-  }
+  },
 });
