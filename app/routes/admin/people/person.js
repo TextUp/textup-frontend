@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  adminService: Ember.inject.service(),
+
   model(params) {
     const id = params.id;
     if (id) {
@@ -15,6 +17,10 @@ export default Ember.Route.extend({
     controller.set('person', model);
     controller.set('team', null);
   },
+  deactivate() {
+    this._super(...arguments);
+    this.get('adminService').clearEditingStaff();
+  },
 
   actions: {
     // use will transition so that current model is
@@ -22,6 +28,11 @@ export default Ember.Route.extend({
     willTransition() {
       this._super(...arguments);
       this.send('revert', this.get('currentModel'));
+      return true;
+    },
+    didTransition() {
+      this._super(...arguments);
+      this.get('adminService').setEditingStaff(this.get('currentModel.id'));
       return true;
     },
   },

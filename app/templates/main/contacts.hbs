@@ -115,10 +115,7 @@
         total=phone.totalNumContacts
         doLoad=(action doLoadMoreContacts)
         doRefresh=(action doRefreshContacts) as |contact|}}
-
-        <h1>{{get contact (constant "PROP_NAME.READABLE_IDENT")}}</h1>
-
-        {{!-- {{#entity-display class="result-item"
+        {{#entity-display class="result-item"
             entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
             linkTarget=(if tag "main.tag.contact" "main.contacts.contact")
             linkParam=contact.id
@@ -126,7 +123,7 @@
             isSelected=contact.isSelected
             onSelect=(route-action "toggleSelected" contact)}}
             {{entity-display/contact entity=contact}}
-        {{/entity-display}} --}}
+        {{/entity-display}}
     {{else}}
         {{#if (and (eq filter (constant "CONTACT.FILTER.ALL")) (not tag))}}
             <div class="no-results">

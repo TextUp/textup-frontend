@@ -7,7 +7,7 @@ const { tryInvoke } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     self: PropTypes.instanceOf(OwnerPolicy),
-    others: PropTypes.instanceOf(Ember.ArrayProxy),
+    others: PropTypes.array,
     onAvailabilityTypeChange: PropTypes.func,
     onManualAvailabilityChange: PropTypes.func,
     onScheduleAvailabilityChange: PropTypes.func,

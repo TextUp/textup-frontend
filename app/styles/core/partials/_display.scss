@@ -1,278 +1,278 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 hr {
-    margin: $padding 0;
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), $border-color, rgba(0, 0, 0, 0));
+  margin: $padding 0;
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), $border-color, rgba(0, 0, 0, 0));
 }
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 // from https://webaim.org/techniques/css/invisiblecontent/
 .sr-only {
-    position: absolute !important;
-    clip: rect(1px 1px 1px 1px);
-    clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
 }
 .clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 .link {
-    cursor: pointer;
-    text-decoration: underline;
+  cursor: pointer;
+  text-decoration: underline;
 }
 .no-select {
-    cursor: default;
-    user-select: none;
+  cursor: default;
+  user-select: none;
 
-    &.clickable {
-        cursor: pointer;
-    }
+  &.clickable {
+    cursor: pointer;
+  }
 }
 .selectable-text {
-    cursor: text;
-    user-select: text;
-    user-select: all;
+  cursor: text;
+  user-select: text;
+  user-select: all;
 }
 .no-space {
-    margin: 0 !important;
-    padding: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 @include spacing-tweaks(margin, 'margin');
 @include spacing-tweaks(padding, 'pad');
 .border-all {
-    border: 1px solid $border-color;
+  border: 1px solid $border-color;
 }
 @each $direction, $abbr in $directions-with-abbr {
-    .border-#{$abbr} {
-        border-#{$direction}: 1px solid $border-color;
-    }
+  .border-#{$abbr} {
+    border-#{$direction}: 1px solid $border-color;
+  }
 }
 .border-radius-all {
-    border-radius: $border-radius;
+  border-radius: $border-radius;
 }
 @each $corner, $abbr in $corners-with-abbr {
-    .border-radius-#{$abbr} {
-        border-#{$corner}-radius: $border-radius;
-    }
+  .border-radius-#{$abbr} {
+    border-#{$corner}-radius: $border-radius;
+  }
 }
 
 $bg-color-states: hover regular;
 @each $state in $bg-color-states {
-    $prefix: '';
-    $suffix: '';
+  $prefix: '';
+  $suffix: '';
+  @if ($state != 'regular') {
+    $prefix: '#{$state}-';
+    $suffix: ':#{$state}';
+  }
+  '.#{$prefix}bg-color#{$suffix}' {
     @if ($state != 'regular') {
-        $prefix: '#{$state}-';
-        $suffix: ':#{$state}';
+      transition: background-color 0.5s;
     }
-    '.#{$prefix}bg-color#{$suffix}' {
-        @if ($state != 'regular') {
-            transition: background-color 0.5s;
-        }
-        background-color: $bg-color;
+    background-color: $bg-color;
 
-        '&.#{$prefix}bg-brand#{$suffix}' {
-            background-color: $brand-color;
-            color: contrast-color($brand-color);
-        }
-        '&.#{$prefix}bg-brand-dark#{$suffix}' {
-            background-color: shade($brand-color);
-            color: contrast-color(shade($brand-color));
-        }
-        '&.#{$prefix}bg-dark#{$suffix}' {
-            background-color: shade($bg-color);
-        }
-        '&.#{$prefix}bg-darkest#{$suffix}' {
-            background-color: $bg-dark-color;
-        }
-        '&.#{$prefix}bg-light#{$suffix}' {
-            background-color: $bg-light-color;
-        }
-        '&.#{$prefix}bg-lightest#{$suffix}' {
-            background-color: $bg-lightest-color;
-        }
+    '&.#{$prefix}bg-brand#{$suffix}' {
+      background-color: $brand-color;
+      color: contrast-color($brand-color);
     }
+    '&.#{$prefix}bg-brand-dark#{$suffix}' {
+      background-color: shade($brand-color);
+      color: contrast-color(shade($brand-color));
+    }
+    '&.#{$prefix}bg-dark#{$suffix}' {
+      background-color: shade($bg-color);
+    }
+    '&.#{$prefix}bg-darkest#{$suffix}' {
+      background-color: $bg-dark-color;
+    }
+    '&.#{$prefix}bg-light#{$suffix}' {
+      background-color: $bg-light-color;
+    }
+    '&.#{$prefix}bg-lightest#{$suffix}' {
+      background-color: $bg-lightest-color;
+    }
+  }
 }
 .reset-list {
-    @extend %vertical-scroll;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+  @extend %vertical-scroll;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 // Centering
 // ---------
 
 .align-top {
-    vertical-align: top;
+  vertical-align: top;
 }
 .align-middle {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 .align-bottom {
-    vertical-align: bottom;
+  vertical-align: bottom;
 }
 .margin-center {
-    float: none !important;
-    margin: 0 auto;
+  float: none !important;
+  margin: 0 auto;
 }
 .relative-parent {
-    position: relative;
+  position: relative;
 }
 .v-center {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .v-center-right {
-    @extend .v-center;
-    right: 0;
+  @extend .v-center;
+  right: 0;
 }
 .v-center-left {
-    @extend .v-center;
-    left: 0;
+  @extend .v-center;
+  left: 0;
 }
 .pull-right {
-    @include v-center(right, $padding);
-    @extend .text-right;
+  @include v-center(right, $padding);
+  @extend .text-right;
 }
 .pull-right-to-edge {
-    @include v-center(right, 0);
-    @extend .text-right;
+  @include v-center(right, 0);
+  @extend .text-right;
 }
 .pull-right-to-edge {
-    @include v-center(right, 0);
-    @extend .text-right;
+  @include v-center(right, 0);
+  @extend .text-right;
 }
 .pull-left {
-    @include v-center(left, $padding);
+  @include v-center(left, $padding);
 }
 .pull-left-to-edge {
-    @include v-center(left, 0);
+  @include v-center(left, 0);
 }
 .pull-left-to-edge {
-    @include v-center(left, 0);
+  @include v-center(left, 0);
 }
 .center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 // Badges
 // ------
 
 .halo {
-    border-radius: 100%;
-    display: inline-block;
-    padding: (0.5 * $padding) (1 * $padding);
+  border-radius: 100%;
+  display: inline-block;
+  padding: (0.5 * $padding) (1 * $padding);
 
-    &.halo-sm {
-        padding: ($padding * 0.15) ($padding * 0.6);
-    }
+  &.halo-sm {
+    padding: ($padding * 0.15) ($padding * 0.6);
+  }
 }
 .badge {
-    @extend .text-ellipsis;
+  @extend .text-ellipsis;
 
-    box-sizing: border-box;
-    min-height: $badge-height;
-    max-width: 100%;
+  box-sizing: border-box;
+  min-height: $badge-height;
+  max-width: 100%;
 
-    color: $font-color;
-    background-color: $bg-color;
-    border-radius: $border-radius;
+  color: $font-color;
+  background-color: $bg-color;
+  border-radius: $border-radius;
 
-    border-width: 1px;
-    border-style: solid;
-    border-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
 
-    vertical-align: middle;
-    display: inline-block;
-    cursor: default;
+  vertical-align: middle;
+  display: inline-block;
+  cursor: default;
 
-    font-weight: $font-weight-bold;
-    line-height: $badge-height;
+  font-weight: $font-weight-bold;
+  line-height: $badge-height;
 
-    padding: 0 $badge-h-space;
-    margin-right: $badge-h-space;
+  padding: 0 $badge-h-space;
+  margin-right: $badge-h-space;
 
-    &--outline {
-        background-color: transparent;
-        border-color: $border-color;
-    }
+  &--outline {
+    background-color: transparent;
+    border-color: $border-color;
+  }
 
-    &.tint {
-        background-color: shade($bg-color);
-        color: contrast-color(shade($bg-color));
-    }
-    &.dark {
-        background-color: shade($bg-dark-color);
-        color: contrast-color(shade($bg-dark-color));
-    }
-    &.success {
-        background-color: $success-color;
-        color: contrast-color($success-color);
-    }
-    &.failed {
-        background-color: $danger-color;
-        color: contrast-color($danger-color);
-    }
-    &.clickable {
-        cursor: pointer;
-    }
-    .btn {
-        line-height: initial;
-    }
+  &.tint {
+    background-color: shade($bg-color);
+    color: contrast-color(shade($bg-color));
+  }
+  &.dark {
+    background-color: shade($bg-dark-color);
+    color: contrast-color(shade($bg-dark-color));
+  }
+  &.success {
+    background-color: $success-color;
+    color: contrast-color($success-color);
+  }
+  &.failed {
+    background-color: $danger-color;
+    color: contrast-color($danger-color);
+  }
+  &.clickable {
+    cursor: pointer;
+  }
+  .btn {
+    line-height: initial;
+  }
 }
 .clear-badge {
-    @extend .badge;
-    color: inherit;
-    background-color: transparent;
-    border-width: 0;
+  @extend .badge;
+  color: inherit;
+  background-color: transparent;
+  border-width: 0;
 }
 .badge-divider {
-    @extend .badge;
-    background-color: transparent;
-    border-radius: 0;
-    border-left: 1px solid $border-color;
-    padding: 0;
+  @extend .badge;
+  background-color: transparent;
+  border-radius: 0;
+  border-left: 1px solid $border-color;
+  padding: 0;
 }
 
 // Lists
 // -----
 
 .textup-list {
-    margin: 0;
-    list-style: none;
+  margin: 0;
+  list-style: none;
 
-    & & {
-        .textup-list__item:after {
-            background-color: transparent;
-        }
+  & & {
+    .textup-list__item:after {
+      background-color: transparent;
     }
+  }
 
-    &--columns-2 {
-        column-count: 2;
-        column-gap: 3em; // to enable bullet points to still show
+  &--columns-2 {
+    column-count: 2;
+    column-gap: 3em; // to enable bullet points to still show
+  }
+
+  &__item {
+    position: relative;
+
+    &:after {
+      position: absolute;
+      content: '';
+      height: 0.5em;
+      width: 0.5em;
+      top: 0.35em;
+      left: -1.5em;
+      border-radius: 100%;
+      border: 1px solid $brand-color;
+      background-color: $brand-color;
     }
-
-    &__item {
-        position: relative;
-
-        &:after {
-            position: absolute;
-            content: '';
-            height: 0.5em;
-            width: 0.5em;
-            top: 0.35em;
-            left: -1.5em;
-            border-radius: 100%;
-            border: 1px solid $brand-color;
-            background-color: $brand-color;
-        }
-    }
+  }
 }

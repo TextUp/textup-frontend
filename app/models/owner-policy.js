@@ -9,4 +9,5 @@ export default MF.Fragment.extend(Dirtiable, {
   name: DS.attr('string'),
   schedule: MF.fragment('schedule'),
   shouldSendPreviewLink: DS.attr('boolean'),
+  staffId: DS.attr('string'),
 });

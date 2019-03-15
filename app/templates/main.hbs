@@ -73,7 +73,7 @@
             {{#if stateManager.owner.phone.isFulfilled}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.self.schedule.isAvailableNow "success"}}"
+                        {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
                             <span>Availability</span>
@@ -82,12 +82,12 @@
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.self.schedule.isAvailableNow "success"}}"
+                        {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Availability"
                             classNames="btn-expand"}}
-                            {{#if stateManager.owner.phone.content.self.schedule.isAvailableNow}}
+                            {{#if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow")}}
                                 <span class="fa fa-calendar-check-o"></span>
                             {{else}}
                                 <span class="fa fa-calendar-times-o"></span>

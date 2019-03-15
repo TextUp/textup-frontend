@@ -102,6 +102,12 @@ export default DS.Model.extend(
       return isPresent(team.get('phone.content'));
     }),
 
+    allPhoneOwners: computed('teamsWithPhones.[]', function() {
+      const phoneOwners = this.get('phone.content.isActive') ? [this] : [];
+      phoneOwners.addObjects(this.get('teamsWithPhones'));
+      return phoneOwners;
+    }),
+
     // Methods
     // -------
 

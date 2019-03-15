@@ -5,8 +5,8 @@
 		<div class="row full-height">
 			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
                 full-height row ">
-                {{#link-to (if team 'admin.team' 'admin.people')
-                	classNames='pull-left'}}
+                {{#link-to (if team "admin.team" "admin.people")
+                	classNames="pull-left"}}
 					<span class="pad-all">
 						<span class="fa fa-chevron-left"></span>
 					</span>
@@ -14,8 +14,8 @@
             </div>
 			<div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
                 full-height contact-info
-                {{if person.hasTeams 'has-details'}}">
-				<div class='contact-summary'>
+                {{if person.hasTeams "has-details"}}">
+				<div class="contact-summary">
                     <div class="horizontal-items">
                         <span class="clear-badge no-space">
                             <h5>{{person.name}}</h5>
@@ -29,13 +29,13 @@
                 </div>
                 <div class="contact-details">
                     <div class="horizontal-items full-height">
-                        <span class='clickable display-l'
-                            onclick={{route-action 'toggleSlideout'
-                            	'slideouts/team/membership'
-                            	'admin.people.person'
+                        <span class="clickable display-l"
+                            onclick={{route-action "toggleSlideout"
+                            	"slideouts/team/membership"
+                            	"admin.people.person"
                                 (constant "SLIDEOUT.OUTLET.DETAIL")}}>
 							{{#each person.teams as |team|}}
-				                {{color-badge classNames='clickable'
+				                {{color-badge classNames="clickable"
                                     text=team.name
                                     color=team.hexColor}}
 				            {{/each}}
@@ -78,11 +78,11 @@
                             {{/pop-over}}
                         </span>
                     {{else}}
-                    	<span class='clear-badge no-space'>
-                            <button type='button' class='btn'
-                                {{action 'toggleSlideout'
-	                            	'slideouts/team/membership'
-	                            	'admin.people.person'
+                    	<span class="clear-badge no-space">
+                            <button type="button" class="btn"
+                                {{action "toggleSlideout"
+	                            	"slideouts/team/membership"
+	                            	"admin.people.person"
                                     (constant "SLIDEOUT.OUTLET.DETAIL")}}>
                                 Teams
                                 <span class="badge tint">
@@ -92,7 +92,7 @@
                         </span>
                     {{/if}}
                     <span class="clear-badge display-m display-l">
-                        {{#link-to (if team 'admin.team' 'admin.people')}}
+                        {{#link-to (if team "admin.team" "admin.people")}}
 							<span class="pad-all">
 								<span class="fa fa-times"></span>
 							</span>
@@ -103,13 +103,14 @@
 		</div>
     </div>
     <div class="section-body bg-color bg-lightest">
-    	{{#tab-container onChange=(route-action 'revert' person)
-    		animation='fade' as |tabContainer doRegister|}}
-			{{#tab-container/item doRegister=doRegister
-				title="Details"}}
+        {{#tab-container onChange=(route-action "revert" person)
+            animation="fade" as |tabContainer1|}}
+            {{#tab-container/item doRegister=tabContainer1.actions.register
+                onDestroy=tabContainer1.actions.unregister
+                title="Details"}}
                 <div class="form">
                     {{#with person as |staff|}}
-                        {{partial 'partials/staff/edit'}}
+                        {{partial "partials/staff/edit"}}
                     {{/with}}
                     {{#if person.isDirty}}
                         {{!-- separate if loops to prevent multiple-set deprecation --}}
@@ -118,57 +119,85 @@
                             (not codeDropdown.isOpen))}}
                             <div class="flex flex--justify-center flex--spacing-between">
                                 <div class="flex__item">
-                                    <button class="btn" type='button'
-                                        onclick={{route-action 'revert' person
+                                    <button class="btn" type="button"
+                                        onclick={{route-action "revert" person
                                             (action (mut person.phoneAction) null)}}>
                                         Cancel
                                     </button>
                                 </div>
                                 <div class="flex__item">
-                                    {{async-button classNames='btn btn-default'
-                                        disableWhen=(not (v-get person 'isValid'))
-                                        action=(route-action 'persistWithPhone' person)
-                                        default='Update'
-                                        pending='Updating...'}}
+                                    {{async-button classNames="btn btn-default"
+                                        disableWhen=(not (v-get person "isValid"))
+                                        action=(route-action "persistWithPhone" person)
+                                        default="Update"
+                                        pending="Updating..."}}
                                 </div>
                             </div>
                         {{/if}}
                     {{/if}}
                 </div>
-				<hr>
-				{{#with person as |staff|}}
-					{{partial 'partials/staff/code-with-confirm'}}
-					{{partial 'partials/staff/username-with-confirm'}}
-					{{partial 'partials/staff/password-with-confirm'}}
-				{{/with}}
-			{{/tab-container/item}}
-
-			{{#tab-container/item doRegister=doRegister
-				title="Default Availability"}}
-
-                {{!-- TODO do we remove this or do we build this out more?  --}}
-				{{availability-control class="margin-t"
-                    entity=person
-                    onTypeChange=(action (mut person.manualSchedule))
-                    onManualAvailabilityChange=(action (mut person.isAvailable))
-                    onScheduleAvailabilityChange=(action "replaceRange" target=person.schedule.content)}}
-				{{#if person.isDirty}}
-			        <div class="flex flex--justify-center flex--spacing-between">
-			            <div class="flex__item">
-			                <button class="btn" type='button'
-			                    onclick={{route-action 'revert' person}}>
-			                    Cancel
-			                </button>
-			            </div>
-			            <div class="flex__item">
-			            	{{async-button classNames='btn btn-default'
-			                    action=(route-action 'persist' person)
-			                    default='Update'
-			                    pending='Updating...'}}
-			            </div>
-			        </div>
-			    {{/if}}
-			{{/tab-container/item}}
-    	{{/tab-container}}
+                <hr>
+                {{#with person as |staff|}}
+                    {{partial "partials/staff/code-with-confirm"}}
+                    {{partial "partials/staff/username-with-confirm"}}
+                    {{partial "partials/staff/password-with-confirm"}}
+                {{/with}}
+            {{/tab-container/item}}
+            {{#if person.allPhoneOwners}}
+                {{#tab-container/item classNames="pad-all"
+                    doRegister=tabContainer1.actions.register
+                    onDestroy=tabContainer1.actions.unregister
+                    title=(concat "Availability (" person.allPhoneOwners.length " phones)")}}
+                    {{#tab-container classNames="flex__item tab-container--nav-outline"
+                        animation="fade" as |tabContainer2|}}
+                        {{#each person.allPhoneOwners as |phoneOwner|}}
+                            {{#tab-container/item classNames="pad-t flex flex--direction-vertical flex--align-stretch flex--spacing-between"
+                                doRegister=tabContainer2.actions.register
+                                onDestroy=tabContainer2.actions.unregister
+                                title=(concat phoneOwner.name " - " (phone-number phoneOwner.phone.content.number))}}
+                                {{#if phoneOwner.isDirty}}
+                                    <div class="flex__item flex flex--justify-center flex--spacing-between">
+                                        <div class="flex__item">
+                                            <button class="btn" type='button'
+                                            onclick={{route-action 'revert' phoneOwner}}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                        <div class="flex__item">
+                                            {{async-button classNames='btn btn-default'
+                                            action=(route-action 'persist' phoneOwner)
+                                            default='Update'
+                                            pending='Updating...'}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                {{availability-control
+                                    self=(owner-policy/self phoneOwner.phone.content person)
+                                    others=(owner-policy/others phoneOwner.phone.content person)
+                                    onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
+                                    onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
+                                    onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
+                                {{#if phoneOwner.isDirty}}
+                                    <div class="flex__item flex flex--justify-center flex--spacing-between">
+                                        <div class="flex__item">
+                                            <button class="btn" type='button'
+                                            onclick={{route-action 'revert' phoneOwner}}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                        <div class="flex__item">
+                                            {{async-button classNames='btn btn-default'
+                                            action=(route-action 'persist' phoneOwner)
+                                            default='Update'
+                                            pending='Updating...'}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            {{/tab-container/item}}
+                        {{/each}}
+                    {{/tab-container}}
+                {{/tab-container/item}}
+            {{/if}}
+        {{/tab-container}}
     </div>
 </div>

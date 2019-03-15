@@ -5,6 +5,8 @@ import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 const { assign, typeOf } = Ember;
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
+  adminService: Ember.inject.service(),
+
   attrs: {
     numMembers: { serialize: false },
     org: { serialize: 'ids' }, // org is passed as id only for teams to avoid circular json
@@ -14,6 +16,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   serialize(snapshot) {
     const json = this._super(...arguments),
       actions = snapshot.record.get('actions');
+    json.staffId = this.get('adminService.editingStaffId');
     if (typeOf(actions) === 'array') {
       json.doTeamActions = actions.map(convertToTeamAction);
     }

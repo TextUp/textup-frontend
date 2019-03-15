@@ -54,9 +54,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   allowSharingWithOtherTeams: DS.attr('boolean'),
 
   tags: DS.hasMany('tag'),
-
-  self: MF.fragment('owner-policy'),
-  others: MF.fragmentArray('owner-policy'),
+  policies: MF.fragmentArray('owner-policy'),
 
   totalNumContacts: '--',
   contacts: computed.readOnly('_sortedContacts'),

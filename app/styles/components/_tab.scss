@@ -36,38 +36,82 @@
 	width: 100%;
 	position: relative;
 }
-.tab-container .tab-container-nav-list {
-	width: 100%;
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-	white-space: nowrap;
 
-	.tab-container-nav-item {
+.tab-container {
+	&-nav-list {
+		width: 100%;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	&-nav-item {
 		@extend .text-ellipsis;
-		box-sizing: border-box;
 
+		position: relative;
+		display: inline-block;
+		padding: $spacing;
+		background-color: $color-white;
+		color: $color-brand-light;
+		border-radius: 0;
 		cursor: pointer;
 		text-align: center;
-		display: inline-block;
-		padding: $padding;
 		font-weight: $font-weight-bold;
-		border-top-left-radius: $border-radius;
-		border-top-right-radius: $border-radius;
 		min-width: 100px;
 		max-width: 100%;
 		border-bottom: 1px solid $border-color;
 		transition: all 0.5s;
 
-		&:hover:not(.active) {
+		&:after {
+			content: '';
+			position: absolute;
+			left: 50%;
+			bottom: 0;
+			transform: translateX(-50%);
+			width: 80%;
+			height: 3px;
+			border-radius: $border-radius;
+			background-color: $color-brand-light;
+			opacity: 0;
+			transition: opacity 0.1s;
+		}
+
+		&:hover {
 			background-color: $bg-color;
-			color: contrast-color($bg-color);
 		}
 		&.active {
-			background-color: $brand-color;
-			color: contrast-color($brand-color);
-			border-bottom: 1px solid $brand-color;
+			color: $color-brand-dark;
+
+			&:after {
+				opacity: 1;
+			}
+		}
+	}
+
+	&--nav-outline &-nav-item {
+		color: $color-brand-light;
+		border: 1px solid $color-brand-light;
+		border-right-width: 0;
+		border-radius: 0;
+
+		&:after {
+			display: none;
+		}
+		&:first-child {
+			border-top-left-radius: $border-radius;
+			border-bottom-left-radius: $border-radius;
+		}
+		&:last-child {
+			border-top-right-radius: $border-radius;
+			border-bottom-right-radius: $border-radius;
+			border-right-width: 1px;
+		}
+
+		&.active {
+			background-color: $color-seafoam;
+			color: $color-brand-dark;
+			border-color: $color-brand-light;
 		}
 	}
 }

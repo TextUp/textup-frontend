@@ -42,6 +42,7 @@ export default {
   MODEL: {
     CONTACT: 'contact',
     ORG: 'organization',
+    PHONE: 'phone',
     RECORD_CALL: 'record-call',
     RECORD_NOTE: 'record-note',
     RECORD_TEXT: 'record-text',

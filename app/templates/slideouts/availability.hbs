@@ -113,9 +113,9 @@
         </div>
     {{/if}}
     {{availability-control
-        self=model.phone.content.self
-        others=model.phone.content.others
-        onAvailabilityTypeChange=(action (mut model.phone.content.self.schedule.manual))
-        onManualAvailabilityChange=(action (mut model.phone.content.self.schedule.manualIsAvailable))
-        onScheduleAvailabilityChange=(action "replaceRange" target=model.phone.content.self.schedule)}}
+        self=(owner-policy/self model.phone.content authService.authUser)
+        others=(owner-policy/others model.phone.content authService.authUser)
+        onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
+        onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
+        onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
 {{/slideout-pane}}

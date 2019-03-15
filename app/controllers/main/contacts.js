@@ -37,21 +37,14 @@ export default Ember.Controller.extend({
         phone = this.get('phone');
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
       if (phone) {
-        const query = {
-          max: 20,
-          status: phone.get('contactStatuses'),
-          offset: phone.get('contacts.length'),
-        };
-        // right now only supports passing one id to the backend at a time.
-        // NOT both tag and team
-        if (tag) {
-          query.tagId = tag.get('id');
-          delete query.status; // ignore filter if viewing a tag
-        } else if (team) {
-          query.teamId = team.get('id');
-        }
         this.get('store')
-          .query('contact', query)
+          .query('contact', {
+            max: 20,
+            status: phone.get('contactStatuses'),
+            offset: phone.get('contacts.length'),
+            tagId: tag ? tag.get('id') : null,
+            teamId: team ? team.get('id') : null,
+          })
           .then(results => {
             phone.set('totalNumContacts', results.get('meta.total'));
             phone.addContacts(results.toArray());
