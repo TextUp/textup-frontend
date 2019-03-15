@@ -4,6 +4,7 @@ const { tryInvoke } = Ember;
 
 export default Ember.Mixin.create({
   tagService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -24,13 +25,17 @@ export default Ember.Mixin.create({
       );
     },
     cancelNewTagSlideout() {
+      this.get('tutorialService').startCompleteTask('createTag');
       this.send('closeSlideout');
       this._tryRevertNewTag();
     },
     finishNewTagSlideout() {
+      this.get('tutorialService').startCompleteTask('createTag');
       return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
-        .then(() => this.send('closeSlideout'));
+        .then(() => {
+          this.send('closeSlideout');
+        });
     },
 
     startTagListSlideout() {
@@ -53,10 +58,12 @@ export default Ember.Mixin.create({
       this._tryRevertNewTag();
     },
     cancelCreateTagInTagList() {
+      this.get('tutorialService').startCompleteTask('createTag');
       this._tryRevertNewTag();
       this._tryCloseTagsListHideAway();
     },
     finishCreateTagInTagList() {
+      this.get('tutorialService').startCompleteTask('createTag');
       return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => this._tryCloseTagsListHideAway());

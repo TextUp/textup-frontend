@@ -3378,9 +3378,9 @@ ember-router-service-polyfill@^1.0.3:
   dependencies:
     ember-cli-babel "^6.8.2"
 
-ember-shepherd@2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/ember-shepherd/-/ember-shepherd-2.0.9.tgz#84a6a058b00488376857348cbb8ee769ecf8c477"
+ember-shepherd@2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/ember-shepherd/-/ember-shepherd-2.2.1.tgz#817663e201634f3c3c7855ab8164d71586ac3233"
   dependencies:
     ember-cli-babel "^5.1.6"
 

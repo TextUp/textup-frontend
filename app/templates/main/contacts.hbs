@@ -107,43 +107,51 @@
             {{/if}}
         {{/hide-show}}
     {{/if}}
-    {{#infinite-scroll classNames='section-body bg-color bg-dark'
-        doRegister=(action (mut _contactsList))
-        containerClass='bg-color bg-lightest'
-        itemsClass='result-list'
-        direction='down'
-        data=contacts
-        total=numContacts
-        doLoad=(action 'loadMore')
-        doRefresh=(action 'refresh') as |contact|}}
-        {{#entity-display class="result-item"
-            entityIdentifier=contact.identifier
-            linkTarget=(if tag 'main.tag.contact' 'main.contacts.contact')
-            linkParam=contact.id
-            bodyClass=(if contact.isUnread 'unread')
-            isSelected=contact.isSelected
-            onSelect=(route-action 'toggleSelected' contact)}}
-            {{entity-display/contact entity=contact}}
-        {{/entity-display}}
-    {{else}}
-        {{#if (and (eq filter "all") (not tag))}}
-            <div class="no-results">
-                <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
-                <button type="button"
-                    class="btn-link"
-                    onclick={{route-action "startNewContactSlideout"}}>
-                    Create contact
-                </button>
-            </div>
-        {{else if tag}}
-            <div class="no-results">
-                No contacts have been added to
-                <span class="text-bold">{{tag.name}}</span>
-                yet.
-            </div>
-        {{else}}
-            <div class="no-results">No contacts match this criteria.</div>
-        {{/if}}
-    {{/infinite-scroll}}
+
+    <div class="section-body flex flex--align-stretch flex--direction-vertical">
+      {{#infinite-scroll classNames='flex__item flex__item--grow bg-color bg-dark'
+          doRegister=(action (mut _contactsList))
+          containerClass='bg-color bg-lightest'
+          itemsClass='result-list'
+          direction='down'
+          data=contacts
+          total=numContacts
+          doLoad=(action 'loadMore')
+          doRefresh=(action 'refresh') as |contact|}}
+          {{#entity-display class="result-item"
+              entityIdentifier=contact.identifier
+              linkTarget=(if tag 'main.tag.contact' 'main.contacts.contact')
+              linkParam=contact.id
+              bodyClass=(if contact.isUnread 'unread')
+              isSelected=contact.isSelected
+              onSelect=(route-action 'toggleSelected' contact)}}
+              {{entity-display/contact entity=contact}}
+          {{/entity-display}}
+      {{else}}
+          {{#if (and (eq filter "all") (not tag))}}
+              <div class="no-results">
+                  <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
+                  <button type="button"
+                      class="btn-link"
+                      onclick={{route-action "startNewContactSlideout"}}>
+                      Create contact
+                  </button>
+              </div>
+          {{else if tag}}
+              <div class="no-results">
+                  No contacts have been added to
+                  <span class="text-bold">{{tag.name}}</span>
+                  yet.
+              </div>
+          {{else}}
+              <div class="no-results">No contacts match this criteria.</div>
+          {{/if}}
+      {{/infinite-scroll}}
+      <div class="section-footer flex__item flex__item--no-shrink">
+        {{tour-components/task-manager
+          doRegister=(action (mut tutorialService.taskManager))
+          firstIncompleteTask=tutorialService.firstIncompleteTask}}
+      </div>
+    </div>
 </div>
 {{outlet}}

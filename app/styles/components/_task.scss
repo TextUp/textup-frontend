@@ -1,0 +1,130 @@
+.task-manager {
+  overflow: none;
+
+  &__title {
+    padding: 0.5em 0.25em 0.5em 1em;
+    background: #3f86b3;
+
+    &__text {
+      color: #ffffff;
+    }
+    &__button {
+      padding: 0.5em !important;
+      min-width: 0 !important;
+    }
+
+    &--fa {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  &__content {
+    padding: $padding;
+  }
+
+  &__status-dot {
+    font-size: 0.5em;
+    padding-right: 0.5em;
+    &--complete {
+      color: #50a5d9;
+    }
+    &--incomplete {
+      color: #c4c4c4;
+    }
+  }
+}
+
+.task-step {
+  color: #505050;
+
+  &__button {
+    border: 1px solid #3f86b3;
+    border-radius: 5px;
+    padding: 0.5em 1.5em;
+
+    &--skip {
+      color: #4789b4;
+      background: #ffffff;
+    }
+    &--show-me {
+      color: #ffffff;
+      background: #3f86b3;
+      margin-left: 0.8em;
+    }
+    &--container {
+      padding-top: $padding;
+    }
+  }
+
+  &--text {
+    font-size: 0.875em;
+    margin: 0.3em 0em;
+  }
+
+  &--title {
+    font-size: 1em;
+    font-weight: 800;
+  }
+
+  &--complete {
+    text-align: center;
+
+    &--icon {
+      border: 6px solid #767676;
+      border-radius: 8px;
+      font-size: 5em;
+      padding: 0.05em;
+      margin: 0.1em;
+      color: #4789b4;
+    }
+  }
+}
+
+.task-element {
+  &__should-animate-pulse {
+    position: relative;
+
+    &:after {
+      opacity: 0.3;
+      position: absolute;
+      content: '';
+      width: 0;
+      height: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      background-color: $color-brand;
+      border: 1px solid white;
+      border-radius: 100%;
+
+      animation-name: pulse-size;
+      animation-duration: 2s;
+      animation-iteration-count: 1;
+      animation-timing-function: ease;
+    }
+  }
+}
+
+@keyframes pulse-size {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  25% {
+    width: 2.5em;
+    height: 2.5em;
+  }
+  50% {
+    width: 0;
+    height: 0;
+  }
+  75% {
+    width: 2.5em;
+    height: 2.5em;
+  }
+  100% {
+    width: 0;
+    height: 0;
+  }
+}

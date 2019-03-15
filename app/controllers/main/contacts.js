@@ -1,8 +1,13 @@
 import Ember from 'ember';
 
-const { computed: { alias }, run } = Ember;
+const {
+  computed: { alias },
+  run
+} = Ember;
 
 export default Ember.Controller.extend({
+  tutorialService: Ember.inject.service(),
+
   mainController: Ember.inject.controller('main'),
 
   queryParams: ['filter'],

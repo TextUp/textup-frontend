@@ -1,0 +1,28 @@
+{{#if shouldShow}}
+  <div class='display-xs display-s display-m'>
+    {{yield}}
+    <p>
+      {{hintText}}
+    </p>
+  </div>
+  <div class='display-l'>
+    {{#if dot}}
+      {{#pop-over doRegister=(action (mut _popOver)) focusOnOpen=false bodyClickWillClose=false}}
+        <div class={{if hasBlock "hint--has-block"}}>
+          <div class='hint__dot' onclick={{_popOver.actions.toggle}}></div>
+          {{yield}}
+        </div>
+      {{else}}
+        {{tour-components/hint-drawer hintTitle=hintTitle hintText=hintText closeWindowFunction=_popOver.actions.toggle}}
+      {{/pop-over}}
+    {{else if focus}}
+      {{#pop-over doRegister=(action (mut _popOver)) focusOnOpen=false bodyClickWillClose=false closeWithOverlay=false verticalPosition=verticalPosition}}
+        {{yield}}
+      {{else}}
+        {{tour-components/hint-drawer hintTitle=hintTitle hintText=hintText closeWindowFunction=_popOver.actions.toggle closeButton=false}}
+      {{/pop-over}}
+    {{/if}}
+  </div>
+{{else}}
+  {{yield}}
+{{/if}}

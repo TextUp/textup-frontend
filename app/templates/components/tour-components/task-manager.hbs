@@ -1,0 +1,56 @@
+{{#hide-show as |hideShow|}}
+  <div class="task-manager__title flex">
+    <h5 class="task-manager__title__text flex__item flex__item--grow">
+      {{#if hideShow.isOpen}}
+        Getting Started
+      {{else}}
+        Step {{firstIncompleteTask.stepNumber}}: {{firstIncompleteTask.title}}
+      {{/if}}
+    </h5>
+    <div class="flex__item">
+        <button type="button"
+            class="btn btn-plain btn-expand btn-default task-manager__title__button"
+            onclick={{hideShow.actions.toggle}}>
+            {{#if hideShow.isOpen}}
+                <span class="fa fa-minus-circle task-manager__title--fa"></span>
+            {{else}}
+                <span class="fa fa-plus-circle task-manager__title--fa"></span>
+            {{/if}}
+        </button>
+    </div>
+    <div class="flex__item">
+      <button type="button"
+          class="btn btn-plain btn-expand btn-default task-manager__title__button"
+          onclick={{_publicAPI.actions.closeTaskManager}}>
+            <span class="fa fa-times-circle task-manager__title--fa"></span>
+      </button>
+    </div>
+  </div>
+  <div class="task-manager__content {{if hideShow.isOpen '' 'hidden'}}">
+    {{#tour-components/task-step
+      doRegister=(action (mut _taskStep))
+      id=firstIncompleteTask.id
+      stepNumber=firstIncompleteTask.stepNumber
+      title=firstIncompleteTask.title
+      complete=firstIncompleteTask.status
+      text=firstIncompleteTask.text
+      openBeforePulse=firstIncompleteTask.openBeforePulse
+      elementToPulse=firstIncompleteTask.elementToPulse
+      openBeforePulseMobile=firstIncompleteTask.openBeforePulseMobile
+      elementToPulseMobile=firstIncompleteTask.elementToPulseMobile
+      completeTask=_publicAPI.actions.finishCompleteTask}}
+      <div class="task-manager__status-dot--container">
+        {{#each tutorialService.tasks as |task|}}
+          <span class="fa fa-circle task-manager__status-dot task-manager__status-dot--{{if task.status "complete" "incomplete"}}"></span>
+        {{/each}}
+      </div>
+    {{/tour-components/task-step}}
+    {{#if (not tutorialService.firstIncompleteTask)}}
+    <button type="button"
+        class="btn btn-plain btn-expand task-manager__title__button"
+        onclick={{_publicAPI.actions.resetTasks}}>
+          Reset Tasks
+    </button>
+    {{/if}}
+  </div>
+{{/hide-show}}

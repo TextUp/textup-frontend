@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
   contactService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -34,6 +35,7 @@ export default Ember.Mixin.create({
         })
         .then(() => {
           this.send('closeSlideout');
+          this.get('tutorialService').startCompleteTask('addContact');
           this.get('controller').set('newContact', null);
         });
     },

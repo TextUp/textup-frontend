@@ -7,6 +7,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   constants: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController: function(controller) {
     this._super(...arguments);
@@ -34,6 +35,7 @@ export default Ember.Mixin.create({
     },
 
     cancelExportSlideout() {
+      this.get('tutorialService').startCompleteTask('exportMessage');
       this.send('closeSlideout');
     },
     finishExportSlideout() {
@@ -44,6 +46,8 @@ export default Ember.Mixin.create({
         exportRecordOwners = controller.get('exportForEntirePhone')
           ? [] // pass no record owners if we want to export entire phone
           : controller.get('exportRecordOwners');
+
+      this.get('tutorialService').startCompleteTask('exportMessage');
 
       return new Ember.RSVP.Promise((resolve, reject) => {
         this.get('recordItemService')

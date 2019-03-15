@@ -1,0 +1,26 @@
+@include mq($until: mobileLandscape) {
+  $container-height: 75vh;
+
+  .tour-managed #container {
+    height: $container-height;
+  }
+
+  .shepherd-content {
+    border-radius: 0 !important;
+    height: 100vh - $container-height;
+    margin: 0 !important;
+
+    &:before {
+      content: none !important;
+    }
+  }
+  #shepherdOverlay {
+    display: none;
+  }
+  .shepherd-mobile-tour {
+    top: auto !important;
+    bottom: 0px !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+}

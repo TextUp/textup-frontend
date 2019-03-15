@@ -103,6 +103,6 @@ export default Ember.Service.extend({
     }
   },
   POP_OVER: {
-    POSITION: { TOP: 'top', BOTTOM: 'bottom' }
+    POSITION: { TOP: 'top', BOTTOM: 'bottom', LEFT: 'left', RIGHT: 'right' }
   }
 });

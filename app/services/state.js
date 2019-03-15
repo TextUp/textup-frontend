@@ -147,14 +147,12 @@ export default Ember.Service.extend({
         }
       }
     });
-    Ember.RSVP
-      .all([
-        socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
-        socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
-        socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
-        socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this))
-      ])
-      .catch(this.get('dataService').buildErrorHandler());
+    Ember.RSVP.all([
+      socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
+      socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
+      socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
+      socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this))
+    ]).catch(this.get('dataService').buildErrorHandler());
   },
   _unbindSocketEvents() {
     this.get('socket').disconnect();

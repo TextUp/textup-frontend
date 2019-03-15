@@ -22,6 +22,7 @@
 {{/if}}
 <div class="form__group">
     <label class="form__label" for="Name">Name</label>
+    {{#tour-components/hint hintId='testHint1' type='focus'}}
     {{input value=contact.name
         validateObj=contact
         validateField='name'
@@ -29,6 +30,7 @@
         disabled=(if (not contact.allowEdits) 'disabled')
         type="text" placeholder="Name" class="form__input"
         autocorrect="off"}}
+      {{/tour-components/hint}}
 </div>
 <div class="form__group">
     <label class="form__label" for="Note">Note</label>

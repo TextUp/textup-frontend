@@ -169,24 +169,24 @@ test('checking viewport space horizontally', function(assert) {
 });
 
 test('floating and dimension style invalid inputs', function(assert) {
-  assert.deepEqual(BoundUtils.buildFloatingStyles(), []);
+  assert.deepEqual(BoundUtils.buildVerticalFloatingStyles(), []);
   assert.deepEqual(
-    BoundUtils.buildFloatingStyles('not bool', 'not bool', 'not obj', 'not obj'),
+    BoundUtils.buildVerticalFloatingStyles('not bool', 'not bool', 'not obj', 'not obj'),
     []
   );
   assert.deepEqual(
-    BoundUtils.buildFloatingStyles(true, true, {}, {}),
+    BoundUtils.buildVerticalFloatingStyles(true, true, {}, {}),
     [],
     'objects need to have getBoundingClientRect function'
   );
 
-  assert.deepEqual(BoundUtils.buildDimensionStyles(), []);
+  assert.deepEqual(BoundUtils.buildVerticalDimensionStyles(), []);
   assert.deepEqual(
-    BoundUtils.buildDimensionStyles('not bool', 'not bool', 'not obj', 'not obj'),
+    BoundUtils.buildVerticalDimensionStyles('not bool', 'not bool', 'not obj', 'not obj'),
     []
   );
   assert.deepEqual(
-    BoundUtils.buildDimensionStyles(true, true, {}, {}),
+    BoundUtils.buildVerticalDimensionStyles(true, true, {}, {}),
     [],
     'objects need to have getBoundingClientRect function'
   );
@@ -197,8 +197,20 @@ test('building floating and dimension styles for top/left', function(assert) {
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
-  let floatingStyles = BoundUtils.buildFloatingStyles.call(this, true, true, triggerEl, bodyEl);
-  let dimensionStyles = BoundUtils.buildDimensionStyles.call(this, true, true, triggerEl, bodyEl);
+  let floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    true,
+    true,
+    triggerEl,
+    bodyEl
+  );
+  let dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    true,
+    true,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 0, 'no max dimensions because no overflow');
@@ -215,8 +227,14 @@ test('building floating and dimension styles for top/left', function(assert) {
 
   triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   bodyEl = { scrollWidth: 200, scrollHeight: 600 };
-  floatingStyles = BoundUtils.buildFloatingStyles.call(this, true, true, triggerEl, bodyEl);
-  dimensionStyles = BoundUtils.buildDimensionStyles.call(this, true, true, triggerEl, bodyEl);
+  floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(this, true, true, triggerEl, bodyEl);
+  dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    true,
+    true,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 1, 'has vertical overflow');
@@ -238,8 +256,14 @@ test('building floating and dimension styles for top/left', function(assert) {
 
   triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   bodyEl = { scrollWidth: 2000, scrollHeight: 600 };
-  floatingStyles = BoundUtils.buildFloatingStyles.call(this, true, true, triggerEl, bodyEl);
-  dimensionStyles = BoundUtils.buildDimensionStyles.call(this, true, true, triggerEl, bodyEl);
+  floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(this, true, true, triggerEl, bodyEl);
+  dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    true,
+    true,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 2, 'both vertical and horizontal overflow');
@@ -268,8 +292,20 @@ test('building floating and dimension styles for top/left', function(assert) {
 test('building floating and dimension styles for top/right', function(assert) {
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
-  let floatingStyles = BoundUtils.buildFloatingStyles.call(this, true, false, triggerEl, bodyEl);
-  let dimensionStyles = BoundUtils.buildDimensionStyles.call(this, true, false, triggerEl, bodyEl);
+  let floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    true,
+    false,
+    triggerEl,
+    bodyEl
+  );
+  let dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    true,
+    false,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 0);
@@ -286,8 +322,20 @@ test('building floating and dimension styles for top/right', function(assert) {
 
   triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   bodyEl = { scrollWidth: 2000, scrollHeight: 1000 };
-  floatingStyles = BoundUtils.buildFloatingStyles.call(this, true, false, triggerEl, bodyEl);
-  dimensionStyles = BoundUtils.buildDimensionStyles.call(this, true, false, triggerEl, bodyEl);
+  floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    true,
+    false,
+    triggerEl,
+    bodyEl
+  );
+  dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    true,
+    false,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 2, 'overflow both directions');
@@ -319,8 +367,20 @@ test('building floating and dimension styles for bottom/left', function(assert) 
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
-  let floatingStyles = BoundUtils.buildFloatingStyles.call(this, false, true, triggerEl, bodyEl);
-  let dimensionStyles = BoundUtils.buildDimensionStyles.call(this, false, true, triggerEl, bodyEl);
+  let floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    false,
+    true,
+    triggerEl,
+    bodyEl
+  );
+  let dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    false,
+    true,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 0);
@@ -337,8 +397,20 @@ test('building floating and dimension styles for bottom/left', function(assert) 
 
   triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   bodyEl = { scrollWidth: 2000, scrollHeight: 1000 };
-  floatingStyles = BoundUtils.buildFloatingStyles.call(this, false, true, triggerEl, bodyEl);
-  dimensionStyles = BoundUtils.buildDimensionStyles.call(this, false, true, triggerEl, bodyEl);
+  floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    false,
+    true,
+    triggerEl,
+    bodyEl
+  );
+  dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    false,
+    true,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 2, 'overflow both directions');
@@ -369,8 +441,20 @@ test('building floating and dimension styles for bottom/right', function(assert)
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
-  let floatingStyles = BoundUtils.buildFloatingStyles.call(this, false, false, triggerEl, bodyEl);
-  let dimensionStyles = BoundUtils.buildDimensionStyles.call(this, false, false, triggerEl, bodyEl);
+  let floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    false,
+    false,
+    triggerEl,
+    bodyEl
+  );
+  let dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    false,
+    false,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 0);
@@ -387,8 +471,20 @@ test('building floating and dimension styles for bottom/right', function(assert)
 
   triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   bodyEl = { scrollWidth: 2000, scrollHeight: 1000 };
-  floatingStyles = BoundUtils.buildFloatingStyles.call(this, false, false, triggerEl, bodyEl);
-  dimensionStyles = BoundUtils.buildDimensionStyles.call(this, false, false, triggerEl, bodyEl);
+  floatingStyles = BoundUtils.buildVerticalFloatingStyles.call(
+    this,
+    false,
+    false,
+    triggerEl,
+    bodyEl
+  );
+  dimensionStyles = BoundUtils.buildVerticalDimensionStyles.call(
+    this,
+    false,
+    false,
+    triggerEl,
+    bodyEl
+  );
 
   assert.equal(floatingStyles.length, 2);
   assert.equal(dimensionStyles.length, 2, 'overflow both directions');

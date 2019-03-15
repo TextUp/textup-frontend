@@ -5,8 +5,14 @@
     {{if _isOpening 'pop-over__body--opening'}}
     {{if _isClosing 'pop-over__body--closing'}}
     {{if _publicAPI.isOpen 'pop-over__body--open'}}
-    {{if _bodyPositionTop 'pop-over__body--position-top' 'pop-over__body--position-bottom'}}
-    {{if _bodyAlignLeft 'pop-over__body--align-left' 'pop-over__body--align-right'}}">
+    {{if _bodyPositionTop 'pop-over__body--position-top'}}
+    {{if _bodyPositionBottom 'pop-over__body--position-bottom'}}
+    {{if _bodyPositionRight 'pop-over__body--position-right'}}
+    {{if _bodyPositionLeft 'pop-over__body--position-left'}}
+    {{if _bodyAlignTop 'pop-over__body--align-top'}}
+    {{if _bodyAlignBottom 'pop-over__body--align-bottom'}}
+    {{if _bodyAlignRight 'pop-over__body--align-right'}}
+    {{if _bodyAlignLeft 'pop-over__body--align-left'}}">
     <div class="pop-over__body__floating-container" style={{_safeBodyFloatStyles}}>
         <div class="pop-over__body__dimension-container" style={{_safeBodyDimensionStyles}}>
             <div class="pop-over__body__contents"
@@ -17,7 +23,9 @@
             </div>
         </div>
     </div>
-    <div class="pop-over__body__overlay"
-        onclick={{action _close}}
-        ontouchend={{action _close}}></div>
+    {{#if closeWithOverlay}}
+      <div class="pop-over__body__overlay"
+          onclick={{action _close}}
+          ontouchend={{action _close}}></div>
+    {{/if}}
 </div>
