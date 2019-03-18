@@ -1,5 +1,5 @@
-import Constants from 'textup-frontend/constants';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import humanId from 'npm:human-id';
@@ -15,6 +15,7 @@ export default Ember.Route.extend(
   RequiresSetup,
   SupportsFeedbackSlideout,
   {
+    adminService: Ember.inject.service(),
     slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
     beforeModel() {
@@ -36,7 +37,9 @@ export default Ember.Route.extend(
     },
     setupController(controller, org) {
       this._super(...arguments);
-      this._loadPending(org);
+      this.get('adminService')
+        .loadPendingStaff(org.get('id'))
+        .then(({ pending, numPending }) => controller.setProperties({ pending, numPending }));
     },
     redirect(model, transition) {
       this._super(...arguments);
@@ -65,7 +68,7 @@ export default Ember.Route.extend(
           'newStaff',
           this.store.createRecord('staff', {
             org: this.get('currentModel'),
-            status: 'STAFF',
+            status: Constants.STAFF.STATUS.STAFF,
             password: humanId({ separator: '-', capitalize: false }),
           })
         );
@@ -167,17 +170,13 @@ export default Ember.Route.extend(
         const isTransfer = withPhone.get('phoneAction') === Constants.ACTION.PHONE.TRANSFER,
           data = withPhone.get('phoneActionData'),
           targetId = isTransfer ? get(data, 'id') : null,
-          // if transfer, one of 'staff' or 'team', see phone-serializer.js mixin for
-          // how this type is transformed into what is accepted by the backend
-          targetClass = isTransfer ? get(data, 'type') : null;
+          targetClass = isTransfer ? get(data, Constants.PROP_NAME.MODEL_NAME) : null;
         return this.get('dataService')
           .persist(withPhone)
           .then(() => {
             if (targetId && targetClass) {
               return this.store
-                .findRecord(targetClass, targetId, {
-                  reload: true,
-                })
+                .findRecord(targetClass, targetId, { reload: true })
                 .then(() => callIfPresent(this, then));
             } else {
               callIfPresent(this, then);
@@ -196,17 +195,6 @@ export default Ember.Route.extend(
           this.controller.notifyPropertyChange('people');
           updatedPeople.forEach(per => per.set('isSelected', false));
         });
-    },
-    _loadPending(org) {
-      this.store
-        .query('staff', {
-          organizationId: org.get('id'),
-          status: [Constants.STAFF.STATUS.PENDING],
-        })
-        .then(success => {
-          this.controller.set('pending', success.toArray());
-          this.controller.set('numPending', success.get('meta.total'));
-        }, this.get('dataService').buildErrorHandler());
     },
   }
 );

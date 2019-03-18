@@ -59,7 +59,7 @@ export default Ember.Controller.extend({
     return new Ember.RSVP.Promise((resolve, reject) => {
       const org = this.get('stateManager.ownerAsOrg'),
         team = this.get('team');
-      this.store
+      this.get('store')
         .query('staff', {
           offset,
           status: this.get('statuses'),

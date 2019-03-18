@@ -112,10 +112,12 @@
             You have connected a personal phone number to your account. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">an away message will be sent</span> as if you were not available. <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>Please add a personal phone number to your account.</span>
         </div>
     {{/if}}
-    {{availability-control
-        self=(owner-policy/self model.phone.content authService.authUser)
-        others=(owner-policy/others model.phone.content authService.authUser)
-        onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
-        onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
-        onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
+    {{#if (owner-policy/self model.phone.content authService.authUser)}}
+        {{availability-control
+            self=(owner-policy/self model.phone.content authService.authUser)
+            others=(owner-policy/others model.phone.content authService.authUser)
+            onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
+            onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
+            onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
+    {{/if}}
 {{/slideout-pane}}

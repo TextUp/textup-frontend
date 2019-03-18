@@ -4,6 +4,8 @@ import Ember from 'ember';
 const { computed } = Ember;
 
 export default Ember.Controller.extend({
+  adminService: Ember.inject.service(),
+  numberService: Ember.inject.service(),
   adminController: Ember.inject.controller('admin'),
 
   pendingStaff: computed.alias('adminController.pending'),
@@ -24,18 +26,14 @@ export default Ember.Controller.extend({
     },
     loadMore() {
       return new Ember.RSVP.Promise((resolve, reject) => {
-        const query = Object.create(null),
-          pending = this.get('pendingStaff');
-        query.organizationId = this.get('stateManager.ownerAsOrg.id');
-        query.status = ['pending'];
-        if (pending.length) {
-          query.offset = pending.length;
-        }
-        this.store.query('staff', query).then(success => {
-          pending.pushObjects(success.toArray());
-          this.set('numPending', success.get('meta.total'));
-          resolve();
-        }, this.get('dataService').buildErrorHandler(reject));
+        const pendingStaff = this.get('pendingStaff');
+        this.get('adminService')
+          .loadPendingStaff(this.get('stateManager.ownerAsOrg.id'), pendingStaff.get('length'))
+          .then(({ pending, numPending }) => {
+            pendingStaff.pushObjects(pending);
+            this.set('numPending', numPending);
+            resolve();
+          }, this.get('dataService').buildErrorHandler(reject));
       });
     },
   },

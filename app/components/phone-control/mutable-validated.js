@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   // Injected services
   // -----------------
 
-  verifyNumberService: Ember.inject.service(),
+  numberService: Ember.inject.service(),
 
   // Computed Properties
   // -------------------
@@ -27,15 +27,15 @@ export default Ember.Component.extend({
     verifyNew(num) {
       tryInvoke(this, 'onClick', [num]);
       tryInvoke(this, 'onValidateStart', [num]);
-      this.get('verifyNumberService')
-        .start(num)
+      this.get('numberService')
+        .startVerify(num)
         .then(() => this.set('_newNumber', num));
     },
     completeVerify(validationCode, num) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         tryInvoke(this, 'onValidate', [num]);
-        this.get('verifyNumberService')
-          .finish(num, validationCode)
+        this.get('numberService')
+          .finishVerify(num, validationCode)
           .then(() => {
             this.set('number', num);
             this.set('_newNumber', num);

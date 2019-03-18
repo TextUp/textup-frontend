@@ -2,11 +2,7 @@ import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 
 export function tryFindPhoneOwnerFromUrl(authUser, urlIdent) {
-  if (urlIdent === authUser.get(Constants.PROP_NAME.URL_IDENT)) {
-    return authUser;
-  } else {
-    return authUser.get('teamsWithPhones').findBy(Constants.PROP_NAME.URL_IDENT, urlIdent);
-  }
+  return authUser.get('allActivePhoneOwners').findBy(Constants.PROP_NAME.URL_IDENT, urlIdent);
 }
 
 export function isActivePhoneOwner(phoneOwner) {
@@ -24,21 +20,23 @@ export function determineAppropriatePosition(thisRoute, authService) {
   if (phoneOwner) {
     thisRoute.transitionTo('main', phoneOwner);
   } else if (canStaffAccessAdminDashboard(authUser)) {
-    thisRoute.transitionTo('admin');
+    transitionIfNotAlreadyThere(thisRoute, 'admin');
   } else {
-    thisRoute.transitionTo('none');
+    transitionIfNotAlreadyThere(thisRoute, 'none');
   }
 }
 
 // Helpers
 // -------
 
-function tryFindFirstActivePhoneOwnerFromStaff(authUser) {
-  if (authUser.get('phone.content.isActive')) {
-    return authUser;
-  } else {
-    return authUser.get('teamsWithPhones').findBy('phone.content.isActive', true);
+function transitionIfNotAlreadyThere(thisRoute, targetRouteName) {
+  if (thisRoute && thisRoute.get('routeName').indexOf(targetRouteName) === -1) {
+    thisRoute.transitionTo(targetRouteName);
   }
+}
+
+function tryFindFirstActivePhoneOwnerFromStaff(authUser) {
+  return authUser.get('allActivePhoneOwners').findBy('phone.content.isActive', true);
 }
 
 function canStaffAccessAdminDashboard(authUser) {

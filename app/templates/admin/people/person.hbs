@@ -143,14 +143,14 @@
                     {{partial "partials/staff/password-with-confirm"}}
                 {{/with}}
             {{/tab-container/item}}
-            {{#if person.allPhoneOwners}}
+            {{#if person.allActivePhoneOwners}}
                 {{#tab-container/item classNames="pad-all"
                     doRegister=tabContainer1.actions.register
                     onDestroy=tabContainer1.actions.unregister
-                    title=(concat "Availability (" person.allPhoneOwners.length " phones)")}}
+                    title=(concat "Availability (" person.allActivePhoneOwners.length " phones)")}}
                     {{#tab-container classNames="flex__item tab-container--nav-outline"
                         animation="fade" as |tabContainer2|}}
-                        {{#each person.allPhoneOwners as |phoneOwner|}}
+                        {{#each person.allActivePhoneOwners as |phoneOwner|}}
                             {{#tab-container/item classNames="pad-t flex flex--direction-vertical flex--align-stretch flex--spacing-between"
                                 doRegister=tabContainer2.actions.register
                                 onDestroy=tabContainer2.actions.unregister
@@ -171,12 +171,14 @@
                                         </div>
                                     </div>
                                 {{/if}}
-                                {{availability-control
-                                    self=(owner-policy/self phoneOwner.phone.content person)
-                                    others=(owner-policy/others phoneOwner.phone.content person)
-                                    onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
-                                    onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
-                                    onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
+                                {{#if (owner-policy/self phoneOwner.phone.content person)}}
+                                    {{availability-control
+                                        self=(owner-policy/self phoneOwner.phone.content person)
+                                        others=(owner-policy/others phoneOwner.phone.content person)
+                                        onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
+                                        onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
+                                        onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
+                                {{/if}}
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">

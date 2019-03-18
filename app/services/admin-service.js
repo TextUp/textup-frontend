@@ -1,8 +1,12 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { computed } = Ember;
+const { computed, RSVP } = Ember;
 
 export default Ember.Service.extend({
+  store: Ember.inject.service(),
+  dataService: Ember.inject.service(),
+
   // Properties
   // ----------
 
@@ -16,6 +20,19 @@ export default Ember.Service.extend({
   },
   clearEditingStaff() {
     this.set('_editingStaffId', null);
+  },
+  loadPendingStaff(orgId, offset = 0) {
+    return new RSVP.Promise((resolve, reject) => {
+      this.get('store')
+        .query('staff', {
+          organizationId: orgId,
+          status: [Constants.STAFF.STATUS.PENDING],
+          offset,
+        })
+        .then(success => {
+          resolve({ pending: success.toArray(), numPending: success.get('meta.total') });
+        }, this.get('dataService').buildErrorHandler(reject));
+    });
   },
 
   // Internal properties

@@ -30,28 +30,6 @@ export default Ember.Service.extend({
       .off(config.events.auth.clear);
   },
 
-  // Actions
-  // -------
-
-  actions: {
-    doNumbersSearch(search = '') {
-      return new Ember.RSVP.Promise((resolve, reject) => {
-        const auth = this.get('authService');
-        auth
-          .authRequest({
-            type: 'GET',
-            url: `${config.host}/v1/numbers?search=${search}`,
-          })
-          .then(({ numbers = [] }) => {
-            numbers.forEach(num => {
-              num.phoneNumber = cleanNumber(num.phoneNumber);
-            });
-            resolve(numbers);
-          }, this.get('dataService').buildErrorHandler(reject));
-      });
-    },
-  },
-
   // Routing
   // -------
 

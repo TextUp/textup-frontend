@@ -12,6 +12,4 @@
     <label class="form__label" for="Your Name">Team Color</label>
     {{color-control color=newTeam.hexColor}}
 </div>
-{{#with newTeam as |owner|}}
-    {{partial 'partials/change-number'}}
-{{/with}}
+{{form/phone-owner-actions owner=newTeam}}

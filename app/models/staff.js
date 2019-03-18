@@ -68,10 +68,6 @@ export default DS.Model.extend(
     name: DS.attr('string'),
     channelName: DS.attr('string'),
 
-    // TODO remove because we use microservices now
-    // // usually blank, for account creation
-    // captcha: DS.attr('string', { defaultValue: '' }),
-
     email: DS.attr('string'),
     org: DS.belongsTo('organization'),
     isSelected: false,
@@ -98,13 +94,10 @@ export default DS.Model.extend(
 
     teams: DS.hasMany('team'),
     hasTeams: computed.notEmpty('teams'),
-    teamsWithPhones: computed.filter('teams', function(team) {
-      return isPresent(team.get('phone.content'));
-    }),
 
-    allPhoneOwners: computed('teamsWithPhones.[]', function() {
+    allActivePhoneOwners: computed('phone.content.isActive', '_teamsWithPhones.[]', function() {
       const phoneOwners = this.get('phone.content.isActive') ? [this] : [];
-      phoneOwners.addObjects(this.get('teamsWithPhones'));
+      phoneOwners.addObjects(this.get('_teamsWithPhones'));
       return phoneOwners;
     }),
 
@@ -131,5 +124,12 @@ export default DS.Model.extend(
         this.set('status', Constants.STAFF.STATUS.BLOCKED);
       }
     },
+
+    // Internal properties
+    // -------------------
+
+    _teamsWithPhones: computed.filter('teams', function(team) {
+      return isPresent(team.get('phone.content.isActive'));
+    }),
   }
 );

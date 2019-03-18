@@ -1,4 +1,9 @@
 export default {
+  REQUEST_METHOD: {
+    GET: 'GET',
+    POST: 'POST',
+    PUT: 'PUT',
+  },
   PROP_NAME: {
     MEDIA_ID: 'uid',
     MODEL_NAME: 'constructor.modelName',
@@ -7,8 +12,13 @@ export default {
     SHARING_PERMISSION: 'permission',
     SHARING_PHONE_ID_BUCKETS: 'sharedWith',
     URL_IDENT: 'urlIdentifier',
+    AVAILABLE_NUMBER: 'phoneNumber',
+    NEW_NUMBER_ID: 'sid',
   },
-  MIME_TYPE: { PDF: 'application/pdf' },
+  MIME_TYPE: {
+    PDF: 'application/pdf',
+    JSON: 'application/json',
+  },
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
     LARGEST_MAX: 5000,

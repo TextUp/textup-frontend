@@ -1,5 +1,6 @@
+import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import config from '../../config/environment';
 
 const { alias } = Ember.computed;
 
@@ -22,7 +23,7 @@ export default Ember.Controller.extend({
     search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         Ember.$.ajax({
-          type: 'GET',
+          type: Constants.REQUEST_METHOD.GET,
           url: `${config.host}/v1/public/organizations?search=${val}`,
         }).then(data => {
           const orgs = data.organizations,

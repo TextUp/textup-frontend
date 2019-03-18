@@ -1,23 +1,27 @@
 import config from 'textup-frontend/config/environment';
-import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import Organization from 'textup-frontend/models/organization';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { get } = Ember;
+const { get, computed } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
   authService: Ember.inject.service(),
   dataService: Ember.inject.service(),
-  store: Ember.inject.service('store'),
+  store: Ember.inject.service(),
 
-  data: defaultIfAbsent([]),
-  phoneOwner: null,
-  selected: null,
-  identityProperty: defaultIfAbsent('id'),
+  propTypes: {
+    data: PropTypes.EmberObject,
+    phoneOwner: PropTypes.EmberObject,
+    org: PropTypes.instanceOf(Organization),
+    selected: PropTypes.oneOfType([PropTypes.null, PropTypes.object]),
+  },
+  getDefaultProps() {
+    return { data: Ember.ArrayProxy.create() };
+  },
 
-  // Computed properties
-  // -------------------
-
-  dataExcludingSelf: Ember.computed('data.[]', 'phoneOwner', function() {
+  _dataExcludingSelf: computed('data.[]', 'phoneOwner', function() {
     return this._excludeOwner(this.get('data'));
   }),
 
@@ -33,10 +37,11 @@ export default Ember.Component.extend({
     },
     search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
+        const orgId = this.get('org.id');
         this.get('authService')
           .authRequest({
-            type: 'GET',
-            url: `${config.host}/v1/staff?search=${val}`,
+            type: Constants.REQUEST_METHOD.GET,
+            url: `${config.host}/v1/staff?organizationId=${orgId}&search=${val}`,
           })
           .then(data => {
             const store = this.get('store'),
@@ -57,8 +62,13 @@ export default Ember.Component.extend({
 
   _excludeOwner(array) {
     const owner = this.get('phoneOwner'),
-      identProp = this.get('identityProperty'),
-      ownerIdent = get(owner, identProp);
-    return (array || []).filter(item => get(item, identProp) !== ownerIdent);
+      idProp = 'id',
+      typeProp = Constants.PROP_NAME.MODEL_NAME;
+    return (array || []).filter(item => {
+      return (
+        get(item, idProp) !== get(owner, idProp) ||
+        (get(item, idProp) === get(owner, idProp) && get(item, typeProp) !== get(owner, typeProp))
+      );
+    });
   },
 });

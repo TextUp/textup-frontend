@@ -1,6 +1,7 @@
+import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import DS from 'ember-data';
+import Ember from 'ember';
 
 const { get, merge } = Ember;
 
@@ -22,7 +23,7 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
         doActions.pushObject(deactivate());
         break;
       case Constants.ACTION.PHONE.TRANSFER:
-        doActions.pushObject(transfer(data, Constants.MODEL.STAFF));
+        doActions.pushObject(transfer(data));
         break;
     }
     if (doActions.length) {
@@ -33,10 +34,10 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
 });
 
 function changeToNewNumber(data) {
-  if (get(data, 'sid')) {
-    return { action: 'NUMBYID', numberId: get(data, 'sid') };
-  } else if (get(data, 'phoneNumber')) {
-    return { action: 'NUMBYNUM', number: get(data, 'phoneNumber') };
+  if (get(data, Constants.PROP_NAME.NEW_NUMBER_ID)) {
+    return { action: 'NUMBYID', numberId: get(data, Constants.PROP_NAME.NEW_NUMBER_ID) };
+  } else if (get(data, Constants.PROP_NAME.AVAILABLE_NUMBER)) {
+    return { action: 'NUMBYNUM', number: get(data, Constants.PROP_NAME.AVAILABLE_NUMBER) };
   } else {
     return Object.create(null);
   }
@@ -46,7 +47,7 @@ function deactivate() {
   return { action: 'DEACTIVATE' };
 }
 
-function transfer(data, staffType) {
-  const type = get(data, 'type') === staffType ? 'INDIVIDUAL' : 'GROUP';
-  return { action: 'TRANSFER', id: get(data, 'id'), type };
+function transfer(targetModel) {
+  const type = TypeUtils.isStaff(targetModel) ? 'INDIVIDUAL' : 'GROUP';
+  return { action: 'TRANSFER', id: get(targetModel, 'id'), type };
 }

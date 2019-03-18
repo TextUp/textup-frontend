@@ -1,5 +1,6 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from '../config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import LocaleUtils from 'textup-frontend/utils/locale';
 
@@ -98,9 +99,9 @@ export default Ember.Service.extend(Ember.Evented, {
         return reject();
       }
       Ember.$.ajax({
-        type: 'POST',
+        type: Constants.REQUEST_METHOD.POST,
         url: `${config.host}/reset`,
-        contentType: 'application/json',
+        contentType: Constants.MIME_TYPE.JSON,
         data: JSON.stringify({
           username: username,
         }),
@@ -113,9 +114,9 @@ export default Ember.Service.extend(Ember.Evented, {
         return reject();
       }
       Ember.$.ajax({
-        type: 'PUT',
+        type: Constants.REQUEST_METHOD.PUT,
         url: `${config.host}/reset`,
-        contentType: 'application/json',
+        contentType: Constants.MIME_TYPE.JSON,
         data: JSON.stringify({
           token,
           password,
@@ -145,7 +146,7 @@ export default Ember.Service.extend(Ember.Evented, {
       Ember.$.ajax(
         Ember.merge(
           {
-            contentType: 'application/json',
+            contentType: Constants.MIME_TYPE.JSON,
             beforeSend: request => {
               if (this.get('hasToken')) {
                 request.setRequestHeader('Authorization', `Bearer ${this.get('token')}`);
@@ -179,9 +180,9 @@ export default Ember.Service.extend(Ember.Evented, {
   },
   _sendCredentials(endpoint, payload) {
     return Ember.$.ajax({
-      type: 'POST',
+      type: Constants.REQUEST_METHOD.POST,
       url: `${config.host}/${endpoint}`,
-      contentType: 'application/json',
+      contentType: Constants.MIME_TYPE.JSON,
       data: JSON.stringify(payload),
     });
   },
@@ -309,7 +310,7 @@ export default Ember.Service.extend(Ember.Evented, {
   _doRenewToken(onSuccess, onError) {
     Ember.$.ajax({
       _alreadyOverriden: true, // short circuit _renewTokenOnError
-      type: 'POST',
+      type: Constants.REQUEST_METHOD.POST,
       url: `${config.host}/oauth/access_token`,
       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
       data: {

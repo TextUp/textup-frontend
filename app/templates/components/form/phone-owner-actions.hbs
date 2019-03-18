@@ -1,4 +1,4 @@
-{{#if (not owner.phone)}}
+{{#if (not owner.phone.content.isActive)}}
     <div class="form__group">
         <div class="xs-2-row-3 control-text">
             <label class="form__label" for="TextUp phone">
@@ -13,12 +13,12 @@
             selectIndex=(if (eq owner.phoneAction null) 0 1)
             wrapAround=true as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#d3d3d3"
+                color=(constant "COLOR.LIGHT_GRAY")
                 onSelect=(action (mut owner.phoneAction) null)}}
                 No
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#76c9ec"
+                color=(constant "COLOR.LIGHT_BLUE")
                 onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
                 Yes
             {{/multi-toggle/item}}
@@ -41,69 +41,69 @@
                     (if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER")) 2 3)))
             wrapAround=true as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#d3d3d3"
+                color=(constant "COLOR.LIGHT_GRAY")
                 onSelect=(action (mut owner.phoneAction) null)}}
                 No Change
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#76c9ec"
+                color=(constant "COLOR.LIGHT_BLUE")
                 onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
                 Change Number
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#1BA5E0"
+                color=(constant "COLOR.BRAND")
                 onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.TRANSFER"))}}
                 Transfer
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
-                color="#c9302c"
+                color=(constant "COLOR.RED")
                 onSelect=(action (mut owner.phoneAction) "deactivateBeforeConfirm")}}
                 Deactivate
             {{/multi-toggle/item}}
         {{/multi-toggle}}
     </div>
-    {{#if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER"))}}
-        {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
-            phoneOwner=owner
-            selected=(mut owner.phoneActionData)
-            classNames="form__group"}}
-    {{else if (or
-        (eq owner.phoneAction "deactivateBeforeConfirm")
-        (eq owner.phoneAction (constant "ACTION.PHONE.DEACTIVATE")))}}
-        <div class="form__group">
-            <div class="form__label form__label--multiline form__label--emphasize">
-                Deactivating a TextUp phone preserves information, but <span class="text-bold">you will lose the TextUp phone"s number</span>. Are you sure you want to deactivate?
-            </div>
-            {{#multi-toggle wrapAround=true as |toggle doRegister|}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color="#d3d3d3"
-                    onSelect=(action (mut owner.phoneAction) "deactivateBeforeConfirm")}}
-                    No
-                {{/multi-toggle/item}}
-                {{#multi-toggle/item doRegister=doRegister
-                    color="#76c9ec"
-                    onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.DEACTIVATE"))}}
-                    Yes
-                {{/multi-toggle/item}}
-            {{/multi-toggle}}
-        </div>
-    {{/if}}
 {{/if}}
-
+{{#if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER"))}}
+    {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
+        org=stateManager.ownerAsOrg
+        phoneOwner=owner
+        selected=(mut owner.phoneActionData)
+        classNames="form__group"}}
+{{/if}}
+{{#if (or (eq owner.phoneAction "deactivateBeforeConfirm")
+    (eq owner.phoneAction (constant "ACTION.PHONE.DEACTIVATE")))}}
+    <div class="form__group">
+        <div class="form__label form__label--multiline form__label--emphasize">
+            Deactivating a TextUp phone preserves information, but <span class="text-bold">you will lose the TextUp phone"s number</span>. Are you sure you want to deactivate?
+        </div>
+        {{#multi-toggle wrapAround=true as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=(constant "COLOR.LIGHT_GRAY")
+                onSelect=(action (mut owner.phoneAction) "deactivateBeforeConfirm")}}
+                No
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=(constant "COLOR.LIGHT_BLUE")
+                onSelect=(action (mut owner.phoneAction) (constant "ACTION.PHONE.DEACTIVATE"))}}
+                Yes
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
+    </div>
+{{/if}}
 {{#if (eq owner.phoneAction (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
     <div class="form__group">
         {{#single-select selected=owner.phoneActionData
-            displayProperty="phoneNumber"
-            identityProperty="phoneNumber"
+            displayProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
+            identityProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
             allowCreate=false
             searchPlaceholder="Pick your TextUp number"
             noResultsMessage="Start typing to search for a phone number"
             onInsert=(action (mut owner.phoneActionData))
             onRemove=(action (mut owner.phoneActionData) null)
-            doSearch=(action "doNumbersSearch" target=stateManager) as |item select|}}
+            doSearch=numberService.publicAPI.actions.listAvailable as |item select|}}
             <div class="text-ellipsis">
                 <span class="text-bold">
-                    {{phone-number item.phoneNumber}}
+                    {{phone-number (get item (constant "PROP_NAME.AVAILABLE_NUMBER"))}}
                 </span>
                 {{#if item.region}}
                     <span class="pad-l text-normal">{{item.region}}</span>

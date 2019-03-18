@@ -2,7 +2,7 @@ import Ember from 'ember';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 
 export default Ember.Route.extend(IsAuthenticated, {
-  verifyNumberService: Ember.inject.service(),
+  numberService: Ember.inject.service(),
   storage: Ember.inject.service(),
 
   redirect() {
@@ -22,11 +22,11 @@ export default Ember.Route.extend(IsAuthenticated, {
   actions: {
     startVerifyPersonalPhone(personalNumber) {
       this.get('storage').trySet(localStorage, this._buildStorageKeyForStaff(), personalNumber);
-      return this.get('verifyNumberService').start(personalNumber);
+      return this.get('numberService').startVerify(personalNumber);
     },
     finishVerifyPersonalPhone(personalNumber, verificationCode) {
-      return this.get('verifyNumberService')
-        .finish(personalNumber, verificationCode)
+      return this.get('numberService')
+        .finishVerify(personalNumber, verificationCode)
         .then(() => {
           // no need to store personal phone number in local storage once is validated
           this.get('storage').removeItem(this._buildStorageKeyForStaff());

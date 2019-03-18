@@ -14,7 +14,7 @@ export default Ember.Service.extend({
       this.get('store')
         .query('staff', {
           max: 100,
-          statuses: [Constants.STAFF.STATUS.ADMIN, Constants.STAFF.STATUS.STAFF],
+          status: [Constants.STAFF.STATUS.ADMIN, Constants.STAFF.STATUS.STAFF],
           teamId: TypeUtils.isTeam(phoneOwner) ? ownerId : null,
           shareStaffId: TypeUtils.isStaff(phoneOwner) ? ownerId : null,
         })

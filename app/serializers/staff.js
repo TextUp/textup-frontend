@@ -6,6 +6,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
     org: { deserialize: 'records', serialize: 'ids' },
     // any changes happen with teamActions on the individual tags
     teams: { deserialize: 'records', serialize: false },
+    channelName: { serialize: false },
   },
 
   serialize() {

@@ -1,11 +1,12 @@
+import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
-import config from '../config/environment';
 
 export default Ember.Route.extend(IsPublic, {
   model() {
     return Ember.$.ajax({
-      type: 'GET',
+      type: Constants.REQUEST_METHOD.GET,
       url: `${config.host}/v1/public/organizations?status[]=approved`,
     }).then(({ organizations = [] }) => {
       return organizations.map(org => {

@@ -109,17 +109,17 @@
 					<div class="input-group flex__item flex__item--grow">
 						<div class="input-group-element">
 			            	{{#single-select selected=selected.phoneActionData
-						        displayProperty='phoneNumber'
-						        identityProperty='phoneNumber'
+						        displayProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
+						        identityProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
 						        allowCreate=false
 						        searchPlaceholder='Pick your TextUp number'
 						        noResultsMessage='Start typing to search for a phone number'
 						        onInsert=(action (mut selected.phoneActionData))
 						        onRemove=(action (mut selected.phoneActionData) null)
-						        doSearch=(action 'doNumbersSearch' target=stateManager) as |item select|}}
+						        doSearch=numberService.publicAPI.actions.listAvailable as |item select|}}
 						        <div class="text-ellipsis">
 						            <span class="text-bold">
-						                {{phone-number item.phoneNumber}}
+						                {{phone-number (get item (constant "PROP_NAME.AVAILABLE_NUMBER"))}}
 						            </span>
 						            {{#if item.region}}
 						                <span class="pad-l text-normal">{{item.region}}</span>

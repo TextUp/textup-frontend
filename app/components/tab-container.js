@@ -97,8 +97,12 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   _tryInitializeNav() {
-    const currentIndex = this.get('_publicAPI.currentIndex');
-    this.get('_items').forEach((item, index) => item.actions.initialize(currentIndex === index));
+    const items = this.get('_items'),
+      currentIndex = ArrayUtils.normalizeIndex(
+        items.get('length'),
+        this.get('_publicAPI.currentIndex')
+      );
+    items.forEach((item, index) => item.actions.initialize(currentIndex === index));
     if (this.get('_hasMultipleTabs')) {
       run.scheduleOnce('afterRender', this, this._setupMultipleTabs);
     }

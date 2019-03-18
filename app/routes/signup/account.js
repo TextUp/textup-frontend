@@ -1,4 +1,5 @@
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
@@ -13,20 +14,10 @@ export default Ember.Route.extend({
   },
   deactivate() {
     this.controller.set('confirmPassword', null);
+    this.controller.set('didAcceptPolicies', false);
   },
 
   actions: {
-    // Captcha
-    // -------
-
-    clearCaptcha(staff) {
-      const captcha = this.controller.get('gRecaptcha');
-      if (captcha) {
-        captcha.resetReCaptcha.call(captcha);
-      }
-      staff.set('captcha', '');
-    },
-
     // Creating new staff
     // ------------------
 
@@ -56,16 +47,14 @@ export default Ember.Route.extend({
       return new Ember.RSVP.Promise((resolve, reject) => {
         const onFail = failure => {
           if (this.get('dataService').displayErrors(failure) === 0) {
-            this.notifications.error(`Could not create new account.
-              Please try again later.`);
+            this.notifications.error(`Could not create new account. Please try again later.`);
           }
-          this.send('clearCaptcha', data);
           reject(failure);
         };
         Ember.$.ajax({
-          type: 'POST',
+          type: Constants.REQUEST_METHOD.POST,
           url: `${config.host}/v1/public/staff`,
-          contentType: 'application/json',
+          contentType: Constants.MIME_TYPE.JSON,
           data: JSON.stringify(toBeSaved),
         }).then(result => {
           this.notifications.success(`Almost done creating your account...`);
