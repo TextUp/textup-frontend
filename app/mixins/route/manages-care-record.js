@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { tryInvoke } = Ember;
+const { tryInvoke, RSVP } = Ember;
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
@@ -36,8 +36,15 @@ export default Ember.Mixin.create({
     },
 
     onCall() {
-      this.get('tutorialService').startCompleteTask('makeCall');
-      return this.get('recordItemService').makeCall(this.get('currentModel'));
+      return new RSVP.Promise((resolve, reject) => {
+        this.get('recordItemService')
+          .makeCall(this.get('currentModel'))
+          .then(() => {
+            this.get('tutorialService').startCompleteTask('makeCall');
+            resolve();
+          })
+          .catch(reject);
+      });
     },
     onText() {
       return this.get('dataService')

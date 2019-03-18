@@ -25,16 +25,15 @@ export default Ember.Mixin.create({
       );
     },
     cancelNewTagSlideout() {
-      this.get('tutorialService').startCompleteTask('createTag');
       this.send('closeSlideout');
       this._tryRevertNewTag();
     },
     finishNewTagSlideout() {
-      this.get('tutorialService').startCompleteTask('createTag');
       return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => {
           this.send('closeSlideout');
+          this.get('tutorialService').startCompleteTask('createTag');
         });
     },
 
@@ -58,15 +57,16 @@ export default Ember.Mixin.create({
       this._tryRevertNewTag();
     },
     cancelCreateTagInTagList() {
-      this.get('tutorialService').startCompleteTask('createTag');
       this._tryRevertNewTag();
       this._tryCloseTagsListHideAway();
     },
     finishCreateTagInTagList() {
-      this.get('tutorialService').startCompleteTask('createTag');
       return this.get('tagService')
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
-        .then(() => this._tryCloseTagsListHideAway());
+        .then(() => {
+          this._tryCloseTagsListHideAway();
+          this.get('tutorialService').startCompleteTask('createTag');
+        });
     }
   },
 

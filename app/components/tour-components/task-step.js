@@ -81,7 +81,6 @@ export default Ember.Component.extend({
 
   _pulseElement(elementIdToPulse) {
     const elementToPulse = $(elementIdToPulse);
-    console.log(elementIdToPulse);
     elementToPulse.addClass('task-element__should-animate-pulse');
     run.later(() => elementToPulse.removeClass('task-element__should-animate-pulse'), 2000);
   }

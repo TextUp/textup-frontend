@@ -47,13 +47,13 @@ export default Ember.Component.extend({
     if (!this.get('mobile')) {
       this.get('_popOver').actions.open();
     }
-  },
-
-  focusOut() {
-    if (!this.get('mobile')) {
-      this.get('_popOver').actions.close();
-    }
   }
+
+  // focusOut() {
+  //   if (!this.get('mobile')) {
+  //     this.get('_popOver').actions.close();
+  //   }
+  // }
 
   // shouldShow: computed.alias("hintService.shouldShow"),
 });

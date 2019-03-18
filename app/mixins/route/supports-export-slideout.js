@@ -35,7 +35,6 @@ export default Ember.Mixin.create({
     },
 
     cancelExportSlideout() {
-      this.get('tutorialService').startCompleteTask('exportMessage');
       this.send('closeSlideout');
     },
     finishExportSlideout() {
@@ -47,13 +46,12 @@ export default Ember.Mixin.create({
           ? [] // pass no record owners if we want to export entire phone
           : controller.get('exportRecordOwners');
 
-      this.get('tutorialService').startCompleteTask('exportMessage');
-
       return new Ember.RSVP.Promise((resolve, reject) => {
         this.get('recordItemService')
           .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
           .then(() => {
             this.send('closeSlideout');
+            this.get('tutorialService').startCompleteTask('exportMessage');
             resolve();
           }, reject);
       });

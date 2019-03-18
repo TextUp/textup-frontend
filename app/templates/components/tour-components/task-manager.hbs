@@ -21,7 +21,7 @@
     <div class="flex__item">
       <button type="button"
           class="btn btn-plain btn-expand btn-default task-manager__title__button"
-          onclick={{_publicAPI.actions.closeTaskManager}}>
+          onclick={{action _onClose}}>
             <span class="fa fa-times-circle task-manager__title--fa"></span>
       </button>
     </div>
@@ -45,12 +45,5 @@
         {{/each}}
       </div>
     {{/tour-components/task-step}}
-    {{#if (not tutorialService.firstIncompleteTask)}}
-    <button type="button"
-        class="btn btn-plain btn-expand task-manager__title__button"
-        onclick={{_publicAPI.actions.resetTasks}}>
-          Reset Tasks
-    </button>
-    {{/if}}
   </div>
 {{/hide-show}}

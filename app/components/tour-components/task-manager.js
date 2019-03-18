@@ -8,18 +8,17 @@ export default Ember.Component.extend({
 
   propTypes: {
     doRegister: PropTypes.func,
-    firstIncompleteTask: PropTypes.object
+    firstIncompleteTask: PropTypes.object,
+    onClose: PropTypes.func,
+    getTaskStatus: PropTypes.func,
+    onFinishCompleteTask: PropTypes.func,
+    resetTasks: PropTypes.func
   },
 
   init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
-
-  // didInsertElement() {
-  // this._resetTasks();
-  // this._closeIfAllComplete();
-  // },
 
   classNames: ['task-manager'],
 
@@ -28,7 +27,6 @@ export default Ember.Component.extend({
       actions: {
         finishCompleteTask: this._finishCompleteTask.bind(this),
         resetTasks: this._resetTasks.bind(this),
-        closeTaskManager: this._close.bind(this),
         startCompleteTask: this._startCompleteTask.bind(this)
       }
     };
@@ -36,20 +34,12 @@ export default Ember.Component.extend({
 
   _taskStep: null,
 
-  _close() {
-    this.destroy();
-  },
-
-  _closeIfAllComplete() {
-    const firstIncomplete = this.get('firstIncompleteTask');
-    if (firstIncomplete === null) {
-      this._close();
-    }
+  _onClose() {
+    tryInvoke(this, 'onClose');
   },
 
   _getTaskStatus(taskId) {
-    const tutorialService = this.get('tutorialService');
-    return tutorialService.getTaskStatus(taskId);
+    return tryInvoke(this, 'getTaskStatus', [taskId]);
   },
 
   _startCompleteTask(taskId, shouldShowCompleteMessage) {
@@ -58,13 +48,10 @@ export default Ember.Component.extend({
   },
 
   _finishCompleteTask(taskId) {
-    const tutorialService = this.get('tutorialService');
-    tutorialService.finishCompleteTask(taskId);
-    // this._closeIfAllComplete();
+    tryInvoke(this, 'onFinishCompleteTask', [taskId]);
   },
 
   _resetTasks() {
-    const tutorialService = this.get('tutorialService');
-    tutorialService.resetTasks();
+    tryInvoke(this, 'resetTasks');
   }
 });

@@ -14,9 +14,23 @@ export default Ember.Service.extend({
     this.set('tasks', tasks);
   },
 
-  taskManager: null, // TODO
+  taskManager: null,
 
   tasks: null,
+
+  publicAPI: computed('_firstIncompleteTask', '_shouldShowTaskManager', function() {
+    return {
+      actions: {
+        getTaskStatus: this.getTaskStatus.bind(this),
+        startCompleteTask: this.startCompleteTask.bind(this),
+        finishCompleteTask: this.finishCompleteTask.bind(this),
+        closeTaskManager: this.closeTaskManager.bind(this),
+        resetTasks: this.resetTasks.bind(this)
+      },
+      firstIncompleteTask: this.get('_firstIncompleteTask'),
+      shouldShowTaskManager: this.get('_shouldShowTaskManager')
+    };
+  }),
 
   getTaskStatus(taskId) {
     const status = window.localStorage.getItem(`task-manager-${taskId}`);
@@ -41,19 +55,26 @@ export default Ember.Service.extend({
     this._setTaskStatus(taskId, true);
   },
 
+  closeTaskManager() {
+    console.log('in tutorial service this', this);
+    const tasks = this.get('tasks');
+    tasks.forEach(task => this._setTaskStatus(task.id, true));
+  },
+
   resetTasks() {
     const tasks = this.get('tasks');
     tasks.forEach(task => this._setTaskStatus(task.id, false));
   },
 
-  firstIncompleteTask: computed('tasks.@each.status', function() {
+  _firstIncompleteTask: computed('tasks.@each.status', function() {
     const tasks = this.get('tasks');
     const firstIncomplete = tasks.find(function(task) {
       return task.status === false;
     });
-    if (firstIncomplete) {
-      return firstIncomplete;
-    }
-    return null;
+    return firstIncomplete;
+  }),
+
+  _shouldShowTaskManager: computed('_firstIncompleteTask', function() {
+    return this.get('_firstIncompleteTask') !== undefined;
   })
 });

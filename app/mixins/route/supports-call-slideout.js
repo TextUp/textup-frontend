@@ -4,6 +4,7 @@ const { run } = Ember;
 
 export default Ember.Mixin.create({
   callSlideoutService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -36,6 +37,7 @@ export default Ember.Mixin.create({
       return this.get('callSlideoutService')
         .makeCall(callByNumberContact, callByNumber, { displayedList, currentFilter })
         .then(contact => {
+          this.get('tutorialService').startCompleteTask('makeCall');
           controller.set('isCallingForNumber', false);
           this.send('closeSlideout');
           run.next(() => {
