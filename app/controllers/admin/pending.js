@@ -27,13 +27,18 @@ export default Ember.Controller.extend({
     loadMore() {
       return new Ember.RSVP.Promise((resolve, reject) => {
         const pendingStaff = this.get('pendingStaff');
-        this.get('adminService')
-          .loadPendingStaff(this.get('stateManager.ownerAsOrg.id'), pendingStaff.get('length'))
+        this.get('dataService')
+          .request(
+            this.get('adminService').loadPendingStaff(
+              this.get('stateManager.ownerAsOrg.id'),
+              pendingStaff.get('length')
+            )
+          )
           .then(({ pending, numPending }) => {
             pendingStaff.pushObjects(pending);
             this.set('numPending', numPending);
             resolve();
-          }, this.get('dataService').buildErrorHandler(reject));
+          }, reject);
       });
     },
   },

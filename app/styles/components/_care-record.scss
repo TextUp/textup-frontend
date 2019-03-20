@@ -1,43 +1,43 @@
 .care-record {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    &__body-container {
-        flex-grow: 1;
-        background-color: shade($bg-color);
+  &__body-container {
+    flex-grow: 1;
+    background-color: shade($bg-color);
+  }
+  &__body {
+    background-color: $bg-color;
+
+    &__message {
+      margin: $baseunit $baseunit 0;
+      text-align: center;
     }
-    &__body {
-        background-color: $bg-color;
-
-        &__message {
-            margin: $baseunit $baseunit 0;
-            text-align: center;
-        }
-        &__items {
-            margin-top: $record-item-space;
-        }
+    &__items {
+      margin-top: $record-item-space;
     }
-    &__add-note {
-        @extend %clearfix;
+  }
+  &__add-note {
+    @extend %clearfix;
 
-        position: relative;
+    position: relative;
 
-        &__button {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translate(-50%, 50%);
-            height: $baseunit * 2;
-            width: $baseunit * 2;
-            border-width: 0;
-            border-radius: 100%;
-            text-align: center;
-            background-color: tint($bg-dark-color, 2);
-            color: white;
-            box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            animation: add-button-expand-in 0.2s;
-            overflow: hidden;
-        }
+    &__button {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      height: $baseunit * 2;
+      width: $baseunit * 2;
+      border-width: 0;
+      border-radius: 100%;
+      text-align: center;
+      background-color: tint($bg-dark-color, 2);
+      color: white;
+      box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      animation: add-button-expand-in 0.2s;
+      overflow: hidden;
     }
+  }
 }

@@ -12,9 +12,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   // ---------
 
   rollbackAttributes() {
-    this.get('_contactRecipients').clear();
-    this.get('_tagRecipients').clear();
-    this.get('_sharedContactRecipients').clear();
+    this.get('_recipients').clear();
     this.get('_newNumberRecipients').clear();
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
     return this._super(...arguments);
@@ -41,31 +39,19 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   contact: DS.belongsTo('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
   tag: DS.belongsTo('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
 
-  contactRecipients: computed.readOnly('_contactRecipients'),
-  sharedContactRecipients: computed.readOnly('_sharedContactRecipients'),
-  tagRecipients: computed.readOnly('_tagRecipients'),
+  recipients: computed.readOnly('_recipients'),
   newNumberRecipients: computed.readOnly('_newNumberRecipients'),
-  numRecipients: computed(
-    '_contactRecipients.[]',
-    '_tagRecipients.[]',
-    '_sharedContactRecipients.[]',
-    '_newNumberRecipients.[]',
-    function() {
-      return (
-        getWithDefault(this, '_contactRecipients.length', 0) +
-        getWithDefault(this, '_tagRecipients.length', 0) +
-        getWithDefault(this, '_sharedContactRecipients.length', 0) +
-        getWithDefault(this, '_newNumberRecipients.length', 0)
-      );
-    }
-  ),
+  numRecipients: computed('_recipients.[]', '_newNumberRecipients.[]', function() {
+    return (
+      getWithDefault(this, '_recipients.length', 0) +
+      getWithDefault(this, '_newNumberRecipients.length', 0)
+    );
+  }),
 
   // Private properties
   // ------------------
 
-  _contactRecipients: computed(() => []),
-  _tagRecipients: computed(() => []),
-  _sharedContactRecipients: computed(() => []),
+  _recipients: computed(() => []),
   _newNumberRecipients: computed(() => []),
 
   // Methods
@@ -80,17 +66,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
 });
 
 function getListFor(ctx, obj) {
-  let list;
-  if (typeOf(obj) === 'string') {
-    list = ctx.get('_newNumberRecipients');
-  } else if (TypeUtils.isContact(obj)) {
-    list = get(obj, 'isShared')
-      ? ctx.get('_sharedContactRecipients')
-      : ctx.get('_contactRecipients');
-  } else if (TypeUtils.isTag(obj)) {
-    list = ctx.get('_tagRecipients');
-  }
-  return list;
+  return typeOf(obj) === 'string' ? ctx.get('_newNumberRecipients') : ctx.get('_recipients');
 }
 
 function addRecipientFor(obj, list) {

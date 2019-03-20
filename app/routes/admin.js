@@ -156,10 +156,9 @@ export default Ember.Route.extend(
         return this.get('dataService')
           .persist(teams)
           .then(() => {
-            const promises = people.map(person => person.reload());
-            Ember.RSVP.all(promises).then(() => {
-              callIfPresent(this, then);
-            }, this.get('dataService').buildErrorHandler());
+            this.get('dataService')
+              .request(Ember.RSVP.all(people.map(person => person.reload())))
+              .then(() => callIfPresent(this, then));
           });
       },
 

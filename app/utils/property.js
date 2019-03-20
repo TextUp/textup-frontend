@@ -10,3 +10,7 @@ export function mustGet(obj, valString, errorString) {
   }
   return retVal;
 }
+
+export function urlIdent(modelName, id) {
+  return `${modelName}-${id}`;
+}

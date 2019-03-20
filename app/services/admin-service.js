@@ -23,15 +23,17 @@ export default Ember.Service.extend({
   },
   loadPendingStaff(orgId, offset = 0) {
     return new RSVP.Promise((resolve, reject) => {
-      this.get('store')
-        .query('staff', {
-          organizationId: orgId,
-          status: [Constants.STAFF.STATUS.PENDING],
-          offset,
-        })
+      this.get('dataService')
+        .request(
+          this.get('store').query('staff', {
+            organizationId: orgId,
+            status: [Constants.STAFF.STATUS.PENDING],
+            offset,
+          })
+        )
         .then(success => {
           resolve({ pending: success.toArray(), numPending: success.get('meta.total') });
-        }, this.get('dataService').buildErrorHandler(reject));
+        }, reject);
     });
   },
 

@@ -4,6 +4,11 @@ export default {
     POST: 'POST',
     PUT: 'PUT',
   },
+  RESPONSE_STATUS: {
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    TIMED_OUT: 0,
+  },
   PROP_NAME: {
     MEDIA_ID: 'uid',
     MODEL_NAME: 'constructor.modelName',

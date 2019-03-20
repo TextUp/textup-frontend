@@ -7,7 +7,7 @@ export default Ember.Service.extend({
 
   createNew() {
     return this.get('store').createRecord('tag', {
-      language: this.get('stateManager.owner.phone.content.language')
+      language: this.get('stateManager.owner.phone.content.language'),
     });
   },
   persistNew(tag, { model }) {
@@ -23,8 +23,9 @@ export default Ember.Service.extend({
     return this.get('dataService')
       .persist(tags)
       .then(() => {
-        const promises = contacts.map(contact => contact.reload());
-        return Ember.RSVP.all(promises).catch(this.get('dataService').buildErrorHandler());
+        return this.get('dataService').request(
+          Ember.RSVP.all(contacts.map(contact => contact.reload()))
+        );
       });
-  }
+  },
 });

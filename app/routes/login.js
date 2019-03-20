@@ -12,30 +12,23 @@ export default Ember.Route.extend(IsPublic, {
   },
   actions: {
     login(un, pwd, doStore) {
-      const auth = this.get('authService');
-      return auth.login(un, pwd, doStore).then(
-        () => {
-          auth.retryAttemptedTransition(() => {
-            this.transitionTo('main', auth.get('authUser'));
-          });
-        },
-        () => {
-          this.notifications.error('Incorrect or blank username or password');
-        }
-      );
+      const authService = this.get('authService'),
+        authUser = authService.get('authUser');
+      return authService
+        .login(un, pwd, doStore)
+        .then(
+          () => authService.retryAttemptedTransition(() => this.transitionTo('main', authUser)),
+          () => this.notifications.error('Incorrect or blank username or password')
+        );
     },
     resetPassword(un) {
+      const successMsg = `All good! The password reset should be in your inbox in a few minutes.`,
+        failMsg = `Hmm. We could not find the username you provided. Please try again.`;
       return this.get('authService')
         .resetPassword(un)
         .then(
-          () => {
-            this.notifications.success(`All good! The password reset
-          should be in your inbox in a few minutes.`);
-          },
-          () => {
-            this.notifications.error(`Hmm. We could not find the username
-          you provided. Please try again.`);
-          }
+          () => this.notifications.success(successMsg),
+          () => this.notifications.error(failMsg)
         );
     },
   },

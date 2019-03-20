@@ -23,7 +23,7 @@
         searchPlaceholder="Search for your organization's location here"
         location=(mut org.location.content.latLng)
         description=(mut org.location.content.address)
-        onError=(route-action 'mapError')}}
+        onError=(service-action "dataService" "handleMapError")}}
 
 	<div class="single-body-footer text-center">
 		{{link-to "Next" "signup.account"

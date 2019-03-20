@@ -59,17 +59,19 @@ export default Ember.Controller.extend({
     return new Ember.RSVP.Promise((resolve, reject) => {
       const org = this.get('stateManager.ownerAsOrg'),
         team = this.get('team');
-      this.get('store')
-        .query('staff', {
-          offset,
-          status: this.get('statuses'),
-          teamId: team ? team.get('id') : null,
-          organizationId: org ? org.get('id') : null,
-        })
+      this.get('dataService')
+        .request(
+          this.get('store').query('staff', {
+            offset,
+            status: this.get('statuses'),
+            teamId: team ? team.get('id') : null,
+            organizationId: org ? org.get('id') : null,
+          })
+        )
         .then(results => {
           this.set('numPeople', results.get('meta.total'));
           resolve(results);
-        }, this.get('dataService').buildErrorHandler(reject));
+        }, reject);
     });
   },
   _translateFilter(filter) {

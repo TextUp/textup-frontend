@@ -145,20 +145,19 @@ export default Ember.Route.extend({
       if (this.get('_isTransitioning') || isBlank(searchQuery)) {
         return resolve();
       }
-      query.search = searchQuery;
-      // build query
-      if (searchResults.length) {
-        query.offset = searchResults.length;
-      }
-      if (team) {
-        query.teamId = team.get('id');
-      }
-      // execute query
-      this.store.query('contact', query).then(results => {
-        searchResults.pushObjects(results.toArray());
-        controller.set('numResults', results.get('meta.total'));
-        resolve();
-      }, this.get('dataService').buildErrorHandler(reject));
+      this.get('dataService')
+        .request(
+          this.store.query('contact', {
+            search: searchQuery,
+            offset: searchResults.length,
+            teamId: team ? team.get('id') : null,
+          })
+        )
+        .then(results => {
+          searchResults.pushObjects(results.toArray());
+          controller.set('numResults', results.get('meta.total'));
+          resolve();
+        });
     });
   },
 });

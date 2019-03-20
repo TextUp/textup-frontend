@@ -43,8 +43,14 @@ export default Ember.Route.extend(
     // `model` hook will not be called if the model object is already provided
     model(params) {
       this._super(...arguments);
-      const authUser = this.get('authService.authUser');
-      return AppAccessUtils.tryFindPhoneOwnerFromUrl(authUser, params.main_identifier);
+      const authUser = this.get('authService.authUser'),
+        foundModel = AppAccessUtils.tryFindPhoneOwnerFromUrl(authUser, params.main_identifier);
+      if (foundModel) {
+        return foundModel;
+      } else {
+        this.get('notifications').info('Please log in to access this TextUp phone.');
+        this.get('authService').logout();
+      }
     },
     afterModel(model = null) {
       this._super(...arguments);

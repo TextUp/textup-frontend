@@ -37,19 +37,21 @@ export default Ember.Controller.extend({
         phone = this.get('phone');
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
       if (phone) {
-        this.get('store')
-          .query('contact', {
-            max: 20,
-            status: phone.get('contactStatuses'),
-            offset: phone.get('contacts.length'),
-            tagId: tag ? tag.get('id') : null,
-            teamId: team ? team.get('id') : null,
-          })
+        this.get('dataService')
+          .request(
+            this.get('store').query('contact', {
+              max: 20,
+              status: phone.get('contactStatuses'),
+              offset: phone.get('contacts.length'),
+              tagId: tag ? tag.get('id') : null,
+              teamId: team ? team.get('id') : null,
+            })
+          )
           .then(results => {
             phone.set('totalNumContacts', results.get('meta.total'));
             phone.addContacts(results.toArray());
             resolve();
-          }, this.get('dataService').buildErrorHandler(reject));
+          }, reject);
       } else {
         resolve();
       }

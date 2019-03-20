@@ -5,8 +5,14 @@ import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 const polymorphicTypeToModelName = {
   TEXT: 'record-text',
   CALL: 'record-call',
-  NOTE: 'record-note'
+  NOTE: 'record-note',
 };
+
+export function tryNormalizePolymorphicType(hash) {
+  if (hash && Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
+    hash.type = polymorphicTypeToModelName[hash.type];
+  }
+}
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasMedia, {
   attrs: {
@@ -16,7 +22,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
     hasBeenDeleted: { key: 'isDeleted', serialize: true },
     receipts: { serialize: false },
     contact: { serialize: false },
-    tag: { serialize: false }
+    tag: { serialize: false },
   },
 
   modelNameFromPayloadKey(payloadKey) {
@@ -33,16 +39,15 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
   },
 
   _normalizePolymorphicRecord(obj, hash) {
-    this._tryNormalizePolymorphicType(hash);
+    tryNormalizePolymorphicType(hash);
     return this._super(...arguments);
   },
 
-  // Helpers
-  // -------
-
-  _tryNormalizePolymorphicType(hash) {
-    if (hash && Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
-      hash.type = polymorphicTypeToModelName[hash.type];
-    }
-  }
+  serialize(snapshot) {
+    const json = this._super(...arguments),
+      rItem = snapshot.record;
+    json.ids = rItem.get('recipients').map(obj => obj.get('id'));
+    json.numbers = rItem.get('newNumberRecipients');
+    return json;
+  },
 });

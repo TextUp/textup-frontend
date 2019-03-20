@@ -1,55 +1,37 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import { urlIdent } from 'textup-frontend/utils/property';
 
 export default Ember.Route.extend({
-  queryParams: {
-    token: {
-      refreshModel: true,
-    },
-  },
-  errors: null,
+  dataService: Ember.inject.service(),
 
-  // Events
-  // ------
+  queryParams: {
+    token: { refreshModel: true },
+  },
 
   model(params) {
     this._super(...arguments);
     const token = params.token;
     if (token) {
-      return this.store.findRecord('notification', token).then(
-        success => {
-          this.set('errors', null);
-          return success;
-        },
-        failure => {
-          this.set('errors', failure.errors);
-        }
-      );
+      return this.get('dataService').request(this.store.findRecord('notification', token));
     } else {
-      this.notifications.error('No authorization token specified.');
       this.transitionTo('login');
     }
   },
-  setupController(controller) {
-    this._super(...arguments);
-    controller.set('errors', this.get('errors'));
-  },
-  deactivate() {
-    this.set('errors', null);
-    this.controller.set('errors', null);
-  },
-
-  // Actions
-  // -------
 
   actions: {
     openInApp(notification) {
-      const ownerUrlId = notification.get('ownerUrlIdentifier'),
-        otherUrlId = notification.get('otherUrlIdentifier'),
-        isOtherTag = notification.get('isOtherTag');
-      if (isOtherTag) {
-        this.transitionTo('main.tag.details', ownerUrlId, otherUrlId);
-      } else {
-        this.transitionTo('main.contacts.contact', ownerUrlId, otherUrlId);
+      if (notification) {
+        this.transitionTo('main', notification.get(Constants.PROP_NAME.URL_IDENT));
+      }
+    },
+    openCareRecord(notification, detail) {
+      if (notification && detail) {
+        this.transitionTo(
+          detail.get('routeName'),
+          notification.get(Constants.PROP_NAME.URL_IDENT),
+          detail.get(Constants.PROP_NAME.URL_IDENT)
+        );
       }
     },
   },

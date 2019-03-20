@@ -100,7 +100,7 @@
             noResultsMessage="Start typing to search for a phone number"
             onInsert=(action (mut owner.phoneActionData))
             onRemove=(action (mut owner.phoneActionData) null)
-            doSearch=numberService.publicAPI.actions.listAvailable as |item select|}}
+            doSearch=(service-action "numberService" "listAvailable") as |item select|}}
             <div class="text-ellipsis">
                 <span class="text-bold">
                     {{phone-number (get item (constant "PROP_NAME.AVAILABLE_NUMBER"))}}

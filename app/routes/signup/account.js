@@ -22,52 +22,37 @@ export default Ember.Route.extend({
     // ------------------
 
     createStaff(data) {
-      const { name, username, email, password, lockCode, captcha } = data.toJSON(),
+      const { password } = data.toJSON(),
         org = this.controller.get('selected'),
-        toBeSaved = {
-          staff: {
-            name: name,
-            username: username,
-            password: password,
-            email: email,
-            lockCode: lockCode,
-            captcha: captcha,
-          },
-        };
+        toBeSaved = { staff: data.toJSON() };
       // build org based on if new or existing
       toBeSaved.staff.org = org.get('isNew')
         ? {
             name: org.get('name'),
             location: org.get('location.content').toJSON(),
           }
-        : {
-            id: org.get('id'),
-          };
-      // make the request
-      return new Ember.RSVP.Promise((resolve, reject) => {
-        const onFail = failure => {
-          if (this.get('dataService').displayErrors(failure) === 0) {
-            this.notifications.error(`Could not create new account. Please try again later.`);
-          }
-          reject(failure);
-        };
-        Ember.$.ajax({
-          type: Constants.REQUEST_METHOD.POST,
-          url: `${config.host}/v1/public/staff`,
-          contentType: Constants.MIME_TYPE.JSON,
-          data: JSON.stringify(toBeSaved),
-        }).then(result => {
-          this.notifications.success(`Almost done creating your account...`);
-          const staff = this.store.push(this.store.normalize('staff', result.staff));
-          this.get('authService')
-            .login(staff.get('username'), password)
-            .then(() => {
-              this.notifications.success(`Success! Welcome ${staff.get('name')}!`);
-              this.transitionTo('none');
-            }, onFail);
-          resolve(result);
-        }, onFail);
-      });
+        : { id: org.get('id') };
+      return this.get('dataService')
+        .request(
+          Ember.$.ajax({
+            type: Constants.REQUEST_METHOD.POST,
+            url: `${config.host}/v1/public/staff`,
+            contentType: Constants.MIME_TYPE.JSON,
+            data: JSON.stringify(toBeSaved),
+          })
+        )
+        .then(result => this._logInAfterCreate(result.staff, password));
     },
+  },
+
+  _logInAfterCreate(staffObj, password) {
+    this.get('notifications').success(`Almost done creating your account...`);
+    const staff = this.store.push(this.store.normalize(Constants.MODEL.STAFF, staffObj));
+    return this.get('dataService')
+      .request(this.get('authService').login(staff.get('username'), password))
+      .then(() => {
+        this.get('notifications').success(`Success! Welcome ${staff.get('name')}!`);
+        this.transitionTo('none');
+      });
   },
 });

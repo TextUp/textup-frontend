@@ -5,7 +5,7 @@ export default RecordItemSerializer.extend({
     whenChanged: { serialize: false },
     isReadOnly: { serialize: false },
     location: { deserialize: 'records', serialize: 'records' },
-    _revisions: { key: 'revisions', deserialize: 'records', serialize: false }
+    _revisions: { key: 'revisions', deserialize: 'records', serialize: false },
   },
 
   modelNameFromPayloadKey() {
@@ -15,18 +15,7 @@ export default RecordItemSerializer.extend({
   serialize(snapshot) {
     const json = this._super(...arguments),
       rNote = snapshot.record;
-
     json.after = rNote.get('addAfterDate');
-    if (rNote.get('contactRecipients.length')) {
-      json.forContact = rNote.get('contactRecipients.firstObject.id');
-    }
-    if (rNote.get('sharedContactRecipients.length')) {
-      json.forSharedContact = rNote.get('sharedContactRecipients.firstObject.id');
-    }
-    if (rNote.get('tagRecipients.length')) {
-      json.forTag = rNote.get('tagRecipients.firstObject.id');
-    }
-
     return json;
-  }
+  },
 });

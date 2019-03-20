@@ -16,5 +16,6 @@
     <div class="form">
         {{partial 'partials/team/create-edit'}}
     </div>
-    {{form/location-model entity=newTeam onLocationError=(route-action 'mapError')}}
+    {{form/location-model entity=newTeam
+        onLocationError=(service-action "dataService" "handleMapError")}}
 {{/slideout-pane}}

@@ -20,12 +20,12 @@ export default Ember.Service.extend({
       if (!refresh) {
         query.offset = model.get('numRecordItems');
       }
-      this.get('store')
-        .query('record-item', query)
+      this.get('dataService')
+        .request(this.get('store').query('record-item', query))
         .then(results => {
           model.set('totalNumRecordItems', get(results, 'meta.total'));
           resolve(results);
-        }, this.get('dataService').buildErrorHandler(reject));
+        }, reject);
     });
   },
 

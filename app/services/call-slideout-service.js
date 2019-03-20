@@ -18,9 +18,9 @@ export default Ember.Service.extend({
   makeCall() {
     return new RSVP.Promise((resolve, reject) => {
       this._ensureContactExists(...arguments).then(contact => {
-        this.get('recordItemService')
-          .makeCall(contact)
-          .then(() => resolve(contact), this.get('dataService').buildErrorHandler(reject));
+        this.get('dataService')
+          .request(this.get('recordItemService').makeCall(contact))
+          .then(() => resolve(contact), reject);
       });
     });
   },

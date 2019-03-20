@@ -22,12 +22,12 @@ export default Ember.Route.extend({
   actions: {
     completeReset(newPassword) {
       const token = this.controller.get('token');
-      return this.get('authService')
-        .completeResetPassword(token, newPassword)
+      return this.get('dataService')
+        .request(this.get('authService').completeResetPassword(token, newPassword))
         .then(() => {
           this.notifications.success('Successfully reset your password!');
           this.transitionTo('login');
-        }, this.get('dataService').buildErrorHandler());
+        });
     },
   },
 });

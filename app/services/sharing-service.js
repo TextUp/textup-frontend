@@ -11,17 +11,16 @@ export default Ember.Service.extend({
   loadStaffForSharing(phoneOwner) {
     return new RSVP.Promise((resolve, reject) => {
       const ownerId = phoneOwner.get('id');
-      this.get('store')
-        .query('staff', {
-          max: 100,
-          status: [Constants.STAFF.STATUS.ADMIN, Constants.STAFF.STATUS.STAFF],
-          teamId: TypeUtils.isTeam(phoneOwner) ? ownerId : null,
-          shareStaffId: TypeUtils.isStaff(phoneOwner) ? ownerId : null,
-        })
-        .then(
-          results => resolve(results.toArray()),
-          this.get('dataService').buildErrorHandler(reject)
-        );
+      this.get('dataService')
+        .request(
+          this.get('store').query('staff', {
+            max: 100,
+            status: [Constants.STAFF.STATUS.ADMIN, Constants.STAFF.STATUS.STAFF],
+            teamId: TypeUtils.isTeam(phoneOwner) ? ownerId : null,
+            shareStaffId: TypeUtils.isStaff(phoneOwner) ? ownerId : null,
+          })
+        )
+        .then(results => resolve(results.toArray()), reject);
     });
   },
 });

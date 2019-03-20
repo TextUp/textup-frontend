@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { typeOf } = Ember;
+const { typeOf, isArray } = Ember;
 
 export function normalizeIndex(numItems, index) {
   if (typeOf(index) !== 'number' || typeOf(numItems) !== 'number') {
@@ -12,4 +12,8 @@ export function normalizeIndex(numItems, index) {
   } else {
     return index;
   }
+}
+
+export function ensureArray(obj) {
+  return isArray(obj) ? obj : [obj];
 }

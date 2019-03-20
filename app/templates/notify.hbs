@@ -1,55 +1,13 @@
 {{title "Notification"}}
 
-<div class="bg-color bg-light full-viewport-height">
-	<div class="notify-contents">
-		<div class="row margin-t-double">
-			<img class="brand" src='assets/images/logo.png' />
-		</div>
-		{{#if errors}}
-			{{#each errors as |error|}}
-				<p class="margin-t text-darken text-bold text-biggest">
-					{{error.message}}
-				</p>
-			{{/each}}
-			<div class="text-bigger margin-t-double">
-				{{#link-to 'index' tagName='button'
-					classNames='btn btn-default'}}
-					Return to app
-				{{/link-to}}
-			</div>
-		{{else}}
-			<div class="display-s display-xs">
-				<div class="row margin-t">
-					{{partial 'partials/notify/other'}}
-				</div>
-				<div class="row margin-t">
-					{{partial 'partials/notify/message'}}
-				</div>
-				<div class="row">
-					{{partial 'partials/notify/owner'}}
-				</div>
-			</div>
-			<div class="display-l display-m">
-				<div class="xs-8-row-10 margin-center">
-					<div class="input-group margin-t-double">
-						<div class="input-group-addon align-middle">
-							{{partial 'partials/notify/other'}}
-						</div>
-						<div class="input-group-element align-middle">
-							{{partial 'partials/notify/message'}}
-						</div>
-						<div class="input-group-addon align-middle">
-							{{partial 'partials/notify/owner'}}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-bigger margin-t-double margin-b">
-				<button class="btn btn-plain" {{action 'openInApp' model}}>
-					Open in app
-				</button>
-			</div>
-		{{/if}}
+<div class="bg-color bg-light pad-t pad-b">
+	<div class="content-container content-container--width-small">
+		{{notification-summary notification=model
+			onOpen=(route-action "openInApp" model)}}
+		{{#each model.details as |detail|}}
+			{{care-record-preview name=detail.name
+				recordClusters=detail.recordClusters
+				onOpen=(route-action "openCareRecord" model detail)}}
+		{{/each}}
 	</div>
 </div>
-

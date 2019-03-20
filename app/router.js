@@ -3,7 +3,7 @@ import Ember from 'ember';
 import Trackable from 'ember-cli-analytics/mixins/trackable';
 
 const Router = Ember.Router.extend(Trackable, {
-  location: config.locationType
+  location: config.locationType,
 });
 
 Router.map(function() {

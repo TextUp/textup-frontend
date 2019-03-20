@@ -74,18 +74,9 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
 
   actions: {
     validate(un, pwd, then = undefined) {
-      return this.get('authService')
-        .validate(un, pwd)
-        .then(
-          () => {
-            callIfPresent(this, then);
-          },
-          failure => {
-            if (this.get('dataService').displayErrors(failure) === 0) {
-              this.notifications.error('Could not validate credentials');
-            }
-          }
-        );
+      return this.get('dataService')
+        .request(this.get('authService').validate(un, pwd))
+        .then(() => callIfPresent(this, then));
     },
     logout() {
       this.get('authService').logout();
@@ -212,9 +203,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Errors
     // ------
 
-    mapError() {
-      this.get('dataService').handleMapError();
-    },
     error(reason, transition) {
       this.get('authService').set('attemptedTransition', transition);
       this.get('dataService').handleError(reason);

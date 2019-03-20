@@ -20,7 +20,8 @@
             <div class="pad-t">
                 {{partial "partials/team/create-edit"}}
             </div>
-            {{form/location-model entity=newTeam onLocationError=(route-action "mapError")}}
+            {{form/location-model entity=newTeam
+                onLocationError=(service-action "dataService" "handleMapError")}}
         {{else}}
             <ul class="result-list">
                 {{#each model.teams as |team|}}

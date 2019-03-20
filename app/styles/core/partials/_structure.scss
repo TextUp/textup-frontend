@@ -1,3 +1,16 @@
+.content-container {
+  max-width: calc(100% - #{$baseunit * 2});
+  margin: 0 auto;
+
+  &--width {
+    &-small {
+      @include mq($from: tablet) {
+        max-width: 70%;
+      }
+    }
+  }
+}
+
 .flex {
   display: flex;
   align-items: center;

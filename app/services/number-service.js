@@ -10,64 +10,38 @@ export default Ember.Service.extend({
   dataService: Ember.inject.service(),
   notifications: Ember.inject.service(),
 
-  // Properties
-  // ----------
-
-  publicAPI: computed(function() {
-    return { actions: { listAvailable: this._listAvailable.bind(this) } };
-  }),
-
-  // Methods
-  // -------
-
   startVerify(num) {
-    return new RSVP.Promise((resolve, reject) => {
-      this.get('authService')
-        .authRequest({
+    return this.get('dataService')
+      .request(
+        this.get('authService').authRequest({
           type: Constants.REQUEST_METHOD.POST,
           url: `${config.host}/v1/numbers`,
           data: JSON.stringify({ phoneNumber: num }),
         })
-        .then(success => {
-          this.get('notifications').info(`Sent verification text to ${format(num)}`);
-          resolve(success);
-        }, this.get('dataService').buildErrorHandler(reject));
-    });
+      )
+      .then(() => this.get('notifications').info(`Sent verification text to ${format(num)}`));
   },
   finishVerify(num, validationCode) {
-    return new RSVP.Promise((resolve, reject) => {
-      const notifications = this.get('notifications');
-      this.get('authService')
-        .authRequest({
+    return this.get('dataService')
+      .request(
+        this.get('authService').authRequest({
           type: Constants.REQUEST_METHOD.POST,
           url: `${config.host}/v1/numbers`,
           data: JSON.stringify({ phoneNumber: num, token: validationCode }),
         })
-        .then(
-          success => {
-            notifications.success(`Successfully validated ${format(num)}`);
-            resolve(success);
-          },
-          failure => {
-            if (this.get('dataService').displayErrors(failure) === 0) {
-              notifications.error(`Invalid or expired token for ${format(num)}`);
-            }
-            reject(failure);
-          }
-        );
-    });
+      )
+      .then(() => this.get('notifications').success(`Successfully validated ${format(num)}`));
   },
 
-  // Internal methods
-  // ----------------
-
-  _listAvailable(search = '') {
+  listAvailable(search = '') {
     return new RSVP.Promise((resolve, reject) => {
-      this.get('authService')
-        .authRequest({
-          type: Constants.REQUEST_METHOD.GET,
-          url: `${config.host}/v1/numbers?search=${search}`,
-        })
+      this.get('dataService')
+        .request(
+          this.get('authService').authRequest({
+            type: Constants.REQUEST_METHOD.GET,
+            url: `${config.host}/v1/numbers?search=${search}`,
+          })
+        )
         .then(({ numbers = [] }) => {
           const availableNums = numbers.map(obj => {
             return Ember.Object.create({
@@ -77,7 +51,7 @@ export default Ember.Service.extend({
             });
           });
           resolve(availableNums);
-        }, this.get('dataService').buildErrorHandler(reject));
+        }, reject);
     });
   },
 });

@@ -22,15 +22,19 @@ export default Ember.Controller.extend({
     },
     search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
-        Ember.$.ajax({
-          type: Constants.REQUEST_METHOD.GET,
-          url: `${config.host}/v1/public/organizations?search=${val}`,
-        }).then(data => {
-          const orgs = data.organizations,
-            doPushOrg = org => this.store.push(this.store.normalize('organization', org)),
-            models = orgs ? orgs.map(doPushOrg) : [];
-          resolve(models);
-        }, this.get('dataService').buildErrorHandler(reject));
+        this.get('dataService')
+          .request(
+            Ember.$.ajax({
+              type: Constants.REQUEST_METHOD.GET,
+              url: `${config.host}/v1/public/organizations?search=${val}`,
+            })
+          )
+          .then(data => {
+            const orgs = data.organizations,
+              doPushOrg = org => this.store.push(this.store.normalize('organization', org)),
+              models = orgs ? orgs.map(doPushOrg) : [];
+            resolve(models);
+          }, reject);
       });
     },
   },

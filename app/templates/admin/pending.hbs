@@ -1,4 +1,4 @@
-{{title pendingStaff.length ' pending'}}
+{{title pendingStaff.length " pending"}}
 
 <div class="full-height">
 	<div class="section-header">
@@ -7,10 +7,10 @@
 				<div class="clear-badge">
 					<h5>Pending</h5>
 				</div>
-				<div class="badge {{if selectedPending 'hidden'}}">
-					{{#tool-tip title=(concat pendingStaff.length ' pending')
-	                    classNames='btn-expand'}}
-	                    <span class='text-bold'>
+				<div class="badge {{if selectedPending "hidden"}}">
+					{{#tool-tip title=(concat pendingStaff.length " pending")
+	                    classNames="btn-expand"}}
+	                    <span class="text-bold">
 	                    	{{pendingStaff.length}}
 	                    </span>
 						<span class="fa fa-user"></span>
@@ -19,13 +19,13 @@
 			</div>
 		</span>
     </div>
-	{{#infinite-scroll classNames='section-body'
-        itemsClass='tile-list'
-        direction='down'
+	{{#infinite-scroll classNames="section-body"
+        itemsClass="tile-list"
+        direction="down"
         data=pendingStaff
         total=numPending
-        doLoad=(action 'loadMore') as |selected|}}
-		{{#hide-show classNames='xs-full-row'
+        doLoad=(action "loadMore") as |selected|}}
+		{{#hide-show classNames="xs-full-row"
 			startOpen=selected.hasPhoneActionData
 			onClose=(action (mut selected.phoneActionData) null) as |hideShow|}}
 			<div class="bg-color bg-lightest pad-all border-all row">
@@ -37,7 +37,7 @@
 						{{selected.email}}
 					</span>
 					{{#if (and selected.phoneActionData
-						(not (eq selected.pendingAction 'reject')))}}
+						(not (eq selected.pendingAction "reject")))}}
 						<span class="text-bold control-text">
 							<span class="fa fa-phone pad-r-half"></span>
 							{{phone-number selected.phoneActionData.phoneNumber}}
@@ -50,17 +50,17 @@
 				<div class="xs-full-row s-row-2 l-row-3 flex flex--justify-end">
 					{{#if selected.pendingAction}}
 						<div class="flex__item">
-							<button class="btn btn-plain btn-span" type='button'
+							<button class="btn btn-plain btn-span" type="button"
 								onclick={{action (mut selected.pendingAction) null}}>
 								Undo
 							</button>
 						</div>
 						<div class="flex__item">
 							<button class="btn btn-plain btn-span
-								{{if (eq selected.pendingAction 'approve')
-									'btn-success'
-									'btn-danger'}}"
-								type='button'
+								{{if (eq selected.pendingAction "approve")
+									"btn-success"
+									"btn-danger"}}"
+								type="button"
 								{{action selected.pendingAction selected}}>
 								Confirm {{selected.pendingAction}}
 							</button>
@@ -83,15 +83,15 @@
 						{{/if}}
 						<div class="flex__item">
 							<button class="btn btn-plain btn-success"
-								type='button'
-								onclick={{action (mut selected.pendingAction) 'approve'}}>
+								type="button"
+								onclick={{action (mut selected.pendingAction) "approve"}}>
 								<span class="fa fa-check"></span>
 							</button>
 						</div>
 						<div class="flex__item">
 							<button class="btn btn-plain btn-danger"
-								type='button'
-								onclick={{action (mut selected.pendingAction) 'reject'}}>
+								type="button"
+								onclick={{action (mut selected.pendingAction) "reject"}}>
 								<span class="fa fa-times"></span>
 							</button>
 						</div>
@@ -100,7 +100,7 @@
 			</div>
 			{{#if hideShow.isOpen}}
 				<div class="bg-color bg-dark pad-all border-l border-r border-b flex flex--align-start
-					{{if (eq selected.pendingAction 'reject') 'hidden'}}">
+					{{if (eq selected.pendingAction "reject") "hidden"}}">
 					<div class="display-m display-l pad-r-double flex__item">
 						<div class="control-text text-bold">
 							Select a phone number
@@ -112,11 +112,11 @@
 						        displayProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
 						        identityProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
 						        allowCreate=false
-						        searchPlaceholder='Pick your TextUp number'
-						        noResultsMessage='Start typing to search for a phone number'
+						        searchPlaceholder="Pick your TextUp number"
+						        noResultsMessage="Start typing to search for a phone number"
 						        onInsert=(action (mut selected.phoneActionData))
 						        onRemove=(action (mut selected.phoneActionData) null)
-						        doSearch=numberService.publicAPI.actions.listAvailable as |item select|}}
+						        doSearch=(service-action "numberService" "listAvailable") as |item select|}}
 						        <div class="text-ellipsis">
 						            <span class="text-bold">
 						                {{phone-number (get item (constant "PROP_NAME.AVAILABLE_NUMBER"))}}
@@ -129,7 +129,7 @@
 						</div>
 						<div class="input-group-addon">
 							<button class="btn btn-default"
-								type='button'
+								type="button"
 								disabled={{if selected.phoneActionData "" "disabled"}}
 								onclick={{action (mut selected.phoneActionData) null}}>
 								Choose another

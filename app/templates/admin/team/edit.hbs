@@ -90,7 +90,7 @@
 			        </div>
 			    </div>
 	    	{{/if}}
-			{{form/location-model entity=team onLocationError=(route-action 'mapError')}}
+			{{form/location-model entity=team onLocationError=(service-action "dataService" "handleMapError")}}
 	    </div>
     {{/if}}
 </div>
