@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('schedule-control', 'Integration | Component | schedule control', {
-  integration: true
+  integration: true,
 });
 
 test('rendering without any data', function(assert) {
@@ -84,9 +84,9 @@ test('rendering a schedule WITH team members', function(assert) {
     Ember.Object.create({
       name: teamMemberName,
       schedule: {
-        content: teamMemberData
-      }
-    })
+        content: teamMemberData,
+      },
+    }),
   ]);
 
   this.render(
@@ -210,11 +210,9 @@ test('adding a range', function(assert) {
 
 test('updating an existing range', function(assert) {
   const daysOfWeek = Ember.getOwner(this)
-    .lookup('service:constants')
-    .get('DAYS_OF_WEEK');
-  assert.expect(6);
-
-  const initialData = {},
+      .lookup('service:constants')
+      .get('DAYS_OF_WEEK'),
+    initialData = {},
     scheduleClass = 'test-schedule-class',
     done = assert.async(2);
   let expectedDayOfWeek, expectedNewStart, expectedNewEnd;
@@ -227,7 +225,7 @@ test('updating an existing range', function(assert) {
       assert.equal(newRanges[0][0], expectedNewStart);
       assert.equal(newRanges[0][1], expectedNewEnd);
       done();
-    }
+    },
   });
   this.render(
     hbs`{{schedule-control schedule=scheduleData scheduleClass=scheduleClass onChange=handleUpdate}}`
@@ -240,31 +238,33 @@ test('updating an existing range', function(assert) {
 
   // start editing start time
   $startInput.click();
-  assert.equal($startInput.attr('aria-expanded'), 'true', 'start time input open after clicking');
-
-  // update start time to 7:15a
-  expectedDayOfWeek = 'thursday';
-  expectedNewStart = '0715';
-  expectedNewEnd = '0715';
-  Ember.$(`#${$startInput.attr('aria-owns')} [data-pick="435"]`).click();
-
-  // delay to allow date-time control to re-render
   setTimeout(() => {
-    // start editing end time
-    $endInput.click();
-    assert.equal($startInput.attr('aria-expanded'), 'false', 'start time input is closed');
-    assert.equal($endInput.attr('aria-expanded'), 'true', 'end time input open after clicking');
+    assert.equal($startInput.attr('aria-expanded'), 'true', 'start time input open after clicking');
 
-    // SUPPOSEDLY, the end time has updated too and earliest possible end time to select should
-    // now constrained by the start time of 7:15a
-    // BUT this does not happen because our update handler doesn't actually update the start/end
-    // values so we don't rebuild in this way
-    // NOW, let's update end time to 5:30p
+    // update start time to 7:15a
     expectedDayOfWeek = 'thursday';
-    expectedNewStart = '0130'; // original time because we DIDN'T ACTUALLY UPDATE our values
-    expectedNewEnd = '1730'; // just-selected 5:30p
-    Ember.$(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
-    done();
+    expectedNewStart = '0715';
+    expectedNewEnd = '0715';
+    Ember.$(`#${$startInput.attr('aria-owns')} [data-pick="435"]`).click();
+
+    // delay to allow date-time control to re-render
+    setTimeout(() => {
+      // start editing end time
+      $endInput.click();
+      assert.equal($startInput.attr('aria-expanded'), 'false', 'start time input is closed');
+      assert.equal($endInput.attr('aria-expanded'), 'true', 'end time input open after clicking');
+
+      // SUPPOSEDLY, the end time has updated too and earliest possible end time to select should
+      // now constrained by the start time of 7:15a
+      // BUT this does not happen because our update handler doesn't actually update the start/end
+      // values so we don't rebuild in this way
+      // NOW, let's update end time to 5:30p
+      expectedDayOfWeek = 'thursday';
+      expectedNewStart = '0130'; // original time because we DIDN'T ACTUALLY UPDATE our values
+      expectedNewEnd = '1730'; // just-selected 5:30p
+      Ember.$(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
+      done();
+    }, 500);
   }, 500);
 });
 
@@ -283,7 +283,7 @@ test('deleting an existing range', function(assert) {
     handleDelete(dayOfWeek, newRanges) {
       assert.equal(dayOfWeek, 'thursday', 'deleting range for thursday');
       assert.equal(newRanges.length, 0, 'no more ranges after deleting');
-    }
+    },
   });
   this.render(
     hbs`{{schedule-control schedule=scheduleData scheduleClass=scheduleClass onChange=handleDelete}}`

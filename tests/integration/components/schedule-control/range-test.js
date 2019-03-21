@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import config from '../../../../config/environment';
 
 moduleForComponent('schedule-control/range', 'Integration | Component | schedule control/range', {
-  integration: true
+  integration: true,
 });
 
 test('rendering without any inputs', function(assert) {
@@ -60,7 +60,7 @@ test('rendering with unclean but valid data', function(assert) {
 test('rendering with valid data', function(assert) {
   this.setProperties({
     validData: ['0128', '0810'],
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(hbs`{{schedule-control/range data=validData timeInterval=timeInterval}}`);
 
@@ -78,12 +78,14 @@ test('rendering with valid data', function(assert) {
 });
 
 test('handling change for start when end is undefined', function(assert) {
+  const done = assert.async();
   this.setProperties({
     handleChange: newData => {
       assert.strictEqual(newData[0], '0030');
       assert.equal(newData[1], null);
+      done();
     },
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(
     hbs`{{schedule-control/range onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -93,13 +95,15 @@ test('handling change for start when end is undefined', function(assert) {
 });
 
 test('handling change for end', function(assert) {
+  const done = assert.async(2);
   // when start is undefined
   this.setProperties({
     handleChange: newData => {
       assert.equal(newData[0], null);
       assert.strictEqual(newData[1], '0215');
+      done();
     },
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(
     hbs`{{schedule-control/range onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -113,8 +117,9 @@ test('handling change for end', function(assert) {
     handleChange: newData => {
       assert.strictEqual(newData[0], originalStart);
       assert.strictEqual(newData[1], '0230');
+      done();
     },
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -123,13 +128,15 @@ test('handling change for end', function(assert) {
 });
 
 test('handling change for start when end is after start', function(assert) {
+  const done = assert.async();
   this.setProperties({
     data: ['0015', '0030'],
     handleChange: newData => {
       assert.strictEqual(newData[0], '0230');
       assert.strictEqual(newData[1], '0230');
+      done();
     },
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -138,13 +145,15 @@ test('handling change for start when end is after start', function(assert) {
 });
 
 test('handling change for start when end is before start', function(assert) {
+  const done = assert.async();
   this.setProperties({
     data: ['0015', '0312'],
     handleChange: newData => {
       assert.strictEqual(newData[0], '0230');
       assert.strictEqual(newData[1], '0312');
+      done();
     },
-    timeInterval: 30
+    timeInterval: 30,
   });
   this.render(
     hbs`{{schedule-control/range data=data onChange=(action handleChange) timeInterval=timeInterval}}`
@@ -172,20 +181,21 @@ function selectTime(component, assert, timeIndex, choiceSelector) {
     .$('input')
     .eq(timeIndex)
     .click();
+  setTimeout(() => {
+    // is open after selecting the input
+    assert.strictEqual(
+      component
+        .$('input')
+        .eq(timeIndex)
+        .attr('aria-expanded'),
+      'true'
+    );
 
-  // is open after selecting the input
-  assert.strictEqual(
-    component
+    // select a list item to update the start time
+    const ownsId = component
       .$('input')
       .eq(timeIndex)
-      .attr('aria-expanded'),
-    'true'
-  );
-
-  // select a list item to update the start time
-  const ownsId = component
-    .$('input')
-    .eq(timeIndex)
-    .attr('aria-owns');
-  Ember.$(`${config.APP.rootElement} #${ownsId} ${choiceSelector}`).click();
+      .attr('aria-owns');
+    Ember.$(`${config.APP.rootElement} #${ownsId} ${choiceSelector}`).click();
+  }, 500);
 }

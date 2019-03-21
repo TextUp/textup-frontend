@@ -4,7 +4,7 @@ import moment from 'moment';
 import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('datetime-control', 'Integration | Component | datetime control', {
-  integration: true
+  integration: true,
 });
 
 test('rendering different configurations', function(assert) {
@@ -69,13 +69,14 @@ test('rendering with various formats and placeholders', function(assert) {
   const datePlaceholder = 'I am a date placeholder',
     timePlaceholder = 'I am a time placeholder',
     dateFormat = 'zzz',
-    timeFormat = 'zzz';
+    timeFormat = 'zzz',
+    done = assert.async();
 
   this.setProperties({
     datePlaceholder,
     timePlaceholder,
     dateFormat,
-    timeFormat
+    timeFormat,
   });
 
   this.render(
@@ -97,79 +98,88 @@ test('rendering with various formats and placeholders', function(assert) {
 
   // select a value to see formats in action
   $dateInput.click();
-  assert.equal($dateInput.attr('aria-expanded'), 'true', 'aria is expanded after clicking');
-  const ownsId = $dateInput.attr('aria-owns');
-  Ember.$(`#${ownsId} td > div`).click();
-  assert.equal($dateInput.val(), dateFormat, 'date is expressed via provided custom format');
-  assert.equal($timeInput.val(), timeFormat, 'time is expressed via provided custom format');
+  setTimeout(() => {
+    assert.equal($dateInput.attr('aria-expanded'), 'true', 'aria is expanded after clicking');
+    const ownsId = $dateInput.attr('aria-owns');
+    Ember.$(`#${ownsId} td > div`).click();
+    assert.equal($dateInput.val(), dateFormat, 'date is expressed via provided custom format');
+    assert.equal($timeInput.val(), timeFormat, 'time is expressed via provided custom format');
 
-  // reset passed-in format to valid formats WILL NOT RESULT in
-  // a component update unless we manually re-render
-  const value = new Date(Date.now());
-  this.setProperties({
-    dateFormat: 'ddd mmm d, yyyy',
-    timeFormat: 'h:i A',
-    value
-  });
-  // still stays original format
-  assert.equal(
-    $dateInput.val(),
-    dateFormat,
-    'date is remains the custom format, not the new format'
-  );
-  assert.equal(
-    $timeInput.val(),
-    timeFormat,
-    'time is remains the custom format, not the new format'
-  );
+    // reset passed-in format to valid formats WILL NOT RESULT in
+    // a component update unless we manually re-render
+    const value = new Date(Date.now());
+    this.setProperties({
+      dateFormat: 'ddd mmm d, yyyy',
+      timeFormat: 'h:i A',
+      value,
+    });
+    // still stays original format
+    assert.equal(
+      $dateInput.val(),
+      dateFormat,
+      'date is remains the custom format, not the new format'
+    );
+    assert.equal(
+      $timeInput.val(),
+      timeFormat,
+      'time is remains the custom format, not the new format'
+    );
 
-  // when we re-render the component
-  this.render(
-    hbs`{{datetime-control datePlaceholder=datePlaceholder
+    // when we re-render the component
+    this.render(
+      hbs`{{datetime-control datePlaceholder=datePlaceholder
       timePlaceholder=timePlaceholder
       dateFormat=dateFormat
       timeFormat=timeFormat
       value=value}}`
-  );
-  $dateInput = this.$('input').eq(0);
-  $timeInput = this.$('input').eq(1);
-  // and the values displayed are according to our passed-in formats
-  // NOTE that moment.js uses different format strings than the
-  // ones used for pickadate.js
-  assert.equal($dateInput.val(), moment(value).format('ddd MMM D, YYYY'), 'date format matches');
-  assert.equal($timeInput.val(), moment(value).format('h:mm A'), 'time format matches');
+    );
+    $dateInput = this.$('input').eq(0);
+    $timeInput = this.$('input').eq(1);
+    // and the values displayed are according to our passed-in formats
+    // NOTE that moment.js uses different format strings than the
+    // ones used for pickadate.js
+    assert.equal($dateInput.val(), moment(value).format('ddd MMM D, YYYY'), 'date format matches');
+    assert.equal($timeInput.val(), moment(value).format('h:mm A'), 'time format matches');
+
+    done();
+  }, 500);
 });
 
 test('rendering different time intervals', function(assert) {
   const value = new Date(Date.now()),
-    timeInterval = 17; // in minutes
+    timeInterval = 17, // in minutes
+    done = assert.async();
   this.setProperties({
     timeInterval,
-    value
+    value,
   });
   this.render(hbs`{{datetime-control value=value timeInterval=timeInterval}}`);
   const $timeInput = this.$('input').eq(1);
   // open the time picker
   $timeInput.click();
-  assert.equal($timeInput.attr('aria-expanded'), 'true', 'picker is expanded after selecting');
-  // and check offsets for all time option items
-  let prevValue = null;
-  Ember.$(`#${$timeInput.attr('aria-owns')} li`).each(function() {
-    const itemValue = $(this).data('pick');
-    // don't run assertion for first item (val is 0) and last item (value is undefined)
-    if (!!itemValue) {
-      assert.equal(itemValue - prevValue, timeInterval, 'time options have appropriate offset');
-    }
-    prevValue = itemValue;
-  });
+  setTimeout(() => {
+    assert.equal($timeInput.attr('aria-expanded'), 'true', 'picker is expanded after selecting');
+    // and check offsets for all time option items
+    let prevValue = null;
+    Ember.$(`#${$timeInput.attr('aria-owns')} li`).each(function() {
+      const itemValue = $(this).data('pick');
+      // don't run assertion for first item (val is 0) and last item (value is undefined)
+      if (!!itemValue) {
+        assert.equal(itemValue - prevValue, timeInterval, 'time options have appropriate offset');
+      }
+      prevValue = itemValue;
+    });
+    done();
+  }, 500);
 });
 
 test('minimum and maximum boundaries', function(assert) {
   const min = moment().subtract(1, 'hour'),
-    max = moment().add(2, 'days');
+    max = moment().add(2, 'days'),
+    done = assert.async();
   this.setProperties({
     min: min.toDate(),
-    max: max.toDate()
+    max: max.toDate(),
   });
   this.render(hbs`{{datetime-control min=min max=max}}`);
   const $dateInput = this.$('input').eq(0),
@@ -177,85 +187,86 @@ test('minimum and maximum boundaries', function(assert) {
 
   // date picker boundaries
   $dateInput.click();
-  assert.equal($dateInput.attr('aria-expanded'), 'true', 'date input expanded after selecting');
-  assert.equal($timeInput.attr('aria-expanded'), 'false', 'time input not expanded');
+  setTimeout(() => {
+    assert.equal($dateInput.attr('aria-expanded'), 'true', 'date input expanded after selecting');
+    assert.equal($timeInput.attr('aria-expanded'), 'false', 'time input not expanded');
 
-  const minDate = min.clone().startOf('day'),
-    maxDate = max.clone().startOf('day');
-  // need the div because the footer has a non-selected button
-  // that has the same date valuea as the currently-selected
-  // calendar date entry
-  Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]`).each(function() {
-    const day = moment(parseInt(this.dataset.pick));
-    if (day.isBefore(minDate) || day.isAfter(maxDate)) {
-      assert.equal(
-        this.attributes['aria-disabled'].value,
-        'true',
-        'date before minimum is disabled'
-      );
-    } else if (day.isSame(minDate)) {
-      assert.ok(
-        !this.attributes['aria-disabled'],
-        "day of minimum is NOT disabled b/c this attribute doesn't exist here"
-      );
-    } else if (day.isAfter(minDate) && day.isSameOrBefore(maxDate)) {
-      assert.ok(!this.attributes['aria-disabled'], 'date between min and max is NOT disabled');
-    }
-  });
+    const minDate = min.clone().startOf('day'),
+      maxDate = max.clone().startOf('day');
+    // need the div because the footer has a non-selected button
+    // that has the same date valuea as the currently-selected
+    // calendar date entry
+    Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]`).each(function() {
+      const day = moment(parseInt(this.dataset.pick));
+      if (day.isBefore(minDate) || day.isAfter(maxDate)) {
+        assert.equal(
+          this.attributes['aria-disabled'].value,
+          'true',
+          'date before minimum is disabled'
+        );
+      } else if (day.isSame(minDate)) {
+        assert.ok(
+          !this.attributes['aria-disabled'],
+          "day of minimum is NOT disabled b/c this attribute doesn't exist here"
+        );
+      } else if (day.isAfter(minDate) && day.isSameOrBefore(maxDate)) {
+        assert.ok(!this.attributes['aria-disabled'], 'date between min and max is NOT disabled');
+      }
+    });
 
-  // time picker boundaries
-  $timeInput.click();
-  assert.equal($timeInput.attr('aria-expanded'), 'true', 'time input expanded after selecting');
-  assert.equal($dateInput.attr('aria-expanded'), 'false', 'date input not expanded');
-  // before a value is being selected
-  assert.equal(
-    Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
-      .eq(0)
-      .data('pick'),
-    0,
-    'before selecting a value, the time picker does not show min because not sure what day it is'
-  );
-
-  // select minimum date from the date picker
-  $dateInput.click();
-  Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
-    .first()
-    .click();
-
-  // with the min date selected, the time picker now shows minimum
-  $timeInput.click();
-  assert.ok(
-    Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
-      .eq(0)
-      .data('pick') >
-      min.hour() * 60,
-    'with date set to same day as minimum, time range is now constrained'
-  );
-
-  // select maximum date from date picker
-  $dateInput.click();
-
-  const done = assert.async(1);
-  // if we don't wait the time picker doesn't update to show max range
-  // so we wait for a bit to select the  max date to simulate more realistic
-  // interaction of selecting the max date
-  setTimeout(function() {
-    Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
-      .last()
-      .click();
-
-    // with the max date selected, the time picker now shows maximum
+    // time picker boundaries
     $timeInput.click();
-    assert.ok(
-      Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
-        .last()
-        .data('pick') <
-        (max.hour() + 1) * 60,
-      'with date set to same day as max, time range is now constrained'
-    );
+    setTimeout(() => {
+      assert.equal($timeInput.attr('aria-expanded'), 'true', 'time input expanded after selecting');
+      assert.equal($dateInput.attr('aria-expanded'), 'false', 'date input not expanded');
+      // before a value is being selected
+      assert.equal(
+        Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+          .eq(0)
+          .data('pick'),
+        0,
+        'before selecting a value, the time picker does not show min because not sure what day it is'
+      );
 
-    done();
-  }, 100);
+      // select minimum date from the date picker
+      $dateInput.click();
+      setTimeout(() => {
+        Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
+          .first()
+          .click();
+
+        // with the min date selected, the time picker now shows minimum
+        $timeInput.click();
+        assert.ok(
+          Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+            .eq(0)
+            .data('pick') >
+            min.hour() * 60,
+          'with date set to same day as minimum, time range is now constrained'
+        );
+
+        // select maximum date from date picker
+        $dateInput.click();
+        setTimeout(() => {
+          Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
+            .last()
+            .click();
+
+          // with the max date selected, the time picker now shows maximum
+          $timeInput.click();
+          assert.ok(
+            Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+              .last()
+              .data('pick') <
+              (max.hour() + 1) * 60,
+            'with date set to same day as max, time range is now constrained'
+          );
+
+          done();
+        }, 500);
+      }, 500);
+    }, 500);
+  }, 500);
 });
 
 test('handling change', function(assert) {
