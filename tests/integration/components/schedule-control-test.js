@@ -251,19 +251,21 @@ test('updating an existing range', function(assert) {
     setTimeout(() => {
       // start editing end time
       $endInput.click();
-      assert.equal($startInput.attr('aria-expanded'), 'false', 'start time input is closed');
-      assert.equal($endInput.attr('aria-expanded'), 'true', 'end time input open after clicking');
+      setTimeout(() => {
+        assert.equal($startInput.attr('aria-expanded'), 'false', 'start time input is closed');
+        assert.equal($endInput.attr('aria-expanded'), 'true', 'end time input open after clicking');
 
-      // SUPPOSEDLY, the end time has updated too and earliest possible end time to select should
-      // now constrained by the start time of 7:15a
-      // BUT this does not happen because our update handler doesn't actually update the start/end
-      // values so we don't rebuild in this way
-      // NOW, let's update end time to 5:30p
-      expectedDayOfWeek = 'thursday';
-      expectedNewStart = '0130'; // original time because we DIDN'T ACTUALLY UPDATE our values
-      expectedNewEnd = '1730'; // just-selected 5:30p
-      Ember.$(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
-      done();
+        // SUPPOSEDLY, the end time has updated too and earliest possible end time to select should
+        // now constrained by the start time of 7:15a
+        // BUT this does not happen because our update handler doesn't actually update the start/end
+        // values so we don't rebuild in this way
+        // NOW, let's update end time to 5:30p
+        expectedDayOfWeek = 'thursday';
+        expectedNewStart = '0130'; // original time because we DIDN'T ACTUALLY UPDATE our values
+        expectedNewEnd = '1730'; // just-selected 5:30p
+        Ember.$(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
+        done();
+      }, 500);
     }, 500);
   }, 500);
 });
