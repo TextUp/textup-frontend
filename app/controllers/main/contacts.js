@@ -45,11 +45,12 @@ export default Ember.Controller.extend({
           status: phone.get('contactStatuses'),
           offset: phone.get('contacts.length'),
         };
+        // right now only supports passing one id to the backend at a time.
+        // NOT both tag and team
         if (tag) {
           query.tagId = tag.get('id');
           delete query.status; // ignore filter if viewing a tag
-        }
-        if (team) {
+        } else if (team) {
           query.teamId = team.get('id');
         }
         this.get('store')
