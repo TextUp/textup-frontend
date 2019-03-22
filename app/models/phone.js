@@ -30,11 +30,10 @@ export default DS.Model.extend(Dirtiable, Validations, {
   },
   rollbackAttributes() {
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
-    tryInvoke(getWithDefault(this, 'availability.content', {}), 'rollbackAttributes');
     return this._super(...arguments);
   },
-  hasManualChanges: computed('availability.isDirty', 'media.isDirty', function() {
-    return !!this.get('availability.isDirty') || !!this.get('media.isDirty');
+  hasManualChanges: computed('media.isDirty', function() {
+    return !!this.get('media.isDirty');
   }),
 
   // Properties

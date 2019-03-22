@@ -3,7 +3,7 @@ import LocationUtils from 'textup-frontend/utils/location';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('util:location', 'Unit | Utility | location', {
-  needs: ['config:environment']
+  needs: ['config:environment'],
 });
 
 test('building preview url', function(assert) {
@@ -14,17 +14,14 @@ test('building preview url', function(assert) {
     lng = Math.random(),
     size = Math.random();
 
-  assert.notOk(LocationUtils.buildPreviewUrl(), 'must pass in config');
-  assert.ok(LocationUtils.buildPreviewUrl({}), 'config can be empty object');
+  const noInputsRes = LocationUtils.buildPreviewUrl();
+  assert.ok(noInputsRes.includes(url));
+  assert.ok(noInputsRes.includes(`access_token=${token}`));
+  assert.ok(noInputsRes.includes('pin-m'));
+  assert.ok(noInputsRes.includes('15'));
+  assert.ok(noInputsRes.includes('.png'));
 
-  const onlyConfigRes = LocationUtils.buildPreviewUrl(config);
-  assert.ok(onlyConfigRes.includes(url));
-  assert.ok(onlyConfigRes.includes(`access_token=${token}`));
-  assert.ok(onlyConfigRes.includes('pin-m'));
-  assert.ok(onlyConfigRes.includes('15'));
-  assert.ok(onlyConfigRes.includes('.png'));
-
-  const allInputsRes = LocationUtils.buildPreviewUrl(config, lat, lng, size);
+  const allInputsRes = LocationUtils.buildPreviewUrl(lat, lng, size);
   assert.ok(allInputsRes.includes(`${lng},${lat}`));
   assert.ok(allInputsRes.includes(`${size}x${size}`));
   assert.ok(allInputsRes.includes(url));

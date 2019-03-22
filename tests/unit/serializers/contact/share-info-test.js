@@ -1,15 +1,9 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import ContactShareInfoSerializer from 'textup-frontend/serializers/contact/share-info';
+import Shareable from 'textup-frontend/mixins/serializer/shareable';
 
-moduleForModel('contact/share-info', 'Unit | Serializer | contact/share info', {
-  // Specify the other units that are required for this test.
-  needs: ['serializer:contact/share-info']
-});
+module('Unit | Serializer | contact/share info');
 
-// Replace this with your real tests.
-test('it serializes records', function(assert) {
-  let record = this.subject();
-
-  let serializedRecord = record.serialize();
-
-  assert.ok(serializedRecord);
+test('is shareable', function(assert) {
+  assert.ok(Shareable.detect(ContactShareInfoSerializer.create()));
 });

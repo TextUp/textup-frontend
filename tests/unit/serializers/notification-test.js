@@ -1,15 +1,12 @@
-import { moduleForModel, test } from 'ember-qunit';
+import DS from 'ember-data';
+import NotificationSerializer from 'textup-frontend/serializers/notification';
+import { module, test } from 'qunit';
 
-moduleForModel('notification', 'Unit | Serializer | notification', {
-  // Specify the other units that are required for this test.
-  needs: ['serializer:notification']
-});
+module('Unit | Serializer | notification');
 
-// Replace this with your real tests.
 test('it serializes records', function(assert) {
-  let record = this.subject();
+  const serializer = NotificationSerializer.create();
 
-  let serializedRecord = record.serialize();
-
-  assert.ok(serializedRecord);
+  assert.ok(serializer.attrs.details.deserialize, 'records');
+  assert.ok(DS.EmbeddedRecordsMixin.detect(serializer));
 });

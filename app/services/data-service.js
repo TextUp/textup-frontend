@@ -21,7 +21,7 @@ export default Ember.Service.extend({
       }
       this.get('loadingSlider').startLoading();
       this.request(RSVP.all(changedModels.map(model => model.save())))
-        .then(success => resolve(isArray(data) ? success : success[0]))
+        .then(success => resolve(isArray(data) ? success : success[0]), reject)
         .finally(() => this.get('loadingSlider').endLoading());
     });
   },

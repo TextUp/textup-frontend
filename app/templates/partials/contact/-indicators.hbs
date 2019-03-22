@@ -7,7 +7,7 @@
             classNames='badge text-smaller'
             title=(concat (if contact.isDelegatePermission
                 'Collaborating with '
-                (if contact.isViewPermission 'Viewing only from ' 'Shared by')) contact.sharedBy)}}
+                (if contact.isViewPermission 'Viewing only from ' 'Shared by')) contact.sharedByName)}}
             Shared
         {{/tool-tip}}
     </span>

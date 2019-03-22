@@ -5,20 +5,21 @@ const { run } = Ember;
 
 moduleForModel('contact', 'Unit | Serializer | contact', {
   needs: [
-    'serializer:contact',
-    'model:record-item',
-    'model:record-text',
-    'model:record-call',
-    'model:record-note',
     'model:future-message',
     'model:phone',
+    'model:record-call',
+    'model:record-item',
+    'model:record-note',
+    'model:record-text',
+    'model:contact/share-info',
     'model:tag',
-    'model:shared-contact',
-    'validator:presence',
-    'validator:length',
+    'serializer:contact',
+    'transform:fragment-array',
+    'validator:collection',
     'validator:inclusion',
-    'validator:collection'
-  ]
+    'validator:length',
+    'validator:presence',
+  ],
 });
 
 test('serialized form', function(assert) {
@@ -32,14 +33,14 @@ test('serialized form', function(assert) {
   assert.notOk(keys.contains('unreadInfo'));
   assert.notOk(keys.contains('tags'));
   assert.notOk(keys.contains('sharedWith'));
-  assert.notOk(keys.contains('permission'));
   assert.notOk(keys.contains('startedSharing'));
-  assert.notOk(keys.contains('sharedBy'));
-  assert.notOk(keys.contains('sharedById'));
+  assert.notOk(keys.contains('sharedByName'));
+  assert.notOk(keys.contains('sharedByPhoneId'));
   assert.notOk(keys.contains('lastRecordActivity'));
   assert.notOk(keys.contains('_recordItems'));
   assert.notOk(keys.contains('_futureMessages'));
   assert.notOk(keys.contains('futureMessages'));
+  assert.ok(keys.contains('permission'));
   assert.ok(keys.contains('language'));
   assert.ok(keys.contains('name'));
   assert.ok(keys.contains('note'));
@@ -56,7 +57,7 @@ test('serialized form', function(assert) {
 
     obj.set('actions', [
       { action: 'stop', bucketId: 88, itemId: 2 },
-      { action: 'delegate', bucketId: 123, itemId: 2 }
+      { action: 'delegate', bucketId: 123, itemId: 2 },
     ]);
     serialized = obj.serialize();
     keys = Object.keys(serialized);

@@ -1,11 +1,12 @@
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import HasAuthor from 'textup-frontend/mixins/serializer/has-author';
 import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 
 const polymorphicTypeToModelName = {
-  TEXT: 'record-text',
-  CALL: 'record-call',
-  NOTE: 'record-note',
+  TEXT: Constants.MODEL.RECORD_TEXT,
+  CALL: Constants.MODEL.RECORD_CALL,
+  NOTE: Constants.MODEL.RECORD_NOTE,
 };
 
 export function tryNormalizePolymorphicType(hash) {
@@ -45,9 +46,13 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
 
   serialize(snapshot) {
     const json = this._super(...arguments),
-      rItem = snapshot.record;
+      rItem = snapshot.record,
+      modelName = rItem.get(Constants.PROP_NAME.MODEL_NAME);
     json.ids = rItem.get('recipients').map(obj => obj.get('id'));
     json.numbers = rItem.get('newNumberRecipients');
+    json.type = Object.keys(polymorphicTypeToModelName).find(
+      key => polymorphicTypeToModelName[key] === modelName
+    );
     return json;
   },
 });

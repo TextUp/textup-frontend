@@ -57,7 +57,7 @@ export default Ember.Route.extend(
       if (AppAccessUtils.isActivePhoneOwner(model)) {
         this.get('stateManager').set('owner', model);
       } else {
-        AppAccessUtils.determineAppropriatePosition(this, this.get('authService'));
+        AppAccessUtils.determineAppropriateLocation(this, this.get('authService'));
       }
     },
     setupController(controller, model) {

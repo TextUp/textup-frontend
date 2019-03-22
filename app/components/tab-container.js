@@ -75,13 +75,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     this._switchToIndex(this.get('_publicAPI.currentIndex') - 1);
   },
   _switchToIndex(index) {
-    if (!isPresent(index)) {
+    if (!isPresent(index) || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     const items = this.get('_items'),
-      itemIndex = ArrayUtils.normalizeIndex(items.get('length'), index),
-      currentIndex = this.get('_publicAPI.currentIndex');
-
+      numItems = items.get('length'),
+      itemIndex = ArrayUtils.normalizeIndex(numItems, index),
+      currentIndex = ArrayUtils.normalizeIndex(numItems, this.get('_publicAPI.currentIndex'));
     if (currentIndex === itemIndex) {
       return;
     }
@@ -102,6 +102,7 @@ export default Ember.Component.extend(PropTypesMixin, {
         items.get('length'),
         this.get('_publicAPI.currentIndex')
       );
+    this.set('_publicAPI.currentIndex', currentIndex); // normalize index if needed
     items.forEach((item, index) => item.actions.initialize(currentIndex === index));
     if (this.get('_hasMultipleTabs')) {
       run.scheduleOnce('afterRender', this, this._setupMultipleTabs);

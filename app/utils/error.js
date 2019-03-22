@@ -1,3 +1,4 @@
+import * as ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
 
 const { isArray, isPresent, typeOf } = Ember,
@@ -11,7 +12,7 @@ export function isResponse(obj) {
 
 export function isResponseStatus(obj, statusCode) {
   if (isResponse(obj)) {
-    return obj[ERRORS_PROP_NAME].isAny(STATUS_PROP_NAME, statusCode);
+    return ArrayUtils.ensureAllDefined(obj[ERRORS_PROP_NAME]).isAny(STATUS_PROP_NAME, statusCode);
   } else {
     return false;
   }
@@ -19,7 +20,9 @@ export function isResponseStatus(obj, statusCode) {
 
 export function tryExtractResponseMessages(obj) {
   if (isResponse(obj)) {
-    return obj[ERRORS_PROP_NAME].mapBy(MESSAGE_PROP_NAME).uniq();
+    return ArrayUtils.ensureAllDefined(obj[ERRORS_PROP_NAME])
+      .mapBy(MESSAGE_PROP_NAME)
+      .uniq();
   } else {
     return [];
   }

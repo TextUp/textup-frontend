@@ -1,9 +1,9 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
-import PhoneNumber from 'textup-frontend/utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
+import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 
@@ -78,8 +78,8 @@ function addRecipientFor(obj, list) {
     : _addRecipientForObject(obj, list);
 }
 function _addRecipientForNumber(num, list) {
-  if (PhoneNumber.validate(num)) {
-    const cleanedNum = PhoneNumber.clean(num);
+  if (PhoneNumberUtils.validate(num)) {
+    const cleanedNum = PhoneNumberUtils.clean(num);
     if (!list.find(existingNum => existingNum === cleanedNum)) {
       list.pushObject(cleanedNum);
     }
@@ -103,8 +103,8 @@ function removeRecipientFor(obj, list) {
     : _removeRecipientForObject(obj, list);
 }
 function _removeRecipientForNumber(num, list) {
-  if (PhoneNumber.validate(num)) {
-    const cleanedNum = PhoneNumber.clean(num),
+  if (PhoneNumberUtils.validate(num)) {
+    const cleanedNum = PhoneNumberUtils.clean(num),
       foundNum = list.find(existingNum => existingNum === cleanedNum);
     if (foundNum) {
       list.removeObject(cleanedNum);

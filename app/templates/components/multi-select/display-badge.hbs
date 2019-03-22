@@ -3,7 +3,7 @@
         <span class="fa fa-tag"></span>
     {{else if (type/is-contact entity)}}
         {{#if entity.isShared}}
-            {{#tool-tip title=(concat 'Shared by ' entity.sharedBy)}}
+            {{#tool-tip title=(concat 'Shared by ' entity.sharedByName)}}
                 <span class="fa fa-share"></span>
             {{/tool-tip}}
         {{else}}

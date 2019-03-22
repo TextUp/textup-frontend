@@ -1,28 +1,41 @@
+import * as ArrayUtils from 'textup-frontend/utils/array';
 import * as TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 
-export function tryFindPhoneOwnerFromUrl(authUser, urlIdent) {
-  return authUser.get('allActivePhoneOwners').findBy(Constants.PROP_NAME.URL_IDENT, urlIdent);
-}
+const { isPresent, typeOf } = Ember;
 
-export function isActivePhoneOwner(phoneOwner) {
-  const isPhoneActive = phoneOwner && phoneOwner.get('phone.content.isActive');
-  if (TypeUtils.isStaff(phoneOwner)) {
-    return isPhoneActive && (phoneOwner.get('isStaff') || phoneOwner.get('isAdmin'));
+export function tryFindPhoneOwnerFromUrl(authUser, urlIdent) {
+  if (typeOf(authUser) === 'instance' && isPresent(urlIdent)) {
+    return ArrayUtils.ensureArrayAndAllDefined(authUser.get('allActivePhoneOwners')).findBy(
+      Constants.PROP_NAME.URL_IDENT,
+      urlIdent
+    );
   } else {
-    return isPhoneActive;
+    return null;
   }
 }
 
-export function determineAppropriatePosition(thisRoute, authService) {
-  const authUser = authService.get('authUser'),
-    phoneOwner = tryFindFirstActivePhoneOwnerFromStaff(authUser);
-  if (phoneOwner) {
-    thisRoute.transitionTo('main', phoneOwner);
-  } else if (canStaffAccessAdminDashboard(authUser)) {
-    transitionIfNotAlreadyThere(thisRoute, 'admin');
+export function isActivePhoneOwner(phoneOwner) {
+  const isPhoneActive =
+    typeOf(phoneOwner) === 'instance' && phoneOwner.get('phone.content.isActive');
+  if (TypeUtils.isStaff(phoneOwner)) {
+    return !!(isPhoneActive && (phoneOwner.get('isStaff') || phoneOwner.get('isAdmin')));
   } else {
-    transitionIfNotAlreadyThere(thisRoute, 'none');
+    return !!isPhoneActive;
+  }
+}
+
+export function determineAppropriateLocation(thisRoute, authService) {
+  if (typeOf(thisRoute) === 'instance' && typeOf(authService) === 'instance') {
+    const authUser = authService.get('authUser'),
+      phoneOwner = tryFindFirstActivePhoneOwnerFromStaff(authUser);
+    if (phoneOwner) {
+      thisRoute.transitionTo('main', phoneOwner);
+    } else if (canStaffAccessAdminDashboard(authUser)) {
+      transitionIfNotAlreadyThere(thisRoute, 'admin');
+    } else {
+      transitionIfNotAlreadyThere(thisRoute, 'none');
+    }
   }
 }
 
@@ -30,7 +43,7 @@ export function determineAppropriatePosition(thisRoute, authService) {
 // -------
 
 function transitionIfNotAlreadyThere(thisRoute, targetRouteName) {
-  if (thisRoute && thisRoute.get('routeName').indexOf(targetRouteName) === -1) {
+  if (thisRoute.get('routeName').indexOf(targetRouteName) === -1) {
     thisRoute.transitionTo(targetRouteName);
   }
 }

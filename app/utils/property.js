@@ -3,8 +3,8 @@ import Ember from 'ember';
 const { getWithDefault } = Ember,
   UNDEFINED_OBJ = function() {};
 
-export function mustGet(obj, valString, errorString) {
-  const retVal = getWithDefault(obj, valString, UNDEFINED_OBJ);
+export function mustGet(obj, propName, errorString) {
+  const retVal = getWithDefault(obj, propName, UNDEFINED_OBJ);
   if (retVal === UNDEFINED_OBJ) {
     throw new Error(errorString);
   }

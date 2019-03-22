@@ -8,7 +8,7 @@ export default Ember.Route.extend(IsAuthenticated, RequiresSetup, {
 
   beforeModel() {
     this._super(...arguments);
-    AppAccessUtils.determineAppropriatePosition(this, this.get('authService'));
+    AppAccessUtils.determineAppropriateLocation(this, this.get('authService'));
   },
   afterModel() {
     this.get('stateManager').set('owner', null);
