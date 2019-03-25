@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import RouteSupportsAvailabilitySlideoutMixin from 'textup-frontend/mixins/route/supports-availability-slideout';
 import sinon from 'sinon';
@@ -10,20 +11,17 @@ moduleFor(
   'Unit | Mixin | route/supports availability slideout',
   {
     needs: [
-      'service:constants',
       'service:analytics',
       'service:data-service',
       'service:auth-service',
-      'service:availability-slideout-service'
+      'service:availability-slideout-service',
     ],
     beforeEach() {
-      this.inject.service('constants');
-
       this.register(
         'route:supports-availability-slideout',
         Ember.Route.extend(RouteSupportsAvailabilitySlideoutMixin)
       );
-    }
+    },
   }
 );
 
@@ -37,7 +35,7 @@ test('starting slideout', function(assert) {
   assert.equal(route.send.firstCall.args[0], 'toggleSlideout');
   assert.equal(route.send.firstCall.args[1], 'slideouts/availability');
   assert.equal(route.send.firstCall.args[2], route.get('routeName'));
-  assert.equal(route.send.firstCall.args[3], this.constants.SLIDEOUT.OUTLET.DEFAULT);
+  assert.equal(route.send.firstCall.args[3], Constants.SLIDEOUT.OUTLET.DEFAULT);
 });
 
 test('cancelling slideout', function(assert) {
@@ -45,7 +43,7 @@ test('cancelling slideout', function(assert) {
   route.setProperties({
     currentModel: { rollbackAttributes: sinon.spy() },
     authService: { authUser: { rollbackAttributes: sinon.spy() } },
-    send: sinon.spy()
+    send: sinon.spy(),
   });
 
   route.actions.cancelAvailabilitySlideout.call(route);
@@ -63,7 +61,7 @@ test('finishing slideout', function(assert) {
     dataService: { persist: sinon.stub().returns(new RSVP.Promise(resolve => resolve())) },
     currentModel: sinon.spy(),
     authService: { authUser: sinon.spy() },
-    send: sinon.spy()
+    send: sinon.spy(),
   });
 
   route.actions.finishAvailabilitySlideout.call(route).then(() => {
@@ -82,20 +80,6 @@ test('finishing slideout', function(assert) {
   });
 });
 
-test('delegating availability entity switch', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
-    retVal = Math.random(),
-    argVal = Math.random();
-  route.setProperties({
-    availabilitySlideoutService: { ensureScheduleIsPresent: sinon.stub().returns(retVal) }
-  });
-
-  assert.equal(route.actions.onAvailabilityEntitySwitch.call(route, argVal), retVal);
-
-  assert.ok(route.availabilitySlideoutService.ensureScheduleIsPresent.calledOnce);
-  assert.ok(route.availabilitySlideoutService.ensureScheduleIsPresent.calledWith(argVal));
-});
-
 test('delegating finishing recording greeting', function(assert) {
   const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
     phoneSpy = sinon.spy(),
@@ -103,7 +87,7 @@ test('delegating finishing recording greeting', function(assert) {
     input3 = Math.random();
   route.setProperties({
     availabilitySlideoutService: { onAddAudio: sinon.spy() },
-    currentModel: { phone: { content: phoneSpy } }
+    currentModel: { phone: { content: phoneSpy } },
   });
 
   route.actions.onFinishRecordingGreeting.call(route, input2, input3);
@@ -118,7 +102,7 @@ test('delegating requesting voicemail greeting call', function(assert) {
     input2 = Math.random();
   route.setProperties({
     availabilitySlideoutService: { onRequestVoicemailGreetingCall: sinon.spy() },
-    currentModel: currentModelSpy
+    currentModel: currentModelSpy,
   });
 
   route.actions.onRequestVoicemailGreetingCall.call(route, input2);
