@@ -17,7 +17,6 @@ moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
     'service:state',
     'service:storage',
     'service:socket',
-    'service:constants',
     'model:contact',
     'model:tag',
     'model:media',
@@ -28,7 +27,7 @@ moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
     'transform:record-item-status',
     'validator:number',
     'validator:has-any',
-    'validator:inclusion'
+    'validator:inclusion',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
@@ -38,7 +37,7 @@ moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
   },
   afterEach() {
     server.restore();
-  }
+  },
 });
 
 test('path for type', function(assert) {
@@ -81,8 +80,8 @@ test('getting polymorphic list of items', function(assert) {
           { id: Math.random() },
           { id: Math.random(), type: TYPE_TEXT },
           { id: Math.random(), type: TYPE_CALL },
-          { id: Math.random(), type: TYPE_NOTE }
-        ]
+          { id: Math.random(), type: TYPE_NOTE },
+        ],
       })
     );
   });

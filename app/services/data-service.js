@@ -1,5 +1,5 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
-import * as ErrorUtils from 'textup-frontend/utils/error';
+import ArrayUtils from 'textup-frontend/utils/array';
+import ErrorUtils from 'textup-frontend/utils/error';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 

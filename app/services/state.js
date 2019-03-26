@@ -1,8 +1,7 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TypeUtils from 'textup-frontend/utils/type';
 import config from 'textup-frontend/config/environment';
 import DS from 'ember-data';
 import Ember from 'ember';
-import { clean as cleanNumber } from 'textup-frontend/utils/phone-number';
 
 const { computed } = Ember;
 

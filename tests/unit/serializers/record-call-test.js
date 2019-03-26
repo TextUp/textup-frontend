@@ -1,8 +1,4 @@
-import Ember from 'ember';
-import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { typeOf } = Ember;
 
 moduleForModel('record-call', 'Unit | Serializer | record call', {
   needs: [

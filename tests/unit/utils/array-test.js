@@ -1,4 +1,4 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
+import ArrayUtils from 'textup-frontend/utils/array';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array');

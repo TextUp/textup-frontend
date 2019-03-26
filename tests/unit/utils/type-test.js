@@ -1,4 +1,5 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
+import Ember from 'ember';
+import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { module, test } from 'qunit';

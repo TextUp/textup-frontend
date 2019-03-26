@@ -39,7 +39,7 @@ test('starting verify number', function(assert) {
     xhr.respond(204);
   });
 
-  service.startVerify(number).then(result => {
+  service.startVerify(number).then(() => {
     assert.ok(this.notifications.info.calledOnce);
     done();
   });

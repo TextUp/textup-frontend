@@ -1,4 +1,4 @@
-import * as AppAccessUtils from 'textup-frontend/utils/app-access';
+import AppAccessUtils from 'textup-frontend/utils/app-access';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
@@ -44,7 +44,10 @@ export default Ember.Route.extend(
     model(params) {
       this._super(...arguments);
       const authUser = this.get('authService.authUser'),
-        foundModel = AppAccessUtils.tryFindPhoneOwnerFromUrl(authUser, params.main_identifier);
+        foundModel = AppAccessUtils.tryFindPhoneOwnerOrSelfFromUrl(
+          authUser,
+          params.main_identifier
+        );
       if (foundModel) {
         return foundModel;
       } else {
@@ -57,7 +60,7 @@ export default Ember.Route.extend(
       if (AppAccessUtils.isActivePhoneOwner(model)) {
         this.get('stateManager').set('owner', model);
       } else {
-        AppAccessUtils.determineAppropriateLocation(this, this.get('authService'));
+        AppAccessUtils.determineAppropriateLocation(this, this.get('authService.authUser'));
       }
     },
     setupController(controller, model) {

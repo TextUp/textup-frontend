@@ -1,4 +1,4 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TypeUtils from 'textup-frontend/utils/type';
 import sinon from 'sinon';
 import { typeIsTag } from 'textup-frontend/helpers/type/is-tag';
 import { module, test } from 'qunit';

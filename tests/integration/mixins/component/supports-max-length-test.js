@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import ElementUtils from 'textup-frontend/utils/element';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
@@ -19,11 +20,10 @@ moduleForComponent('', 'Integration | Mixin | component/supports max length', {
         tagName: 'textarea',
         _buildCurrentValueLength() {
           return this.$().val().length;
-        }
+        },
       })
     );
-    this.inject.service('constants');
-  }
+  },
 });
 
 test('properties', function(assert) {
@@ -157,7 +157,7 @@ test('specifying position of indicator', function(assert) {
     'other position classes not added'
   );
 
-  this.setProperties({ maxLengthPosition: this.constants.MAX_LENGTH.POSITION.BOTTOM });
+  this.setProperties({ maxLengthPosition: Constants.MAX_LENGTH.POSITION.BOTTOM });
 
   wait().then(() => {
     assert.ok(Ember.$('.max-length .max-length__indicator--position-bottom').length);

@@ -1,8 +1,4 @@
-import Ember from 'ember';
-import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { isPresent } = Ember;
 
 moduleForModel('record-text', 'Unit | Serializer | record text', {
   needs: [

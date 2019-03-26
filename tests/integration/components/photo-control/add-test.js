@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import * as PhotoUtils from 'textup-frontend/utils/photo';
+import PhotoUtils from 'textup-frontend/utils/photo';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -8,7 +8,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { run } = Ember;
 
 moduleForComponent('photo-control/add', 'Integration | Component | photo control/add', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {

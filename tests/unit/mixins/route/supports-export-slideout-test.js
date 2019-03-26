@@ -1,23 +1,17 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import RouteSupportsExportSlideoutMixin from 'textup-frontend/mixins/route/supports-export-slideout';
-import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
+import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('mixin:route/supports-export-slideout', 'Unit | Mixin | route/supports export slideout', {
-  needs: [
-    'service:constants',
-    'service:analytics',
-    'service:compose-slideout-service',
-    'service:record-item-service'
-  ],
+  needs: ['service:analytics', 'service:compose-slideout-service', 'service:record-item-service'],
   beforeEach() {
-    this.inject.service('constants');
-
     this.register(
       'route:supports-export-slideout',
       Ember.Route.extend(RouteSupportsExportSlideoutMixin)
     );
-  }
+  },
 });
 
 test('initializing properties', function(assert) {
@@ -102,7 +96,7 @@ test('opening slideout', function(assert) {
     _initializeProperties: sinon.spy(),
     send: sinon.spy(),
     controller: Math.random(),
-    routeName: Math.random()
+    routeName: Math.random(),
   });
 
   route.actions.startSingleExportSlideout.call(route, recordOwner);
@@ -114,7 +108,7 @@ test('opening slideout', function(assert) {
   assert.equal(route.send.firstCall.args[0], 'toggleSlideout');
   assert.equal(route.send.firstCall.args[1], 'slideouts/export/single');
   assert.equal(route.send.firstCall.args[2], route.routeName);
-  assert.equal(route.send.firstCall.args[3], this.constants.SLIDEOUT.OUTLET.DETAIL);
+  assert.equal(route.send.firstCall.args[3], Constants.SLIDEOUT.OUTLET.DETAIL);
 
   route.actions.startMultipleExportSlideout.call(route, recordOwner);
 
@@ -125,7 +119,7 @@ test('opening slideout', function(assert) {
   assert.equal(route.send.secondCall.args[0], 'toggleSlideout');
   assert.equal(route.send.secondCall.args[1], 'slideouts/export/multiple');
   assert.equal(route.send.secondCall.args[2], route.routeName);
-  assert.equal(route.send.secondCall.args[3], this.constants.SLIDEOUT.OUTLET.DEFAULT);
+  assert.equal(route.send.secondCall.args[3], Constants.SLIDEOUT.OUTLET.DEFAULT);
 });
 
 test('starting export and finishing slideout', function(assert) {
@@ -134,16 +128,16 @@ test('starting export and finishing slideout', function(assert) {
 
   route.setProperties({
     recordItemService: {
-      exportRecordItems: sinon.stub().resolves()
+      exportRecordItems: sinon.stub().resolves(),
     },
     controller: Ember.Object.create({
       exportStartDate: Math.random(),
       exportEndDate: Math.random(),
       exportAsGrouped: Math.random(),
       exportForEntirePhone: true,
-      exportRecordOwners: Math.random()
+      exportRecordOwners: Math.random(),
     }),
-    send: sinon.spy()
+    send: sinon.spy(),
   });
 
   route.actions.finishExportSlideout

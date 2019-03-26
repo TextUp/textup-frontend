@@ -1,4 +1,4 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TypeUtils from 'textup-frontend/utils/type';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';

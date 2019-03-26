@@ -1,6 +1,5 @@
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import { urlIdent } from 'textup-frontend/utils/property';
 
 export default Ember.Route.extend({
   dataService: Ember.inject.service(),

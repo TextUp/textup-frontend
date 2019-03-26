@@ -3,7 +3,6 @@ import DS from 'ember-data';
 import Ember from 'ember';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
-import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 

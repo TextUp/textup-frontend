@@ -1,13 +1,13 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import wait from 'ember-test-helpers/wait';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
   mockValidMediaImage,
-  mockValidMediaAudio
+  mockValidMediaAudio,
 } from 'textup-frontend/tests/helpers/utilities';
 
 const { typeOf } = Ember;
@@ -16,7 +16,7 @@ moduleForComponent('image-stack', 'Integration | Component | image stack', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -63,7 +63,7 @@ test('successfully loading an image', function(assert) {
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1);
-      assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], true);
+      assert.equal(results[mockImage.get(Constants.PROP_NAME.MEDIA_ID)], true);
 
       assert.ok(this.$('.image-stack__preview__count').length);
       assert.ok(
@@ -86,7 +86,7 @@ test('failing to load image', function(assert) {
     onLoadEnd = results => {
       assert.equal(typeOf(results), 'object');
       assert.equal(Object.keys(results).length, 1, 'only try the first image');
-      assert.equal(results[mockImage.get(MEDIA_ID_PROP_NAME)], false);
+      assert.equal(results[mockImage.get(Constants.PROP_NAME.MEDIA_ID)], false);
 
       assert.ok(this.$('.image-stack__preview__count').length);
       assert.ok(
@@ -100,7 +100,7 @@ test('failing to load image', function(assert) {
 
   this.setProperties({
     images: [mockImage, mockValidMediaImage(this.store), mockValidMediaImage(this.store)],
-    onLoadEnd
+    onLoadEnd,
   });
 
   this.render(hbs`{{image-stack images=images onLoadEnd=onLoadEnd}}`);

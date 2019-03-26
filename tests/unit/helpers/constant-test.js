@@ -1,4 +1,4 @@
-import * as PropertyUtils from 'textup-frontend/utils/property';
+import PropertyUtils from 'textup-frontend/utils/property';
 import Constants from 'textup-frontend/constants';
 import sinon from 'sinon';
 import { getConstantVal } from 'textup-frontend/helpers/constant';

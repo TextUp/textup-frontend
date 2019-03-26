@@ -1,12 +1,12 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import MediaElementVersion from 'textup-frontend/models/media-element-version';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, typeOf } = Ember;
 
 moduleForModel('media-element', 'Unit | Model | media element', {
-  needs: ['model:media-element-version']
+  needs: ['model:media-element-version'],
 });
 
 test('properties', function(assert) {
@@ -14,9 +14,9 @@ test('properties', function(assert) {
     const obj = this.subject(),
       randVal1 = Math.random();
 
-    obj.set(MEDIA_ID_PROP_NAME, randVal1);
+    obj.set(Constants.PROP_NAME.MEDIA_ID, randVal1);
 
-    assert.equal(obj.get(MEDIA_ID_PROP_NAME), randVal1);
+    assert.equal(obj.get(Constants.PROP_NAME.MEDIA_ID), randVal1);
     assert.equal(typeOf(obj.get('isDirty')), 'boolean');
     assert.throws(() => obj.set('versions', []), 'must use method to add versions');
   });
@@ -64,7 +64,7 @@ test('adding versions and rolling back', function(assert) {
         type,
         source: `${randVal1}`,
         width: null,
-        height: null
+        height: null,
       }
     );
     assert.deepEqual(
@@ -73,7 +73,7 @@ test('adding versions and rolling back', function(assert) {
         type,
         source: `${randVal2}`,
         width: 88,
-        height: 88
+        height: 88,
       }
     );
 

@@ -1,4 +1,4 @@
-import * as AudioUtils from 'textup-frontend/utils/audio';
+import AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -12,7 +12,7 @@ moduleForComponent('audio-control', 'Integration | Component | audio control', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('properties', function(assert) {

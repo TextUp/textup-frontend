@@ -13,7 +13,7 @@ moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('empty + invalid inputs', function(assert) {
@@ -26,7 +26,7 @@ test('empty + invalid inputs', function(assert) {
     {{care-record canAddToRecord=88
       canModifyExistingInRecord=88
       nextFutureFire=88
-      personalPhoneNumber=88
+      personalNumber=88
       recordClusters=88
       numRecordItems="not a number"
       totalNumRecordItems="not a number"
@@ -63,7 +63,7 @@ test('all valid inputs', function(assert) {
     {{care-record canAddToRecord=true
       canModifyExistingInRecord=true
       nextFutureFire=date
-      personalPhoneNumber="hi"
+      personalNumber="hi"
       recordClusters=array
       numRecordItems=88
       totalNumRecordItems=88
@@ -103,7 +103,7 @@ test('overlay messages', function(assert) {
     noRecordItemsMessage,
     noAddToRecordMessage,
     startCallMessage,
-    addNoteInPastMessage
+    addNoteInPastMessage,
   });
 
   this.render(hbs`
@@ -182,15 +182,15 @@ test('no items yet in the record', function(assert) {
 test('starting call', function(assert) {
   const recordClusters = mockRecordClusters(this.store),
     onCall = sinon.spy(),
-    personalPhoneNumber = `${Math.random()}`,
+    personalNumber = `${Math.random()}`,
     done = assert.async();
-  this.setProperties({ recordClusters, onCall, personalPhoneNumber });
+  this.setProperties({ recordClusters, onCall, personalNumber });
 
   this.render(hbs`
     {{care-record canAddToRecord=true
       canModifyExistingInRecord=true
       recordClusters=recordClusters
-      personalPhoneNumber=personalPhoneNumber
+      personalNumber=personalNumber
       onCall=onCall}}
   `);
 
@@ -227,7 +227,7 @@ test('starting call', function(assert) {
 
       let callOverlayText = this.$('.record-actions-control__overlay--open').text();
       assert.ok(
-        callOverlayText.includes(personalPhoneNumber),
+        callOverlayText.includes(personalNumber),
         'default message shows personal phone number'
       );
       assert.ok(

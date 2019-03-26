@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
@@ -10,8 +11,7 @@ moduleForComponent('future-message', 'Integration | Component | future message',
   integration: true,
   beforeEach() {
     this.inject.service('store');
-    this.inject.service('constants');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -48,7 +48,7 @@ test('rendering type of message', function(assert) {
   run(() => {
     const done = assert.async(),
       fMsg = this.store.createRecord('future-message', {
-        type: this.constants.get('FUTURE_MESSAGE.TYPE.TEXT')
+        type: Constants.FUTURE_MESSAGE.TYPE.TEXT,
       });
     this.setProperties({ fMsg });
     this.render(hbs`{{future-message message=fMsg}}`);
@@ -56,7 +56,7 @@ test('rendering type of message', function(assert) {
     assert.ok(this.$('.ember-view').length);
     assert.ok(this.$('.fa-paper-plane-o').length, 'has text icon');
 
-    fMsg.set('type', this.constants.get('FUTURE_MESSAGE.TYPE.CALL'));
+    fMsg.set('type', Constants.FUTURE_MESSAGE.TYPE.CALL);
 
     wait().then(() => {
       assert.ok(this.$('.fa-phone').length, 'has call icon');
@@ -150,7 +150,7 @@ test('media + content', function(assert) {
       'media',
       this.store.createRecord('media', {
         images: [mockValidMediaImage(this.store)],
-        audio: [mockValidMediaAudio(this.store)]
+        audio: [mockValidMediaAudio(this.store)],
       })
     );
     wait().then(() => {

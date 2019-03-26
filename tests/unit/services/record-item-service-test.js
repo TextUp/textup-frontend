@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import FileUtils from 'textup-frontend/utils/file';
 import Location from 'textup-frontend/models/location';
@@ -13,40 +14,38 @@ const { typeOf, RSVP, run } = Ember;
 
 moduleFor('service:record-item-service', 'Unit | Service | record item service', {
   needs: [
-    'service:constants',
     'model:contact',
     'model:location',
     'model:media',
-    'model:media/add',
     'model:media-element',
     'model:media-element-version',
-    'model:record-item',
-    'model:record-note-revision',
-    'model:tag',
-    'model:record-item',
+    'model:media/add',
     'model:record-call',
+    'model:record-item',
+    'model:record-item',
     'model:record-note',
+    'model:record-note-revision',
     'model:record-text',
+    'model:tag',
     'transform:record-item-status',
     'validator:has-any',
     'validator:inclusion',
     'validator:number',
-    'validator:presence'
+    'validator:presence',
   ],
   beforeEach() {
     this.register('service:data-service', Ember.Service);
     this.inject.service('data-service', { as: 'dataService' });
     this.inject.service('store');
-    this.inject.service('constants');
-  }
+  },
 });
 
 test('building required query parameters for particular record owners', function(assert) {
   const service = this.subject(),
     emptyResult = { contactIds: [], sharedContactIds: [], tagIds: [] },
-    mockTag = mockModel(Math.random(), this.constants.MODEL.TAG),
-    mockContact = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: false }),
-    mockShared = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: true });
+    mockTag = mockModel(Math.random(), Constants.MODEL.TAG),
+    mockContact = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: false }),
+    mockShared = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: true });
 
   assert.deepEqual(service._buildQueryFor(), emptyResult);
   assert.deepEqual(service._buildQueryFor(null), emptyResult);
@@ -91,13 +90,13 @@ test('loading more record items for contact', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 100,
-    model = mockModel(88, this.constants.MODEL.CONTACT, { numRecordItems }),
+    model = mockModel(88, Constants.MODEL.CONTACT, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
@@ -106,7 +105,7 @@ test('loading more record items for contact', function(assert) {
       sharedContactIds: [],
       tagIds: [],
       max: 20,
-      offset: numRecordItems
+      offset: numRecordItems,
     });
 
     queryStub.restore();
@@ -118,13 +117,13 @@ test('loading more record items for tag', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 88,
-    model = mockModel(888, this.constants.MODEL.TAG, { numRecordItems }),
+    model = mockModel(888, Constants.MODEL.TAG, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
@@ -133,7 +132,7 @@ test('loading more record items for tag', function(assert) {
       sharedContactIds: [],
       contactIds: [],
       max: 20,
-      offset: numRecordItems
+      offset: numRecordItems,
     });
 
     queryStub.restore();
@@ -145,13 +144,13 @@ test('refreshing all record items', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 88,
-    model = mockModel(888, this.constants.MODEL.TAG, { numRecordItems }),
+    model = mockModel(888, Constants.MODEL.TAG, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model, { refresh: true }).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
@@ -172,7 +171,7 @@ test('exporting record items', function(assert) {
     teamId = Math.random(),
     tagId = Math.random(),
     tz = Math.random(),
-    mockTag = mockModel(tagId, this.constants.MODEL.TAG);
+    mockTag = mockModel(tagId, Constants.MODEL.TAG);
   // build mocks
   const done = assert.async(),
     service = this.subject(),
@@ -183,7 +182,7 @@ test('exporting record items', function(assert) {
 
   service.setProperties({
     stateManager: Ember.Object.create({ ownerAsTeam: { id: teamId } }),
-    authService: Ember.Object.create({ timezone: tz })
+    authService: Ember.Object.create({ timezone: tz }),
   });
 
   // call done to ensure to promise return value is respected
@@ -197,14 +196,12 @@ test('exporting record items', function(assert) {
 
   assert.ok(requests[0].url.indexOf(encodeURI(`teamId=${teamId}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`timezone=${tz}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`format=${this.constants.EXPORT.FORMAT.PDF}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`max=${this.constants.EXPORT.LARGEST_MAX}`) > -1));
+  assert.ok(requests[0].url.indexOf(encodeURI(`format=${Constants.EXPORT.FORMAT.PDF}`) > -1));
+  assert.ok(requests[0].url.indexOf(encodeURI(`max=${Constants.EXPORT.LARGEST_MAX}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`since=${start.toISOString()}`) > -1));
   assert.ok(requests[0].url.indexOf(encodeURI(`before=${end.toISOString()}`) > -1));
   assert.ok(
-    requests[0].url.indexOf(
-      encodeURI(`exportFormatType=${this.constants.EXPORT.TYPE.GROUPED}`) > -1
-    )
+    requests[0].url.indexOf(encodeURI(`exportFormatType=${Constants.EXPORT.TYPE.GROUPED}`) > -1)
   );
   assert.ok(requests[0].url.indexOf(encodeURI(`tagIds[]=${tagId}`) > -1));
 
@@ -294,7 +291,7 @@ test('removing location from note', function(assert) {
     const service = this.subject(),
       rollbackSpy = sinon.spy(),
       mockNote = Ember.Object.create({
-        location: { content: { rollbackAttributes: rollbackSpy } }
+        location: { content: { rollbackAttributes: rollbackSpy } },
       });
 
     service.removeLocationFromNote(mockNote);

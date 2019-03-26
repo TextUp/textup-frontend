@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import SerializerHasMediaMixin from 'textup-frontend/mixins/serializer/has-media';
 import { moduleForModel, test } from 'ember-qunit';
@@ -6,12 +7,11 @@ const { isPresent, typeOf, run } = Ember;
 
 moduleForModel('media', 'Unit | Mixin | serializer/has media', {
   needs: [
-    'service:constants',
     'model:media/add',
     'model:media/remove',
     'serializer:media/add',
-    'serializer:media/remove'
-  ]
+    'serializer:media/remove',
+  ],
 });
 
 test('attributes', function(assert) {
@@ -24,8 +24,7 @@ test('attributes', function(assert) {
 
 test('serializing with media actions', function(assert) {
   run(() => {
-    const constants = Ember.getOwner(this).lookup('service:constants'),
-      SerializerHasMediaObject = Ember.Object.extend(SerializerHasMediaMixin),
+    const SerializerHasMediaObject = Ember.Object.extend(SerializerHasMediaMixin),
       serializer = SerializerHasMediaObject.create(),
       media = this.subject(),
       obj = { record: Ember.Object.create({ media }) };
@@ -42,8 +41,8 @@ test('serializing with media actions', function(assert) {
     assert.equal(serialized.doMediaActions.length, 2);
     serialized.doMediaActions.forEach(mediaAction => {
       assert.ok(
-        mediaAction.action === constants.ACTION.MEDIA.ADD ||
-          mediaAction.action === constants.ACTION.MEDIA.REMOVE,
+        mediaAction.action === Constants.ACTION.MEDIA.ADD ||
+          mediaAction.action === Constants.ACTION.MEDIA.REMOVE,
         'each media action has appropriate action values'
       );
     });

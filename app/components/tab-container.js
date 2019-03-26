@@ -1,4 +1,4 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
+import ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 

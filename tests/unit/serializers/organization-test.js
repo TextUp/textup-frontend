@@ -2,15 +2,14 @@ import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('organization', 'Unit | Serializer | organization', {
   needs: [
-    'serializer:organization',
-    'service:constants',
     'model:location',
     'model:team',
-    'validator:presence',
+    'serializer:organization',
     'validator:belongs-to',
+    'validator:length',
     'validator:number',
-    'validator:length'
-  ]
+    'validator:presence',
+  ],
 });
 
 test('serialized form', function(assert) {

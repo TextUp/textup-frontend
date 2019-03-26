@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Constants from 'textup-frontend/constants';
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TypeUtils from 'textup-frontend/utils/type';
 
 const { RSVP } = Ember;
 

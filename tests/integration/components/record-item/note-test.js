@@ -1,4 +1,4 @@
-import * as LocationUtils from 'textup-frontend/utils/location';
+import LocationUtils from 'textup-frontend/utils/location';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -9,7 +9,7 @@ import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 const { run } = Ember;
 
 moduleForComponent('record-item/note', 'Integration | Component | record item/note', {
-  integration: true
+  integration: true,
 });
 
 test('mandatory inputs', function(assert) {
@@ -108,7 +108,7 @@ test('display note with note contents, media, and location', function(assert) {
       rNote = store.createRecord('record-note', {
         noteContents: `${Math.random()}`,
         location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } }),
-        media: store.createRecord('media')
+        media: store.createRecord('media'),
       }),
       buildUrlStub = sinon
         .stub(LocationUtils, 'buildPreviewUrl')
@@ -150,7 +150,7 @@ test('displaying note with revisions + actions', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onEdit = sinon.spy(),
       onViewHistory = sinon.spy(),
@@ -208,7 +208,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         hasBeenDeleted: true,
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onRestore = sinon.spy(),
       onViewHistory = sinon.spy(),
@@ -267,7 +267,7 @@ test('readonly mode with revisions + actions', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onViewHistory = sinon.spy(),
       done = assert.async();

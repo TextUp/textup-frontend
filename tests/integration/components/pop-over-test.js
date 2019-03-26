@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -10,7 +11,6 @@ let $testingContainer, originalPadding, originalZoom;
 moduleForComponent('pop-over', 'Integration | Component | pop over', {
   integration: true,
   beforeEach() {
-    this.inject.service('constants');
     // pad the testing container on the top and left so the component has space on all sides
     // reset zoom because for some reason `ember-testing` has zoom:50% applied on it which
     // messes with our getBoundingClientRect values
@@ -22,7 +22,7 @@ moduleForComponent('pop-over', 'Integration | Component | pop over', {
   },
   afterEach() {
     $testingContainer.css({ padding: originalPadding, zoom: originalZoom });
-  }
+  },
 });
 
 test('properties', function(assert) {
@@ -240,7 +240,7 @@ test('appropriate floating coordinations based on specified position', function(
       }
 
       elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
-      this.set('position', this.constants.POP_OVER.POSITION.TOP);
+      this.set('position', Constants.POP_OVER.POSITION.TOP);
       return wait();
     })
     .then(() => {
@@ -254,7 +254,7 @@ test('appropriate floating coordinations based on specified position', function(
       assert.ok(parseFloat(floatingTop) < elementCoords.top);
 
       elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
-      this.set('position', this.constants.POP_OVER.POSITION.BOTTOM);
+      this.set('position', Constants.POP_OVER.POSITION.BOTTOM);
       return wait();
     })
     .then(() => {
@@ -275,7 +275,7 @@ test('truncate body if overflow', function(assert) {
   const done = assert.async(),
     doRegister = sinon.spy(),
     onReposition = sinon.spy();
-  this.setProperties({ position: this.constants.POP_OVER.POSITION.TOP, doRegister, onReposition });
+  this.setProperties({ position: Constants.POP_OVER.POSITION.TOP, doRegister, onReposition });
 
   this.render(hbs`
     {{#pop-over doRegister=doRegister onReposition=onReposition position=position}}
@@ -311,7 +311,7 @@ test('appropriate positioning on repeating openings', function(assert) {
   const done = assert.async(),
     doRegister = sinon.spy();
 
-  this.setProperties({ position: this.constants.POP_OVER.POSITION.BOTTOM, doRegister });
+  this.setProperties({ position: Constants.POP_OVER.POSITION.BOTTOM, doRegister });
   this.render(hbs`
     {{#pop-over doRegister=doRegister position=position}}
       <div style="width: 100px; height: 100px;">Trigger</div>

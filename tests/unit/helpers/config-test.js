@@ -1,5 +1,6 @@
-import * as PropertyUtils from 'textup-frontend/utils/property';
 import configObj from 'textup-frontend/config/environment';
+import PropertyUtils from 'textup-frontend/utils/property';
+import sinon from 'sinon';
 import { getConfigVal } from 'textup-frontend/helpers/config';
 import { module, test } from 'qunit';
 

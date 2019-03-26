@@ -1,8 +1,7 @@
 import Ember from 'ember';
-import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { typeOf, isPresent, run } = Ember;
+const { typeOf, run } = Ember;
 
 moduleForModel('record-note', 'Unit | Serializer | record note', {
   needs: [
@@ -23,8 +22,8 @@ moduleForModel('record-note', 'Unit | Serializer | record note', {
 
 test('serialized form', function(assert) {
   const obj = this.subject();
-  let serialized = obj.serialize();
-  keys = Object.keys(serialized);
+  let serialized = obj.serialize(),
+    keys = Object.keys(serialized);
 
   assert.ok(keys.contains('type'), 'type is converted back to backend format');
   assert.equal(serialized.type, 'NOTE');

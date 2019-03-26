@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -6,16 +7,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 
 // [FUTURE] investigate testing window resizing recalculation
 
-const { run } = Ember,
-  DEFAULT_ALT = 'I am the default alt message',
-  mockConstants = Ember.Service.extend({ IMAGE: { DEFAULT_ALT } });
+const { run } = Ember;
 
 moduleForComponent('responsive-image', 'Integration | Component | responsive image', {
   integration: true,
-  beforeEach() {
-    this.register('service:constants', mockConstants);
-    this.inject.service('constants');
-  }
 });
 
 test('inputs', function(assert) {
@@ -60,7 +55,7 @@ test('rendering success + rerendering on attribute change', function(assert) {
   this.setProperties({
     versions: [{ source: VALID_IMAGE_DATA_URL }],
     onSuccess,
-    onFailure
+    onFailure,
   });
 
   this.render(hbs`{{responsive-image versions=versions onSuccess=onSuccess onFailure=onFailure}}`);
@@ -120,7 +115,7 @@ test('rendering nonresponsive image', function(assert) {
   assert.ok($img.attr('sizes').includes('vw'), 'sizes is present');
   assert.equal($img.attr('src'), source, 'fallback src is present');
   assert.notOk($img.attr('width'), 'no width');
-  assert.equal($img.attr('alt'), DEFAULT_ALT, 'alt is present');
+  assert.equal($img.attr('alt'), Constants.IMAGE.DEFAULT_ALT, 'alt is present');
 
   const sizeAttr = parseInt(/(\d+)/.exec($img.attr('sizes')));
   assert.ok(sizeAttr <= 100, 'size <= 100');
@@ -132,7 +127,7 @@ test('rendering responsive image', function(assert) {
       { source: 'https://via.placeholder.com/350x150', width: 350 },
       { source: 'https://via.placeholder.com/100x150', width: 100 },
       { source: 'https://via.placeholder.com/50x150', width: 50 },
-      { source: VALID_IMAGE_DATA_URL, width: 10 }
+      { source: VALID_IMAGE_DATA_URL, width: 10 },
     ],
     versionsNoWidth = [{ source: 'https://via.placeholder.com/300x150' }];
   this.set('versions', [].pushObjects(versionsWithWidth).pushObjects(versionsNoWidth));
@@ -152,7 +147,7 @@ test('rendering responsive image', function(assert) {
   assert.ok($img.attr('sizes').includes('vw'), 'sizes is present');
   assert.equal($img.attr('src'), versionsNoWidth[0].source, 'fallback src is present');
   assert.equal($img.attr('width'), '350', 'no width');
-  assert.equal($img.attr('alt'), DEFAULT_ALT, 'alt is present');
+  assert.equal($img.attr('alt'), Constants.IMAGE.DEFAULT_ALT, 'alt is present');
 
   const sizeAttr = parseInt(/(\d+)/.exec($img.attr('sizes')));
   assert.ok(sizeAttr <= 100, 'size <= 100');

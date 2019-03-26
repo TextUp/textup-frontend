@@ -1,4 +1,4 @@
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';

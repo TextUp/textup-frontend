@@ -1,7 +1,7 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
+import ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
 
-const { isArray, isPresent, typeOf } = Ember,
+const { isArray, isPresent } = Ember,
   ERRORS_PROP_NAME = 'errors',
   STATUS_PROP_NAME = 'statusCode',
   MESSAGE_PROP_NAME = 'message';

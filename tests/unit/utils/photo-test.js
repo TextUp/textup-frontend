@@ -1,8 +1,8 @@
-import * as ImageCompression from 'npm:browser-image-compression';
+import * as ImageCompression from 'npm:browser-image-compression'; // needs wildward to override default import
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import sinon from 'sinon';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -157,7 +157,9 @@ test('ensuring image dimensions for some without dimensions', function(assert) {
       noDimensions = Array(5)
         .fill()
         .map(() => {
-          const el = store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: 'id' });
+          const el = store.createFragment('media-element', {
+            [Constants.PROP_NAME.MEDIA_ID]: 'id',
+          });
           Array(numVersionsPerNoDimension)
             .fill()
             .forEach(() => {
@@ -202,7 +204,7 @@ test('selecting appropriate image version for display in gallery', function(asse
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
       fn = PhotoUtils.formatResponsiveMediaImageForGallery,
-      el = store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: 'id' });
+      el = store.createFragment('media-element', { [Constants.PROP_NAME.MEDIA_ID]: 'id' });
 
     assert.notOk(fn(), 'short circuits invalid input');
     assert.notOk(fn('not a number', 8), 'short circuits invalid input');
@@ -221,25 +223,23 @@ test('selecting appropriate image version for display in gallery', function(asse
   });
 });
 
-// TODO fix
-// test('getting boundary coordinates for preview thumbnail', function(assert) {
-//   const fn = PhotoUtils.getPreviewBounds,
-//     windowStub = sinon.stub(window, 'pageYOffset');
-//   windowStub.value(0);
+test('getting boundary coordinates for preview thumbnail', function(assert) {
+  const fn = PhotoUtils.getPreviewBounds,
+    windowStub = sinon.stub(window, 'pageYOffset').value(0);
 
-//   assert.notOk(fn(), 'short circuits invalid input');
-//   assert.notOk(fn(null), 'not an object');
-//   assert.notOk(fn('blah'), 'not an object');
-//   assert.notOk(fn(88), 'not an object');
-//   assert.notOk(fn({}), 'getBoundingClientRect is not a function');
-//   assert.notOk(fn({ getBoundingClientRect: 'hi' }), 'getBoundingClientRect is not a function');
+  assert.notOk(fn(), 'short circuits invalid input');
+  assert.notOk(fn(null), 'not an object');
+  assert.notOk(fn('blah'), 'not an object');
+  assert.notOk(fn(88), 'not an object');
+  assert.notOk(fn({}), 'getBoundingClientRect is not a function');
+  assert.notOk(fn({ getBoundingClientRect: 'hi' }), 'getBoundingClientRect is not a function');
 
-//   const bounds = { left: Math.random(), top: Math.random(), width: Math.random() };
-//   assert.deepEqual(fn({ getBoundingClientRect: () => bounds }), {
-//     x: bounds.left,
-//     y: bounds.top,
-//     w: bounds.width
-//   });
+  const bounds = { left: Math.random(), top: Math.random(), width: Math.random() };
+  assert.deepEqual(fn({ getBoundingClientRect: () => bounds }), {
+    x: bounds.left,
+    y: bounds.top,
+    w: bounds.width,
+  });
 
-//   windowStub.restore();
-// });
+  windowStub.restore();
+});

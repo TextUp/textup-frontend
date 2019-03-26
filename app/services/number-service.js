@@ -3,7 +3,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import { format } from 'textup-frontend/utils/phone-number';
 
-const { computed, RSVP } = Ember;
+const { RSVP } = Ember;
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),

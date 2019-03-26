@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
@@ -6,7 +7,6 @@ const { run } = Ember;
 
 moduleForModel('organization', 'Unit | Model | organization', {
   needs: [
-    'service:constants',
     'model:location',
     'model:team',
     'model:phone',
@@ -14,11 +14,8 @@ moduleForModel('organization', 'Unit | Model | organization', {
     'validator:belongs-to',
     'validator:number',
     'validator:length',
-    'validator:inclusion'
+    'validator:inclusion',
   ],
-  beforeEach() {
-    this.inject.service('constants');
-  }
 });
 
 test('default values', function(assert) {
@@ -54,19 +51,19 @@ test('getting status info', function(assert) {
     assert.equal(obj.get('isPending'), false);
     assert.equal(obj.get('isApproved'), false);
 
-    obj.set('status', this.constants.ORGANIZATION.STATUS.REJECTED);
+    obj.set('status', Constants.ORGANIZATION.STATUS.REJECTED);
 
     assert.equal(obj.get('isRejected'), true);
     assert.equal(obj.get('isPending'), false);
     assert.equal(obj.get('isApproved'), false);
 
-    obj.set('status', this.constants.ORGANIZATION.STATUS.PENDING);
+    obj.set('status', Constants.ORGANIZATION.STATUS.PENDING);
 
     assert.equal(obj.get('isRejected'), false);
     assert.equal(obj.get('isPending'), true);
     assert.equal(obj.get('isApproved'), false);
 
-    obj.set('status', this.constants.ORGANIZATION.STATUS.APPROVED);
+    obj.set('status', Constants.ORGANIZATION.STATUS.APPROVED);
 
     assert.equal(obj.get('isRejected'), false);
     assert.equal(obj.get('isPending'), false);
@@ -151,7 +148,7 @@ test('validating name and location', function(assert) {
 
         model.setProperties({
           name: 'hello there!',
-          location: this.store().createRecord('location', { address: 'hi', lat: 0, lon: 0 })
+          location: this.store().createRecord('location', { address: 'hi', lat: 0, lng: 0 }),
         });
         return model.validate();
       })
@@ -223,7 +220,7 @@ test('validating away message suffix', function(assert) {
           awayMessageSuffix: Array(model.get('awayMessageSuffixMaxLength') * 2)
             .fill()
             .map(() => 'hi')
-            .join()
+            .join(),
         });
         return model.validate();
       })

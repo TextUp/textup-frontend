@@ -29,8 +29,7 @@ export function extractImagesFromEvent(event) {
     files.forEach(file => {
       promises.pushObject(imageCompression(file, 0.5));
     });
-    RSVP.Promise
-      .all(promises)
+    RSVP.Promise.all(promises)
       .then(compressedFiles => {
         return RSVP.Promise.all(compressedFiles.map(_formatCompressedImages));
       })
@@ -88,8 +87,7 @@ export function ensureImageDimensions(mediaImages) {
         }
       }
     });
-    return RSVP.Promise
-      .all(versionsFetchingDimensions)
+    return RSVP.Promise.all(versionsFetchingDimensions)
       .then(results => {
         results.forEach(({ version, dimensions }) => {
           if (_hasDimensions(dimensions)) {
@@ -174,12 +172,14 @@ export function formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity
 
 export function getPreviewBounds(previewEl) {
   if (typeOf(previewEl) === 'object' && typeOf(previewEl.getBoundingClientRect) === 'function') {
-    const pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+    const pageYScroll = isPresent(window.pageYOffset)
+        ? window.pageYOffset
+        : document.documentElement.scrollTop,
       bounds = previewEl.getBoundingClientRect(); // relative to viewport
     return {
       x: bounds.left,
       y: bounds.top + pageYScroll,
-      w: bounds.width
+      w: bounds.width,
     };
   }
 }

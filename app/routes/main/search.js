@@ -135,8 +135,7 @@ export default Ember.Route.extend({
   },
   _loadMore() {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      const query = Object.create(null),
-        controller = this.get('controller'),
+      const controller = this.get('controller'),
         team = this.get('stateManager.ownerAsTeam'),
         searchResults = controller.get('searchResults'),
         searchQuery = controller.get('searchQuery');
@@ -157,7 +156,7 @@ export default Ember.Route.extend({
           searchResults.pushObjects(results.toArray());
           controller.set('numResults', results.get('meta.total'));
           resolve();
-        });
+        }, reject);
     });
   },
 });

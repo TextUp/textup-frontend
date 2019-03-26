@@ -8,7 +8,7 @@ import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isPresent, isArray, computed, assign } = Ember,
+const { isPresent, computed, assign } = Ember,
   Validations = buildValidations(
     assign(
       {

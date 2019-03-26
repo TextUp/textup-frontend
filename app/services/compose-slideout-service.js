@@ -1,4 +1,4 @@
-import * as PhoneNumberUtils from 'textup-frontend/utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 

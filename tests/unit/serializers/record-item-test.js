@@ -70,8 +70,7 @@ test('getting model name from payload', function(assert) {
 });
 
 test('normalizing polyorphic types', function(assert) {
-  const serializer = Ember.getOwner(this).lookup('serializer:record-item'),
-    hash = {};
+  const hash = {};
 
   tryNormalizePolymorphicType(hash);
   assert.deepEqual(hash, {}, 'no change if no type');

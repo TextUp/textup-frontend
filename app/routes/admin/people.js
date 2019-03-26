@@ -1,11 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  queryParams: {
-    filter: {
-      refreshModel: true,
-    },
-  },
+  queryParams: { filter: { refreshModel: true } },
 
   setupController() {
     this._super(...arguments);

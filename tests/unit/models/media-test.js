@@ -1,31 +1,27 @@
-import * as PhotoUtils from 'textup-frontend/utils/photo';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import MediaAddChange from 'textup-frontend/models/media/add';
 import MediaElement from 'textup-frontend/models/media-element';
 import MediaRemoveChange from 'textup-frontend/models/media/remove';
+import PhotoUtils from 'textup-frontend/utils/photo';
 import sinon from 'sinon';
+import { mergeExistingAndChanges, removeElementsById } from 'textup-frontend/models/media';
 import { moduleForModel, test } from 'ember-qunit';
-import {
-  MEDIA_ID_PROP_NAME,
-  mergeExistingAndChanges,
-  removeElementsById
-} from 'textup-frontend/models/media';
 
 const { run, RSVP } = Ember;
 let ensureDimensionsStub;
 
 moduleForModel('media', 'Unit | Model | media', {
   needs: [
-    'service:constants',
     'model:media-element',
     'model:media-element-version',
     'model:media/add',
-    'model:media/remove'
+    'model:media/remove',
   ],
   subject() {
     return run(() => {
       const media = this.store().createRecord('media');
-      media.get('images').createFragment({ [MEDIA_ID_PROP_NAME]: `${Math.random()}` });
+      media.get('images').createFragment({ [Constants.PROP_NAME.MEDIA_ID]: `${Math.random()}` });
       return media;
     });
   },
@@ -36,7 +32,7 @@ moduleForModel('media', 'Unit | Model | media', {
   },
   afterEach() {
     ensureDimensionsStub.restore();
-  }
+  },
 });
 
 test('removing elementds by id helper function', function(assert) {
@@ -45,8 +41,10 @@ test('removing elementds by id helper function', function(assert) {
       array = [],
       idVal = Math.random();
 
-    array.pushObject(store.createFragment('media/add', { [MEDIA_ID_PROP_NAME]: idVal }));
-    array.pushObject(store.createFragment('media/add', { [MEDIA_ID_PROP_NAME]: 'something else' }));
+    array.pushObject(store.createFragment('media/add', { [Constants.PROP_NAME.MEDIA_ID]: idVal }));
+    array.pushObject(
+      store.createFragment('media/add', { [Constants.PROP_NAME.MEDIA_ID]: 'something else' })
+    );
     assert.equal(array.length, 2);
 
     assert.equal(removeElementsById(array, 'nonexistent key'), false);
@@ -69,17 +67,17 @@ test('merging existing and changes helper function', function(assert) {
       newId2 = Math.random();
 
     existing.pushObject(
-      store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: existingId1 })
+      store.createFragment('media-element', { [Constants.PROP_NAME.MEDIA_ID]: existingId1 })
     );
     existing.pushObject(
-      store.createFragment('media-element', { [MEDIA_ID_PROP_NAME]: existingId2 })
+      store.createFragment('media-element', { [Constants.PROP_NAME.MEDIA_ID]: existingId2 })
     );
 
-    toAdd.pushObject(store.createFragment('media/add', { [MEDIA_ID_PROP_NAME]: newId1 }));
-    toAdd.pushObject(store.createFragment('media/add', { [MEDIA_ID_PROP_NAME]: newId2 }));
+    toAdd.pushObject(store.createFragment('media/add', { [Constants.PROP_NAME.MEDIA_ID]: newId1 }));
+    toAdd.pushObject(store.createFragment('media/add', { [Constants.PROP_NAME.MEDIA_ID]: newId2 }));
 
     toRemove.pushObject(
-      store.createFragment('media/remove', { [MEDIA_ID_PROP_NAME]: existingId1 })
+      store.createFragment('media/remove', { [Constants.PROP_NAME.MEDIA_ID]: existingId1 })
     );
 
     assert.equal(existing.length, 2);
@@ -90,10 +88,13 @@ test('merging existing and changes helper function', function(assert) {
 
     assert.equal(merged.length, 3); // 1 existing, 2 new
     assert.ok(merged.every(el => el instanceof MediaElement));
-    assert.notOk(merged.findBy(MEDIA_ID_PROP_NAME, existingId1), 'removed by remove action');
-    assert.ok(merged.findBy(MEDIA_ID_PROP_NAME, existingId2));
-    assert.ok(merged.findBy(MEDIA_ID_PROP_NAME, newId1));
-    assert.ok(merged.findBy(MEDIA_ID_PROP_NAME, newId2));
+    assert.notOk(
+      merged.findBy(Constants.PROP_NAME.MEDIA_ID, existingId1),
+      'removed by remove action'
+    );
+    assert.ok(merged.findBy(Constants.PROP_NAME.MEDIA_ID, existingId2));
+    assert.ok(merged.findBy(Constants.PROP_NAME.MEDIA_ID, newId1));
+    assert.ok(merged.findBy(Constants.PROP_NAME.MEDIA_ID, newId2));
   });
 });
 
@@ -171,7 +172,7 @@ test('add/remove new audio', function(assert) {
     assert.equal(obj.get('displayedAudio.length'), 0);
     assert.equal(obj.get('pendingChanges.length'), 0);
 
-    obj.get('audio').createFragment({ [MEDIA_ID_PROP_NAME]: existingId });
+    obj.get('audio').createFragment({ [Constants.PROP_NAME.MEDIA_ID]: existingId });
 
     assert.equal(obj.get('audio.length'), 1);
     assert.equal(obj.get('displayedAudio.length'), 1);

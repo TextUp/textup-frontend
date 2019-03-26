@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
@@ -8,9 +9,6 @@ moduleForComponent(
   'Integration | Component | multi select/display badge',
   {
     integration: true,
-    beforeEach() {
-      this.inject.service('constants');
-    }
   }
 );
 
@@ -31,7 +29,10 @@ test('properties', function(assert) {
 test('displaying tag', function(assert) {
   const identifier = `${Math.random()}`,
     numMembers = Math.random(),
-    mockTag = mockModel(88, this.get('constants.MODEL.TAG'), { identifier, numMembers });
+    mockTag = mockModel(88, Constants.MODEL.TAG, {
+      [Constants.PROP_NAME.READABLE_IDENT]: identifier,
+      numMembers,
+    });
 
   this.setProperties({ mockTag });
 
@@ -47,9 +48,9 @@ test('displaying tag', function(assert) {
 
 test('displaying contact', function(assert) {
   const identifier = `${Math.random()}`,
-    mockContact = mockModel(88, this.get('constants.MODEL.CONTACT'), {
-      identifier,
-      isShared: false
+    mockContact = mockModel(88, Constants.MODEL.CONTACT, {
+      [Constants.PROP_NAME.READABLE_IDENT]: identifier,
+      isShared: false,
     });
 
   this.setProperties({ mockContact });
@@ -65,7 +66,10 @@ test('displaying contact', function(assert) {
 
 test('displaying shared contact', function(assert) {
   const identifier = `${Math.random()}`,
-    mockShared = mockModel(88, this.get('constants.MODEL.CONTACT'), { identifier, isShared: true });
+    mockShared = mockModel(88, Constants.MODEL.CONTACT, {
+      [Constants.PROP_NAME.READABLE_IDENT]: identifier,
+      isShared: true,
+    });
 
   this.setProperties({ mockShared });
 
@@ -80,7 +84,7 @@ test('displaying shared contact', function(assert) {
 
 test('displaying other entity', function(assert) {
   const identifier = `${Math.random()}`,
-    mockOther = mockModel(88, 'other', { identifier });
+    mockOther = mockModel(88, 'other', { [Constants.PROP_NAME.READABLE_IDENT]: identifier });
 
   this.setProperties({ mockOther });
 

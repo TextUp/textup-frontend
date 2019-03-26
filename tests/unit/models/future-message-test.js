@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
@@ -6,7 +7,6 @@ const { run, typeOf } = Ember;
 
 moduleForModel('future-message', 'Unit | Model | future message', {
   needs: [
-    'service:constants',
     'model:media',
     'model:media/add',
     'model:media-element',
@@ -14,7 +14,6 @@ moduleForModel('future-message', 'Unit | Model | future message', {
     'model:contact',
     'model:tag',
     'model:phone',
-    'model:shared-contact',
     'model:record-item',
     'model:record-text',
     'model:record-call',
@@ -25,11 +24,8 @@ moduleForModel('future-message', 'Unit | Model | future message', {
     'validator:presence',
     'validator:length',
     'validator:has-any',
-    'validator:number'
+    'validator:number',
   ],
-  beforeEach() {
-    this.inject.service('constants');
-  }
 });
 
 test('dirty checking', function(assert) {
@@ -38,7 +34,7 @@ test('dirty checking', function(assert) {
 
     assert.equal(obj.get('hasManualChanges'), false);
 
-    obj.set('intervalSize', this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    obj.set('intervalSize', Constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
 
     assert.equal(
       obj.get('hasManualChanges'),
@@ -71,32 +67,32 @@ test('setting intervals of different sizes', function(assert) {
   run(() => {
     const obj = this.subject();
 
-    assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
+    assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
     assert.equal(obj.get('repeatInterval'), null);
     assert.equal(obj.get('_repeatIntervalInDays'), null);
 
     obj.set('repeatInterval', 2);
 
-    assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
+    assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
     assert.equal(obj.get('repeatInterval'), 2);
     assert.equal(obj.get('_repeatIntervalInDays'), 2);
 
-    obj.set('intervalSize', this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    obj.set('intervalSize', Constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
 
-    assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
     assert.equal(obj.get('repeatInterval'), 2);
     assert.equal(obj.get('_repeatIntervalInDays'), 14);
 
     obj.set('repeatInterval', 1);
 
-    assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
     assert.equal(obj.get('repeatInterval'), 1);
     assert.equal(obj.get('_repeatIntervalInDays'), 7);
 
     const originalRepeatIntervalInDays = obj.get('_repeatIntervalInDays');
     obj.set('repeatInterval', null);
 
-    assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
+    assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.WEEK);
     assert.equal(obj.get('repeatInterval'), null);
     assert.equal(
       obj.get('_repeatIntervalInDays'),
@@ -106,7 +102,7 @@ test('setting intervals of different sizes', function(assert) {
 
     obj.setProperties({
       repeatInterval: 1,
-      intervalSize: null
+      intervalSize: null,
     });
 
     assert.equal(obj.get('intervalSize'), null);
@@ -204,8 +200,8 @@ test('default values', function(assert) {
   assert.equal(typeOf(obj.get('startDate')), 'date');
   assert.equal(obj.get('hasEndDate'), false);
   assert.equal(obj.get('_repeatIntervalInDays'), undefined, 'no default value');
-  assert.equal(obj.get('type'), this.constants.FUTURE_MESSAGE.TYPE.TEXT);
-  assert.equal(obj.get('intervalSize'), this.constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
+  assert.equal(obj.get('type'), Constants.FUTURE_MESSAGE.TYPE.TEXT);
+  assert.equal(obj.get('intervalSize'), Constants.FUTURE_MESSAGE.INTERVAL_SIZE.DAY);
 });
 
 test('repeat-related properties are only validated if message is repeating', function(assert) {
@@ -228,7 +224,7 @@ test('repeat-related properties are only validated if message is repeating', fun
           type: 'invalid type',
           intervalSize: 'not a number',
           repeatInterval: 'not a number',
-          repeatCount: 'not a number'
+          repeatCount: 'not a number',
         });
 
         return model.validate();
@@ -265,10 +261,10 @@ test('repeat-related properties are only validated if message is repeating', fun
         );
 
         model.setProperties({
-          type: this.constants.FUTURE_MESSAGE.TYPE.CALL,
+          type: Constants.FUTURE_MESSAGE.TYPE.CALL,
           intervalSize: 1,
           repeatInterval: 1,
-          repeatCount: 1
+          repeatCount: 1,
         });
 
         return model.validate();
@@ -288,8 +284,8 @@ test('validating repeating future message', function(assert) {
 
     obj.setProperties({
       message: 'hello',
-      type: this.constants.FUTURE_MESSAGE.TYPE.CALL,
-      isRepeating: true
+      type: Constants.FUTURE_MESSAGE.TYPE.CALL,
+      isRepeating: true,
     });
 
     obj
@@ -311,7 +307,7 @@ test('validating repeating future message', function(assert) {
 
         obj.setProperties({
           repeatCount: null,
-          endDate: new Date(Date.now() + 1000)
+          endDate: new Date(Date.now() + 1000),
         });
 
         return model.validate();
@@ -338,7 +334,7 @@ test('validating contents', function(assert) {
 
         model.setProperties({
           message: 'a message',
-          media: null
+          media: null,
         });
         return model.validate();
       })
@@ -347,7 +343,7 @@ test('validating contents', function(assert) {
 
         model.setProperties({
           message: null,
-          media: mediaObj
+          media: mediaObj,
         });
 
         return model.validate();

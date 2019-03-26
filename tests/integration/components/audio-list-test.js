@@ -1,6 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { mockValidMediaAudio, mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
@@ -10,7 +10,7 @@ moduleForComponent('audio-list', 'Integration | Component | audio list', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('properties', function(assert) {
@@ -50,7 +50,7 @@ test('ignores non-audio media elements', function(assert) {
       onlyAudio: [audioEl1, audioEl2],
       onlyImages: [imageEl1, imageEl2],
       onlyEmpty: [emptyEl],
-      allTypes: [imageEl1, imageEl2, audioEl1, audioEl2, emptyEl]
+      allTypes: [imageEl1, imageEl2, audioEl1, audioEl2, emptyEl],
     });
 
     this.render(hbs`{{audio-list}}`);
@@ -85,8 +85,8 @@ test('rendering block + inverse', function(assert) {
   const nestedClass = 'audio-list-test',
     audioEl1 = mockValidMediaAudio(this.store),
     audioEl2 = mockValidMediaAudio(this.store),
-    uid1 = audioEl1.get(MEDIA_ID_PROP_NAME),
-    uid2 = audioEl2.get(MEDIA_ID_PROP_NAME),
+    uid1 = audioEl1.get(Constants.PROP_NAME.MEDIA_ID),
+    uid2 = audioEl2.get(Constants.PROP_NAME.MEDIA_ID),
     inverseBlockText = `${Math.random()}`;
   this.setProperties({ audio: [audioEl1, audioEl2], nestedClass, inverseBlockText });
 
@@ -138,14 +138,14 @@ test('listing audio items in a certain order + specifying max num to show', func
       this.$(`.${nestedClass}`)
         .eq(0)
         .text(),
-      audioEl2.get(MEDIA_ID_PROP_NAME),
+      audioEl2.get(Constants.PROP_NAME.MEDIA_ID),
       'no sort key specified = use passed-in order'
     );
     assert.equal(
       this.$(`.${nestedClass}`)
         .eq(1)
         .text(),
-      audioEl1.get(MEDIA_ID_PROP_NAME),
+      audioEl1.get(Constants.PROP_NAME.MEDIA_ID),
       'no sort key specified = use passed-in order'
     );
 
@@ -159,13 +159,13 @@ test('listing audio items in a certain order + specifying max num to show', func
       this.$(`.${nestedClass}`)
         .eq(0)
         .text(),
-      audioEl1.get(MEDIA_ID_PROP_NAME)
+      audioEl1.get(Constants.PROP_NAME.MEDIA_ID)
     );
     assert.equal(
       this.$(`.${nestedClass}`)
         .eq(1)
         .text(),
-      audioEl2.get(MEDIA_ID_PROP_NAME)
+      audioEl2.get(Constants.PROP_NAME.MEDIA_ID)
     );
 
     this.render(hbs`
@@ -178,13 +178,13 @@ test('listing audio items in a certain order + specifying max num to show', func
       this.$(`.${nestedClass}`)
         .eq(0)
         .text(),
-      audioEl2.get(MEDIA_ID_PROP_NAME)
+      audioEl2.get(Constants.PROP_NAME.MEDIA_ID)
     );
     assert.equal(
       this.$(`.${nestedClass}`)
         .eq(1)
         .text(),
-      audioEl1.get(MEDIA_ID_PROP_NAME)
+      audioEl1.get(Constants.PROP_NAME.MEDIA_ID)
     );
 
     this.render(hbs`
@@ -199,7 +199,7 @@ test('listing audio items in a certain order + specifying max num to show', func
       this.$(`.${nestedClass}`)
         .eq(0)
         .text(),
-      audioEl1.get(MEDIA_ID_PROP_NAME)
+      audioEl1.get(Constants.PROP_NAME.MEDIA_ID)
     );
   });
 });

@@ -1,15 +1,20 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
-import * as TypeUtils from 'textup-frontend/utils/type';
+import Ember from 'ember';
+import ArrayUtils from 'textup-frontend/utils/array';
+import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 
 const { isPresent, typeOf } = Ember;
 
-export function tryFindPhoneOwnerFromUrl(authUser, urlIdent) {
+export function tryFindPhoneOwnerOrSelfFromUrl(authUser, urlIdent) {
   if (typeOf(authUser) === 'instance' && isPresent(urlIdent)) {
-    return ArrayUtils.ensureArrayAndAllDefined(authUser.get('allActivePhoneOwners')).findBy(
-      Constants.PROP_NAME.URL_IDENT,
-      urlIdent
-    );
+    if (authUser.get(Constants.PROP_NAME.URL_IDENT) === urlIdent) {
+      return authUser;
+    } else {
+      return ArrayUtils.ensureArrayAndAllDefined(authUser.get('allActivePhoneOwners')).findBy(
+        Constants.PROP_NAME.URL_IDENT,
+        urlIdent
+      );
+    }
   } else {
     return null;
   }
@@ -25,10 +30,9 @@ export function isActivePhoneOwner(phoneOwner) {
   }
 }
 
-export function determineAppropriateLocation(thisRoute, authService) {
-  if (typeOf(thisRoute) === 'instance' && typeOf(authService) === 'instance') {
-    const authUser = authService.get('authUser'),
-      phoneOwner = tryFindFirstActivePhoneOwnerFromStaff(authUser);
+export function determineAppropriateLocation(thisRoute, authUser) {
+  if (typeOf(thisRoute) === 'instance' && typeOf(authUser) === 'instance') {
+    const phoneOwner = tryFindFirstActivePhoneOwnerFromStaff(authUser);
     if (phoneOwner) {
       thisRoute.transitionTo('main', phoneOwner);
     } else if (canStaffAccessAdminDashboard(authUser)) {

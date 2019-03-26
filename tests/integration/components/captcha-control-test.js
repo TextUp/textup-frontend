@@ -1,10 +1,10 @@
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import ReCaptcha from 'ember-g-recaptcha/components/g-recaptcha';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-// For import, see: https://github.com/algonauti/ember-g-recaptcha/blob/v0.4.0/app/components/g-recaptcha.js
+// For grecaptcha, see: https://github.com/algonauti/ember-g-recaptcha/blob/v0.4.0/app/components/g-recaptcha.js
 
 let grecaptcha;
 

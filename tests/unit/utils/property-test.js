@@ -1,4 +1,5 @@
-import * as PropertyUtils from 'textup-frontend/utils/property';
+import Ember from 'ember';
+import PropertyUtils from 'textup-frontend/utils/property';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | property');

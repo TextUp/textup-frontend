@@ -1,4 +1,4 @@
-import * as BoundUtils from 'textup-frontend/utils/bounds';
+import BoundUtils from 'textup-frontend/utils/bounds';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | bounds');

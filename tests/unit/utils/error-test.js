@@ -1,4 +1,5 @@
-import * as ErrorUtils from 'textup-frontend/utils/error';
+import Ember from 'ember';
+import ErrorUtils from 'textup-frontend/utils/error';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | error');

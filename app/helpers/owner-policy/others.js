@@ -1,5 +1,5 @@
-import * as ArrayUtils from 'textup-frontend/utils/array';
-import * as TypeUtils from 'textup-frontend/utils/type';
+import ArrayUtils from 'textup-frontend/utils/array';
+import TypeUtils from 'textup-frontend/utils/type';
 import Ember from 'ember';
 
 const { get } = Ember;

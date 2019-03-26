@@ -1,5 +1,5 @@
-import * as TextUtils from 'textup-frontend/utils/text';
-import * as TypeUtils from 'textup-frontend/utils/type';
+import TextUtils from 'textup-frontend/utils/text';
+import TypeUtils from 'textup-frontend/utils/type';
 import Ember from 'ember';
 
 const { computed } = Ember;

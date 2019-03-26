@@ -1,3 +1,4 @@
+import AppAccessUtils from 'textup-frontend/utils/app-access';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
@@ -20,19 +21,14 @@ export default Ember.Route.extend(
 
     beforeModel() {
       this._super(...arguments);
-      const user = this.get('authService.authUser');
-      return user.get('org').then(org => {
-        if (!org.get('isApproved')) {
-          this.transitionTo('none');
-        } else if (!user.get('isAdmin')) {
-          this.transitionTo('main', user);
-        }
-      });
+      AppAccessUtils.determineAppropriateLocation(this, this.get('authService.authUser'));
     },
     model() {
+      this._super(...arguments);
       return this.get('authService.authUser.org');
     },
     afterModel(org) {
+      this._super(...arguments);
       this.get('stateManager').set('owner', org);
     },
     setupController(controller, org) {

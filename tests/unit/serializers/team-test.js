@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import OwnsPhoneSerializer from 'textup-frontend/mixins/serializer/owns-phone';
 import TeamSerializer from 'textup-frontend/serializers/team';
 import { moduleForModel, test } from 'ember-qunit';

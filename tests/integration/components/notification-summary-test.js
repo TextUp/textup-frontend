@@ -37,8 +37,6 @@ test('displaying summary-level information', function(assert) {
     const notif1 = this.store.createRecord('notification', {
       name: 'squirrel',
       phoneNumber: '999 999 9999',
-      incomingNames: 'incoming names',
-      outgoingNames: 'outgoing names',
       numVoicemail: 1,
       numIncomingText: 2,
       numIncomingCall: 3,
@@ -53,11 +51,8 @@ test('displaying summary-level information', function(assert) {
     const text = this.$()
       .text()
       .trim();
-
     assert.ok(text.indexOf(notif1.get('name')) > -1);
     assert.ok(text.indexOf(format(notif1.get('phoneNumber'))) > -1);
-    assert.ok(text.indexOf(notif1.get('incomingNames')) > -1);
-    assert.ok(text.indexOf(notif1.get('outgoingNames')) > -1);
     assert.ok(text.indexOf(notif1.get('numVoicemail')) > -1);
     assert.ok(text.indexOf(notif1.get('numIncomingText')) > -1);
     assert.ok(text.indexOf(notif1.get('numIncomingCall')) > -1);
