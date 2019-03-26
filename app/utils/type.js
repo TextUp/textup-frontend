@@ -43,6 +43,10 @@ export function isNote(obj) {
   return checkModelName(obj, Constants.MODEL.RECORD_NOTE);
 }
 
+export function isSchedule(obj) {
+  return checkModelName(obj, Constants.MODEL.SCHEDULE);
+}
+
 function checkModelName(obj, modelName) {
   return isAnyModel(obj) && get(obj, Constants.PROP_NAME.MODEL_NAME) === modelName;
 }

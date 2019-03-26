@@ -47,16 +47,4 @@ export default MF.Fragment.extend(Dirtiable, {
       );
     });
   }),
-
-  // Methods
-  // -------
-
-  actions: {
-    replaceRange(dayOfWeek, newRanges) {
-      if (!Constants.DAYS_OF_WEEK.contains(dayOfWeek)) {
-        return;
-      }
-      this.set(dayOfWeek, newRanges);
-    },
-  },
 });

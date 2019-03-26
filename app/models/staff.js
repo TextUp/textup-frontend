@@ -1,3 +1,4 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
@@ -28,7 +29,6 @@ const { isPresent, isArray, computed, assign } = Ember,
           validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
         },
         email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
-        phone: { description: 'Phone', validators: [validator('belongs-to')] },
       },
       OwnsPhoneValidations
     )
@@ -79,8 +79,9 @@ export default DS.Model.extend(
         email = this.get('email');
       return `${name},${username},${email}`;
     }),
-    isAuthUser: computed('authService.authUser', function() {
-      return this.get('authService.authUser.id') === this.get('id');
+    isAuthUser: computed('authService.authUser.id', 'id', function() {
+      const authId = this.get('authService.authUser.id');
+      return isPresent(authId) && authId === this.get('id');
     }),
 
     personalNumber: DS.attr('phone-number'),
@@ -105,7 +106,7 @@ export default DS.Model.extend(
     // -------
 
     isAnyStatus(raw) {
-      return (isArray(raw) ? raw : [raw])
+      return ArrayUtils.ensureArrayAndAllDefined(raw)
         .map(stat => String(stat).toLowerCase())
         .contains(String(this.get('status')).toLowerCase());
     },
@@ -128,8 +129,14 @@ export default DS.Model.extend(
     // Internal properties
     // -------------------
 
-    _teamsWithPhones: computed.filter('teams', function(team) {
-      return isPresent(team.get('phone.content.isActive'));
+    _teamPhones: computed('teams.@each.phone', function() {
+      return this.get('teams').mapBy('phone.content');
+    }),
+    _teamsWithPhones: computed('teams.[]', '_teamPhones.@each.isActive', function() {
+      // need to call `_teamPhones`` because a single `@each` only works one level deep
+      return this.get('_teamPhones').isAny('isActive', true)
+        ? this.get('teams').filterBy('phone.content.isActive', true)
+        : [];
     }),
   }
 );

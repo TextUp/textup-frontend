@@ -73,9 +73,14 @@ function addRecipientFor(obj, list) {
   if (!list) {
     return false;
   }
-  return typeOf(obj) === 'string'
-    ? _addRecipientForNumber(obj, list)
-    : _addRecipientForObject(obj, list);
+  const objType = typeOf(obj);
+  if (objType === 'string') {
+    return _addRecipientForNumber(obj, list);
+  } else if (objType === 'object' || objType === 'instance') {
+    return _addRecipientForObject(obj, list);
+  } else {
+    return false;
+  }
 }
 function _addRecipientForNumber(num, list) {
   if (PhoneNumberUtils.validate(num)) {
@@ -98,9 +103,14 @@ function removeRecipientFor(obj, list) {
   if (!list) {
     return false;
   }
-  return typeOf(obj) === 'string'
-    ? _removeRecipientForNumber(obj, list)
-    : _removeRecipientForObject(obj, list);
+  const objType = typeOf(obj);
+  if (objType === 'string') {
+    return _removeRecipientForNumber(obj, list);
+  } else if (objType === 'object' || objType === 'instance') {
+    return _removeRecipientForObject(obj, list);
+  } else {
+    return false;
+  }
 }
 function _removeRecipientForNumber(num, list) {
   if (PhoneNumberUtils.validate(num)) {

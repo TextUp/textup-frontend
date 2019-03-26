@@ -10,5 +10,5 @@ const { computed } = Ember;
 export default MF.Fragment.extend(Dirtiable, Shareable, {
   whenCreated: DS.attr('date'),
   phoneId: DS.attr('number'),
-  [Constants.PROP_NAME.SHARING_IDENT]: computed.alias('phoneId'),
+  [Constants.PROP_NAME.SHARING_IDENT]: computed.readOnly('phoneId'),
 });

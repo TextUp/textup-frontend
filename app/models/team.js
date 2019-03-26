@@ -13,7 +13,6 @@ const { computed, tryInvoke, getWithDefault, assign } = Ember,
       {
         name: { description: 'Name', validators: [validator('presence', true)] },
         hexColor: { description: 'Color', validators: [validator('presence', true)] },
-        phone: { description: 'Phone', validators: [validator('belongs-to')] },
         location: {
           description: 'Location',
           validators: [validator('presence', true), validator('belongs-to')],

@@ -171,14 +171,12 @@
                                         </div>
                                     </div>
                                 {{/if}}
-                                {{#if (owner-policy/self phoneOwner.phone.content person)}}
-                                    {{availability-control
-                                        self=(owner-policy/self phoneOwner.phone.content person)
-                                        others=(owner-policy/others phoneOwner.phone.content person)
-                                        onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
-                                        onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
-                                        onScheduleAvailabilityChange=(action "replaceRange" target=(get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
-                                {{/if}}
+                                {{availability-control
+                                    self=(owner-policy/self phoneOwner.phone.content person)
+                                    others=(owner-policy/others phoneOwner.phone.content person)
+                                    onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
+                                    onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
+                                    onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">

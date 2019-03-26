@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
 import sinon from 'sinon';
@@ -7,28 +8,23 @@ const { run } = Ember;
 
 moduleForModel('phone', 'Unit | Model | phone', {
   needs: [
-    'model:availability',
     'model:contact',
     'model:future-message',
     'model:media',
     'model:record-item',
-    'model:shared-contact',
     'model:tag',
-    'service:constants',
     'validator:collection',
     'validator:inclusion',
     'validator:length',
     'validator:presence',
   ],
-  beforeEach() {
-    this.inject.service('constants');
-  },
 });
 
 test('default values', function(assert) {
   const obj = this.subject();
 
-  assert.equal(obj.get('language'), this.constants.DEFAULT.LANGUAGE);
+  assert.equal(obj.get('contactsFilter'), Constants.CONTACT.FILTER.ALL);
+  assert.equal(obj.get('language'), Constants.DEFAULT.LANGUAGE);
   assert.equal(obj.get('awayMessage'), '');
   assert.equal(obj.get('awayMessageMaxLength'), 320);
 });
@@ -42,13 +38,7 @@ test('dirty checking', function(assert) {
   obj.set('media.content', { isDirty: true });
   assert.equal(obj.get('hasManualChanges'), true);
 
-  obj.set('availability.content', { isDirty: true });
-  assert.equal(obj.get('hasManualChanges'), true);
-
-  obj.setProperties({
-    'media.content.isDirty': false,
-    'availability.content.isDirty': false,
-  });
+  obj.setProperties({ 'media.content.isDirty': false });
   assert.equal(obj.get('hasManualChanges'), false);
 });
 
@@ -58,14 +48,13 @@ test('rolling back changes', function(assert) {
 
   obj.setProperties({
     'media.content': { rollbackAttributes: rollbackSpy },
-    'availability.content': { rollbackAttributes: rollbackSpy },
   });
 
   obj.rollbackAttributes();
 
   // need to store rollbackSpy separately because all of the association fields
   // are cleared on rollback
-  assert.ok(rollbackSpy.calledTwice);
+  assert.ok(rollbackSpy.calledOnce);
 });
 
 test('validation', function(assert) {
@@ -104,8 +93,8 @@ test('validation', function(assert) {
 test('contact filter and statuses', function(assert) {
   run(() => {
     const obj = this.subject(),
-      statuses = this.constants.CONTACT.STATUS,
-      filters = this.constants.CONTACT.FILTER;
+      statuses = Constants.CONTACT.STATUS,
+      filters = Constants.CONTACT.FILTER;
 
     assert.throws(() => obj.set('contactStatuses', []));
 
@@ -139,8 +128,8 @@ test('contact filter and statuses', function(assert) {
 
 test('displaying contacts based on set filter', function(assert) {
   const obj = this.subject(),
-    statuses = this.constants.CONTACT.STATUS,
-    filters = this.constants.CONTACT.FILTER,
+    statuses = Constants.CONTACT.STATUS,
+    filters = Constants.CONTACT.FILTER,
     c1 = run(() => this.store().createRecord('contact', { id: 1, status: 'invalid' })),
     c2 = run(() => this.store().createRecord('contact', { id: 2, status: statuses.UNREAD })),
     c3 = run(() => this.store().createRecord('contact', { id: 3, status: statuses.ACTIVE })),
@@ -172,7 +161,7 @@ test('displaying contacts based on set filter', function(assert) {
 test('maintaining contact order', function(assert) {
   run(() => {
     const obj = this.subject(),
-      statuses = this.constants.CONTACT.STATUS,
+      statuses = Constants.CONTACT.STATUS,
       c1 = this.store().createRecord('contact', {
         id: 1,
         status: statuses.ACTIVE,
@@ -225,7 +214,7 @@ test('maintaining contact order', function(assert) {
 
 test('total number of contacts and clearing contacts', function(assert) {
   const obj = this.subject(),
-    statuses = this.constants.CONTACT.STATUS,
+    statuses = Constants.CONTACT.STATUS,
     c1 = run(() => this.store().createRecord('contact', { status: statuses.ACTIVE })),
     totalNum = 88;
 
@@ -254,7 +243,7 @@ test('total number of contacts and clearing contacts', function(assert) {
 
 test('ignores duplicate contacts (based on id)', function(assert) {
   const obj = this.subject(),
-    statuses = this.constants.CONTACT.STATUS,
+    statuses = Constants.CONTACT.STATUS,
     c1 = run(() => this.store().createRecord('contact', { id: 1, status: statuses.ACTIVE })),
     c2 = run(() => this.store().createRecord('contact', { id: 2, status: statuses.ACTIVE }));
 

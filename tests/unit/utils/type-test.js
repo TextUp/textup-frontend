@@ -46,4 +46,7 @@ test('determining if a specific model', function(assert) {
 
   assert.equal(TypeUtils.isNote(), false);
   assert.equal(TypeUtils.isNote(mockModel(1, Constants.MODEL.RECORD_NOTE)), true);
+
+  assert.equal(TypeUtils.isSchedule(), false);
+  assert.equal(TypeUtils.isSchedule(mockModel(1, Constants.MODEL.SCHEDULE)), true);
 });

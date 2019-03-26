@@ -8,7 +8,7 @@ import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-message
 import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { alias, notEmpty, equal: eq } = Ember.computed,
+const { computed, typeOf } = Ember,
   Validations = buildValidations({
     name: { description: 'Name', validators: [validator('presence', true)] },
   });
@@ -24,10 +24,6 @@ export default DS.Model.extend(
     // Overrides
     // ---------
 
-    init() {
-      this._super(...arguments);
-      this.set('actions', []);
-    },
     rollbackAttributes() {
       this._super(...arguments);
       this.clearMembershipChanges();
@@ -40,26 +36,22 @@ export default DS.Model.extend(
       this._super(...arguments);
       this.rollbackAttributes();
     },
+    hasManualChanges: computed.notEmpty('actions'),
 
-    // Attributes
+    // Properties
     // ----------
 
     name: DS.attr('string'),
     hexColor: DS.attr('string', { defaultValue: Constants.COLOR.BRAND }),
     phone: DS.belongsTo('phone'),
+
     numMembers: DS.attr('number'),
+    isEmpty: computed('numMembers', function() {
+      const numMembers = this.get('numMembers');
+      return typeOf(numMembers) !== 'number' || numMembers <= 0;
+    }),
 
-    // Not attributes
-    // --------------
-
-    actions: null,
-
-    // Computed properties
-    // -------------------
-
-    isEmpty: eq('numMembers', 0),
-    hasManualChanges: notEmpty('actions'),
-    identifier: alias('name'),
+    actions: computed(() => []),
 
     // Methods
     // -------

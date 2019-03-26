@@ -10,17 +10,11 @@ const { computed, getWithDefault, tryInvoke } = Ember;
 // [NOTE] don't mix into this mixin because of a bug where all classes that mix in this class
 // will have their own validations overriden with the last class that mixed in this mixin
 export const OwnsPhoneValidations = {
-  phone: {
-    description: 'Phone',
-    validators: [validator('belongs-to')],
-  },
+  phone: { description: 'Phone', validators: [validator('belongs-to')] },
   phoneAction: {
     description: 'Change going to be made to this phone',
     validators: [
-      validator('inclusion', {
-        allowBlank: true,
-        in: Object.values(Constants.ACTION.PHONE),
-      }),
+      validator('inclusion', { allowBlank: true, in: Object.values(Constants.ACTION.PHONE) }),
     ],
   },
   transferFilter: {

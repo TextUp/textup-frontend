@@ -30,13 +30,6 @@ export default Ember.Route.extend({
         },
       });
     },
-    // need to do this because a bug with context setting on action helper using `target`
-    // in which flipping between tabs does not always trigger the action helper to rebuild
-    // so we end up targeting the previous schedule for actions instead of the schedule
-    // currently being viewed
-    replaceRangeForSchedule(schedule, dayOfWeek, newRanges) {
-      schedule.actions.replaceRange.call(schedule, dayOfWeek, newRanges);
-    },
   },
 
   _resetController() {

@@ -1,3 +1,4 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
@@ -45,10 +46,6 @@ export default DS.Model.extend(
     // Overrides
     // ---------
 
-    init() {
-      this._super(...arguments);
-      this.set('actions', []);
-    },
     rollbackAttributes() {
       this._super(...arguments);
       this.clearSharingChanges();
@@ -99,7 +96,7 @@ export default DS.Model.extend(
 
     isSelected: false,
     numberDuplicates: Ember.computed(() => []),
-    actions: null,
+    actions: Ember.computed(() => []),
 
     // Methods
     // -------
@@ -123,7 +120,7 @@ export default DS.Model.extend(
     },
 
     isAnyStatus(raw) {
-      return (Ember.isArray(raw) ? raw : [raw])
+      return ArrayUtils.ensureArrayAndAllDefined(raw)
         .map(stat => String(stat).toLowerCase())
         .contains(String(this.get('status')).toLowerCase());
     },
