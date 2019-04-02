@@ -78,7 +78,7 @@
         doRegister=(action (mut _peopleList))
         containerClass="bg-color bg-lightest"
         itemsClass="result-list"
-        direction="down"
+        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
         data=people
         total=numPeople
         doLoad=(action "loadMore")

@@ -1,5 +1,7 @@
 /* jshint node: true */
 
+// TODO restore test credential in zshrc
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'textup-frontend',

@@ -31,7 +31,7 @@
 	{{#infinite-scroll classNames='section-body bg-color bg-dark'
         containerClass='bg-color bg-lightest'
         itemsClass='result-list'
-        direction='down'
+        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
         data=searchResults
         total=numResults
         doLoad=(route-action 'loadMore')

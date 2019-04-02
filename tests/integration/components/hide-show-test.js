@@ -7,7 +7,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { typeOf } = Ember;
 
 moduleForComponent('hide-show', 'Integration | Component | hide show', {
-  integration: true
+  integration: true,
 });
 
 test('properties', function(assert) {

@@ -2,6 +2,8 @@ import Ember from 'ember';
 import InflectorRulesInitializer from 'textup-frontend/initializers/inflector-rules';
 import { module, test } from 'qunit';
 
+// TODO test?
+
 let application;
 
 module('Unit | Initializer | inflector rules', {
@@ -10,7 +12,7 @@ module('Unit | Initializer | inflector rules', {
       application = Ember.Application.create();
       application.deferReadiness();
     });
-  }
+  },
 });
 
 // Replace this with your real tests.

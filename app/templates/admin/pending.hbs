@@ -21,7 +21,7 @@
     </div>
 	{{#infinite-scroll classNames="section-body"
         itemsClass="tile-list"
-        direction="down"
+        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
         data=pendingStaff
         total=numPending
         doLoad=(action "loadMore") as |selected|}}
