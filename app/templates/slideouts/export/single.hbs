@@ -1,7 +1,7 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat "Exporting " (get model (constant "PROP_NAME.READABLE_IDENT"))))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(concat "Exporting " (get model (constant "PROP_NAME.READABLE_IDENT"))))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishExportSlideout")
         disablePrimary=(or (not exportStartDate) (not exportEndDate))

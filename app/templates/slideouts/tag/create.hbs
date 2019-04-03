@@ -1,7 +1,6 @@
 {{#slideout-pane
-    headerProps=(hash title='New Tag')
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title='New Tag')
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishNewTagSlideout")
         disablePrimary=(not (v-get newTag 'isValid'))

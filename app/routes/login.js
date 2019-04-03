@@ -12,14 +12,16 @@ export default Ember.Route.extend(IsPublic, {
   },
   actions: {
     login(un, pwd, doStore) {
-      const authService = this.get('authService'),
-        authUser = authService.get('authUser');
-      return authService
-        .login(un, pwd, doStore)
-        .then(
-          () => authService.retryAttemptedTransition(() => this.transitionTo('main', authUser)),
-          () => this.notifications.error('Incorrect or blank username or password')
-        );
+      const authService = this.get('authService');
+      return authService.login(un, pwd, doStore).then(
+        () => {
+          authService.retryAttemptedTransition(() => {
+            // need to get the authUser after it has been set by the login function
+            this.transitionTo('main', authService.get('authUser'));
+          });
+        },
+        () => this.notifications.error('Incorrect or blank username or password')
+      );
     },
     resetPassword(un) {
       const successMsg = `All good! The password reset should be in your inbox in a few minutes.`,

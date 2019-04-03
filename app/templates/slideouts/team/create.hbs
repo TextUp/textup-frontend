@@ -1,20 +1,19 @@
 {{#slideout-pane
-    headerProps=(hash title='New Team')
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="New Team")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action 'createTeam' newTeam
+        doPrimary=(route-action "createTeam" newTeam
             (route-action "closeSlideout"))
-        disablePrimary=(not (v-get newTeam 'isValid'))
+        disablePrimary=(not (v-get newTeam "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onOpen=(route-action 'initializeNewTeam')
-    doClose=(route-action 'revert' newTeam
+    onOpen=(route-action "initializeNewTeam")
+    doClose=(route-action "revert" newTeam
         (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving
-    focusSelector='.start-focus' as |slideout|}}
+    focusSelector=".start-focus" as |slideout|}}
     <div class="form">
-        {{partial 'partials/team/create-edit'}}
+        {{partial "partials/team/create-edit"}}
     </div>
     {{form/location-model entity=newTeam
         onLocationError=(service-action "dataService" "handleMapError")}}

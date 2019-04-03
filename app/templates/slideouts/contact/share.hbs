@@ -1,9 +1,9 @@
 {{#slideout-pane
-    headerProps=(hash title=(if (gt sharingContacts.length 1)
-        (concat 'Share (' sharingContacts.length ' selected)')
-        (concat 'Sharing ' sharingContacts.firstObject.name)))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(if (gt sharingContacts.length 1)
+            (concat "Share (" sharingContacts.length " selected)")
+            (concat "Sharing " sharingContacts.firstObject.name)))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=contactAnySharingChange
         doPrimary=(route-action "finishContactSharingSlideout")
         primaryLabel="Update"

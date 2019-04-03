@@ -1,7 +1,6 @@
 {{#slideout-pane
-	headerProps=(hash title='Compose')
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Compose")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishComposeSlideout")
         disablePrimary=(or (not composeMessage) (not composeHasRecipients))
@@ -9,7 +8,7 @@
         primaryProgressLabel="Sending...")
     doClose=(route-action "cancelComposeSlideout")
     forceKeepOpen=(or composeMessage composeHasRecipients)
-    focusSelector='.multi-select-new-input' as |slideout|}}
+    focusSelector=".multi-select-new-input" as |slideout|}}
 	<div class="form">
 		{{#if model.phone.isFulfilled}}
 			<div class="form__group">

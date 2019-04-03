@@ -1,12 +1,10 @@
 {{#slideout-pane
-    headerComponent="slideout-pane/accounts"
-    headerProps=(hash
+    headerComponent=(component "slideout-pane/accounts"
         title="Your Account"
         activeOwner=stateManager.owner
         user=authService.authUser
         doLogOut=(route-action "logout"))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    footerComponent=(component "slideout-pane/actions"
         showFooter=(and (or stateManager.owner.isDirty authService.authUser.isDirty)
                 (not usernameDropdown.isOpen)
                 (not passwordDropdown.isOpen)

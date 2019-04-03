@@ -230,6 +230,10 @@ test('determining active phone owners', function(assert) {
       team2 = this.store.createRecord('team', {
         name: 'team2',
         phone: this.store.createRecord('phone', { isActive: false }),
+      }),
+      team3 = this.store.createRecord('team', {
+        name: 'team2',
+        phone: null,
       });
 
     assert.equal(model.get('allActivePhoneOwners.length'), 0);
@@ -241,6 +245,9 @@ test('determining active phone owners', function(assert) {
     assert.equal(model.get('allActivePhoneOwners.length'), 1);
 
     model.get('teams').pushObject(team2);
+    assert.equal(model.get('allActivePhoneOwners.length'), 1);
+
+    model.get('teams').pushObject(team3);
     assert.equal(model.get('allActivePhoneOwners.length'), 1);
 
     model.set('phone', activePhone1);

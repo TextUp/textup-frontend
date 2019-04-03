@@ -1,6 +1,8 @@
-import LocationUtils from 'textup-frontend/utils/location';
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import LocationUtils from 'textup-frontend/utils/location';
+import moment from 'moment';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -58,6 +60,26 @@ test('optional inputs', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__metadata').length);
+  });
+});
+
+test('timestamp displayed is `whenChanged` not `whenCreated`', function(assert) {
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      whenChanged = new Date(),
+      rNote = store.createRecord('record-note', { whenCreated: null, whenChanged });
+
+    this.setProperties({ rNote });
+    this.render(hbs`{{record-item/note note=rNote}}`);
+
+    assert.ok(this.$('.record-item').length);
+    assert.ok(this.$('.record-item--note').length);
+    assert.ok(this.$('.record-item__metadata').length, 'has metadata');
+    assert.ok(
+      this.$('.record-item__metadata')
+        .text()
+        .indexOf(moment(whenChanged).format(config.moment.outputFormat)) > -1
+    );
   });
 });
 

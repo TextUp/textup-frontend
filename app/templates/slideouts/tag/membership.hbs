@@ -1,9 +1,9 @@
 {{#slideout-pane
-    headerProps=(hash title=(if (gt tagMembershipContacts.length 1)
-        (concat 'Tags (' tagMembershipContacts.length ' selected)')
-        (concat tagMembershipContacts.firstObject.name ' Tags')))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(if (gt tagMembershipContacts.length 1)
+            (concat "Tags (" tagMembershipContacts.length " selected)")
+            (concat tagMembershipContacts.firstObject.name " Tags")))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=tagsHaveActions
         doPrimary=(route-action "finishTagMembershipSlideout")
         primaryLabel="Update"
@@ -11,7 +11,7 @@
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "cancelTagMembershipSlideout") as |slideout|}}
     {{#multi-toggle/group-by-bucket anyChanges=(mut tagsHaveActions)
-        itemBucketProperty='tags'
+        itemBucketProperty="tags"
         items=tagMembershipContacts
         buckets=tagMembershipTags as |tag|}}
         {{color-badge color=tag.hexColor text=tag.name}}

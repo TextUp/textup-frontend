@@ -1,7 +1,7 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat stateManager.owner.name " Availability"))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(concat stateManager.owner.name " Availability"))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=(or model.isDirty authService.authUser.isDirty)
         doPrimary=(route-action "finishAvailabilitySlideout")
         disablePrimary=(or

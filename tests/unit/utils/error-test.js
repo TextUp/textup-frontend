@@ -34,10 +34,10 @@ test('extracting error mssages from response', function(assert) {
     [],
     'nulls are ignored'
   );
-  assert.deepEqual(ErrorUtils.tryExtractResponseMessages({ errors: ['nope'] }), [undefined]);
+  assert.deepEqual(ErrorUtils.tryExtractResponseMessages({ errors: ['nope'] }), []);
   assert.deepEqual(
     ErrorUtils.tryExtractResponseMessages({
-      errors: [{ message: val1 }, { message: val1 }, { message: val2 }],
+      errors: [{ message: val1 }, { message: val1 }, { message: val2 }, { message: null }],
     }),
     [val1, val2]
   );

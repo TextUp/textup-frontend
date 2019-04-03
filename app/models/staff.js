@@ -129,7 +129,6 @@ export default DS.Model.extend(
     // Internal properties
     // -------------------
 
-    // TODO test when some teams have no phone
     _teamPhones: computed('teams.@each.phone', function() {
       return ArrayUtils.ensureArrayAndAllDefined(this.get('teams').mapBy('phone.content'));
     }),

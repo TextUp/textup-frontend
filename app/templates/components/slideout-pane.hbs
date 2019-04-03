@@ -1,9 +1,11 @@
-{{component headerComponent doClose=(action 'forceClose') props=headerProps}}
+{{#if headerComponent}}
+    {{component headerComponent doClose=(action _close true)}}
+{{/if}}
 
 <div class="slideout-pane__body {{bodyClass}}" tabindex="-1">
     {{yield publicAPI}}
 </div>
 
 {{#if footerComponent}}
-	{{component footerComponent doClose=(action 'forceClose') props=footerProps}}
+    {{component footerComponent doClose=(action _close true)}}
 {{/if}}

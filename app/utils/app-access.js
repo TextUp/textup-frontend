@@ -43,9 +43,10 @@ export function determineAppropriateLocation(thisRoute, authUser) {
   }
 }
 
-// TODO test this directly
 export function canStaffAccessAdminDashboard(authUser) {
-  return authUser.get('isAdmin') && authUser.get('org.content.isApproved');
+  return (
+    TypeUtils.isStaff(authUser) && authUser.get('isAdmin') && authUser.get('org.content.isApproved')
+  );
 }
 
 // Helpers

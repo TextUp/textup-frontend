@@ -41,15 +41,28 @@ test('determining if provided phone owner is active', function(assert) {
   assert.equal(AppAccessUtils.isActivePhoneOwner(team1), true);
 });
 
+test('determining if authUser is an admin', function(assert) {
+  const inactiveAdmin = mockModel(1, Constants.MODEL.STAFF, { isAdmin: true }),
+    activeAdmin = mockModel(2, Constants.MODEL.STAFF, {
+      isAdmin: true,
+      org: { content: { isApproved: true } },
+    });
+
+  assert.notOk(AppAccessUtils.canStaffAccessAdminDashboard());
+  assert.notOk(AppAccessUtils.canStaffAccessAdminDashboard('not a staff'));
+  assert.notOk(AppAccessUtils.canStaffAccessAdminDashboard(inactiveAdmin));
+  assert.ok(AppAccessUtils.canStaffAccessAdminDashboard(activeAdmin));
+});
+
 test('determining the appropriate location in the app based on available phone owners', function(assert) {
   const transitionTo = sinon.spy(),
     phoneOwner1 = { name: Math.random(), phone: { content: { isActive: true } } };
   const mainRoute = Ember.Object.create({ transitionTo, routeName: 'main' }),
     adminIndexRoute = Ember.Object.create({ transitionTo, routeName: 'admin.index' }),
     noneIndexRoute = Ember.Object.create({ transitionTo, routeName: 'none.index' });
-  const noneUser = Ember.Object.create({ allActivePhoneOwners: [] }),
-    staffUser = Ember.Object.create({ allActivePhoneOwners: [phoneOwner1] }),
-    adminOnlyUser = Ember.Object.create({
+  const noneUser = mockModel(1, Constants.MODEL.STAFF, { allActivePhoneOwners: [] }),
+    staffUser = mockModel(2, Constants.MODEL.STAFF, { allActivePhoneOwners: [phoneOwner1] }),
+    adminOnlyUser = mockModel(3, Constants.MODEL.STAFF, {
       allActivePhoneOwners: [],
       isAdmin: true,
       org: { content: { isApproved: true } },

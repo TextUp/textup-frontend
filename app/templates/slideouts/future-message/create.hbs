@@ -1,7 +1,6 @@
 {{#slideout-pane
-    headerProps=(hash title="Schedule Message")
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Schedule Message")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishNewScheduleMessageSlideout")
         disablePrimary=(not (v-get newFutureMessage "isValid"))

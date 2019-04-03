@@ -1,5 +1,5 @@
 {{#slideout-pane
-    headerProps=(hash title="Scheduled Messages")
+    headerComponent=(component "slideout-pane/title" title="Scheduled Messages")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
     <ul class="result-list">

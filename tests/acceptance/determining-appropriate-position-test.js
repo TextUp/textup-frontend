@@ -132,11 +132,7 @@ test('logged in user has no phones and is admin', function(assert) {
   this.application.inject('controller:admin', 'authService', 'services:auth-service');
 
   server.respondWith(/\/v1\/staff\/*/, xhr => {
-    xhr.respond(
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ staff: [], meta: { total: 0 } })
-    );
+    xhr.respond(200, { 'Content-Type': 'application/json' }, JSON.stringify({ staff: [] }));
   });
 
   visit(`/main/${urlIdent}`);
@@ -147,7 +143,6 @@ test('logged in user has no phones and is admin', function(assert) {
   });
 });
 
-// TODO need to test visiting admin because admin kicks back to main right now
 test('logged in user has phones and is admin', function(assert) {
   const urlIdent = 'testing-staff-segment',
     staff = run(() =>
@@ -166,19 +161,27 @@ test('logged in user has phones and is admin', function(assert) {
   );
   this.application.inject('route:main', 'authService', 'services:auth-service');
   this.application.inject('controller:main', 'authService', 'services:auth-service');
+  this.application.inject('route:admin', 'authService', 'services:auth-service');
+  this.application.inject('controller:admin', 'authService', 'services:auth-service');
 
+  server.respondWith(/\/v1\/contacts\/*/, xhr => {
+    xhr.respond(200, { 'Content-Type': 'application/json' }, JSON.stringify({ contacts: [] }));
+  });
   server.respondWith(/\/v1\/staff\/*/, xhr => {
-    xhr.respond(
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ staff: [], meta: { total: 0 } })
-    );
+    xhr.respond(200, { 'Content-Type': 'application/json' }, JSON.stringify({ staff: [] }));
   });
 
-  visit(`/main/${urlIdent}`);
-  andThen(() => {
-    assert.equal(currentURL(), `/main/${urlIdent}/contacts`);
-    assert.equal(currentPath(), 'main.contacts.index');
-    assert.equal(currentRouteName(), 'main.contacts.index');
-  });
+  visit(`/main/${urlIdent}`)
+    .then(() => {
+      assert.equal(currentURL(), `/main/${urlIdent}/contacts`);
+      assert.equal(currentPath(), 'main.contacts.index');
+      assert.equal(currentRouteName(), 'main.contacts.index');
+
+      return visit('/admin');
+    })
+    .then(() => {
+      assert.equal(currentURL(), '/admin/people');
+      assert.equal(currentPath(), 'admin.people.index');
+      assert.equal(currentRouteName(), 'admin.people.index');
+    });
 });

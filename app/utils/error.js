@@ -22,6 +22,7 @@ export function tryExtractResponseMessages(obj) {
   if (isResponse(obj)) {
     return ArrayUtils.ensureAllDefined(obj[ERRORS_PROP_NAME])
       .mapBy(MESSAGE_PROP_NAME)
+      .filter(isPresent)
       .uniq();
   } else {
     return [];

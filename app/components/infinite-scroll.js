@@ -3,7 +3,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isPresent, tryInvoke, typeOf, run, RSVP, on, observer } = Ember;
+const { computed, isPresent, tryInvoke, typeOf, run, on, observer } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -102,6 +102,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   // _checkIfLoadFinish -> checkNearEnd -> onLoad. _checkIfLoadFinish expects `_didStartLoad` to be
   // TRUE because it itself will reset this flag back to false for the onLoad handler called later on
   _resetAll() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     this._resetProperties();
     callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
   },

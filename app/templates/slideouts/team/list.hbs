@@ -1,7 +1,6 @@
 {{#slideout-pane
-    headerProps=(hash title=(if model.teams "Teams" "New Team"))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title=(if model.teams "Teams" "New Team"))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=teamsListHideAway.isOpen
         doPrimary=(route-action "createTeam" newTeam teamsListHideAway.actions.close)
         disablePrimary=(not (v-get newTeam "isValid"))

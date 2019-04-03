@@ -1,7 +1,5 @@
 import Ember from 'ember';
 
-// TODO test
-
 const { typeOf } = Ember;
 
 export default function callIfPresent(context, onCall, args) {

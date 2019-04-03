@@ -1,7 +1,7 @@
 {{#slideout-pane
-    headerProps=(hash title=(phone-number (get model (constant "PROP_NAME.READABLE_IDENT"))))
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(phone-number (get model (constant "PROP_NAME.READABLE_IDENT"))))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishExistingContactSlideout")
         disablePrimary=(or (not model.allowEdits) (not (v-get model "isValid")))
@@ -16,3 +16,4 @@
         onAddNumber=(route-action "onAddNumber")
         onRemoveNumber=(route-action "onRemoveNumber")}}
 {{/slideout-pane}}
+

@@ -56,7 +56,7 @@ export default Ember.Component.extend({
       isEditing: false,
       currentlyEditing: null,
       actions: {
-        clear: this.clearInput.bind(this, this.get('inputObj')),
+        clear: this.clearInput.bind(this),
         insert: this.insert.bind(this),
         update: this.updateOnEvent.bind(this),
         focus: this.ensureFocus.bind(this),
@@ -181,7 +181,7 @@ export default Ember.Component.extend({
         this.insert(event);
       } else if (event.which === 27) {
         // escape
-        this.clearInput($input);
+        this.clearInput();
       } else if (
         event.which === 8 &&
         inputEmpty &&
@@ -195,7 +195,7 @@ export default Ember.Component.extend({
       } else if (event.which === 37 && (inputEmpty || inputBlank) && anyData) {
         // left arrow and empty
         if (inputBlank) {
-          this.clearInput($input);
+          this.clearInput();
         }
         this._focusBefore();
       } else {
@@ -211,7 +211,7 @@ export default Ember.Component.extend({
     const $input = this.get('inputObj'),
       result = Ember.tryInvoke(this, 'onInsert', [$input.val(), event]);
     if (result && result.then) {
-      result.then(() => this.clearInput($input));
+      result.then(() => this.clearInput());
     }
   },
   updateOnEvent(event) {
@@ -268,8 +268,11 @@ export default Ember.Component.extend({
     }
     this.set('_lastInputValue', inputVal);
   },
-  clearInput($input) {
-    $input.val('');
+  clearInput() {
+    const $input = this.get('inputObj');
+    if ($input) {
+      $input.val('');
+    }
     this.set('publicAPI.currentVal', '');
   },
 

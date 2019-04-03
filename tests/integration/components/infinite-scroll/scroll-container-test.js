@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { typeOf, run } = Ember;
+const { typeOf } = Ember;
 
 moduleForComponent(
   'infinite-scroll/scroll-container',

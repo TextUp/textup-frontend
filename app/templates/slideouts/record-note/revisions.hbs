@@ -1,5 +1,5 @@
 {{#slideout-pane
-    headerProps=(hash title='Note History')
+    headerComponent=(component "slideout-pane/title" title='Note History')
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     doClose=(route-action "finishViewNoteHistorySlideout") as |slideout|}}
     <ul class="result-list">

@@ -1,7 +1,6 @@
 {{#slideout-pane
-    headerProps=(hash title="Edit Note")
-    footerComponent=(constant "SLIDEOUT.FOOTER.ACTIONS")
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Edit Note")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
         doPrimary=(route-action "finishEditNoteSlideout")
         disablePrimary=(not (v-get editingRecordNote "isValid"))

@@ -1,7 +1,7 @@
-<div class="display-xs display-s display-m row">
-    {{slideout-pane/title doClose=doClose props=props}}
-</div>
-{{account-switcher class='display-l'
-    activeOwner=props.activeOwner
-    user=props.user
-    doLogOut=props.doLogOut}}
+{{slideout-pane/title classNames="display-xs display-s display-m row"
+    doClose=doClose
+    title=title}}
+{{account-switcher classNames='display-l'
+    activeOwner=activeOwner
+    user=user
+    doLogOut=doLogOut}}

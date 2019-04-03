@@ -9,14 +9,11 @@ const { $, isNone, computed, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   propTypes: {
     doClose: PropTypes.func.isRequired,
+    headerComponent: PropTypes.EmberComponent,
+    footerComponent: PropTypes.EmberComponent,
 
-    headerComponent: PropTypes.string,
-    headerProps: PropTypes.object,
-    footerComponent: PropTypes.string,
-    footerProps: PropTypes.object,
-
-    bodyClass: '',
-    direction: PropTypes.string,
+    bodyClass: PropTypes.string,
+    direction: PropTypes.oneOf(Object.values(Constants.SLIDEOUT.DIRECTION)),
     ignoreCloseSelectors: PropTypes.string,
     startOpen: PropTypes.bool,
     clickOutToClose: PropTypes.bool,
@@ -29,10 +26,6 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   },
   getDefaultProps() {
     return {
-      headerComponent: 'slideout-pane/title',
-      headerProps: {},
-      footerComponent: '',
-      footerProps: {},
       direction: Constants.SLIDEOUT.DIRECTION.LEFT,
       ignoreCloseSelectors: Constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR,
       bodyClass: '',
@@ -91,12 +84,6 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
     this._super(...arguments);
     $(document).off(`.${this.elementId}`);
     this._removeOverlay();
-  },
-
-  actions: {
-    forceClose() {
-      this._close(true);
-    },
   },
 
   // Event handlers

@@ -218,7 +218,7 @@ test('total number of contacts and clearing contacts', function(assert) {
     c1 = run(() => this.store().createRecord('contact', { status: statuses.ACTIVE })),
     totalNum = 88;
 
-  assert.equal(obj.get('totalNumContacts'), '--');
+  assert.equal(obj.get('totalNumContacts'), null);
   assert.equal(obj.get('contacts.length'), 0);
 
   obj.set('totalNumContacts', totalNum);
@@ -237,7 +237,7 @@ test('total number of contacts and clearing contacts', function(assert) {
   assert.equal(obj.get('contacts.length'), 1);
 
   obj.clearContacts();
-  assert.equal(obj.get('totalNumContacts'), '--');
+  assert.equal(obj.get('totalNumContacts'), null);
   assert.equal(obj.get('contacts.length'), 0);
 });
 

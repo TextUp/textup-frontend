@@ -42,7 +42,7 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
 
 test('building required query parameters for particular record owners', function(assert) {
   const service = this.subject(),
-    emptyResult = { contactIds: [], sharedContactIds: [], tagIds: [] },
+    emptyResult = { owners: [] },
     mockTag = mockModel(Math.random(), Constants.MODEL.TAG),
     mockContact = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: false }),
     mockShared = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: true });
@@ -54,9 +54,10 @@ test('building required query parameters for particular record owners', function
   assert.deepEqual(service._buildQueryFor([]), emptyResult);
 
   let resObj = service._buildQueryFor([mockTag, mockContact, mockShared]);
-  assert.deepEqual(resObj.contactIds, [mockContact.id]);
-  assert.deepEqual(resObj.sharedContactIds, [mockShared.id]);
-  assert.deepEqual(resObj.tagIds, [mockTag.id]);
+  assert.equal(resObj.owners.length, 3);
+  assert.ok(resObj.owners.indexOf(mockTag.id) > -1);
+  assert.ok(resObj.owners.indexOf(mockContact.id) > -1);
+  assert.ok(resObj.owners.indexOf(mockShared.id) > -1);
 });
 
 test('handling export outcome', function(assert) {
@@ -101,9 +102,7 @@ test('loading more record items for contact', function(assert) {
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
     assert.deepEqual(queryStub.firstCall.args[1], {
-      contactIds: [model.id],
-      sharedContactIds: [],
-      tagIds: [],
+      owners: [model.id],
       max: 20,
       offset: numRecordItems,
     });
@@ -128,9 +127,7 @@ test('loading more record items for tag', function(assert) {
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
     assert.deepEqual(queryStub.firstCall.args[1], {
-      tagIds: [model.id],
-      sharedContactIds: [],
-      contactIds: [],
+      owners: [model.id],
       max: 20,
       offset: numRecordItems,
     });
