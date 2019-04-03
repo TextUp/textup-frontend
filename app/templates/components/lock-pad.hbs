@@ -1,14 +1,12 @@
-{{#if _isLoading}}
-  Validating...
-  <span class="fa fa-circle-o-notch fa-spin"></span>
-{{/if}}
-
 <div class="lock-pad__indicator-container">
-  {{#unless _isLoading}}
+  {{#if _isLoading}}
+    Validating...
+    <span class="fa fa-circle-o-notch fa-spin"></span>
+  {{else}}
     {{#each _valIndices as |val index|}}
       {{lock-pad/indicator indicatorNum=(plus index 1) numFilled=_valLength}}
     {{/each}}
-  {{/unless}}
+  {{/if}}
 </div>
 
 {{number-control val=val

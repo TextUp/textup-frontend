@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.textup" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.textup" version="1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>TextUp</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        TextUp equips social workers with the tools they need to improve client outcomes
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="connect@textup.org" href="https://www.textup.org">
+        TextUp
     </author>
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
@@ -79,7 +79,7 @@
     </plugin>
     <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
     <edit-config file="*-Info.plist" mode="merge" target="NSContactsUsageDescription">
-        <string>need contacts access to search friends</string>
+        <string>  Allow contact access to import native contacts into TextUp </string>
     </edit-config>
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />

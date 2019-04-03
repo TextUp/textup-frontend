@@ -1,0 +1,26 @@
+<h1> Select Contacts to Import </h1>
+<br><br>
+
+<div class="contacts-import__container">
+  <div class="contacts-import__contact-item">
+    <h2 class="contacts-import__contact-name" style="margin-left:50px"> Name </h2>
+    <h2 class="contacts-import__contact-number"> Number </h2>
+  </div>
+  {{#each _contacts as |person index|}}
+    <div class="contacts-import__contact-item">
+      <input type="checkbox" id="{{index}}">
+      <h2 class="contacts-import__contact-name"> {{person.name}} </h2>
+      {{#each person.number as |number|}}
+        <h2 class="contacts-import__contact-number"> {{number}} </h2>
+      {{/each}}
+    </div>
+  {{/each}}
+
+</div>
+<br><br>
+<input type="button" value="Import" onclick={{action _submitContacts}}>
+<br><br>
+<input type="file"
+    accept="text/vcard"
+    multiple="multiple"
+    onchange={{action _handleUpload}}>

@@ -134,6 +134,9 @@ export default Ember.Route.extend(
       this.get('staffService').loadStaffForSharing(model);
     },
     redirect: function(model, transition) {
+      // TODO comment out the following line in production release
+      this.transitionTo('testing');
+
       this._super(...arguments);
       if (transition.targetName === 'main.index') {
         this.transitionTo('main.contacts');

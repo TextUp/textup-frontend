@@ -1,0 +1,30 @@
+{
+  "android": {
+    "release": {
+      "keystore": "./android.keystore",
+      "alias": "TextUp-Key",
+      "keystoreType": ""
+    }
+  },
+  "ios": {
+    "debug": {
+      "buildFlag": [
+        "EMBEDDED_CONTENT_CONTAINS_SWIFT=YES",
+        "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
+        "UseModernBuildSystem=0",
+        "SWIFT_VERSION=4.0"
+      ]
+    },
+    "release": {
+      "developmentTeam": "J24J4GBZ2N",
+      "codeSignIdentity": "iPhone Developer",
+      "packageType": "app-store",
+      "buildFlag": [
+        "EMBEDDED_CONTENT_CONTAINS_SWIFT=YES",
+        "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
+        "UseModernBuildSystem=0",
+        "SWIFT_VERSION=4.0"
+      ]
+    }
+  }
+}
