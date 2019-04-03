@@ -1,12 +1,15 @@
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isPresent, tryInvoke, run, RSVP } = Ember;
+const { computed, isPresent, tryInvoke, typeOf, run, RSVP, on, observer } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
+    contentClass: PropTypes.string,
     data: PropTypes.oneOfType([PropTypes.null, PropTypes.array]),
+    numItems: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     numTotal: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     direction: PropTypes.oneOf(Object.values(Constants.INFINITE_SCROLL.DIRECTION)),
     loadMessage: PropTypes.string,
@@ -35,10 +38,19 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
     run.scheduleOnce('afterRender', this, this._resetAll);
   },
-  didReceiveAttrs() {
-    this._super(...arguments);
-    this._checkIfLoadFinish();
-  },
+
+  // Internal observers
+  // ------------------
+
+  // `didReceiveAttrs` is not called when the `data` object has items added to it. This hook is only
+  // called when the reference is changed to an entirely separate `data` object. Therefore, we rely
+  // on an observer to watch for `data` reference AND `data` item changes
+  _dataObserver: on(
+    'init',
+    observer('data.[]', function() {
+      run.once(this, this._checkIfLoadFinish);
+    })
+  ),
 
   // Internal properties
   // -------------------
@@ -57,9 +69,14 @@ export default Ember.Component.extend(PropTypesMixin, {
       },
     };
   }),
-  _numItems: computed('data.length', function() {
-    const numItems = this.get('data.length');
-    return isPresent(numItems) ? numItems : 0;
+  _numItems: computed('data.length', 'numItems', function() {
+    const numItems = this.get('numItems'),
+      dataLength = this.get('data.length');
+    if (typeOf(numItems) === 'number') {
+      return numItems;
+    } else {
+      return isPresent(dataLength) ? dataLength : 0;
+    }
   }),
   _prevNumItems: null,
   _prevNumTotal: null,
@@ -71,13 +88,58 @@ export default Ember.Component.extend(PropTypesMixin, {
     return isPresent(numTotal) && numItems >= numTotal;
   }),
   _shouldLoadMore: computed('_publicAPI.isDone', '_hasLoadedAllItems', function() {
-    return !this.get('_publicAPI.isDone') || !this.get('_hasLoadedAllItems');
+    return this.get('_publicAPI.isDone') ? false : !this.get('_hasLoadedAllItems');
   }),
 
   // Internal handlers
   // -----------------
 
+  // This method is usually called AFTER the `data` has been changed so we want to react immediately.
+  // Therefore, we make sure that the `_didStartLoad` flag is FALSE because we trigger a load more via
+  // checkNearEnd -> onLoad, which expects the `_didStartLoad` flag to be FALSE.
+  // In contrast, `onRefresh` which will kick off a `data` change and therefore should not
+  // check if near edge immediately. `onRefresh` triggers a load more via
+  // _checkIfLoadFinish -> checkNearEnd -> onLoad. _checkIfLoadFinish expects `_didStartLoad` to be
+  // TRUE because it itself will reset this flag back to false for the onLoad handler called later on
   _resetAll() {
+    this._resetProperties();
+    callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
+  },
+  _resetPosition() {
+    return callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'), [...arguments]);
+  },
+  _restorePosition() {
+    return callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition'), [
+      ...arguments,
+    ]);
+  },
+  // See `_resetAll`'s description for an explanation for why we need to make sure that `_didStartLoad`
+  // is TRUE for `_onRefresh` while `_didStartLoad` must be FALSE for `_resetAll`
+  _onRefresh() {
+    this._resetProperties();
+    this._storeStateOnloadStart(); // call this AFTER resetting the state
+    // return value is used by `infinite-scroll/pull-to-refresh`
+    return tryInvoke(this, 'onRefresh');
+  },
+  _onLoad() {
+    run(() => {
+      if (this.get('_shouldLoadMore')) {
+        if (!this.get('_didStartLoad')) {
+          this.set('_publicAPI.isLoading', true);
+          this._storeStateOnloadStart();
+          const loadVal = tryInvoke(this, 'onLoad');
+          if (loadVal && loadVal.finally) {
+            loadVal.finally(() => run(() => this.set('_publicAPI.isLoading', false)));
+          } else {
+            this.set('_publicAPI.isLoading', false);
+          }
+        }
+      } else {
+        this.set('_publicAPI.isDone', true);
+      }
+    });
+  },
+  _resetProperties() {
     this.setProperties({
       '_publicAPI.isLoading': false,
       '_publicAPI.isDone': false,
@@ -85,40 +147,6 @@ export default Ember.Component.extend(PropTypesMixin, {
       _prevNumTotal: null,
       _didStartLoad: false,
       _numTimesWithoutChanges: 0,
-    });
-  },
-  _resetPosition() {
-    const _scrollContainer = this.get('_scrollContainer');
-    if (_scrollContainer) {
-      return _scrollContainer.actions.resetPosition(...arguments);
-    }
-  },
-  _restorePosition() {
-    const _scrollContainer = this.get('_scrollContainer');
-    if (_scrollContainer) {
-      return _scrollContainer.actions.restoreUserPosition(...arguments);
-    }
-  },
-  _onRefresh() {
-    this._resetAll();
-    // return value is used by `infinite-scroll/pull-to-refresh`
-    return tryInvoke(this, 'onRefresh');
-  },
-
-  _onLoad() {
-    run(() => {
-      if (this.get('_shouldLoadMore')) {
-        this.set('_publicAPI.isLoading', true);
-        this._storeStateOnloadStart();
-        const loadVal = tryInvoke(this, 'onLoad');
-        if (loadVal && loadVal.finally) {
-          loadVal.finally(() => run(() => this.set('_publicAPI.isLoading', false)));
-        } else {
-          this.set('_publicAPI.isLoading', false);
-        }
-      } else {
-        this.set('_publicAPI.isDone', true);
-      }
     });
   },
   _storeStateOnloadStart() {
@@ -146,6 +174,7 @@ export default Ember.Component.extend(PropTypesMixin, {
         _didStartLoad: false,
         '_publicAPI.isDone': this.get('_numTimesWithoutChanges') >= 3 || currentHasLoadedAll,
       });
+      callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
     }
   },
 });

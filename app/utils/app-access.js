@@ -43,6 +43,11 @@ export function determineAppropriateLocation(thisRoute, authUser) {
   }
 }
 
+// TODO test this directly
+export function canStaffAccessAdminDashboard(authUser) {
+  return authUser.get('isAdmin') && authUser.get('org.content.isApproved');
+}
+
 // Helpers
 // -------
 
@@ -54,8 +59,4 @@ function transitionIfNotAlreadyThere(thisRoute, targetRouteName) {
 
 function tryFindFirstActivePhoneOwnerFromStaff(authUser) {
   return authUser.get('allActivePhoneOwners').findBy('phone.content.isActive', true);
-}
-
-function canStaffAccessAdminDashboard(authUser) {
-  return authUser.get('isAdmin') && authUser.get('org.content.isApproved');
 }

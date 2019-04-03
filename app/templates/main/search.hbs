@@ -1,48 +1,47 @@
-{{title (if searchQuery (concat 'Search ' searchQuery) 'New Search') separator=' - '}}
+{{title (if searchQuery (concat "Search " searchQuery) "New Search") separator=" - "}}
 
 <div class="content">
 	<div class="section-header">
 		<div class="tag-title">
 			{{input type="text"
 				value=_searchQuery
-				classNames='form-control form-control--only-bottom search-input'
+				classNames="form-control form-control--only-bottom search-input"
 				placeholder="Search here..."
 				enter=(route-action "triggerSearch" _searchQuery)
 				escape-press=(action (mut _searchQuery) null)}}
 			<div class="margin-t-half">
 				{{#if searchResults}}
 					<span class="text-bold margin-r-half">
-						{{numResults}}
-						{{pluralize 'contact' numResults}}
+						{{numTotalSearchResults}}
+						{{pluralize "contact" numTotalSearchResults}}
 					</span>
 				{{/if}}
 				<span>
-					<a href="" {{action 'closeSearch'}}>Close search</a>
+					<a href="" {{action "closeSearch"}}>Close search</a>
 				</span>
 			</div>
 		</div>
 		<button class="v-center-right full-height btn btn-plain"
-			type='button'
-			disabled={{if (not _searchQuery) 'disabled'}}
+			type="button"
+			disabled={{if (not _searchQuery) "disabled"}}
 			onclick={{route-action "triggerSearch" _searchQuery}}>
 			<span class="fa fa-search"></span>
 		</button>
 	</div>
-	{{#infinite-scroll classNames='section-body bg-color bg-dark'
-        containerClass='bg-color bg-lightest'
-        itemsClass='result-list'
-        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
+	{{#infinite-scroll classNames="section-body bg-color bg-lightest"
+        contentClass="result-list"
         data=searchResults
-        total=numResults
-        doLoad=(route-action 'loadMore')
-        doRefresh=(route-action 'refresh') as |contact|}}
+        numTotal=numTotalSearchResults
+        doRegister=(action (mut searchList))
+        onRefresh=(route-action "refresh")
+        onLoad=(route-action "loadMore") as |contact|}}
         {{#entity-display class="result-item"
-            entityIdentifier=contact.identifier
-            linkTarget='main.search.contact'
+            entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
+            linkTarget="main.search.contact"
             linkParam=contact.id
-            bodyClass=(if contact.isUnread 'unread')
+            bodyClass=(if contact.isUnread "unread")
             isSelected=contact.isSelected
-            onSelect=(route-action 'toggleSelected' contact)}}
+            onSelect=(route-action "toggleSelected" contact)}}
             {{entity-display/contact entity=contact}}
         {{/entity-display}}
     {{else}}

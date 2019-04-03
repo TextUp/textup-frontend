@@ -2,7 +2,7 @@
     {{title team.name separator=" - "}}
 {{/if}}
 
-<div class="content">
+ <div class="content">
     {{#hide-show clickOutToClose=true as |hideShow|}}
         <div class="section-header">
             {{#if team}}
@@ -74,15 +74,13 @@
             </ul>
         {{/if}}
     {{/hide-show}}
-    {{#infinite-scroll classNames="section-body bg-color bg-dark"
-        doRegister=(action (mut _peopleList))
-        containerClass="bg-color bg-lightest"
-        itemsClass="result-list"
-        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
+    {{#infinite-scroll classNames="section-body bg-color bg-lightest"
+        contentClass="result-list"
         data=people
-        total=numPeople
-        doLoad=(action "loadMore")
-        doRefresh=(action "refresh") as |person|}}
+        numTotal=numPeople
+        doRegister=(action (mut _peopleList))
+        onLoad=(action "loadMore")
+        onRefresh=(action "refresh") as |person|}}
         {{#entity-display class="result-item"
             entityIdentifier=person.name
             linkTarget=(if team "admin.team.person" "admin.people.person")

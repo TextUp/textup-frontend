@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
   filter: computed.alias('adminController.filter'),
 
   people: computed.alias('adminController.people'),
-  numPeople: '--',
+  numPeople: null,
   team: null,
 
   // Computed properties

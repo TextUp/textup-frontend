@@ -4,17 +4,16 @@
 
   &__body-container {
     flex-grow: 1;
-    background-color: shade($bg-color);
+    min-height: 0;
+    background-color: $bg-color;
   }
   &__body {
-    background-color: $bg-color;
-
     &__message {
       margin: $baseunit $baseunit 0;
       text-align: center;
     }
     &__items {
-      margin-top: $record-item-space;
+      padding: $baseunit 0;
     }
   }
   &__add-note {

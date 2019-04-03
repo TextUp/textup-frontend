@@ -129,8 +129,9 @@ export default DS.Model.extend(
     // Internal properties
     // -------------------
 
+    // TODO test when some teams have no phone
     _teamPhones: computed('teams.@each.phone', function() {
-      return this.get('teams').mapBy('phone.content');
+      return ArrayUtils.ensureArrayAndAllDefined(this.get('teams').mapBy('phone.content'));
     }),
     _teamsWithPhones: computed('teams.[]', '_teamPhones.@each.isActive', function() {
       // need to call `_teamPhones`` because a single `@each` only works one level deep

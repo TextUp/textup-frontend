@@ -1,13 +1,12 @@
 {{#infinite-scroll classNames="care-record__body-container"
-    containerClass="care-record__body"
-    itemsClass="care-record__body__items"
-    doRegister=(action (mut _recordClustersScroll))
-    direction=(constant "INFINITE_SCROLL.DIRECTION.UP")
+    contentClass="care-record__body__items"
     data=recordClusters
-    dataLength=numRecordItems
-    total=totalNumRecordItems
-    doLoad=(action _onLoadRecordItems)
-    doRefresh=(action _onRefreshRecordItems) as |cluster|}}
+    numItems=numRecordItems
+    numTotal=totalNumRecordItems
+    direction=(constant "INFINITE_SCROLL.DIRECTION.UP")
+    doRegister=(action (mut _recordClustersScroll))
+    onRefresh=(action _onRefreshRecordItems)
+    onLoad=(action _onLoadRecordItems) as |cluster|}}
     {{#record-cluster classNames="care-record__add-note"
         cluster=cluster
         noteOptions=(hash onEdit=(action _onEditNote)

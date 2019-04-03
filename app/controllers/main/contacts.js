@@ -18,7 +18,7 @@ export default Ember.Controller.extend({
   setup(newTag = null) {
     const contactsList = this.get('contactsList');
     if (contactsList) {
-      contactsList.actions.resetPosition();
+      contactsList.actions.resetAll();
     }
     this.set('tag', TypeUtils.isTag(newTag) ? newTag : null);
     this.get('phone').clearContacts();
@@ -27,7 +27,7 @@ export default Ember.Controller.extend({
   doRefreshContacts() {
     const phone = this.get('phone');
     phone.clearContacts();
-    this.doLoadMoreContacts();
+    return this.doLoadMoreContacts();
   },
 
   doLoadMoreContacts() {

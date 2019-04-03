@@ -49,6 +49,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     return {
       isAtStart: false,
       actions: {
+        checkNearEnd: this._scheduleCheckOffsetAndNearEnd.bind(this),
         resetPosition: this._scheduleResetPosition.bind(this),
         restoreUserPosition: this._scheduleRestoreUserPosition.bind(this),
       },
@@ -104,6 +105,9 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     }
   },
 
+  _scheduleCheckOffsetAndNearEnd() {
+    run.join(() => run.scheduleOnce('afterRender', this, this._storeUserOffsetAndCheckNearEnd));
+  },
   _storeUserOffsetAndCheckNearEnd() {
     run.join(() => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {

@@ -21,7 +21,10 @@ export default Ember.Route.extend(
 
     beforeModel() {
       this._super(...arguments);
-      AppAccessUtils.determineAppropriateLocation(this, this.get('authService.authUser'));
+      const authUser = this.get('authService.authUser');
+      if (!AppAccessUtils.canStaffAccessAdminDashboard(authUser)) {
+        AppAccessUtils.determineAppropriateLocation(this, authUser);
+      }
     },
     model() {
       this._super(...arguments);

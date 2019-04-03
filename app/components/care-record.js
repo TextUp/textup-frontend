@@ -79,7 +79,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _recordClustersScroll: null, // set by `doRegister` in `infinite-scroll`
   _publicAPI: computed(function() {
-    return { actions: { reset: () => this._tryResetScroll() } };
+    return { actions: { reset: this._tryResetScroll.bind(this) } };
   }),
 
   _hasPersonalNumber: computed.notEmpty('personalNumber'),
@@ -157,7 +157,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _tryResetScroll() {
     const scrollEl = this.get('_recordClustersScroll');
     if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'resetPosition');
+      tryInvoke(scrollEl.actions, 'resetAll');
     }
   },
   _afterStartCall() {

@@ -32,7 +32,7 @@ export default Ember.Route.extend({
     const controller = this.controller;
     controller.set('team', null);
     controller.set('people', []);
-    controller.set('numPeople', '--');
+    controller.set('numPeople', null);
     const peopleList = controller.get('_peopleList');
     if (peopleList) {
       peopleList.actions.resetPosition();

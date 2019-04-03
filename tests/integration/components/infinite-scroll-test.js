@@ -232,9 +232,21 @@ test('loading + direction', function(assert) {
 
       $container.scrollTop(0);
       setTimeout(() => {
-        assert.ok(onLoad.calledTwice);
+        assert.ok(
+          onLoad.calledOnce,
+          'load is not triggered because the _didStartLoad flag is still set to true and needs to be cleared by the data observer'
+        );
 
-        done();
+        // trigger data observer
+        run(() => this.get('data').pushObjects([]));
+        wait().then(() => {
+          assert.ok(
+            onLoad.calledTwice,
+            'can load again because the _didStartLoad flag has been cleared by the data observer'
+          );
+
+          done();
+        });
       }, 1000);
     });
   }, 1000);
@@ -273,7 +285,7 @@ test('load handler return value', function(assert) {
     assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
 
     onLoad.callsFake(() => new RSVP.Promise(resolve => (resolveFn = resolve)));
-    $container.scrollTop(contentPxHeight / 2); // need to scroll away then back
+    run(() => this.get('data').pushObjects([])); // need to clear `_didStartLoad` state`
     $container.scrollTop(contentPxHeight);
     setTimeout(() => {
       assert.equal(onLoad.callCount, 2);
@@ -317,7 +329,6 @@ test('avoid infinite loop if loading more does not yield different result', func
   assert.equal(publicAPI.isDone, false, 'not done');
 
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight / 2); // need to scroll away then back
   $container.scrollTop(contentPxHeight);
   setTimeout(() => {
     assert.equal(onLoad.callCount, 1);
@@ -326,7 +337,6 @@ test('avoid infinite loop if loading more does not yield different result', func
     assert.equal(publicAPI.isDone, false, 'not done');
 
     this.setProperties({ data: [1], numTotal: null });
-    $container.scrollTop(contentPxHeight / 2); // need to scroll away then back
     $container.scrollTop(contentPxHeight);
     setTimeout(() => {
       assert.equal(onLoad.callCount, 2);
@@ -335,7 +345,6 @@ test('avoid infinite loop if loading more does not yield different result', func
       assert.equal(publicAPI.isDone, false, 'not done');
 
       this.setProperties({ data: [1], numTotal: null });
-      $container.scrollTop(contentPxHeight / 2); // need to scroll away then back
       $container.scrollTop(contentPxHeight);
       setTimeout(() => {
         assert.equal(onLoad.callCount, 3);
@@ -370,7 +379,7 @@ test('avoid infinite loop if loading more does not yield different result', func
   }, 1000);
 });
 
-test('marking done with number of items is greater than total number', function(assert) {
+test('marking done with number of items is greater than or equal to total number', function(assert) {
   const doRegister = sinon.spy(),
     onLoad = sinon.stub(),
     contentPxHeight = 2888,
@@ -421,6 +430,45 @@ test('marking done with number of items is greater than total number', function(
   }, 1000);
 });
 
+test('can manually specify data length for non-standard length logic', function(assert) {
+  const doRegister = sinon.spy(),
+    contentPxHeight = 5,
+    done = assert.async();
+  this.setProperties({
+    doRegister,
+    contentPxHeight,
+    data: [1, 2, 3],
+    numItems: null,
+    numTotal: null,
+  });
+
+  this.render(hbs`
+    {{#infinite-scroll data=data numItems=numItems numTotal=numTotal doRegister=doRegister}}
+      <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
+    {{/infinite-scroll}}
+  `);
+  assert.ok(this.$('.infinite-scroll').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+  const publicAPI = doRegister.firstCall.args[0];
+  assert.equal(publicAPI.isDone, false, 'not done');
+
+  this.setProperties({ numTotal: 3 });
+  publicAPI.actions.resetAll();
+  wait()
+    .then(() => {
+      assert.equal(publicAPI.isDone, true, 'is done because data length is 3 and num total is 3');
+
+      this.setProperties({ numItems: 1, numTotal: 3 });
+      publicAPI.actions.resetAll();
+      return wait();
+    })
+    .then(() => {
+      assert.equal(publicAPI.isDone, false, 'not done because data length overriden by 1');
+
+      done();
+    });
+});
+
 test('refreshing is disabled when not at the start', function(assert) {
   const contentPxHeight = 2888,
     done = assert.async();
@@ -449,14 +497,15 @@ test('refreshing is disabled when not at the start', function(assert) {
   }, 1000);
 });
 
-test('scroll container is disabled when refreshing', function(assert) {
-  const contentPxHeight = 2888,
+test('refreshing + scroll container is disabled when refreshing', function(assert) {
+  const contentPxHeight = 20,
     onRefresh = sinon.stub(),
+    onLoad = sinon.spy(),
     done = assert.async();
-  this.setProperties({ onRefresh, contentPxHeight, data: [1] });
+  this.setProperties({ onRefresh, onLoad, contentPxHeight, data: [1] });
 
   this.render(hbs`
-    {{#infinite-scroll data=data onRefresh=onRefresh}}
+    {{#infinite-scroll data=data onRefresh=onRefresh onLoad=onLoad}}
       <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
     {{/infinite-scroll}}
   `);
@@ -467,9 +516,17 @@ test('scroll container is disabled when refreshing', function(assert) {
     this.$('.infinite-scroll__scroll-container--disabled').length,
     'scroll container not disabled because not refreshing'
   );
+  assert.ok(onRefresh.notCalled);
+  assert.ok(onLoad.calledOnce);
 
   let resolveFn;
-  onRefresh.callsFake(() => new RSVP.Promise(resolve => (resolveFn = resolve)));
+  onRefresh.callsFake(
+    () =>
+      new RSVP.Promise(resolve => {
+        run(() => this.get('data').pushObjects([])); // to simulate a real reset handler
+        resolveFn = resolve;
+      })
+  );
   const $refreshContent = this.$('.infinite-scroll__pull-to-refresh__content');
   $refreshContent.trigger(Ember.$.Event('mousedown', { pageY: 0 }));
   $refreshContent.trigger(Ember.$.Event('mousemove', { pageY: 100 }));
@@ -495,9 +552,36 @@ test('scroll container is disabled when refreshing', function(assert) {
         this.$('.infinite-scroll__scroll-container--disabled').length,
         'scroll container not disabled because not refreshing'
       );
+      assert.ok(onRefresh.calledOnce);
+      assert.ok(onLoad.calledTwice);
 
       done();
     });
+});
+
+test('resetting position resets component internal state and immediately triggers an edge check', function(assert) {
+  const contentPxHeight = 20,
+    doRegister = sinon.spy(),
+    onLoad = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ doRegister, onLoad, contentPxHeight, data: [1] });
+
+  this.render(hbs`
+    {{#infinite-scroll data=data doRegister=doRegister onLoad=onLoad}}
+      <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
+    {{/infinite-scroll}}
+  `);
+  assert.ok(this.$('.infinite-scroll').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+  assert.ok(onLoad.calledOnce);
+
+  const publicAPI = doRegister.firstCall.args[0];
+  publicAPI.actions.resetAll();
+  wait().then(() => {
+    assert.ok(onLoad.calledTwice, 'called without needing to trigger data observer');
+
+    done();
+  });
 });
 
 test('resetting/restoring position via public API', function(assert) {

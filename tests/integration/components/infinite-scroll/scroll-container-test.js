@@ -10,9 +10,7 @@ const { typeOf, run } = Ember;
 moduleForComponent(
   'infinite-scroll/scroll-container',
   'Integration | Component | infinite scroll/scroll container',
-  {
-    integration: true,
-  }
+  { integration: true }
 );
 
 test('inputs', function(assert) {
@@ -45,6 +43,7 @@ test('registering', function(assert) {
 
   const publicAPI = doRegister.firstCall.args[0];
   assert.equal(typeOf(publicAPI.isAtStart), 'boolean');
+  assert.equal(typeOf(publicAPI.actions.checkNearEnd), 'function');
   assert.equal(typeOf(publicAPI.actions.resetPosition), 'function');
   assert.equal(typeOf(publicAPI.actions.restoreUserPosition), 'function');
 });
@@ -395,4 +394,33 @@ test('using public API position methods when scrolling up', function(assert) {
         done();
       });
   }, 1000);
+});
+
+test('manually triggering check if near end via public API', function(assert) {
+  const doRegister = sinon.spy(),
+    onNearEnd = sinon.spy(),
+    contentPxHeight = 10,
+    done = assert.async();
+  this.setProperties({ doRegister, onNearEnd, contentPxHeight });
+
+  this.render(hbs`
+    {{#infinite-scroll/scroll-container doRegister=doRegister onNearEnd=onNearEnd}}
+      <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
+    {{/infinite-scroll/scroll-container}}
+  `);
+  assert.ok(this.$('.infinite-scroll__scroll-container').length, 'did render');
+  assert.ok(this.$('.infinite-scroll__scroll-container__content').length, 'did render');
+  assert.ok(onNearEnd.calledOnce);
+  assert.ok(doRegister.calledOnce);
+  const publicAPI = doRegister.firstCall.args[0];
+
+  publicAPI.actions.checkNearEnd();
+  wait().then(() => {
+    assert.ok(
+      onNearEnd.calledTwice,
+      'near end check is manually triggered again + calls handler because is still near the end'
+    );
+
+    done();
+  });
 });

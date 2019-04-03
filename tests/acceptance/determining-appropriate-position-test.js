@@ -147,6 +147,7 @@ test('logged in user has no phones and is admin', function(assert) {
   });
 });
 
+// TODO need to test visiting admin because admin kicks back to main right now
 test('logged in user has phones and is admin', function(assert) {
   const urlIdent = 'testing-staff-segment',
     staff = run(() =>

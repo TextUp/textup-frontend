@@ -106,15 +106,13 @@
             {{/if}}
         {{/hide-show}}
     {{/if}}
-    {{#infinite-scroll classNames="section-body bg-color bg-dark"
-        doRegister=(action (mut contactsList))
-        containerClass="bg-color bg-lightest"
-        itemsClass="result-list"
-        direction=(constant "INFINITE_SCROLL.DIRECTION.DOWN")
+    {{#infinite-scroll classNames="section-body bg-color bg-lightest"
+        contentClass="result-list"
         data=phone.contacts
-        total=phone.totalNumContacts
-        doLoad=(action doLoadMoreContacts)
-        doRefresh=(action doRefreshContacts) as |contact|}}
+        numTotal=phone.totalNumContacts
+        doRegister=(action (mut contactsList))
+        onRefresh=(action doRefreshContacts)
+        onLoad=(action doLoadMoreContacts) as |contact|}}
         {{#entity-display class="result-item"
             entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
             linkTarget=(if tag "main.tag.contact" "main.contacts.contact")

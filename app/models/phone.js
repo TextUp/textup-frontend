@@ -55,7 +55,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   tags: DS.hasMany('tag'),
   policies: MF.fragmentArray('owner-policy'),
 
-  totalNumContacts: '--',
+  totalNumContacts: null,
   contacts: computed.readOnly('_sortedContacts'),
   contactsFilter: null,
   contactStatuses: computed.readOnly('_contactStatuses'),
@@ -102,7 +102,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   },
 
   clearContacts() {
-    this.set('totalNumContacts', '--');
+    this.set('totalNumContacts', null);
     this.get('_contacts').clear();
   },
 });

@@ -1,11 +1,12 @@
 <div class="pad-all">
     <button type="button" onclick={{route-action "resetPosition" true}}>Reset position with animation</button>
     <button type="button" onclick={{route-action "resetPosition" false}}>Reset position no animation</button>
+    <button type="button" onclick={{route-action "resetAll"}}>Reset all</button>
 </div>
-<div style="height: 80vh;">
+<div style="height: 90vh; background-color: lightgray; ">
     {{#infinite-scroll doRegister=(action (mut _infiniteScroll))
         data=data
-        direction=(constant "INFINITE_SCROLL.DIRECTION.UP")
+        direction=(constant "INFINITE_SCROLL.DIRECTION.DOWN")
         onRefresh=(route-action "onRefresh")
         onLoad=(route-action "onLoad") as |item|}}
       <div style="height: 200px; width: 100%; background-color: white; border: 1px solid gray;">{{item}}</div>

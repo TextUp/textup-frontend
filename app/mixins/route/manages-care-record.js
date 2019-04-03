@@ -7,10 +7,9 @@ export default Ember.Mixin.create({
   mediaService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
-  setupController(controller) {
-    this._super(...arguments);
-    controller.setProperties({ careRecordRef: null, careRecordText: null });
-  },
+  // For routes with dynamic segments, each time the model hook is called, the `setupController`
+  // hook will also be called. We DO NOT want to set `careRecordRef` and `careRecordText` to null
+  // because this will lead us to lose our reference to `careRecordRef`
 
   actions: {
     willTransition() {
@@ -20,6 +19,7 @@ export default Ember.Mixin.create({
     },
     didTransition() {
       this._super(...arguments);
+
       this._resetCareRecord();
       this._initCareRecordText();
       return true;

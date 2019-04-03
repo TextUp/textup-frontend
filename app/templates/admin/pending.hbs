@@ -20,11 +20,10 @@
 		</span>
     </div>
 	{{#infinite-scroll classNames="section-body"
-        itemsClass="tile-list"
-        direction=(constants "INFINITE_SCROLL.DIRECTION.DOWN")
+        contentClass="tile-list"
         data=pendingStaff
-        total=numPending
-        doLoad=(action "loadMore") as |selected|}}
+        numTotal=numPending
+        onLoad=(action "loadMore") as |selected|}}
 		{{#hide-show classNames="xs-full-row"
 			startOpen=selected.hasPhoneActionData
 			onClose=(action (mut selected.phoneActionData) null) as |hideShow|}}

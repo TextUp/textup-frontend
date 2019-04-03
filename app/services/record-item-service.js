@@ -1,8 +1,9 @@
-import TypeUtils from 'textup-frontend/utils/type';
+import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
+import TypeUtils from 'textup-frontend/utils/type';
 import { tryGetFileNameFromXHR, download } from 'textup-frontend/utils/file';
 
 const { assign, isArray, get } = Ember;
@@ -92,23 +93,11 @@ export default Ember.Service.extend({
   // ----------------
 
   _buildQueryFor(models) {
-    const contactIds = [],
-      sharedContactIds = [],
-      tagIds = [];
-    if (isArray(models)) {
-      models.forEach(model => {
-        if (TypeUtils.isContact(model)) {
-          if (model.get('isShared')) {
-            sharedContactIds.pushObject(model.get('id'));
-          } else {
-            contactIds.pushObject(model.get('id'));
-          }
-        } else if (TypeUtils.isTag(model)) {
-          tagIds.pushObject(model.get('id'));
-        }
-      });
-    }
-    return { contactIds, sharedContactIds, tagIds };
+    return {
+      owners: ArrayUtils.ensureArrayAndAllDefined(models)
+        .filter(TypeUtils.isAnyModel)
+        .mapBy('id'),
+    };
   },
 
   _handleExportOutcome(xhr, resolve, reject) {

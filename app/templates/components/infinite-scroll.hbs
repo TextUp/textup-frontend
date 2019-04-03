@@ -8,7 +8,7 @@
 		disabled=_pullToRefresh.isRefreshing
 		onNearEnd=(action _onLoad)
 		contentClass="infinite-scroll__loading-container"}}
-		<div class="infinite-scroll__loading-container__content">
+		<div class="infinite-scroll__loading-container__content {{contentClass}}">
 			{{#each data as |item index|}}
 				{{yield item index _publicAPI}}
 			{{else}}
