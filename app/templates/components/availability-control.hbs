@@ -1,22 +1,26 @@
 <div class="form__group">
-    <div class="xs-row-2 control-text">
-        <label for="Availability" class='form__label'>
-            Set availability
-        </label>
+    {{#tour-components/hint hintId='setAvailability'}}
+    <div class="row">
+        <div class="xs-row-2 control-text">
+            <label for="Availability" class='form__label'>
+                Set availability
+            </label>
+        </div>
+        {{#multi-toggle classNames='xs-row-2'
+            selectIndex=(if entity.manualSchedule 0 1) as |toggle doRegister|}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.BRAND
+                onSelect=(action 'handleType' true)}}
+                Manually
+            {{/multi-toggle/item}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=constants.COLOR.LIGHT_BLUE
+                onSelect=(action 'handleType' false)}}
+                By schedule
+            {{/multi-toggle/item}}
+        {{/multi-toggle}}
     </div>
-    {{#multi-toggle classNames='xs-row-2'
-        selectIndex=(if entity.manualSchedule 0 1) as |toggle doRegister|}}
-        {{#multi-toggle/item doRegister=doRegister
-            color=constants.COLOR.BRAND
-            onSelect=(action 'handleType' true)}}
-            Manually
-        {{/multi-toggle/item}}
-        {{#multi-toggle/item doRegister=doRegister
-            color=constants.COLOR.LIGHT_BLUE
-            onSelect=(action 'handleType' false)}}
-            By schedule
-        {{/multi-toggle/item}}
-    {{/multi-toggle}}
+    {{/tour-components/hint}}
 </div>
 {{#if entity.manualSchedule}}
     <div class="form__group">

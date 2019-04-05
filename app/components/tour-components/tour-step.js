@@ -1,74 +1,72 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import * as TourUtil from 'textup-frontend/utils/tour-info';
+import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 
-const { computed } = Ember;
+const { computed, $, run } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Ember.Component.extend(HasWormhole, PropTypesMixin, {
   propTypes: {
-    stepId: PropTypes.string.isRequired,
-    registerWithTourManager: PropTypes.func.isRequired,
-    beforeShow: PropTypes.func,
-    afterShow: PropTypes.func
+    title: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+    elementToHighlight: PropTypes.string,
+    elementToOpenMobile: PropTypes.string,
+    elementToHighlightMobile: PropTypes.string,
+    onNext: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
+    onFinish: PropTypes.func.isRequired,
+    isLastStep: PropTypes.bool.isRequired,
+    isFirstStep: PropTypes.bool.isRequired
   },
-  getDefaultProps() {
-    return {
-      afterShow: function() {
-        console.log('after show');
-      }
-    };
-  },
-  tagName: '',
 
-  init() {
+  classNames: ['tour-step'],
+
+  didRender() {
     this._super(...arguments);
-    this.get('registerWithTourManager')(this.get('_publicAPI'));
+    const elementName = this.get('elementToHighlightMobile');
+    if (elementName) {
+      const elementToScrollTo = $(elementName)[0];
+      if (elementToScrollTo) {
+        run.scheduleOnce('afterRender', () => {
+          this.get('_mobileOverlay').actions.removeCutout();
+          elementToScrollTo.scrollIntoView({ behavior: 'smooth' });
+
+          run.later(() => this.get('_mobileOverlay').actions.calculateCutout(), 1000);
+        });
+      }
+    }
+    // TODO
+    run.scheduleOnce('afterRender', () => this.get('_desktopOverlay').actions.calculateCutout());
   },
+  didInsertElement() {
+    this._super(...arguments);
+    // apply class to app root that contracts it on mobile
+    Ember.run.scheduleOnce('afterRender', () => {
+      Ember.$(Ember.getOwner(this).rootElement).addClass(this.get('_bodyDrawerClass'));
+    });
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    // remove class to app root that contracts it on mobile
+    Ember.$(Ember.getOwner(this).rootElement).removeClass(this.get('_bodyDrawerClass'));
+  },
+
+  _mobileOverlay: null,
+  _desktopOverlay: null,
+  _bodyDrawerClass: 'tour-step__root',
 
   // Internal properties
   // -----------------
-
-  _publicAPI: computed(function() {
-    return {
-      id: this.get('stepId'),
-      stepNumber: this.get('_stepNumber'),
-      beforeShow: this.get('beforeShow'),
-      afterShow: this.get('afterShow'),
-      title: this.get('_title'),
-      text: this.get('_text'),
-      elementToAttachTo: {
-        element: this.get('_elementToAttachTo'),
-        on: 'bottom'
-      },
-      actions: {
-        hasBlock: this._hasBlock.bind(this)
-      }
-    };
+  _elementToWormhole: computed('_containerId', function() {
+    // TODO
+    // return this.$(`${this.get('_containerId')}`);
+    return this.$('.tour-step__wormhole');
   }),
 
-  _title: computed('stepId', function() {
-    const stepId = this.get('stepId');
-    return TourUtil.getTitle(stepId);
-  }),
-  _text: computed('stepId', function() {
-    const stepId = this.get('stepId');
-    return TourUtil.getText(stepId);
-  }),
-  _stepNumber: computed('stepId', function() {
-    const stepId = this.get('stepId');
-    return TourUtil.getStepNumber(stepId);
-  }),
-  _elementToAttachTo: computed('_containerId', function() {
-    return `#${this.get('_containerId')}`;
-  }),
-  _containerId: computed('elementId', function() {
-    return `${this.get('elementId')}__container`;
+  _isMobile: computed('', function() {
+    return $(window).innerWidth() < 480;
   }),
 
-  // Internal handlers
-  // -----------------
-
-  _hasBlock() {
-    return !!Ember.$(this.get('_elementToAttachTo')).length;
-  }
+  _containerId: computed('elementToHighlight', function() {
+    return `${this.get('elementToHighlight')}__container`;
+  })
 });

@@ -1,4 +1,4 @@
-{{#hide-show as |hideShow|}}
+{{#hide-show startOpen=true as |hideShow|}}
   <div class="task-manager__title flex">
     <h5 class="task-manager__title__text flex__item flex__item--grow">
       {{#if hideShow.isOpen}}
@@ -8,42 +8,54 @@
       {{/if}}
     </h5>
     <div class="flex__item">
-        <button type="button"
-            class="btn btn-plain btn-expand btn-default task-manager__title__button"
-            onclick={{hideShow.actions.toggle}}>
-            {{#if hideShow.isOpen}}
-                <span class="fa fa-minus-circle task-manager__title--fa"></span>
-            {{else}}
-                <span class="fa fa-plus-circle task-manager__title--fa"></span>
-            {{/if}}
-        </button>
+      <button type="button" class="btn btn-plain btn-expand btn-default task-manager__title__button"
+        onclick= {{hideShow.actions.toggle}}>
+        {{#if hideShow.isOpen}}
+          <span class="fa fa-minus-circle task-manager__title--fa"></span>
+        {{else}}
+          <span class="fa fa-chevron-circle-up task-manager__title--fa"></span>
+        {{/if}}
+      </button>
     </div>
     <div class="flex__item">
-      <button type="button"
-          class="btn btn-plain btn-expand btn-default task-manager__title__button"
-          onclick={{action _onClose}}>
-            <span class="fa fa-times-circle task-manager__title--fa"></span>
+      <button type="button" class="btn btn-plain btn-expand btn-default task-manager__title__button"
+        onclick= {{action _onClose}}>
+        <span class="fa fa-times-circle task-manager__title--fa"></span>
       </button>
     </div>
   </div>
   <div class="task-manager__content {{if hideShow.isOpen '' 'hidden'}}">
-    {{#tour-components/task-step
-      doRegister=(action (mut _taskStep))
-      id=firstIncompleteTask.id
-      stepNumber=firstIncompleteTask.stepNumber
-      title=firstIncompleteTask.title
-      complete=firstIncompleteTask.status
-      text=firstIncompleteTask.text
-      openBeforePulse=firstIncompleteTask.openBeforePulse
-      elementToPulse=firstIncompleteTask.elementToPulse
-      openBeforePulseMobile=firstIncompleteTask.openBeforePulseMobile
-      elementToPulseMobile=firstIncompleteTask.elementToPulseMobile
-      completeTask=_publicAPI.actions.finishCompleteTask}}
-      <div class="task-manager__status-dot--container">
-        {{#each tutorialService.tasks as |task|}}
-          <span class="fa fa-circle task-manager__status-dot task-manager__status-dot--{{if task.status "complete" "incomplete"}}"></span>
-        {{/each}}
+    {{#if firstIncompleteTask}}
+      {{#tour-components/task-step doRegister=(action (mut _taskStep)) id=firstIncompleteTask.id
+        stepNumber=firstIncompleteTask.stepNumber title=firstIncompleteTask.title text=firstIncompleteTask.text
+        elementsToPulse=firstIncompleteTask.elementsToPulse elementsToPulseMobile=firstIncompleteTask.elementsToPulseMobile
+        completeTask=_publicAPI.actions.finishCompleteTask}}
+        <div class="task-manager__status-dot--container">
+          {{#each tutorialService.tasks as |task|}}
+            <span class="fa fa-circle
+              task-manager__status-dot task-manager__status-dot--{{if (eq task.id firstIncompleteTask.id)
+                  "complete"
+                  (if task.status "complete" "incomplete")}}"></span>
+          {{/each}}
+        </div>
+      {{/tour-components/task-step}}
+    {{else}}
+      <div class="flex task-congratulations__container">
+        <div class="flex__item task-congratulations__text--container">
+          <p class='task-congratulations__text--title'>
+            Congratulations!
+          </p>
+          <p class='task-congratulations__text--message'>
+            You’re all set to use TextUp. For more advanced tutorials, see the Support page.
+          </p>
+          <button type="button" class="task-congratulations__button" onclick= {{action _onClose}}>
+            Finish Tour
+          </button>
+        </div>
+        <div class="flex__item flex__item task-congratulations__image--container">
+          <img class="task-congratulations__image" src='assets/images/task-manager-complete.png'/>
+        </div>
       </div>
-    {{/tour-components/task-step}}
+    {{/if}}
   </div>
 {{/hide-show}}

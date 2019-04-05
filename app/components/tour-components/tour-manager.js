@@ -1,49 +1,42 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
+import * as TourUtil from 'textup-frontend/utils/tour-info';
 
-const { computed, tryInvoke, RSVP } = Ember;
+const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  tour: Ember.inject.service(),
-
   // doRegister is a route action
   propTypes: {
     beforeTour: PropTypes.func,
     afterTour: PropTypes.func,
-    doRegister: PropTypes.func,
-    startTourImmediately: PropTypes.bool
-  },
-  getDefaultProps() {
-    return {
-      startTourImmediately: false
-    };
+    doRegister: PropTypes.func
   },
 
   init() {
     this._super(...arguments);
+    const tourSteps = TourUtil.getTourSteps();
+    this.set('_steps', tourSteps);
+    this.set('_numSteps', tourSteps.length);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+    // const finishedTour = window.localStorage.setItem(`tour-manager-finished-tour`, false);
   },
 
-  didInsertElement() {
-    this._sortSteps();
-    const tourSteps = this._generateTourSteps();
-    this._generateTour(tourSteps);
-
-    this.get('tour')
-      .on('complete', this._endTour.bind(this))
-      .on('cancel', this._endTour.bind(this));
-  },
+  _steps: null,
+  _numSteps: null,
+  _tourOngoing: false,
+  _currentStepNumber: 0,
 
   // Internal Properties
   // -------------------
 
   _publicAPI: computed(function() {
     return {
-      startTourImmediately: this.get('startTourImmediately'),
+      startTourImmediately: this.get('_startTourImmediately'),
       actions: {
-        addStep: this._addStep.bind(this),
-        startTour: this._startTour.bind(this)
+        startTour: this._startTour.bind(this),
+        endTour: this._endTour.bind(this),
+        nextStep: this._nextStep.bind(this),
+        previousStep: this._previousStep.bind(this)
       }
     };
   }),
@@ -51,110 +44,41 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal Handlers
   // -----------------
 
+  _startTourImmediately: computed(function() {
+    const finishedTour = window.localStorage.getItem(`tour-manager-finished-tour`);
+    return finishedTour === 'false';
+  }),
+
+  _lastStep: computed('_currentStepNumber', function() {
+    const currentStepNumber = this.get('_currentStepNumber');
+    const numSteps = this.get('_numSteps');
+    return currentStepNumber === numSteps - 1;
+  }),
+
+  _firstStep: computed('_currentStepNumber', function() {
+    const currentStepNumber = this.get('_currentStepNumber');
+    return currentStepNumber === 0;
+  }),
+
   _startTour: function() {
-    Ember.$(Ember.getOwner(this).rootElement).addClass('tour-managed');
     tryInvoke(this, 'beforeTour');
-    this.get('tour').start();
+    this.set('_tourOngoing', true);
   },
+
   _endTour: function() {
-    Ember.$(Ember.getOwner(this).rootElement).removeClass('tour-managed');
+    window.localStorage.setItem(`tour-manager-finished-tour`, true);
+    this.set('_tourOngoing', false);
     tryInvoke(this, 'afterTour');
   },
-  _steps: computed(function() {
-    return [];
+
+  _currentStep: computed('_currentStepNumber', function() {
+    return this.get('_steps')[this.get('_currentStepNumber')];
   }),
-  _addStep: function(step) {
-    this.get('_steps').pushObject(step);
-  },
-  _generateButtons: function(stepNumber, numSteps) {
-    const buttons = [
-      {
-        classes: 'shepherd-button-secondary',
-        text: 'Exit',
-        type: 'cancel'
-      }
-    ];
-    if (stepNumber > 0) {
-      buttons.pushObject({
-        classes: 'shepherd-button-primary',
-        text: 'Back',
-        type: 'back'
-      });
-    }
-    if (stepNumber < numSteps - 1) {
-      buttons.pushObject({
-        classes: 'shepherd-button-primary',
-        text: 'Next',
-        type: 'next'
-      });
-    }
-    return buttons;
-  },
-  _sortSteps: function() {
-    this.get('_steps').sort(function(a, b) {
-      return a.stepNumber - b.stepNumber;
-    });
-  },
-  /*
-  Iterate through all the steps and create a json object used to create
-  ember shepherd tour.
-  Info needed:
-  - id: id of step
-  - stepNumber: position of step in tour (to sort list)
-  - elementToAttachTo: element to attach to (empty div with same id of step)
-  - beforeShow: function to be called when step is shown (navigate to appropriate region)
-  - title: title of step to be displayed on card
-  - text: text of step to be displayed on card
-  */
-  _generateTourSteps: function() {
-    const numSteps = this.get('_steps').length;
-    const toReturn = [];
-    const callStepAfterShow = this.get('_callStepAfterShow');
 
-    this.get('_steps').forEach((step, index) => {
-      const toPush = {
-        id: step.id,
-        options: {
-          attachTo: step.actions.hasBlock() ? step.elementToAttachTo : '',
-          beforeShowPromise: function() {
-            return new RSVP.Promise(function(resolve) {
-              Ember.run.scheduleOnce('afterRender', function() {
-                tryInvoke(step, 'beforeShow');
-                resolve();
-              });
-            });
-          },
-          builtInButtons: this._generateButtons(index, numSteps),
-          title: step.title,
-          text: [step.text],
-          when: {
-            hide: function() {
-              Ember.run.throttle(callStepAfterShow, step.afterShow, 100);
-            }
-          }
-        }
-      };
-
-      toReturn.pushObject(toPush);
-    });
-    return toReturn;
+  _nextStep: function() {
+    this.incrementProperty('_currentStepNumber');
   },
-
-  _callStepAfterShow(afterShow) {
-    callIfPresent(null, afterShow);
-  },
-
-  _generateTour: function(tourSteps) {
-    this.get('tour').set('defaults', {
-      classes:
-        'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text shepherd-mobile-tour',
-      copyStyles: false,
-      highlightClass: 'selected-tour-element',
-      scrollTo: true,
-      showCancelLink: true
-    });
-    this.get('tour').set('modal', true);
-    this.get('tour').set('disableScroll', true);
-    this.get('tour').set('steps', tourSteps);
+  _previousStep: function() {
+    this.decrementProperty('_currentStepNumber');
   }
 });

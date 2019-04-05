@@ -1,20 +1,18 @@
 import Ember from 'ember';
 import { PropTypes } from 'ember-prop-types';
+import HasEvents from 'textup-frontend/mixins/component/has-events';
 
 const { computed, run, $, tryInvoke } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(HasEvents, {
   propTypes: {
     id: PropTypes.string.isRequired,
-    complete: PropTypes.bool.isRequired,
     text: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     completeTask: PropTypes.func.isRequired,
     stepNumber: PropTypes.number.isRequired,
-    openBeforePulse: PropTypes.string,
-    elementToPulse: PropTypes.string,
-    openBeforePulseMobile: PropTypes.string,
-    elementToPulseMobile: PropTypes.string
+    elementsToPulse: PropTypes.arrayOf(PropTypes.string),
+    elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string)
   },
 
   classNames: ['task-step'],
@@ -23,7 +21,8 @@ export default Ember.Component.extend({
     return {
       actions: {
         completeTask: this._completeThisTask.bind(this),
-        showUserSteps: this._showUserSteps.bind(this)
+        showUserSteps: this._showUserSteps.bind(this),
+        removeAllPulsing: this._removeAllPulsing.bind(this)
       }
     };
   }),
@@ -37,10 +36,55 @@ export default Ember.Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
-    this.set('_temporaryComplete', this.get('complete'));
+    this.set('_temporaryComplete', false);
+  },
+
+  didRender() {
+    const mobile = $(window).innerWidth() < 750;
+
+    var elementsToPulse, num_elems;
+
+    if (mobile) {
+      elementsToPulse = this.get('elementsToPulseMobile');
+      num_elems = elementsToPulse.length;
+    } else {
+      elementsToPulse = this.get('elementsToPulse');
+      num_elems = elementsToPulse.length;
+    }
+
+    elementsToPulse.forEach((element, index) => {
+      if (index < num_elems - 1) {
+        this._pulseElement(element);
+        $(element).on(this._event('click'), () => {
+          run.next(this, this._pulseElement, elementsToPulse[index + 1]);
+        });
+      } else {
+        this._pulseElement(element);
+      }
+    });
   },
 
   _completeThisTask(taskId, shouldShowCompleteMessage = true) {
+    const mobile = $(window).innerWidth() < 750;
+    var elementsToPulse, num_elems;
+
+    if (mobile) {
+      elementsToPulse = this.get('elementsToPulseMobile');
+      num_elems = elementsToPulse.length;
+    } else {
+      elementsToPulse = this.get('elementsToPulse');
+      num_elems = elementsToPulse.length;
+    }
+
+    elementsToPulse.forEach((element, index) => {
+      if (index < num_elems - 1) {
+        this._removePulseFromElement(element);
+        $(element).off(this._event('click'));
+      } else {
+        this._removePulseFromElement(element);
+      }
+    });
+
     if (taskId === this.get('id') && shouldShowCompleteMessage) {
       this.set('_temporaryComplete', true);
       run.later(() => this.get('completeTask')(taskId), 2000);
@@ -52,36 +96,43 @@ export default Ember.Component.extend({
   _showUserSteps() {
     // check if element needs to be opened, open if it's visible
     const mobile = $(window).innerWidth() < 750;
-    var elementToOpen, elementToPulse;
+
+    var elementsToPulse;
+
     if (mobile) {
-      elementToOpen = this.get('openBeforePulseMobile');
-      elementToPulse = this.get('elementToPulseMobile');
+      elementsToPulse = this.get('elementsToPulseMobile');
     } else {
-      elementToOpen = this.get('openBeforePulse');
-      elementToPulse = this.get('elementToPulse');
+      elementsToPulse = this.get('elementsToPulse');
     }
 
-    if (elementToOpen) {
-      const openBeforePulse = $(elementToOpen);
-      if (openBeforePulse.is(':visible')) {
-        this._pulseElement(elementToOpen);
-        run.later(() => openBeforePulse.click(), 2000);
-        run.later(() => {
-          if (elementToPulse) {
-            this._pulseElement(elementToPulse);
-          }
-        }, 2500);
-      }
-    } else {
-      if (elementToPulse) {
-        this._pulseElement(elementToPulse);
-      }
-    }
+    elementsToPulse.forEach((element, index) => {
+      run.later(() => {
+        $(element).click();
+      }, 200 + index * 1500);
+    });
   },
 
   _pulseElement(elementIdToPulse) {
     const elementToPulse = $(elementIdToPulse);
     elementToPulse.addClass('task-element__should-animate-pulse');
-    run.later(() => elementToPulse.removeClass('task-element__should-animate-pulse'), 2000);
+  },
+
+  _removePulseFromElement(elementIdToRemovePulse) {
+    run.scheduleOnce('afterRender', () => {
+      const elementToRemove = $(elementIdToRemovePulse);
+      elementToRemove.removeClass('task-element__should-animate-pulse');
+    });
+  },
+
+  _removeAllPulsing() {
+    const elements = this.get('elementsToPulse');
+    const elementsMobile = this.get('elementsToPulseMobile');
+
+    elements.forEach(element => {
+      this._removePulseFromElement(element);
+    });
+    elementsMobile.forEach(element => {
+      this._removePulseFromElement(element);
+    });
   }
 });

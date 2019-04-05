@@ -2,6 +2,8 @@
 {{message-modal url=appMessageEndpoint
     display=shouldShowAppMessage
     onClose=(action "closeAppUpdateMessage")}}
+{{tour-components/tour-manager doRegister=actions.registerTourManager}}
+
 
 {{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
@@ -10,7 +12,7 @@
     bodyId="body"
     doRegister=(action (mut slidingMenu))
     as |drawer|}}
-    <span class="display-xs display-s display-m menu-toggle">
+    <span id="tour-testing123" class="display-xs display-s display-m menu-toggle">
         <button class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}} id='tour-openSlideoutButton'>
             {{#if stateManager.ownerIsTeam}}
@@ -34,14 +36,14 @@
 {{else}}
     <div class="menu">
         <div class="menu__section">
-            <div class="display-xs display-s display-m">
+            <div class="display-xs display-s display-m" >
                 {{#account-switcher
                     activeOwner=stateManager.owner
                     user=authService.authUser
                     doLogOut=(route-action "logout")
                     doRegisterContainer=(action (mut accountSwitcher))
                     toggleClass="xs-8-row-10"}}
-                    <button class="xs-2-row-10 textup-account-switcher__display"
+                    <button class="xs-2-row-10 textup-account-switcher__display" id="tour-mobileSettings"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
                         <span class="fa fa-cog"></span>
                     </button>
@@ -156,8 +158,8 @@
 
             {{!-- contacts --}}
 
-            <div class="display-xs display-s display-m">
-                <div class="menu-divider">
+            <div class="display-xs display-s display-m" id="tour-mobileContactsButton">
+                <div class="menu-divider" >
                     Contacts
                     <button class="btn btn-plain v-center-right"
                         type="button"
@@ -167,7 +169,7 @@
                 </div>
                 <div class="menu-item
                     {{if (and stateManager.viewingContacts (eq filter "all")) "active"}}"
-                    {{action "changeFilter" "all"}}>
+                    {{action "changeFilter" "all"}} >
                     <span>All</span>
                 </div>
                 <div class="menu-item
@@ -243,17 +245,17 @@
             </div>
             <div class="display-l">
                 <div class="menu-divider"></div>
-                <div class="menu-item menu-slideout"
+                <div class="menu-item menu-slideout" id='tour-openTagsListButton'
                     onclick={{route-action "startTagListSlideout"}}>
                     {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                         title="Tags"
                         classNames="btn-expand"}}
-                        <span class="fa fa-tags" id='tour-openTagsListButton'></span>
+                        <span class="fa fa-tags" ></span>
                     {{/tool-tip}}
                 </div>
             </div>
         </div>
-        <div class="menu__section">
+        <div class="menu__section" id="tour-supportButton">
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"

@@ -10,23 +10,29 @@
         validate='bottom'}}
 </div>
 <div class="form__group">
-    <label class="form__label" for="Tag Color">Tag Color</label>
-    {{color-control color=tag.hexColor
-        disabled=tag.isDeleted}}
+    {{#tour-components/hint hintId='tagColor'}}
+        <label class="form__label" for="Tag Color">Tag Color</label>
+        {{color-control color=tag.hexColor
+            disabled=tag.isDeleted}}
+    {{/tour-components/hint}}
 </div>
 <div class="form__group">
-    <div class="xs-2-row-3 control-text">
-        <label  class="form__label"for="Language">
-            Tag Language
-        </label>
-    </div>
-    <select name="tag-language" class="xs-row-3 form__input"
-        onchange={{action (mut tag.language) value="target.value"}}>
-        {{#each constants.LANGUAGES as |_lang|}}
-            <option value={{_lang}}
-                selected={{if (eq _lang tag.language) "selected"}}>
-                {{capitalize (lowercase _lang) 1}}
-            </option>
-        {{/each}}
-    </select>
+    {{#tour-components/hint hintId='tagLanguage'}}
+        <div class="row">
+            <div class="xs-2-row-3 control-text">
+                <label  class="form__label"for="Language">
+                    Tag Language
+                </label>
+            </div>
+            <select name="tag-language" class="xs-row-3 form__input"
+                onchange={{action (mut tag.language) value="target.value"}}>
+                {{#each constants.LANGUAGES as |_lang|}}
+                    <option value={{_lang}}
+                        selected={{if (eq _lang tag.language) "selected"}}>
+                        {{capitalize (lowercase _lang) 1}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+    {{/tour-components/hint}}
 </div>

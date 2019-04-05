@@ -27,14 +27,17 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     position: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     verticalPosition: PropTypes.bool,
     focusOnOpen: PropTypes.bool,
-    closeWithOverlay: PropTypes.bool
+    closeWithOverlay: PropTypes.bool,
+    startOpen: PropTypes.bool,
+    bodyClass: PropTypes.string
   },
   getDefaultProps() {
     return {
       bodyClickWillClose: true,
       focusOnOpen: true,
       closeWithOverlay: true,
-      verticalPosition: true
+      verticalPosition: true,
+      startOpen: false
     };
   },
   classNames: ['pop-over'],
@@ -46,6 +49,9 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   didInsertElement() {
     this._super(...arguments);
     run.scheduleOnce('afterRender', this, this._attachListeners);
+    if (this.get('startOpen')) {
+      run.scheduleOnce('afterRender', this, this._toggle);
+    }
   },
   // only do this on subsequent render this pop-over happens to be open
   didUpdateAttrs() {

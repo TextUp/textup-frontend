@@ -1,9 +1,9 @@
 import Ember from 'ember';
-import { PropTypes } from 'ember-prop-types';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, tryInvoke } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
   tutorialService: Ember.inject.service(),
 
   propTypes: {
@@ -35,6 +35,8 @@ export default Ember.Component.extend({
   _taskStep: null,
 
   _onClose() {
+    const taskStep = this.get('_taskStep');
+    taskStep.actions.removeAllPulsing();
     tryInvoke(this, 'onClose');
   },
 

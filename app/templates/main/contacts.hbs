@@ -147,7 +147,7 @@
               <div class="no-results">No contacts match this criteria.</div>
           {{/if}}
       {{/infinite-scroll}}
-      <div class="section-footer flex__item flex__item--no-shrink">
+      <div class="section-footer flex__item flex__item--no-shrink" id="task-manager__container">
         {{#if tutorialService.publicAPI.shouldShowTaskManager}}
           {{tour-components/task-manager
             doRegister=(action (mut tutorialService.taskManager))

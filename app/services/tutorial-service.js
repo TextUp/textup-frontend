@@ -4,6 +4,8 @@ import * as TaskUtil from 'textup-frontend/utils/task-info';
 const { computed, set } = Ember;
 
 export default Ember.Service.extend({
+  notifications: Ember.inject.service(),
+
   init() {
     this._super(...arguments);
     const tasks = TaskUtil.getTasks();
@@ -12,6 +14,11 @@ export default Ember.Service.extend({
       task.stepNumber = index + 1;
     });
     this.set('tasks', tasks);
+    this.resetTasks();
+    // DAO HAN TODO
+    // window.localStorage.setItem(`task-manager-shouldShowTaskManager`, true);
+    const shouldShow = window.localStorage.getItem(`task-manager-shouldShowTaskManager`);
+    this.set('shouldShowTaskManagerInternal', shouldShow === 'true');
   },
 
   taskManager: null,
@@ -48,7 +55,9 @@ export default Ember.Service.extend({
   },
 
   startCompleteTask(taskId) {
-    this.taskManager.actions.startCompleteTask(taskId);
+    if (taskId === this.get('_firstIncompleteTask').id) {
+      this.taskManager.actions.startCompleteTask(taskId);
+    }
   },
 
   finishCompleteTask(taskId) {
@@ -56,14 +65,18 @@ export default Ember.Service.extend({
   },
 
   closeTaskManager() {
-    console.log('in tutorial service this', this);
-    const tasks = this.get('tasks');
-    tasks.forEach(task => this._setTaskStatus(task.id, true));
+    this.get('notifications').info(
+      'Access the “Getting Started” tour at anytime through the Support page.'
+    );
+    this.set('shouldShowTaskManagerInternal', false);
+    window.localStorage.setItem(`task-manager-shouldShowTaskManager`, false);
   },
 
   resetTasks() {
     const tasks = this.get('tasks');
     tasks.forEach(task => this._setTaskStatus(task.id, false));
+    window.localStorage.setItem(`task-manager-shouldShowTaskManager`, true);
+    this.set('shouldShowTaskManagerInternal', true);
   },
 
   _firstIncompleteTask: computed('tasks.@each.status', function() {
@@ -74,7 +87,13 @@ export default Ember.Service.extend({
     return firstIncomplete;
   }),
 
-  _shouldShowTaskManager: computed('_firstIncompleteTask', function() {
-    return this.get('_firstIncompleteTask') !== undefined;
+  shouldShowTaskManagerInternal: null,
+
+  _shouldShowTaskManager: computed('shouldShowTaskManagerInternal', function() {
+    const shouldShow = this.get('shouldShowTaskManagerInternal');
+    if (shouldShow === null) {
+      return true;
+    }
+    return shouldShow;
   })
 });

@@ -1,62 +1,8 @@
 .hint {
-  &--has-block &__dot {
-    right: 0;
-    position: absolute;
-  }
-
-  &--has-block {
-    position: relative;
-    padding-right: 2em;
-    min-height: 1.5em;
-  }
-
-  &__dot {
-    position: relative;
-    background: #666666;
-    border-radius: 50%;
-    height: 1em;
-    width: 1em;
-    opacity: 0.5;
-    margin: 0.25em;
-    z-index: 50;
-
-    &:after {
-      position: absolute;
-      content: '';
-      width: 0.5em;
-      height: 0.5em;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-
-      background-color: #333333;
-      border-radius: 100%;
-    }
-  }
-
-  &__drawer {
-    &__body {
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      flex-direction: column;
-      max-width: 30vw;
-      padding: $padding;
-
-      &__hint-title {
-        font-weight: $font-weight-bold;
-      }
-      &__hint-text {
-        line-height: 1.5em;
-        text-align: justify;
-        margin-top: 1em;
-      }
-      &__close-button {
-        background-color: $color-seafoam;
-        border-radius: $border-radius;
-        border-style: none;
-        color: black;
-      }
-    }
+  &__text {
+    background: #f8f8f8;
+    padding: 1rem 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
   }
 }
