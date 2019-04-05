@@ -2,11 +2,11 @@
     headerComponent=(component "slideout-pane/title" title="New Contact")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishNewContactSlideout")
+        onPrimary=(route-action "finishNewContactSlideout")
         disablePrimary=(not (v-get newContact "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    doClose=(route-action "cancelNewContactSlideout")
+    onClose=(route-action "cancelNewContactSlideout")
     forceKeepOpen=newContact.isSaving
     focusSelector=".start-focus" as |slideout|}}
     {{form/contact-model contact=newContact

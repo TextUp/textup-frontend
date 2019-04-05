@@ -2,17 +2,17 @@
     headerComponent=(component "slideout-pane/title" title="Edit Note")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishEditNoteSlideout")
+        onPrimary=(route-action "finishEditNoteSlideout")
         disablePrimary=(not (v-get editingRecordNote "isValid"))
         primaryLabel=(if editingRecordNote.hasBeenDeleted "Confirm Delete" "Update")
         primaryProgressLabel=(if editingRecordNote.hasBeenDeleted "Deleting..." "Updating")
         primaryClass=(if editingRecordNote.hasBeenDeleted "btn btn-danger")
         secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo")
-        doSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
+        onSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
         showDelete=(not editingRecordNote.hasBeenDeleted)
-        doMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
+        onMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "cancelEditNoteSlideout")
+    onClose=(route-action "cancelEditNoteSlideout")
     forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
     {{form/record-note class="pad-t"
         recordNote=editingRecordNote

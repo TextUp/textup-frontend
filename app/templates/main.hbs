@@ -35,11 +35,11 @@
     <div class="menu">
         <div class="menu__section">
             <div class="display-xs display-s display-m">
-                {{#account-switcher
-                    activeOwner=stateManager.owner
-                    user=authService.authUser
-                    doLogOut=(route-action "logout")
-                    doRegisterContainer=(action (mut accountSwitcher))
+                {{#account-switcher user=authService.authUser
+                    onLogOut=(route-action "logout")
+                    doRegister=(action (mut accountSwitcher))
+                    activeName=stateManager.owner.name
+                    activeNumber=stateManager.owner.phone.content.number
                     toggleClass="xs-8-row-10"}}
                     <button class="xs-2-row-10 textup-account-switcher__display"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>

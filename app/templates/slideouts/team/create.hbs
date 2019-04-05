@@ -2,13 +2,13 @@
     headerComponent=(component "slideout-pane/title" title="New Team")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "createTeam" newTeam
+        onPrimary=(route-action "createTeam" newTeam
             (route-action "closeSlideout"))
         disablePrimary=(not (v-get newTeam "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     onOpen=(route-action "initializeNewTeam")
-    doClose=(route-action "revert" newTeam
+    onClose=(route-action "revert" newTeam
         (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving
     focusSelector=".start-focus" as |slideout|}}

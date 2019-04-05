@@ -2,11 +2,11 @@
     headerComponent=(component "slideout-pane/title" title=(concat "Export records"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishExportSlideout")
+        onPrimary=(route-action "finishExportSlideout")
         disablePrimary=(or (not exportStartDate) (not exportEndDate))
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
-    doClose=(route-action "cancelExportSlideout")
+    onClose=(route-action "cancelExportSlideout")
     focusSelector=".multi-select-new-input" as |slideout|}}
     <div class="form">
         <div class="form__group">

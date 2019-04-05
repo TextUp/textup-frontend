@@ -559,7 +559,7 @@ test('refreshing + scroll container is disabled when refreshing', function(asser
     });
 });
 
-test('resetting position resets component internal state and immediately triggers an edge check', function(assert) {
+test('resetting all resets component internal state and triggers an edge check for when no overflow', function(assert) {
   const contentPxHeight = 20,
     doRegister = sinon.spy(),
     onLoad = sinon.spy(),
@@ -582,6 +582,38 @@ test('resetting position resets component internal state and immediately trigger
 
     done();
   });
+});
+
+test('resetting all resets component internal state and resets to initial position when has overflow', function(assert) {
+  const contentPxHeight = 2888,
+    doRegister = sinon.spy(),
+    onLoad = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ doRegister, onLoad, contentPxHeight, data: [1] });
+
+  this.render(hbs`
+    {{#infinite-scroll data=data doRegister=doRegister onLoad=onLoad}}
+      <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
+    {{/infinite-scroll}}
+  `);
+  assert.ok(this.$('.infinite-scroll').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+  assert.ok(onLoad.notCalled);
+  const publicAPI = doRegister.firstCall.args[0],
+    $container = this.$('.infinite-scroll__scroll-container');
+
+  $container.scrollTop(contentPxHeight / 2);
+  setTimeout(() => {
+    assert.ok($container.scrollTop() > 0, 'scroll is no longer at initial position');
+
+    publicAPI.actions.resetAll();
+    wait().then(() => {
+      assert.equal($container.scrollTop(), 0, 'scroll is back at initial position');
+      assert.ok(onLoad.notCalled, 'no need to load more because already overflow');
+
+      done();
+    });
+  }, 1000);
 });
 
 test('resetting/restoring position via public API', function(assert) {

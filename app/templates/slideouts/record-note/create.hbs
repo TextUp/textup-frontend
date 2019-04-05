@@ -2,12 +2,12 @@
     headerComponent=(component "slideout-pane/title" title="New Note")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishAddNoteSlideout")
+        onPrimary=(route-action "finishAddNoteSlideout")
         disablePrimary=(not (v-get newRecordNote "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "cancelAddNoteSlideout")
+    onClose=(route-action "cancelAddNoteSlideout")
     forceKeepOpen=newRecordNote.isSaving
     focusSelector=".start-focus" as |slideout|}}
     {{form/record-note class="pad-t"

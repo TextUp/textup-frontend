@@ -134,6 +134,9 @@ export default Ember.Component.extend({
   // --------------
 
   clearResults() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     const featureLayer = this.get('_features');
     this.set('_results', []);
     featureLayer.setGeoJSON([]);
@@ -215,7 +218,7 @@ export default Ember.Component.extend({
     Ember.run.next(this, this._doRefresh);
   },
   _doRefresh() {
-    if (this.isDestroying || this.isDestroyed) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     const map = this.get('_map');

@@ -131,18 +131,23 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
   _hasOverflow() {
     return this._contentHeight() > this._containerHeight();
   },
+  // offset should be relative to the "leading edge" of the viewport. That is, when scrolling down,
+  // the leading edge is the top edge of the viewport. When scrolling up, the leading edge of the viewport
+  // is the bottom edge of the viewport. Calculating the offset relative to the leading edge allows us
+  // to account for `scroll-container` viewport height changes
   _invertValueIfIsUp(val) {
-    return this.get('_isUp') ? this._contentHeight() - val : val;
+    return this.get('_isUp') ? this._contentHeight() - (val + this._containerHeight()) : val;
   },
+  // starting is defined as the distance between the initial position and the leading edge. This is
+  // exactly the same as the offset so we just return the offset value without any changes
   _startingFromOffset(offsetVal) {
-    return this.get('_isUp') ? offsetVal - this._containerHeight() : offsetVal;
+    return offsetVal;
   },
+  // remaining is defined as the distance between the lagging edge and the final position
+  // (the end of the content). For example, if scrolling up, the lagging edge is the top of the
+  // container viewport and the final position is the very top of the content element
   _remainingFromOffset(offsetVal) {
-    let remaining = this._contentHeight() - offsetVal;
-    if (this.get('_isDown')) {
-      remaining -= this._containerHeight();
-    }
-    return remaining;
+    return this._contentHeight() - offsetVal - this._containerHeight();
   },
   _containerHeight() {
     return this.$().height();

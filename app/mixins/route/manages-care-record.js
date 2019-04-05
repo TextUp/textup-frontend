@@ -19,14 +19,15 @@ export default Ember.Mixin.create({
     },
     didTransition() {
       this._super(...arguments);
-
       this._resetCareRecord();
       this._initCareRecordText();
       return true;
     },
 
     onLoadRecordItems() {
-      return this.get('recordItemService').loadRecordItems(this.get('currentModel'));
+      return this.get('recordItemService')
+        .loadRecordItems(this.get('currentModel'))
+        .then(() => this._restoreCareRecordPosition());
     },
     onRefreshRecordItems() {
       return this.get('recordItemService').loadRecordItems(this.get('currentModel'), {
@@ -56,10 +57,16 @@ export default Ember.Mixin.create({
       careRecordText.rollbackAttributes();
     }
   },
+  _restoreCareRecordPosition() {
+    const careRecordRef = this.get('controller.careRecordRef');
+    if (careRecordRef && careRecordRef.actions) {
+      tryInvoke(careRecordRef.actions, 'restorePosition');
+    }
+  },
   _resetCareRecord() {
     const careRecordRef = this.get('controller.careRecordRef');
     if (careRecordRef && careRecordRef.actions) {
-      tryInvoke(careRecordRef.actions, 'reset');
+      tryInvoke(careRecordRef.actions, 'resetAll');
     }
   },
 });

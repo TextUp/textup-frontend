@@ -2,14 +2,14 @@
     headerComponent=(component "slideout-pane/title" title="Schedule Message")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishNewScheduleMessageSlideout")
+        onPrimary=(route-action "finishNewScheduleMessageSlideout")
         disablePrimary=(not (v-get newFutureMessage "isValid"))
         primaryLabel="Schedule"
         primaryProgressLabel="Scheduling...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     focusSelector=".start-focus"
     forceKeepOpen=newFutureMessage.isSaving
-    doClose=(route-action "cancelNewScheduleMessageSlideout") as |slideout|}}
+    onClose=(route-action "cancelNewScheduleMessageSlideout") as |slideout|}}
     {{form/future-message classNames="pad-t"
         futureMessage=newFutureMessage
         personalNumber=authService.authUser.personalNumber

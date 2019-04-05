@@ -3,27 +3,33 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    doClose: PropTypes.func.isRequired,
-
+    onClose: PropTypes.func.isRequired,
     showFooter: PropTypes.bool,
-    disablePrimary: PropTypes.bool,
-    hideSecondary: PropTypes.bool,
-    showDelete: PropTypes.bool,
 
-    doPrimary: PropTypes.func.isRequired,
+    onPrimary: PropTypes.func.isRequired,
+    disablePrimary: PropTypes.bool,
     primaryLabel: PropTypes.string.isRequired,
     primaryProgressLabel: PropTypes.string.isRequired,
     primaryClass: PropTypes.string,
 
-    doSecondary: PropTypes.func,
+    onSecondary: PropTypes.func,
+    hideSecondary: PropTypes.bool,
     secondaryLabel: PropTypes.string,
 
-    doMarkForDelete: PropTypes.func,
+    onMarkForDelete: PropTypes.func,
+    showDelete: PropTypes.bool,
   },
   getDefaultProps() {
-    return { showFooter: false };
+    return {
+      showFooter: false,
+      primaryClass: '',
+      disablePrimary: false,
+      hideSecondary: false,
+      secondaryLabel: 'Cancel',
+      showDelete: false,
+    };
   },
 
   classNames: 'slideout-pane__footer flex flex--spacing-between',
-  classNameBindings: ['showFooter::slideout-pane__footer--hidden'],
+  classNameBindings: 'showFooter::slideout-pane__footer--hidden',
 });

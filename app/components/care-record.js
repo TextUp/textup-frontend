@@ -79,7 +79,12 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _recordClustersScroll: null, // set by `doRegister` in `infinite-scroll`
   _publicAPI: computed(function() {
-    return { actions: { reset: this._tryResetScroll.bind(this) } };
+    return {
+      actions: {
+        restorePosition: this._tryRestorePosition.bind(this),
+        resetAll: this._tryResetAll.bind(this),
+      },
+    };
   }),
 
   _hasPersonalNumber: computed.notEmpty('personalNumber'),
@@ -113,13 +118,6 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onViewScheduledMessages', [...arguments]);
   },
 
-  _onControlsHeightChange() {
-    const scrollEl = this.get('_recordClustersScroll');
-    if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'restorePosition');
-    }
-  },
-
   // content-related handlers
   _onContentChange() {
     tryInvoke(this, 'onContentChange', [...arguments]);
@@ -143,7 +141,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onAddNote', [...arguments]);
   },
   _onCall() {
-    this._afterStartCall();
+    this.set('_hasStartedCall', true);
+    this._tryResetScroll();
     tryInvoke(this, 'onCall', [...arguments]);
   },
   _onText() {
@@ -154,14 +153,22 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onScheduleMessage', [...arguments]);
   },
 
-  _tryResetScroll() {
+  _tryResetAll() {
     const scrollEl = this.get('_recordClustersScroll');
     if (scrollEl && scrollEl.actions) {
       tryInvoke(scrollEl.actions, 'resetAll');
     }
   },
-  _afterStartCall() {
-    this.set('_hasStartedCall', true);
-    this._tryResetScroll();
+  _tryRestorePosition(shouldAnimate = false) {
+    const scrollEl = this.get('_recordClustersScroll');
+    if (scrollEl && scrollEl.actions) {
+      tryInvoke(scrollEl.actions, 'restorePosition', [shouldAnimate]);
+    }
+  },
+  _tryResetScroll() {
+    const scrollEl = this.get('_recordClustersScroll');
+    if (scrollEl && scrollEl.actions) {
+      tryInvoke(scrollEl.actions, 'resetPosition', [true]);
+    }
   },
 });

@@ -2,11 +2,11 @@
     headerComponent=(component "slideout-pane/title" title="Compose")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishComposeSlideout")
+        onPrimary=(route-action "finishComposeSlideout")
         disablePrimary=(or (not composeMessage) (not composeHasRecipients))
         primaryLabel="Send"
         primaryProgressLabel="Sending...")
-    doClose=(route-action "cancelComposeSlideout")
+    onClose=(route-action "cancelComposeSlideout")
     forceKeepOpen=(or composeMessage composeHasRecipients)
     focusSelector=".multi-select-new-input" as |slideout|}}
 	<div class="form">

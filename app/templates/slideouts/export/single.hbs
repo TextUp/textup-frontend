@@ -3,12 +3,12 @@
         title=(concat "Exporting " (get model (constant "PROP_NAME.READABLE_IDENT"))))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishExportSlideout")
+        onPrimary=(route-action "finishExportSlideout")
         disablePrimary=(or (not exportStartDate) (not exportEndDate))
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "cancelExportSlideout") as |slideout|}}
+    onClose=(route-action "cancelExportSlideout") as |slideout|}}
     <div class="form">
         <div class="form__group">
             <label for="export-start-date" class="form__label">

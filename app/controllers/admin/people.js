@@ -62,6 +62,7 @@ export default Ember.Controller.extend({
       this.get('dataService')
         .request(
           this.get('store').query('staff', {
+            max: 20,
             offset,
             status: this.get('statuses'),
             teamId: team ? team.get('id') : null,

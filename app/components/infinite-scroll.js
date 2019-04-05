@@ -36,7 +36,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   didInitAttrs() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
-    run.scheduleOnce('afterRender', this, this._resetAll);
+    this._scheduleResetAll();
   },
 
   // Internal observers
@@ -101,13 +101,20 @@ export default Ember.Component.extend(PropTypesMixin, {
   // check if near edge immediately. `onRefresh` triggers a load more via
   // _checkIfLoadFinish -> checkNearEnd -> onLoad. _checkIfLoadFinish expects `_didStartLoad` to be
   // TRUE because it itself will reset this flag back to false for the onLoad handler called later on
+  _scheduleResetAll() {
+    run(() => run.scheduleOnce('afterRender', this, this._resetAll));
+  },
   _resetAll() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     this._resetProperties();
-    callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
+    const retVal = callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'));
+    if (retVal && retVal.then) {
+      retVal.then(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
+    }
   },
+
   _resetPosition() {
     return callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'), [...arguments]);
   },

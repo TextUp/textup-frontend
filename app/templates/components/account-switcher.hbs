@@ -1,17 +1,14 @@
-{{#hide-show tagName=containerTagName
-    clickOutToClose=true
-    doRegister=doRegisterContainer as |hideShow|}}
+{{#hide-show clickOutToClose=true
+    doRegister=doRegister as |hideShow|}}
     <div class="textup-account-switcher__display-container">
         <button type="button"
             class="textup-account-switcher__display flex flex--spacing-all {{toggleClass}}"
             onclick={{hideShow.actions.toggle}}>
             <div class="flex__item text-left flex__item--grow">
-                <h4 class="text-white text-ellipsis">{{activeOwner.name}}</h4>
-                {{#if activeOwner.phone.content.number}}
-                    <p class="text-bold text-ellipsis">
-                        {{phone-number activeOwner.phone.content.number}}
-                    </p>
-                {{/if}}
+                <h4 class="text-white text-ellipsis">{{activeName}}</h4>
+                <p class="text-bold text-ellipsis">
+                    {{phone-number activeNumber}}
+                </p>
             </div>
             <div class="flex__item">
                 {{#if hideShow.isOpen}}
@@ -27,15 +24,15 @@
         {{!-- pass identifiers not resolved models to allow the logic in the model hook to run --}}
         <ul class="reset-list textup-account-switcher__accounts">
             {{#each user.allActivePhoneOwners as |phoneOwner|}}
-                {{#link-to 'main.contacts' (get phoneOwner (constant "PROP_NAME.URL_IDENT"))
-                    tagName='li'
-                    classNames='menu-item'
-                    current-when='main'}}
+                {{#link-to "main.contacts" (get phoneOwner (constant "PROP_NAME.URL_IDENT"))
+                    tagName="li"
+                    classNames="menu-item"
+                    current-when="main"}}
                     <div class="xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">
                             {{#if (type/is-team phoneOwner)}}
                                 <span class="indicator margin-r-quarter"
-                                    style='background-color:{{phoneOwner.hexColor}};'></span>
+                                    style="background-color:{{phoneOwner.hexColor}};"></span>
                             {{/if}}
                             {{phoneOwner.name}}
                         </p>
@@ -46,17 +43,17 @@
                 {{/link-to}}
             {{/each}}
             {{#if user.isAdmin}}
-                {{#link-to 'admin.people'
-                    tagName='li'
-                    classNames='menu-item'
-                    current-when='admin'}}
+                {{#link-to "admin.people"
+                    tagName="li"
+                    classNames="menu-item"
+                    current-when="admin"}}
                     <div class="xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Admin</p>
                     </div>
                 {{/link-to}}
             {{/if}}
             <li class="menu-divider"></li>
-            <li class="menu-item" onclick={{doLogOut}}>
+            <li class="menu-item" onclick={{onLogOut}}>
                 <div class="xs-8-row-10 text-left">
                     <p class="text-bold text-ellipsis">Log Out</p>
                 </div>

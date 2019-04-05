@@ -19,7 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     clickOutToClose: PropTypes.bool,
     ignoreCloseSelector: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     focusOutToClose: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
   },
   getDefaultProps() {
     return {
@@ -27,7 +27,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       clickOutToClose: false,
       ignoreCloseSelector: '.slideout-pane, .c-notification__container',
       focusOutToClose: false,
-      disabled: false
+      disabled: false,
     };
   },
 
@@ -54,12 +54,12 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     return {
       isOpen: false,
       actions: {
-        toggle: () => this._toggle(),
-        open: () => this._open(),
-        close: () => this._close(),
+        toggle: this._toggle.bind(this),
+        open: this._open.bind(this),
+        close: this._close.bind(this),
         // call bind instead of using an arrow function so we can access `arguments`
-        closeThenCall: this._closeThenCall.bind(this)
-      }
+        closeThenCall: this._closeThenCall.bind(this),
+      },
     };
   }),
   _touchCoordinates: Ember.computed(() => Object.create(null)),
@@ -183,5 +183,5 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     if (shouldTryClose) {
       this._tryCloseOnClick(event);
     }
-  }
+  },
 });

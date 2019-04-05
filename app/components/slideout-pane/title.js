@@ -3,7 +3,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    doClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
   },
 

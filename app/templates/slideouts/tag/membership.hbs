@@ -5,11 +5,11 @@
             (concat tagMembershipContacts.firstObject.name " Tags")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=tagsHaveActions
-        doPrimary=(route-action "finishTagMembershipSlideout")
+        onPrimary=(route-action "finishTagMembershipSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "cancelTagMembershipSlideout") as |slideout|}}
+    onClose=(route-action "cancelTagMembershipSlideout") as |slideout|}}
     {{#multi-toggle/group-by-bucket anyChanges=(mut tagsHaveActions)
         itemBucketProperty="tags"
         items=tagMembershipContacts

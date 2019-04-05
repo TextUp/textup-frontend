@@ -2,11 +2,11 @@
     headerComponent=(component "slideout-pane/title" title="Call")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishCallSlideout")
+        onPrimary=(route-action "finishCallSlideout")
         disablePrimary=(or isCallingForNumber (not callByNumber) (not callByNumberIsValid))
         primaryLabel=(if isCallingForNumber "Calling..." "Call")
         primaryProgressLabel="Calling...")
-    doClose=(route-action "cancelCallSlideout")
+    onClose=(route-action "cancelCallSlideout")
     forceKeepOpen=isCallingForNumber
     focusSelector=".number-control" as |slideout|}}
     <div class="pad-t pad-l pad-r">

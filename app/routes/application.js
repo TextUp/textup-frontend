@@ -21,8 +21,8 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
 
   init() {
     this._super(...arguments);
-    this.notifications.setDefaultClearNotification(5000);
-    this.notifications.setDefaultAutoClear(true);
+    this.get('notifications').setDefaultClearNotification(5000);
+    this.get('notifications').setDefaultAutoClear(true);
     this.get('authService')
       .on(config.events.auth.success, this, this._bindLockEvents)
       .on(config.events.auth.clear, this, this._clearLockEvents);
@@ -99,7 +99,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
               resolve();
             },
             () => {
-              this.notifications.error('Incorrect lock code.');
+              this.get('notifications').error('Incorrect lock code.');
               reject();
             }
           )

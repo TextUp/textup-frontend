@@ -5,7 +5,7 @@
             (concat person.name " Teams")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=teamsHaveActions
-        doPrimary=(route-action "updateTeamMemberships"
+        onPrimary=(route-action "updateTeamMemberships"
             stateManager.owner.teams
             (if selected selected person)
             (route-action "clearList" stateManager.owner.teams "actions"
@@ -13,7 +13,7 @@
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "clearList" stateManager.owner.teams "actions"
+    onClose=(route-action "clearList" stateManager.owner.teams "actions"
         (route-action "closeSlideout")) as |slideout|}}
     {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)
         itemBucketProperty="teams"

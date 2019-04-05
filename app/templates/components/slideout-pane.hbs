@@ -1,11 +1,11 @@
 {{#if headerComponent}}
-    {{component headerComponent doClose=(action _close true)}}
+    {{component headerComponent onClose=(action _close true)}}
 {{/if}}
 
 <div class="slideout-pane__body {{bodyClass}}" tabindex="-1">
-    {{yield publicAPI}}
+    {{yield _publicAPI}}
 </div>
 
 {{#if footerComponent}}
-    {{component footerComponent doClose=(action _close true)}}
+    {{component footerComponent onClose=(action _close true)}}
 {{/if}}

@@ -1,15 +1,16 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/accounts"
         title="Your Account"
-        activeOwner=stateManager.owner
+        activeName=stateManager.owner.name
+        activeNumber=stateManager.owner.phone.content.number
         user=authService.authUser
-        doLogOut=(route-action "logout"))
+        onLogOut=(route-action "logout"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=(and (or stateManager.owner.isDirty authService.authUser.isDirty)
                 (not usernameDropdown.isOpen)
                 (not passwordDropdown.isOpen)
                 (not codeDropdown.isOpen))
-        doPrimary=(route-action "persist"
+        onPrimary=(route-action "persist"
             (if (eq accountSettingsTabs.currentIndex 1) authService.authUser stateManager.owner)
             (route-action "closeSlideout"))
         disablePrimary=(or
@@ -17,9 +18,9 @@
             (not (v-get authService.authUser "isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
-        doSecondary=(route-action "revert" stateManager.owner
+        onSecondary=(route-action "revert" stateManager.owner
             (route-action "revert" authService.authUser)))
-    doClose=(route-action "revert" stateManager.owner
+    onClose=(route-action "revert" stateManager.owner
         (route-action "revert" authService.authUser)
         (route-action "closeSlideout"))
     forceKeepOpen=(or stateManager.owner.isSaving authService.authUser.isSaving)}}

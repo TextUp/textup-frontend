@@ -3,13 +3,13 @@
         title=(if model.phone.content.tags "Tags" "New Tag"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=tagsListHideAway.isOpen
-        doPrimary=(route-action "finishCreateTagInTagList")
+        onPrimary=(route-action "finishCreateTagInTagList")
         disablePrimary=(not (v-get newTag "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        doSecondary=(route-action "cancelCreateTagInTagList")
+        onSecondary=(route-action "cancelCreateTagInTagList")
         hideSecondary=(not model.phone.content.tags))
-    doClose=(route-action "closeTagListSlideout")
+    onClose=(route-action "closeTagListSlideout")
     forceKeepOpen=newTag.isSaving as |slideout|}}
     {{#hide-show doRegister=(action (mut tagsListHideAway))
         startOpen=(if model.phone.content.tags false true)

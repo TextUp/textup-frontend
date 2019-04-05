@@ -2,14 +2,14 @@
     headerComponent=(component "slideout-pane/title" title='New Staff')
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action 'createStaff' newStaff
+        onPrimary=(route-action 'createStaff' newStaff
             (route-action 'cleanNewStaff' newStaff
                 (route-action "closeSlideout")))
         disablePrimary=(not (v-get newStaff 'isValid'))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     onOpen=(route-action 'initializeNewStaff')
-    doClose=(route-action 'revert' newStaff
+    onClose=(route-action 'revert' newStaff
         (route-action 'cleanNewStaff' newStaff
             (route-action "closeSlideout")))
     forceKeepOpen=newStaff.isSaving

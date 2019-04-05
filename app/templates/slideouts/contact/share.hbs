@@ -5,11 +5,11 @@
             (concat "Sharing " sharingContacts.firstObject.name)))
     footerComponent=(component "slideout-pane/actions"
         showFooter=contactAnySharingChange
-        doPrimary=(route-action "finishContactSharingSlideout")
+        onPrimary=(route-action "finishContactSharingSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "cancelContactSharingSlideout") as |slideout|}}
+    onClose=(route-action "cancelContactSharingSlideout") as |slideout|}}
     {{#if stateManager.shareCandidates.isFulfilled}}
         {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
             contacts=sharingContacts

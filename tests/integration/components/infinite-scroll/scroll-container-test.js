@@ -396,6 +396,45 @@ test('using public API position methods when scrolling up', function(assert) {
   }, 1000);
 });
 
+test('restoring position calculation is sensitive to changes in the container height', function(assert) {
+  const doRegister = sinon.spy(),
+    contentPxHeight = 2888,
+    done = assert.async();
+  this.setProperties({
+    doRegister,
+    direction: Constants.INFINITE_SCROLL.DIRECTION.UP,
+    contentPxHeight,
+  });
+
+  this.render(hbs`
+    {{#infinite-scroll/scroll-container direction=direction doRegister=doRegister}}
+      <div style="height: {{contentPxHeight}}px; width: 100%;"></div>
+    {{/infinite-scroll/scroll-container}}
+  `);
+  assert.ok(this.$('.infinite-scroll__scroll-container').length, 'did render');
+  assert.ok(this.$('.infinite-scroll__scroll-container__content').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+  const publicAPI = doRegister.firstCall.args[0],
+    $container = this.$('.infinite-scroll__scroll-container');
+
+  $container.scrollTop(contentPxHeight / 2);
+  setTimeout(() => {
+    const originalScrollTop = $container.scrollTop(),
+      reduceHeightAmount = 300;
+    $container.height($container.height() - reduceHeightAmount);
+    publicAPI.actions.restoreUserPosition();
+    setTimeout(() => {
+      assert.equal(
+        $container.scrollTop(),
+        originalScrollTop + reduceHeightAmount,
+        'restored user position adapts to the changed container height'
+      );
+
+      done();
+    }, 1000);
+  }, 1000);
+});
+
 test('manually triggering check if near end via public API', function(assert) {
   const doRegister = sinon.spy(),
     onNearEnd = sinon.spy(),

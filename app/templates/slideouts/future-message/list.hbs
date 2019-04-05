@@ -1,7 +1,7 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title" title="Scheduled Messages")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    doClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
+    onClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
     <ul class="result-list">
         {{#each model.futureMessages as |existingFutureMessage|}}
             {{#hide-show tagName="li" as |hideShow|}}

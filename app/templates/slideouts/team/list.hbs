@@ -2,13 +2,13 @@
     headerComponent=(component "slideout-pane/title" title=(if model.teams "Teams" "New Team"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=teamsListHideAway.isOpen
-        doPrimary=(route-action "createTeam" newTeam teamsListHideAway.actions.close)
+        onPrimary=(route-action "createTeam" newTeam teamsListHideAway.actions.close)
         disablePrimary=(not (v-get newTeam "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        doSecondary=(route-action "revert" newTeam teamsListHideAway.actions.close)
+        onSecondary=(route-action "revert" newTeam teamsListHideAway.actions.close)
         hideSecondary=(not model.existingTeams.content))
-    doClose=(route-action "revert" newTeam (route-action "closeSlideout"))
+    onClose=(route-action "revert" newTeam (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving as |slideout|}}
     {{#hide-show doRegister=(action (mut teamsListHideAway))
         startOpen=(if model.teams false true)
