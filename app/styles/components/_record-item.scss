@@ -1,171 +1,175 @@
 .record-item {
-    &--text,
-    &--call {
-        .record-item__media {
-            width: 100%;
+  &--text,
+  &--call {
+    .record-item__media {
+      width: 100%;
 
-            &--audio {
-                padding: ($baseunit / 2) $baseunit;
-            }
-        }
-    }
-    &--note {
-        background-color: $bg-lightest-color;
-        border: 1px solid $border-color;
-        border-radius: $border-radius;
-
-        .record-item {
-            &__multi-item-body {
-                position: relative;
-                display: flex;
-                align-items: stretch;
-                flex-wrap: wrap;
-
-                @include mq($from: desktop) {
-                    flex-wrap: nowrap;
-                }
-            }
-            &__body {
-                width: 100%;
-                padding: ($baseunit / 2) $baseunit;
-                padding-right: $min-control-width;
-
-                @include mq($from: desktop) {
-                    width: auto;
-                    padding-right: $baseunit;
-                }
-            }
-            &__media-container {
-                display: flex;
-                flex-grow: 1;
-                flex-wrap: wrap;
-
-                @include mq($from: desktop) {
-                    flex-grow: 0;
-                    flex-wrap: nowrap;
-                }
-            }
-            &__media {
-                width: 50%;
-                flex-grow: 1;
-
-                &--audio {
-                    width: 100%;
-                    padding: ($baseunit * 0.5) $baseunit;
-                }
-
-                @include mq($from: desktop) {
-                    display: flex;
-                    align-items: center;
-                    width: $media-preview-height;
-                    max-width: 100%;
-
-                    &--audio {
-                        display: initial;
-                        width: $media-preview-height * 2;
-                        padding: $baseunit $baseunit 0 0;
-                    }
-                }
-            }
-            &__control {
-                position: absolute;
-                top: 0;
-                right: 0;
-
-                @include mq($from: desktop) {
-                    position: static;
-                }
-            }
-        }
-    }
-    &--system-message {
-        @extend .text-small;
-        @extend .text--deemphasize;
-
-        width: 100%;
-        margin: 0 auto;
-        padding: ($baseunit * 0.3) ($baseunit * 0.5);
-        border: 1px solid lightgray;
-        border-radius: $border-radius;
-        text-align: center;
-        user-select: text;
-        user-select: all;
-
-        @include mq($from: tablet) {
-            width: 70%;
-        }
-        @include mq($from: desktop) {
-            width: 40%;
-        }
-        .record-item__metadata {
-            padding-bottom: 0;
-            user-select: none;
-        }
-    }
-    &__body {
-        flex-grow: 1;
+      &--audio {
         padding: ($baseunit / 2) $baseunit;
+      }
     }
-    &__metadata {
+  }
+  &--note {
+    background-color: $bg-lightest-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+
+    .record-item {
+      &__multi-item-body {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        flex-wrap: wrap;
+
+        @include mq($from: desktop) {
+          flex-wrap: nowrap;
+        }
+      }
+      &__body {
+        @include mq($from: desktop) {
+          width: auto;
+          padding-right: $baseunit;
+        }
+      }
+      &__media-container {
+        display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
+
+        @include mq($from: desktop) {
+          flex-grow: 0;
+          flex-wrap: nowrap;
+        }
+      }
+      &__media {
+        width: 50%;
+        flex-grow: 1;
+
+        &--audio {
+          width: 100%;
+          padding: ($baseunit * 0.5) $baseunit;
+        }
+
+        @include mq($from: desktop) {
+          display: flex;
+          align-items: center;
+          width: $media-preview-height;
+          max-width: 100%;
+
+          &--audio {
+            display: initial;
+            width: $media-preview-height * 2;
+            padding: $baseunit $baseunit 0 0;
+          }
+        }
+      }
+      &__control {
+        @include mq($from: desktop) {
+          position: static;
+        }
+      }
+    }
+  }
+  &--system-message {
+    @extend .text-small;
+    @extend .text--deemphasize;
+
+    width: 100%;
+    margin: 0 auto;
+    padding: ($baseunit * 0.3) ($baseunit * 0.5);
+    border: 1px solid lightgray;
+    border-radius: $border-radius;
+    text-align: center;
+    user-select: text;
+    user-select: all;
+
+    @include mq($from: tablet) {
+      width: 70%;
+    }
+    @include mq($from: desktop) {
+      width: 40%;
+    }
+    .record-item__metadata {
+      padding-bottom: 0;
+      user-select: none;
+    }
+  }
+
+  &__body {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    padding: ($baseunit / 2) $baseunit;
+
+    &--has-control {
+      padding-right: $min-control-width;
+    }
+  }
+  &__metadata {
+    @extend .text-ellipsis;
+
+    padding: ($baseunit * 0.25) 0;
+    user-select: none;
+  }
+  &__control {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  &__receipts {
+    @extend %vertical-scroll;
+    @extend .text-small;
+
+    max-height: $baseunit * 10;
+    background-color: $overlay-light-color;
+    padding: 0 $baseunit;
+    user-select: none;
+
+    &--disabled {
+      background-color: transparent;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+      .record-item__receipts__trigger {
+        cursor: auto;
+        user-select: auto;
+        opacity: 0.8;
+      }
+    }
+    &__trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
+      background-color: transparent;
+      border-width: 0;
+      outline: 0;
+      padding-left: 0;
+      padding-right: 0;
+
+      &__label {
         @extend .text-ellipsis;
 
-        padding: ($baseunit * 0.25) 0;
-        user-select: none;
+        display: none;
+        margin-left: $baseunit / 2;
+        text-decoration: underline;
+
+        @include mq($from: tablet) {
+          display: block;
+        }
+      }
     }
-    &__receipts {
-        @extend %vertical-scroll;
-        @extend .text-small;
-
-        max-height: $baseunit * 10;
-        background-color: $overlay-light-color;
-        padding: 0 $baseunit;
-        user-select: none;
-
-        &--disabled {
-            background-color: transparent;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-            .record-item__receipts__trigger {
-                cursor: auto;
-                user-select: auto;
-                opacity: 0.8;
-            }
-        }
-        &__trigger {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            cursor: pointer;
-            user-select: none;
-            background-color: transparent;
-            border-width: 0;
-            outline: 0;
-            padding-left: 0;
-            padding-right: 0;
-
-            &__label {
-                @extend .text-ellipsis;
-
-                display: none;
-                margin-left: $baseunit / 2;
-                text-decoration: underline;
-
-                @include mq($from: tablet) {
-                    display: block;
-                }
-            }
-        }
-        &__body {
-            padding: ($baseunit * 0.6) 0 ($baseunit * 0.1);
-        }
-        &__label {
-            font-weight: $font-weight-bold;
-        }
-        &__list {
-            padding-left: $baseunit;
-            column-count: 2;
-            column-gap: $baseunit * 2;
-        }
+    &__body {
+      padding: ($baseunit * 0.6) 0 ($baseunit * 0.1);
     }
+    &__label {
+      font-weight: $font-weight-bold;
+    }
+    &__list {
+      padding-left: $baseunit;
+      column-count: 2;
+      column-gap: $baseunit * 2;
+    }
+  }
 }

@@ -10,6 +10,7 @@
     doRefresh=(action _onRefreshRecordItems) as |cluster|}}
     {{#record-cluster classNames="care-record__add-note"
         cluster=cluster
+        callOptions=(hash onEndOngoing=(action _onEndOngoingCall))
         noteOptions=(hash onEdit=(action _onEditNote)
             onRestore=(action _onRestoreNote)
             onViewHistory=(action _onViewNoteHistory)

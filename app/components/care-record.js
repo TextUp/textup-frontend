@@ -31,6 +31,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     // --------
 
     doRegister: PropTypes.func,
+    // call-specific handlers
+    onEndOngoingCall: PropTypes.func,
     // note-specific handlers
     onEditNote: PropTypes.func,
     onRestoreNote: PropTypes.func,
@@ -56,7 +58,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     noRecordItemsMessage: PropTypes.string,
     noAddToRecordMessage: PropTypes.string,
     startCallMessage: PropTypes.string,
-    addNoteInPastMessage: PropTypes.string
+    addNoteInPastMessage: PropTypes.string,
   },
   getDefaultProps() {
     return {
@@ -66,7 +68,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       noRecordItemsMessage: 'Nothing in the record yet!',
       noAddToRecordMessage: "You don't have permission to add to this record.",
       startCallMessage: `Calling your personal phone at ${format(this.get('personalPhoneNumber'))}`,
-      addNoteInPastMessage: "Choose your note's place"
+      addNoteInPastMessage: "Choose your note's place",
     };
   },
   classNames: 'care-record',
@@ -92,6 +94,11 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   // Internal handlers
   // -----------------
+
+  // call-specific handlers
+  _onEndOngoingCall() {
+    tryInvoke(this, 'onEndOngoingCall', [...arguments]);
+  },
 
   // note-specific handlers
   _onEditNote() {
@@ -165,5 +172,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   _afterStartCall() {
     this.set('_hasStartedCall', true);
     this._tryResetScroll();
-  }
+  },
 });

@@ -11,8 +11,15 @@ moduleForModel('record-call', 'Unit | Model | record call', {
     'model:tag',
     'model:media',
     'validator:inclusion',
-    'validator:has-any'
-  ]
+    'validator:has-any',
+  ],
+});
+
+test('default values', function(assert) {
+  const obj = this.subject();
+
+  assert.equal(obj.get('stillOngoing'), false, 'by default not ongoing');
+  assert.equal(obj.get('endOngoing'), false, 'by default do not want to end ongoing');
 });
 
 test('validating recipients', function(assert) {
@@ -66,4 +73,3 @@ test('validating recipients', function(assert) {
 
 // Helpers
 // -------
-

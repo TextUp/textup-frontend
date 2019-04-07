@@ -7,7 +7,8 @@ const { computed } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     item: PropTypes.instanceOf(RecordItem).isRequired,
-    noteOptions: PropTypes.object
+    callOptions: PropTypes.object,
+    noteOptions: PropTypes.object,
   },
   getDefaultProps() {
     return { noteOptions: {} };
@@ -16,7 +17,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   classNameBindings: [
     '_isOutgoing:record-cluster__item--outgoing',
     '_isIncoming:record-cluster__item--incoming',
-    '_isInternal:record-cluster__item--internal'
+    '_isInternal:record-cluster__item--internal',
   ],
 
   // Internal properties
@@ -28,5 +29,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isIncoming: computed('_isInternal', 'item.outgoing', function() {
     return !this.get('_isInternal') && !this.get('item.outgoing');
   }),
-  _isInternal: computed.equal('item.constructor.modelName', 'record-note')
+  _isInternal: computed.equal('item.constructor.modelName', 'record-note'),
 });

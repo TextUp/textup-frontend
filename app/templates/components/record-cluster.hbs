@@ -13,13 +13,17 @@
         {{#if hideShow.isOpen}}
             <div class="record-cluster__body">
                 {{#each cluster.items as |item index|}}
-                    {{record-cluster/item item=item noteOptions=noteOptions}}
+                    {{record-cluster/item item=item
+                        callOptions=callOptions
+                        noteOptions=noteOptions}}
                     {{yield item index}}
                 {{/each}}
             </div>
         {{/if}}
     {{/hide-show}}
 {{else if (eq cluster.numItems 1)}}
-    {{record-cluster/item item=cluster.items.firstObject noteOptions=noteOptions}}
+    {{record-cluster/item item=cluster.items.firstObject
+        callOptions=callOptions
+        noteOptions=noteOptions}}
     {{yield cluster.items.firstObject 0}}
 {{/if}}

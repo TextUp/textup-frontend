@@ -13,7 +13,7 @@ moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('empty + invalid inputs', function(assert) {
@@ -34,6 +34,7 @@ test('empty + invalid inputs', function(assert) {
       audio=88
       contents=88
       doRegister=88
+      onEndOngoingCall=88
       onEditNote=88
       onRestoreNote=88
       onViewNoteHistory=88
@@ -71,6 +72,7 @@ test('all valid inputs', function(assert) {
       audio=array
       contents="hi"
       doRegister=func
+      onEndOngoingCall=func
       onEditNote=func
       onRestoreNote=func
       onViewNoteHistory=func
@@ -103,7 +105,7 @@ test('overlay messages', function(assert) {
     noRecordItemsMessage,
     noAddToRecordMessage,
     startCallMessage,
-    addNoteInPastMessage
+    addNoteInPastMessage,
   });
 
   this.render(hbs`

@@ -31,14 +31,14 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
     'validator:has-any',
     'validator:inclusion',
     'validator:number',
-    'validator:presence'
+    'validator:presence',
   ],
   beforeEach() {
     this.register('service:data-service', Ember.Service);
     this.inject.service('data-service', { as: 'dataService' });
     this.inject.service('store');
     this.inject.service('constants');
-  }
+  },
 });
 
 test('building required query parameters for particular record owners', function(assert) {
@@ -106,7 +106,7 @@ test('loading more record items for contact', function(assert) {
       sharedContactIds: [],
       tagIds: [],
       max: 20,
-      offset: numRecordItems
+      offset: numRecordItems,
     });
 
     queryStub.restore();
@@ -133,7 +133,7 @@ test('loading more record items for tag', function(assert) {
       sharedContactIds: [],
       contactIds: [],
       max: 20,
-      offset: numRecordItems
+      offset: numRecordItems,
     });
 
     queryStub.restore();
@@ -183,7 +183,7 @@ test('exporting record items', function(assert) {
 
   service.setProperties({
     stateManager: Ember.Object.create({ ownerAsTeam: { id: teamId } }),
-    authService: Ember.Object.create({ timezone: tz })
+    authService: Ember.Object.create({ timezone: tz }),
   });
 
   // call done to ensure to promise return value is respected
@@ -276,6 +276,22 @@ test('creating new note', function(assert) {
   });
 });
 
+test('end ongoing call', function(assert) {
+  run(() => {
+    const service = this.subject(),
+      rCall = this.store.createRecord('record-call');
+    service.setProperties({ dataService: { persist: sinon.spy() } });
+
+    service.endOngoingCall();
+    assert.ok(service.dataService.persist.notCalled);
+
+    service.endOngoingCall(rCall);
+    assert.ok(service.dataService.persist.calledOnce);
+    assert.equal(service.dataService.persist.firstCall.args[0], rCall);
+    assert.equal(rCall.get('endOngoing'), true);
+  });
+});
+
 test('adding location to note', function(assert) {
   run(() => {
     const service = this.subject(),
@@ -294,7 +310,7 @@ test('removing location from note', function(assert) {
     const service = this.subject(),
       rollbackSpy = sinon.spy(),
       mockNote = Ember.Object.create({
-        location: { content: { rollbackAttributes: rollbackSpy } }
+        location: { content: { rollbackAttributes: rollbackSpy } },
       });
 
     service.removeLocationFromNote(mockNote);

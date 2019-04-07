@@ -10,16 +10,16 @@ moduleForComponent('record-cluster/item', 'Integration | Component | record clus
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
   run(() => {
     const rItem = store.createRecord('record-item'),
       rCall = store.createRecord('record-call'),
-      validNoteOpts = {},
-      invalidNoteOpts = 'hi';
-    this.setProperties({ rItem, rCall, validNoteOpts, invalidNoteOpts });
+      validOpts = {},
+      invalidOpts = 'hi';
+    this.setProperties({ rItem, rCall, validOpts, invalidOpts });
 
     assert.throws(() => this.render(hbs`{{record-cluster/item}}`), 'requires item or subclass');
 
@@ -27,13 +27,18 @@ test('inputs', function(assert) {
 
     assert.ok(this.$('.record-cluster__item').length, 'did render');
 
-    this.render(hbs`{{record-cluster/item item=rCall noteOptions=validNoteOpts}}`);
+    this.render(
+      hbs`{{record-cluster/item item=rCall callOptions=validOpts noteOptions=validOpts}}`
+    );
 
     assert.ok(this.$('.record-cluster__item').length, 'did render');
 
     assert.throws(
-      () => this.render(hbs`{{record-cluster/item item=rCall noteOptions=invalidNoteOpts}}`),
-      'if specified, note options must be an object'
+      () =>
+        this.render(
+          hbs`{{record-cluster/item item=rCall callOptions=invalidOpts noteOptions=invalidOpts}}`
+        ),
+      'if specified, options must be an object'
     );
   });
 });

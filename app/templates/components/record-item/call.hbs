@@ -1,16 +1,20 @@
-<div class="record-item__body">
-    {{#if call.noteContents}}
-        {{#read-more classNames=(concat "pad-b-half " (if call.outgoing "read-more--outgoing" "read-more--incoming"))}}
-            {{call.noteContents}}
-        {{/read-more}}
-    {{/if}}
-    {{#if call.media.content.displayedAudio.firstObject}}
-        {{audio-list classNames="margin-b-half"
-            itemClass=(if call.outgoing "audio-wrapper__player-item--dark")
-            audio=call.media.content.displayedAudio}}
-    {{/if}}
+{{#if (or call.noteContents call.media.content.displayedAudio.firstObject)}}
+    <div class="record-item__body">
+        {{#if call.noteContents}}
+            {{#read-more classNames=(concat "pad-b-half " (if call.outgoing "read-more--outgoing" "read-more--incoming"))}}
+                {{call.noteContents}}
+            {{/read-more}}
+        {{/if}}
+        {{#if call.media.content.displayedAudio.firstObject}}
+            {{audio-list classNames="margin-b-half"
+                itemClass=(if call.outgoing "audio-wrapper__player-item--dark")
+                audio=call.media.content.displayedAudio}}
+        {{/if}}
+    </div>
+{{/if}}
+<div class="record-item__body {{if call.stillOngoing "record-item__body--has-control"}}">
     <div class="text-small text-wrap">
-        {{#if call.durationInSeconds}}
+        {{#if (not call.stillOngoing)}}
             <span class="fa fa-phone margin-r-half"></span>
             <span class="selectable-text">Call lasting {{moment-duration call.durationInSeconds 'seconds'}}</span>
         {{else if (date/is-same-day call.whenCreated (now))}}
@@ -21,6 +25,20 @@
             <span class="selectable-text">Call could not be completed</span>
         {{/if}}
     </div>
+    {{#if call.stillOngoing}}
+        {{#tool-tip classNames="record-item__control"
+            title="End ongoing call"}}
+            <button class="btn btn-plain btn-expand {{if call.outgoing "" "btn-default"}}"
+                type="button"
+                onclick={{action _onEndOngoing call}}>
+                {{#if call.endOngoing}}
+                    <span class="fa fa-circle-o-notch fa-spin"></span>
+                {{else}}
+                    <span class="fa fa-times"></span>
+                {{/if}}
+            </button>
+        {{/tool-tip}}
+    {{/if}}
 </div>
 {{#if call.media.content.displayedImages.content}}
     <div class="record-item__media">

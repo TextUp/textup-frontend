@@ -30,7 +30,7 @@ export default Ember.Mixin.create({
     },
     onRefreshRecordItems() {
       return this.get('recordItemService').loadRecordItems(this.get('currentModel'), {
-        refresh: true
+        refresh: true,
       });
     },
 
@@ -41,7 +41,11 @@ export default Ember.Mixin.create({
       return this.get('dataService')
         .persist(this.get('controller.careRecordText'))
         .then(() => this._initCareRecordText());
-    }
+    },
+
+    endOngoingCall(call) {
+      this.get('recordItemService').endOngoingCall(call);
+    },
   },
 
   _initCareRecordText() {
@@ -61,5 +65,5 @@ export default Ember.Mixin.create({
     if (careRecordRef && careRecordRef.actions) {
       tryInvoke(careRecordRef.actions, 'reset');
     }
-  }
+  },
 });

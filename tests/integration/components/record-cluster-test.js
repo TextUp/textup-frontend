@@ -12,23 +12,26 @@ moduleForComponent('record-cluster', 'Integration | Component | record cluster',
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
   const rCluster = RecordCluster.create(),
-    validNoteOpts = {},
-    invalidNoteOpts = 'hi';
-  this.setProperties({ rCluster, validNoteOpts, invalidNoteOpts });
+    validOpts = {},
+    invalidOpts = 'hi';
+  this.setProperties({ rCluster, validOpts, invalidOpts });
 
   assert.throws(() => this.render(hbs`{{record-cluster}}`), 'requires cluster');
 
-  this.render(hbs`{{record-cluster cluster=rCluster noteOptions=validNoteOpts}}`);
+  this.render(hbs`{{record-cluster cluster=rCluster callOptions=validOpts noteOptions=validOpts}}`);
 
   assert.ok(this.$('.ember-view').length, 'did render');
 
   assert.throws(
-    () => this.render(hbs`{{record-cluster cluster=rCluster noteOptions=invalidNoteOpts}}`),
+    () =>
+      this.render(
+        hbs`{{record-cluster cluster=rCluster callOptions=invalidOpts noteOptions=invalidOpts}}`
+      ),
     'if specified, note options must be an object'
   );
 });
@@ -103,7 +106,7 @@ test('rendering block cluster of several + opening and closing', function(assert
         label: `${Math.random()}`,
         items: Array(8)
           .fill()
-          .map(() => store.createRecord('record-item'))
+          .map(() => store.createRecord('record-item')),
       }),
       done = assert.async();
     this.setProperties({ rCluster, blockSpy, blockText });

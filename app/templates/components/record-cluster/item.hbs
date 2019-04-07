@@ -1,7 +1,7 @@
 {{#if (eq item.constructor.modelName 'record-text')}}
     {{record-item/text text=item}}
 {{else if (eq item.constructor.modelName 'record-call')}}
-    {{record-item/call call=item}}
+    {{record-item/call call=item onEndOngoing=callOptions.onEndOngoing}}
 {{else if (eq item.constructor.modelName 'record-note')}}
     {{#if item.isReadOnly}}
         {{record-item/system-note note=item}}

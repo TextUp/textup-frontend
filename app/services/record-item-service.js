@@ -2,6 +2,7 @@ import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import moment from 'moment';
 import { tryGetFileNameFromXHR, download } from 'textup-frontend/utils/file';
+import RecordCall from 'textup-frontend/models/record-call';
 
 const { assign, isArray, get } = Ember;
 
@@ -42,7 +43,7 @@ export default Ember.Service.extend({
           before: moment(dateEnd).toISOString(),
           exportFormatType: shouldGroupEntities
             ? constants.EXPORT.TYPE.GROUPED
-            : constants.EXPORT.TYPE.SINGLE
+            : constants.EXPORT.TYPE.SINGLE,
         };
       assign(query, this._buildQueryFor(recordOwners));
       // Need to use XHR directy because jQuery does not support XHR2 responseType of `arrayBuffer`
@@ -75,6 +76,13 @@ export default Ember.Service.extend({
     rNote.addRecipient(recipient);
     rNote.addAfter(addAfterRecordItem);
     return rNote;
+  },
+
+  endOngoingCall(rCall) {
+    if (rCall instanceof RecordCall) {
+      rCall.set('endOngoing', true);
+      this.get('dataService').persist(rCall);
+    }
   },
 
   addLocationToNote(rNote) {
@@ -124,5 +132,5 @@ export default Ember.Service.extend({
     } else {
       reject();
     }
-  }
+  },
 });
