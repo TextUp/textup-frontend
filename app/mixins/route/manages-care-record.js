@@ -53,6 +53,9 @@ export default Ember.Mixin.create({
           this._initCareRecordText();
           this.get('tutorialService').startCompleteTask('sendMessage');
         });
+    },
+    onFinishCareRecordTutorial() {
+      this.get('tutorialService').startCompleteTask('additionalActions');
     }
   },
 

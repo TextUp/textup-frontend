@@ -44,6 +44,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     onAddImage: PropTypes.func,
     onAddAudio: PropTypes.func,
     onRemoveMedia: PropTypes.func,
+    onOptionsClose: PropTypes.func,
     // record modification handlers
     onAddNote: PropTypes.func,
     onCall: PropTypes.func,
@@ -134,6 +135,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onRemoveMedia() {
     tryInvoke(this, 'onRemoveMedia', [...arguments]);
+  },
+  _onOptionsClose() {
+    tryInvoke(this, 'onOptionsClose', [...arguments]);
   },
 
   // record modification handlers

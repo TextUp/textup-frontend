@@ -28,7 +28,8 @@
 			<span class="fa fa-search"></span>
 		</button>
 	</div>
-	{{#infinite-scroll classNames='section-body bg-color bg-dark'
+    <div class="section-body flex flex--align-stretch flex--direction-vertical">
+	{{#infinite-scroll classNames='bg-color bg-dark flex__item flex__item--grow'
         containerClass='bg-color bg-lightest'
         itemsClass='result-list'
         direction='down'
@@ -54,5 +55,18 @@
 			{{/if}}
         </div>
     {{/infinite-scroll}}
+    <div class="section-footer flex__item flex__item--no-shrink" id="task-manager__container">
+        {{tour-components/task-manager
+          shouldShow=tutorialService.publicAPI.shouldShowTaskManager
+          doRegister=(action (mut tutorialService.taskManager))
+          firstIncompleteTask=tutorialService.publicAPI.firstIncompleteTask
+          onClose=tutorialService.publicAPI.actions.closeTaskManager
+          getTaskStatus=tutorialService.publicAPI.actions.getTaskStatus
+          onFinishCompleteTask=tutorialService.publicAPI.actions.finishCompleteTask
+          resetTasks=tutorialService.publicAPI.actions.resetTasks
+          tasks=tutorialService.publicAPI.tasks
+        }}
+    </div>
+</div>
 </div>
 {{outlet}}

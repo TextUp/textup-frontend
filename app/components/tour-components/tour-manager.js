@@ -5,6 +5,8 @@ import * as TourUtil from 'textup-frontend/utils/tour-info';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
+  authService: Ember.inject.service(),
+
   // doRegister is a route action
   propTypes: {
     beforeTour: PropTypes.func,
@@ -18,7 +20,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     this.set('_steps', tourSteps);
     this.set('_numSteps', tourSteps.length);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
-    // const finishedTour = window.localStorage.setItem(`tour-manager-finished-tour`, false);
+    // window.localStorage.setItem(
+    //   `tour-manager-${this.get('authService.authUser.username')}-finished-tour`,
+    //   false
+    // );
   },
 
   _steps: null,
@@ -45,8 +50,10 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _startTourImmediately: computed(function() {
-    const finishedTour = window.localStorage.getItem(`tour-manager-finished-tour`);
-    return finishedTour === 'false';
+    const finishedTour = window.localStorage.getItem(
+      `tour-manager-${this.get('authService.authUser.username')}-finished-tour`
+    );
+    return finishedTour !== 'true';
   }),
 
   _lastStep: computed('_currentStepNumber', function() {
@@ -66,7 +73,10 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   _endTour: function() {
-    window.localStorage.setItem(`tour-manager-finished-tour`, true);
+    window.localStorage.setItem(
+      `tour-manager-${this.get('authService.authUser.username')}-finished-tour`,
+      true
+    );
     this.set('_tourOngoing', false);
     tryInvoke(this, 'afterTour');
   },

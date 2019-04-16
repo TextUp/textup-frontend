@@ -5,6 +5,7 @@ const { computed, set } = Ember;
 
 export default Ember.Service.extend({
   notifications: Ember.inject.service(),
+  authService: Ember.inject.service(),
 
   init() {
     this._super(...arguments);
@@ -14,10 +15,9 @@ export default Ember.Service.extend({
       task.stepNumber = index + 1;
     });
     this.set('tasks', tasks);
-    this.resetTasks();
-    // DAO HAN TODO
-    // window.localStorage.setItem(`task-manager-shouldShowTaskManager`, true);
-    const shouldShow = window.localStorage.getItem(`task-manager-shouldShowTaskManager`);
+    const shouldShow = window.localStorage.getItem(
+      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`
+    );
     this.set('shouldShowTaskManagerInternal', shouldShow === 'true');
   },
 
@@ -34,13 +34,16 @@ export default Ember.Service.extend({
         closeTaskManager: this.closeTaskManager.bind(this),
         resetTasks: this.resetTasks.bind(this)
       },
+      tasks: this.get('tasks'),
       firstIncompleteTask: this.get('_firstIncompleteTask'),
       shouldShowTaskManager: this.get('_shouldShowTaskManager')
     };
   }),
 
   getTaskStatus(taskId) {
-    const status = window.localStorage.getItem(`task-manager-${taskId}`);
+    const status = window.localStorage.getItem(
+      `task-manager-${this.get('authService.authUser.username')}-${taskId}`
+    );
     return status === 'true';
   },
 
@@ -49,7 +52,10 @@ export default Ember.Service.extend({
       return task.id === taskId;
     });
     if (task) {
-      window.localStorage.setItem(`task-manager-${taskId}`, status);
+      window.localStorage.setItem(
+        `task-manager-${this.get('authService.authUser.username')}-${taskId}`,
+        status
+      );
       set(task, 'status', status);
     }
   },
@@ -66,16 +72,31 @@ export default Ember.Service.extend({
 
   closeTaskManager() {
     this.get('notifications').info(
-      'Access the “Getting Started” tour at anytime through the Support page.'
+      'Access the “Getting Started” tour at anytime through <button class="btn-link">the Support menu</button>.',
+      {
+        htmlContent: true,
+        onClick: this._openSupportSlideout.bind(this)
+      }
     );
     this.set('shouldShowTaskManagerInternal', false);
-    window.localStorage.setItem(`task-manager-shouldShowTaskManager`, false);
+    window.localStorage.setItem(
+      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`,
+      false
+    );
+  },
+  _openSupportSlideout() {
+    Ember.getOwner(this)
+      .lookup('route:main')
+      .send('startFeedbackSlideout');
   },
 
   resetTasks() {
     const tasks = this.get('tasks');
     tasks.forEach(task => this._setTaskStatus(task.id, false));
-    window.localStorage.setItem(`task-manager-shouldShowTaskManager`, true);
+    window.localStorage.setItem(
+      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`,
+      true
+    );
     this.set('shouldShowTaskManagerInternal', true);
   },
 

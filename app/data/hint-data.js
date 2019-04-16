@@ -8,7 +8,7 @@
 export default {
   contactsAddSupport: {
     title: '',
-    message: 'Try adding the TextUp customer support hotline: (401) 519-7932'
+    message: 'The number for our Customer Support Hotline is (401) 519-7932'
   },
   contactsLanguage: {
     title: '',

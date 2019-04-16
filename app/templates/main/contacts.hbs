@@ -108,7 +108,7 @@
         {{/hide-show}}
     {{/if}}
 
-    <div class="section-body flex flex--align-stretch flex--direction-vertical">
+    <div class="section-body flex flex--align-stretch flex--direction-vertical" id='tour-contactsList'>
       {{#infinite-scroll classNames='flex__item flex__item--grow bg-color bg-dark'
           doRegister=(action (mut _contactsList))
           containerClass='bg-color bg-lightest'
@@ -148,16 +148,16 @@
           {{/if}}
       {{/infinite-scroll}}
       <div class="section-footer flex__item flex__item--no-shrink" id="task-manager__container">
-        {{#if tutorialService.publicAPI.shouldShowTaskManager}}
           {{tour-components/task-manager
+            shouldShow=tutorialService.publicAPI.shouldShowTaskManager
             doRegister=(action (mut tutorialService.taskManager))
             firstIncompleteTask=tutorialService.publicAPI.firstIncompleteTask
             onClose=tutorialService.publicAPI.actions.closeTaskManager
             getTaskStatus=tutorialService.publicAPI.actions.getTaskStatus
             onFinishCompleteTask=tutorialService.publicAPI.actions.finishCompleteTask
             resetTasks=tutorialService.publicAPI.actions.resetTasks
+            tasks=tutorialService.publicAPI.tasks
           }}
-        {{/if}}
       </div>
     </div>
 </div>

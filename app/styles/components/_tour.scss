@@ -1,6 +1,6 @@
 @include mq($until: mobileLandscape) {
   .tour-step {
-    $container-height: 80vh;
+    $container-height: 75vh;
 
     &__root {
       position: relative;
@@ -78,8 +78,6 @@
 
 @include mq($from: mobileLandscape) {
   .tour-step {
-    // TODO
-
     &__status-dot {
       font-size: 0.6em;
       padding-right: 0.5em;
@@ -168,6 +166,7 @@
       &--back {
         border: 1px solid rgba(63, 134, 179, 0.5);
         margin-right: $spacing;
+        background: none;
       }
     }
   }

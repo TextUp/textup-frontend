@@ -7,12 +7,16 @@ export default Ember.Component.extend(PropTypesMixin, {
   tutorialService: Ember.inject.service(),
 
   propTypes: {
+    shouldShow: PropTypes.bool,
     doRegister: PropTypes.func,
     firstIncompleteTask: PropTypes.object,
     onClose: PropTypes.func,
-    getTaskStatus: PropTypes.func,
     onFinishCompleteTask: PropTypes.func,
-    resetTasks: PropTypes.func
+    resetTasks: PropTypes.func,
+    tasks: PropTypes.arrayOf(PropTypes.object)
+  },
+  getDefaultProps() {
+    return { shouldShow: true };
   },
 
   init() {
@@ -21,6 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   classNames: ['task-manager'],
+  classNameBindings: 'shouldShow::task-manager--hidden',
 
   _publicAPI: computed(function() {
     return {
@@ -36,12 +41,10 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _onClose() {
     const taskStep = this.get('_taskStep');
-    taskStep.actions.removeAllPulsing();
+    if (taskStep) {
+      taskStep.actions.removeAllPulsing();
+    }
     tryInvoke(this, 'onClose');
-  },
-
-  _getTaskStatus(taskId) {
-    return tryInvoke(this, 'getTaskStatus', [taskId]);
   },
 
   _startCompleteTask(taskId, shouldShowCompleteMessage) {

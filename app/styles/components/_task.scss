@@ -1,6 +1,9 @@
 .task-manager {
   overflow: none;
 
+  &--hidden {
+    display: none;
+  }
   &__title {
     padding: 0.5em 0.25em 0.5em 1em;
     background: #3f86b3;
@@ -15,6 +18,7 @@
 
     &--fa {
       color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2em;
     }
   }
 
@@ -68,6 +72,7 @@
     &--message {
       font-size: 0.875em;
       margin: 0.3em 0em;
+      line-height: 1.4em;
       padding-top: calc(0.5 * #{$padding});
       padding-bottom: calc(1 * #{$padding});
     }
@@ -78,6 +83,10 @@
   color: #505050;
   padding: $padding $padding calc(2 * #{$padding}) $padding;
 
+  &__complete-image {
+    max-width: 70%;
+    max-height: 70%;
+  }
   &__button {
     border: 1px solid #3f86b3;
     border-radius: 5px;
@@ -93,12 +102,13 @@
       margin-left: 0.8em;
     }
     &--container {
-      padding-top: $padding;
+      padding-top: calc(1.5 * #{$padding});
     }
   }
 
   &--text {
-    font-size: 0.875em;
+    font-size: 1em;
+    line-height: 1.4em;
     margin: 0.3em 0em;
   }
 
@@ -140,7 +150,7 @@
       border-radius: 100%;
 
       animation-name: pulse-size;
-      animation-duration: 0.8s;
+      animation-duration: 1.2s;
       animation-iteration-count: infinite;
       animation-timing-function: ease-out;
     }
@@ -156,16 +166,4 @@
     width: 2.5em;
     height: 2.5em;
   }
-  // 50% {
-  //   width: 0;
-  //   height: 0;
-  // }
-  // 75% {
-  //   width: 2.5em;
-  //   height: 2.5em;
-  // }
-  // 100% {
-  //   width: 0;
-  //   height: 0;
-  // }
 }

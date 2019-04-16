@@ -2,7 +2,9 @@ import Ember from 'ember';
 import RouteSupportsExportSlideoutMixin from 'textup-frontend/mixins/route/supports-export-slideout';
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
+import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 
+let startCompleteTask;
 moduleFor('mixin:route/supports-export-slideout', 'Unit | Mixin | route/supports export slideout', {
   needs: [
     'service:constants',
@@ -12,6 +14,15 @@ moduleFor('mixin:route/supports-export-slideout', 'Unit | Mixin | route/supports
   ],
   beforeEach() {
     this.inject.service('constants');
+    this.register('service:notifications', NotificationsService);
+
+    startCompleteTask = sinon.spy();
+    this.register(
+      'service:tutorial-service',
+      Ember.Service.extend({
+        startCompleteTask
+      })
+    );
 
     this.register(
       'route:supports-export-slideout',
@@ -149,6 +160,7 @@ test('starting export and finishing slideout', function(assert) {
   route.actions.finishExportSlideout
     .call(route)
     .then(() => {
+      assert.ok(startCompleteTask.calledWith('exportMessage'));
       assert.ok(route.recordItemService.exportRecordItems.calledOnce);
       assert.ok(
         route.recordItemService.exportRecordItems.calledWith(

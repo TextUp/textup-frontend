@@ -29,24 +29,20 @@ export default Ember.Component.extend(HasWormhole, PropTypesMixin, {
         run.scheduleOnce('afterRender', () => {
           this.get('_mobileOverlay').actions.removeCutout();
           elementToScrollTo.scrollIntoView({ behavior: 'smooth' });
-
           run.later(() => this.get('_mobileOverlay').actions.calculateCutout(), 1000);
         });
       }
     }
-    // TODO
     run.scheduleOnce('afterRender', () => this.get('_desktopOverlay').actions.calculateCutout());
   },
   didInsertElement() {
     this._super(...arguments);
-    // apply class to app root that contracts it on mobile
     Ember.run.scheduleOnce('afterRender', () => {
       Ember.$(Ember.getOwner(this).rootElement).addClass(this.get('_bodyDrawerClass'));
     });
   },
   willDestroyElement() {
     this._super(...arguments);
-    // remove class to app root that contracts it on mobile
     Ember.$(Ember.getOwner(this).rootElement).removeClass(this.get('_bodyDrawerClass'));
   },
 
@@ -57,7 +53,6 @@ export default Ember.Component.extend(HasWormhole, PropTypesMixin, {
   // Internal properties
   // -----------------
   _elementToWormhole: computed('_containerId', function() {
-    // TODO
     // return this.$(`${this.get('_containerId')}`);
     return this.$('.tour-step__wormhole');
   }),

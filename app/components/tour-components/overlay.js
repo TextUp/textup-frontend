@@ -42,10 +42,16 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   }),
 
   _removeDimensions() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     this.set('_elementDimensions', null);
   },
 
   _setElementDimensions() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     const elementToHighlight = $(this.get('elementToHighlight'))[0];
     if (elementToHighlight) {
       const dimensions = elementToHighlight.getBoundingClientRect();

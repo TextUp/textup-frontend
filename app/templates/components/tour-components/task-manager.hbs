@@ -1,10 +1,12 @@
-{{#hide-show startOpen=true as |hideShow|}}
+{{#hide-show startOpen=true animate=false as |hideShow|}}
   <div class="task-manager__title flex">
     <h5 class="task-manager__title__text flex__item flex__item--grow">
       {{#if hideShow.isOpen}}
         Getting Started
-      {{else}}
+      {{else if firstIncompleteTask}}
         Step {{firstIncompleteTask.stepNumber}}: {{firstIncompleteTask.title}}
+      {{else}}
+        Congratulations!
       {{/if}}
     </h5>
     <div class="flex__item">
@@ -31,7 +33,7 @@
         elementsToPulse=firstIncompleteTask.elementsToPulse elementsToPulseMobile=firstIncompleteTask.elementsToPulseMobile
         completeTask=_publicAPI.actions.finishCompleteTask}}
         <div class="task-manager__status-dot--container">
-          {{#each tutorialService.tasks as |task|}}
+          {{#each tasks as |task|}}
             <span class="fa fa-circle
               task-manager__status-dot task-manager__status-dot--{{if (eq task.id firstIncompleteTask.id)
                   "complete"
@@ -46,13 +48,13 @@
             Congratulations!
           </p>
           <p class='task-congratulations__text--message'>
-            You’re all set to use TextUp. For more advanced tutorials, see the Support page.
+            You're now all set to use TextUp! If you need more help or have questions, click the Support icon.
           </p>
           <button type="button" class="task-congratulations__button" onclick= {{action _onClose}}>
             Finish Tour
           </button>
         </div>
-        <div class="flex__item flex__item task-congratulations__image--container">
+        <div class="flex__item task-congratulations__image--container">
           <img class="task-congratulations__image" src='assets/images/task-manager-complete.png'/>
         </div>
       </div>

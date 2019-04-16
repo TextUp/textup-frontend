@@ -11,6 +11,7 @@ export default Ember.Component.extend(HasEvents, {
     title: PropTypes.string.isRequired,
     completeTask: PropTypes.func.isRequired,
     stepNumber: PropTypes.number.isRequired,
+    doRegister: PropTypes.func,
     elementsToPulse: PropTypes.arrayOf(PropTypes.string),
     elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string)
   },
@@ -34,12 +35,35 @@ export default Ember.Component.extend(HasEvents, {
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
 
-  didReceiveAttrs() {
+  didReceiveAttrs({ oldAttrs, newAttrs }) {
     this._super(...arguments);
     this.set('_temporaryComplete', false);
+
+    if (oldAttrs) {
+      run.scheduleOnce('afterRender', () => {
+        const oldPulsingElements = oldAttrs.elementsToPulse.value;
+        const oldPulsingElementsMobile = oldAttrs.elementsToPulseMobile.value;
+        if (oldPulsingElements) {
+          oldPulsingElements.forEach(element => {
+            if (!newAttrs.elementsToPulse.value.includes(element)) {
+              this._removePulseFromElement(element);
+            }
+          });
+        }
+        if (oldPulsingElementsMobile) {
+          oldPulsingElementsMobile.forEach(element => {
+            if (!newAttrs.elementsToPulseMobile.value.includes(element)) {
+              this._removePulseFromElement(element);
+            }
+          });
+        }
+      });
+    }
+
+    run.scheduleOnce('afterRender', this, this._startPulsing);
   },
 
-  didRender() {
+  _startPulsing() {
     const mobile = $(window).innerWidth() < 750;
 
     var elementsToPulse, num_elems;
@@ -52,6 +76,8 @@ export default Ember.Component.extend(HasEvents, {
       num_elems = elementsToPulse.length;
     }
 
+    // TODO -> fix this logic to add pulse element to next,
+    // if list of elements to pulse is longer than 2, then will fail
     elementsToPulse.forEach((element, index) => {
       if (index < num_elems - 1) {
         this._pulseElement(element);
@@ -62,6 +88,10 @@ export default Ember.Component.extend(HasEvents, {
         this._pulseElement(element);
       }
     });
+  },
+
+  willDestroyElement() {
+    this._removeAllPulsing();
   },
 
   _completeThisTask(taskId, shouldShowCompleteMessage = true) {
@@ -76,13 +106,8 @@ export default Ember.Component.extend(HasEvents, {
       num_elems = elementsToPulse.length;
     }
 
-    elementsToPulse.forEach((element, index) => {
-      if (index < num_elems - 1) {
-        this._removePulseFromElement(element);
-        $(element).off(this._event('click'));
-      } else {
-        this._removePulseFromElement(element);
-      }
+    elementsToPulse.forEach(element => {
+      this._removePulseFromElement(element);
     });
 
     if (taskId === this.get('id') && shouldShowCompleteMessage) {
@@ -120,6 +145,7 @@ export default Ember.Component.extend(HasEvents, {
   _removePulseFromElement(elementIdToRemovePulse) {
     run.scheduleOnce('afterRender', () => {
       const elementToRemove = $(elementIdToRemovePulse);
+      elementToRemove.off(this._event('click'));
       elementToRemove.removeClass('task-element__should-animate-pulse');
     });
   },

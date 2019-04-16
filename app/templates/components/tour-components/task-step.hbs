@@ -1,10 +1,12 @@
 {{#if _temporaryComplete}}
-  <div class="flex task-step--complete">
+  <div class="flex flex__item--grow task-step--complete">
     <div class="flex__item flex__item--grow pad-r-half">
       <p class='task-step--title'>
         Step {{stepNumber}}: {{title}}
       </p>
-      <span class="fa fa-check task-step--complete--icon"></span>
+      <div class="flex__item flex__item--grow">
+        <img class="task-step__complete-image" src='assets/images/task-manager-complete-task.png'/>
+      </div>
     </div>
   </div>
 {{else}}

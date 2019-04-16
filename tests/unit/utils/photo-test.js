@@ -138,15 +138,14 @@ test('ensuring image dimensions for all with dimensions', function(assert) {
   const store = Ember.getOwner(this).lookup('service:store'),
     done = assert.async();
 
-  PhotoUtils.ensureImageDimensions([
-    mockValidMediaImage(store),
-    mockValidMediaImage(store)
-  ]).then(mediaImages => {
-    assert.equal(mediaImages.length, 2);
-    assert.ok(loadImageStub.notCalled, 'load image never called because already have dimensions');
+  PhotoUtils.ensureImageDimensions([mockValidMediaImage(store), mockValidMediaImage(store)]).then(
+    mediaImages => {
+      assert.equal(mediaImages.length, 2);
+      assert.ok(loadImageStub.notCalled, 'load image never called because already have dimensions');
 
-    done();
-  });
+      done();
+    }
+  );
 });
 
 test('ensuring image dimensions for some without dimensions', function(assert) {
@@ -168,20 +167,20 @@ test('ensuring image dimensions for some without dimensions', function(assert) {
         });
     loadImageReturnVal = { naturalWidth: Math.random(), naturalHeight: Math.random() };
 
-    PhotoUtils.ensureImageDimensions(
-      [].pushObjects(withDimensions).pushObjects(noDimensions)
-    ).then(mediaImages => {
-      assert.equal(mediaImages.length, withDimensions.length + noDimensions.length);
-      assert.equal(loadImageStub.callCount, noDimensions.length * numVersionsPerNoDimension);
-      noDimensions.forEach(mElements => {
-        mElements.get('versions').forEach(version => {
-          assert.equal(version.get('width'), loadImageReturnVal.naturalWidth);
-          assert.equal(version.get('height'), loadImageReturnVal.naturalHeight);
+    PhotoUtils.ensureImageDimensions([].pushObjects(withDimensions).pushObjects(noDimensions)).then(
+      mediaImages => {
+        assert.equal(mediaImages.length, withDimensions.length + noDimensions.length);
+        assert.equal(loadImageStub.callCount, noDimensions.length * numVersionsPerNoDimension);
+        noDimensions.forEach(mElements => {
+          mElements.get('versions').forEach(version => {
+            assert.equal(version.get('width'), loadImageReturnVal.naturalWidth);
+            assert.equal(version.get('height'), loadImageReturnVal.naturalHeight);
+          });
         });
-      });
 
-      done();
-    });
+        done();
+      }
+    );
   });
 });
 

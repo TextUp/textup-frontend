@@ -5,7 +5,7 @@
     onAddAudio=(action _onAddAudio)
     onRemoveMedia=(action _onRemoveMedia)}}
     <div class="record-actions-control__action-container">
-        {{#pop-over as |popOver|}}
+        {{#pop-over onClose=(action _onOptionsClose) as |popOver|}}
             <button class="btn btn-default btn-plain record-actions-control__dropdown-trigger"
                 type="button"
                 onclick={{popOver.actions.toggle}}>
