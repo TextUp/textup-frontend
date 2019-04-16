@@ -5,6 +5,8 @@ import { moduleFor, test } from 'ember-qunit';
 
 const { RSVP, typeOf } = Ember;
 
+let startCompleteTask;
+
 moduleFor(
   'mixin:route/supports-availability-slideout',
   'Unit | Mixin | route/supports availability slideout',
@@ -18,7 +20,13 @@ moduleFor(
     ],
     beforeEach() {
       this.inject.service('constants');
-
+      startCompleteTask = sinon.spy();
+      this.register(
+        'service:tutorial-service',
+        Ember.Service.extend({
+          startCompleteTask
+        })
+      );
       this.register(
         'route:supports-availability-slideout',
         Ember.Route.extend(RouteSupportsAvailabilitySlideoutMixin)
@@ -67,6 +75,7 @@ test('finishing slideout', function(assert) {
   });
 
   route.actions.finishAvailabilitySlideout.call(route).then(() => {
+    assert.ok(startCompleteTask.calledWith('setAvailability'));
     assert.ok(route.send.calledOnce);
     assert.equal(route.send.firstCall.args[0], 'closeSlideout');
 

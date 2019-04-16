@@ -5,6 +5,7 @@ export default Ember.Mixin.create({
   availabilitySlideoutService: Ember.inject.service(),
   constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   actions: {
     startAvailabilitySlideout() {
@@ -20,14 +21,18 @@ export default Ember.Mixin.create({
         authUser = this.get('authService.authUser');
       model.rollbackAttributes();
       authUser.rollbackAttributes();
+      this.get('tutorialService').startCompleteTask('setAvailability');
       this.send('closeSlideout');
     },
     finishAvailabilitySlideout() {
       const model = this.get('currentModel'),
         authUser = this.get('authService.authUser');
+      this.get('tutorialService').startCompleteTask('setAvailability');
       return this.get('dataService')
         .persist([model, authUser])
-        .then(() => this.send('closeSlideout'));
+        .then(() => {
+          this.send('closeSlideout');
+        });
     },
 
     onAvailabilityEntitySwitch(scheduleOwner) {

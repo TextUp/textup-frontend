@@ -5,9 +5,12 @@ import MutationObserver from 'npm:mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import {
   hasMoreViewportSpaceOnTop,
+  hasMoreViewportSpaceOnLeft,
   shouldAlignToLeftEdge,
-  buildFloatingStyles,
-  buildDimensionStyles
+  shouldAlignToTopEdge,
+  buildVerticalFloatingStyles,
+  buildHorizontalFloatingStyles,
+  buildVerticalDimensionStyles
 } from 'textup-frontend/utils/bounds';
 
 const { computed, RSVP, run, tryInvoke } = Ember;
@@ -21,10 +24,21 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     onClose: PropTypes.func,
     onReposition: PropTypes.func,
     bodyClickWillClose: PropTypes.bool,
-    position: PropTypes.oneOfType([PropTypes.null, PropTypes.string])
+    position: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    verticalPosition: PropTypes.bool,
+    focusOnOpen: PropTypes.bool,
+    closeWithOverlay: PropTypes.bool,
+    startOpen: PropTypes.bool,
+    bodyClass: PropTypes.string
   },
   getDefaultProps() {
-    return { bodyClickWillClose: true };
+    return {
+      bodyClickWillClose: true,
+      focusOnOpen: true,
+      closeWithOverlay: true,
+      verticalPosition: true,
+      startOpen: false
+    };
   },
   classNames: ['pop-over'],
 
@@ -35,6 +49,9 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   didInsertElement() {
     this._super(...arguments);
     run.scheduleOnce('afterRender', this, this._attachListeners);
+    if (this.get('startOpen')) {
+      run.scheduleOnce('afterRender', this, this._toggle);
+    }
   },
   // only do this on subsequent render this pop-over happens to be open
   didUpdateAttrs() {
@@ -73,7 +90,13 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   }),
   _previousPosition: null,
   _bodyPositionTop: null,
+  _bodyPositionLeft: null,
+  _bodyPositionRight: null,
+  _bodyPositionBottom: null,
   _bodyAlignLeft: null,
+  _bodyAlignRight: null,
+  _bodyAlignTop: null,
+  _bodyAlignBottom: null,
   _bodyFloatStyles: null,
   _safeBodyFloatStyles: computed('_bodyFloatStyles', function() {
     const stylesArray = this.get('_bodyFloatStyles');
@@ -119,7 +142,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     }
     this._adjustPosition().then(() => {
       const bodyContents = this.get('_bodyContents');
-      if (bodyContents && bodyContents.length) {
+      if (bodyContents && bodyContents.length && this.get('focusOnOpen')) {
         run.scheduleOnce('afterRender', () => bodyContents.focus());
       }
       this.setProperties({ _isOpening: false, '_publicAPI.isOpen': true });
@@ -146,7 +169,13 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
         this.setProperties({
           _isClosing: true, // intermediate state for closing animation
           _bodyPositionTop: null,
+          _bodyPositionBottom: null,
+          _bodyPositionRight: null,
+          _bodyPositionLeft: null,
           _bodyAlignLeft: null,
+          _bodyAlignRight: null,
+          _bodyAlignTop: null,
+          _bodyAlignBottom: null,
           _bodyFloatStyles: null,
           _bodyDimesionStyles: null,
           _closeCounter: counter
@@ -179,24 +208,48 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     });
   },
   _adjustPosition() {
-    return new RSVP.Promise(resolve => {
-      const triggerEl = this.element,
-        bodyEl = this.get('_bodyContents')[0],
-        isTop = this._determineIsTop(),
-        alignLeft = shouldAlignToLeftEdge(triggerEl),
-        floatStyles = buildFloatingStyles(isTop, alignLeft, triggerEl, bodyEl),
-        dimensionStyles = buildDimensionStyles(isTop, alignLeft, triggerEl, bodyEl);
+    if (this.get('verticalPosition')) {
+      return new RSVP.Promise(resolve => {
+        const triggerEl = this.element,
+          bodyEl = this.get('_bodyContents')[0],
+          isTop = this._determineIsTop(),
+          alignLeft = shouldAlignToLeftEdge(triggerEl),
+          floatStyles = buildVerticalFloatingStyles(isTop, alignLeft, triggerEl, bodyEl),
+          dimensionStyles = buildVerticalDimensionStyles(isTop, alignLeft, triggerEl, bodyEl);
 
-      run(() => {
-        this.setProperties({
-          _bodyPositionTop: isTop,
-          _bodyAlignLeft: alignLeft,
-          _bodyFloatStyles: floatStyles,
-          _bodyDimesionStyles: dimensionStyles
+        run(() => {
+          this.setProperties({
+            _bodyPositionTop: isTop,
+            _bodyPositionBottom: !isTop,
+            _bodyAlignLeft: alignLeft,
+            _bodyAlignRight: !alignLeft,
+            _bodyFloatStyles: floatStyles,
+            _bodyDimesionStyles: dimensionStyles
+          });
         });
+        resolve();
       });
-      resolve();
-    });
+    } else {
+      return new RSVP.Promise(resolve => {
+        const triggerEl = this.element,
+          bodyEl = this.get('_bodyContents')[0],
+          isLeft = this._determineIsLeft(),
+          alignTop = shouldAlignToTopEdge(triggerEl),
+          floatStyles = buildHorizontalFloatingStyles(isLeft, alignTop, triggerEl, bodyEl),
+          dimensionStyles = null;
+        run(() => {
+          this.setProperties({
+            _bodyPositionLeft: isLeft,
+            _bodyPositionRight: !isLeft,
+            _bodyAlignTop: alignTop,
+            _bodyAlignBottom: !alignTop,
+            _bodyFloatStyles: floatStyles,
+            _bodyDimesionStyles: dimensionStyles
+          });
+        });
+        resolve();
+      });
+    }
   },
   _determineIsTop() {
     const position = this.get('position'),
@@ -207,6 +260,18 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       return false;
     } else {
       return hasMoreViewportSpaceOnTop(this.element);
+    }
+  },
+
+  _determineIsLeft() {
+    const position = this.get('position'),
+      constants = this.get('constants');
+    if (position === constants.POP_OVER.POSITION.LEFT) {
+      return true;
+    } else if (position === constants.POP_OVER.POSITION.RIGHT) {
+      return false;
+    } else {
+      return hasMoreViewportSpaceOnLeft(this.element);
     }
   },
 

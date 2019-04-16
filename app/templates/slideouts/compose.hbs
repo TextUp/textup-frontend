@@ -13,6 +13,7 @@
 	<div class="form">
 		{{#if model.phone.isFulfilled}}
 			<div class="form__group">
+                {{#tour-components/hint hintId='composeRecipient' }}
 				{{#multi-select data=model.phone.content.tags
 			    	selected=composeRecipients
 			    	displayProperty='identifier'
@@ -23,6 +24,7 @@
 					onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
 					{{multi-select/display-badge entity=recipient}}
 				{{/multi-select}}
+                {{/tour-components/hint}}
 			</div>
 		{{/if}}
 		<div class="form__group">

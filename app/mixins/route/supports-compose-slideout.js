@@ -6,6 +6,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   dataService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -37,6 +38,7 @@ export default Ember.Mixin.create({
           return get(recipient, 'constructor.modelName') ? recipient : get(recipient, 'identifier');
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
+      this.get('tutorialService').startCompleteTask('sendMessage');
       return this.get('dataService')
         .persist(rText)
         .then(() => this.send('cancelComposeSlideout'))

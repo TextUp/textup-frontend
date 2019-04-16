@@ -12,6 +12,9 @@ module.exports = function(defaults) {
     minifyCSS: {
       options: { processImport: false }
     },
+    minifyJS: {
+      enabled: false
+    },
     sassOptions: { includePaths: ['bower_components'] }
   });
 

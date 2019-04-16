@@ -34,6 +34,16 @@ export function hasMoreViewportSpaceOnTop(triggerElement) {
     { top, height } = triggerElement.getBoundingClientRect();
   return top > viewportHeight - top - height;
 }
+
+export function hasMoreViewportSpaceOnLeft(triggerElement) {
+  if (!hasBoundingClientRect(triggerElement)) {
+    return null;
+  }
+  const viewportWidth = $(window).innerWidth(),
+    { left, width } = triggerElement.getBoundingClientRect();
+  return left > viewportWidth - left - width;
+}
+
 export function shouldAlignToLeftEdge(triggerElement) {
   if (!hasBoundingClientRect(triggerElement)) {
     return null;
@@ -43,8 +53,17 @@ export function shouldAlignToLeftEdge(triggerElement) {
   return left < viewportWidth - left - width;
 }
 
+export function shouldAlignToTopEdge(triggerElement) {
+  if (!hasBoundingClientRect(triggerElement)) {
+    return null;
+  }
+  const viewportHeight = $(window).innerHeight(),
+    { top, height } = triggerElement.getBoundingClientRect();
+  return top < viewportHeight - top - height;
+}
+
 export const EDGE_GUTTER_SIZE_IN_PX = 30;
-export function buildFloatingStyles(isTop, alignToLeftEdge, triggerElement, bodyElement) {
+export function buildVerticalFloatingStyles(isTop, alignToLeftEdge, triggerElement, bodyElement) {
   const styles = [];
   if (!styleInputsAreValid(isTop, alignToLeftEdge, triggerElement, bodyElement)) {
     return styles;
@@ -52,11 +71,28 @@ export function buildFloatingStyles(isTop, alignToLeftEdge, triggerElement, body
   const space = getSpaceOnAllSides(triggerElement),
     triggerDim = triggerElement.getBoundingClientRect(),
     bodyDim = getBodyDimensions(bodyElement);
-  styles.pushObject(buildTop(isTop, space.top, triggerDim.height, bodyDim.height));
-  styles.pushObject(buildLeft(alignToLeftEdge, space.left, triggerDim.width, bodyDim.width));
+  styles.pushObject(buildVerticalTop(isTop, space.top, triggerDim.height, bodyDim.height));
+  styles.pushObject(
+    buildVerticalLeft(alignToLeftEdge, space.left, triggerDim.width, bodyDim.width)
+  );
   return styles;
 }
-export function buildDimensionStyles(isTop, alignToLeftEdge, triggerElement, bodyElement) {
+export function buildHorizontalFloatingStyles(isLeft, alignToTopEdge, triggerElement, bodyElement) {
+  const styles = [];
+  if (!styleInputsAreValid(isLeft, alignToTopEdge, triggerElement, bodyElement)) {
+    return styles;
+  }
+  const space = getSpaceOnAllSides(triggerElement),
+    triggerDim = triggerElement.getBoundingClientRect(),
+    bodyDim = getBodyDimensions(bodyElement);
+  styles.pushObject(
+    buildHorizontalTop(alignToTopEdge, space.top, triggerDim.height, bodyDim.height)
+  );
+  styles.pushObject(buildHorizontalLeft(isLeft, space.left, triggerDim.width, bodyDim.width));
+  return styles;
+}
+
+export function buildVerticalDimensionStyles(isTop, alignToLeftEdge, triggerElement, bodyElement) {
   const styles = [];
   if (!styleInputsAreValid(isTop, alignToLeftEdge, triggerElement, bodyElement)) {
     return styles;
@@ -78,6 +114,34 @@ export function buildDimensionStyles(isTop, alignToLeftEdge, triggerElement, bod
   }
   return styles;
 }
+
+// export function buildHorizontalDimensionStyles(
+//   isLeft,
+//   alignToTopEdge,
+//   triggerElement,
+//   bodyElement
+// ) {
+//   const styles = [];
+//   if (!styleInputsAreValid(isLeft, alignToTopEdge, triggerElement, bodyElement)) {
+//     return styles;
+//   }
+//   const space = getSpaceOnAllSides(triggerElement),
+//     triggerDim = triggerElement.getBoundingClientRect(),
+//     bodyDim = getBodyDimensions(bodyElement),
+//     maxHeight = tryBuildMaxHeight(isTop ? space.top : space.bottom, bodyDim.height),
+//     maxWidth = tryBuildMaxWidth(
+//       alignToLeftEdge ? space.right : space.left,
+//       triggerDim.width,
+//       bodyDim.width
+//     );
+//   if (maxHeight) {
+//     styles.pushObject(maxHeight);
+//   }
+//   if (maxWidth) {
+//     styles.pushObject(maxWidth);
+//   }
+//   return styles;
+// }
 
 function styleInputsAreValid(isTop, alignToLeftEdge, triggerElement, bodyElement) {
   return (
@@ -109,13 +173,25 @@ function getBodyDimensions(bodyElement) {
   return { width: bodyElement.scrollWidth, height: bodyElement.scrollHeight };
 }
 
-function buildTop(isTop, spaceOnTop, triggerHeight, bodyHeight) {
+function buildHorizontalTop(alignToTopEdge, spaceOnTop, triggerHeight, bodyHeight) {
+  const topCoord = alignToTopEdge
+    ? spaceOnTop
+    : Math.max(EDGE_GUTTER_SIZE_IN_PX, spaceOnTop + triggerHeight - bodyHeight);
+  return `top: ${topCoord}px`;
+}
+function buildVerticalTop(isTop, spaceOnTop, triggerHeight, bodyHeight) {
   const topCoord = isTop
     ? Math.max(EDGE_GUTTER_SIZE_IN_PX, spaceOnTop - bodyHeight)
     : spaceOnTop + triggerHeight;
   return `top: ${topCoord}px`;
 }
-function buildLeft(alignToLeftEdge, spaceOnLeft, triggerWidth, bodyWidth) {
+function buildHorizontalLeft(isLeft, spaceOnLeft, triggerWidth, bodyWidth) {
+  const leftCoord = isLeft
+    ? Math.max(EDGE_GUTTER_SIZE_IN_PX, spaceOnLeft - bodyWidth)
+    : spaceOnLeft + triggerWidth;
+  return `left: ${leftCoord}px`;
+}
+function buildVerticalLeft(alignToLeftEdge, spaceOnLeft, triggerWidth, bodyWidth) {
   const leftCoord = alignToLeftEdge
     ? spaceOnLeft
     : Math.max(EDGE_GUTTER_SIZE_IN_PX, spaceOnLeft + triggerWidth - bodyWidth);

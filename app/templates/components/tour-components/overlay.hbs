@@ -1,0 +1,22 @@
+<div id="{{_svgId}}">
+  {{#if (and _elementDimensions showOverlay)}}
+    <svg class="overlay--svg {{svgClasses}}">
+      <defs>
+        <mask height="100%" id="shepherdModalMask--{{this.elementId}}" width="100%" x="0" y="0">
+          <rect fill="#FFFFFF" height="100%" width="100%" x="0" y="0"></rect>
+          <rect fill="#000000" x={{_elementDimensions.x}} y={{_elementDimensions.y}} width={{_elementDimensions.width}} height={{_elementDimensions.height}}></rect>
+        </mask>
+      </defs>
+      <rect height="100%" width="100%" x="0" y="0" mask="url(#shepherdModalMask--{{this.elementId}})"></rect>
+    </svg>
+  {{else if showOverlay}}
+    <svg class="overlay--svg {{svgClasses}}">
+      <defs>
+        <mask height="100%" id="shepherdModalMask--{{this.elementId}}" width="100%" x="0" y="0">
+          <rect fill="#FFFFFF" height="100%" width="100%" x="0" y="0"></rect>
+        </mask>
+      </defs>
+      <rect height="100%" width="100%" x="0" y="0" mask="url(#shepherdModalMask--{{this.elementId}})"></rect>
+    </svg>
+  {{/if}}
+</div>

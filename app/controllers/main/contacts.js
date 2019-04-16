@@ -4,6 +4,8 @@ import * as TextUtils from 'textup-frontend/utils/text';
 const { computed } = Ember;
 
 export default Ember.Controller.extend({
+  tutorialService: Ember.inject.service(),
+
   queryParams: ['filter'],
   filter: null,
   tag: null,
@@ -43,7 +45,7 @@ export default Ember.Controller.extend({
         const query = {
           max: 20,
           status: phone.get('contactStatuses'),
-          offset: phone.get('contacts.length'),
+          offset: phone.get('contacts.length')
         };
         // right now only supports passing one id to the backend at a time.
         // NOT both tag and team
@@ -64,5 +66,5 @@ export default Ember.Controller.extend({
         resolve();
       }
     });
-  },
+  }
 });

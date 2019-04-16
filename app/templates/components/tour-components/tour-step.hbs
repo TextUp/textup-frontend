@@ -1,0 +1,72 @@
+{{#modal-dialog containerClass="tour-step__message-container tour-step__message-container--desktop flex flex--direction-vertical"
+  overlayClass="display-l" hasOverlay=false clickOutsideToClose=false}}
+    <div class="tour-step__header flex">
+      <div class="tour-step__header__text">
+        {{title}}
+      </div>
+    </div>
+    <div class="tour-step__content flex__item flex__item--grow">
+      {{text}}
+      <div class="tour-step__status-dot--container flex">
+        {{yield}}
+      </div>
+    </div>
+    <div class="tour-step__footer flex__item flex__item--no-shrink">
+      <div>
+        {{#if (not isFirstStep)}}
+          <button type="button" class="tour-step__button tour-step__button--back" onclick={{action onBack}}>
+            Back
+          </button>
+        {{else}}
+          <button type="button" class="tour-step__button tour-step__button--inactive">
+            Back
+          </button>
+        {{/if}}
+        {{#if isLastStep}}
+          <button type="button" class="tour-step__button tour-step__button--next" onclick= {{action onFinish}}>
+            Finish
+          </button>
+        {{else}}
+          <button type="button" class="tour-step__button tour-step__button--next" onclick= {{action onNext}}>
+            Next
+          </button>
+        {{/if}}
+      </div>
+    </div>
+{{/modal-dialog}}
+
+{{tour-components/overlay doRegister=(action (mut _desktopOverlay)) svgClasses="display-l"
+elementToHighlight=elementToHighlight}}
+
+<div class="tour-step__wormhole">
+  <div class="tour-step__message-container tour-step__message-container--mobile">
+    <div class="tour-step__header flex">
+      <div class="tour-step__header__text">
+        {{title}}
+      </div>
+    </div>
+    <div class="tour-step__content flex">
+      {{text}}
+    </div>
+    <div class="tour-step__footer flex">
+      {{#if isLastStep}}
+        <button type="button" class="btn btn-plain tour-step__button tour-step__button--finish"
+          onclick= {{action onFinish}}>
+          Finish Tour
+        </button>
+      {{else}}
+        <button type="button" class="btn btn-plain tour-step__button tour-step__button--next"
+          onclick= {{action onNext}}>
+          Next
+        </button>
+        <button type="button" class="btn btn-plain tour-step__button tour-step__button--skip"
+          onclick= {{action onFinish}}>
+          Skip Tips
+        </button>
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+{{tour-components/overlay doRegister=(action (mut _mobileOverlay)) svgClasses="display-s
+display-xs display-m" elementToHighlight=elementToHighlightMobile}}

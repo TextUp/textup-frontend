@@ -1,0 +1,36 @@
+{{#if _temporaryComplete}}
+  <div class="flex flex__item--grow task-step--complete">
+    <div class="flex__item flex__item--grow pad-r-half">
+      <p class='task-step--title'>
+        Step {{stepNumber}}: {{title}}
+      </p>
+      <div class="flex__item flex__item--grow">
+        <img class="task-step__complete-image" src='assets/images/task-manager-complete-task.png'/>
+      </div>
+    </div>
+  </div>
+{{else}}
+  <div class="flex">
+    <div class="flex__item flex__item--grow pad-r-half">
+      <p class='task-step--title'>
+        Step {{stepNumber}}: {{title}}
+      </p>
+      <p class='task-step--text'>
+        {{text}}
+      </p>
+    </div>
+  </div>
+  {{yield}}
+  <div class="task-step__button--container">
+    <button type="button"
+        class="task-step__button task-step__button--skip"
+        onclick={{action _publicAPI.actions.completeTask id false}}>
+          Skip
+    </button>
+    <button type="button"
+        class="task-step__button task-step__button--show-me"
+        onclick={{_publicAPI.actions.showUserSteps}}>
+          Show Me
+    </button>
+  </div>
+{{/if}}

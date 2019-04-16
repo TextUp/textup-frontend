@@ -1,11 +1,12 @@
 import Ember from 'ember';
 
-const { tryInvoke } = Ember;
+const { tryInvoke, RSVP } = Ember;
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
   mediaService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController: function(controller) {
     this._super(...arguments);
@@ -30,22 +31,37 @@ export default Ember.Mixin.create({
     },
     onRefreshRecordItems() {
       return this.get('recordItemService').loadRecordItems(this.get('currentModel'), {
-        refresh: true,
+        refresh: true
       });
     },
 
     onCall() {
-      return this.get('recordItemService').makeCall(this.get('currentModel'));
+      return new RSVP.Promise((resolve, reject) => {
+        this.get('recordItemService')
+          .makeCall(this.get('currentModel'))
+          .then(() => {
+            this.get('tutorialService').startCompleteTask('makeCall');
+            resolve();
+          })
+          .catch(reject);
+      });
     },
     onText() {
       return this.get('dataService')
         .persist(this.get('controller.careRecordText'))
-        .then(() => this._initCareRecordText());
+        .then(() => {
+          this._initCareRecordText();
+          this.get('tutorialService').startCompleteTask('sendMessage');
+        });
     },
 
     endOngoingCall(call) {
       this.get('recordItemService').endOngoingCall(call);
     },
+
+    onFinishCareRecordTutorial() {
+      this.get('tutorialService').startCompleteTask('additionalActions');
+    }
   },
 
   _initCareRecordText() {
@@ -65,5 +81,5 @@ export default Ember.Mixin.create({
     if (careRecordRef && careRecordRef.actions) {
       tryInvoke(careRecordRef.actions, 'reset');
     }
-  },
+  }
 });

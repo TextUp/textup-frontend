@@ -2,6 +2,8 @@
 {{message-modal url=appMessageEndpoint
     display=shouldShowAppMessage
     onClose=(action "closeAppUpdateMessage")}}
+{{tour-components/tour-manager doRegister=actions.registerTourManager}}
+
 
 {{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
@@ -10,9 +12,9 @@
     bodyId="body"
     doRegister=(action (mut slidingMenu))
     as |drawer|}}
-    <span class="display-xs display-s display-m menu-toggle">
+    <span id="tour-testing123" class="display-xs display-s display-m menu-toggle">
         <button class="btn btn-plain full-height"
-            onclick={{drawer.actions.toggle}}>
+            onclick={{drawer.actions.toggle}} id='tour-openSlideoutButton'>
             {{#if stateManager.ownerIsTeam}}
                 <p class="halo halo-sm text-heading"
                     style="background-color:{{stateManager.owner.hexColor}};
@@ -34,14 +36,14 @@
 {{else}}
     <div class="menu">
         <div class="menu__section">
-            <div class="display-xs display-s display-m">
+            <div class="display-xs display-s display-m" >
                 {{#account-switcher
                     activeOwner=stateManager.owner
                     user=authService.authUser
                     doLogOut=(route-action "logout")
                     doRegisterContainer=(action (mut accountSwitcher))
                     toggleClass="xs-8-row-10"}}
-                    <button class="xs-2-row-10 textup-account-switcher__display"
+                    <button class="xs-2-row-10 textup-account-switcher__display" id="tour-mobileSettings"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
                         <span class="fa fa-cog"></span>
                     </button>
@@ -76,7 +78,7 @@
                         {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
-                            <span>Availability</span>
+                            <span id="tour-openAvailabilityButtonMobile">Availability</span>
                         </div>
                     </div>
                 </div>
@@ -88,9 +90,9 @@
                             title="Availability"
                             classNames="btn-expand"}}
                             {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
-                                <span class="fa fa-calendar-check-o"></span>
+                                <span class="fa fa-calendar-check-o" id="tour-openAvailabilityButton"></span>
                             {{else}}
-                                <span class="fa fa-calendar-times-o"></span>
+                                <span class="fa fa-calendar-times-o" id="tour-openAvailabilityButton"></span>
                             {{/if}}
                         {{/tool-tip}}
                     </div>
@@ -100,7 +102,7 @@
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startComposeSlideout"}}>
                     <div class="btn-expand">
-                        <span>Compose</span>
+                        <span id="tour-openMessageButtonMobile">Compose</span>
                     </div>
                 </div>
             </div>
@@ -111,7 +113,7 @@
                     {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                         title="Compose"
                         classNames="btn-expand"}}
-                        <span class="fa fa-comments"></span>
+                        <span class="fa fa-comments" id="tour-openMessageButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -119,7 +121,7 @@
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startCallSlideout"}}>
                     <div class="btn-expand">
-                        <span>Call</span>
+                        <span id='tour-openCallButtonMobile'>Call</span>
                     </div>
                 </div>
             </div>
@@ -129,7 +131,7 @@
                     {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                         title="Call"
                         classNames="btn-expand"}}
-                        <span class="fa fa-phone"></span>
+                        <span class="fa fa-phone" id="tour-openCallButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -138,7 +140,7 @@
                     <div class="menu-item menu-slideout"
                         onclick={{route-action "startMultipleExportSlideout"}}>
                         <div class="btn-expand">
-                            <span>Export</span>
+                            <span id='tour-openExportButtonMobile'>Export</span>
                         </div>
                     </div>
                 </div>
@@ -148,7 +150,7 @@
                         {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                             title="Export"
                             classNames="btn-expand"}}
-                            <span class="fa fa-file"></span>
+                            <span class="fa fa-file" id="tour-openExportButton"></span>
                         {{/tool-tip}}
                     </div>
                 </div>
@@ -156,13 +158,13 @@
 
             {{!-- contacts --}}
 
-            <div class="display-xs display-s display-m">
-                <div class="menu-divider">
+            <div class="display-xs display-s display-m" id="tour-mobileContactsButton">
+                <div class="menu-divider" >
                     Contacts
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewContactSlideout"}}>
-                        <span class="fa fa-plus"></span>
+                        <span class="fa fa-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
                 <div class="menu-item
@@ -197,7 +199,7 @@
                     {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                         title="Add Contact"
                         classNames="btn-expand"}}
-                        <span class="fa fa-user-plus"></span>
+                        <span class="fa fa-user-plus" id="tour-openContactListButton"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "main.search" tagName="div" classNames="menu-item"}}
@@ -224,7 +226,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewTagSlideout"}}>
-                        <span class="fa fa-plus"></span>
+                        <span class="fa fa-plus" id='tour-createNewTagButtonMobile'></span>
                     </button >
                 </div>
                 {{#if model.phone.isFulfilled}}
@@ -248,17 +250,17 @@
             </div>
             <div class="display-l">
                 <div class="menu-divider"></div>
-                <div class="menu-item menu-slideout"
+                <div class="menu-item menu-slideout" id='tour-openTagsListButton'
                     onclick={{route-action "startTagListSlideout"}}>
                     {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
                         title="Tags"
                         classNames="btn-expand"}}
-                        <span class="fa fa-tags"></span>
+                        <span class="fa fa-tags" ></span>
                     {{/tool-tip}}
                 </div>
             </div>
         </div>
-        <div class="menu__section">
+        <div class="menu__section" id="tour-supportButton">
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"

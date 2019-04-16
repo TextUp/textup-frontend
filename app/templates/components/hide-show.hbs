@@ -1,3 +1,7 @@
-{{#liquid-spacer class="hide-show"}}
+{{#if animate}}
+    {{#liquid-spacer class="hide-show"}}
+        {{yield _publicAPI}}
+    {{/liquid-spacer}}
+{{else}}
     {{yield _publicAPI}}
-{{/liquid-spacer}}
+{{/if}}

@@ -7,6 +7,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   constants: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  tutorialService: Ember.inject.service(),
 
   setupController: function(controller) {
     this._super(...arguments);
@@ -50,6 +51,7 @@ export default Ember.Mixin.create({
           .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
           .then(() => {
             this.send('closeSlideout');
+            this.get('tutorialService').startCompleteTask('exportMessage');
             resolve();
           }, reject);
       });

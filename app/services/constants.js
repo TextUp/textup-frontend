@@ -5,7 +5,7 @@ export default Ember.Service.extend({
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
     LARGEST_MAX: 5000,
-    TYPE: { SINGLE: 'singleStream', GROUPED: 'groupByEntity' },
+    TYPE: { SINGLE: 'singleStream', GROUPED: 'groupByEntity' }
   },
   LANGUAGES: [
     'CHINESE',
@@ -17,87 +17,87 @@ export default Ember.Service.extend({
     'KOREAN',
     'PORTUGUESE',
     'RUSSIAN',
-    'SPANISH',
+    'SPANISH'
   ],
   COLOR: {
     BRAND: '#1ba5e0',
     LIGHT_BLUE: '#76c9ec',
     MEDIUM_BLUE: '#6ab4d4',
-    LIGHT_GRAY: '#d3d3d3',
+    LIGHT_GRAY: '#d3d3d3'
   },
   DEFAULT: {
     LANGUAGE: 'ENGLISH',
     TIME_INTERVAL_IN_MINUTES: 15,
-    OUTGOING_TEXT_NUM_CHARACTERS: 160 * 10,
+    OUTGOING_TEXT_NUM_CHARACTERS: 160 * 10
   },
   DAYS_OF_WEEK: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   MODEL: {
     STAFF: 'staff',
     TEAM: 'team',
     CONTACT: 'contact',
-    TAG: 'tag',
+    TAG: 'tag'
   },
   TOOLTIP: {
     SIDE: {
       TOP: 'top',
       BOTTOM: 'bottom',
       RIGHT: 'right',
-      LEFT: 'left',
-    },
+      LEFT: 'left'
+    }
   },
   SLIDEOUT: {
     OUTLET: {
       DEFAULT: 'slideout',
-      DETAIL: 'details-slideout',
+      DETAIL: 'details-slideout'
     },
     DIRECTION: {
       LEFT: 'left',
-      RIGHT: 'right',
+      RIGHT: 'right'
     },
     FOOTER: {
-      ACTIONS: 'slideout-pane/actions',
+      ACTIONS: 'slideout-pane/actions'
     },
     DEFAULT_IGNORE_CLOSE_SELECTOR:
-      '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp, .pop-over__body',
+      '.textup-account-switcher, .c-notification__container, .datetime-control-wormhole, .pswp, .pop-over__body'
   },
   INFINITE_SCROLL: {
-    DIRECTION: { UP: 'up', DOWN: 'down' },
+    DIRECTION: { UP: 'up', DOWN: 'down' }
   },
   PHOTO_CONTROL: {
-    DISPLAY: { GRID: 'image-grid', STACK: 'image-stack' },
+    DISPLAY: { GRID: 'image-grid', STACK: 'image-stack' }
   },
   MAX_LENGTH: {
-    POSITION: { TOP: 'top', BOTTOM: 'bottom' },
+    POSITION: { TOP: 'top', BOTTOM: 'bottom' }
   },
   IMAGE: { DEFAULT_ALT: 'User provided image' },
   AUDIO: { MAX_DURATION_IN_SECONDS: 180 },
   FUTURE_MESSAGE: {
     TYPE: {
       CALL: 'CALL', // need to capitalized to match
-      TEXT: 'TEXT',
+      TEXT: 'TEXT'
     },
-    INTERVAL_SIZE: { DAY: 1, WEEK: 7 },
+    INTERVAL_SIZE: { DAY: 1, WEEK: 7 }
   },
   CONTACT: {
     STATUS: {
       UNREAD: 'UNREAD',
       ACTIVE: 'ACTIVE',
       ARCHIVED: 'ARCHIVED',
-      BLOCKED: 'BLOCKED',
+      BLOCKED: 'BLOCKED'
     },
     FILTER: {
       ALL: 'all',
       UNREAD: 'unread',
       ARCHIVED: 'archived',
-      BLOCKED: 'blocked',
-    },
+      BLOCKED: 'blocked'
+    }
   },
   ORGANIZATION: {
     STATUS: {
       REJECTED: 'REJECTED',
       PENDING: 'PENDING',
-      APPROVED: 'APPROVED',
-    },
+      APPROVED: 'APPROVED'
+    }
   },
   SHARING_PERMISSION: { DELEGATE: 'DELEGATE', VIEW: 'VIEW' },
   ACTION: {
@@ -105,10 +105,11 @@ export default Ember.Service.extend({
     PHONE: {
       DEACTIVATE: 'DEACTIVATE',
       TRANSFER: 'TRANSFER',
-      CHANGE_NUMBER: 'NUMBER',
-    },
+      CHANGE_NUMBER: 'NUMBER'
+    }
   },
   POP_OVER: {
-    POSITION: { TOP: 'top', BOTTOM: 'bottom' },
-  },
+    // TODO remove LEFT/RIGHT
+    POSITION: { TOP: 'top', BOTTOM: 'bottom', LEFT: 'left', RIGHT: 'right' }
+  }
 });
