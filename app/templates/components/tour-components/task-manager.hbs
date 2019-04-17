@@ -31,7 +31,7 @@
       {{#tour-components/task-step doRegister=(action (mut _taskStep)) id=firstIncompleteTask.id
         stepNumber=firstIncompleteTask.stepNumber title=firstIncompleteTask.title text=firstIncompleteTask.text
         elementsToPulse=firstIncompleteTask.elementsToPulse elementsToPulseMobile=firstIncompleteTask.elementsToPulseMobile
-        completeTask=_publicAPI.actions.finishCompleteTask}}
+        completeTask=_publicAPI.actions.finishCompleteTask shouldShow=shouldShow}}
         <div class="task-manager__status-dot--container">
           {{#each tasks as |task|}}
             <span class="fa fa-circle

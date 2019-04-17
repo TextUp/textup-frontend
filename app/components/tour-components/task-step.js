@@ -12,8 +12,13 @@ export default Ember.Component.extend(HasEvents, {
     completeTask: PropTypes.func.isRequired,
     stepNumber: PropTypes.number.isRequired,
     doRegister: PropTypes.func,
+    shouldShow: PropTypes.bool,
     elementsToPulse: PropTypes.arrayOf(PropTypes.string),
-    elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string)
+    elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string),
+  },
+
+  getDefaultProps() {
+    return { shouldShow: true };
   },
 
   classNames: ['task-step'],
@@ -23,8 +28,8 @@ export default Ember.Component.extend(HasEvents, {
       actions: {
         completeTask: this._completeThisTask.bind(this),
         showUserSteps: this._showUserSteps.bind(this),
-        removeAllPulsing: this._removeAllPulsing.bind(this)
-      }
+        removeAllPulsing: this._removeAllPulsing.bind(this),
+      },
     };
   }),
 
@@ -60,7 +65,9 @@ export default Ember.Component.extend(HasEvents, {
       });
     }
 
-    run.scheduleOnce('afterRender', this, this._startPulsing);
+    if (this.get('shouldShow')) {
+      run.scheduleOnce('afterRender', this, this._startPulsing);
+    }
   },
 
   _startPulsing() {
@@ -160,5 +167,5 @@ export default Ember.Component.extend(HasEvents, {
     elementsMobile.forEach(element => {
       this._removePulseFromElement(element);
     });
-  }
+  },
 });
