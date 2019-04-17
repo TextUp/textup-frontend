@@ -27,7 +27,7 @@ export default Ember.Component.extend(HasEvents, {
     return {
       actions: {
         completeTask: this._completeThisTask.bind(this),
-        showUserSteps: this._showUserSteps.bind(this),
+        showUserSteps: this._debounceShowUserSteps.bind(this),
         removeAllPulsing: this._removeAllPulsing.bind(this),
       },
     };
@@ -125,19 +125,23 @@ export default Ember.Component.extend(HasEvents, {
     }
   },
 
+  _debounceShowUserSteps() {
+    run.debounce(this, this._showUserSteps, 1000, true);
+  },
+
   _showUserSteps() {
     // check if element needs to be opened, open if it's visible
     const mobile = $(window).innerWidth() < 750;
 
-    var elementsToPulse;
+    var elementsToClick;
 
     if (mobile) {
-      elementsToPulse = this.get('elementsToPulseMobile');
+      elementsToClick = this.get('elementsToPulseMobile');
     } else {
-      elementsToPulse = this.get('elementsToPulse');
+      elementsToClick = this.get('elementsToPulse');
     }
 
-    elementsToPulse.forEach((element, index) => {
+    elementsToClick.forEach((element, index) => {
       run.later(() => {
         $(element).click();
       }, 200 + index * 1500);

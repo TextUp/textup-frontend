@@ -87,6 +87,7 @@
             {{/each}}
         </div>
     {{/if}}
+    <!-- TODO: If contacts is clicked many times, this will cause the page to crash -->
     {{sortable-group/numbers numbers=contact.numbers
         readonly=(not contact.allowEdits)
         onAdd=(action _onAddNumber)
