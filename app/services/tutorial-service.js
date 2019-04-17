@@ -18,7 +18,7 @@ export default Ember.Service.extend({
     const shouldShow = window.localStorage.getItem(
       `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`
     );
-    this.set('shouldShowTaskManagerInternal', shouldShow === 'true');
+    this.set('shouldShowTaskManagerInternal', shouldShow !== 'false');
   },
 
   taskManager: null,
@@ -32,11 +32,11 @@ export default Ember.Service.extend({
         startCompleteTask: this.startCompleteTask.bind(this),
         finishCompleteTask: this.finishCompleteTask.bind(this),
         closeTaskManager: this.closeTaskManager.bind(this),
-        resetTasks: this.resetTasks.bind(this)
+        resetTasks: this.resetTasks.bind(this),
       },
       tasks: this.get('tasks'),
       firstIncompleteTask: this.get('_firstIncompleteTask'),
-      shouldShowTaskManager: this.get('_shouldShowTaskManager')
+      shouldShowTaskManager: this.get('_shouldShowTaskManager'),
     };
   }),
 
@@ -75,7 +75,7 @@ export default Ember.Service.extend({
       'Access the “Getting Started” tour at anytime through <button class="btn-link">the Support menu</button>.',
       {
         htmlContent: true,
-        onClick: this._openSupportSlideout.bind(this)
+        onClick: this._openSupportSlideout.bind(this),
       }
     );
     this.set('shouldShowTaskManagerInternal', false);
@@ -116,5 +116,5 @@ export default Ember.Service.extend({
       return true;
     }
     return shouldShow;
-  })
+  }),
 });
