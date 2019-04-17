@@ -7,7 +7,7 @@ moduleForComponent(
   'tour-components/task-step',
   'Integration | Component | tour components/task step',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -21,7 +21,7 @@ test('it renders', function(assert) {
     completeTask: () => null,
     stepNumber: 1,
     elementsToPulse: [],
-    elementsToPulseMobile: []
+    elementsToPulseMobile: [],
   });
 
   this.render(hbs`
@@ -73,7 +73,7 @@ test('calls doRegister', function(assert) {
     doRegister: doRegister,
     stepNumber: 1,
     elementsToPulse: ['#step1', '#step2'],
-    elementsToPulseMobile: ['#step1', '#step2']
+    elementsToPulseMobile: ['#step1', '#step2'],
   });
 
   this.render(hbs`
@@ -89,9 +89,11 @@ test('calls doRegister', function(assert) {
         doRegister=doRegister
         stepNumber=stepNumber
         elementsToPulse=elementsToPulse
+        shouldShow=true
         elementsToPulseMobile=elementsToPulseMobile}}
         `);
   assert.ok(doRegister.calledOnce, 'doRegister is called');
+
   assert.ok(
     Ember.$('#step1')
       .attr('class')
