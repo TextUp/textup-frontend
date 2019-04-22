@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import * as TaskUtil from 'textup-frontend/utils/task-info';
+import config from 'textup-frontend/config/environment';
 
 const { computed, set } = Ember;
 
@@ -15,10 +16,7 @@ export default Ember.Service.extend({
       task.stepNumber = index + 1;
     });
     this.set('tasks', tasks);
-    const shouldShow = window.localStorage.getItem(
-      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`
-    );
-    this.set('shouldShowTaskManagerInternal', shouldShow !== 'false');
+    this.get('authService').on(config.events.auth.success, this._setShouldShow.bind(this));
   },
 
   taskManager: null,
@@ -39,6 +37,13 @@ export default Ember.Service.extend({
       shouldShowTaskManager: this.get('_shouldShowTaskManager'),
     };
   }),
+
+  _setShouldShow() {
+    const shouldShow = window.localStorage.getItem(
+      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`
+    );
+    this.set('shouldShowTaskManagerInternal', shouldShow !== 'false');
+  },
 
   getTaskStatus(taskId) {
     const status = window.localStorage.getItem(

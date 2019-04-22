@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
+import config from 'textup-frontend/config/environment';
 
 moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
   // Specify the other units that are required for this test.
@@ -9,13 +10,13 @@ moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
   beforeEach() {
     this.register(
       'service:auth-service',
-      Ember.Service.extend({
+      Ember.Service.extend(Ember.Evented, {
         authUser: {
-          username: 'someUsername'
-        }
+          username: 'someUsername',
+        },
       })
     );
-  }
+  },
 });
 
 // Replace this with your real tests.
@@ -29,6 +30,19 @@ test('it exists', function(assert) {
     assert.equal(task.stepNumber, index + 1);
     assert.notStrictEqual(task.status, null, 'task status is null for task ' + task.id);
   });
+});
+
+// TODO
+test('logging out and loggin in', function(assert) {
+  let service = this.subject();
+
+  const authService = Ember.getOwner(this).lookup('service:auth-service');
+
+  authService.set('authUser', { username: 'un1' });
+  authService.trigger(config.events.auth.success);
+
+  authService.set('authUser', { username: 'un2' });
+  authService.trigger(config.events.auth.success);
 });
 
 test('_setTaskStatus and getTaskStatus', function(assert) {
@@ -66,12 +80,12 @@ test('startCompleteTask with different Ids', function(assert) {
     done = assert.async();
   const taskManager = {
     actions: {
-      startCompleteTask: completeTask
-    }
+      startCompleteTask: completeTask,
+    },
   };
   const taskId = 'taskId';
   const firstIncomplete = {
-    id: taskId
+    id: taskId,
   };
 
   service.taskManager = taskManager;
@@ -123,7 +137,7 @@ test('closeTaskManager', function(assert) {
   const info = sinon.spy(),
     done = assert.async();
   service.notifications = {
-    info: info
+    info: info,
   };
   service.closeTaskManager();
   wait().then(() => {
