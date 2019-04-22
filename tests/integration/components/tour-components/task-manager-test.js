@@ -27,7 +27,7 @@ moduleForComponent(
               id: 'addContact',
               title: 'Add a contact',
               text: 'You can add multiple phone numbers to a contact if needed.',
-              elementsToPulse: ['#tour-openContactListButton'],
+              elementsToPulse: ['#tour-openNewContactButton'],
               elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
             },
             {
@@ -93,7 +93,7 @@ test('renders correct step', function(assert) {
         id: 'addContact',
         title: 'Add a contact',
         text: 'You can add multiple phone numbers to a contact if needed.',
-        elementsToPulse: ['#tour-openContactListButton'],
+        elementsToPulse: ['#tour-openNewContactButton'],
         elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
       }
     ],
@@ -102,7 +102,7 @@ test('renders correct step', function(assert) {
       stepNumber: 2,
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
-      elementsToPulse: ['#tour-openContactListButton'],
+      elementsToPulse: ['#tour-openNewContactButton'],
       elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
     };
 
@@ -143,7 +143,7 @@ test('shouldShow works', function(assert) {
       id: 'addContact',
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
-      elementsToPulse: ['#tour-openContactListButton'],
+      elementsToPulse: ['#tour-openNewContactButton'],
       elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
     };
 
@@ -200,7 +200,7 @@ test('onClose is called', function(assert) {
       id: 'addContact',
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
-      elementsToPulse: ['#tour-openContactListButton'],
+      elementsToPulse: ['#tour-openNewContactButton'],
       elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
     };
 

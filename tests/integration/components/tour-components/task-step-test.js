@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
+import wait from 'ember-test-helpers/wait';
 
 moduleForComponent(
   'tour-components/task-step',
@@ -64,7 +65,9 @@ test('it renders', function(assert) {
 
 test('calls doRegister', function(assert) {
   const completeTask = sinon.spy(),
-    doRegister = sinon.spy();
+    doRegister = sinon.spy(),
+    done = assert.async();
+
   this.setProperties({
     id: 'addContacts',
     text: 'Task Text',
@@ -94,29 +97,36 @@ test('calls doRegister', function(assert) {
         `);
   assert.ok(doRegister.calledOnce, 'doRegister is called');
 
-  assert.ok(
-    Ember.$('#step1')
-      .attr('class')
-      .includes('task-element__should-animate-pulse')
-  );
-  assert.ok(
-    Ember.$('#step2')
-      .attr('class')
-      .includes('task-element__should-animate-pulse')
-  );
-  Ember.$('.task-step__button--skip')
-    .first()
-    .click();
-  assert.ok(completeTask.calledOnce, 'finishTask is called on skip');
+  wait()
+    .then(() => {
+      assert.ok(
+        Ember.$('#step1')
+          .attr('class')
+          .includes('task-element__should-animate-pulse')
+      );
+      assert.ok(
+        Ember.$('#step2')
+          .attr('class')
+          .includes('task-element__should-animate-pulse')
+      );
+      Ember.$('.task-step__button--skip')
+        .first()
+        .click();
+      assert.ok(completeTask.calledOnce, 'finishTask is called on skip');
 
-  assert.ok(
-    !Ember.$('#step1')
-      .attr('class')
-      .includes('task-element__should-animate-pulse')
-  );
-  assert.ok(
-    !Ember.$('#step2')
-      .attr('class')
-      .includes('task-element__should-animate-pulse')
-  );
+      return wait();
+    })
+    .then(() => {
+      assert.ok(
+        !Ember.$('#step1')
+          .attr('class')
+          .includes('task-element__should-animate-pulse')
+      );
+      assert.ok(
+        !Ember.$('#step2')
+          .attr('class')
+          .includes('task-element__should-animate-pulse')
+      );
+      done();
+    });
 });

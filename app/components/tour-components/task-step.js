@@ -1,10 +1,11 @@
 import Ember from 'ember';
 import { PropTypes } from 'ember-prop-types';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 
 const { computed, run, $, tryInvoke } = Ember;
 
-export default Ember.Component.extend(HasEvents, {
+export default Ember.Component.extend(HasEvents, HasAppRoot, {
   propTypes: {
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -45,28 +46,26 @@ export default Ember.Component.extend(HasEvents, {
     this.set('_temporaryComplete', false);
 
     if (oldAttrs) {
-      run.scheduleOnce('afterRender', () => {
-        const oldPulsingElements = oldAttrs.elementsToPulse.value;
-        const oldPulsingElementsMobile = oldAttrs.elementsToPulseMobile.value;
-        if (oldPulsingElements) {
-          oldPulsingElements.forEach(element => {
-            if (!newAttrs.elementsToPulse.value.includes(element)) {
-              this._removePulseFromElement(element);
-            }
-          });
-        }
-        if (oldPulsingElementsMobile) {
-          oldPulsingElementsMobile.forEach(element => {
-            if (!newAttrs.elementsToPulseMobile.value.includes(element)) {
-              this._removePulseFromElement(element);
-            }
-          });
-        }
-      });
+      const oldPulsingElements = oldAttrs.elementsToPulse.value;
+      const oldPulsingElementsMobile = oldAttrs.elementsToPulseMobile.value;
+      if (oldPulsingElements) {
+        oldPulsingElements.forEach(element => {
+          if (!newAttrs.elementsToPulse.value.includes(element)) {
+            this._removePulseFromElement(element);
+          }
+        });
+      }
+      if (oldPulsingElementsMobile) {
+        oldPulsingElementsMobile.forEach(element => {
+          if (!newAttrs.elementsToPulseMobile.value.includes(element)) {
+            this._removePulseFromElement(element);
+          }
+        });
+      }
     }
 
     if (this.get('shouldShow')) {
-      run.scheduleOnce('afterRender', this, this._startPulsing);
+      run.next(this, this._startPulsing);
     }
   },
 
@@ -83,12 +82,12 @@ export default Ember.Component.extend(HasEvents, {
       num_elems = elementsToPulse.length;
     }
 
-    // TODO -> fix this logic to add pulse element to next,
-    // if list of elements to pulse is longer than 2, then will fail
+    const $root = this.get('_root');
+
     elementsToPulse.forEach((element, index) => {
       if (index < num_elems - 1) {
         this._pulseElement(element);
-        $(element).on(this._event('click'), () => {
+        $root.on(this._event('click'), element, () => {
           run.next(this, this._pulseElement, elementsToPulse[index + 1]);
         });
       } else {
@@ -154,9 +153,10 @@ export default Ember.Component.extend(HasEvents, {
   },
 
   _removePulseFromElement(elementIdToRemovePulse) {
+    const $root = this.get('_root');
     run.scheduleOnce('afterRender', () => {
       const elementToRemove = $(elementIdToRemovePulse);
-      elementToRemove.off(this._event('click'));
+      $root.off(this._event('click'));
       elementToRemove.removeClass('task-element__should-animate-pulse');
     });
   },
