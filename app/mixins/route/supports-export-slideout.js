@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
@@ -19,7 +20,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/export/single',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
@@ -28,7 +29,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/export/multiple',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },

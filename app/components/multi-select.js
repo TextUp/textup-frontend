@@ -415,8 +415,12 @@ export default Ember.Component.extend({
       // escape js regex special characters from https://stackoverflow.com/a/9310752,
       // instead of escaping special characters, replace with whitespace, effectively discarding
       cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
-    let matchString = (item && prop ? Ember.get(item, prop) : item).toString();
     let matchExp;
+    let matchString = (item && prop ? Ember.get(item, prop) : item).toString();
+    // also clean the string to match in the same way
+    if (matchString) {
+      matchString = matchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
+    }
     if (this.get('removeSpacesInDefaultFilter')) {
       matchExp = new RegExp(cleanedSearchString.replace(/\s+/g, ''), 'i');
       matchString = matchString.replace(/\s+/g, '');

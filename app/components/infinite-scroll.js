@@ -1,6 +1,7 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, isPresent, tryInvoke, typeOf, run, on, observer } = Ember;
@@ -109,10 +110,9 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     this._resetProperties();
-    const retVal = callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'));
-    if (retVal && retVal.then) {
-      retVal.then(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
-    }
+    PropertyUtils.ensurePromise(
+      callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'))
+    ).then(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
   },
 
   _resetPosition() {
@@ -185,6 +185,10 @@ export default Ember.Component.extend(PropTypesMixin, {
         '_publicAPI.isDone': this.get('_numTimesWithoutChanges') >= 3 || currentHasLoadedAll,
       });
       callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
+    } else {
+      // When items are added to the data array and the user does not manually trigger a restore,
+      // then we want to restore the user position here regardless
+      run.next(() => callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition')));
     }
   },
 });

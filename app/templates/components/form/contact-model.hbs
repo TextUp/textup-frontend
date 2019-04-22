@@ -65,18 +65,22 @@
     {{#if contact.numberDuplicates}}
         <div class="bg-color margin-b border-radius-all pad-t pad-l pad-r pad-b-half">
             {{#each contact.numberDuplicates as |dupObj|}}
-                <p class='margin-b-half'>
-                    <span class="text-bold">{{phone-number dupObj.number}}</span>
-                    also belongs to
-                    {{#each dupObj.duplicates as |dup|}}
-                        <span class='link'
-                            onclick={{action _onGoToDuplicates dup.id}}>
-                            {{!-- tildes present to trim whitespace --}}
-                            {{~phone-number dup.identifier ~}}
-                        </span>
-                        {{~if (eq dup.identifier dupObj.duplicates.lastObject.identifier) "." ", "}}
-                    {{/each}}
-                </p>
+                {{#with (get dupObj.duplicates.lastObject (constant "PROP_NAME.READABLE_IDENT")) as |lastIdent|}}
+                    <p class='margin-b-half'>
+                        <span class="text-bold">{{phone-number dupObj.number}}</span>
+                        also belongs to
+                        {{#each dupObj.duplicates as |dupContact|}}
+                            {{#with (get dupContact (constant "PROP_NAME.READABLE_IDENT")) as |thisIdent|}}
+                                <span class='link'
+                                    onclick={{action _onGoToDuplicates dupContact.id}}>
+                                    {{!-- tildes present to trim whitespace --}}
+                                    {{~phone-number thisIdent ~}}
+                                </span>
+                                {{~if (eq thisIdent lastIdent) "." ", "}}
+                            {{/with}}
+                        {{/each}}
+                    </p>
+                {{/with}}
             {{/each}}
         </div>
     {{/if}}

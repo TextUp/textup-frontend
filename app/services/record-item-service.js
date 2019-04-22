@@ -39,8 +39,8 @@ export default Ember.Service.extend({
         timezone: this.get('authService.timezone'),
         format: Constants.EXPORT.FORMAT.PDF,
         max: Constants.EXPORT.LARGEST_MAX,
-        since: moment(dateStart).toISOString(),
-        before: moment(dateEnd).toISOString(),
+        start: moment(dateStart).toISOString(),
+        end: moment(dateEnd).toISOString(),
         exportFormatType: shouldGroupEntities
           ? Constants.EXPORT.TYPE.GROUPED
           : Constants.EXPORT.TYPE.SINGLE,

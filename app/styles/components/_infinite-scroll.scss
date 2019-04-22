@@ -9,6 +9,9 @@
     &__message {
       opacity: 1;
     }
+    &__none {
+      opacity: 0;
+    }
   }
   &--done &__loading-container {
     &__message {
@@ -29,6 +32,10 @@
       text-align: center;
       transition: opacity 0.2s;
       opacity: 0;
+    }
+    &__none {
+      transition: opacity 0.2s;
+      opacity: 1;
     }
   }
   &__scroll-container {

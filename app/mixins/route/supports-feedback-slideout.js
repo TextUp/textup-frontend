@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
@@ -13,7 +14,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/feedback',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },

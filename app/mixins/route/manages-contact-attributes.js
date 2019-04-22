@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
@@ -58,7 +59,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/contact/share',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },

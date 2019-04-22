@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
@@ -142,12 +143,14 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onCall() {
     this.set('_hasStartedCall', true);
-    this._tryResetScroll();
-    tryInvoke(this, 'onCall', [...arguments]);
+    return PropertyUtils.ensurePromise(tryInvoke(this, 'onCall', [...arguments])).then(() =>
+      this._tryResetScroll()
+    );
   },
   _onText() {
-    this._tryResetScroll();
-    return tryInvoke(this, 'onText', [...arguments]);
+    return PropertyUtils.ensurePromise(tryInvoke(this, 'onText', [...arguments])).then(() =>
+      this._tryResetScroll()
+    );
   },
   _onScheduleMessage() {
     tryInvoke(this, 'onScheduleMessage', [...arguments]);

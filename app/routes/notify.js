@@ -19,6 +19,9 @@ export default Ember.Route.extend({
   },
 
   actions: {
+    error() {
+      this.transitionTo('index');
+    },
     openInApp(notification) {
       if (notification) {
         this.transitionTo('main', notification.get(Constants.PROP_NAME.URL_IDENT));

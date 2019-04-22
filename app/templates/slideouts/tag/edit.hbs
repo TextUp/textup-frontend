@@ -8,7 +8,7 @@
         primaryLabel=(if editingTag.isDeleted "Confirm Delete" "Update")
         primaryProgressLabel=(if editingTag.isDeleted "Deleting..." "Updating")
         primaryClass=(if editingTag.isDeleted "btn btn-danger")
-        secondaryLabel=(if editingTag.isDeleted "Undo")
+        secondaryLabel=(if editingTag.isDeleted "Undo" "Cancel")
         onSecondary=(if editingTag.isDeleted (route-action "onTagUndoDelete"))
         showDelete=(not editingTag.isDeleted)
         onMarkForDelete=(route-action "onTagMarkForDelete"))

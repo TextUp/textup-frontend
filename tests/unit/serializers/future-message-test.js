@@ -34,7 +34,7 @@ test('serialized form', function(assert) {
   assert.notOk(keys.contains('whenCreated'));
   assert.ok(keys.contains('language'));
   assert.ok(keys.contains('message'));
-  assert.ok(keys.contains('notifySelf'));
+  assert.ok(keys.contains('notifySelfOnSend'));
   assert.ok(keys.contains('startDate'));
   assert.ok(keys.contains('type'));
   assert.ok(keys.contains('doMediaActions'));

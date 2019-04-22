@@ -12,7 +12,9 @@
 			{{#each data as |item index|}}
 				{{yield item index _publicAPI}}
 			{{else}}
-				{{yield to="inverse"}}
+				<div class="infinite-scroll__loading-container__none">
+					{{yield to="inverse"}}
+				</div>
 			{{/each}}
 		</div>
 		<div class="infinite-scroll__loading-container__message">

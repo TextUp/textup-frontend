@@ -42,6 +42,8 @@ export default DS.Model.extend(
     // ----------
 
     name: DS.attr('string'),
+    [Constants.PROP_NAME.FILTER_VAL]: computed.alias('name'),
+
     hexColor: DS.attr('string', { defaultValue: Constants.COLOR.BRAND }),
     phone: DS.belongsTo('phone'),
 

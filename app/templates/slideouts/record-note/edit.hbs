@@ -7,7 +7,7 @@
         primaryLabel=(if editingRecordNote.hasBeenDeleted "Confirm Delete" "Update")
         primaryProgressLabel=(if editingRecordNote.hasBeenDeleted "Deleting..." "Updating")
         primaryClass=(if editingRecordNote.hasBeenDeleted "btn btn-danger")
-        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo")
+        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo" "Cancel")
         onSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
         showDelete=(not editingRecordNote.hasBeenDeleted)
         onMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))

@@ -59,6 +59,8 @@ export default DS.Model.extend(
 
     whenCreated: DS.attr('date'),
     name: DS.attr('string', { defaultValue: '' }),
+    [Constants.PROP_NAME.FILTER_VAL]: computed.alias('name'),
+
     note: DS.attr('string', { defaultValue: '' }),
     numbers: DS.attr('collection', { defaultValue: () => [] }),
 

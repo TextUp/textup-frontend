@@ -29,7 +29,11 @@ export default Ember.Service.extend({
   createRecipient(val) {
     if (PhoneNumberUtils.validate(val)) {
       const num = PhoneNumberUtils.clean(val);
-      return { [Constants.PROP_NAME.URL_IDENT]: num, [Constants.PROP_NAME.READABLE_IDENT]: num };
+      return {
+        [Constants.PROP_NAME.URL_IDENT]: num,
+        [Constants.PROP_NAME.READABLE_IDENT]: num,
+        [Constants.PROP_NAME.FILTER_VAL]: num,
+      };
     }
   },
 });

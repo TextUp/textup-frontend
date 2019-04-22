@@ -33,6 +33,7 @@
                 </label>
                 {{#multi-select data=model.phone.content.tags
                     selected=exportRecordOwners
+                    filterProperty=(constant "PROP_NAME.FILTER_VAL")
                     displayProperty=(constant "PROP_NAME.READABLE_IDENT")
                     identityProperty=(constant "PROP_NAME.URL_IDENT")
                     doSearch=(route-action "exportDoSearch")

@@ -1,8 +1,5 @@
 import Ember from 'ember';
-import {
-  validate as validateNumber,
-  clean as cleanNumber,
-} from 'textup-frontend/utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
 const { isPresent, run, RSVP } = Ember;
 
@@ -30,8 +27,8 @@ export default Ember.Service.extend({
 
   _validateAndCheckForName(number, ctx) {
     const maxNum = 30, // we want some options in case the earlier contacts are view-only
-      cleaned = cleanNumber(number);
-    if (validateNumber(cleaned)) {
+      cleaned = PhoneNumberUtils.clean(number);
+    if (PhoneNumberUtils.validate(cleaned)) {
       this.get('contactService')
         .searchContactsByNumber(cleaned, { max: maxNum })
         .then(results => {
@@ -53,14 +50,14 @@ export default Ember.Service.extend({
       });
     }
   },
-  _ensureContactExists(contactToCall, number, { displayedList, currentFilter }) {
+  _ensureContactExists(contactToCall, number) {
     return new RSVP.Promise((resolve, reject) => {
       if (isPresent(contactToCall)) {
         resolve(contactToCall);
       } else {
         const newContact = this.get('store').createRecord('contact', { numbers: [{ number }] });
         this.get('contactService')
-          .persistNew(newContact, { displayedList, currentFilter })
+          .persistNewAndTryAddToPhone(newContact)
           .then(() => resolve(newContact), reject);
       }
     });

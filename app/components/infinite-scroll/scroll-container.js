@@ -78,7 +78,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
   _scheduleResetPosition(shouldAnimate = false) {
     return new RSVP.Promise(resolve => {
       run.join(() =>
-        run.scheduleOnce('render', this, this._scrollToOffset, resolve, 0, shouldAnimate)
+        run.scheduleOnce('afterRender', this, this._scrollToOffset, resolve, 0, shouldAnimate)
       );
     });
   },
@@ -86,7 +86,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     return new RSVP.Promise(resolve => {
       run.join(() => {
         const offset = this.get('_userOffsetFromInitial');
-        run.scheduleOnce('render', this, this._scrollToOffset, resolve, offset, shouldAnimate);
+        run.scheduleOnce('afterRender', this, this._scrollToOffset, resolve, offset, shouldAnimate);
       });
     });
   },

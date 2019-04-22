@@ -26,10 +26,10 @@
                 {{/tool-tip}}
             {{/if}}
         </span>
-        <span class="badge {{if message.notifySelf 'bg-color bg-dark'}}">
-            {{#tool-tip title=(if message.notifySelf 'Notify myself via text' 'Do not notify me')}}
+        <span class="badge {{if message.notifySelfOnSend 'bg-color bg-dark'}}">
+            {{#tool-tip title=(if message.notifySelfOnSend 'Notify me when sending' 'Do not notify me when sending')}}
                 <span class="fa fa-user
-                    {{if (not message.notifySelf) 'fa-inverse'}}"></span>
+                    {{if (not message.notifySelfOnSend) 'fa-inverse'}}"></span>
             {{/tool-tip}}
         </span>
     </div>

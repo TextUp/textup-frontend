@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
@@ -8,6 +9,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   dataService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  stateManager: Ember.inject.service('state'),
 
   setupController(controller) {
     this._super(...arguments);
@@ -22,7 +24,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/compose',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
@@ -43,7 +45,16 @@ export default Ember.Mixin.create({
         rText = this.get('recordItemService').createNewText(recipients, { contents });
       return this.get('dataService')
         .persist(rText)
-        .then(() => this.send('cancelComposeSlideout'))
+        .then(() => {
+          this.send('cancelComposeSlideout');
+          // [FUTURE] Right now, newly created contacts aren't pushed to the contacts list so the
+          // user needs to refresh before seeing the newly-created contacts. Consider making the
+          // contacts to phone relationship automatically managed by Ember Data like the
+          // record items to record owners
+          if (this.get('stateManager.viewingContacts')) {
+            this.controllerFor('main.contacts').doRefreshContacts();
+          }
+        })
         .catch(() => rText.rollbackAttributes());
     },
 

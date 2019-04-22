@@ -111,14 +111,14 @@ test('rendering completion status', function(assert) {
 test('rendering notify self', function(assert) {
   run(() => {
     const done = assert.async(),
-      fMsg = this.store.createRecord('future-message', { notifySelf: false });
+      fMsg = this.store.createRecord('future-message', { notifySelfOnSend: false });
     this.setProperties({ fMsg });
     this.render(hbs`{{future-message message=fMsg}}`);
 
     assert.ok(this.$('.ember-view').length);
     assert.ok(this.$('.fa-user.fa-inverse').length, 'user icon is greyed out');
 
-    fMsg.set('notifySelf', true);
+    fMsg.set('notifySelfOnSend', true);
 
     wait().then(() => {
       assert.notOk(this.$('.fa-user.fa-inverse').length, 'user icon is greyed out');

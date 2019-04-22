@@ -75,7 +75,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   whenCreated: DS.attr('date'),
   nextFireDate: DS.attr('date'),
   isDone: DS.attr('boolean', { defaultValue: false }),
-  notifySelf: DS.attr('boolean', { defaultValue: false }),
+  notifySelfOnSend: DS.attr('boolean', { defaultValue: false }),
   timesTriggered: DS.attr('number', { defaultValue: 0 }),
   isRepeating: DS.attr('boolean', { defaultValue: false }),
   repeatCount: DS.attr('number'),

@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import TextUtils from 'textup-frontend/utils/text';
 import TypeUtils from 'textup-frontend/utils/type';
 import Ember from 'ember';
@@ -12,16 +13,23 @@ export default Ember.Controller.extend({
 
   phone: computed.alias('stateManager.owner.phone.content'),
   filterName: computed('phone.contactsFilter', function() {
-    return TextUtils.capitalize(this.get('phone.contactsFilter'));
+    return TextUtils.capitalize(this.get('phone.contactsFilter') || Constants.CONTACT.FILTER.ALL);
   }),
 
   setup(newTag = null) {
-    const contactsList = this.get('contactsList');
+    const contactsList = this.get('contactsList'),
+      phone = this.get('phone');
     if (contactsList) {
       contactsList.actions.resetAll();
     }
-    this.set('tag', TypeUtils.isTag(newTag) ? newTag : null);
-    this.get('phone').clearContacts();
+    phone.clearContacts();
+    if (TypeUtils.isTag(newTag)) {
+      this.set('tag', newTag);
+      phone.set('contactsFilter', null);
+    } else {
+      this.set('tag', null);
+      phone.set('contactsFilter', this.get('filter'));
+    }
   },
 
   doRefreshContacts() {

@@ -1,7 +1,8 @@
-import TypeUtils from 'textup-frontend/utils/type';
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';
+import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed } = Ember;
 
@@ -131,10 +132,26 @@ export default Ember.Service.extend({
     });
     this.get('dataService').request(
       Ember.RSVP.all([
-        socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
-        socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
-        socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
-        socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this)),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.RECORD_ITEMS,
+          this._handleSocketRecordItems.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.CONTACTS,
+          this._handleSocketContacts.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.FUTURE_MESSAGES,
+          this._handleSocketFutureMsgs.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.PHONES,
+          this._handleSocketPhones.bind(this)
+        ),
       ])
     );
   },
@@ -148,7 +165,7 @@ export default Ember.Service.extend({
   _handleSocketFutureMsgs(data) {
     this._normalizeAndPushSocketPayload('future-message', data);
   },
-  _handleSocketRecords(data) {
+  _handleSocketRecordItems(data) {
     this._normalizeAndPushSocketPayload('record-item', data);
   },
   _handleSocketContacts(data) {

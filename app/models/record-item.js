@@ -35,8 +35,8 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   media: DS.belongsTo('media'), // hasOne
 
   // belong to either a contact or a tag
-  contact: DS.belongsTo('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
-  tag: DS.belongsTo('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
+  contacts: DS.hasMany('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
+  tags: DS.hasMany('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
 
   recipients: computed.readOnly('_recipients'),
   newNumberRecipients: computed.readOnly('_newNumberRecipients'),

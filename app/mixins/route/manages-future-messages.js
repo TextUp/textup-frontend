@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
@@ -21,7 +22,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/future-message/create',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
@@ -39,7 +40,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/future-message/list',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },

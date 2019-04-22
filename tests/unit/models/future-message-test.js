@@ -194,7 +194,7 @@ test('default values', function(assert) {
   const obj = this.subject();
 
   assert.equal(obj.get('isDone'), false);
-  assert.equal(obj.get('notifySelf'), false);
+  assert.equal(obj.get('notifySelfOnSend'), false);
   assert.equal(obj.get('isRepeating'), false);
   assert.equal(obj.get('timesTriggered'), 0);
   assert.equal(typeOf(obj.get('startDate')), 'date');

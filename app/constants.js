@@ -4,21 +4,28 @@ export default {
     POST: 'POST',
     PUT: 'PUT',
   },
+  SOCKET_EVENT: {
+    CONTACTS: 'contacts',
+    FUTURE_MESSAGES: 'futureMessages',
+    RECORD_ITEMS: 'recordItems',
+    PHONES: 'phones',
+  },
   RESPONSE_STATUS: {
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,
     TIMED_OUT: 0,
   },
   PROP_NAME: {
+    AVAILABLE_NUMBER: 'phoneNumber',
+    FILTER_VAL: 'filterValue',
     MEDIA_ID: 'uid',
     MODEL_NAME: 'constructor.modelName',
+    NEW_NUMBER_ID: 'sid',
     READABLE_IDENT: 'readableIdentifier',
     SHARING_IDENT: 'sharingIdentifier',
     SHARING_PERMISSION: 'permission',
     SHARING_PHONE_ID_BUCKETS: 'sharedWith',
     URL_IDENT: 'urlIdentifier',
-    AVAILABLE_NUMBER: 'phoneNumber',
-    NEW_NUMBER_ID: 'sid',
   },
   MIME_TYPE: {
     PDF: 'application/pdf',
@@ -28,6 +35,10 @@ export default {
     FORMAT: { PDF: 'pdf' },
     LARGEST_MAX: 5000,
     TYPE: { SINGLE: 'singleStream', GROUPED: 'groupByEntity' },
+  },
+  VOICE_TYPE: {
+    MALE: 'MALE',
+    FEMALE: 'FEMALE',
   },
   LANGUAGES: [
     'CHINESE',
@@ -136,6 +147,18 @@ export default {
       REJECTED: 'REJECTED',
       PENDING: 'PENDING',
       APPROVED: 'APPROVED',
+    },
+  },
+  NOTIFICATION: {
+    METHOD: {
+      EMAIL: 'EMAIL',
+      TEXT: 'TEXT',
+    },
+    FREQUENCY: {
+      IMMEDIATELY: 'IMMEDIATELY',
+      QUARTER_HOUR: 'QUARTER_HOUR',
+      HALF_HOUR: 'HALF_HOUR',
+      HOUR: 'HOUR',
     },
   },
   SHARING_PERMISSION: { DELEGATE: 'DELEGATE', VIEW: 'VIEW' },

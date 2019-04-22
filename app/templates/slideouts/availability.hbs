@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat stateManager.owner.name " Availability"))
+        title=(concat stateManager.owner.name " Notifications"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=(or model.isDirty authService.authUser.isDirty)
         onPrimary=(route-action "finishAvailabilitySlideout")
@@ -57,15 +57,15 @@
                     <span class="text-normal">Read away message</span>
                 </label>
                 {{#multi-toggle classNames="xs-full-row s-row-2"
-                    selectIndex=(if (eq model.phone.content.voice "MALE") 0 1) as |toggle doRegister|}}
+                    selectIndex=(if (eq model.phone.content.voice (constant "VOICE_TYPE.MALE")) 0 1) as |toggle doRegister|}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=(constant "COLOR.LIGHT_BLUE")
-                        onSelect=(action (mut model.phone.content.voice) "MALE")}}
+                        onSelect=(action (mut model.phone.content.voice) (constant "VOICE_TYPE.MALE"))}}
                         Male voice
                     {{/multi-toggle/item}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=(constant "COLOR.BRAND")
-                        onSelect=(action (mut model.phone.content.voice) "FEMALE")}}
+                        onSelect=(action (mut model.phone.content.voice) (constant "VOICE_TYPE.FEMALE"))}}
                         Female voice
                     {{/multi-toggle/item}}
                 {{/multi-toggle}}
@@ -103,19 +103,75 @@
                 {{/audio-control}}
             </div>
         </div>
+        {{#with (owner-policy/self model.phone.content authService.authUser) as |selfPolicy|}}
+            <hr>
+            <div class="form__group">
+                <label for="notification-type" class="control-text form__label xs-full-row s-row-2">
+                    Send notifications via
+                </label>
+                {{#multi-toggle classNames="xs-full-row s-row-2"
+                    selectIndex=(if (eq selfPolicy.method (constant "NOTIFICATION.METHOD.EMAIL")) 0 1) as |toggle doRegister|}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.LIGHT_BLUE")
+                        onSelect=(action (mut selfPolicy.method) (constant "NOTIFICATION.METHOD.EMAIL"))}}
+                        email
+                    {{/multi-toggle/item}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.BRAND")
+                        onSelect=(action (mut selfPolicy.method) (constant "NOTIFICATION.METHOD.TEXT"))}}
+                        text message
+                    {{/multi-toggle/item}}
+                {{/multi-toggle}}
+            </div>
+            <div class="form__group">
+                <label for="notification-type" class="control-text form__label xs-full-row s-row-2">
+                    Notify
+                    {{#if (not (eq selfPolicy.frequency (constant "NOTIFICATION.FREQUENCY.IMMEDIATELY")))}}
+                        at most every
+                    {{/if}}
+                </label>
+                {{#multi-toggle classNames="xs-full-row s-row-2"
+                    selectIndex=(if
+                        (eq selfPolicy.frequency (constant "NOTIFICATION.FREQUENCY.IMMEDIATELY")) 0
+                        (if (eq selfPolicy.frequency (constant "NOTIFICATION.FREQUENCY.QUARTER_HOUR")) 1
+                            (if (eq selfPolicy.frequency (constant "NOTIFICATION.FREQUENCY.HALF_HOUR")) 2
+                                (if (eq selfPolicy.frequency (constant "NOTIFICATION.FREQUENCY.HOUR")) 3)))) as |toggle doRegister|}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.BRAND")
+                        onSelect=(action (mut selfPolicy.frequency) (constant "NOTIFICATION.FREQUENCY.IMMEDIATELY"))}}
+                        immediately
+                    {{/multi-toggle/item}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.LIGHT_BLUE")
+                        onSelect=(action (mut selfPolicy.frequency) (constant "NOTIFICATION.FREQUENCY.QUARTER_HOUR"))}}
+                        15 minutes
+                    {{/multi-toggle/item}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.MEDIUM_BLUE")
+                        onSelect=(action (mut selfPolicy.frequency) (constant "NOTIFICATION.FREQUENCY.HALF_HOUR"))}}
+                        30 minutes
+                    {{/multi-toggle/item}}
+                    {{#multi-toggle/item doRegister=doRegister
+                        color=(constant "COLOR.LIGHT_GRAY")
+                        onSelect=(action (mut selfPolicy.frequency) (constant "NOTIFICATION.FREQUENCY.HOUR"))}}
+                        1 hour
+                    {{/multi-toggle/item}}
+                {{/multi-toggle}}
+            </div>
+        {{/with}}
+
+        <hr>
+
+        {{#if (not authService.authUser.hasPersonalNumber)}}
+            <div class="bg-color pad-all margin-b border-radius-all">
+                You have connected a personal phone number to your account. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">an away message will be sent</span> as if you were not available. <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>Please add a personal phone number to your account.</span>
+            </div>
+        {{/if}}
+        {{availability-control
+            self=(owner-policy/self model.phone.content authService.authUser)
+            others=(owner-policy/others model.phone.content authService.authUser)
+            onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
+            onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
+            onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
     </div>
-
-    <hr>
-
-    {{#if (not authService.authUser.hasPersonalNumber)}}
-        <div class="bg-color pad-all margin-b border-radius-all">
-            You have connected a personal phone number to your account. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">an away message will be sent</span> as if you were not available. <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>Please add a personal phone number to your account.</span>
-        </div>
-    {{/if}}
-    {{availability-control
-        self=(owner-policy/self model.phone.content authService.authUser)
-        others=(owner-policy/others model.phone.content authService.authUser)
-        onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
-        onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
-        onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
 {{/slideout-pane}}

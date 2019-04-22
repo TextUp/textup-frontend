@@ -31,7 +31,7 @@
         {{/if}}
     </div>
     <div class="flex__item flex__item--single-line text-right">
-        {{#if entity.unreadInfo}}
+        {{#if (and entity.isUnread entity.unreadInfo)}}
             <div class="text-big text-brand">
                 <span class="margin-l-half">{{entity.unreadInfo.numTexts}}</span>
                 <i class="fa fa-commenting margin-l-quarter" aria-hidden="true"></i>

@@ -297,7 +297,10 @@ export default Ember.Service.extend(Ember.Evented, {
     // that this current ajax request being made results in a 401 error
     options.error = function(_jqXHR) {
       const errorArgs = arguments;
-      if (_jqXHR.status === 401 && !originalOptions._alreadyTriedRenew) {
+      if (
+        _jqXHR.status === Constants.RESPONSE_STATUS.UNAUTHORIZED &&
+        !originalOptions._alreadyTriedRenew
+      ) {
         originalOptions._alreadyTriedRenew = true;
         this._doRenewToken(() => {
           Ember.$.ajax(originalOptions);

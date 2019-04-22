@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import TypeUtils from 'textup-frontend/utils/type';
 
-const { isArray, RSVP } = Ember;
+const { RSVP } = Ember;
 
 export default Ember.Service.extend({
   dataService: Ember.inject.service(),
@@ -9,22 +10,25 @@ export default Ember.Service.extend({
 
   createNew() {
     return this.get('store').createRecord('contact', {
-      language: this.get('stateManager.owner.phone.content.language')
+      language: this.get('stateManager.owner.phone.content.language'),
     });
   },
-  persistNew(contact, { displayedList, currentFilter }) {
+  persistNewAndTryAddToPhone(contact) {
+    const stateManager = this.get('stateManager'),
+      phone = stateManager.get('owner.phone.content');
     return this.get('dataService')
       .persist(contact)
       .then(() => {
-        // add new contact to the beginning of the currently-shown list if is showing all
-        if (isArray(displayedList) && currentFilter === 'all') {
-          displayedList.unshiftObject(contact);
+        // add new contact to the beginning of the currently-shown list if it is viewing all contacts
+        // and not a specific tag's contacts. Phone will handle filtering for statuses.
+        if (TypeUtils.isPhone(phone) && stateManager.get('viewingContacts')) {
+          phone.addContacts(contact, true);
         }
       });
   },
 
   checkNumberDuplicate(contact, addedNum) {
-    if (!contact) {
+    if (!contact || !addedNum) {
       return;
     }
     this.searchContactsByNumber(addedNum).then(results => {
@@ -32,21 +36,18 @@ export default Ember.Service.extend({
     });
   },
   removeNumberDuplicate(contact, removedNum) {
-    if (!contact) {
+    if (!contact || !removedNum) {
       return;
     }
     contact.removeDuplicatesForNumber(removedNum);
   },
   searchContactsByNumber(number, params = Object.create(null)) {
     return new RSVP.Promise((resolve, reject) => {
-      const teamId = this.get('stateManager.ownerAsTeam.id');
       params.search = number;
-      if (teamId) {
-        params.teamId = teamId;
-      }
+      params.teamId = this.get('stateManager.ownerAsTeam.id');
       this.get('store')
         .query('contact', params)
         .then(resolve, reject);
     });
-  }
+  },
 });

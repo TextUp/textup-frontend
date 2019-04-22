@@ -22,8 +22,8 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
     hasAwayMessage: { serialize: false },
     hasBeenDeleted: { key: 'isDeleted', serialize: true },
     receipts: { serialize: false },
-    contact: { serialize: false },
-    tag: { serialize: false },
+    contacts: { serialize: false },
+    tags: { serialize: false },
   },
 
   modelNameFromPayloadKey(payloadKey) {

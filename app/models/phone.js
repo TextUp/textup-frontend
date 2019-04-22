@@ -1,3 +1,4 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
@@ -94,10 +95,15 @@ export default DS.Model.extend(Dirtiable, Validations, {
     this.set('contactsFilter', Constants.CONTACT.FILTER.ALL);
   },
 
-  addContacts(contacts) {
-    const list = this.get('_contacts');
-    if (isPresent(contacts)) {
-      list.pushObjects(isArray(contacts) ? contacts : [contacts]);
+  addContacts(contacts, addToBeginning = false) {
+    const list = this.get('_contacts'),
+      toAdd = ArrayUtils.ensureArrayAndAllDefined(contacts);
+    if (isPresent(toAdd)) {
+      if (addToBeginning) {
+        list.unshiftObjects(toAdd);
+      } else {
+        list.pushObjects(toAdd);
+      }
     }
   },
 

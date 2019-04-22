@@ -33,7 +33,7 @@ export default DS.RESTSerializer.extend(
         json.doShareActions = actions.map(this._convertToShareAction);
         actions.clear();
       }
-      return json;
+      return snapshot.record.get('isViewPermission') ? { status: json.status } : json;
     },
 
     // Sharing

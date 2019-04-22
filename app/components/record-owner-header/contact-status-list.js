@@ -17,10 +17,10 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _contactsIsAlreadyArray: computed('contacts', function() {
+  _contactsIsAlreadyArray: computed('contacts.status', 'contacts.@each.status', function() {
     return isArray(this.get('contacts'));
   }),
-  _singleStatus: computed('contacts', function() {
+  _singleStatus: computed('contacts.status', 'contacts.@each.status', function() {
     const contacts = this.get('contacts');
     return isArray(contacts) ? null : getWithDefault(contacts, 'status', '').toLowerCase();
   }),

@@ -1,7 +1,8 @@
 import ArrayUtils from 'textup-frontend/utils/array';
-import ErrorUtils from 'textup-frontend/utils/error';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import ErrorUtils from 'textup-frontend/utils/error';
+import PropertyUtils from 'textup-frontend/utils/property';
 
 const { RSVP, isArray } = Ember;
 
@@ -38,14 +39,10 @@ export default Ember.Service.extend({
 
   request(promise) {
     return new RSVP.Promise((resolve, reject) => {
-      if (promise instanceof RSVP.Promise) {
-        promise.then(resolve, failureObj => {
-          this.handleError(failureObj);
-          reject(failureObj);
-        });
-      } else {
-        resolve(promise);
-      }
+      PropertyUtils.ensurePromise(promise).then(resolve, failureObj => {
+        this.handleError(failureObj);
+        reject(failureObj);
+      });
     });
   },
 

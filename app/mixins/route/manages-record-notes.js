@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
@@ -38,7 +39,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/record-note/create',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
@@ -57,7 +58,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/record-note/edit',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
@@ -77,7 +78,7 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/record-note/revisions',
-        this.get('routeName'),
+        AppUtils.controllerNameForRoute(this),
         Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },

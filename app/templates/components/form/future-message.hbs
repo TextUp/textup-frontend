@@ -83,7 +83,7 @@
 <div class="form__group">
     <div class="xs-2-row-3 control-text">
         <label class="form__label" for="Notify Self">
-            Notify me also?
+            Notify me when sending?
             {{#if (not personalNumber)}}
                 {{#tool-tip title='Notifications disabled'
                     classNames='margin-l-quarter'
@@ -95,7 +95,7 @@
     </div>
     {{multi-toggle/binary classNames='xs-row-3'
         disabled=(or futureMessage.isDeleted (not personalNumber))
-        value=futureMessage.notifySelf}}
+        value=futureMessage.notifySelfOnSend}}
 </div>
 {{#if futureMessage.isNew}}
     <div class="form__group">

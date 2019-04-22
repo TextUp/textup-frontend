@@ -9,6 +9,9 @@ test('serializes', function(assert) {
   let serializedRecord = record.serialize(),
     keys = Object.keys(serializedRecord);
 
-  assert.notOk(keys.contains('staffId'));
+  assert.ok(
+    keys.contains('staffId'),
+    'needs staff id to be able to identify who this policy belongs to'
+  );
   assert.notOk(keys.contains('name'));
 });
