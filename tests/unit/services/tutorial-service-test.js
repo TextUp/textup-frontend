@@ -3,11 +3,14 @@ import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import config from 'textup-frontend/config/environment';
+import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 
 moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
+
   beforeEach() {
+    this.register('service:notifications', NotificationsService);
     this.register(
       'service:auth-service',
       Ember.Service.extend(Ember.Evented, {
@@ -41,8 +44,15 @@ test('logging out and loggin in', function(assert) {
   authService.set('authUser', { username: 'un1' });
   authService.trigger(config.events.auth.success);
 
+  service.resetTasks();
+  assert.ok(service._shouldShowTaskManager, true);
+  service.closeTaskManager();
+  assert.ok(service._shouldShowTaskManager, false);
+
   authService.set('authUser', { username: 'un2' });
   authService.trigger(config.events.auth.success);
+
+  assert.ok(service._shouldShowTaskManager, true);
 });
 
 test('_setTaskStatus and getTaskStatus', function(assert) {
@@ -133,7 +143,6 @@ test('firstIncompleteTask', function(assert) {
 
 test('closeTaskManager', function(assert) {
   let service = this.subject();
-  assert.strictEqual(service.shouldShowTaskManagerInternal, true, 'init with shouldshow is true');
   const info = sinon.spy(),
     done = assert.async();
   service.notifications = {
