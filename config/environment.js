@@ -9,6 +9,7 @@ module.exports = function(environment) {
     EmberENV: { FEATURES: {} },
     APP: {},
 
+    hasCordova: process.argv.some(obj => obj === '--cordova'),
     apiKeys: { mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX },
     gReCaptcha: { siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA },
     locationPreview: {
@@ -16,7 +17,7 @@ module.exports = function(environment) {
       maxWidth: 1280,
       maxHeight: 1280,
     },
-    lock: { lockOnHidden: true },
+    lock: { lockOnHidden: true, maxNumAttempts: 4 },
     moment: { includeTimezone: 'subset', outputFormat: 'llll' },
     socket: { authKey: process.env.TEXTUP_FRONTEND_API_PUSHER },
     storage: { namespace: 'textup' },
@@ -49,7 +50,7 @@ module.exports = function(environment) {
     ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
-    ENV.lock.lockOnHidden = false;
+    // ENV.lock.lockOnHidden = false;
     ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
     ENV.links.privacyPolicy = 'http://staging-static.textup.org/privacy-policy/';
     ENV.links.termsOfUse = 'http://staging-static.textup.org/terms-of-use/';
@@ -75,7 +76,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    if (process.env.TRAVIS_BRANCH === 'master') {
+    // TODO: hasCordova remove once main branched
+    if (process.env.TRAVIS_BRANCH === 'master' || ENV.hasCordova) {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_PRODUCTION;
       ENV.analytics = {
         options: { limitRouteInformation: true },

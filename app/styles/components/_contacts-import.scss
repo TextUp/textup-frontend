@@ -1,0 +1,28 @@
+.contacts-import {
+  margin-left: 50px;
+
+  &__contact-container {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+  }
+
+  &__contact-item {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__contact-name {
+    flex-grow: 1;
+  }
+
+  &__contact-number-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__contact-number-item {
+    display: inline;
+    flex-grow: 1;
+  }
+}

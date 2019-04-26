@@ -1,0 +1,16 @@
+<input type="button"
+  class="contacts-display-toggle"
+  value={{if _someSelected "Deselect All" "Select All"}}
+  onclick={{action _toggleSelect}}>
+
+<br><br>
+{{_someSelected}}
+
+<h2> Name Number</h2>
+{{#each contactObjects as |person|}}
+  {{contacts-display/contact-item doRegister=(action _registerChild)
+    data=person}}
+{{/each}}
+
+<br><br>
+<input type="button" id = "contacts-display-import" value="Import" onclick={{action _submitContacts}}>

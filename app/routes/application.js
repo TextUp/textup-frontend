@@ -4,7 +4,7 @@ import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-const { $, isArray, get, isPresent, run: { later, cancel } } = Ember;
+const { isArray, get } = Ember;
 
 export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   attemptedTransition: null,
@@ -17,9 +17,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     this._super(...arguments);
     this.notifications.setDefaultClearNotification(5000);
     this.notifications.setDefaultAutoClear(true);
-    this.get('authService')
-      .on(config.events.auth.success, this, this._bindLockEvents)
-      .on(config.events.auth.clear, this, this._clearLockEvents);
   },
   willDestroy: function() {
     this._super(...arguments);
@@ -46,10 +43,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
       targetName = transition.targetName;
     // initialize the observer after retrieving the previous currentUrl
     this.get('stateManager').trackLocation();
-    // skip initial locking when setting up controller if in ignore list
-    const ignoreLock = config.state.ignoreLock,
-      doInitialLock = ignoreLock.every(loc => targetName.indexOf(loc) === -1);
-    this.set('doInitialLock', doInitialLock);
+
     // redirect only if previous url present and the target
     // route is not one of the routes to be ignored
     const ignoreTracking = config.state.ignoreTracking,
@@ -61,9 +55,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   setupController: function(controller) {
     this._super(...arguments);
     controller.set('lockCode', '');
-    if (this.get('authService.isLoggedIn') && this.get('doInitialLock')) {
-      this.doLock();
-    }
   },
 
   actions: {
@@ -88,21 +79,19 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Lock
     // ----
 
-    updateLockCode: function(code) {
-      this.controller.set('lockCode', code);
-    },
-    verifyLockCode: function(code) {
+    verifyLockCode(code) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         const un = this.get('authService.authUser.username');
         this.get('authService')
           .validateLockCode(un, code)
           .then(
             () => {
-              this.doUnlock();
+              this._resetAttempts();
               resolve();
             },
             () => {
               this.notifications.error('Incorrect lock code.');
+              this._doAttempt();
               reject();
             }
           )
@@ -113,40 +102,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Slideout
     // --------
 
-    willTransition: function(transition) {
-      this._super(...arguments);
-      const targetName = transition.targetName,
-        url = this.get('storage').getItem('currentUrl'),
-        ignoreLock = config.state.ignoreLock;
-      if (this.controller.get('isLocked')) {
-        const allowTransition = ignoreLock.any(loc => {
-          return targetName.indexOf(loc) > -1;
-        });
-        if (allowTransition) {
-          this.doUnlock();
-        } else {
-          transition.abort();
-          // Manual fix for the problem of URL getting out of sync
-          // when pressing the back button even though we are aborting
-          // the transition.
-          // http://stackoverflow.com/questions/17738923/
-          //    url-gets-updated-when-using-transition-
-          //    abort-on-using-browser-back
-          if (window.history) {
-            window.history.forward();
-          }
-        }
-      } else if (this.get('authService.isLoggedIn')) {
-        // otherwise, if logged in and we are coming from one of the ignoreLock
-        // locations, then we need to re-lock
-        const shouldRelock = ignoreLock.any(loc => {
-          return url.indexOf(loc) > -1;
-        });
-        if (shouldRelock) {
-          this.doLock();
-        }
-      }
-    },
     didTransition: function() {
       this._super(...arguments);
       // initializer
@@ -212,46 +167,57 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     error: function(reason, transition) {
       this.get('authService').set('attemptedTransition', transition);
       this.get('dataService').handleError(reason);
-    }
+    },
   },
 
-  // Lock helpers
-  // ------------
+  // Lock Attempts properties + helpers
+  // ----------------------------------
+  _storageObj: Ember.computed('persistStorage', function() {
+    return this.get('persistStorage') ? localStorage : sessionStorage;
+  }),
+  _numAttemptsKey: Ember.computed('storageNamespace', function() {
+    return `${this.get('storageNamespace')}--attempts`;
+  }),
 
-  doLock: function() {
-    if (!config.lock.lockOnHidden) {
+  _doLogout() {
+    // logout
+    this.get('authService').logout();
+    // unlock
+    const lockContainer = this.get('controller.lockContainer');
+    if (lockContainer) {
+      lockContainer.actions.reset();
+    }
+  },
+  _doAttempt() {
+    if (this.isDestroying || this.isDestroyed) {
       return;
     }
-    this.controller.set('isLocked', true);
-    Ember.run.scheduleOnce('afterRender', this, function() {
-      $('#container .number-control').focus();
-    });
-  },
-  doUnlock: function() {
-    this.controller.set('isLocked', false);
-  },
-  _scheduleLock: function() {
-    const org = this.get('authService.authUser.org.content'),
-      changedAttrs = org.changedAttributes();
-    let timeout = org.get('timeout');
-    if (isArray(get(changedAttrs, 'timeout'))) {
-      timeout = get(changedAttrs, 'timeout')[0];
+    this._incrementAttempts();
+    if (this._isTooManyAttempts()) {
+      this._resetAttempts();
+      Ember.tryInvoke(this, '_doLogout');
     }
-    timeout = isPresent(timeout) ? timeout : 15000;
-    this.set('_lockTimer', later(this, this.doLock, timeout));
   },
-  _unscheduleLock: function() {
-    cancel(this.get('_lockTimer'));
+  _isTooManyAttempts() {
+    return this._getAttempts() > config.lock.maxNumAttempts;
   },
-  _bindLockEvents: function() {
-    this.get('visibility')
-      .on(config.events.visibility.hidden, this, this._scheduleLock)
-      .on(config.events.visibility.visible, this, this._unscheduleLock);
+  _incrementAttempts() {
+    const storage = this.get('storage'),
+      obj = this.get('_storageObj'),
+      key = this.get('_numAttemptsKey');
+    storage.trySet(obj, key, this._getAttempts() + 1);
   },
-  _clearLockEvents: function() {
-    this.get('visibility')
-      .off(config.events.visibility.hidden, this)
-      .off(config.events.visibility.visible, this);
+  _resetAttempts() {
+    const storage = this.get('storage'),
+      obj = this.get('_storageObj'),
+      key = this.get('_numAttemptsKey');
+    storage.trySet(obj, key, 0);
+  },
+  _getAttempts() {
+    const storage = this.get('storage'),
+      key = this.get('_numAttemptsKey'),
+      existing = parseInt(storage.getItem(key));
+    return isNaN(existing) ? 0 : existing;
   },
 
   // Helpers
@@ -263,5 +229,5 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     } else {
       return doAction(data);
     }
-  }
+  },
 });

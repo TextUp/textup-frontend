@@ -1,0 +1,32 @@
+{{#if _hasCordova}}
+  <p> Loading spinner </p>
+  <p> if user denied settings instructions and try again button </p>
+
+{{else}}
+  <p> TextUp accepts contacts in the standard vCard format suppported by all major contacts managers. </p>
+  <p> See our importing contacts guide for more information on how to import multiple contacts from vCard files. </p>
+
+  <br><br>
+  <input type="file"
+      id="{{elementId}}__input"
+      accept="text/vcard"
+      multiple="multiple"
+      onchange={{action _handleChange}}>
+
+  <label class="{{labelClass}}" for="{{elementId}}__input">
+    {{#if _isLoading}}
+      <p> Loading ... </p>
+    {{else if _isError}}
+      <p> Something went wrong, please try upload again </p>
+      <p> or click here to upload a file from your computer </p>
+    {{else if _isLoaded}}
+      <p> Uploaded successfully hit import to complete </p>
+    {{else}}
+      <p> Drag and drop your contacts vcard file here </p>
+      <p> or click here to upload a file from your computer </p>
+    {{/if}}
+  </label>
+
+  <!-- hasFile else {is loading} else {is error} else (no files) -->
+
+{{/if}}

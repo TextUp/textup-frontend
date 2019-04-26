@@ -1,0 +1,15 @@
+<div class="lock-pad__indicator-container">
+  {{#if _isLoading}}
+    Validating...
+    <span class="fa fa-circle-o-notch fa-spin"></span>
+  {{else}}
+    {{#each _valIndices as |val index|}}
+      {{lock-pad/indicator indicatorNum=(plus index 1) numFilled=_valLength}}
+    {{/each}}
+  {{/if}}
+</div>
+
+{{number-control val=val
+  numDigits=totalPadDigits
+  hasError=_isError
+  doChange=(action _doUpdateVal)}}
