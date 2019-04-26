@@ -7,6 +7,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     src: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
+    hasCordovaClasses: PropTypes.string,
+    noCordovaClasses: PropTypes.string,
   },
   getDefaultProps() {
     return { hasCordovaClasses: '', noCordovaClasses: '' };

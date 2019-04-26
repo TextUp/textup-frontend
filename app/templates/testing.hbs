@@ -1,11 +1,17 @@
-{{link-to "Log In" "login"}}
+<div style="background: white; height: 100%; width: 100%;">
+  {{link-to "Log In" "login"}}
+  <br>
+  <h1>Testing Route!!</h1>
+  <h2>Used to test components</h2>
+  <br><br>
 
+  {{contacts-upload onImport=(action (mut contactObjectsToImport))}}
 
-<h1>Testing Route!!</h1>
-<h2>Used to test components</h2>
-<br>
-<br>
+  <br><br>
+  <p> --Above is upload-----Below is display----- </p>
+  <br><br>
 
-{{contacts-import
-  exportContacts = exportContacts
-}}
+  {{contacts-display contactObjects=contactObjectsToImport
+    onImport=(route-action "saveContacts")}}
+    
+</div>

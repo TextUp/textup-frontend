@@ -135,7 +135,7 @@ export default Ember.Route.extend(
     },
     redirect: function(model, transition) {
       // TODO comment out the following line in production release
-      this.transitionTo('testing');
+      // this.transitionTo('testing');
 
       this._super(...arguments);
       if (transition.targetName === 'main.index') {

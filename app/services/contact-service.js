@@ -9,7 +9,7 @@ export default Ember.Service.extend({
 
   createNew() {
     return this.get('store').createRecord('contact', {
-      language: this.get('stateManager.owner.phone.content.language')
+      language: this.get('stateManager.owner.phone.content.language'),
     });
   },
   persistNew(contact, { displayedList, currentFilter }) {
@@ -48,5 +48,5 @@ export default Ember.Service.extend({
         .query('contact', params)
         .then(resolve, reject);
     });
-  }
+  },
 });

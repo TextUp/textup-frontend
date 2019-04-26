@@ -1,5 +1,8 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import config from 'textup-frontend/config/environment';
+
+const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -11,8 +14,15 @@ export default Ember.Component.extend(PropTypesMixin, {
   init() {
     this._super(...arguments);
     console.log('...loading'); // create a loading class
-    //this.importContacts();
-    this.fakeContacts();
+    this.set('_contacts', []);
+
+    if (config.hasCordova) {
+      this.set('_hasCordova', true);
+      this.importContacts();
+      // this.fakeContacts();
+    } else {
+      this.set('_hasCordova', false);
+    }
     console.log('finished loading');
   },
 
@@ -63,6 +73,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     console.log(contacts);
     return contacts;
   },
+
   _handleUpload(event) {
     const fr = new FileReader();
     fr.onloadend = event => {
@@ -76,26 +87,61 @@ export default Ember.Component.extend(PropTypesMixin, {
     };
     fr.readAsText(event.target.files[0]);
   },
+
+  // Actions
+  // -------
   _parseVcard(contents) {
-    console.log('PARSE CALLED');
     const contacts = contents.split('BEGIN:VCARD');
     const namePattern = new RegExp('[F][N][:].*');
-    const numPattern = new RegExp('[T][E][L].*');
-    const trim = new RegExp('[ ()-+]', 'g');
+    const numPattern = new RegExp('[T][E][L][;].*');
+    const numTrim = new RegExp('[\\-\\s+()]', 'g');
+    const nameTrim = new RegExp('[/\\\\]', 'g');
 
-    console.log(contacts);
+    var formatted = [];
 
     for (var i = 0; i < contacts.length; i++) {
       const curContact = contacts[i].split('\n');
+      var numbers = [];
+      var name = '';
+
       for (var j = 0; j < curContact.length; j++) {
         if (namePattern.test(curContact[j])) {
-          const name = curContact[j].substring(3);
-          console.log(name);
+          name = curContact[j].substring(3).replace(nameTrim, '');
         } else if (numPattern.test(curContact[j])) {
-          const number = curContact[j].substring(curContact[j].indexOf(':') + 1).replace(trim, '');
-          console.log(number);
+          var number = curContact[j].substring(curContact[j].indexOf(':') + 1).replace(numTrim, '');
+          // remove leading 1 for US numbers
+          if (number.length > 10 && number[0] === '1') {
+            number = number.substring(1);
+          }
+          if (numbers.indexOf(number) === -1) {
+            numbers.push(number);
+          }
         }
       }
+      if (name !== '' && numbers.length !== 0) {
+        formatted.push({ name: name, number: numbers });
+      }
+    }
+    this.set('_contacts', formatted);
+  },
+
+  _selectAll() {
+    var checkboxes = document.getElementsByName('box');
+    for (var i = 0, n = checkboxes.length; i < n; i++) {
+      checkboxes[i].checked = true;
     }
   },
+
+  _deselectAll() {
+    var checkboxes = document.getElementsByName('box');
+    for (var i = 0, n = checkboxes.length; i < n; i++) {
+      checkboxes[i].checked = false;
+    }
+  },
+
+  // Computed Values
+  // ---------------
+  _hasContacts: computed('_contacts', function() {
+    return this.get('_contacts').length > 0;
+  }),
 });

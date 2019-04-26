@@ -19,7 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   classNames: 'lock-pad__indicator',
   classNameBindings: ['_isFilled:lock-pad__indicator--filled'],
 
-  // Computed properties
+  // Internal properties
   // -------------------
 
   _isFilled: computed('indicatorNum', 'numFilled', function() {

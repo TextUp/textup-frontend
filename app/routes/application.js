@@ -180,7 +180,13 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   }),
 
   _doLogout() {
+    // logout
     this.get('authService').logout();
+    // unlock
+    const lockContainer = this.get('controller.lockContainer');
+    if (lockContainer) {
+      lockContainer.actions.reset();
+    }
   },
   _doAttempt() {
     if (this.isDestroying || this.isDestroyed) {

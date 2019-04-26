@@ -30,7 +30,7 @@ export default Ember.Mixin.create({
       return this.get('contactService')
         .persistNew(this.get('controller.newContact'), {
           displayedList: this.get('controller.contacts'),
-          currentFilter: this.get('controller.filter')
+          currentFilter: this.get('controller.filter'),
         })
         .then(() => {
           this.send('closeSlideout');
@@ -46,7 +46,7 @@ export default Ember.Mixin.create({
     },
     onRemoveNumber() {
       this.get('contactService').removeNumberDuplicate(this.get('controller.newContact'));
-    }
+    },
   },
 
   _tryRevertNewContact() {
@@ -54,5 +54,5 @@ export default Ember.Mixin.create({
     if (newContact) {
       newContact.rollbackAttributes();
     }
-  }
+  },
 });
