@@ -1,7 +1,8 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import sinon from 'sinon';
-import { mockModel } from '../../helpers/utilities';
+import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
 const { run, typeOf } = Ember;
@@ -14,16 +15,15 @@ moduleForModel('record-note', 'Unit | Model | record note', {
     'model:contact',
     'model:location',
     'model:media',
-    'model:media/add',
     'model:media-element',
     'model:media-element-version',
+    'model:media/add',
     'model:record-item',
     'model:record-note-revision',
     'model:tag',
     'serializer:record-item',
     'serializer:record-note',
     'service:auth-service',
-    'service:constants',
     'service:data-service',
     'service:socket',
     'service:state',
@@ -32,7 +32,7 @@ moduleForModel('record-note', 'Unit | Model | record note', {
     'validator:has-any',
     'validator:inclusion',
     'validator:number',
-    'validator:presence'
+    'validator:presence',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
@@ -42,7 +42,7 @@ moduleForModel('record-note', 'Unit | Model | record note', {
   },
   afterEach() {
     server.restore();
-  }
+  },
 });
 
 test('dirty checking', function(assert) {
@@ -69,9 +69,8 @@ test('dirty checking', function(assert) {
 
 test('rolling back chanages, including inherited rollback', function(assert) {
   run(() => {
-    const constants = Ember.getOwner(this).lookup('service:constants'),
-      obj = this.subject(),
-      mockContact1 = mockModel('1', constants.MODEL.CONTACT),
+    const obj = this.subject(),
+      mockContact1 = mockModel('1', Constants.MODEL.CONTACT),
       rItem = this.store().createRecord('record-item', { whenCreated: new Date() }),
       location = this.store().createRecord('location'),
       rollbackSpy = sinon.spy(location, 'rollbackAttributes');
@@ -127,13 +126,12 @@ test('specifying a time to add this note after', function(assert) {
 });
 
 test('validating content', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants'),
-    obj = this.subject(),
+  const obj = this.subject(),
     done = assert.async();
 
   run(() => {
     const mediaObj = this.store().createRecord('media');
-    obj.addRecipient(mockModel('1', constants.MODEL.CONTACT));
+    obj.addRecipient(mockModel('1', Constants.MODEL.CONTACT));
 
     obj
       .validate()
@@ -147,7 +145,7 @@ test('validating content', function(assert) {
         model.setProperties({
           noteContents: 'a message',
           location: null,
-          media: null
+          media: null,
         });
         return model.validate();
       })
@@ -157,7 +155,7 @@ test('validating content', function(assert) {
         model.setProperties({
           noteContents: null,
           location: null,
-          media: mediaObj
+          media: mediaObj,
         });
 
         return model.validate();
@@ -180,7 +178,7 @@ test('validating content', function(assert) {
         model.setProperties({
           noteContents: null,
           location: this.store().createRecord('location'),
-          media: null
+          media: null,
         });
 
         return model.validate();
@@ -194,12 +192,11 @@ test('validating content', function(assert) {
 });
 
 test('validating recipients', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants'),
-    obj = this.subject(),
+  const obj = this.subject(),
     done = assert.async(),
-    mockContact = mockModel('1', constants.MODEL.CONTACT),
-    mockTag = mockModel('2', constants.MODEL.TAG),
-    mockSharedContact = mockModel('3', constants.MODEL.CONTACT, { isShared: true });
+    mockContact = mockModel('1', Constants.MODEL.CONTACT),
+    mockTag = mockModel('2', Constants.MODEL.TAG),
+    mockSharedContact = mockModel('3', Constants.MODEL.CONTACT, { isShared: true });
   run(() => {
     obj.set('noteContents', 'hello');
 
@@ -207,17 +204,6 @@ test('validating recipients', function(assert) {
       .validate()
       .then(({ model, validations }) => {
         assert.equal(validations.get('isTruelyValid'), false, 'no recipients');
-
-        model.addRecipient('111 222 3333');
-
-        return model.validate();
-      })
-      .then(({ model, validations }) => {
-        assert.equal(
-          validations.get('isTruelyValid'),
-          false,
-          'recipient needs to be contact, shared contact, or tag'
-        );
 
         model.removeRecipient('111 222 3333');
         model.addRecipient(mockContact);

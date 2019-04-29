@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import MediaElementVersion from 'textup-frontend/models/media-element-version';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -5,24 +6,19 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed, tryInvoke, isNone, run, get } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     versions: PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(MediaElementVersion),
-        PropTypes.shape({ source: PropTypes.string.isRequired, width: PropTypes.number })
+        PropTypes.shape({ source: PropTypes.string.isRequired, width: PropTypes.number }),
       ])
     ),
     alt: PropTypes.string,
     onSuccess: PropTypes.func,
-    onFailure: PropTypes.func
+    onFailure: PropTypes.func,
   },
   getDefaultProps() {
-    return {
-      versions: [],
-      alt: this.get('constants.IMAGE.DEFAULT_ALT')
-    };
+    return { versions: [], alt: Constants.IMAGE.DEFAULT_ALT };
   },
 
   tagName: 'img',
@@ -31,7 +27,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     '_sizes:sizes',
     '_fallbackSource:src',
     '_width:width',
-    'alt'
+    'alt',
   ],
   classNames: ['responsive-image'],
   classNameBindings: ['_isLoadingSuccess:responsive-image--success'],
@@ -140,9 +136,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _calculateUpdatedSize() {
     const viewportWidthRatio = Math.round(
-      Math.min(this.get('_$img').width() / this.get('_$window').width() * 100, 100)
+      Math.min((this.get('_$img').width() / this.get('_$window').width()) * 100, 100)
     );
     // don't want to return `0vw` because that effectively hides the image completely
     return viewportWidthRatio !== 0 ? `${viewportWidthRatio}vw` : '1vw';
-  }
+  },
 });

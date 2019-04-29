@@ -5,13 +5,11 @@ import Contact from 'textup-frontend/models/contact';
 const { tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     contact: PropTypes.instanceOf(Contact),
     onGoToDuplicates: PropTypes.func,
     onAddNumber: PropTypes.func,
-    onRemoveNumber: PropTypes.func
+    onRemoveNumber: PropTypes.func,
   },
 
   classNames: 'form',
@@ -27,5 +25,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onRemoveNumber() {
     tryInvoke(this, 'onRemoveNumber', [...arguments]);
-  }
+  },
 });

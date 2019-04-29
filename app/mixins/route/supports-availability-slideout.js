@@ -1,9 +1,10 @@
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
   authService: Ember.inject.service(),
   availabilitySlideoutService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
   tutorialService: Ember.inject.service(),
 
@@ -12,8 +13,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/availability',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelAvailabilitySlideout() {
@@ -35,10 +36,6 @@ export default Ember.Mixin.create({
         });
     },
 
-    onAvailabilityEntitySwitch(scheduleOwner) {
-      return this.get('availabilitySlideoutService').ensureScheduleIsPresent(scheduleOwner);
-    },
-
     onFinishRecordingGreeting(mimeType, data) {
       const phone = this.get('currentModel.phone.content');
       this.get('availabilitySlideoutService').onAddAudio(phone, mimeType, data);
@@ -48,6 +45,6 @@ export default Ember.Mixin.create({
         this.get('currentModel'),
         numToCall
       );
-    }
-  }
+    },
+  },
 });

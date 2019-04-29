@@ -1,13 +1,12 @@
 {{#slideout-pane
-    headerProps=(hash title='New Tag')
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title='New Tag')
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishNewTagSlideout")
+        onPrimary=(route-action "finishNewTagSlideout")
         disablePrimary=(not (v-get newTag 'isValid'))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    doClose=(route-action "cancelNewTagSlideout")
+    onClose=(route-action "cancelNewTagSlideout")
     forceKeepOpen=newTag.isSaving
     focusSelector='.start-focus' as |slideout|}}
     {{form/tag-model tag=newTag}}

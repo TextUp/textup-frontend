@@ -5,17 +5,15 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     doRegister: PropTypes.func,
     onAddAudio: PropTypes.func,
-    onRemoveMedia: PropTypes.func
+    onRemoveMedia: PropTypes.func,
   },
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
@@ -47,5 +45,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   // no matter audio or image, always passed element then index
   _onRemoveMedia() {
     tryInvoke(this, 'onRemoveMedia', [...arguments]);
-  }
+  },
 });

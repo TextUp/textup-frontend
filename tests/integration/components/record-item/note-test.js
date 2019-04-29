@@ -1,6 +1,8 @@
-import * as LocationUtils from 'textup-frontend/utils/location';
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import LocationUtils from 'textup-frontend/utils/location';
+import moment from 'moment';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -9,7 +11,7 @@ import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 const { run } = Ember;
 
 moduleForComponent('record-item/note', 'Integration | Component | record item/note', {
-  integration: true
+  integration: true,
 });
 
 test('mandatory inputs', function(assert) {
@@ -61,6 +63,26 @@ test('optional inputs', function(assert) {
   });
 });
 
+test('timestamp displayed is `whenChanged` not `whenCreated`', function(assert) {
+  run(() => {
+    const store = Ember.getOwner(this).lookup('service:store'),
+      whenChanged = new Date(),
+      rNote = store.createRecord('record-note', { whenCreated: null, whenChanged });
+
+    this.setProperties({ rNote });
+    this.render(hbs`{{record-item/note note=rNote}}`);
+
+    assert.ok(this.$('.record-item').length);
+    assert.ok(this.$('.record-item--note').length);
+    assert.ok(this.$('.record-item__metadata').length, 'has metadata');
+    assert.ok(
+      this.$('.record-item__metadata')
+        .text()
+        .indexOf(moment(whenChanged).format(config.moment.outputFormat)) > -1
+    );
+  });
+});
+
 test('displaying empty note', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
@@ -108,7 +130,7 @@ test('display note with note contents, media, and location', function(assert) {
       rNote = store.createRecord('record-note', {
         noteContents: `${Math.random()}`,
         location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } }),
-        media: store.createRecord('media')
+        media: store.createRecord('media'),
       }),
       buildUrlStub = sinon
         .stub(LocationUtils, 'buildPreviewUrl')
@@ -150,7 +172,7 @@ test('displaying note with revisions + actions', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onEdit = sinon.spy(),
       onViewHistory = sinon.spy(),
@@ -208,7 +230,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         hasBeenDeleted: true,
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onRestore = sinon.spy(),
       onViewHistory = sinon.spy(),
@@ -267,7 +289,7 @@ test('readonly mode with revisions + actions', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
-        _revisions: [store.createRecord('record-note-revision')]
+        _revisions: [store.createRecord('record-note-revision')],
       }),
       onViewHistory = sinon.spy(),
       done = assert.async();

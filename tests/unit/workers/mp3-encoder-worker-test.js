@@ -10,12 +10,12 @@ module('Unit | Worker | mp3 encoder worker', {
   beforeEach() {
     encoderWorker = new window.Worker('/workers/mp3-encoder-worker.js');
     encoderWorker.onmessage = sinon.spy();
-    encoderWorker.onerror = sinon.stub().callsFake((ev) => ev.preventDefault());
+    encoderWorker.onerror = sinon.stub().callsFake(ev => ev.preventDefault());
     encoderWorker.onmessageerror = sinon.spy();
   },
   afterEach() {
     encoderWorker.terminate();
-  }
+  },
 });
 
 test('invalid message', function(assert) {
@@ -68,21 +68,20 @@ test('initializing valid worker', function(assert) {
   }, 500);
 });
 
-// TODO
-// test('initializing invalid worker', function(assert) {
-//   const done = assert.async();
-//
-//   encoderWorker.postMessage(['init', 'not a valid number']);
-//
-//   // `wait` doesn't wait long enough
-//   run.later(() => {
-//     assert.ok(encoderWorker.onmessage.notCalled);
-//     assert.ok(encoderWorker.onerror.calledOnce);
-//     assert.ok(encoderWorker.onmessageerror.notCalled);
-//
-//     done();
-//   }, 500);
-// });
+test('initializing invalid worker', function(assert) {
+  const done = assert.async();
+
+  encoderWorker.postMessage(['init', 'not a valid number']);
+
+  // `wait` doesn't wait long enough
+  run.later(() => {
+    assert.ok(encoderWorker.onmessage.notCalled);
+    assert.ok(encoderWorker.onerror.calledOnce);
+    assert.ok(encoderWorker.onmessageerror.notCalled);
+
+    done();
+  }, 500);
+});
 
 test('encoding data overall', function(assert) {
   const done = assert.async();

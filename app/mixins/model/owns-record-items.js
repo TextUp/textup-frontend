@@ -22,7 +22,7 @@ export default Ember.Mixin.create({
   // Private properties
   // ------------------
 
-  // polymorphic needs `inverse: '_recordItems'` in `mixins/model/owns-record-items`
+  // polymorphic needs `inverse: '_recordItems'` in `models/record-item`
   _recordItems: DS.hasMany('record-item', { polymorphic: true }),
   _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
   _recordsSorting: ['whenCreated:asc'],
@@ -72,7 +72,7 @@ export default Ember.Mixin.create({
     }
     this.get('_recordItems').pushObject(item);
     return true;
-  }
+  },
 });
 
 function addClusterLabel(cluster) {

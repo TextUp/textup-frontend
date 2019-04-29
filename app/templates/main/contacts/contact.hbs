@@ -15,7 +15,7 @@
         canAddToRecord=model.allowEdits
         canModifyExistingInRecord=model.allowEdits
         nextFutureFire=model.nextFutureFire
-        personalPhoneNumber=authService.authUser.personalPhoneNumber
+        personalNumber=authService.authUser.personalNumber
         recordClusters=model.recordClusters
         numRecordItems=model.numRecordItems
         totalNumRecordItems=model.totalNumRecordItems
@@ -23,7 +23,7 @@
         contents=careRecordText.contents
         onContentChange=(action (mut careRecordText.contents))
 
-        images=careRecordText.media.content.displayedImages.content
+        images=careRecordText.media.content.displayedImages
         audio=careRecordText.media.content.displayedAudio
         onAddImage=(route-action "onAddImage" careRecordText)
         onAddAudio=(route-action "onAddAudio" careRecordText)

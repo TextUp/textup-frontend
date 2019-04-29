@@ -28,26 +28,26 @@ export default Ember.Component.extend({
     {
       display: 'No',
       command: 'REMOVE',
-      color: '#c9302c'
+      color: '#c9302c',
     },
     {
       showWhenSelected: true,
       display: 'Yes',
       command: 'ADD',
-      color: '#56a556'
-    }
+      color: '#56a556',
+    },
   ]),
   multipleOptions: defaultIfAbsent([
     {
       display: 'None',
       command: 'REMOVE',
-      color: '#c9302c'
+      color: '#c9302c',
     },
     {
       display: 'All',
       command: 'ADD',
-      color: '#56a556'
-    }
+      color: '#56a556',
+    },
   ]),
   noChangeLabel: defaultIfAbsent('No Change'),
   noChangeColor: defaultIfAbsent('#d3d3d3'),
@@ -91,7 +91,7 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     Ember.run.scheduleOnce('afterRender', this, this._determineAnyChanges);
   },
 
@@ -99,18 +99,18 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    clearActions: function(bucket) {
+    clearActions(bucket) {
       this.clearActions(bucket);
     },
-    doActions: function(bucket, command) {
+    doActions(bucket, command) {
       this.doActions(bucket, command);
-    }
+    },
   },
 
   // Helpers
   // -------
 
-  clearActions: function(bucket, determineChanges = true) {
+  clearActions(bucket, determineChanges = true) {
     const prop = this.get('actionProperty'),
       actions = Ember.get(bucket, prop);
     if (Ember.isArray(actions)) {
@@ -122,7 +122,7 @@ export default Ember.Component.extend({
       this._determineAnyChanges();
     }
   },
-  doActions: function(bucket, command) {
+  doActions(bucket, command) {
     this.clearActions(bucket, false);
     const prop = this.get('actionProperty'),
       actions = Ember.get(bucket, prop);
@@ -134,7 +134,7 @@ export default Ember.Component.extend({
     Ember.set(bucket, prop, actions);
     this.set('anyChanges', true);
   },
-  _makeAction: function(bucket, item, command) {
+  _makeAction(bucket, item, command) {
     const itemIdProp = this.get('itemIdentityProperty'),
       bucketIdProp = this.get('bucketIdentityProperty'),
       action = Object.create(null);
@@ -143,7 +143,7 @@ export default Ember.Component.extend({
     action[this.get('_actionCommandProp')] = command;
     return action;
   },
-  _determineAnyChanges: function() {
+  _determineAnyChanges() {
     const prop = this.get('actionProperty'),
       anyChanges = this.get('buckets').any(bucket => {
         const actions = Ember.get(bucket, prop);
@@ -151,5 +151,5 @@ export default Ember.Component.extend({
       });
     this.set('anyChanges', anyChanges);
     return anyChanges;
-  }
+  },
 });

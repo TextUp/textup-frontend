@@ -1,7 +1,7 @@
 {{#slideout-pane
-    headerProps=(hash title='Note History')
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action "finishViewNoteHistorySlideout") as |slideout|}}
+    headerComponent=(component "slideout-pane/title" title='Note History')
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+    onClose=(route-action "finishViewNoteHistorySlideout") as |slideout|}}
     <ul class="result-list">
         {{#each viewingRecordNote.revisions as |revision index|}}
             {{#record-note-revision classNames="result-item"

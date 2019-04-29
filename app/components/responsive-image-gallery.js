@@ -9,7 +9,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import {
   getPreviewBounds,
   shouldRebuildResponsiveGallery,
-  formatResponsiveMediaImageForGallery
+  formatResponsiveMediaImageForGallery,
 } from 'textup-frontend/utils/photo';
 
 const { computed, isPresent, tryInvoke } = Ember;
@@ -18,9 +18,9 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     images: PropTypes.oneOfType([
       PropTypes.null,
-      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     ]),
-    thumbnailClass: PropTypes.string // for thumbnail coordinates function
+    thumbnailClass: PropTypes.string, // for thumbnail coordinates function
   },
   getDefaultProps() {
     return { images: [], thumbnailClass: '' };
@@ -73,7 +73,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   _elementToWormhole: computed(function() {
     return this.get('element').querySelector('.pswp');
   }),
-  _getThumbBoundsFn: function(index) {
+  _getThumbBoundsFn(index) {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
@@ -92,7 +92,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   // Internal handlers
   // -----------------
 
-  _onBeforeResize: function() {
+  _onBeforeResize() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
@@ -116,11 +116,11 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     this.setProperties({
       _isFirstResize: false,
       _prevResizeWidth: viewportWidth,
-      _prevResizeDensity: pixelDensity
+      _prevResizeDensity: pixelDensity,
     });
   },
 
-  _onGettingData: function(index, item) {
+  _onGettingData(index, item) {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
@@ -131,5 +131,5 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     if (result) {
       Ember.merge(item, result);
     }
-  }
+  },
 });

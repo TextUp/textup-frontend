@@ -3,25 +3,33 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    doClose: PropTypes.func.isRequired,
-    props: PropTypes.shape({
-      showFooter: PropTypes.bool.isRequired,
-      disablePrimary: PropTypes.bool,
-      hideSecondary: PropTypes.bool,
-      showDelete: PropTypes.bool,
+    onClose: PropTypes.func.isRequired,
+    showFooter: PropTypes.bool,
 
-      doPrimary: PropTypes.func.isRequired,
-      primaryLabel: PropTypes.string.isRequired,
-      primaryProgressLabel: PropTypes.string.isRequired,
-      primaryClass: PropTypes.string,
+    onPrimary: PropTypes.func.isRequired,
+    disablePrimary: PropTypes.bool,
+    primaryLabel: PropTypes.string.isRequired,
+    primaryProgressLabel: PropTypes.string.isRequired,
+    primaryClass: PropTypes.string,
 
-      doSecondary: PropTypes.func,
-      secondaryLabel: PropTypes.string,
+    onSecondary: PropTypes.func,
+    hideSecondary: PropTypes.bool,
+    secondaryLabel: PropTypes.string,
 
-      doMarkForDelete: PropTypes.func
-    }).isRequired
+    onMarkForDelete: PropTypes.func,
+    showDelete: PropTypes.bool,
+  },
+  getDefaultProps() {
+    return {
+      showFooter: false,
+      primaryClass: '',
+      disablePrimary: false,
+      hideSecondary: false,
+      secondaryLabel: 'Cancel',
+      showDelete: false,
+    };
   },
 
   classNames: 'slideout-pane__footer flex flex--spacing-between',
-  classNameBindings: ['props.showFooter::slideout-pane__footer--hidden']
+  classNameBindings: 'showFooter::slideout-pane__footer--hidden',
 });

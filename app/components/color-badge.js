@@ -1,17 +1,16 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     text: PropTypes.string.isRequired,
-    color: PropTypes.string
+    color: PropTypes.string,
   },
   getDefaultProps() {
-    return { color: this.get('constants.COLOR.BRAND') };
+    return { color: Constants.COLOR.BRAND };
   },
 
   tagName: 'span',
@@ -23,5 +22,5 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _style: computed('color', function() {
     return Ember.String.htmlSafe(`border-color: ${this.get('color')};`);
-  })
+  }),
 });

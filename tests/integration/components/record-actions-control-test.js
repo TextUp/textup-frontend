@@ -1,4 +1,4 @@
-import * as AudioUtils from 'textup-frontend/utils/audio';
+import AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import RecordActionsControlComponent from 'textup-frontend/components/record-actions-control';
@@ -9,7 +9,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { run } = Ember;
 
 moduleForComponent('record-actions-control', 'Integration | Component | record actions control', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {
@@ -20,7 +20,7 @@ test('inputs', function(assert) {
   this.setProperties({ array: [], func: () => null });
 
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=true
+    {{record-actions-control hasPersonalNumber=true
       hasItemsInRecord=true
       images=array
       audio=array
@@ -41,7 +41,7 @@ test('inputs', function(assert) {
 
   assert.throws(() => {
     this.render(hbs`
-      {{record-actions-control hasPersonalPhoneNumber=888
+      {{record-actions-control hasPersonalNumber=888
         hasItemsInRecord=888
         images=888
         audio=888
@@ -79,9 +79,7 @@ test('rendering for personal phone number and items in record', function(assert)
   const done = assert.async();
 
   this.setProperties({ hasNums: false, hasItems: false });
-  this.render(
-    hbs`{{record-actions-control hasPersonalPhoneNumber=hasNums hasItemsInRecord=hasItems}}`
-  );
+  this.render(hbs`{{record-actions-control hasPersonalNumber=hasNums hasItemsInRecord=hasItems}}`);
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
@@ -194,7 +192,7 @@ test('trigger schedule message action', function(assert) {
 
   this.setProperties({ hasNums: true, hasItems: true, onScheduleMessage });
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=hasNums
+    {{record-actions-control hasPersonalNumber=hasNums
       hasItemsInRecord=hasItems
       onScheduleMessage=onScheduleMessage}}
   `);
@@ -230,7 +228,7 @@ test('trigger make call action', function(assert) {
 
   this.setProperties({ hasNums: true, hasItems: true, onCall });
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=hasNums
+    {{record-actions-control hasPersonalNumber=hasNums
       hasItemsInRecord=hasItems
       onCall=onCall}}
   `);
@@ -265,7 +263,7 @@ test('trigger add note in past action', function(assert) {
 
   this.setProperties({ hasNums: true, hasItems: true, onAddNoteInPast });
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=hasNums
+    {{record-actions-control hasPersonalNumber=hasNums
       hasItemsInRecord=hasItems
       onAddNoteInPast=onAddNoteInPast}}
   `);
@@ -299,7 +297,7 @@ test('trigger add note now action', function(assert) {
 
   this.setProperties({ hasNums: true, hasItems: true, onAddNote });
   this.render(hbs`
-    {{record-actions-control hasPersonalPhoneNumber=hasNums
+    {{record-actions-control hasPersonalNumber=hasNums
       hasItemsInRecord=hasItems
       onAddNote=onAddNote}}
   `);

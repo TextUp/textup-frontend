@@ -1,4 +1,5 @@
-import config from 'textup-frontend/config/environment';
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -7,7 +8,7 @@ export default Ember.Mixin.create({
   setupController(controller) {
     this._super(...arguments);
     const tutorialService = this.get('tutorialService');
-    controller.setProperties({ config, feedbackMessage: null, tutorialService });
+    controller.setProperties({ feedbackMessage: null, tutorialService });
   },
 
   actions: {
@@ -16,8 +17,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/feedback',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     finishFeedbackSlideout() {
@@ -25,9 +26,8 @@ export default Ember.Mixin.create({
       this.controller.set('feedbackMessage', null);
     },
     restartTour() {
-      const tutorialService = this.get('tutorialService');
-      tutorialService.resetTasks();
+      this.get('tutorialService').resetTasks();
       this.send('finishFeedbackSlideout');
-    }
-  }
+    },
+  },
 });

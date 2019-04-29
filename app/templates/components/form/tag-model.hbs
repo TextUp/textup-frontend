@@ -26,7 +26,7 @@
             </div>
             <select name="tag-language" class="xs-row-3 form__input"
                 onchange={{action (mut tag.language) value="target.value"}}>
-                {{#each constants.LANGUAGES as |_lang|}}
+                {{#each (constant "LANGUAGES") as |_lang|}}
                     <option value={{_lang}}
                         selected={{if (eq _lang tag.language) "selected"}}>
                         {{capitalize (lowercase _lang) 1}}

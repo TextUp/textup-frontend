@@ -1,0 +1,4 @@
+{{g-recaptcha classNames="captcha-control"
+    onSuccess=(action _startVerifyCaptcha)
+    onExpired=(action _expireCaptcha)
+    ref=(mut _captchaComponent)}}

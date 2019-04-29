@@ -1,3 +1,5 @@
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -15,8 +17,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/contact/create',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelNewContactSlideout() {
@@ -29,10 +31,7 @@ export default Ember.Mixin.create({
     },
     finishNewContactSlideout() {
       return this.get('contactService')
-        .persistNew(this.get('controller.newContact'), {
-          displayedList: this.get('controller.contacts'),
-          currentFilter: this.get('controller.filter'),
-        })
+        .persistNewAndTryAddToPhone(this.get('controller.newContact'))
         .then(() => {
           this.send('closeSlideout');
           this.get('tutorialService').startCompleteTask('addContact');
@@ -43,11 +42,11 @@ export default Ember.Mixin.create({
       this.send('cancelNewContactSlideout');
       this.transitionTo('main.contacts.contact', dupId);
     },
-    onAddNumber() {
-      this.get('contactService').checkNumberDuplicate(this.get('controller.newContact'));
+    onAddNumber(num) {
+      this.get('contactService').checkNumberDuplicate(this.get('controller.newContact'), num);
     },
-    onRemoveNumber() {
-      this.get('contactService').removeNumberDuplicate(this.get('controller.newContact'));
+    onRemoveNumber(num) {
+      this.get('contactService').removeNumberDuplicate(this.get('controller.newContact'), num);
     },
   },
 

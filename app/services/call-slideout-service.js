@@ -1,8 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import {
-  validate as validateNumber,
-  clean as cleanNumber
-} from 'textup-frontend/utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
 const { isPresent, run, RSVP } = Ember;
 
@@ -12,15 +10,15 @@ export default Ember.Service.extend({
   recordItemService: Ember.inject.service(),
   store: Ember.inject.service(),
 
-  validateAndCheckForName: function(number, { ctx }) {
+  validateAndCheckForName(number, { ctx }) {
     run.debounce(this, this._validateAndCheckForName, number, ctx, 250);
   },
-  makeCall() {
+  makeCall(contactToCall, number) {
     return new RSVP.Promise((resolve, reject) => {
-      this._ensureContactExists(...arguments).then(contact => {
-        this.get('recordItemService')
-          .makeCall(contact)
-          .then(() => resolve(contact), this.get('dataService').buildErrorHandler(reject));
+      this._ensureContactExists(contactToCall, number).then(contact => {
+        this.get('dataService')
+          .request(this.get('recordItemService').makeCall(contact))
+          .then(() => resolve(contact), reject);
       });
     });
   },
@@ -29,40 +27,42 @@ export default Ember.Service.extend({
   // ----------------
 
   _validateAndCheckForName(number, ctx) {
-    const maxNum = 30, // we want some options in case the earlier contacts are view-only
-      cleaned = cleanNumber(number);
-    if (validateNumber(cleaned)) {
+    const max = 30, // we want some options in case the earlier contacts are view-only
+      callByNumber = PhoneNumberUtils.clean(number);
+    if (PhoneNumberUtils.validate(callByNumber)) {
       this.get('contactService')
-        .searchContactsByNumber(cleaned, { max: maxNum })
+        .searchContactsByNumber(callByNumber, { max })
         .then(results => {
-          const noViewOnlyContacts = results.toArray().filterBy('isSharedView', false),
+          const noViewOnlyContacts = results.toArray().filterBy('isViewPermission', false),
             total = noViewOnlyContacts.length;
           ctx.setProperties({
-            callByNumber: cleaned,
+            callByNumber,
             callByNumberContact: noViewOnlyContacts.get('firstObject'),
+            callByNumberIsValid: true,
             callByNumberMoreNum: Math.max(total - 1, 0), // this is an approx total
-            callByNumberIsValid: true
           });
         });
     } else {
       ctx.setProperties({
-        callByNumber: cleaned,
+        callByNumber,
         callByNumberContact: null,
         callByNumberIsValid: false,
-        callByNumberMoreNum: 0
+        callByNumberMoreNum: 0,
       });
     }
   },
-  _ensureContactExists(contactToCall, number, { displayedList, currentFilter }) {
+  _ensureContactExists(contactToCall, number) {
     return new RSVP.Promise((resolve, reject) => {
       if (isPresent(contactToCall)) {
         resolve(contactToCall);
       } else {
-        const newContact = this.get('store').createRecord('contact', { numbers: [{ number }] });
+        const newContact = this.get('store').createRecord(Constants.MODEL.CONTACT, {
+          numbers: [{ number }],
+        });
         this.get('contactService')
-          .persistNew(newContact, { displayedList, currentFilter })
+          .persistNewAndTryAddToPhone(newContact)
           .then(() => resolve(newContact), reject);
       }
     });
-  }
+  },
 });

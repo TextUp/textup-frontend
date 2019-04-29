@@ -1,25 +1,27 @@
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';
-import OwnsFutureMessages from '../mixins/serializer/owns-future-messages';
-import OwnsRecordItems from '../mixins/serializer/owns-record-items';
+import OwnsFutureMessages from 'textup-frontend/mixins/serializer/owns-future-messages';
+import OwnsRecordItems from 'textup-frontend/mixins/serializer/owns-record-items';
+import Shareable from 'textup-frontend/mixins/serializer/shareable';
 
 export default DS.RESTSerializer.extend(
   DS.EmbeddedRecordsMixin,
   OwnsRecordItems,
   OwnsFutureMessages,
+  Shareable,
   {
     attrs: {
-      sharedWith: { deserialize: 'records', serialize: false },
-      tags: { deserialize: 'records', serialize: false },
+      [Constants.PROP_NAME.SHARING_PHONE_ID_BUCKETS]: { key: 'sharedWith', serialize: false },
       numbers: { serialize: false },
       phone: { serialize: false },
-      sharedBy: { serialize: false },
-      sharedById: { serialize: false },
-      startedSharing: { serialize: false },
-      permission: { serialize: false },
-      unreadInfo: { serialize: false }
+      sharedByName: { serialize: false },
+      sharedByPhoneId: { serialize: false },
+      tags: { deserialize: 'records', serialize: false },
+      unreadInfo: { serialize: false },
+      whenCreated: { serialize: false },
     },
-    serialize: function(snapshot) {
+    serialize(snapshot) {
       const json = this._super(...arguments),
         changed = snapshot.changedAttributes(),
         numChange = Ember.get(changed, 'numbers'),
@@ -31,19 +33,19 @@ export default DS.RESTSerializer.extend(
         json.doShareActions = actions.map(this._convertToShareAction);
         actions.clear();
       }
-      return json;
+      return snapshot.record.get('isViewPermission') ? { status: json.status } : json;
     },
 
     // Sharing
     // -------
 
-    _convertToShareAction: function(action) {
+    _convertToShareAction(action) {
       if (!action) {
         return action;
       }
-      if (action.action && action.action.toUpperCase() !== 'STOP') {
+      if (action.action && action.action.toUpperCase() !== Constants.ACTION.SHARE.STOP) {
         action.permission = action.action;
-        action.action = 'MERGE';
+        action.action = Constants.ACTION.SHARE.MERGE;
       }
       action.id = action.bucketId;
       delete action.bucketId;
@@ -54,7 +56,7 @@ export default DS.RESTSerializer.extend(
     // Numbers
     // -------
 
-    _buildNumberActions: function(originalNumbers, newNumbers) {
+    _buildNumberActions(originalNumbers, newNumbers) {
       const doNumberActions = [];
       // merge numbers
       newNumbers.forEach((numObj, index) => {
@@ -80,18 +82,18 @@ export default DS.RESTSerializer.extend(
       });
       return doNumberActions;
     },
-    _mergeNumber: function(number, preference) {
+    _mergeNumber(number, preference) {
       return {
         number: number,
         preference: preference,
-        action: 'MERGE'
+        action: Constants.ACTION.NUMBER.MERGE,
       };
     },
-    _deleteNumber: function(number) {
+    _deleteNumber(number) {
       return {
         number: number,
-        action: 'DELETE'
+        action: Constants.ACTION.NUMBER.DELETE,
       };
-    }
+    },
   }
 );

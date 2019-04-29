@@ -7,8 +7,8 @@ const Validations = buildValidations({
     in: [1],
     message: 'should have exactly one recipient',
   }),
-  'contactRecipients.length': validator('has-any', {
-    also: ['sharedContactRecipients.length'],
+  'recipients.length': validator('has-any', {
+    also: ['newNumberRecipients.length'],
     dependentKeys: ['numRecipients'],
     description: 'a contact or shared contact recipient',
   }),

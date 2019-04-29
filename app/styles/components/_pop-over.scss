@@ -1,7 +1,7 @@
 .pop-over {
   $caret-size: $spacing;
 
-  display: block;
+  display: inline-block;
 
   &__body {
     display: none;
@@ -25,9 +25,6 @@
               top: 100%;
               border-left-width: 1px;
               border-bottom-width: 1px;
-              border-top-right-radius: $border-radius;
-              border-bottom-left-radius: $border-radius;
-              transform: translateY(-50%) rotate(-45deg);
             }
           }
         }
@@ -39,37 +36,6 @@
               top: 0;
               border-top-width: 1px;
               border-right-width: 1px;
-              border-top-right-radius: $border-radius;
-              border-bottom-left-radius: $border-radius;
-              transform: translateY(-50%) rotate(-45deg);
-            }
-          }
-        }
-        &-left {
-          .pop-over__body__floating-container {
-            transform: translateX(#{-1 * $caret-size});
-
-            &:after {
-              left: 100%;
-              border-right-width: 1px;
-              border-bottom-width: 1px;
-              border-top-left-radius: $border-radius;
-              border-bottom-right-radius: $border-radius;
-              transform: translateX(-50%) translateY(-50%) rotate(-45deg);
-            }
-          }
-        }
-        &-right {
-          .pop-over__body__floating-container {
-            transform: translateX(#{$caret-size});
-
-            &:after {
-              left: -1/2 * $caret-size;
-              border-left-width: 1px;
-              border-top-width: 1px;
-              border-top-left-radius: $border-radius;
-              border-bottom-right-radius: $border-radius;
-              transform: translateY(-50%) rotate(-45deg);
             }
           }
         }
@@ -87,18 +53,6 @@
           .pop-over__body__floating-container:after {
             left: auto;
             right: $caret-size;
-          }
-        }
-        &-top {
-          .pop-over__body__floating-container:after {
-            top: $caret-size;
-            bottom: auto;
-          }
-        }
-        &-bottom {
-          .pop-over__body__floating-container:after {
-            top: auto;
-            bottom: $caret-size;
           }
         }
       }
@@ -121,6 +75,9 @@
           width: $caret-size;
           background-color: $bg-lightest-color;
           border: 0 solid $border-color;
+          border-top-right-radius: $border-radius;
+          border-bottom-left-radius: $border-radius;
+          transform: translateY(-50%) rotate(-45deg);
         }
       }
     }

@@ -35,7 +35,6 @@ test('it exists', function(assert) {
   });
 });
 
-// TODO
 test('logging out and loggin in', function(assert) {
   let service = this.subject();
 

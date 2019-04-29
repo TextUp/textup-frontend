@@ -5,16 +5,15 @@ const { run } = Ember;
 
 moduleForModel('future-message', 'Unit | Serializer | future message', {
   needs: [
-    'serializer:future-message',
-    'model:media',
-    'service:constants',
     'model:contact',
+    'model:media',
     'model:tag',
+    'serializer:future-message',
+    'validator:has-any',
     'validator:inclusion',
     'validator:length',
-    'validator:has-any',
-    'validator:number'
-  ]
+    'validator:number',
+  ],
 });
 
 test('serialized form', function(assert) {
@@ -35,7 +34,7 @@ test('serialized form', function(assert) {
   assert.notOk(keys.contains('whenCreated'));
   assert.ok(keys.contains('language'));
   assert.ok(keys.contains('message'));
-  assert.ok(keys.contains('notifySelf'));
+  assert.ok(keys.contains('notifySelfOnSend'));
   assert.ok(keys.contains('startDate'));
   assert.ok(keys.contains('type'));
   assert.ok(keys.contains('doMediaActions'));
@@ -60,7 +59,7 @@ test('serializing when repeating', function(assert) {
       isRepeating: true,
       repeatCount: 88,
       hasEndDate: true,
-      endDate: new Date()
+      endDate: new Date(),
     });
 
     let serialized = obj.serialize(),

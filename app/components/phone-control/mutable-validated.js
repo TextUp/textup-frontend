@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   // Injected services
   // -----------------
 
-  staffService: Ember.inject.service(),
+  numberService: Ember.inject.service(),
 
   // Computed Properties
   // -------------------
@@ -20,22 +20,22 @@ export default Ember.Component.extend({
   _newNumber: '',
 
   actions: {
-    updateNew: function(num) {
+    updateNew(num) {
       this.set('_newNumber', num);
       tryInvoke(this, 'onChange', [num]);
     },
-    verifyNew: function(num) {
+    verifyNew(num) {
       tryInvoke(this, 'onClick', [num]);
       tryInvoke(this, 'onValidateStart', [num]);
-      this.get('staffService')
-        .startVerifyPersonalPhone(num)
+      this.get('numberService')
+        .startVerify(num)
         .then(() => this.set('_newNumber', num));
     },
-    completeVerify: function(validationCode, num) {
+    completeVerify(validationCode, num) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         tryInvoke(this, 'onValidate', [num]);
-        this.get('staffService')
-          .finishVerifyPersonalPhone(num, validationCode)
+        this.get('numberService')
+          .finishVerify(num, validationCode)
           .then(() => {
             this.set('number', num);
             this.set('_newNumber', num);
@@ -43,6 +43,6 @@ export default Ember.Component.extend({
             resolve();
           }, reject);
       });
-    }
-  }
+    },
+  },
 });

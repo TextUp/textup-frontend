@@ -6,7 +6,7 @@ const {
   computed,
   computed: { notEmpty, and, match },
   run,
-  run: { scheduleOnce, debounce, next }
+  run: { scheduleOnce, debounce, next },
 } = Ember;
 
 export default Ember.Mixin.create({
@@ -43,7 +43,7 @@ export default Ember.Mixin.create({
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
 
     scheduleOnce('afterRender', this, function() {
@@ -84,7 +84,7 @@ export default Ember.Mixin.create({
       });
     });
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     this._super(...arguments);
     const $errors = this.get('$errors');
     if ($errors && $errors.length) {
@@ -105,7 +105,7 @@ export default Ember.Mixin.create({
   // Validation
   // ----------
 
-  doValidate: function() {
+  doValidate() {
     if (!this.get('canDoValidate')) {
       return;
     }
@@ -119,14 +119,14 @@ export default Ember.Mixin.create({
       model
         .validate(
           {
-            on: [field]
+            on: [field],
           },
           true
         )
         .then(this._processValidate.bind(this, model, field, $errors));
     }
   },
-  _processValidate: function(model, field, $errors) {
+  _processValidate(model, field, $errors) {
     const $errorNeighbor = this.get('$errorNeighbor'),
       validateErrorClass = this.get('validateErrorClass');
     run(() => {
@@ -143,7 +143,7 @@ export default Ember.Mixin.create({
   // DOM construction
   // ----------------
 
-  get$Errors: function() {
+  get$Errors() {
     if (this.get('$errors')) {
       return this.get('$errors');
     }
@@ -161,8 +161,8 @@ export default Ember.Mixin.create({
     }
     return $errors;
   },
-  _build$Errors: function() {
+  _build$Errors() {
     const validateErrorClass = this.get('validateErrorClass');
     return Ember.$(`<p class="${validateErrorClass}"></p>`);
-  }
+  },
 });

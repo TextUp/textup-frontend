@@ -12,6 +12,11 @@ module.exports = function(environment) {
     hasCordova: process.argv.some(obj => obj === '--cordova'),
     apiKeys: { mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX },
     gReCaptcha: { siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA },
+    captcha: {
+      // endpoint: 'http://localhost:3000/human-verification',
+      endpoint: 'https://services.textup.org/human-verification',
+      location: 'app',
+    },
     locationPreview: {
       host: 'https://api.mapbox.com/v4/mapbox.streets',
       maxWidth: 1280,
@@ -76,7 +81,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // TODO: hasCordova remove once main branched
+    // TODO: set up automated deployment for cordova apps
     if (process.env.TRAVIS_BRANCH === 'master' || ENV.hasCordova) {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_PRODUCTION;
       ENV.analytics = {

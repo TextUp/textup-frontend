@@ -26,7 +26,7 @@ test('empty + invalid inputs', function(assert) {
     {{care-record canAddToRecord=88
       canModifyExistingInRecord=88
       nextFutureFire=88
-      personalPhoneNumber=88
+      personalNumber=88
       recordClusters=88
       numRecordItems="not a number"
       totalNumRecordItems="not a number"
@@ -64,7 +64,7 @@ test('all valid inputs', function(assert) {
     {{care-record canAddToRecord=true
       canModifyExistingInRecord=true
       nextFutureFire=date
-      personalPhoneNumber="hi"
+      personalNumber="hi"
       recordClusters=array
       numRecordItems=88
       totalNumRecordItems=88
@@ -136,17 +136,20 @@ test('doRegister a reference to the public API', function(assert) {
     'object',
     'is a public API, not component itself'
   );
-  assert.equal(typeOf(doRegister.firstCall.args[0].actions.reset), 'function');
+  assert.equal(typeOf(doRegister.firstCall.args[0].actions.resetAll), 'function');
+  assert.equal(typeOf(doRegister.firstCall.args[0].actions.restorePosition), 'function');
 });
 
 test('text handler returns outcome', function(assert) {
-  const onText = sinon.stub(),
-    randVal = Math.random(),
+  const done = assert.async(),
+    onText = sinon.spy(),
     obj = CareRecordComponent.create({ onText });
-  onText.callsFake(() => randVal);
 
-  assert.equal(obj._onText(), randVal, 'send handler return outcome');
-  assert.ok(onText.calledOnce);
+  obj._onText().then(() => {
+    assert.ok(onText.calledOnce);
+
+    done();
+  });
 });
 
 test('cannot add to record', function(assert) {
@@ -184,15 +187,15 @@ test('no items yet in the record', function(assert) {
 test('starting call', function(assert) {
   const recordClusters = mockRecordClusters(this.store),
     onCall = sinon.spy(),
-    personalPhoneNumber = `${Math.random()}`,
+    personalNumber = `${Math.random()}`,
     done = assert.async();
-  this.setProperties({ recordClusters, onCall, personalPhoneNumber });
+  this.setProperties({ recordClusters, onCall, personalNumber });
 
   this.render(hbs`
     {{care-record canAddToRecord=true
       canModifyExistingInRecord=true
       recordClusters=recordClusters
-      personalPhoneNumber=personalPhoneNumber
+      personalNumber=personalNumber
       onCall=onCall}}
   `);
 
@@ -204,13 +207,14 @@ test('starting call', function(assert) {
   );
   assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
 
+  // open the dropdown
   this.$('.record-actions-control__action-container button')
     .first()
     .triggerHandler('click');
   run.later(() => {
-    const originalScrollPosition = this.$('.care-record__body').scrollTop();
+    const originalScrollPosition = this.$('.infinite-scroll__scroll-container').scrollTop();
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
-    this.$('.care-record__body').scrollTop(0); // scroll record to top
+    this.$('.infinite-scroll__scroll-container').scrollTop(0); // scroll record to top
 
     assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
@@ -229,11 +233,11 @@ test('starting call', function(assert) {
 
       let callOverlayText = this.$('.record-actions-control__overlay--open').text();
       assert.ok(
-        callOverlayText.includes(personalPhoneNumber),
+        callOverlayText.includes(personalNumber),
         'default message shows personal phone number'
       );
       assert.ok(
-        this.$('.care-record__body').scrollTop() >= originalScrollPosition,
+        this.$('.infinite-scroll__scroll-container').scrollTop() >= originalScrollPosition,
         'scroll position is reset'
       );
 
@@ -271,9 +275,9 @@ test('sending text', function(assert) {
   assert.ok(this.$('.compose-text .action-button').length, 'send text button is ACTIVE');
 
   run.later(() => {
-    const originalScrollPosition = this.$('.care-record__body').scrollTop();
+    const originalScrollPosition = this.$('.infinite-scroll__scroll-container').scrollTop();
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
-    this.$('.care-record__body').scrollTop(0); // scroll record to top
+    this.$('.infinite-scroll__scroll-container').scrollTop(0); // scroll record to top
 
     this.$('.compose-text .action-button')
       .first()
@@ -281,7 +285,7 @@ test('sending text', function(assert) {
     wait().then(() => {
       assert.ok(onText.calledOnce);
       assert.ok(
-        this.$('.care-record__body').scrollTop() >= originalScrollPosition,
+        this.$('.infinite-scroll__scroll-container').scrollTop() >= originalScrollPosition,
         'scroll position is reset'
       );
 
@@ -429,21 +433,86 @@ test('record item position is preserved with changing actions control height', f
   assert.ok(this.$('.record-actions-control').length);
 
   wait().then(() => {
-    const originalScrollPosition = this.$('.care-record__body').scrollTop();
+    const originalScrollPosition = this.$('.infinite-scroll__scroll-container').scrollTop();
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
-
-    // simulate changing height of the media drawer
-    this.$('.care-record__body').height(50);
+    // simulate changing height of the media drawer as if the record action control increased in height
+    this.$('.infinite-scroll__scroll-container').height(50);
     // trigger mutation observers
     this.$('.record-actions-control').append('<div style="height: 100px;">Test</div>');
     run.later(() => {
-      const newScrollPosition = this.$('.care-record__body').scrollTop();
+      const newScrollPosition = this.$('.infinite-scroll__scroll-container').scrollTop();
       assert.ok(
         newScrollPosition !== originalScrollPosition,
         'scroll position adjusted based on actions container height change'
       );
 
       done();
+    }, 1000);
+  });
+});
+
+test('restoring user position after loading via public API', function(assert) {
+  const doRegister = sinon.spy(),
+    recordClusters = mockRecordClusters(this.store),
+    moreClusters1 = mockRecordClusters(this.store),
+    done = assert.async();
+  this.setProperties({ doRegister, recordClusters });
+
+  this.render(hbs`{{care-record doRegister=doRegister recordClusters=recordClusters}}`);
+  assert.ok(this.$('.care-record').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+
+  const $container = this.$('.infinite-scroll__scroll-container');
+  let originalScrollPosition;
+  // [IMPORTANT] need to wait first to allow the scroll-container to initialize its initial user offset
+  wait()
+    .then(() => {
+      originalScrollPosition = $container.scrollTop();
+
+      run(() => this.get('recordClusters').pushObjects(moreClusters1));
+      return wait();
+    })
+    .then(() => {
+      assert.ok(
+        $container.scrollTop() > originalScrollPosition,
+        'scroll position is restored automatically when the data array is added-to so the position changes'
+      );
+
+      done();
+    });
+});
+
+test('resetting all scroll state via public API', function(assert) {
+  const doRegister = sinon.spy(),
+    recordClusters = mockRecordClusters(this.store),
+    done = assert.async();
+  this.setProperties({ doRegister, recordClusters });
+
+  this.render(hbs`{{care-record doRegister=doRegister recordClusters=recordClusters}}`);
+  assert.ok(this.$('.care-record').length, 'did render');
+  assert.ok(doRegister.calledOnce);
+
+  const publicAPI = doRegister.firstCall.args[0],
+    $container = this.$('.infinite-scroll__scroll-container'),
+    $content = this.$('.infinite-scroll__scroll-container__content');
+  let originalScrollPosition;
+  // [IMPORTANT] need to wait first to allow the scroll-container to initialize its initial user offset
+  wait().then(() => {
+    // scroll halfway and give time for the scroll handlers to propagate
+    $container.scrollTop($content.outerHeight() / 2);
+    setTimeout(() => {
+      originalScrollPosition = $container.scrollTop();
+
+      // then try to reset position
+      publicAPI.actions.resetAll();
+      wait().then(() => {
+        assert.ok(
+          $container.scrollTop() > originalScrollPosition,
+          'scroll position is reset to very bottom'
+        );
+
+        done();
+      });
     }, 1000);
   });
 });

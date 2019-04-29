@@ -1,6 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
 import Ember from 'ember';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed, tryInvoke } = Ember;
 
@@ -22,9 +22,13 @@ export default Ember.Component.extend(DisplaysImages, {
   // -----------------
 
   _onSuccess() {
-    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${MEDIA_ID_PROP_NAME}`)]: true }]);
+    tryInvoke(this, 'onLoadEnd', [
+      { [this.get(`_coverImage.${Constants.PROP_NAME.MEDIA_ID}`)]: true },
+    ]);
   },
   _onFailure() {
-    tryInvoke(this, 'onLoadEnd', [{ [this.get(`_coverImage.${MEDIA_ID_PROP_NAME}`)]: false }]);
-  }
+    tryInvoke(this, 'onLoadEnd', [
+      { [this.get(`_coverImage.${Constants.PROP_NAME.MEDIA_ID}`)]: false },
+    ]);
+  },
 });

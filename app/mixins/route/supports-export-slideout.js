@@ -1,15 +1,16 @@
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
 
-const { isArray } = Ember;
+const { isArray, RSVP } = Ember;
 
 export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
   tutorialService: Ember.inject.service(),
 
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     this._initializeProperties(controller);
   },
@@ -20,8 +21,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/export/single',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     startMultipleExportSlideout(selectedRecordOwnersOrEvent) {
@@ -29,8 +30,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/export/multiple',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
 
@@ -46,7 +47,7 @@ export default Ember.Mixin.create({
           ? [] // pass no record owners if we want to export entire phone
           : controller.get('exportRecordOwners');
 
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         this.get('recordItemService')
           .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
           .then(() => {
@@ -61,14 +62,14 @@ export default Ember.Mixin.create({
       return this.get('composeSlideoutService').doSearch(...arguments);
     },
     exportInsertRecordOwner(index, recordOwner) {
-      return new Ember.RSVP.Promise(resolve => {
+      return new RSVP.Promise(resolve => {
         this.get('controller.exportRecordOwners').replace(index, 1, [recordOwner]);
         resolve();
       });
     },
     exportRemoveRecordOwner(recordOwner) {
       this.get('controller.exportRecordOwners').removeObject(recordOwner);
-    }
+    },
   },
 
   _initializeProperties(controller, models) {
@@ -79,7 +80,7 @@ export default Ember.Mixin.create({
       exportEndDate: moment().toDate(),
       exportForEntirePhone: false,
       exportAsGrouped: false,
-      exportRecordOwners: isArray(models) ? models : []
+      exportRecordOwners: isArray(models) ? models : [],
     });
-  }
+  },
 });

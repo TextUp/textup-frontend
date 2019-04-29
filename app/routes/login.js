@@ -2,41 +2,36 @@ import Ember from 'ember';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
 
 export default Ember.Route.extend(IsPublic, {
-  deactivate: function() {
+  deactivate() {
     this._super(...arguments);
     this.controller.setProperties({
       username: null,
       password: null,
-      resetUsername: null
+      resetUsername: null,
     });
   },
   actions: {
-    login: function(un, pwd, doStore) {
-      const auth = this.get('authService');
-      return auth.login(un, pwd, doStore).then(
+    login(un, pwd, doStore) {
+      const authService = this.get('authService');
+      return authService.login(un, pwd, doStore).then(
         () => {
-          auth.retryAttemptedTransition(() => {
-            this.transitionTo('main', auth.get('authUser'));
+          authService.retryAttemptedTransition(() => {
+            // need to get the authUser after it has been set by the login function
+            this.transitionTo('main', authService.get('authUser'));
           });
         },
-        () => {
-          this.notifications.error('Incorrect or blank username or password');
-        }
+        () => this.notifications.error('Incorrect or blank username or password')
       );
     },
-    resetPassword: function(un) {
+    resetPassword(un) {
+      const successMsg = `All good! The password reset should be in your inbox in a few minutes.`,
+        failMsg = `Hmm. We could not find the username you provided. Please try again.`;
       return this.get('authService')
         .resetPassword(un)
         .then(
-          () => {
-            this.notifications.success(`All good! The password reset
-          should be in your inbox in a few minutes.`);
-          },
-          () => {
-            this.notifications.error(`Hmm. We could not find the username
-          you provided. Please try again.`);
-          }
+          () => this.notifications.success(successMsg),
+          () => this.notifications.error(failMsg)
         );
-    }
-  }
+    },
+  },
 });

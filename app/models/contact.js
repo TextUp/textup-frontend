@@ -1,20 +1,22 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import ArrayUtils from 'textup-frontend/utils/array';
+import Constants from 'textup-frontend/constants';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import OwnsFutureMessages from '../mixins/model/owns-future-messages';
-import OwnsRecordItems from '../mixins/model/owns-record-items';
-import { validate as validateNumber } from '../utils/phone-number';
+import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
+import MF from 'model-fragments';
+import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-messages';
+import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
+import Shareable from 'textup-frontend/mixins/model/shareable';
+import { validate as validateNumber } from 'textup-frontend/utils/phone-number';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const {
-    isEmpty,
-    isPresent,
-    computed: { notEmpty, equal: eq },
-  } = Ember,
+const { isEmpty, computed } = Ember,
   Validations = buildValidations({
     name: { description: 'Name', validators: [validator('presence', true)] },
     note: { description: 'Note', validators: [validator('length', { max: 1000 })] },
-    status: validator('inclusion', { in: ['UNREAD', 'ACTIVE', 'ARCHIVED', 'BLOCKED'] }),
+    status: validator('inclusion', { in: Object.values(Constants.CONTACT.STATUS) }),
     numbers: {
       description: 'Numbers',
       validators: [
@@ -23,7 +25,7 @@ const {
           dependentKeys: ['numbers.@each.number'],
           message: 'All phone numbers must be valid, with area code',
           for: 'every',
-          test: function(numObj) {
+          test(numObj) {
             return validateNumber(Ember.get(numObj, 'number'));
           },
         }),
@@ -32,125 +34,97 @@ const {
     },
   });
 
-export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
-  constants: Ember.inject.service(),
+export default DS.Model.extend(
+  Dirtiable,
+  HasReadableIdentifier,
+  HasUrlIdentifier,
+  OwnsFutureMessages,
+  OwnsRecordItems,
+  Shareable,
+  Validations,
+  {
+    // Overrides
+    // ---------
 
-  init: function() {
-    this._super(...arguments);
-    this.set('actions', []);
-  },
-  rollbackAttributes: function() {
-    this._super(...arguments);
-    this.clearSharingChanges();
-    this.get('numberDuplicates').clear();
-    this.set('isSelected', false);
-  },
+    rollbackAttributes() {
+      this._super(...arguments);
+      this.clearSharingChanges();
+      this.get('numberDuplicates').clear();
+      this.set('isSelected', false);
+    },
+    hasManualChanges: computed.notEmpty('actions'),
 
-  // Attributes
-  // ----------
+    // Properties
+    // ----------
 
-  name: DS.attr('string', { defaultValue: '' }),
-  note: DS.attr('string', { defaultValue: '' }),
-  status: DS.attr('string', {
-    defaultValue: model => model.get('constants.CONTACT.STATUS.ACTIVE'),
-  }),
-  numbers: DS.attr('collection', { defaultValue: () => [] }),
-  phone: DS.belongsTo('phone'),
-  unreadInfo: DS.attr(),
+    whenCreated: DS.attr('date'),
+    name: DS.attr('string', { defaultValue: '' }),
+    [Constants.PROP_NAME.FILTER_VAL]: computed.alias('name'),
 
-  // Contact
-  // -------
+    note: DS.attr('string', { defaultValue: '' }),
+    numbers: DS.attr('collection', { defaultValue: () => [] }),
 
-  tags: DS.hasMany('tag'),
-  sharedWith: DS.hasMany('sharedContact'),
+    status: DS.attr('string', { defaultValue: Constants.CONTACT.STATUS.ACTIVE }),
+    unreadInfo: MF.fragment('contact/unread-info'),
+    isArchived: computed.equal('status', Constants.CONTACT.STATUS.ARCHIVED),
+    isBlocked: computed.equal('status', Constants.CONTACT.STATUS.BLOCKED),
+    isActive: computed.equal('status', Constants.CONTACT.STATUS.ACTIVE),
+    isUnread: computed.equal('status', Constants.CONTACT.STATUS.UNREAD),
+    intStatus: Ember.computed('status', function() {
+      const statuses = Constants.CONTACT.STATUS;
+      switch (this.get('status')) {
+        case statuses.UNREAD:
+          return 0;
+        case statuses.ACTIVE:
+          return 1;
+        case statuses.ARCHIVED:
+          return 2;
+        case statuses.BLOCKED:
+          return 4;
+        default:
+          return 3;
+      }
+    }),
 
-  // Shared contact
-  // --------------
+    phone: DS.belongsTo('phone'),
+    tags: DS.hasMany('tag'),
+    hasTags: computed.notEmpty('tags'),
 
-  permission: DS.attr('string'),
-  startedSharing: DS.attr('date'),
-  sharedBy: DS.attr('string'),
-  sharedById: DS.attr('number'),
+    // if is owned contact
+    [Constants.PROP_NAME.SHARING_PHONE_ID_BUCKETS]: MF.fragmentArray('contact/share-info'),
+    // if is shared contact + Shareable mixin
+    sharedByName: DS.attr('string'),
+    sharedByPhoneId: DS.attr('number'),
 
-  // Not attributes
-  // --------------
+    isSelected: false,
+    numberDuplicates: Ember.computed(() => []),
+    actions: Ember.computed(() => []),
 
-  isSelected: false,
-  numberDuplicates: Ember.computed(() => []),
-  actions: null,
+    // Methods
+    // -------
 
-  // Computed properties
-  // -------------------
+    addDuplicatesForNumber(num, dups) {
+      if (isEmpty(dups)) {
+        return;
+      }
+      this.removeDuplicatesForNumber(num);
+      this.get('numberDuplicates').pushObject({ number: num, duplicates: dups });
+    },
+    removeDuplicatesForNumber(num) {
+      const dupsList = this.get('numberDuplicates'),
+        foundObj = dupsList.findBy('number', num);
+      if (foundObj) {
+        dupsList.removeObject(foundObj);
+      }
+    },
+    clearSharingChanges() {
+      this.get('actions').clear();
+    },
 
-  hasManualChanges: notEmpty('actions'),
-  identifier: Ember.computed('name', 'numbers', function() {
-    const name = this.get('name'),
-      firstNum = this.get('numbers').objectAt(0);
-    return isPresent(name) ? name : firstNum ? Ember.get(firstNum, 'number') : 'No Name';
-  }),
-  uniqueIdentifier: Ember.computed('name', 'numbers', function() {
-    const name = this.get('name'),
-      numbers = this.get('numbers').mapBy('number');
-    return `${name} ${numbers.join(', ')}`;
-  }),
-  intStatus: Ember.computed('status', function() {
-    const statuses = this.get('constants.CONTACT.STATUS');
-    switch (this.get('status')) {
-      case statuses.UNREAD:
-        return 0;
-      case statuses.ACTIVE:
-        return 1;
-      case statuses.ARCHIVED:
-        return 2;
-      case statuses.BLOCKED:
-        return 4;
-      default:
-        return 3;
-    }
-  }),
-
-  hasTags: notEmpty('tags'),
-  isShared: notEmpty('sharedBy'),
-  isSharedDelegate: eq('permission', 'DELEGATE'),
-  isSharedView: eq('permission', 'VIEW'),
-  allowEdits: Ember.computed('isShared', 'isSharedDelegate', function() {
-    const shared = this.get('isShared'),
-      delegate = this.get('isSharedDelegate');
-    return !shared || (shared && delegate);
-  }),
-
-  isArchived: eq('status', 'ARCHIVED'),
-  isBlocked: eq('status', 'BLOCKED'),
-  isActive: eq('status', 'ACTIVE'),
-  isUnread: eq('status', 'UNREAD'),
-
-  // Helper methods
-  // --------------
-
-  addDuplicatesForNumber: function(num, dups) {
-    if (isEmpty(dups)) {
-      return;
-    }
-    this.removeDuplicatesForNumber(num);
-    this.get('numberDuplicates').pushObject({
-      number: num,
-      duplicates: dups,
-    });
-  },
-  removeDuplicatesForNumber: function(num) {
-    const dupsList = this.get('numberDuplicates'),
-      foundObj = dupsList.findBy('number', num);
-    if (foundObj) {
-      dupsList.removeObject(foundObj);
-    }
-  },
-  clearSharingChanges() {
-    this.get('actions').clear();
-  },
-
-  isAnyStatus: function(raw) {
-    return (Ember.isArray(raw) ? raw : [raw])
-      .map(stat => String(stat).toLowerCase())
-      .contains(String(this.get('status')).toLowerCase());
-  },
-});
+    isAnyStatus(raw) {
+      return ArrayUtils.ensureArrayAndAllDefined(raw)
+        .map(stat => String(stat).toLowerCase())
+        .contains(String(this.get('status')).toLowerCase());
+    },
+  }
+);

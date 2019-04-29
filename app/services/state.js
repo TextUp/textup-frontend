@@ -1,7 +1,8 @@
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';
-import { clean as cleanNumber } from 'textup-frontend/utils/phone-number';
+import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed } = Ember;
 
@@ -27,28 +28,6 @@ export default Ember.Service.extend({
     this.get('authService')
       .off(config.events.auth.success)
       .off(config.events.auth.clear);
-  },
-
-  // Actions
-  // -------
-
-  actions: {
-    doNumbersSearch(search = '') {
-      return new Ember.RSVP.Promise((resolve, reject) => {
-        const auth = this.get('authService');
-        auth
-          .authRequest({
-            type: 'GET',
-            url: `${config.host}/v1/numbers?search=${search}`
-          })
-          .then(({ numbers = [] }) => {
-            numbers.forEach(num => {
-              num.phoneNumber = cleanNumber(num.phoneNumber);
-            });
-            resolve(numbers);
-          }, this.get('dataService').buildErrorHandler(reject));
-      });
-    }
   },
 
   // Routing
@@ -77,11 +56,15 @@ export default Ember.Service.extend({
   // the current owner in the current application state
   // may be the logged-in user or a team that the user is on
   owner: null,
-  ownerIsTeam: computed.equal('owner.constructor.modelName', 'team'),
+  ownerIsTeam: computed('owner', function() {
+    return TypeUtils.isTeam(this.get('owner'));
+  }),
   ownerAsTeam: computed('owner', 'ownerIsTeam', function() {
     return this.get('ownerIsTeam') ? this.get('owner') : null;
   }),
-  ownerIsOrg: computed.equal('owner.constructor.modelName', 'organization'),
+  ownerIsOrg: computed('owner', function() {
+    return TypeUtils.isOrg(this.get('owner'));
+  }),
   ownerAsOrg: computed('owner', 'ownerIsOrg', function() {
     return this.get('ownerIsOrg') ? this.get('owner') : null;
   }),
@@ -128,7 +111,7 @@ export default Ember.Service.extend({
           }
         });
         return staffsWithPhones;
-      })
+      }),
     });
   }),
 
@@ -137,22 +120,40 @@ export default Ember.Service.extend({
 
   _bindSocketEvents() {
     const socket = this.get('socket'),
-      channelName = this.get('authService.channelName');
+      channelName = this.get('authService.authUser.channelName');
     socket.connect({
       encrypted: true,
       authEndpoint: `${config.host}/v1/sockets`,
       auth: {
         headers: {
-          Authorization: `Bearer ${this.get('authService.token')}`
-        }
-      }
+          Authorization: `Bearer ${this.get('authService.token')}`,
+        },
+      },
     });
-    Ember.RSVP.all([
-      socket.bind(channelName, 'records', this._handleSocketRecords.bind(this)),
-      socket.bind(channelName, 'contacts', this._handleSocketContacts.bind(this)),
-      socket.bind(channelName, 'futureMessages', this._handleSocketFutureMsgs.bind(this)),
-      socket.bind(channelName, 'phones', this._handleSocketPhones.bind(this))
-    ]).catch(this.get('dataService').buildErrorHandler());
+    this.get('dataService').request(
+      Ember.RSVP.all([
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.RECORD_ITEMS,
+          this._handleSocketRecordItems.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.CONTACTS,
+          this._handleSocketContacts.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.FUTURE_MESSAGES,
+          this._handleSocketFutureMsgs.bind(this)
+        ),
+        socket.bind(
+          channelName,
+          Constants.SOCKET_EVENT.PHONES,
+          this._handleSocketPhones.bind(this)
+        ),
+      ])
+    );
   },
   _unbindSocketEvents() {
     this.get('socket').disconnect();
@@ -164,7 +165,7 @@ export default Ember.Service.extend({
   _handleSocketFutureMsgs(data) {
     this._normalizeAndPushSocketPayload('future-message', data);
   },
-  _handleSocketRecords(data) {
+  _handleSocketRecordItems(data) {
     this._normalizeAndPushSocketPayload('record-item', data);
   },
   _handleSocketContacts(data) {
@@ -187,5 +188,5 @@ export default Ember.Service.extend({
         'query'
       );
     store.push(normalized);
-  }
+  },
 });

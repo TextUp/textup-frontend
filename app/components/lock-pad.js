@@ -45,7 +45,7 @@ export default Ember.Component.extend(PropTypesMixin, {
           .finally(() => run(() => this.set('_isLoading', false)));
       } else {
         this.set('_isLoading', false);
-        console.log('doValidate did not return a promise');
+        Ember.debug('doValidate did not return a promise');
       }
     }
   },

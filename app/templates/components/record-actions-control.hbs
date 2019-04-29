@@ -16,7 +16,7 @@
                 <li tabindex="0" class="dropdown-item" onclick={{action _scheduleMessage}}>
                     Schedule message
                 </li>
-                {{#if hasPersonalPhoneNumber}}
+                {{#if hasPersonalNumber}}
                     <li tabindex="0" class="dropdown-item" onclick={{action _startCall}}>
                         Make call
                     </li>
@@ -37,7 +37,7 @@
             classNames="record-actions-control__action-item record-actions-control__action-item--grow"
             numMedia=_numMedia
             contents=(mut _contents)
-            onClearContents=(action _onContentChange '')
+            onClearContents=(action _onContentChange "")
             onSend=(action _onSendText)}}
             {{#if (can-record-audio)}}
                 {{#pop-over as |popOver|}}

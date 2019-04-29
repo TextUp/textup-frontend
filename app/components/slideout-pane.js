@@ -1,47 +1,40 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
+import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { $, isNone, computed, run } = Ember;
+const { $, isNone, computed, run, tryInvoke } = Ember;
 
-export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
-  constants: Ember.inject.service(),
-
+export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   propTypes: {
-    doClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    doRegister: PropTypes.func,
+    headerComponent: PropTypes.EmberComponent,
+    footerComponent: PropTypes.EmberComponent,
 
-    headerComponent: PropTypes.string,
-    headerProps: PropTypes.object,
-    footerComponent: PropTypes.string,
-    footerProps: PropTypes.object,
-
-    bodyClass: '',
-    direction: PropTypes.string,
+    bodyClass: PropTypes.string,
+    direction: PropTypes.oneOf(Object.values(Constants.SLIDEOUT.DIRECTION)),
     ignoreCloseSelectors: PropTypes.string,
-    startOpen: PropTypes.bool,
     clickOutToClose: PropTypes.bool,
     focusDelay: PropTypes.number,
     focusSelector: PropTypes.string,
     // if true then calling close on the slideout has no effect used to disable closing, for
     // example when performing a longer process that hasn't finished yet.
     forceKeepOpen: PropTypes.bool,
-    onOpen: PropTypes.func
+    onOpen: PropTypes.func,
   },
   getDefaultProps() {
     return {
-      headerComponent: 'slideout-pane/title',
-      headerProps: {},
-      footerComponent: '',
-      footerProps: {},
-      direction: this.get('constants.SLIDEOUT.DIRECTION.LEFT'),
-      ignoreCloseSelectors: this.get('constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR'),
+      direction: Constants.SLIDEOUT.DIRECTION.LEFT,
+      ignoreCloseSelectors: Constants.SLIDEOUT.DEFAULT_IGNORE_CLOSE_SELECTOR,
       bodyClass: '',
-      startOpen: true,
       clickOutToClose: true,
       focusDelay: 500, // in ms
       focusSelector: '.slideout-pane__body',
-      forceKeepOpen: false
+      forceKeepOpen: false,
     };
   },
 
@@ -49,136 +42,110 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   classNameBindings: [
     '_directionClass',
     'forceKeepOpen:slideout-pane--keep-open',
-    '_isOpen:slideout-pane--open'
+    '_publicAPI.isOpen:slideout-pane--open',
   ],
 
-  // Private properties
-  // ------------------
+  init() {
+    this._super(...arguments);
+    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
+  didInsertElement() {
+    this._super(...arguments);
+    run.scheduleOnce('afterRender', this, this._open);
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    $(document).off(this._event());
+    this._removeOverlay();
+  },
 
-  _isOpen: false,
-  _$overlay: null,
-
-  // Computed properties
+  // Internal properties
   // -------------------
 
-  publicAPI: computed('direction', '_isOpen', function() {
+  _$overlay: null,
+  _publicAPI: computed(function() {
     return {
-      id: this.elementId,
-      direction: this.get('direction'),
-      isOpen: this.get('_isOpen'),
+      id: this.get('elementId'),
+      isOpen: false,
       actions: {
-        open: this._open.bind(this),
-        // can pass as many closures to execute subsequently as we like
-        close: this._close.bind(this, true)
-      }
+        close: this._close.bind(this, true), // can pass closures to execute subsequently
+      },
     };
   }),
   _directionClass: computed('direction', function() {
     return `slideout-pane--direction-${this.get('direction')}`;
   }),
-  _$el: computed(function() {
-    return this.$();
-  }),
 
-  // Events
-  // ------
+  // Internal handlers
+  // -----------------
 
-  didInsertElement() {
-    if (this.get('startOpen')) {
-      run.scheduleOnce('afterRender', this, this._open);
-    }
-  },
-  willDestroyElement() {
-    this._super(...arguments);
-    $(document).off(`.${this.elementId}`);
-    this._removeOverlay();
-  },
-
-  actions: {
-    forceClose() {
-      this._close(true);
-    }
-  },
-
-  // Event handlers
-  // --------------
-
-  _handleClickOutToClose(event) {
-    if (!this.get('_isOpen')) {
+  _handleClickOutToClose({ target }) {
+    if (!this.get('_publicAPI.isOpen') || !this.get('clickOutToClose')) {
       return;
     }
-    const ignoreCloseSelectors = this.get('ignoreCloseSelectors'),
-      $appRoot = this.get('_root'),
-      $overlay = this.get('_$overlay'),
-      $target = $(event.target),
-      targetStillInDOM = $appRoot.find($target).length > 0;
-    if (!targetStillInDOM) {
-      return;
-    }
-    if ($target.is($overlay)) {
-      this._close(false);
-    } else if (
-      !$target.closest(`#${this.elementId}`).length &&
-      !$target.closest(ignoreCloseSelectors).length
-    ) {
-      this._close(false);
-    }
-  },
-
-  // Opening and closing
-  // -------------------
-
-  _close(forceClose, ...then) {
-    if (forceClose || this.get('forceKeepOpen') !== true) {
-      if (!(this.isDestroying || this.isDestroyed)) {
-        this.set('_isOpen', false);
-        this._removeOverlay();
+    const $target = $(target);
+    if (this._targetIsInDOM($target)) {
+      if (this._targetIsOverlay($target) || this._targetIsNotChildOrIgnored($target)) {
+        this._close(false);
       }
-      Ember.tryInvoke(this, 'doClose', [this.get('publicAPI')]);
-      then.forEach(fn => callIfPresent(this, fn));
     }
   },
-  _open() {
-    if (this.get('_isOpen')) {
-      return;
-    }
-    this.set('_isOpen', true);
-    this._insertOverlay();
-    Ember.tryInvoke(this, 'onOpen', [this.get('publicAPI')]);
-    // events
-    run.next(() => {
-      if (this.get('clickOutToClose')) {
-        const elId = this.elementId;
-        $(document).on(`click.${elId}`, this._handleClickOutToClose.bind(this));
-      }
-    });
-    // focus on open
-    run.later(
-      this,
-      function() {
-        const $el = this.get('_$el');
-        if ($el) {
-          const focusObj = $el.find(this.get('focusSelector'));
-          if (focusObj) {
-            focusObj.focus();
-          }
-        }
-      },
-      this.get('focusDelay')
+  _targetIsInDOM($target) {
+    return this.get('_root').find($target).length > 0;
+  },
+  _targetIsOverlay($target) {
+    return $target.is(this.get('_$overlay'));
+  },
+  _targetIsNotChildOrIgnored($target) {
+    return (
+      !$target.closest(`#${this.get('elementId')}`).length &&
+      !$target.closest(this.get('ignoreCloseSelectors')).length
     );
   },
 
-  // Overlay
-  // -------
+  _close(forceClose, ...then) {
+    run.join(() => {
+      if (this.get('isDestroying') || this.get('isDestroyed')) {
+        return;
+      }
+      if (forceClose || this.get('forceKeepOpen') !== true) {
+        this.set('_publicAPI.isOpen', false);
+        this._removeOverlay();
+        tryInvoke(this, 'onClose', [this.get('_publicAPI')]);
+        ArrayUtils.ensureArrayAndAllDefined(then).forEach(fn => callIfPresent(this, fn));
+      }
+    });
+  },
+  _open() {
+    run.join(() => {
+      if (this.get('isDestroying') || this.get('isDestroyed') || this.get('_publicAPI.isOpen')) {
+        return;
+      }
+      this.set('_publicAPI.isOpen', true);
+      this._insertOverlay();
+      tryInvoke(this, 'onOpen', [this.get('_publicAPI')]);
+      // attach click handler later on so we don't catch the click that opens up this slideout
+      run.next(() => $(document).on(this._event('click'), this._handleClickOutToClose.bind(this)));
+      run.later(this, this._focusAfterOpen, this.get('focusDelay'));
+    });
+  },
+  _focusAfterOpen() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    const focusObj = this.$().find(this.get('focusSelector'));
+    if (focusObj) {
+      focusObj.focus();
+    }
+  },
 
   _insertOverlay() {
-    const $el = this.get('_$el');
     let $overlay = this.get('_$overlay');
     if (isNone($overlay)) {
       $overlay = this._build$Overlay();
       this.set('_$overlay', $overlay);
     }
-    $el.after($overlay);
+    this.$().after($overlay);
   },
   _removeOverlay() {
     const $overlay = this.get('_$overlay');
@@ -188,5 +155,5 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   },
   _build$Overlay() {
     return $(`<div class='slideout-pane__overlay'></div>`);
-  }
+  },
 });

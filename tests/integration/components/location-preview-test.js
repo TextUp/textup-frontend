@@ -1,4 +1,4 @@
-import * as LocationUtils from 'textup-frontend/utils/location';
+import LocationUtils from 'textup-frontend/utils/location';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -17,7 +17,7 @@ moduleForComponent('location-preview', 'Integration | Component | location previ
   },
   afterEach() {
     buildUrlStub.restore();
-  }
+  },
 });
 
 test('invalid inputs', function(assert) {
@@ -26,7 +26,7 @@ test('invalid inputs', function(assert) {
     onSuccess: 'not a function',
     onFailure: 'not a function',
     loadingMessage: 88,
-    errorMessage: 88
+    errorMessage: 88,
   });
 
   assert.throws(() => this.render(hbs`{{location-preview}}`), 'requires location');
@@ -58,7 +58,7 @@ test('valid inputs', function(assert) {
       onSuccess: () => null,
       onFailure: () => null,
       loadingMessage: 'a string',
-      errorMessage: 'a string'
+      errorMessage: 'a string',
     });
 
     this.render(hbs`{{location-preview location=location}}`);
@@ -135,7 +135,7 @@ test('rendering valid location + clicking', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
-        latLng: { lat: Math.random(), lng: Math.random() }
+        latLng: { lat: Math.random(), lng: Math.random() },
       }),
       onSuccess = sinon.spy(),
       onFailure = sinon.spy(),
@@ -152,11 +152,10 @@ test('rendering valid location + clicking', function(assert) {
     // wait doesn't always wait long enough
     Ember.run.later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
-      assert.ok(buildUrlStub.args.every(argList => argList.length === 4));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[0]) === 'object'));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[3]) === 'number'));
-      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lat'));
-      assert.equal(buildUrlStub.firstCall.args[2], location.get('latLng.lng'));
+      assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
+      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
+      assert.equal(buildUrlStub.firstCall.args[0], location.get('latLng.lat'));
+      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lng'));
 
       assert.ok(onSuccess.calledOnce, 'success handler called');
       assert.ok(onFailure.notCalled, 'not failure');
@@ -191,7 +190,7 @@ test('rendering invalid location + clicking', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
-        latLng: { lat: Math.random(), lng: Math.random() }
+        latLng: { lat: Math.random(), lng: Math.random() },
       }),
       onSuccess = sinon.spy(),
       onFailure = sinon.spy(),
@@ -209,11 +208,10 @@ test('rendering invalid location + clicking', function(assert) {
     // wait doesn't wait long enough
     Ember.run.later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
-      assert.ok(buildUrlStub.args.every(argList => argList.length === 4));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[0]) === 'object'));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[3]) === 'number'));
-      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lat'));
-      assert.equal(buildUrlStub.firstCall.args[2], location.get('latLng.lng'));
+      assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
+      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
+      assert.equal(buildUrlStub.firstCall.args[0], location.get('latLng.lat'));
+      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lng'));
 
       assert.ok(onSuccess.notCalled, 'load not successful');
       assert.ok(onFailure.calledOnce, 'loading failure');
@@ -250,7 +248,7 @@ test('re-rendering on location changes', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
-        latLng: { lat: Math.random(), lng: Math.random() }
+        latLng: { lat: Math.random(), lng: Math.random() },
       }),
       onSuccess = sinon.spy(),
       onFailure = sinon.spy(),
@@ -268,11 +266,10 @@ test('re-rendering on location changes', function(assert) {
     // wait doesn't wait long enough
     Ember.run.later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
-      assert.ok(buildUrlStub.args.every(argList => argList.length === 4));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[0]) === 'object'));
-      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[3]) === 'number'));
-      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lat'));
-      assert.equal(buildUrlStub.firstCall.args[2], location.get('latLng.lng'));
+      assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
+      assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
+      assert.equal(buildUrlStub.firstCall.args[0], location.get('latLng.lat'));
+      assert.equal(buildUrlStub.firstCall.args[1], location.get('latLng.lng'));
 
       assert.ok(onSuccess.notCalled, 'load not successful');
       assert.ok(onFailure.calledOnce, 'loading failure');
@@ -285,13 +282,12 @@ test('re-rendering on location changes', function(assert) {
       // wait doesn't wait long enough
       Ember.run.later(() => {
         assert.ok(buildUrlStub.calledTwice, 'build url handler called');
-        assert.ok(buildUrlStub.args.every(argList => argList.length === 4));
-        assert.ok(buildUrlStub.args.every(argList => typeOf(argList[0]) === 'object'));
-        assert.ok(buildUrlStub.args.every(argList => typeOf(argList[3]) === 'number'));
-        assert.notEqual(buildUrlStub.firstCall.args[1], location.get('latLng.lat'));
-        assert.notEqual(buildUrlStub.firstCall.args[2], location.get('latLng.lng'));
-        assert.equal(buildUrlStub.secondCall.args[1], location.get('latLng.lat'));
-        assert.equal(buildUrlStub.secondCall.args[2], location.get('latLng.lng'));
+        assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
+        assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
+        assert.notEqual(buildUrlStub.firstCall.args[0], location.get('latLng.lat'));
+        assert.notEqual(buildUrlStub.firstCall.args[1], location.get('latLng.lng'));
+        assert.equal(buildUrlStub.secondCall.args[0], location.get('latLng.lat'));
+        assert.equal(buildUrlStub.secondCall.args[1], location.get('latLng.lng'));
 
         assert.ok(onSuccess.calledOnce, 'this time is success');
         assert.ok(onFailure.calledOnce);

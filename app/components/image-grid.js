@@ -1,6 +1,6 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 
 const { computed, get, tryInvoke } = Ember;
 
@@ -46,6 +46,6 @@ export default Ember.Component.extend(DisplaysImages, {
       return;
     }
     const image = this.get('_images').objectAt(imageIndex);
-    return image ? get(image, MEDIA_ID_PROP_NAME) : null;
-  }
+    return image ? get(image, Constants.PROP_NAME.MEDIA_ID) : null;
+  },
 });

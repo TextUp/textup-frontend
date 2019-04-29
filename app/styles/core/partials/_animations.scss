@@ -19,12 +19,3 @@
     width: $spacing * 2;
   }
 }
-
-@keyframes bottom-drawer-slide-up {
-  from {
-    max-height: 0vh;
-  }
-  to {
-    max-height: 30vh;
-  }
-}

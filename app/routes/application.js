@@ -1,5 +1,5 @@
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import config from '../config/environment';
+import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import Loading from 'textup-frontend/mixins/loading-slider';
@@ -7,28 +7,21 @@ import Loading from 'textup-frontend/mixins/loading-slider';
 const { isArray, get } = Ember;
 
 export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
-  attemptedTransition: null,
   storage: Ember.inject.service(),
 
   // Events
   // ------
 
-  init: function() {
+  init() {
     this._super(...arguments);
-    this.notifications.setDefaultClearNotification(5000);
-    this.notifications.setDefaultAutoClear(true);
-  },
-  willDestroy: function() {
-    this._super(...arguments);
-    this.get('authService')
-      .off(config.events.auth.success, this)
-      .off(config.events.auth.clear, this);
+    this.get('notifications').setDefaultClearNotification(5000);
+    this.get('notifications').setDefaultAutoClear(true);
   },
 
   // Hooks
   // -----
 
-  beforeModel: function() {
+  beforeModel() {
     // validate stored token for staff, if any
     // return promise so that resolver blocks until promise completes
     // catch any error to avoid default error handler if promise
@@ -37,7 +30,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
       .setupFromStorage()
       .catch(() => {});
   },
-  redirect: function(model, transition) {
+  redirect(model, transition) {
     const storage = this.get('storage'),
       url = storage.getItem('currentUrl'),
       targetName = transition.targetName;
@@ -52,27 +45,18 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
       this.transitionTo(url);
     }
   },
-  setupController: function(controller) {
+  setupController(controller) {
     this._super(...arguments);
     controller.set('lockCode', '');
   },
 
   actions: {
-    validate: function(un, pwd, then = undefined) {
-      return this.get('authService')
-        .validate(un, pwd)
-        .then(
-          () => {
-            callIfPresent(this, then);
-          },
-          failure => {
-            if (this.get('dataService').displayErrors(failure) === 0) {
-              this.notifications.error('Could not validate credentials');
-            }
-          }
-        );
+    validate(un, pwd, then = undefined) {
+      return this.get('dataService')
+        .request(this.get('authService').validate(un, pwd))
+        .then(() => callIfPresent(this, then));
     },
-    logout: function() {
+    logout() {
       this.get('authService').logout();
     },
 
@@ -90,7 +74,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
               resolve();
             },
             () => {
-              this.notifications.error('Incorrect lock code.');
+              this.get('notifications').error('Incorrect lock code.');
               this._doAttempt();
               reject();
             }
@@ -102,7 +86,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Slideout
     // --------
 
-    didTransition: function() {
+    didTransition() {
       this._super(...arguments);
       // initializer
       if (!this.get('_initialized')) {
@@ -121,15 +105,15 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Slideout utilities
     // ------------------
 
-    clearList: function(models, propName, ...then) {
+    clearList(models, propName, ...then) {
       this._doForOneOrMany(models, model => model.get(propName).clear());
       then.forEach(fn => callIfPresent(this, fn));
     },
-    revert: function(models, ...then) {
+    revert(models, ...then) {
       this._doForOneOrMany(models, model => model && model.rollbackAttributes());
       then.forEach(fn => callIfPresent(this, fn));
     },
-    revertAttribute: function(models, attributeName, ...then) {
+    revertAttribute(models, attributeName, ...then) {
       this._doForOneOrMany(models, model => {
         if (model) {
           const changes = get(model.changedAttributes(), attributeName);
@@ -140,12 +124,12 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
       });
       then.forEach(fn => callIfPresent(this, fn));
     },
-    persist: function(models, ...then) {
+    persist(models, ...then) {
       return this.get('dataService')
         .persist(models)
         .then(() => then.forEach(fn => callIfPresent(this, fn)));
     },
-    markForDelete: function(models, ...then) {
+    markForDelete(models, ...then) {
       this.get('dataService').markForDelete(models);
       then.forEach(fn => callIfPresent(this, fn));
     },
@@ -153,7 +137,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Chaining utilities
     // ------------------
 
-    mutate: function(propClosure, newValue, ...then) {
+    mutate(propClosure, newValue, ...then) {
       callIfPresent(this, propClosure, [newValue]);
       then.forEach(fn => callIfPresent(this, fn));
     },
@@ -161,10 +145,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     // Errors
     // ------
 
-    mapError: function() {
-      this.get('dataService').handleMapError();
-    },
-    error: function(reason, transition) {
+    error(reason, transition) {
       this.get('authService').set('attemptedTransition', transition);
       this.get('dataService').handleError(reason);
     },
@@ -172,6 +153,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
 
   // Lock Attempts properties + helpers
   // ----------------------------------
+
   _storageObj: Ember.computed('persistStorage', function() {
     return this.get('persistStorage') ? localStorage : sessionStorage;
   }),
@@ -189,9 +171,6 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
     }
   },
   _doAttempt() {
-    if (this.isDestroying || this.isDestroyed) {
-      return;
-    }
     this._incrementAttempts();
     if (this._isTooManyAttempts()) {
       this._resetAttempts();
@@ -223,7 +202,7 @@ export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   // Helpers
   // -------
 
-  _doForOneOrMany: function(data, doAction) {
+  _doForOneOrMany(data, doAction) {
     if (Ember.isArray(data)) {
       return data.forEach(doAction);
     } else {

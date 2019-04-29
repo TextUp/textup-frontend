@@ -1,0 +1,36 @@
+.notification-summary {
+  margin: 0 auto;
+  padding: $baseunit 0;
+
+  @include mq($from: tablet) {
+    max-width: 50vw;
+  }
+
+  &__brand {
+    max-width: 50%;
+    width: $baseunit * 5;
+    margin-bottom: $baseunit;
+  }
+  &__greeting {
+    @extend .text-big;
+
+    margin-bottom: $baseunit;
+    font-weight: $font-weight-bold;
+
+    &--small {
+      @extend .text-small;
+    }
+  }
+  &__message {
+    @extend .text-big;
+
+    margin-bottom: $baseunit;
+
+    &--bold {
+      font-weight: $font-weight-bold;
+    }
+  }
+  &__button {
+    @extend .button;
+  }
+}

@@ -1,12 +1,12 @@
 {{#slideout-pane
-    headerProps=(hash title="Scheduled Messages")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
+    headerComponent=(component "slideout-pane/title" title="Scheduled Messages")
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+    onClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
     <ul class="result-list">
         {{#each model.futureMessages as |existingFutureMessage|}}
             {{#hide-show tagName="li" as |hideShow|}}
                 {{#future-message classNames="border-b" message=existingFutureMessage}}
-                    {{#if (and (or (eq model.constructor.modelName constants.MODEL.TAG) model.allowEdits)
+                    {{#if (and (or (type/is-tag model) model.allowEdits)
                         (not existingFutureMessage.isDone))}}
                         <div class="border-l flex__item flex__item--no-shrink">
                             <button class="btn-span btn btn-plain full-height"
@@ -42,7 +42,7 @@
                             hideShow.actions.close)}}
                     {{form/future-message classNames="pad-t pad-b-double border-b"
                         futureMessage=existingFutureMessage
-                        personalPhoneNumber=authService.authUser.personalPhoneNumber
+                        personalNumber=authService.authUser.personalNumber
                         onAddImage=(route-action "onAddImage" existingFutureMessage)
                         onAddAudio=(route-action "onAddAudio" existingFutureMessage)
                         onRemoveMedia=(route-action "onRemoveMedia" existingFutureMessage)}}

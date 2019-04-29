@@ -1,44 +1,50 @@
 import config from 'textup-frontend/config/environment';
-import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import Organization from 'textup-frontend/models/organization';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { get } = Ember;
+const { get, computed } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
   authService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
-  store: Ember.inject.service('store'),
+  store: Ember.inject.service(),
 
-  data: defaultIfAbsent([]),
-  phoneOwner: null,
-  selected: null,
-  identityProperty: defaultIfAbsent('id'),
+  propTypes: {
+    data: PropTypes.EmberObject,
+    phoneOwner: PropTypes.EmberObject,
+    org: PropTypes.instanceOf(Organization),
+    selected: PropTypes.oneOfType([PropTypes.null, PropTypes.object]),
+  },
+  getDefaultProps() {
+    return { data: Ember.ArrayProxy.create() };
+  },
 
-  // Computed properties
-  // -------------------
-
-  dataExcludingSelf: Ember.computed('data.[]', 'phoneOwner', function() {
+  _dataExcludingSelf: computed('data.[]', 'phoneOwner', function() {
     return this._excludeOwner(this.get('data'));
   }),
 
   actions: {
-    select: function(transferTarget) {
+    select(transferTarget) {
       return new Ember.RSVP.Promise(resolve => {
         this.set('selected', transferTarget);
         resolve();
       });
     },
-    deselect: function() {
+    deselect() {
       this.set('selected', null);
     },
-    search: function(val) {
+    search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
-        this.get('authService')
-          .authRequest({
-            type: 'GET',
-            url: `${config.host}/v1/staff?search=${val}`
-          })
+        const orgId = this.get('org.id');
+        this.get('dataService')
+          .request(
+            this.get('authService').authRequest({
+              type: Constants.REQUEST_METHOD.GET,
+              url: `${config.host}/v1/staff?organizationId=${orgId}&search=${val}`,
+            })
+          )
           .then(data => {
             const store = this.get('store'),
               staffs = data.staff,
@@ -48,18 +54,23 @@ export default Ember.Component.extend({
                   })
                 : [];
             resolve(this._excludeOwner(models));
-          }, this.get('dataService').buildErrorHandler(reject));
+          }, reject);
       });
-    }
+    },
   },
 
   // Helper methods
   // --------------
 
-  _excludeOwner: function(array) {
+  _excludeOwner(array) {
     const owner = this.get('phoneOwner'),
-      identProp = this.get('identityProperty'),
-      ownerIdent = get(owner, identProp);
-    return (array || []).filter(item => get(item, identProp) !== ownerIdent);
-  }
+      idProp = 'id',
+      typeProp = Constants.PROP_NAME.MODEL_NAME;
+    return (array || []).filter(item => {
+      return (
+        get(item, idProp) !== get(owner, idProp) ||
+        (get(item, idProp) === get(owner, idProp) && get(item, typeProp) !== get(owner, typeProp))
+      );
+    });
+  },
 });

@@ -1,13 +1,12 @@
 {{#slideout-pane
-    headerProps=(hash title=(concat "Export records"))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title=(concat "Export records"))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishExportSlideout")
+        onPrimary=(route-action "finishExportSlideout")
         disablePrimary=(or (not exportStartDate) (not exportEndDate))
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
-    doClose=(route-action "cancelExportSlideout")
+    onClose=(route-action "cancelExportSlideout")
     focusSelector=".multi-select-new-input" as |slideout|}}
     <div class="form">
         <div class="form__group">
@@ -16,12 +15,12 @@
             </label>
             {{#multi-toggle selectIndex=(if exportForEntirePhone 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
+                    color=(constant "COLOR.BRAND")
                     onSelect=(action (mut exportForEntirePhone) true)}}
                     all of {{stateManager.owner.name}}
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
+                    color=(constant "COLOR.LIGHT_BLUE")
                     onSelect=(action (mut exportForEntirePhone) false)}}
                     selected contacts and tags
                 {{/multi-toggle/item}}
@@ -34,8 +33,9 @@
                 </label>
                 {{#multi-select data=model.phone.content.tags
                     selected=exportRecordOwners
-                    displayProperty="identifier"
-                    identityProperty="uniqueIdentifier"
+                    filterProperty=(constant "PROP_NAME.FILTER_VAL")
+                    displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+                    identityProperty=(constant "PROP_NAME.URL_IDENT")
                     doSearch=(route-action "exportDoSearch")
                     onInsert=(route-action "exportInsertRecordOwner")
                     onRemove=(route-action "exportRemoveRecordOwner") as |recipient select|}}
@@ -65,12 +65,12 @@
             </label>
             {{#multi-toggle selectIndex=(if exportAsGrouped 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.BRAND
+                    color=(constant "COLOR.BRAND")
                     onSelect=(action (mut exportAsGrouped) true)}}
                     as separate pages
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
-                    color=constants.COLOR.LIGHT_BLUE
+                    color=(constant "COLOR.LIGHT_BLUE")
                     onSelect=(action (mut exportAsGrouped) false)}}
                     all together ordered by timestamp
                 {{/multi-toggle/item}}

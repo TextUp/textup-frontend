@@ -1,62 +1,63 @@
-{{#if hasMultipleTabs}}
-	<div class="tab-container-nav">
-		<ul class="tab-container-nav-list">
-			{{#each _items as |item index|}}
-				<li class="tab-container-nav-item {{if (eq _currentIndex index) 'active'}}"
-					{{action 'switchTo' index}}>
-					{{item.title}}
-				</li>
-			{{/each}}
-		</ul>
-		<div class="tab-container-nav-controls">
-			{{#hide-show as |hideShow|}}
-				<div class="flex border-b">
-					<div class="flex__item flex__item--grow">
-						<button class="tab-container-nav-display btn btn-expand flex flex--spacing-between flex--justify-spread"
-							type='button'
-							onclick={{hideShow.actions.toggle}}>
-							<span class="text-ellipsis flex__item flex__item--grow">
-								{{_currentItem.title}}
-							</span>
-							<span class="flex__item">
-								{{#if hideShow.isOpen}}
-									<span class="fa fa-caret-up"></span>
-		    					{{else}}
-		    						<span class="fa fa-caret-down"></span>
-		    					{{/if}}
-							</span>
-		    			</button>
-					</div>
-					<div class="flex__item">
-						<button class="btn btn-plain"
-							type='button'
-							onclick={{action 'prev'}}>
-							<span class="fa fa-chevron-left"></span>
-						</button>
-					</div>
-					<div class="flex__item">
-						<button class="btn btn-plain"
-							type='button'
-							onclick={{action 'next'}}>
-							<span class="fa fa-chevron-right"></span>
-						</button>
-					</div>
+<div class="tab-container__nav
+		{{if (not _hasMultipleTabs) "tab-container__nav--no-multiple"}}
+		{{if _hasTabOverflow "tab-container__nav--overflow"}}">
+	<ul class="tab-container__nav__list">
+		{{#each _items as |item index|}}
+			<li class="tab-container__nav__list-item
+					{{if (eq _publicAPI.currentIndex index) "tab-container__nav__list-item--active"}}"
+				onclick={{action _switchToIndex index}}>
+				{{item.title}}
+			</li>
+		{{/each}}
+	</ul>
+	<div class="tab-container__nav__controls">
+		{{#hide-show animate=false as |hideShow|}}
+			<div class="flex border-b">
+				<div class="flex__item flex__item--grow">
+					<button class="tab-container__nav__display flex flex--spacing-between flex--justify-spread"
+						type="button"
+						onclick={{hideShow.actions.toggle}}>
+						<span class="text-ellipsis flex__item flex__item--grow">
+							{{_currentItem.title}}
+						</span>
+						<span class="flex__item">
+							{{#if hideShow.isOpen}}
+								<span class="fa fa-caret-up"></span>
+	    					{{else}}
+	    						<span class="fa fa-caret-down"></span>
+	    					{{/if}}
+						</span>
+	    			</button>
 				</div>
-				{{#if hideShow.isOpen}}
-					<ul class="dropdown border-b">
-		                {{#each _items as |item index|}}
-							<li tabindex='0'
-								class="dropdown-item {{if (eq _currentIndex index) 'active'}}"
-								onclick={{action hideShow.actions.closeThenCall (action "switchTo" index)}}>
-								{{item.title}}
-							</li>
-						{{/each}}
-		            </ul>
-				{{/if}}
-			{{/hide-show}}
-		</div>
+				<div class="flex__item">
+					<button class="btn btn-plain"
+						type="button"
+						onclick={{action _switchToPrevIndex}}>
+						<span class="fa fa-chevron-left"></span>
+					</button>
+				</div>
+				<div class="flex__item">
+					<button class="btn btn-plain"
+						type="button"
+						onclick={{action _switchToNextIndex}}>
+						<span class="fa fa-chevron-right"></span>
+					</button>
+				</div>
+			</div>
+			{{#if hideShow.isOpen}}
+				<ul class="dropdown border-b">
+	                {{#each _items as |item index|}}
+						<li tabindex="0"
+							class="dropdown-item {{if (eq _publicAPI.currentIndex index) "active"}}"
+							onclick={{action hideShow.actions.closeThenCall (action _switchToIndex index)}}>
+							{{item.title}}
+						</li>
+					{{/each}}
+	            </ul>
+			{{/if}}
+		{{/hide-show}}
 	</div>
-{{/if}}
-<div class="tab-container-body">
-	{{yield publicAPI (action 'registerItem')}}
+</div>
+<div class="tab-container__body">
+	{{yield _publicAPI}}
 </div>

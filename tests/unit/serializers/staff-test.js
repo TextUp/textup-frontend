@@ -7,22 +7,21 @@ const { run } = Ember;
 
 moduleForModel('staff', 'Unit | Serializer | staff', {
   needs: [
+    'model:location',
+    'model:organization',
+    'model:phone',
+    'model:schedule',
+    'model:team',
     'serializer:staff',
-    'service:constants',
     'service:auth-service',
+    'transform:phone-number',
     'validator:belongs-to',
     'validator:format',
-    'validator:length',
-    'validator:presence',
-    'validator:number',
     'validator:inclusion',
-    'model:team',
-    'model:organization',
-    'model:location',
-    'model:schedule',
-    'model:phone',
-    'transform:phone-number'
-  ]
+    'validator:length',
+    'validator:number',
+    'validator:presence',
+  ],
 });
 
 test('serializer owns phone', function(assert) {
@@ -40,13 +39,9 @@ test('serialized form', function(assert) {
   assert.notOk(keys.contains('teams'));
   assert.ok(keys.contains('username'));
   assert.ok(keys.contains('name'));
-  assert.ok(keys.contains('captcha'));
   assert.ok(keys.contains('email'));
   assert.ok(keys.contains('org'));
-  assert.ok(keys.contains('schedule'));
-  assert.ok(keys.contains('manualSchedule'));
-  assert.ok(keys.contains('isAvailable'));
-  assert.ok(keys.contains('personalPhoneNumber'));
+  assert.ok(keys.contains('personalNumber'));
   assert.ok(keys.contains('status'));
 });
 

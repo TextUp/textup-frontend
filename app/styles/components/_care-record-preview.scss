@@ -1,0 +1,33 @@
+.care-record-preview {
+  margin-bottom: $baseunit;
+  border-radius: $border-radius;
+  box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
+
+  &__header {
+    display: flex;
+    background-color: $color-white;
+    padding: $baseunit ($record-item-triangle * 1.5);
+  }
+  &__name {
+    @extend .text-ellipsis;
+
+    flex-grow: 1;
+    padding-right: $baseunit;
+    font-weight: $font-weight-bold;
+  }
+  &__button {
+    @extend .btn-link;
+
+    flex-shrink: 0;
+  }
+  &__body {
+    background-color: $bg-color;
+    padding-top: $baseunit;
+    overflow: auto; // prevents margin collapse
+
+    &__message {
+      text-align: center;
+      padding-bottom: $baseunit;
+    }
+  }
+}

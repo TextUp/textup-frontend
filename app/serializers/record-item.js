@@ -1,12 +1,19 @@
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import HasAuthor from 'textup-frontend/mixins/serializer/has-author';
 import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 
 const polymorphicTypeToModelName = {
-  TEXT: 'record-text',
-  CALL: 'record-call',
-  NOTE: 'record-note'
+  TEXT: Constants.MODEL.RECORD_TEXT,
+  CALL: Constants.MODEL.RECORD_CALL,
+  NOTE: Constants.MODEL.RECORD_NOTE,
 };
+
+export function tryNormalizePolymorphicType(hash) {
+  if (hash && Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
+    hash.type = polymorphicTypeToModelName[hash.type];
+  }
+}
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasMedia, {
   attrs: {
@@ -15,8 +22,8 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
     hasAwayMessage: { serialize: false },
     hasBeenDeleted: { key: 'isDeleted', serialize: true },
     receipts: { serialize: false },
-    contact: { serialize: false },
-    tag: { serialize: false }
+    contacts: { serialize: false },
+    tags: { serialize: false },
   },
 
   modelNameFromPayloadKey(payloadKey) {
@@ -33,16 +40,19 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasAuthor, HasM
   },
 
   _normalizePolymorphicRecord(obj, hash) {
-    this._tryNormalizePolymorphicType(hash);
+    tryNormalizePolymorphicType(hash);
     return this._super(...arguments);
   },
 
-  // Helpers
-  // -------
-
-  _tryNormalizePolymorphicType(hash) {
-    if (hash && Object.keys(polymorphicTypeToModelName).indexOf(hash.type) !== -1) {
-      hash.type = polymorphicTypeToModelName[hash.type];
-    }
-  }
+  serialize(snapshot) {
+    const json = this._super(...arguments),
+      rItem = snapshot.record,
+      modelName = rItem.get(Constants.PROP_NAME.MODEL_NAME);
+    json.ids = rItem.get('recipients').map(obj => obj.get('id'));
+    json.numbers = rItem.get('newNumberRecipients');
+    json.type = Object.keys(polymorphicTypeToModelName).find(
+      key => polymorphicTypeToModelName[key] === modelName
+    );
+    return json;
+  },
 });

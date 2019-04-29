@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import AudioRecording from 'textup-frontend/objects/audio-recording';
@@ -6,8 +7,6 @@ import { isRecordingSupported, blobToBase64String } from 'textup-frontend/utils/
 const { computed, run, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     onError: PropTypes.func,
     onFinish: PropTypes.func,
@@ -17,7 +16,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     unsupportedMessage: PropTypes.string,
     startMessage: PropTypes.string,
     recordingMessage: PropTypes.string,
-    processingMessage: PropTypes.string
+    processingMessage: PropTypes.string,
   },
   getDefaultProps() {
     return {
@@ -25,7 +24,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       unsupportedMessage: 'Audio recording is not supported by your browser',
       startMessage: 'Select to start recording',
       recordingMessage: 'Recording...',
-      processingMessage: 'Processing...'
+      processingMessage: 'Processing...',
     };
   },
 
@@ -33,7 +32,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   classNameBindings: [
     '_isUnsupported:audio-control--unsupported',
     '_errorMessage:audio-control--error',
-    'disabled:audio-control--disabled'
+    'disabled:audio-control--disabled',
   ],
 
   didInsertElement() {
@@ -53,7 +52,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isProcessing: false,
 
   _maxTime: computed('_recorder', function() {
-    return this.get('_recorder') ? this.get('constants.AUDIO.MAX_DURATION_IN_SECONDS') : null;
+    return this.get('_recorder') ? Constants.AUDIO.MAX_DURATION_IN_SECONDS : null;
   }),
   _currentTime: computed('_recorder', '_recordingDurationSoFar', function() {
     return this.get('_recorder') ? this.get('_recordingDurationSoFar') : null;
@@ -136,7 +135,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       _isProcessing: false,
       _errorMessage: null,
       _timerIntervalId: intervalId,
-      _startTimeInMillis: Date.now()
+      _startTimeInMillis: Date.now(),
     });
   },
   _onFinishState() {
@@ -168,5 +167,5 @@ export default Ember.Component.extend(PropTypesMixin, {
     if (intervalId) {
       clearInterval(intervalId);
     }
-  }
+  },
 });

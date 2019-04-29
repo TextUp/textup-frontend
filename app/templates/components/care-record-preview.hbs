@@ -1,0 +1,17 @@
+<div class="care-record-preview__header">
+    <div class="care-record-preview__name">{{name}}</div>
+    {{#if _hasOnOpen}}
+        <button type="button"
+            class="care-record-preview__button"
+            onclick={{action _onOpen}}>
+            View in app
+        </button>
+    {{/if}}
+</div>
+<div class="care-record-preview__body">
+    {{#each recordClusters as |cluster|}}
+        {{record-cluster cluster=cluster noteOptions=(hash readOnly=true)}}
+    {{else}}
+        <p class="care-record-preview__body__message">{{noItemsMessage}}</p>
+    {{/each}}
+</div>

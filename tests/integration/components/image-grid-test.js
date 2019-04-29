@@ -1,13 +1,13 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import wait from 'ember-test-helpers/wait';
-import { MEDIA_ID_PROP_NAME } from 'textup-frontend/models/media';
 import { moduleForComponent, test } from 'ember-qunit';
 import {
   mockInvalidMediaImage,
   mockValidMediaImage,
-  mockValidMediaAudio
+  mockValidMediaAudio,
 } from 'textup-frontend/tests/helpers/utilities';
 
 const { typeOf } = Ember;
@@ -16,7 +16,7 @@ moduleForComponent('image-grid', 'Integration | Component | image grid', {
   integration: true,
   beforeEach() {
     this.inject.service('store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -52,8 +52,12 @@ test('loading and reloading several images', function(assert) {
         validImages.length + invalidImages.length,
         'try all images'
       );
-      validImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], true));
-      invalidImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], false));
+      validImages.forEach(img =>
+        assert.equal(results[img.get(Constants.PROP_NAME.MEDIA_ID)], true)
+      );
+      invalidImages.forEach(img =>
+        assert.equal(results[img.get(Constants.PROP_NAME.MEDIA_ID)], false)
+      );
 
       // load 2
       this.setProperties({
@@ -61,7 +65,7 @@ test('loading and reloading several images', function(assert) {
           .pushObjects(validImages2)
           .pushObjects(invalidImages)
           .pushObjects(audioElements),
-        onLoadEnd: onLoadEnd2
+        onLoadEnd: onLoadEnd2,
       });
       this.render(hbs`{{image-grid images=images onLoadEnd=onLoadEnd}}`);
     },
@@ -72,8 +76,12 @@ test('loading and reloading several images', function(assert) {
         validImages2.length + invalidImages.length,
         'return results for all images, even ones that were already tried'
       );
-      validImages2.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], true));
-      invalidImages.forEach(img => assert.equal(results[img.get(MEDIA_ID_PROP_NAME)], false));
+      validImages2.forEach(img =>
+        assert.equal(results[img.get(Constants.PROP_NAME.MEDIA_ID)], true)
+      );
+      invalidImages.forEach(img =>
+        assert.equal(results[img.get(Constants.PROP_NAME.MEDIA_ID)], false)
+      );
 
       done();
     };
@@ -84,7 +92,7 @@ test('loading and reloading several images', function(assert) {
       .pushObjects(validImages)
       .pushObjects(invalidImages)
       .pushObjects(audioElements),
-    onLoadEnd
+    onLoadEnd,
   });
   this.render(hbs`{{image-grid images=images onLoadEnd=onLoadEnd}}`);
 });

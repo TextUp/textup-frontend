@@ -1,41 +1,31 @@
 import Ember from 'ember';
+import OwnerPolicy from 'textup-frontend/models/owner-policy';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
+const { tryInvoke } = Ember;
 
+export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    entity: PropTypes.EmberObject.isRequired,
-    entityIdentityProp: PropTypes.string,
-    onEntityDidChange: PropTypes.func,
-    others: PropTypes.oneOfType([PropTypes.EmberObject, PropTypes.arrayOf(PropTypes.EmberObject)]),
-    onTypeChange: PropTypes.func,
+    self: PropTypes.instanceOf(OwnerPolicy),
+    others: PropTypes.array,
+    onAvailabilityTypeChange: PropTypes.func,
     onManualAvailabilityChange: PropTypes.func,
-    onScheduleAvailabilityChange: PropTypes.func
+    onScheduleAvailabilityChange: PropTypes.func,
   },
   getDefaultProps() {
-    return { others: [], entityIdentityProp: 'id' };
+    return { others: [] };
   },
 
-  didUpdateAttrs({
-    newAttrs: { entity: { value: newEntity } },
-    oldAttrs: { entity: { value: oldEntity } }
-  }) {
-    const identProp = this.get('entityIdentityProp');
-    if (newEntity.get(identProp) !== oldEntity.get(identProp)) {
-      Ember.tryInvoke(this, 'onEntityDidChange', [newEntity]);
-    }
-  },
+  // Internal handlers
+  // -----------------
 
-  actions: {
-    handleType() {
-      Ember.tryInvoke(this, 'onTypeChange', [...arguments]);
-    },
-    handleManualAvailability() {
-      Ember.tryInvoke(this, 'onManualAvailabilityChange', [...arguments]);
-    },
-    handleScheduleAvailability() {
-      Ember.tryInvoke(this, 'onScheduleAvailabilityChange', [...arguments]);
-    }
-  }
+  _handleType() {
+    tryInvoke(this, 'onAvailabilityTypeChange', [...arguments]);
+  },
+  _handleManualAvailability() {
+    tryInvoke(this, 'onManualAvailabilityChange', [...arguments]);
+  },
+  _handleScheduleAvailability() {
+    tryInvoke(this, 'onScheduleAvailabilityChange', [...arguments]);
+  },
 });

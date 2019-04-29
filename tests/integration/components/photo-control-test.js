@@ -1,16 +1,17 @@
-import * as PhotoUtils from 'textup-frontend/utils/photo';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
+import PhotoUtils from 'textup-frontend/utils/photo';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { mockValidMediaImage } from '../../helpers/utilities';
+import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 const { run } = Ember;
 
 moduleForComponent('photo-control', 'Integration | Component | photo control', {
-  integration: true
+  integration: true,
 });
 
 test('inputs + rendering', function(assert) {
@@ -48,8 +49,6 @@ test('inputs + rendering', function(assert) {
 });
 
 test('changing image display type', function(assert) {
-  const constants = Ember.getOwner(this).lookup('service:constants');
-
   this.setProperties({ images: [] });
   this.render(hbs`{{photo-control images=images}}`);
 
@@ -57,7 +56,7 @@ test('changing image display type', function(assert) {
   assert.ok(this.$('.image-stack').length, 'default is image stack');
   assert.notOk(this.$('.image-grid').length, 'default is image stack');
 
-  this.setProperties({ images: [], display: constants.PHOTO_CONTROL.DISPLAY.GRID });
+  this.setProperties({ images: [], display: Constants.PHOTO_CONTROL.DISPLAY.GRID });
   this.render(hbs`{{photo-control images=images imageDisplayComponent=display}}`);
 
   assert.ok(this.$('.photo-control').length);
@@ -74,7 +73,6 @@ test('changing image display type', function(assert) {
 
 test('displaying images', function(assert) {
   const store = Ember.getOwner(this).lookup('service:store'),
-    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store));
@@ -86,7 +84,7 @@ test('displaying images', function(assert) {
   assert.ok(this.$('.image-stack').length, 'default is image stack');
   assert.equal(this.$('.photo-control__item').length, 1, 'displays only one image');
 
-  this.setProperties({ images, display: constants.PHOTO_CONTROL.DISPLAY.GRID });
+  this.setProperties({ images, display: Constants.PHOTO_CONTROL.DISPLAY.GRID });
   this.render(hbs`{{photo-control images=images imageDisplayComponent=display}}`);
 
   assert.ok(this.$('.photo-control').length);
@@ -132,14 +130,13 @@ test('adding images', function(assert) {
 
 test('removing images', function(assert) {
   const store = Ember.getOwner(this).lookup('service:store'),
-    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store)),
     done = assert.async(),
     onRemove = sinon.spy();
 
-  this.setProperties({ images, onRemove, display: constants.PHOTO_CONTROL.DISPLAY.STACK });
+  this.setProperties({ images, onRemove, display: Constants.PHOTO_CONTROL.DISPLAY.STACK });
   this.render(hbs`{{photo-control images=images onRemove=onRemove imageDisplayComponent=display}}`);
 
   assert.ok(this.$('.photo-control').length, 'did render');
@@ -166,7 +163,7 @@ test('removing images', function(assert) {
         'stop event propagation so gallery is not triggered to open'
       );
 
-      this.set('display', constants.PHOTO_CONTROL.DISPLAY.GRID);
+      this.set('display', Constants.PHOTO_CONTROL.DISPLAY.GRID);
 
       assert.ok(this.$('.image-grid').length, 'did render image grid');
       assert.equal(
@@ -201,12 +198,11 @@ test('removing images', function(assert) {
 
 test('readOnly mode', function(assert) {
   const store = Ember.getOwner(this).lookup('service:store'),
-    constants = Ember.getOwner(this).lookup('service:constants'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store));
 
-  this.setProperties({ images, readOnly: true, display: constants.PHOTO_CONTROL.DISPLAY.STACK });
+  this.setProperties({ images, readOnly: true, display: Constants.PHOTO_CONTROL.DISPLAY.STACK });
   this.render(hbs`{{photo-control images=images readOnly=readOnly imageDisplayComponent=display}}`);
 
   assert.ok(this.$('.photo-control').length, 'did render');
@@ -214,7 +210,7 @@ test('readOnly mode', function(assert) {
   assert.notOk(this.$('.photo-control__remove').length, 'no remove controls rendered');
   assert.notOk(this.$('.photo-control__add').length, 'no add controls rendered');
 
-  this.set('display', constants.PHOTO_CONTROL.DISPLAY.GRID);
+  this.set('display', Constants.PHOTO_CONTROL.DISPLAY.GRID);
 
   assert.ok(this.$('.image-grid').length, 'did render image grid');
   assert.notOk(this.$('.photo-control__remove').length, 'no remove controls rendered');

@@ -1,23 +1,23 @@
 {{#slideout-pane
-	headerProps=(hash title='Compose')
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Compose")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishComposeSlideout")
+        onPrimary=(route-action "finishComposeSlideout")
         disablePrimary=(or (not composeMessage) (not composeHasRecipients))
         primaryLabel="Send"
         primaryProgressLabel="Sending...")
-    doClose=(route-action "cancelComposeSlideout")
+    onClose=(route-action "cancelComposeSlideout")
     forceKeepOpen=(or composeMessage composeHasRecipients)
-    focusSelector='.multi-select-new-input' as |slideout|}}
+    focusSelector=".multi-select-new-input" as |slideout|}}
 	<div class="form">
 		{{#if model.phone.isFulfilled}}
 			<div class="form__group">
                 {{#tour-components/hint hintId='composeRecipient' }}
 				{{#multi-select data=model.phone.content.tags
 			    	selected=composeRecipients
-			    	displayProperty='identifier'
-			    	identityProperty='uniqueIdentifier'
+			    	filterProperty=(constant "PROP_NAME.FILTER_VAL")
+                    displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+			    	identityProperty=(constant "PROP_NAME.URL_IDENT")
 			    	doSearch=(route-action "composeDoSearch")
 			    	doCreate=(route-action "composeCreateRecipient")
 			    	onInsert=(route-action "composeInsertRecipient")
@@ -31,7 +31,7 @@
 			{{textarea rows="3"
 				autoresize=true
 				class="form__input form__input--multiline"
-				maxLength=constants.DEFAULT.OUTGOING_TEXT_NUM_CHARACTERS
+				maxLength=(constant "DEFAULT.OUTGOING_TEXT_NUM_CHARACTERS")
 				value=composeMessage
 				placeholder="Type your message here"}}
 		</div>

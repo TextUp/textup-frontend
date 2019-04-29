@@ -6,10 +6,10 @@ const { dasherize, pluralize } = Ember.String;
 export default ApplicationAdapter.extend({
   authService: Ember.inject.service(),
 
-  pathForType: function(modelName) {
+  pathForType(modelName) {
     return pluralize(dasherize(modelName));
   },
-  buildURL: function(modelName, id, snapshot, requestType) {
+  buildURL(modelName, id, snapshot, requestType) {
     const obj = snapshot && snapshot.record;
     let url = this._super(...arguments);
 
@@ -23,5 +23,5 @@ export default ApplicationAdapter.extend({
     }
 
     return url;
-  }
+  },
 });

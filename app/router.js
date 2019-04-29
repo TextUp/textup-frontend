@@ -52,9 +52,6 @@ Router.map(function() {
       this.route('edit');
     });
   });
-  // This route should only be enabled during development
-  // TODO: remove before prodution
-  this.route('testing');
 });
 
 export default Router;

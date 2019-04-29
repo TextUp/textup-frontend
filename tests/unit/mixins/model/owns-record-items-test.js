@@ -17,11 +17,10 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
     'model:record-note-revision',
     'model:record-text',
     'model:tag',
-    'service:constants',
     'validator:has-any',
     'validator:inclusion',
     'validator:number',
-    'validator:presence'
+    'validator:presence',
   ],
   beforeEach() {
     this.inject.service('store');
@@ -38,7 +37,7 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
       const store = Ember.getOwner(this).lookup('service:store');
       return store.createRecord('owns-record-items-mixin-model');
     });
-  }
+  },
 });
 
 test('record items relationship is polymorphic', function(assert) {
@@ -74,7 +73,7 @@ test('adding record items ignores duplicate, invalid, and falsy values', functio
         .fill()
         .map(() =>
           this.store.createRecord('record-item', {
-            id: `${Math.random()}`
+            id: `${Math.random()}`,
           })
         );
 
@@ -117,7 +116,7 @@ test('getting record items and record clusters', function(assert) {
         .map(() =>
           this.store.createRecord('record-item', {
             id: `${Math.random()}`,
-            whenCreated: new Date(Date.now() - 1000)
+            whenCreated: new Date(Date.now() - 1000),
           })
         ),
       rItems2 = Array(numItems)
@@ -125,7 +124,7 @@ test('getting record items and record clusters', function(assert) {
         .map(() =>
           this.store.createRecord('record-item', {
             id: `${Math.random()}`,
-            whenCreated: new Date(Date.now() + 1000)
+            whenCreated: new Date(Date.now() + 1000),
           })
         ),
       numNotes = 8,
@@ -134,7 +133,7 @@ test('getting record items and record clusters', function(assert) {
         .map(() =>
           this.store.createRecord('record-note', {
             id: `${Math.random()}`,
-            whenCreated: new Date()
+            whenCreated: new Date(),
           })
         );
 

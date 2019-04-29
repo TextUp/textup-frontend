@@ -3,8 +3,6 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordNote from 'textup-frontend/models/record-note';
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     recordNote: PropTypes.instanceOf(RecordNote).isRequired,
     onAddImage: PropTypes.func.isRequired,
@@ -14,11 +12,11 @@ export default Ember.Component.extend(PropTypesMixin, {
     onRemoveLocation: PropTypes.func.isRequired,
     onLocationError: PropTypes.func.isRequired,
     contentsClass: PropTypes.string,
-    readOnly: PropTypes.bool
+    readOnly: PropTypes.bool,
   },
   getDefaultProps() {
     return { readOnly: false };
   },
   tagName: 'form',
-  classNames: 'form'
+  classNames: 'form',
 });

@@ -52,17 +52,17 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     run.scheduleOnce('afterRender', this._setupMapbox.bind(this));
   },
-  willDestroyElement: function() {
+  willDestroyElement() {
     const map = this.get('_map');
     if (map) {
       map.off();
     }
     this.$().off(`.${this.elementId}`);
   },
-  _setupMapbox: function() {
+  _setupMapbox() {
     // set access token
     window.L.mapbox.accessToken = config.apiKeys.mapbox;
     // mapbox.streets is a map on mapbox.com
@@ -107,7 +107,7 @@ export default Ember.Component.extend({
   // Searching
   // ---------
 
-  _doSearch: function(event) {
+  _doSearch(event) {
     // so that the page is not accidentally refreshed
     event.stopPropagation();
     event.preventDefault();
@@ -133,18 +133,21 @@ export default Ember.Component.extend({
   // Search results
   // --------------
 
-  clearResults: function() {
+  clearResults() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     const featureLayer = this.get('_features');
     this.set('_results', []);
     featureLayer.setGeoJSON([]);
   },
-  processResultsAndSelectFirst: function(error, data) {
+  processResultsAndSelectFirst(error, data) {
     this.processResults(error, data);
     Ember.run.scheduleOnce('afterRender', this, function() {
       this.selectResult(this.get('_results.firstObject'));
     });
   },
-  processResults: function(error, data) {
+  processResults(error, data) {
     if (Ember.isPresent(error)) {
       Ember.tryInvoke(this, 'onError', [error]);
       return;
@@ -170,7 +173,7 @@ export default Ember.Component.extend({
     // bind select event handlers
     featureLayer.eachLayer(layer => layer.on('click', this.selectResult.bind(this, layer)));
   },
-  selectResult: function(layer) {
+  selectResult(layer) {
     if (!Ember.isPresent(layer)) {
       return;
     }
@@ -193,7 +196,7 @@ export default Ember.Component.extend({
       }
     });
   },
-  deselectResult: function() {
+  deselectResult() {
     var results = this.get('_results');
     // update which result layer is active
     results.forEach(layer => Ember.set(layer, 'status', ''));
@@ -210,12 +213,12 @@ export default Ember.Component.extend({
   // Popups
   // ------
 
-  refreshPopup: function() {
+  refreshPopup() {
     // run next to give bindings time to synchronize
     Ember.run.next(this, this._doRefresh);
   },
-  _doRefresh: function() {
-    if (this.isDestroying || this.isDestroyed) {
+  _doRefresh() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     const map = this.get('_map');
@@ -228,7 +231,7 @@ export default Ember.Component.extend({
         keepInView: true,
         closeButton: false,
         closeOnClick: false,
-        className: this.get('popupClass')
+        className: this.get('popupClass'),
       });
       this.set('_isEditing', false);
     } else {
@@ -237,14 +240,14 @@ export default Ember.Component.extend({
       this.set('_isEditing', true);
     }
   },
-  _buildPopupString: function(description) {
+  _buildPopupString(description) {
     return `
       <h5>You\'ve selected this location!</h5>
       <p>${description}</p>
       <button>This isn't me</button>
     `;
   },
-  centerAfterOpen: function(event) {
+  centerAfterOpen(event) {
     const latLng = event.popup.getLatLng(),
       $popup = this.$(`.${this.get('popupClass')}`);
     if ($popup.length) {
@@ -261,5 +264,5 @@ export default Ember.Component.extend({
   _hasLatLng() {
     const latLng = this.get('location');
     return Ember.typeOf(latLng) === 'object' && latLng.lat && latLng.lng;
-  }
+  },
 });

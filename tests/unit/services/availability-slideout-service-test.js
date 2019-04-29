@@ -10,7 +10,6 @@ moduleFor(
   'Unit | Service | availability slideout service',
   {
     needs: [
-      'model:availability',
       'model:media',
       'model:media-element',
       'model:media/add',
@@ -18,56 +17,22 @@ moduleFor(
       'model:phone',
       'model:schedule',
       'model:tag',
-      'service:constants',
       'transform:interval-string',
       'transform:phone-number',
-      'validator:length'
+      'validator:length',
     ],
     beforeEach() {
       this.register(
         'service:data-service',
         Ember.Service.extend({
-          persist: sinon.stub().returns(new RSVP.Promise(resolve => resolve()))
+          persist: sinon.stub().returns(new RSVP.Promise(resolve => resolve())),
         })
       );
       this.inject.service('data-service', { as: 'dataService' });
       this.inject.service('store');
-    }
+    },
   }
 );
-
-test('ensuring that schedule is present on the record owner', function(assert) {
-  run(() => {
-    const service = this.subject(),
-      done = assert.async(),
-      scheduleOwner = this.store.createRecord('availability', { manualSchedule: true }),
-      sBaseline = this.store.peekAll('schedule').get('length');
-
-    service
-      .ensureScheduleIsPresent()
-      .catch(error => {
-        assert.ok(typeOf(error) === 'string', 'has explanatory error message');
-
-        return service.ensureScheduleIsPresent(scheduleOwner);
-      })
-      .then(() => {
-        assert.equal(this.store.peekAll('schedule').get('length'), sBaseline);
-
-        scheduleOwner.set('manualSchedule', false);
-        return service.ensureScheduleIsPresent(scheduleOwner);
-      })
-      .then(() => {
-        assert.equal(this.store.peekAll('schedule').get('length'), sBaseline + 1);
-
-        return service.ensureScheduleIsPresent(scheduleOwner);
-      })
-      .then(() => {
-        assert.equal(this.store.peekAll('schedule').get('length'), sBaseline + 1);
-
-        done();
-      });
-  });
-});
 
 test('adding processed audio to media', function(assert) {
   run(() => {

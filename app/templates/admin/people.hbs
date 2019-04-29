@@ -1,14 +1,14 @@
 {{#if team}}
-    {{title team.name separator=' - '}}
+    {{title team.name separator=" - "}}
 {{/if}}
 
-<div class="content">
+ <div class="content">
     {{#hide-show clickOutToClose=true as |hideShow|}}
         <div class="section-header">
             {{#if team}}
                 <span class="display-l">
                     <span class="indicator pull-left"
-                        style='background-color:{{team.hexColor}};'></span>
+                        style="background-color:{{team.hexColor}};"></span>
                 </span>
                 <div class="tag-title">
                     <h4 class="text-ellipsis">
@@ -16,16 +16,16 @@
                     </h4>
                     <p>
                         {{numPeople}}
-                        {{pluralize 'person' numPeople}}
+                        {{pluralize "person" numPeople}}
                     </p>
                 </div>
                 {{#if (not team.isDeleted)}}
-                    {{#link-to 'admin.team.edit'
-                        classNames='pull-right-to-edge full-height'
-                        activeClass='bg-color bg-dark'}}
-                        {{#tool-tip title='Edit Team'
-                            tagName='button'
-                            classNames='btn btn-plain btn-expand'}}
+                    {{#link-to "admin.team.edit"
+                        classNames="pull-right-to-edge full-height"
+                        activeClass="bg-color bg-dark"}}
+                        {{#tool-tip title="Edit Team"
+                            tagName="button"
+                            classNames="btn btn-plain btn-expand"}}
                             <span class="fa fa-sliders"></span>
                         {{/tool-tip}}
                     {{/link-to}}
@@ -35,7 +35,7 @@
                     <h4 class="text-ellipsis">{{capitalize filter}}</h4>
                     <p>
                         {{numPeople}}
-                        {{pluralize 'person' numPeople}}
+                        {{pluralize "person" numPeople}}
                     </p>
                 </div>
                 <div class="pull-right-to-edge full-height display-l">
@@ -53,20 +53,20 @@
         </div>
         {{#if hideShow.isOpen}}
             <ul class="reset-list">
-                <li class="menu-item {{if (eq filter 'active') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'active')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ACTIVE")) "active"}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.ACTIVE"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Active</p>
                     </div>
                 </li>
-                <li class="menu-item {{if (eq filter 'admins') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'admins')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ADMINS")) "active"}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.ADMINS"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Admins</p>
                     </div>
                 </li>
-                <li class="menu-item {{if (eq filter 'deactivated') 'active'}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action 'changeFilter' 'deactivated')}}>
+                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.DEACTIVATED")) "active"}}"
+                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.DEACTIVATED"))}}>
                     <div class="offset-xs-row-10 xs-8-row-10 text-left">
                         <p class="text-bold text-ellipsis">Deactivated</p>
                     </div>
@@ -74,21 +74,19 @@
             </ul>
         {{/if}}
     {{/hide-show}}
-    {{#infinite-scroll classNames='section-body bg-color bg-dark'
-        doRegister=(action (mut _peopleList))
-        containerClass='bg-color bg-lightest'
-        itemsClass='result-list'
-        direction='down'
+    {{#infinite-scroll classNames="section-body bg-color bg-lightest"
+        contentClass="result-list"
         data=people
-        total=numPeople
-        doLoad=(action 'loadMore')
-        doRefresh=(action 'refresh') as |person|}}
+        numTotal=numPeople
+        doRegister=(action (mut _peopleList))
+        onLoad=(action "loadMore")
+        onRefresh=(action "refresh") as |person|}}
         {{#entity-display class="result-item"
             entityIdentifier=person.name
-            linkTarget=(if team 'admin.team.person' 'admin.people.person')
+            linkTarget=(if team "admin.team.person" "admin.people.person")
             linkParam=person.id
             isSelected=person.isSelected
-            onSelect=(route-action 'toggleSelected' person)}}
+            onSelect=(route-action "toggleSelected" person)}}
             {{entity-display/staff entity=person}}
         {{/entity-display}}
     {{else}}

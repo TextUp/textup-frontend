@@ -30,6 +30,4 @@
         validateField='email'
         validate='bottom'}}
 </div>
-{{#with newStaff as |owner|}}
-    {{partial 'partials/change-number'}}
-{{/with}}
+{{form/phone-owner-actions owner=newStaff}}

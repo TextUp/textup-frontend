@@ -1,19 +1,18 @@
 {{#slideout-pane
-    headerProps=(hash title="Edit Note")
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Edit Note")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishEditNoteSlideout")
+        onPrimary=(route-action "finishEditNoteSlideout")
         disablePrimary=(not (v-get editingRecordNote "isValid"))
         primaryLabel=(if editingRecordNote.hasBeenDeleted "Confirm Delete" "Update")
         primaryProgressLabel=(if editingRecordNote.hasBeenDeleted "Deleting..." "Updating")
         primaryClass=(if editingRecordNote.hasBeenDeleted "btn btn-danger")
-        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo")
-        doSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
+        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo" "Cancel")
+        onSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
         showDelete=(not editingRecordNote.hasBeenDeleted)
-        doMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action "cancelEditNoteSlideout")
+        onMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+    onClose=(route-action "cancelEditNoteSlideout")
     forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
     {{form/record-note class="pad-t"
         recordNote=editingRecordNote
@@ -23,5 +22,5 @@
         onAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
         onRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
         onLocationError=(route-action "onLocationError")
-        readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
+        readOnly=(and (type/is-contact model) (not model.allowEdits))}}
 {{/slideout-pane}}

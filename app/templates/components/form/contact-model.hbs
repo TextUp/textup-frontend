@@ -3,20 +3,20 @@
         pad-t pad-l pad-r pad-b-half">
         <p class='margin-b-half'>
             <span class="text-bold">
-                {{phone-number contact.sharedBy}}
+                {{phone-number contact.sharedByName}}
             </span>
-            {{#if contact.isSharedDelegate}}
+            {{#if contact.isDelegatePermission}}
                 has been collaborating with you on
-            {{else if contact.isSharedView}}
+            {{else if contact.isViewPermission}}
                 has allowed you to view
             {{else}}
                 has shared
             {{/if}}
             <span class="text-bold">
-                {{phone-number contact.identifier}}
+                {{phone-number contact.name}}
             </span>
             since
-            {{moment-from-now contact.startedSharing interval=10000}}
+            {{moment-from-now contact.whenCreated interval=10000}}
         </p>
     </div>
 {{/if}}
@@ -56,7 +56,7 @@
             <select name="contact-language" class="xs-row-3 form__input"
                 onchange={{action (mut contact.language) value="target.value"}}
                 disabled={{if (not contact.allowEdits) "disabled"}}>
-                {{#each constants.LANGUAGES as |_lang|}}
+                {{#each (constant "LANGUAGES") as |_lang|}}
                     <option value={{_lang}}
                         selected={{if (eq _lang contact.language) "selected"}}>
                         {{capitalize (lowercase _lang) 1}}
@@ -68,32 +68,36 @@
 </div>
 <div class="form__group">
     {{#tour-components/hint hintId='contactsNumbers'}}
-    <label class="form__label" for="Numbers">Numbers</label>
-    {{#if contact.numberDuplicates}}
-        <div class="bg-color margin-b border-radius-all pad-t pad-l pad-r pad-b-half">
-            {{#each contact.numberDuplicates as |dupObj|}}
-                <p class='margin-b-half'>
-                    <span class="text-bold">{{phone-number dupObj.number}}</span>
-                    also belongs to
-                    {{#each dupObj.duplicates as |dup|}}
-                        <span class='link'
-                            onclick={{action _onGoToDuplicates dup.id}}>
-                            {{!-- tildes present to trim whitespace --}}
-                            {{~phone-number dup.identifier ~}}
-                        </span>
-                        {{~if (eq dup.identifier dupObj.duplicates.lastObject.identifier) "." ", "}}
-                    {{/each}}
-                </p>
-            {{/each}}
-        </div>
-    {{/if}}
-    <!-- TODO: If contacts is clicked many times, this will cause the page to crash -->
-    {{sortable-group/numbers numbers=contact.numbers
-        readonly=(not contact.allowEdits)
-        onAdd=(action _onAddNumber)
-        onRemove=(action _onRemoveNumber)
-        validateObj=contact
-        validateField='numbers'
-        validate='bottom'}}
-        {{/tour-components/hint}}
+        <label class="form__label" for="Numbers">Numbers</label>
+        {{#if contact.numberDuplicates}}
+            <div class="bg-color margin-b border-radius-all pad-t pad-l pad-r pad-b-half">
+                {{#each contact.numberDuplicates as |dupObj|}}
+                    {{#with (get dupObj.duplicates.lastObject (constant "PROP_NAME.READABLE_IDENT")) as |lastIdent|}}
+                        <p class='margin-b-half'>
+                            <span class="text-bold">{{phone-number dupObj.number}}</span>
+                            also belongs to
+                            {{#each dupObj.duplicates as |dupContact|}}
+                                {{#with (get dupContact (constant "PROP_NAME.READABLE_IDENT")) as |thisIdent|}}
+                                    <span class='link'
+                                        onclick={{action _onGoToDuplicates dupContact.id}}>
+                                        {{!-- tildes present to trim whitespace --}}
+                                        {{~phone-number thisIdent ~}}
+                                    </span>
+                                    {{~if (eq thisIdent lastIdent) "." ", "}}
+                                {{/with}}
+                            {{/each}}
+                        </p>
+                    {{/with}}
+                {{/each}}
+            </div>
+        {{/if}}
+        <!-- TODO: If contacts is clicked many times, this will cause the page to crash -->
+        {{sortable-group/numbers numbers=contact.numbers
+            readonly=(not contact.allowEdits)
+            onAdd=(action _onAddNumber)
+            onRemove=(action _onRemoveNumber)
+            validateObj=contact
+            validateField='numbers'
+            validate='bottom'}}
+    {{/tour-components/hint}}
 </div>

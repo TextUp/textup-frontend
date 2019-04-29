@@ -1,15 +1,14 @@
 {{#slideout-pane
-    headerProps=(hash title='Call')
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="Call")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishCallSlideout")
+        onPrimary=(route-action "finishCallSlideout")
         disablePrimary=(or isCallingForNumber (not callByNumber) (not callByNumberIsValid))
         primaryLabel=(if isCallingForNumber "Calling..." "Call")
         primaryProgressLabel="Calling...")
-    doClose=(route-action "cancelCallSlideout")
+    onClose=(route-action "cancelCallSlideout")
     forceKeepOpen=isCallingForNumber
-    focusSelector='.number-control' as |slideout|}}
+    focusSelector=".number-control" as |slideout|}}
     <div class="pad-t pad-l pad-r">
         <div class="form-element">
             {{#hide-show clickOutToClose=true
@@ -18,7 +17,7 @@
                 focusOnOpenSelector="input" as |hideShow|}}
                 {{#if hideShow.isOpen}}
                     {{input type="tel"
-                        class='form-control form-control--only-bottom text-biggest text-center'
+                        class="form-control form-control--only-bottom text-biggest text-center"
                         pattern="[0-9]*"
                         placeholder="Enter number here"
                         value=callByNumber
@@ -29,18 +28,18 @@
                         onfocus={{hideShow.actions.open}}
                         onclick={{hideShow.actions.open}}>
                         <input type="tel"
-                            disabled='disabled'
-                            class='form-control form-control--only-bottom text-biggest text-center'
+                            disabled="disabled"
+                            class="form-control form-control--only-bottom text-biggest text-center"
                             value={{phone-number callByNumber}}>
                     </div>
                 {{/if}}
             {{/hide-show}}
-            <div class='row margin-t margin-b text-center text-small'>
+            <div class="row margin-t margin-b text-center text-small">
                 {{#if callByNumberContact}}
                     <span class="center text-ellipses xs-full-row">
-                        <span class="text-bold">{{callByNumberContact.identifier}}</span>
+                        <span class="text-bold">{{callByNumberContact.name}}</span>
                         {{#if callByNumberMoreNum}}
-                            and {{callByNumberMoreNum}} {{pluralize 'other' callByNumberMoreNum}}
+                            and {{callByNumberMoreNum}} {{pluralize "other" callByNumberMoreNum}}
                         {{/if}}
                     </span>
                 {{/if}}

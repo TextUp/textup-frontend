@@ -1,9 +1,7 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 export default Ember.Component.extend({
-  constants: Ember.inject.service(),
-
   displayProperty: null,
   identityProperty: null,
   filterProperty: null,
@@ -54,7 +52,7 @@ export default Ember.Component.extend({
         clearHighlight: this.clearHighlight.bind(this),
         maintainOrHighlightFirst: this.maintainOrHighlightFirst.bind(this),
         highlightUp: this.highlightUp.bind(this),
-        highlightDown: this.highlightDown.bind(this)
+        highlightDown: this.highlightDown.bind(this),
       };
       return {
         isOpen: dropdown.isOpen,
@@ -62,7 +60,7 @@ export default Ember.Component.extend({
         isCreating: input.isCreating,
         isEditing: input.isEditing,
         currentlyEditing: input.currentlyEditing,
-        actions: Ember.merge(Ember.merge(myActions, dropdown.actions), input.actions)
+        actions: Ember.merge(Ember.merge(myActions, dropdown.actions), input.actions),
       };
     } else {
       return {};
@@ -88,7 +86,7 @@ export default Ember.Component.extend({
   // key press event to come before the key up event, so that
   // isCreating and isEditing statuses do not reflect the mode we
   // are about to enter.
-  keyPress: function(event) {
+  keyPress(event) {
     const val = event.target.value,
       anyRemaining = this.get('anyRemainingResults'),
       creating = this.get('_input.isCreating'),
@@ -98,7 +96,7 @@ export default Ember.Component.extend({
       this.get('_input.actions.insert')(event);
     }
   },
-  keyUp: function(event) {
+  keyUp(event) {
     // keyboard nagivation only if has results
     if (this.get('anyRemainingResults')) {
       if (event.which === 38) {
@@ -115,7 +113,7 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    selectItem: function(item, index, event) {
+    selectItem(item, index, event) {
       // run next in order to allow clickOnClose handler in
       // hide away to run first
       Ember.run.next(this, function() {
@@ -132,7 +130,7 @@ export default Ember.Component.extend({
     // Dropdown hooks
     // --------------
 
-    inputStart: function(val) {
+    inputStart(val) {
       Ember.run.cancel(this.get('_updateResultsTimer'));
       this.updateResults(val, true);
       if (this.get('_dropdown.isOpen') && this.get('_input.isCreating')) {
@@ -143,16 +141,16 @@ export default Ember.Component.extend({
         });
       }
     },
-    inputChange: function(val) {
+    inputChange(val) {
       const delay = this.get('delayThreshold'),
         timer = Ember.run.debounce(this, this.updateResults, val, delay);
       this.set('_updateResultsTimer', timer);
     },
-    afterDropdownOpen: function() {
+    afterDropdownOpen() {
       this.maintainOrHighlightFirst();
       this.get('_input.actions.focus')();
     },
-    afterDropdownClose: function() {
+    afterDropdownClose() {
       this.clearHighlight();
       this.get('_input.actions.stopEditing')();
     },
@@ -160,24 +158,24 @@ export default Ember.Component.extend({
     // Input hooks
     // -----------
 
-    update: function(item, val, event) {
+    update(item, val, event) {
       const promise = this.insertOrUpdate(false, val, this.get('selected').indexOf(item), event);
       this.get('_input.actions.stopEditing')();
       return promise;
     },
-    insert: function(val, event) {
+    insert(val, event) {
       return this.insertOrUpdate(false, val, this.get('selected.length'), event);
     },
-    remove: function(item) {
+    remove(item) {
       Ember.tryInvoke(this, 'onRemove', [item]);
       Ember.run.next(this, this.setupResults);
-    }
+    },
   },
 
   // Tag manipulation
   // ----------------
 
-  insertOrUpdate: function(skipFocus, val, index, event) {
+  insertOrUpdate(skipFocus, val, index, event) {
     return new Ember.RSVP.Promise((resolve, reject) => {
       let promise;
       const $highlight = this.get('_currentHighlight'),
@@ -203,24 +201,24 @@ export default Ember.Component.extend({
       }
     });
   },
-  _doCreateAndInsert: function(val, index, event) {
+  _doCreateAndInsert(val, index, event) {
     const created = Ember.tryInvoke(this, 'doCreate', [val, event]);
     if (created) {
       return this._doInsert(index, event, created);
     }
   },
-  _doInsert: function(index, event, toBeInserted) {
+  _doInsert(index, event, toBeInserted) {
     return Ember.tryInvoke(this, 'onInsert', [index, toBeInserted, event]);
   },
-  getDataAt: function(index) {
+  getDataAt(index) {
     return {
       object: Ember.get(this.get('_remainingResults'), String(index)),
       node: this.$()
         .find('.multi-select-item')
-        .eq(index)
+        .eq(index),
     };
   },
-  setupResults: function(skipFocus = false) {
+  setupResults(skipFocus = false) {
     if (!skipFocus) {
       this.get('_input.actions.focus')();
     }
@@ -240,7 +238,7 @@ export default Ember.Component.extend({
   // Keyboard navigation
   // -------------------
 
-  clearHighlight: function() {
+  clearHighlight() {
     if (this.isDestroying) {
       return;
     }
@@ -248,7 +246,7 @@ export default Ember.Component.extend({
       .find('.multi-select-item')
       .removeClass('highlight');
   },
-  maintainOrHighlightFirst: function() {
+  maintainOrHighlightFirst() {
     if (this.get('anyRemainingResults')) {
       const $highlighted = this.$().find('.multi-select-item.highlight');
       if (!$highlighted.length) {
@@ -263,13 +261,13 @@ export default Ember.Component.extend({
       this._scrollIntoView();
     }
   },
-  highlightUp: function() {
+  highlightUp() {
     return this._highlightNeighbor(true);
   },
-  highlightDown: function() {
+  highlightDown() {
     return this._highlightNeighbor(false);
   },
-  _highlightNeighbor: function(moveUp) {
+  _highlightNeighbor(moveUp) {
     // in case the highlight is not present for some reason
     Ember.run.throttle(this, this.maintainOrHighlightFirst, 1000);
     const $current = this.get('_currentHighlight');
@@ -283,13 +281,13 @@ export default Ember.Component.extend({
     }
     return false;
   },
-  highlightNode: function($node) {
+  highlightNode($node) {
     this.clearHighlight();
     $node.addClass('highlight');
     this.set('_currentHighlight', $node);
     this._scrollIntoView();
   },
-  _scrollIntoView: function() {
+  _scrollIntoView() {
     const $current = this.get('_currentHighlight');
     if ($current && $current.length) {
       // if there is a current highlight
@@ -311,7 +309,7 @@ export default Ember.Component.extend({
   // Result display methods
   // ----------------------
 
-  updateResults: function(val, isOpening) {
+  updateResults(val, isOpening) {
     if (!isOpening) {
       Ember.run.scheduleOnce('afterRender', this, this.maintainOrHighlightFirst);
     }
@@ -320,7 +318,7 @@ export default Ember.Component.extend({
     } else {
       this.setProperties({
         _results: [],
-        _resultIds: Object.create(null)
+        _resultIds: Object.create(null),
       });
       this._doSyncResults(val);
       if (val === this.get('_prevSearchVal')) {
@@ -330,19 +328,19 @@ export default Ember.Component.extend({
       }
     }
   },
-  _handleBlankInput: function() {
+  _handleBlankInput() {
     this.setProperties({
       _results: this.get('data'),
-      _resultIds: this.get('dataIds')
+      _resultIds: this.get('dataIds'),
     });
   },
-  _doSyncResults: function(val) {
+  _doSyncResults(val) {
     const data = this.get('data');
     const { results: newResults, resultIds: newIds } = this._buildAll(data, val);
     this._listMergeInto(this.get('_results'), newResults);
     this._objectMergeInto(this.get('_resultIds'), newIds);
   },
-  _restoreAsyncResults: function() {
+  _restoreAsyncResults() {
     const results = this.get('_prevSearchResults'),
       resultIds = this.get('_prevSearchResultIds');
     if (results && resultIds) {
@@ -350,7 +348,7 @@ export default Ember.Component.extend({
       this._objectMergeInto(this.get('_resultIds'), resultIds);
     }
   },
-  _doAsyncResults: function(val) {
+  _doAsyncResults(val) {
     const searchResult = Ember.tryInvoke(this, 'doSearch', [val]);
     if (!searchResult || !searchResult.then) {
       return;
@@ -367,7 +365,7 @@ export default Ember.Component.extend({
           isSearching: false,
           _prevSearchVal: val,
           _prevSearchResults: newResults,
-          _prevSearchResultIds: newIds
+          _prevSearchResultIds: newIds,
         });
         this._listMergeInto(this.get('_results'), newResults);
         this._objectMergeInto(this.get('_resultIds'), newIds);
@@ -377,15 +375,15 @@ export default Ember.Component.extend({
       }
     });
   },
-  _buildAll: function(data, val) {
+  _buildAll(data, val) {
     const resultIds = this.get('_resultIds'),
       matching = this._filter(data, val, resultIds);
     return {
       resultIds: this.buildIds(matching, resultIds),
-      results: matching
+      results: matching,
     };
   },
-  buildIds: function(data, existingIds = Object.create(null)) {
+  buildIds(data, existingIds = Object.create(null)) {
     const ids = Object.create(null);
     if (this.get('checkIdentity')) {
       data.mapBy(this.get('identityProperty')).forEach(matchId => {
@@ -396,7 +394,7 @@ export default Ember.Component.extend({
     }
     return ids;
   },
-  _filter: function(array, searchString, resultIds) {
+  _filter(array, searchString, resultIds) {
     const customFilter = this.get('doFilter'),
       doFilter = customFilter ? customFilter : this._defaultFilter.bind(this);
     if (this.get('checkIdentity')) {
@@ -408,7 +406,7 @@ export default Ember.Component.extend({
       return array.filter(doFilter.bind(this, searchString));
     }
   },
-  _defaultFilter: function(searchString, item) {
+  _defaultFilter(searchString, item) {
     const here = Ember.isPresent,
       fProp = this.get('filterProperty'),
       dProp = this.get('displayProperty'),
@@ -417,8 +415,12 @@ export default Ember.Component.extend({
       // escape js regex special characters from https://stackoverflow.com/a/9310752,
       // instead of escaping special characters, replace with whitespace, effectively discarding
       cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
-    let matchString = (item && prop ? Ember.get(item, prop) : item).toString();
     let matchExp;
+    let matchString = (item && prop ? Ember.get(item, prop) : item).toString();
+    // also clean the string to match in the same way
+    if (matchString) {
+      matchString = matchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
+    }
     if (this.get('removeSpacesInDefaultFilter')) {
       matchExp = new RegExp(cleanedSearchString.replace(/\s+/g, ''), 'i');
       matchString = matchString.replace(/\s+/g, '');
@@ -431,10 +433,10 @@ export default Ember.Component.extend({
   // Utility methods
   // ---------------
 
-  _listMergeInto: function(target, toBeMerged) {
+  _listMergeInto(target, toBeMerged) {
     target.pushObjects(toBeMerged);
   },
-  _objectMergeInto: function(target, toBeMerged) {
+  _objectMergeInto(target, toBeMerged) {
     Ember.$.extend(target, toBeMerged);
-  }
+  },
 });

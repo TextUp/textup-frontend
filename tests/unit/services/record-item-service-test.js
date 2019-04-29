@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import FileUtils from 'textup-frontend/utils/file';
 import Location from 'textup-frontend/models/location';
@@ -13,20 +14,19 @@ const { typeOf, RSVP, run } = Ember;
 
 moduleFor('service:record-item-service', 'Unit | Service | record item service', {
   needs: [
-    'service:constants',
     'model:contact',
     'model:location',
     'model:media',
-    'model:media/add',
     'model:media-element',
     'model:media-element-version',
-    'model:record-item',
-    'model:record-note-revision',
-    'model:tag',
-    'model:record-item',
+    'model:media/add',
     'model:record-call',
+    'model:record-item',
+    'model:record-item',
     'model:record-note',
+    'model:record-note-revision',
     'model:record-text',
+    'model:tag',
     'transform:record-item-status',
     'validator:has-any',
     'validator:inclusion',
@@ -37,16 +37,15 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
     this.register('service:data-service', Ember.Service);
     this.inject.service('data-service', { as: 'dataService' });
     this.inject.service('store');
-    this.inject.service('constants');
   },
 });
 
 test('building required query parameters for particular record owners', function(assert) {
   const service = this.subject(),
-    emptyResult = { contactIds: [], sharedContactIds: [], tagIds: [] },
-    mockTag = mockModel(Math.random(), this.constants.MODEL.TAG),
-    mockContact = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: false }),
-    mockShared = mockModel(Math.random(), this.constants.MODEL.CONTACT, { isShared: true });
+    emptyResult = { owners: [] },
+    mockTag = mockModel(Math.random(), Constants.MODEL.TAG),
+    mockContact = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: false }),
+    mockShared = mockModel(Math.random(), Constants.MODEL.CONTACT, { isShared: true });
 
   assert.deepEqual(service._buildQueryFor(), emptyResult);
   assert.deepEqual(service._buildQueryFor(null), emptyResult);
@@ -55,9 +54,10 @@ test('building required query parameters for particular record owners', function
   assert.deepEqual(service._buildQueryFor([]), emptyResult);
 
   let resObj = service._buildQueryFor([mockTag, mockContact, mockShared]);
-  assert.deepEqual(resObj.contactIds, [mockContact.id]);
-  assert.deepEqual(resObj.sharedContactIds, [mockShared.id]);
-  assert.deepEqual(resObj.tagIds, [mockTag.id]);
+  assert.equal(resObj.owners.length, 3);
+  assert.ok(resObj.owners.indexOf(mockTag.id) > -1);
+  assert.ok(resObj.owners.indexOf(mockContact.id) > -1);
+  assert.ok(resObj.owners.indexOf(mockShared.id) > -1);
 });
 
 test('handling export outcome', function(assert) {
@@ -91,20 +91,18 @@ test('loading more record items for contact', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 100,
-    model = mockModel(88, this.constants.MODEL.CONTACT, { numRecordItems }),
+    model = mockModel(88, Constants.MODEL.CONTACT, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
     assert.deepEqual(queryStub.firstCall.args[1], {
-      contactIds: [model.id],
-      sharedContactIds: [],
-      tagIds: [],
+      owners: [model.id],
       max: 20,
       offset: numRecordItems,
     });
@@ -118,20 +116,18 @@ test('loading more record items for tag', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 88,
-    model = mockModel(888, this.constants.MODEL.TAG, { numRecordItems }),
+    model = mockModel(888, Constants.MODEL.TAG, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
     assert.deepEqual(queryStub.firstCall.args[1], {
-      tagIds: [model.id],
-      sharedContactIds: [],
-      contactIds: [],
+      owners: [model.id],
       max: 20,
       offset: numRecordItems,
     });
@@ -145,13 +141,13 @@ test('refreshing all record items', function(assert) {
   const done = assert.async(),
     service = this.subject(),
     numRecordItems = 88,
-    model = mockModel(888, this.constants.MODEL.TAG, { numRecordItems }),
+    model = mockModel(888, Constants.MODEL.TAG, { numRecordItems }),
     queryStub = sinon.stub(this.store, 'query').returns(new RSVP.Promise(resolve => resolve({})));
-  service.setProperties({ dataService: { buildErrorHandler: sinon.stub() } });
+  service.setProperties({ dataService: { request: sinon.stub().returnsArg(0) } });
 
   service.loadRecordItems(model, { refresh: true }).then(results => {
     assert.equal(typeOf(results), 'object');
-    assert.ok(service.dataService.buildErrorHandler.calledOnce);
+    assert.ok(service.dataService.request.calledOnce);
 
     assert.ok(queryStub.calledOnce);
     assert.equal(queryStub.firstCall.args[0], 'record-item');
@@ -172,7 +168,7 @@ test('exporting record items', function(assert) {
     teamId = Math.random(),
     tagId = Math.random(),
     tz = Math.random(),
-    mockTag = mockModel(tagId, this.constants.MODEL.TAG);
+    mockTag = mockModel(tagId, Constants.MODEL.TAG);
   // build mocks
   const done = assert.async(),
     service = this.subject(),
@@ -195,18 +191,20 @@ test('exporting record items', function(assert) {
   assert.ok(requests[0].requestHeaders['Content-Type'].indexOf('application/pdf') > -1);
   assert.ok(requests[0].requestHeaders['Authorization'].indexOf('Bearer') > -1);
 
-  assert.ok(requests[0].url.indexOf(encodeURI(`teamId=${teamId}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`timezone=${tz}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`format=${this.constants.EXPORT.FORMAT.PDF}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`max=${this.constants.EXPORT.LARGEST_MAX}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`since=${start.toISOString()}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`before=${end.toISOString()}`) > -1));
+  // For `escape` vs `encodeURI` vs `encodeURIComponent` see https://stackoverflow.com/a/23842171
+  assert.ok(requests[0].url.includes(`teamId=${encodeURIComponent(teamId)}`));
+  assert.ok(requests[0].url.includes(`timezone=${encodeURIComponent(tz)}`));
+  assert.ok(requests[0].url.includes(`format=${encodeURIComponent(Constants.EXPORT.FORMAT.PDF)}`));
+  assert.ok(requests[0].url.includes(`max=${encodeURIComponent(Constants.EXPORT.LARGEST_MAX)}`));
+  assert.ok(requests[0].url.includes(`start=${encodeURIComponent(start.toISOString())}`));
+
+  assert.ok(requests[0].url.includes(`end=${encodeURIComponent(end.toISOString())}`));
   assert.ok(
-    requests[0].url.indexOf(
-      encodeURI(`exportFormatType=${this.constants.EXPORT.TYPE.GROUPED}`) > -1
+    requests[0].url.includes(
+      `exportFormatType=${encodeURIComponent(Constants.EXPORT.TYPE.GROUPED)}`
     )
   );
-  assert.ok(requests[0].url.indexOf(encodeURI(`tagIds[]=${tagId}`) > -1));
+  assert.ok(requests[0].url.includes(encodeURI(`owners[]=${encodeURIComponent(tagId)}`)));
 
   requests[0].respond(200);
 

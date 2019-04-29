@@ -8,10 +8,9 @@ export default Ember.Mixin.create({
   recordItemService: Ember.inject.service(),
   tutorialService: Ember.inject.service(),
 
-  setupController: function(controller) {
-    this._super(...arguments);
-    controller.setProperties({ careRecordRef: null, careRecordText: null });
-  },
+  // For routes with dynamic segments, each time the model hook is called, the `setupController`
+  // hook will also be called. We DO NOT want to set `careRecordRef` and `careRecordText` to null
+  // because this will lead us to lose our reference to `careRecordRef`
 
   actions: {
     willTransition() {
@@ -27,11 +26,13 @@ export default Ember.Mixin.create({
     },
 
     onLoadRecordItems() {
-      return this.get('recordItemService').loadRecordItems(this.get('currentModel'));
+      return this.get('recordItemService')
+        .loadRecordItems(this.get('currentModel'))
+        .then(() => this._restoreCareRecordPosition());
     },
     onRefreshRecordItems() {
       return this.get('recordItemService').loadRecordItems(this.get('currentModel'), {
-        refresh: true
+        refresh: true,
       });
     },
 
@@ -61,7 +62,7 @@ export default Ember.Mixin.create({
 
     onFinishCareRecordTutorial() {
       this.get('tutorialService').startCompleteTask('additionalActions');
-    }
+    },
   },
 
   _initCareRecordText() {
@@ -76,10 +77,16 @@ export default Ember.Mixin.create({
       careRecordText.rollbackAttributes();
     }
   },
+  _restoreCareRecordPosition() {
+    const careRecordRef = this.get('controller.careRecordRef');
+    if (careRecordRef && careRecordRef.actions) {
+      tryInvoke(careRecordRef.actions, 'restorePosition');
+    }
+  },
   _resetCareRecord() {
     const careRecordRef = this.get('controller.careRecordRef');
     if (careRecordRef && careRecordRef.actions) {
-      tryInvoke(careRecordRef.actions, 'reset');
+      tryInvoke(careRecordRef.actions, 'resetAll');
     }
-  }
+  },
 });

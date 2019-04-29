@@ -1,8 +1,12 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import moment from 'moment';
 
-const { computed, computed: { equal: eq }, run: { scheduleOnce } } = Ember;
+const {
+  computed,
+  computed: { equal: eq },
+  run: { scheduleOnce },
+} = Ember;
 
 export default Ember.Component.extend({
   // injected services
@@ -96,7 +100,7 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     Ember.run.scheduleOnce('afterRender', this, function() {
       if (this.isTooManyAttempts()) {
@@ -109,15 +113,15 @@ export default Ember.Component.extend({
   // -------
 
   actions: {
-    updateVal: function(newVal) {
+    updateVal(newVal) {
       this.updateVal(newVal);
-    }
+    },
   },
 
   // Helpers
   // -------
 
-  updateVal: function(newVal) {
+  updateVal(newVal) {
     if (this.get('disabled')) {
       return;
     }
@@ -125,7 +129,7 @@ export default Ember.Component.extend({
     this.set('_status', ''); // clear status
     Ember.run.scheduleOnce('afterRender', this, this._verifyVal);
   },
-  _verifyVal: function() {
+  _verifyVal() {
     if (this.get('disabled') || !this.get('_isFull')) {
       return;
     }
@@ -137,14 +141,14 @@ export default Ember.Component.extend({
       this.resetLock();
     }
   },
-  _onVerifySuccess: function() {
+  _onVerifySuccess() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
     this.resetLock();
     this.set('_status', this.get('successClass'));
   },
-  _onVerifyFail: function() {
+  _onVerifyFail() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -161,7 +165,7 @@ export default Ember.Component.extend({
   // Locking
   // -------
 
-  tryStartLock: function() {
+  tryStartLock() {
     const whenUnlock = this._getWhenLocked().add(this.get('_lockDuration')),
       now = moment();
     this.set('_whenUnlock', whenUnlock);
@@ -173,7 +177,7 @@ export default Ember.Component.extend({
       Ember.run.later(this, this.resetLock, timeout);
     }
   },
-  resetLock: function() {
+  resetLock() {
     const storage = this.get('storage'),
       $input = this.get('_$input');
     storage.removeItem(this.get('_whenLockedKey'));
@@ -188,7 +192,7 @@ export default Ember.Component.extend({
   // Locked for helpers
   // ------------------
 
-  setLockedForUser: function() {
+  setLockedForUser() {
     const storage = this.get('storage'),
       obj = this.get('_storageObj'),
       key = this.get('_lockedForKey'),
@@ -197,7 +201,7 @@ export default Ember.Component.extend({
       storage.trySet(obj, key, user);
     }
   },
-  isLockedForSameUser: function() {
+  isLockedForSameUser() {
     const storage = this.get('storage'),
       key = this.get('_lockedForKey'),
       user = this.get('lockTarget');
@@ -207,7 +211,7 @@ export default Ember.Component.extend({
   // When locked helpers
   // -------------------
 
-  setWhenLockedToNow: function() {
+  setWhenLockedToNow() {
     const whenLocked = moment();
     this.get('storage').trySet(
       this.get('_storageObj'),
@@ -216,7 +220,7 @@ export default Ember.Component.extend({
     );
     return whenLocked;
   },
-  _getWhenLocked: function() {
+  _getWhenLocked() {
     const storage = this.get('storage'),
       key = this.get('_whenLockedKey'),
       whenLocked = moment(storage.getItem(key));
@@ -226,19 +230,19 @@ export default Ember.Component.extend({
   // Attempts helpers
   // ----------------
 
-  isTooManyAttempts: function() {
+  isTooManyAttempts() {
     return this.get('lockOnMultipleFailure') && this._getAttempts() > this.get('maxNumAttempts');
   },
-  incrementAttempts: function() {
+  incrementAttempts() {
     const storage = this.get('storage'),
       obj = this.get('_storageObj'),
       key = this.get('_numAttemptsKey');
     storage.trySet(obj, key, this._getAttempts() + 1);
   },
-  _getAttempts: function() {
+  _getAttempts() {
     const storage = this.get('storage'),
       key = this.get('_numAttemptsKey'),
       existing = parseInt(storage.getItem(key));
     return isNaN(existing) ? 0 : existing;
-  }
+  },
 });

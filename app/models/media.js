@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -5,8 +6,6 @@ import MF from 'model-fragments';
 import { ensureImageDimensions } from 'textup-frontend/utils/photo';
 
 const { computed, get, typeOf } = Ember;
-
-export const MEDIA_ID_PROP_NAME = 'uid';
 
 export default DS.Model.extend(Dirtiable, {
   // Properties
@@ -81,10 +80,10 @@ export default DS.Model.extend(Dirtiable, {
       mimeType,
       mediaData,
       width,
-      height
+      height,
     });
     this.get('_imageAddChanges').pushObject(addObj);
-    return addObj.get(MEDIA_ID_PROP_NAME);
+    return addObj.get(Constants.PROP_NAME.MEDIA_ID);
   },
   addAudio(mimeType, mediaData) {
     if (typeOf(mimeType) !== 'string' || typeOf(mediaData) !== 'string') {
@@ -92,7 +91,7 @@ export default DS.Model.extend(Dirtiable, {
     }
     const addObj = this.get('store').createFragment('media/add', { mimeType, mediaData });
     this.get('_audioAddChanges').pushObject(addObj);
-    return addObj.get(MEDIA_ID_PROP_NAME);
+    return addObj.get(Constants.PROP_NAME.MEDIA_ID);
   },
   removeElement(elId) {
     if (typeOf(elId) !== 'string') {
@@ -106,21 +105,24 @@ export default DS.Model.extend(Dirtiable, {
       this.get('_removeChanges').createFragment({ uid: elId });
     }
     return true;
-  }
+  },
 });
 
 export function mergeExistingAndChanges(existingElements, addChanges, removeChanges) {
   const displayedNew = addChanges.map(addChange => addChange.toMediaElement()),
     // after rolling back existing elements array may become undefined
-    displayedExisting = (existingElements || [])
-      .filter(
-        existing => !removeChanges.findBy(MEDIA_ID_PROP_NAME, get(existing, MEDIA_ID_PROP_NAME))
-      );
+    displayedExisting = (existingElements || []).filter(
+      existing =>
+        !removeChanges.findBy(
+          Constants.PROP_NAME.MEDIA_ID,
+          get(existing, Constants.PROP_NAME.MEDIA_ID)
+        )
+    );
   return [].addObjects(displayedNew).addObjects(displayedExisting);
 }
 
 export function removeElementsById(arrayToSearch, idVal) {
-  const matching = arrayToSearch.findBy(MEDIA_ID_PROP_NAME, idVal);
+  const matching = arrayToSearch.findBy(Constants.PROP_NAME.MEDIA_ID, idVal);
   if (matching) {
     arrayToSearch.removeObject(matching);
     return true;

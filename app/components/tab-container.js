@@ -1,161 +1,121 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-export default Ember.Component.extend({
-  startIndex: defaultIfAbsent(0),
-  animation: defaultIfAbsent('slide'), // none | slide | fade
-  throttleThreshold: defaultIfAbsent(60),
+const { computed, run, tryInvoke, isPresent } = Ember;
 
-  onChange: null,
-  onChanged: null,
-  doRegister: null,
+export default Ember.Component.extend(PropTypesMixin, {
+  propTypes: {
+    startIndex: PropTypes.number,
+    doRegister: PropTypes.func,
+    onChange: PropTypes.func,
+  },
+  getDefaultProps() {
+    return { startIndex: 0 };
+  },
 
   classNames: 'tab-container',
 
-  _hideShow: null,
-  _items: defaultIfAbsent([]),
+  init() {
+    this._super(...arguments);
+    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
 
-  // Computed properties
+  // Internal properties
   // -------------------
 
-  _currentIndex: Ember.computed.reads('startIndex'),
-  _currentItem: Ember.computed('_currentIndex', '_items.[]', function() {
-    const index = this.get('_currentIndex'),
+  _hideShow: null,
+  _hasTabOverflow: false,
+  _items: computed(() => []),
+  _currentItem: computed('_publicAPI.currentIndex', '_items.[]', function() {
+    const index = this.get('_publicAPI.currentIndex'),
       items = this.get('_items');
-    return this.indexIsValid(index) ? items.objectAt(index) : null;
+    return items.objectAt(ArrayUtils.normalizeIndex(items.get('length'), index));
   }),
-  hasMultipleTabs: Ember.computed('_items.[]', function() {
+  _hasMultipleTabs: computed('_items.[]', function() {
     return this.get('_items.length') > 1;
   }),
-  $navlist: Ember.computed(function() {
-    return this.$().find('.tab-container-nav-list');
+  _$navlist: computed(function() {
+    return this.$('.tab-container__nav__list');
   }),
-  publicAPI: Ember.computed('_currentIndex', function() {
+  _publicAPI: computed(function() {
     return {
-      currentIndex: this.get('_currentIndex'),
+      currentIndex: this.get('startIndex'),
       actions: {
-        next: this.next.bind(this),
-        prev: this.prev.bind(this)
-      }
+        next: this._switchToNextIndex.bind(this),
+        prev: this._switchToPrevIndex.bind(this),
+        register: this._addTabItem.bind(this),
+        unregister: this._removeTabItem.bind(this),
+      },
     };
   }),
 
-  // Events
-  // ------
+  // Internal handlers
+  // -----------------
 
-  didInitAttrs: function() {
-    this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
+  _addTabItem(item) {
+    if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run.scheduleOnce('afterRender', () => {
+      this.get('_items').pushObject(item);
+      run.scheduleOnce('afterRender', this, this._tryInitializeNav);
+    });
   },
-  didInsertElement: function() {
-    this._super(...arguments);
-    Ember.run.next(this, function() {
-      // initialize all items
-      const current = this.get('_currentIndex'),
-        animation = this.get('animation');
-      this.get('_items').forEach(function(item, index) {
-        item.actions.initialize(animation, current === index);
-      }, this);
-      if (this.get('hasMultipleTabs')) {
-        this.setupNav();
-      }
+  _removeTabItem(item) {
+    if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run.scheduleOnce('afterRender', () => {
+      this.get('_items').removeObject(item);
+      run.scheduleOnce('afterRender', this, this._tryInitializeNav);
     });
   },
 
-  // Actions
-  // -------
-
-  actions: {
-    registerItem: function(item) {
-      Ember.run.scheduleOnce('afterRender', this, function() {
-        this.get('_items').pushObject(item);
-      });
-    },
-    switchTo: function(index) {
-      this.switchTo(index);
-    },
-    next: function() {
-      this.next();
-    },
-    prev: function() {
-      this.prev();
-    }
+  _switchToNextIndex() {
+    this._switchToIndex(this.get('_publicAPI.currentIndex') + 1);
   },
-
-  // Switch tabs
-  // -----------
-
-  next: function() {
-    this.switchTo(this.get('_currentIndex') + 1);
+  _switchToPrevIndex() {
+    this._switchToIndex(this.get('_publicAPI.currentIndex') - 1);
   },
-  prev: function() {
-    this.switchTo(this.get('_currentIndex') - 1);
-  },
-  switchTo: function(index) {
-    if (!Ember.isPresent(index)) {
+  _switchToIndex(index) {
+    if (!isPresent(index) || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    const itemIndex = this._normalizeIndex(index);
-    if (this.get('_currentIndex') === itemIndex) {
+    const items = this.get('_items'),
+      numItems = items.get('length'),
+      itemIndex = ArrayUtils.normalizeIndex(numItems, index),
+      currentIndex = ArrayUtils.normalizeIndex(numItems, this.get('_publicAPI.currentIndex'));
+    if (currentIndex === itemIndex) {
       return;
     }
-    const publicAPI = this.get('publicAPI'),
-      items = this.get('_items'),
-      current = items.objectAt(this.get('_currentIndex')),
-      target = items.objectAt(itemIndex),
-      animation = this.get('animation');
-    Ember.tryInvoke(this, 'onChange', [current, target, publicAPI]);
-    this._doSwitch(animation, current, target, itemIndex);
-  },
-  _doSwitch(animation, current, target, itemIndex) {
-    const publicAPI = this.get('publicAPI');
+    const current = items.objectAt(currentIndex),
+      target = items.objectAt(itemIndex);
     current.actions
-      .hide(animation)
-      .then(() => target.actions.show(animation))
+      .hide()
+      .then(() => target.actions.show())
       .then(() => {
-        this.set('_currentIndex', itemIndex);
-        Ember.tryInvoke(this, 'onChanged', [current, target, publicAPI]);
+        this.set('_publicAPI.currentIndex', itemIndex);
+        tryInvoke(this, 'onChange', [current, target, this.get('_publicAPI')]);
       });
   },
 
-  // Nav
-  // ---
-
-  setupNav: function() {
-    const $navlist = this.get('$navlist'),
-      navlist = $navlist[0],
-      displayWidth = navlist.clientWidth,
-      contentWidth = navlist.scrollWidth,
-      $parent = $navlist.parent();
-    if (contentWidth > displayWidth) {
-      $parent.addClass('overflow');
-    } else {
-      const $navItems = $navlist.children('.tab-container-nav-item'),
-        numItems = $navItems.length;
-      $parent.addClass('inline');
-      $navItems.each(function() {
-        Ember.$(this).css('width', `${100 / numItems}%`);
-      });
+  _tryInitializeNav() {
+    const items = this.get('_items'),
+      currentIndex = ArrayUtils.normalizeIndex(
+        items.get('length'),
+        this.get('_publicAPI.currentIndex')
+      );
+    this.set('_publicAPI.currentIndex', currentIndex); // normalize index if needed
+    items.forEach((item, index) => item.actions.initialize(currentIndex === index));
+    if (this.get('_hasMultipleTabs')) {
+      run.scheduleOnce('afterRender', this, this._setupMultipleTabs);
     }
   },
-
-  // Helpers
-  // -------
-
-  indexIsValid: function(index) {
-    if (isNaN(index)) {
-      return false;
-    }
-    return index >= 0 && index < this.get('_items.length');
+  _setupMultipleTabs() {
+    const $navlist = this.get('_$navlist'),
+      contentWidth = $navlist[0].scrollWidth,
+      displayWidth = $navlist[0].clientWidth;
+    this.set('_hasTabOverflow', contentWidth > displayWidth);
   },
-  _normalizeIndex: function(index) {
-    const numItems = this.get('_items.length');
-    if (index < 0) {
-      return numItems + index;
-    } else if (index >= numItems) {
-      return index - numItems;
-    } else {
-      return index;
-    }
-  }
 });

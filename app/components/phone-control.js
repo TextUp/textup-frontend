@@ -1,6 +1,9 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../utils/default-if-absent';
-import { validate as validateNumber, clean as cleanNumber } from '../utils/phone-number';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
+import {
+  validate as validateNumber,
+  clean as cleanNumber,
+} from 'textup-frontend/utils/phone-number';
 
 const {
   isBlank,
@@ -8,7 +11,7 @@ const {
   isPresent,
   computed,
   computed: { notEmpty },
-  run: { scheduleOnce, next }
+  run: { scheduleOnce, next },
 } = Ember;
 
 export default Ember.Component.extend({
@@ -58,8 +61,8 @@ export default Ember.Component.extend({
     return {
       actions: {
         back: this._revertExternalValidation.bind(this),
-        validate: this._handleValidateAfterEntry.bind(this)
-      }
+        validate: this._handleValidateAfterEntry.bind(this),
+      },
     };
   }),
   _$el: computed(function() {
@@ -171,7 +174,7 @@ export default Ember.Component.extend({
     },
     submitExternalValidation() {
       this._handleSubmitForExternalValidation();
-    }
+    },
   },
 
   // Phone number input
@@ -295,5 +298,5 @@ export default Ember.Component.extend({
     const $input = this.get('_$input');
     this.set('_isEditingInput', true);
     scheduleOnce('afterRender', this, () => $input.focus());
-  }
+  },
 });

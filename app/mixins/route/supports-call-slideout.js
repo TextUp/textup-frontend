@@ -1,3 +1,5 @@
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { run } = Ember;
@@ -17,8 +19,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/call',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelCallSlideout() {
@@ -31,29 +33,27 @@ export default Ember.Mixin.create({
       }
       controller.set('isCallingForNumber', true); // force keep open
       const callByNumber = controller.get('callByNumber'),
-        callByNumberContact = controller.get('callByNumberContact'),
-        displayedList = this.get('controller.contacts'),
-        currentFilter = this.get('controller.filter');
+        callByNumberContact = controller.get('callByNumberContact');
       return this.get('callSlideoutService')
-        .makeCall(callByNumberContact, callByNumber, { displayedList, currentFilter })
+        .makeCall(callByNumberContact, callByNumber)
         .then(contact => {
           this.get('tutorialService').startCompleteTask('makeCall');
           controller.set('isCallingForNumber', false);
           this.send('closeSlideout');
           run.next(() => {
             this.transitionTo('main.contacts.contact', contact.get('id'), {
-              queryParams: { filter: 'all' }
+              queryParams: { filter: Constants.CONTACT.FILTER.ALL },
             }).then(() => this._afterStartCall(contact));
           });
         });
     },
 
-    onCallNumberChange: function(number) {
+    onCallNumberChange(number) {
       const controller = this.get('controller'),
         callSlideoutService = this.get('callSlideoutService');
       controller.set('callByNumber', number);
       callSlideoutService.validateAndCheckForName(number, { ctx: controller });
-    }
+    },
   },
 
   _initialCallSlideoutProps() {
@@ -62,12 +62,12 @@ export default Ember.Mixin.create({
       callByNumberContact: null,
       callByNumberIsValid: false,
       callByNumberMoreNum: 0,
-      isCallingForNumber: false
+      isCallingForNumber: false,
     };
   },
   _afterStartCall(contact) {
     this.notifications.success(
-      `Calling your personal phone number to connect you to ${contact.get('identifier')}.`
+      `Calling your personal phone number to connect you to ${contact.get('name')}.`
     );
-  }
+  },
 });

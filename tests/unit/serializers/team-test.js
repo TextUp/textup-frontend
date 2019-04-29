@@ -1,20 +1,22 @@
+import Ember from 'ember';
 import OwnsPhoneSerializer from 'textup-frontend/mixins/serializer/owns-phone';
 import TeamSerializer from 'textup-frontend/serializers/team';
 import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('team', 'Unit | Serializer | team', {
   needs: [
-    'serializer:team',
-    'service:constants',
-    'validator:belongs-to',
-    'validator:presence',
-    'validator:number',
-    'validator:inclusion',
-    'model:team',
-    'model:organization',
     'model:location',
-    'model:phone'
-  ]
+    'model:organization',
+    'model:phone',
+    'model:team',
+    'serializer:team',
+    'service:admin-service',
+    'service:data-service',
+    'validator:belongs-to',
+    'validator:inclusion',
+    'validator:number',
+    'validator:presence',
+  ],
 });
 
 test('serializer owns phone', function(assert) {
@@ -24,10 +26,15 @@ test('serializer owns phone', function(assert) {
 });
 
 test('serialized form', function(assert) {
-  const obj = this.subject();
+  const adminService = Ember.getOwner(this).lookup('service:admin-service'),
+    sId = Math.random(),
+    obj = this.subject();
+  adminService.setEditingStaff(sId);
 
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
+
+  assert.equal(serialized.staffId, sId);
 
   assert.notOk(keys.contains('numMembers'));
   assert.ok(keys.contains('name'));

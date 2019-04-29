@@ -1,9 +1,9 @@
 <span class="clear-badge">
-    {{#if (eq entity.constructor.modelName constants.MODEL.TAG)}}
+    {{#if (type/is-tag entity)}}
         <span class="fa fa-tag"></span>
-    {{else if (eq entity.constructor.modelName constants.MODEL.CONTACT)}}
+    {{else if (type/is-contact entity)}}
         {{#if entity.isShared}}
-            {{#tool-tip title=(concat 'Shared by ' entity.sharedBy)}}
+            {{#tool-tip title=(concat 'Shared by ' entity.sharedByName)}}
                 <span class="fa fa-share"></span>
             {{/tool-tip}}
         {{else}}
@@ -14,8 +14,8 @@
     {{/if}}
 </span>
 <span class="clear-badge text-bold">
-    {{phone-number entity.identifier}}
-    {{#if (eq entity.constructor.modelName constants.MODEL.TAG)}}
+    {{phone-number (get entity (constant "PROP_NAME.READABLE_IDENT"))}}
+    {{#if (type/is-tag entity)}}
         <span class="margin-l-half halo halo-sm bg-color bg-dark">
             {{entity.numMembers}}
         </span>

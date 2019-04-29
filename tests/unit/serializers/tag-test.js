@@ -2,16 +2,15 @@ import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('tag', 'Unit | Serializer | tag', {
   needs: [
-    'serializer:tag',
-    'service:constants',
-    'model:phone',
     'model:future-message',
-    'model:record-item',
-    'model:record-text',
+    'model:phone',
     'model:record-call',
+    'model:record-item',
     'model:record-note',
-    'validator:presence'
-  ]
+    'model:record-text',
+    'serializer:tag',
+    'validator:presence',
+  ],
 });
 
 test('serialized form', function(assert) {

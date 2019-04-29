@@ -71,9 +71,9 @@
         {{/if}}
     </div>
     <div class="bg-color pad-t pad-b">
-        {{g-recaptcha onSuccess=(action (mut staff.captcha))
-            onExpired=(route-action 'clearCaptcha' staff)
-            ref=(mut gRecaptcha)}}
+        {{captcha-control onSuccess=(action (mut isValidCaptcha) true)
+            onFailure=(action (mut isValidCaptcha) false)
+            onExpiration=(action (mut isValidCaptcha) false)}}
     </div>
     <div class="single-body-content">
         <div class="flex flex--spacing-between flex--align-stretch">
@@ -89,17 +89,17 @@
                     onclick={{action (mut showPrivacyPolicy) true}}>Privacy Policy</button>
             </label>
         </div>
-        {{message-modal url=config.links.termsOfUse
+        {{message-modal url=(config "links.termsOfUse")
             display=showTermsOfUse
             onClose=(action (mut showTermsOfUse) false)}}
-        {{message-modal url=config.links.privacyPolicy
+        {{message-modal url=(config "links.privacyPolicy")
             display=showPrivacyPolicy
             onClose=(action (mut showPrivacyPolicy) false)}}
     </div>
     <div class="single-body-footer text-center">
         {{async-button classNames='btn btn-default'
             disableWhen=(or (not (v-get staff 'isValid'))
-                (not staff.captcha)
+                (not isValidCaptcha)
                 (not staff.lockCode)
                 (not staff.password)
                 (not (eq staff.password confirmPassword))

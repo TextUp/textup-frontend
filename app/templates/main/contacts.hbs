@@ -74,30 +74,30 @@
             </div>
             {{#if hideShow.isOpen}}
                 <ul class="reset-list">
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ALL) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ALL")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ALL)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.ALL"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">All</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.UNREAD) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.UNREAD")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.UNREAD)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Unread</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.ARCHIVED) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ARCHIVED")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.ARCHIVED)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Archived</p>
                         </div>
                     </li>
-                    <li class="menu-item {{if (eq filter constants.CONTACT.FILTER.BLOCKED) "active"}}"
+                    <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.BLOCKED")) "active"}}"
                         onclick={{action hideShow.actions.closeThenCall
-                            (route-action "showFilteredContacts" constants.CONTACT.FILTER.BLOCKED)}}>
+                            (route-action "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED"))}}>
                         <div class="offset-xs-row-10 xs-8-row-10 text-left">
                             <p class="text-bold text-ellipsis">Blocked</p>
                         </div>
@@ -106,58 +106,55 @@
             {{/if}}
         {{/hide-show}}
     {{/if}}
-
-    <div class="section-body flex flex--align-stretch flex--direction-vertical" id='tour-contactsList'>
-      {{#infinite-scroll classNames='flex__item flex__item--grow bg-color bg-dark'
-          doRegister=(action (mut _contactsList))
-          containerClass='bg-color bg-lightest'
-          itemsClass='result-list'
-          direction=constants.INFINITE_SCROLL.DIRECTION.DOWN
-          data=phone.contacts
-          total=phone.totalNumContacts
-          doLoad=(action doLoadMoreContacts)
-          doRefresh=(action doRefreshContacts) as |contact|}}
-          {{#entity-display class="result-item"
-              entityIdentifier=contact.identifier
-              linkTarget=(if tag 'main.tag.contact' 'main.contacts.contact')
-              linkParam=contact.id
-              bodyClass=(if contact.isUnread constants.CONTACT.FILTER.UNREAD)
-              isSelected=contact.isSelected
-              onSelect=(route-action 'toggleSelected' contact)}}
-              {{entity-display/contact entity=contact}}
-          {{/entity-display}}
-      {{else}}
-          {{#if (and (eq filter constants.CONTACT.FILTER.ALL) (not tag))}}
-              <div class="no-results">
-                  <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
-                  <button type="button"
-                      class="btn-link"
-                      onclick={{route-action "startNewContactSlideout"}}>
-                      Create contact
-                  </button>
-              </div>
-          {{else if tag}}
-              <div class="no-results">
-                  No contacts have been added to
-                  <span class="text-bold">{{tag.name}}</span>
-                  yet.
-              </div>
-          {{else}}
-              <div class="no-results">No contacts match this criteria.</div>
-          {{/if}}
-      {{/infinite-scroll}}
-      <div class="section-footer flex__item flex__item--no-shrink" id="task-manager__container">
-          {{tour-components/task-manager
-            shouldShow=tutorialService.publicAPI.shouldShowTaskManager
-            doRegister=(action (mut tutorialService.taskManager))
-            firstIncompleteTask=tutorialService.publicAPI.firstIncompleteTask
-            onClose=tutorialService.publicAPI.actions.closeTaskManager
-            getTaskStatus=tutorialService.publicAPI.actions.getTaskStatus
-            onFinishCompleteTask=tutorialService.publicAPI.actions.finishCompleteTask
-            resetTasks=tutorialService.publicAPI.actions.resetTasks
-            tasks=tutorialService.publicAPI.tasks
-          }}
-      </div>
+    <div id="tour-contactsList" class="flex flex--align-stretch flex--direction-vertical">
+      {{#infinite-scroll classNames="flex__item flex__item--grow section-body bg-color bg-lightest"
+            contentClass="result-list"
+            data=phone.contacts
+            numTotal=phone.totalNumContacts
+            doRegister=(action (mut contactsList))
+            onRefresh=(action doRefreshContacts)
+            onLoad=(action doLoadMoreContacts) as |contact|}}
+            {{#entity-display class="result-item"
+                entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
+                linkTarget=(if tag "main.tag.contact" "main.contacts.contact")
+                linkParam=contact.id
+                bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
+                isSelected=contact.isSelected
+                onSelect=(route-action "toggleSelected" contact)}}
+                {{entity-display/contact entity=contact}}
+            {{/entity-display}}
+        {{else}}
+            {{#if (and (eq filter (constant "CONTACT.FILTER.ALL")) (not tag))}}
+                <div class="no-results">
+                    <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
+                    <button type="button"
+                        class="btn-link"
+                        onclick={{route-action "startNewContactSlideout"}}>
+                        Create contact
+                    </button>
+                </div>
+            {{else if tag}}
+                <div class="no-results">
+                    No contacts have been added to
+                    <span class="text-bold">{{tag.name}}</span>
+                    yet.
+                </div>
+            {{else}}
+                <div class="no-results">No contacts match this criteria.</div>
+            {{/if}}
+        {{/infinite-scroll}}
+        <div id="task-manager__container" class="section-footer flex__item flex__item--no-shrink">
+            {{tour-components/task-manager
+                shouldShow=tutorialService.publicAPI.shouldShowTaskManager
+                doRegister=(action (mut tutorialService.taskManager))
+                firstIncompleteTask=tutorialService.publicAPI.firstIncompleteTask
+                onClose=tutorialService.publicAPI.actions.closeTaskManager
+                getTaskStatus=tutorialService.publicAPI.actions.getTaskStatus
+                onFinishCompleteTask=tutorialService.publicAPI.actions.finishCompleteTask
+                resetTasks=tutorialService.publicAPI.actions.resetTasks
+                tasks=tutorialService.publicAPI.tasks}}
+        </div>
     </div>
 </div>
+
 {{outlet}}

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
@@ -7,8 +8,6 @@ import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     // Properties
     // ----------
@@ -17,7 +16,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     canAddToRecord: PropTypes.bool,
     canModifyExistingInRecord: PropTypes.bool,
     nextFutureFire: PropTypes.oneOfType([PropTypes.null, PropTypes.date]),
-    personalPhoneNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    personalNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     // for displaying existing items
     recordClusters: PropTypes.arrayOf(PropTypes.instanceOf(RecordCluster)),
     numRecordItems: PropTypes.number,
@@ -68,13 +67,13 @@ export default Ember.Component.extend(PropTypesMixin, {
       recordClusters: [],
       noRecordItemsMessage: 'Nothing in the record yet!',
       noAddToRecordMessage: "You don't have permission to add to this record.",
-      startCallMessage: `Calling your personal phone at ${format(this.get('personalPhoneNumber'))}`,
+      startCallMessage: `Calling your personal phone at ${format(this.get('personalNumber'))}`,
       addNoteInPastMessage: "Choose your note's place",
     };
   },
   classNames: 'care-record',
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
@@ -84,10 +83,15 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _recordClustersScroll: null, // set by `doRegister` in `infinite-scroll`
   _publicAPI: computed(function() {
-    return { actions: { reset: () => this._tryResetScroll() } };
+    return {
+      actions: {
+        restorePosition: this._tryRestorePosition.bind(this),
+        resetAll: this._tryResetAll.bind(this),
+      },
+    };
   }),
 
-  _hasPersonalPhoneNumber: computed.notEmpty('personalPhoneNumber'),
+  _hasPersonalNumber: computed.notEmpty('personalNumber'),
   _hasItemsInRecord: computed.notEmpty('recordClusters'),
 
   _hasStartedCall: false,
@@ -123,13 +127,6 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onViewScheduledMessages', [...arguments]);
   },
 
-  _onControlsHeightChange() {
-    const scrollEl = this.get('_recordClustersScroll');
-    if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'restorePosition');
-    }
-  },
-
   // content-related handlers
   _onContentChange() {
     tryInvoke(this, 'onContentChange', [...arguments]);
@@ -156,25 +153,36 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onAddNote', [...arguments]);
   },
   _onCall() {
-    this._afterStartCall();
-    tryInvoke(this, 'onCall', [...arguments]);
+    this.set('_hasStartedCall', true);
+    return PropertyUtils.ensurePromise(tryInvoke(this, 'onCall', [...arguments])).then(() =>
+      this._tryResetScroll()
+    );
   },
   _onText() {
-    this._tryResetScroll();
-    return tryInvoke(this, 'onText', [...arguments]);
+    return PropertyUtils.ensurePromise(tryInvoke(this, 'onText', [...arguments])).then(() =>
+      this._tryResetScroll()
+    );
   },
   _onScheduleMessage() {
     tryInvoke(this, 'onScheduleMessage', [...arguments]);
   },
 
+  _tryResetAll() {
+    const scrollEl = this.get('_recordClustersScroll');
+    if (scrollEl && scrollEl.actions) {
+      tryInvoke(scrollEl.actions, 'resetAll');
+    }
+  },
+  _tryRestorePosition(shouldAnimate = false) {
+    const scrollEl = this.get('_recordClustersScroll');
+    if (scrollEl && scrollEl.actions) {
+      tryInvoke(scrollEl.actions, 'restorePosition', [shouldAnimate]);
+    }
+  },
   _tryResetScroll() {
     const scrollEl = this.get('_recordClustersScroll');
     if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'resetPosition');
+      tryInvoke(scrollEl.actions, 'resetPosition', [true]);
     }
-  },
-  _afterStartCall() {
-    this.set('_hasStartedCall', true);
-    this._tryResetScroll();
   },
 });

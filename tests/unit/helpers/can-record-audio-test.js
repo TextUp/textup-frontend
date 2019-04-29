@@ -1,4 +1,4 @@
-import * as AudioUtils from 'textup-frontend/utils/audio';
+import AudioUtils from 'textup-frontend/utils/audio';
 import sinon from 'sinon';
 import { canRecordAudio } from 'textup-frontend/helpers/can-record-audio';
 import { module, test } from 'qunit';

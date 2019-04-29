@@ -1,56 +1,40 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  dataService: Ember.inject.service(),
+
   queryParams: {
-    token: {
-      refreshModel: true
-    }
+    token: { refreshModel: true },
   },
-  errors: null,
 
-  // Events
-  // ------
-
-  model: function(params) {
+  model(params) {
     this._super(...arguments);
     const token = params.token;
     if (token) {
-      return this.store.findRecord('notification', token).then(
-        success => {
-          this.set('errors', null);
-          return success;
-        },
-        failure => {
-          this.set('errors', failure.errors);
-        }
-      );
+      return this.get('dataService').request(this.store.findRecord('notification', token));
     } else {
-      this.notifications.error('No authorization token specified.');
       this.transitionTo('login');
     }
   },
-  setupController: function(controller) {
-    this._super(...arguments);
-    controller.set('errors', this.get('errors'));
-  },
-  deactivate: function() {
-    this.set('errors', null);
-    this.controller.set('errors', null);
-  },
-
-  // Actions
-  // -------
 
   actions: {
-    openInApp: function(notification) {
-      const ownerUrlId = notification.get('ownerUrlIdentifier'),
-        otherUrlId = notification.get('otherUrlIdentifier'),
-        isOtherTag = notification.get('isOtherTag');
-      if (isOtherTag) {
-        this.transitionTo('main.tag.details', ownerUrlId, otherUrlId);
-      } else {
-        this.transitionTo('main.contacts.contact', ownerUrlId, otherUrlId);
+    error() {
+      this.transitionTo('index');
+    },
+    openInApp(notification) {
+      if (notification) {
+        this.transitionTo('main', notification.get(Constants.PROP_NAME.URL_IDENT));
       }
-    }
-  }
+    },
+    openCareRecord(notification, detail) {
+      if (notification && detail) {
+        this.transitionTo(
+          detail.get('routeName'),
+          notification.get(Constants.PROP_NAME.URL_IDENT),
+          detail.get(Constants.PROP_NAME.URL_IDENT)
+        );
+      }
+    },
+  },
 });

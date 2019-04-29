@@ -1,3 +1,5 @@
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Mixin.create({
@@ -32,13 +34,13 @@ export default Ember.Mixin.create({
     startAddNoteSlideout(addAfterRecordItem = null) {
       const recipient = this.get('currentModel');
       this.get('controller').setProperties({
-        newRecordNote: this.get('recordItemService').createNewNote(recipient, addAfterRecordItem)
+        newRecordNote: this.get('recordItemService').createNewNote(recipient, addAfterRecordItem),
       });
       this.send(
         'toggleSlideout',
         'slideouts/record-note/create',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelAddNoteSlideout() {
@@ -56,8 +58,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/record-note/edit',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     cancelEditNoteSlideout() {
@@ -76,14 +78,14 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/record-note/revisions',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DETAIL')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DETAIL
       );
     },
     finishViewNoteHistorySlideout() {
       this.send('closeSlideout');
       this.get('controller').setProperties(this._initialRecordNoteProps());
-    }
+    },
   },
 
   _initialRecordNoteProps() {
@@ -104,5 +106,5 @@ export default Ember.Mixin.create({
     if (editingRecordNote) {
       editingRecordNote.rollbackAttributes();
     }
-  }
+  },
 });

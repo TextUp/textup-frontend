@@ -6,26 +6,6 @@ export default Ember.Service.extend({
   dataService: Ember.inject.service(),
   store: Ember.inject.service(),
 
-  // scheduleOwner is either a staff or availability model
-  ensureScheduleIsPresent(scheduleOwner) {
-    return new RSVP.Promise((resolve, reject) => {
-      if (typeOf(scheduleOwner) !== 'instance') {
-        return reject('Must pass an Ember object into `ensureScheduleIsPresent`');
-      }
-      const isManualSchedule = scheduleOwner.get('manualSchedule');
-      if (isManualSchedule === false) {
-        scheduleOwner.get('schedule').then(sched1 => {
-          if (!sched1) {
-            scheduleOwner.set('schedule', this.get('store').createRecord('schedule'));
-          }
-          resolve();
-        }, reject);
-      } else {
-        resolve();
-      }
-    });
-  },
-
   onAddAudio(phone, mimeType, data) {
     return new RSVP.Promise((resolve, reject) => {
       if (typeOf(phone) !== 'instance' || !mimeType || !data) {
@@ -57,5 +37,5 @@ export default Ember.Service.extend({
         .persist(phoneOwner)
         .then(resolve, reject);
     });
-  }
+  },
 });

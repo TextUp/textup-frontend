@@ -1,34 +1,31 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import { validate as validateNumber, clean as cleanNumber } from '../utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
 const { isBlank, RSVP } = Ember;
 
 export default Ember.Service.extend({
-  stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
 
-  doSearch: function(searchString) {
+  doSearch(search) {
     return new RSVP.Promise((resolve, reject) => {
-      if (isBlank(searchString)) {
+      if (isBlank(search)) {
         return resolve([]);
       }
-      const query = Object.create(null),
-        team = this.get('stateManager.ownerAsTeam');
-      query.search = searchString;
-      if (team) {
-        query.teamId = team.get('id');
-      }
+      // teamId added by `contact` adapter
       this.get('store')
-        .query('contact', query)
-        .then(results => {
-          resolve(results.toArray());
-        }, reject);
+        .query(Constants.MODEL.CONTACT, { search })
+        .then(results => resolve(results.toArray()), reject);
     });
   },
-  createRecipient: function(val) {
-    if (validateNumber(val)) {
-      const num = cleanNumber(val);
-      return { uniqueIdentifier: num, identifier: num };
+  createRecipient(val) {
+    if (PhoneNumberUtils.validate(val)) {
+      const num = PhoneNumberUtils.clean(val);
+      return {
+        [Constants.PROP_NAME.URL_IDENT]: num,
+        [Constants.PROP_NAME.READABLE_IDENT]: num,
+        [Constants.PROP_NAME.FILTER_VAL]: num,
+      };
     }
-  }
+  },
 });

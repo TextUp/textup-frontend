@@ -1,6 +1,9 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
+import TypeUtils from 'textup-frontend/utils/type';
 import { tryGetFileNameFromXHR, download } from 'textup-frontend/utils/file';
 import RecordCall from 'textup-frontend/models/record-call';
 
@@ -8,7 +11,6 @@ const { assign, isArray, get } = Ember;
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
-  constants: Ember.inject.service(),
   dataService: Ember.inject.service(),
   stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
@@ -20,12 +22,12 @@ export default Ember.Service.extend({
       if (!refresh) {
         query.offset = model.get('numRecordItems');
       }
-      this.get('store')
-        .query('record-item', query)
+      this.get('dataService')
+        .request(this.get('store').query('record-item', query))
         .then(results => {
           model.set('totalNumRecordItems', get(results, 'meta.total'));
           resolve(results);
-        }, this.get('dataService').buildErrorHandler(reject));
+        }, reject);
     });
   },
 
@@ -33,18 +35,17 @@ export default Ember.Service.extend({
   // currently-active phone
   exportRecordItems(dateStart, dateEnd, shouldGroupEntities, recordOwners = []) {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      const constants = this.get('constants'),
-        query = {
-          teamId: this.get('stateManager.ownerAsTeam.id'),
-          timezone: this.get('authService.timezone'),
-          format: constants.EXPORT.FORMAT.PDF,
-          max: constants.EXPORT.LARGEST_MAX,
-          since: moment(dateStart).toISOString(),
-          before: moment(dateEnd).toISOString(),
-          exportFormatType: shouldGroupEntities
-            ? constants.EXPORT.TYPE.GROUPED
-            : constants.EXPORT.TYPE.SINGLE,
-        };
+      const query = {
+        teamId: this.get('stateManager.ownerAsTeam.id'),
+        timezone: this.get('authService.timezone'),
+        format: Constants.EXPORT.FORMAT.PDF,
+        max: Constants.EXPORT.LARGEST_MAX,
+        start: moment(dateStart).toISOString(),
+        end: moment(dateEnd).toISOString(),
+        exportFormatType: shouldGroupEntities
+          ? Constants.EXPORT.TYPE.GROUPED
+          : Constants.EXPORT.TYPE.SINGLE,
+      };
       assign(query, this._buildQueryFor(recordOwners));
       // Need to use XHR directy because jQuery does not support XHR2 responseType of `arrayBuffer`
       // We need this because the server returns the raw binary data. In order for the binary data
@@ -53,7 +54,7 @@ export default Ember.Service.extend({
       var xhr = new XMLHttpRequest();
       xhr.open('GET', `${config.host}/v1/records?${Ember.$.param(query)}`);
       xhr.responseType = 'arraybuffer';
-      xhr.setRequestHeader('Content-Type', constants.MIME_TYPE.PDF);
+      xhr.setRequestHeader('Content-Type', Constants.MIME_TYPE.PDF);
       xhr.setRequestHeader('Authorization', `Bearer ${this.get('authService.token')}`);
       xhr.onload = () => this._handleExportOutcome(xhr, resolve, reject);
       xhr.send();
@@ -100,32 +101,16 @@ export default Ember.Service.extend({
   // ----------------
 
   _buildQueryFor(models) {
-    const constants = this.get('constants'),
-      contactIds = [],
-      sharedContactIds = [],
-      tagIds = [];
-    if (isArray(models)) {
-      models.forEach(model => {
-        switch (model.get('constructor.modelName')) {
-          case constants.MODEL.CONTACT:
-            if (model.get('isShared')) {
-              sharedContactIds.pushObject(model.get('id'));
-            } else {
-              contactIds.pushObject(model.get('id'));
-            }
-            break;
-          case constants.MODEL.TAG:
-            tagIds.pushObject(model.get('id'));
-            break;
-        }
-      });
-    }
-    return { contactIds, sharedContactIds, tagIds };
+    return {
+      owners: ArrayUtils.ensureArrayAndAllDefined(models)
+        .filter(TypeUtils.isAnyModel)
+        .mapBy('id'),
+    };
   },
 
   _handleExportOutcome(xhr, resolve, reject) {
     if (xhr.status === 200) {
-      const fileType = this.get('constants.MIME_TYPE.PDF'),
+      const fileType = Constants.MIME_TYPE.PDF,
         fallbackName = 'textup-export.pdf';
       download(xhr.response, fileType, tryGetFileNameFromXHR(xhr, fallbackName));
       resolve();

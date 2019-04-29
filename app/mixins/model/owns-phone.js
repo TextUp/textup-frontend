@@ -1,6 +1,8 @@
+import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
-import Ember from 'ember';
 import DS from 'ember-data';
+import Ember from 'ember';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import { validator } from 'ember-cp-validations';
 
 const { computed, getWithDefault, tryInvoke } = Ember;
@@ -8,17 +10,11 @@ const { computed, getWithDefault, tryInvoke } = Ember;
 // [NOTE] don't mix into this mixin because of a bug where all classes that mix in this class
 // will have their own validations overriden with the last class that mixed in this mixin
 export const OwnsPhoneValidations = {
-  phone: {
-    description: 'Phone',
-    validators: [validator('belongs-to')],
-  },
+  phone: { description: 'Phone', validators: [validator('belongs-to')] },
   phoneAction: {
     description: 'Change going to be made to this phone',
     validators: [
-      validator('inclusion', {
-        allowBlank: true,
-        in: model => Object.values(model.get('constants.ACTION.PHONE')),
-      }),
+      validator('inclusion', { allowBlank: true, in: Object.values(Constants.ACTION.PHONE) }),
     ],
   },
   transferFilter: {
@@ -27,9 +23,7 @@ export const OwnsPhoneValidations = {
   },
 };
 
-export default Ember.Mixin.create(Dirtiable, {
-  constants: Ember.inject.service(),
-
+export default Ember.Mixin.create(Dirtiable, HasUrlIdentifier, {
   // Overrides
   // ---------
 
@@ -55,7 +49,6 @@ export default Ember.Mixin.create(Dirtiable, {
   // Properties
   // ----------
 
-  hasInactivePhone: DS.attr('boolean'),
   phone: DS.belongsTo('phone'), // hasOne
 
   hasPhoneAction: computed.notEmpty('phoneAction'),
@@ -64,9 +57,6 @@ export default Ember.Mixin.create(Dirtiable, {
   hasPhoneActionData: computed.notEmpty('phoneActionData'), // not all actions have data!
   phoneActionData: null,
 
-  transferId: computed('constructor.modelName', 'id', function() {
-    return `${this.get('constructor.modelName')}-${this.get('id')}`;
-  }),
   // Models that own a phone must implement `transferFilter`
   transferFilter: null,
 });

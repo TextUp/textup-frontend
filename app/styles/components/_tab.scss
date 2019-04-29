@@ -1,90 +1,119 @@
-.tab-container .tab-container-nav {
-	.tab-container-nav-controls {
-		visibility: hidden;
+.tab-container {
+	&__body {
+		@extend %clearfix;
+
+		width: 100%;
+		overflow: hidden;
+		position: relative;
 	}
-	// After see if there is overflow in the nav list,
-	// apply either the inline or overflow styles to the nav
-	// the inline style will cause all nav items to float left
-	&.inline {
-		.tab-container-nav-list {
-			@extend %clearfix;
-
-			.tab-container-nav-item {
-				@extend .no-select;
-				cursor: pointer;
-				float: left;
-			}
-		}
-		.tab-container-nav-controls {
-			display: none;
-		}
-	}
-	// the overflow style hides the list altogether and
-	// instead shows the mobile controls
-	&.overflow {
-		.tab-container-nav-list {
-			display: none;
-		}
-		.tab-container-nav-controls {
-			visibility: visible;
-		}
-	}
-}
-.tab-container .tab-container-nav-controls .tab-container-nav-display {
-	@extend .btn;
-	@extend .text-ellipsis;
-	width: 100%;
-	position: relative;
-}
-.tab-container .tab-container-nav-list {
-	width: 100%;
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-	white-space: nowrap;
-
-	.tab-container-nav-item {
-		@extend .text-ellipsis;
-		box-sizing: border-box;
-
-		cursor: pointer;
-		text-align: center;
-		display: inline-block;
-		padding: $padding;
-		font-weight: $font-weight-bold;
-		border-top-left-radius: $border-radius;
-		border-top-right-radius: $border-radius;
-		min-width: 100px;
-		max-width: 100%;
-		border-bottom: 1px solid $border-color;
-		transition: all 0.5s;
-
-		&:hover:not(.active) {
-			background-color: $bg-color;
-			color: contrast-color($bg-color);
-		}
-		&.active {
-			background-color: $brand-color;
-			color: contrast-color($brand-color);
-			border-bottom: 1px solid $brand-color;
-		}
-	}
-}
-.tab-container .tab-container-body {
-	@extend %clearfix;
-	width: 100%;
-	overflow: hidden;
-	position: relative;
-
-	.tab-container-item {
+	&__item {
 		float: left;
 		overflow: hidden;
 		width: 100%;
 
-		&.pending {
+		&--pending {
 			position: absolute;
 			left: 100%;
+		}
+	}
+	&__nav {
+		&--no-multiple {
+			display: none;
+		}
+		&--nav-outline &__list-item {
+			color: $color-brand-light;
+			border: 1px solid $color-brand-light;
+			border-right-width: 0;
+			border-radius: 0;
+
+			&:after {
+				display: none;
+			}
+			&:first-child {
+				border-top-left-radius: $border-radius;
+				border-bottom-left-radius: $border-radius;
+			}
+			&:last-child {
+				border-top-right-radius: $border-radius;
+				border-bottom-right-radius: $border-radius;
+				border-right-width: 1px;
+			}
+			&--active {
+				background-color: $color-seafoam;
+				color: $color-brand-dark;
+				border-color: $color-brand-light;
+			}
+		}
+		&--overflow {
+			.tab-container__nav__list {
+				display: none;
+			}
+			.tab-container__nav__controls {
+				display: block;
+			}
+		}
+
+		&__controls {
+			display: none;
+		}
+		&__display {
+			@extend .btn;
+			@extend .btn-expand;
+			@extend .text-ellipsis;
+
+			width: 100%;
+			position: relative;
+		}
+		&__list {
+			display: flex;
+			width: 100%;
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+			list-style-type: none;
+			white-space: nowrap;
+		}
+		&__list-item {
+			@extend .no-select;
+			@extend .text-ellipsis;
+
+			flex-grow: 1;
+			position: relative;
+			min-width: 100px;
+			max-width: 100%;
+			padding: $spacing;
+			background-color: $color-white;
+			color: $color-brand-light;
+			border-bottom: 1px solid $border-color;
+			border-radius: 0;
+			cursor: pointer;
+			text-align: center;
+			font-weight: $font-weight-bold;
+			transition: all 0.5s;
+
+			&:after {
+				content: '';
+				position: absolute;
+				left: 50%;
+				bottom: 0;
+				width: 80%;
+				height: 3px;
+				transform: translateX(-50%);
+				border-radius: $border-radius;
+				background-color: $color-brand-light;
+				opacity: 0;
+				transition: opacity 0.1s;
+			}
+			&:hover {
+				background-color: $bg-color;
+			}
+			&--active {
+				color: $color-brand-dark;
+
+				&:after {
+					opacity: 1;
+				}
+			}
 		}
 	}
 }

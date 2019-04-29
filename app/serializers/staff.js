@@ -4,12 +4,12 @@ import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
     org: { deserialize: 'records', serialize: 'ids' },
-    schedule: { deserialize: 'records', serialize: 'records' },
     // any changes happen with teamActions on the individual tags
-    teams: { deserialize: 'records', serialize: false }
+    teams: { deserialize: 'records', serialize: false },
+    channelName: { serialize: false },
   },
 
-  serialize: function() {
+  serialize() {
     const json = this._super(...arguments);
     json.org = { id: json.org };
     if (!json.password) {
@@ -19,5 +19,5 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
       delete json.lockCode;
     }
     return json;
-  }
+  },
 });

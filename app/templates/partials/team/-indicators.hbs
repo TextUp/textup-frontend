@@ -1,23 +1,22 @@
-{{#if (and (not team.hasInactivePhone)
-    team.phone.isFulfilled
-    team.phone.content)}}
-    <span class="badge">
-        {{#tool-tip tagName='span'
-            side=constants.TOOLTIP.SIDE.RIGHT
-            title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
-            <span class="fa fa-phone"></span>
-        {{/tool-tip}}
-    </span>
-{{/if}}
-{{#if team.hasInactivePhone}}
-    <span class="badge">
-        {{#tool-tip tagName='span'
-            class='text-lighten'
-            side=constants.TOOLTIP.SIDE.RIGHT
-            title='Has inactive phone'}}
-            <span class="fa fa-phone"></span>
-        {{/tool-tip}}
-    </span>
+{{#if team.phone.content}}
+    {{#if team.phone.content.isActive}}
+        <span class="badge">
+            {{#tool-tip tagName='span'
+                side=(constant "TOOLTIP.SIDE.RIGHT")
+                title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
+                <span class="fa fa-phone"></span>
+            {{/tool-tip}}
+        </span>
+    {{else}}
+        <span class="badge">
+            {{#tool-tip tagName='span'
+                class='text-lighten'
+                side=(constant "TOOLTIP.SIDE.RIGHT")
+                title='Has inactive phone'}}
+                <span class="fa fa-phone"></span>
+            {{/tool-tip}}
+        </span>
+    {{/if}}
 {{/if}}
 <span class="badge">
     {{team.numMembers}}

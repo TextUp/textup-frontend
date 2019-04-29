@@ -1,27 +1,22 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import SerializerOwnsPhoneMixin from 'textup-frontend/mixins/serializer/owns-phone';
+import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
 const { typeOf } = Ember;
 
 moduleFor('mixin:serializer/owns-phone', 'Unit | Mixin | serializer/owns phone', {
-  needs: ['service:constants'],
-  beforeEach() {
-    this.inject.service('constants');
-  },
   subject() {
     const BaseClass = Ember.Object.extend({ serialize: () => Object.create(null) });
-    const SerializerOwnsPhoneObject = BaseClass.extend(SerializerOwnsPhoneMixin, {
-      constants: this.constants
-    });
+    const SerializerOwnsPhoneObject = BaseClass.extend(SerializerOwnsPhoneMixin);
     return SerializerOwnsPhoneObject.create();
-  }
+  },
 });
 
 test('attributes', function(assert) {
   const obj = this.subject();
 
-  assert.equal(obj.attrs.hasInactivePhone.serialize, false);
   assert.equal(obj.attrs.phone.deserialize, 'records');
   assert.equal(obj.attrs.phone.serialize, 'records');
 });
@@ -41,7 +36,7 @@ test('changing phone number', function(assert) {
     phoneNumber = Math.random();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER })
+    record: Ember.Object.create({ phoneAction: Constants.ACTION.PHONE.CHANGE_NUMBER }),
   });
 
   assert.equal(typeOf(json), 'object');
@@ -49,10 +44,10 @@ test('changing phone number', function(assert) {
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER,
+      phoneAction: Constants.ACTION.PHONE.CHANGE_NUMBER,
       hasPhoneActionData: true,
-      phoneActionData: { sid }
-    })
+      phoneActionData: { sid },
+    }),
   });
 
   assert.equal(typeOf(json), 'object');
@@ -60,10 +55,10 @@ test('changing phone number', function(assert) {
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.ACTION.PHONE.CHANGE_NUMBER,
+      phoneAction: Constants.ACTION.PHONE.CHANGE_NUMBER,
       hasPhoneActionData: true,
-      phoneActionData: { phoneNumber }
-    })
+      phoneActionData: { phoneNumber },
+    }),
   });
 
   assert.equal(typeOf(json), 'object');
@@ -74,7 +69,7 @@ test('deactivating phone', function(assert) {
   const obj = this.subject();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.DEACTIVATE })
+    record: Ember.Object.create({ phoneAction: Constants.ACTION.PHONE.DEACTIVATE }),
   });
 
   assert.equal(typeOf(json), 'object');
@@ -86,24 +81,24 @@ test('transfering phone', function(assert) {
     id = Math.random();
 
   let json = obj.serialize({
-    record: Ember.Object.create({ phoneAction: this.constants.ACTION.PHONE.TRANSFER })
+    record: Ember.Object.create({ phoneAction: Constants.ACTION.PHONE.TRANSFER }),
   });
 
   assert.equal(typeOf(json), 'object');
   assert.deepEqual(json.phone, {
-    doPhoneActions: [{ action: 'TRANSFER', id: undefined, type: 'GROUP' }]
+    doPhoneActions: [{ action: 'TRANSFER', id: undefined, type: 'GROUP' }],
   });
 
   json = obj.serialize({
     record: Ember.Object.create({
-      phoneAction: this.constants.ACTION.PHONE.TRANSFER,
+      phoneAction: Constants.ACTION.PHONE.TRANSFER,
       hasPhoneActionData: true,
-      phoneActionData: { id, type: this.constants.MODEL.STAFF }
-    })
+      phoneActionData: mockModel(id, Constants.MODEL.STAFF),
+    }),
   });
 
   assert.equal(typeOf(json), 'object');
   assert.deepEqual(json.phone, {
-    doPhoneActions: [{ action: 'TRANSFER', id, type: 'INDIVIDUAL' }]
+    doPhoneActions: [{ action: 'TRANSFER', id, type: 'INDIVIDUAL' }],
   });
 });

@@ -1,66 +1,65 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Constants from 'textup-frontend/constants';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import OwnsFutureMessages from '../mixins/model/owns-future-messages';
-import OwnsRecordItems from '../mixins/model/owns-record-items';
+import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
+import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-messages';
+import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { alias, notEmpty, equal: eq } = Ember.computed,
+const { computed, typeOf } = Ember,
   Validations = buildValidations({
-    name: { description: 'Name', validators: [validator('presence', true)] }
+    name: { description: 'Name', validators: [validator('presence', true)] },
   });
 
-export default DS.Model.extend(Dirtiable, Validations, OwnsRecordItems, OwnsFutureMessages, {
-  constants: Ember.inject.service(),
+export default DS.Model.extend(
+  Dirtiable,
+  HasReadableIdentifier,
+  HasUrlIdentifier,
+  OwnsFutureMessages,
+  OwnsRecordItems,
+  Validations,
+  {
+    // Overrides
+    // ---------
 
-  // Overrides
-  // ------
+    rollbackAttributes() {
+      this._super(...arguments);
+      this.clearMembershipChanges();
+    },
+    didCreate() {
+      this._super(...arguments);
+      this.rollbackAttributes();
+    },
+    didUpdate() {
+      this._super(...arguments);
+      this.rollbackAttributes();
+    },
+    hasManualChanges: computed.notEmpty('actions'),
 
-  init: function() {
-    this._super(...arguments);
-    this.set('actions', []);
-  },
-  rollbackAttributes: function() {
-    this._super(...arguments);
-    this.clearMembershipChanges();
-  },
-  didCreate() {
-    this._super(...arguments);
-    this.rollbackAttributes();
-  },
-  didUpdate() {
-    this._super(...arguments);
-    this.rollbackAttributes();
-  },
+    // Properties
+    // ----------
 
-  // Attributes
-  // ----------
+    name: DS.attr('string'),
+    [Constants.PROP_NAME.FILTER_VAL]: computed.alias('name'),
 
-  name: DS.attr('string'),
-  hexColor: DS.attr('string', { defaultValue: model => model.get('constants.COLOR.BRAND') }),
-  phone: DS.belongsTo('phone'),
-  numMembers: DS.attr('number'),
+    hexColor: DS.attr('string', { defaultValue: Constants.COLOR.BRAND }),
+    phone: DS.belongsTo('phone'),
 
-  // Not attributes
-  // --------------
+    numMembers: DS.attr('number'),
+    isEmpty: computed('numMembers', function() {
+      const numMembers = this.get('numMembers');
+      return typeOf(numMembers) !== 'number' || numMembers <= 0;
+    }),
 
-  actions: null,
+    actions: computed(() => []),
 
-  // Computed properties
-  // -------------------
+    // Methods
+    // -------
 
-  isEmpty: eq('numMembers', 0),
-  hasManualChanges: notEmpty('actions'),
-  identifier: alias('name'),
-  uniqueIdentifier: alias('name'),
-  urlIdentifier: Ember.computed('name', function() {
-    return Ember.String.dasherize(this.get('name') || '');
-  }),
-
-  // Methods
-  // -------
-
-  clearMembershipChanges() {
-    this.get('actions').clear();
+    clearMembershipChanges() {
+      this.get('actions').clear();
+    },
   }
-});
+);

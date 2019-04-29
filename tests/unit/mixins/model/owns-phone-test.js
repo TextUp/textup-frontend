@@ -1,28 +1,22 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import ModelOwnsPhoneMixin, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import sinon from 'sinon';
-import { moduleFor, test } from 'ember-qunit';
 import { buildValidations } from 'ember-cp-validations';
+import { moduleFor, test } from 'ember-qunit';
 
 const { run } = Ember,
   TEST_CLASS_NAME = 'owns-phone-mixin-model';
 
 moduleFor('mixin:model/owns-phone', 'Unit | Mixin | model/owns phone', {
-  needs: [
-    'service:constants',
-    'model:phone',
-    'validator:belongs-to',
-    'validator:inclusion',
-    'validator:presence',
-  ],
+  needs: ['model:phone', 'validator:belongs-to', 'validator:inclusion', 'validator:presence'],
   beforeEach() {
     const OwnsPhoneMixinModel = DS.Model.extend(
       buildValidations(OwnsPhoneValidations),
       ModelOwnsPhoneMixin
     );
     this.register(`model:${TEST_CLASS_NAME}`, OwnsPhoneMixinModel);
-
-    this.inject.service('constants');
   },
   subject() {
     return run(() => {
@@ -41,7 +35,7 @@ test('dirty checking', function(assert) {
 
   obj.setProperties({
     'phone.content': { isDirty: true },
-    phoneAction: this.constants.ACTION.PHONE.DEACTIVATE,
+    phoneAction: Constants.ACTION.PHONE.DEACTIVATE,
   });
   assert.equal(obj.get('hasManualChanges'), true);
   assert.equal(obj.get('ownsPhoneHasManualChanges'), true);
@@ -84,11 +78,7 @@ test('rolling back on update', function(assert) {
 });
 
 test('getting transfer id', function(assert) {
-  const obj = this.subject(),
-    id = Math.random();
-  obj.set('id', id);
-
-  assert.equal(obj.get('transferId'), `${TEST_CLASS_NAME}-${id}`);
+  assert.ok(HasUrlIdentifier.detect(this.subject()));
 });
 
 test('validating phone', function(assert) {
@@ -132,7 +122,7 @@ test('validating phone action', function(assert) {
           'phoneAction not in specified list'
         );
 
-        model.setProperties({ phoneAction: this.constants.ACTION.PHONE.DEACTIVATE });
+        model.setProperties({ phoneAction: Constants.ACTION.PHONE.DEACTIVATE });
         return model.validate();
       })
       .then(({ model }) => {

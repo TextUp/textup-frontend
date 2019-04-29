@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -10,7 +11,6 @@ let $testingContainer, originalPadding, originalZoom;
 moduleForComponent('pop-over', 'Integration | Component | pop over', {
   integration: true,
   beforeEach() {
-    this.inject.service('constants');
     // pad the testing container on the top and left so the component has space on all sides
     // reset zoom because for some reason `ember-testing` has zoom:50% applied on it which
     // messes with our getBoundingClientRect values
@@ -22,7 +22,7 @@ moduleForComponent('pop-over', 'Integration | Component | pop over', {
   },
   afterEach() {
     $testingContainer.css({ padding: originalPadding, zoom: originalZoom });
-  }
+  },
 });
 
 test('properties', function(assert) {
@@ -182,101 +182,100 @@ test('registering', function(assert) {
     });
 });
 
-// // TODO
-// test('appropriate floating coordinations based on specified position', function(assert) {
-//   const done = assert.async(),
-//     doRegister = sinon.spy(),
-//     onReposition = sinon.spy();
-//   this.setProperties({ position: null, doRegister, onReposition });
-//
-//   this.render(hbs`
-//     {{#pop-over doRegister=doRegister onReposition=onReposition position=position}}
-//       <div style="width: 100px; height: 100px;">Trigger</div>
-//     {{else}}
-//       <div style="width: 100px; height: 100px;">Body</div>
-//     {{/pop-over}}
-//   `);
-//
-//   assert.ok(this.$('.pop-over').length);
-//   assert.ok(Ember.$('.pop-over__body__floating-container').length);
-//   assert.ok(this.$('.pop-over').length);
-//   assert.ok(doRegister.calledOnce);
-//   assert.ok(onReposition.notCalled);
-//
-//   let elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
-//   const { top: spaceOnTop, left: spaceOnLeft, width, height } = elementCoords,
-//     viewportHeight = Ember.$(window).height(),
-//     viewportWidth = Ember.$(window).width(),
-//     spaceOnRight = viewportWidth - spaceOnLeft - width,
-//     spaceOnBottom = viewportHeight - spaceOnTop - height,
-//     $floatingContainer = Ember.$('.pop-over__body__floating-container');
-//
-//   // invalid position specified -- pick side with the most space
-//   const publicAPI = doRegister.firstCall.args[0];
-//   publicAPI.actions
-//     .open()
-//     .then(() => {
-//       assert.ok(doRegister.calledOnce);
-//       assert.equal(
-//         onReposition.callCount,
-//         0,
-//         'positioning happens on open but reposition hook not called'
-//       );
-//
-//       const floatingTop = $floatingContainer.css('top');
-//       if (spaceOnTop > spaceOnBottom) {
-//         assert.ok(Ember.$('.pop-over__body--position-top').length, 'position on top');
-//         assert.ok(parseFloat(floatingTop) < elementCoords.top);
-//       } else {
-//         assert.ok(Ember.$('.pop-over__body--position-bottom').length, 'position on bottom');
-//         assert.ok(parseFloat(floatingTop) > elementCoords.top);
-//       }
-//       const floatingLeft = $floatingContainer.css('left');
-//       if (spaceOnLeft > spaceOnRight) {
-//         assert.ok(Ember.$('.pop-over__body--align-right').length, 'align to right edge');
-//         assert.ok(parseFloat(floatingLeft) > elementCoords.left);
-//       } else {
-//         assert.ok(Ember.$('.pop-over__body--align-left').length, 'align to left edge');
-//         assert.ok(parseFloat(floatingLeft) < elementCoords.right);
-//       }
-//
-//       elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
-//       this.set('position', this.constants.POP_OVER.POSITION.TOP);
-//       return wait();
-//     })
-//     .then(() => {
-//       assert.ok(doRegister.calledOnce);
-//       assert.equal(onReposition.callCount, 1);
-//
-//       const floatingTop = $floatingContainer.css('top');
-//
-//       assert.ok(Ember.$('.pop-over__body--position-top').length);
-//       assert.notOk(Ember.$('.pop-over__body--position-bottom').length);
-//       assert.ok(parseFloat(floatingTop) < elementCoords.top);
-//
-//       elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
-//       this.set('position', this.constants.POP_OVER.POSITION.BOTTOM);
-//       return wait();
-//     })
-//     .then(() => {
-//       assert.ok(doRegister.calledOnce);
-//       assert.equal(onReposition.callCount, 2);
-//
-//       const floatingTop = $floatingContainer.css('top');
-//
-//       assert.notOk(Ember.$('.pop-over__body--position-top').length);
-//       assert.ok(Ember.$('.pop-over__body--position-bottom').length);
-//       assert.ok(parseFloat(floatingTop) > elementCoords.top);
-//
-//       done();
-//     });
-// });
+test('appropriate floating coordinations based on specified position', function(assert) {
+  const done = assert.async(),
+    doRegister = sinon.spy(),
+    onReposition = sinon.spy();
+  this.setProperties({ position: null, doRegister, onReposition });
+
+  this.render(hbs`
+    {{#pop-over doRegister=doRegister onReposition=onReposition position=position}}
+      <div style="width: 100px; height: 100px;">Trigger</div>
+    {{else}}
+      <div style="width: 100px; height: 100px;">Body</div>
+    {{/pop-over}}
+  `);
+
+  assert.ok(this.$('.pop-over').length);
+  assert.ok(Ember.$('.pop-over__body__floating-container').length);
+  assert.ok(this.$('.pop-over').length);
+  assert.ok(doRegister.calledOnce);
+  assert.ok(onReposition.notCalled);
+
+  let elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
+  const { top: spaceOnTop, left: spaceOnLeft, width, height } = elementCoords,
+    viewportHeight = Ember.$(window).height(),
+    viewportWidth = Ember.$(window).width(),
+    spaceOnRight = viewportWidth - spaceOnLeft - width,
+    spaceOnBottom = viewportHeight - spaceOnTop - height,
+    $floatingContainer = Ember.$('.pop-over__body__floating-container');
+
+  // invalid position specified -- pick side with the most space
+  const publicAPI = doRegister.firstCall.args[0];
+  publicAPI.actions
+    .open()
+    .then(() => {
+      assert.ok(doRegister.calledOnce);
+      assert.equal(
+        onReposition.callCount,
+        0,
+        'positioning happens on open but reposition hook not called'
+      );
+
+      const floatingTop = $floatingContainer.css('top');
+      if (spaceOnTop > spaceOnBottom) {
+        assert.ok(Ember.$('.pop-over__body--position-top').length, 'position on top');
+        assert.ok(parseFloat(floatingTop) < elementCoords.top);
+      } else {
+        assert.ok(Ember.$('.pop-over__body--position-bottom').length, 'position on bottom');
+        assert.ok(parseFloat(floatingTop) > elementCoords.top);
+      }
+      const floatingLeft = $floatingContainer.css('left');
+      if (spaceOnLeft > spaceOnRight) {
+        assert.ok(Ember.$('.pop-over__body--align-right').length, 'align to right edge');
+        assert.ok(parseFloat(floatingLeft) > elementCoords.left);
+      } else {
+        assert.ok(Ember.$('.pop-over__body--align-left').length, 'align to left edge');
+        assert.ok(parseFloat(floatingLeft) < elementCoords.right);
+      }
+
+      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
+      this.set('position', Constants.POP_OVER.POSITION.TOP);
+      return wait();
+    })
+    .then(() => {
+      assert.ok(doRegister.calledOnce);
+      assert.equal(onReposition.callCount, 1);
+
+      const floatingTop = $floatingContainer.css('top');
+
+      assert.ok(Ember.$('.pop-over__body--position-top').length);
+      assert.notOk(Ember.$('.pop-over__body--position-bottom').length);
+      assert.ok(parseFloat(floatingTop) < elementCoords.top);
+
+      elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
+      this.set('position', Constants.POP_OVER.POSITION.BOTTOM);
+      return wait();
+    })
+    .then(() => {
+      assert.ok(doRegister.calledOnce);
+      assert.equal(onReposition.callCount, 2);
+
+      const floatingTop = $floatingContainer.css('top');
+
+      assert.notOk(Ember.$('.pop-over__body--position-top').length);
+      assert.ok(Ember.$('.pop-over__body--position-bottom').length);
+      assert.ok(parseFloat(floatingTop) > elementCoords.top);
+
+      done();
+    });
+});
 
 test('truncate body if overflow', function(assert) {
   const done = assert.async(),
     doRegister = sinon.spy(),
     onReposition = sinon.spy();
-  this.setProperties({ position: this.constants.POP_OVER.POSITION.TOP, doRegister, onReposition });
+  this.setProperties({ position: Constants.POP_OVER.POSITION.TOP, doRegister, onReposition });
 
   this.render(hbs`
     {{#pop-over doRegister=doRegister onReposition=onReposition position=position}}
@@ -312,7 +311,7 @@ test('appropriate positioning on repeating openings', function(assert) {
   const done = assert.async(),
     doRegister = sinon.spy();
 
-  this.setProperties({ position: this.constants.POP_OVER.POSITION.BOTTOM, doRegister });
+  this.setProperties({ position: Constants.POP_OVER.POSITION.BOTTOM, doRegister });
   this.render(hbs`
     {{#pop-over doRegister=doRegister position=position}}
       <div style="width: 100px; height: 100px;">Trigger</div>

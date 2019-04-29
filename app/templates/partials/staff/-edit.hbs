@@ -20,6 +20,4 @@
 </div>
 {{partial 'partials/staff/personal-number'}}
 <hr>
-{{#with staff as |owner|}}
-    {{partial 'partials/change-number'}}
-{{/with}}
+{{form/phone-owner-actions owner=staff}}

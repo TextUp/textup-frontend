@@ -1,5 +1,6 @@
-import Ember from 'ember';
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
+import Ember from 'ember';
 
 const { $ } = Ember;
 
@@ -13,6 +14,7 @@ export default {
 };
 
 function onDeviceReady() {
+  const brandHexCode = Constants.COLOR.BRAND;
   window.open = window.cordova.InAppBrowser.open;
   $(document).on('click', 'a[target="_system"], a[target="_blank"]', function(e) {
     e.preventDefault();
@@ -20,8 +22,7 @@ function onDeviceReady() {
       this.href,
       '_blank',
       // styling for inappbrowser
-      // TODO: change colors to be constants
-      'footer=yes,closebuttoncolor=#28a6de,location=no,navigationbuttoncolor=#28a6de'
+      `footer=yes,closebuttoncolor=${brandHexCode},location=no,navigationbuttoncolor=${brandHexCode}`
     );
   });
 }

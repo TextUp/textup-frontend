@@ -1,9 +1,8 @@
 {{title stateManager.owner.name prepend=false separator=" - "}}
-{{message-modal url=appMessageEndpoint
+{{message-modal url=(config "appMessage.messageEndpoint")
     display=shouldShowAppMessage
     onClose=(action "closeAppUpdateMessage")}}
 {{tour-components/tour-manager doRegister=actions.registerTourManager}}
-
 
 {{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
@@ -28,23 +27,24 @@
             {{/if}}
         </button>
     </span>
-    {{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DETAIL)
+    {{#liquid-if (get slideoutService.shouldShow (constant "SLIDEOUT.OUTLET.DETAIL"))
         class="animate-slide-from-right animated-overflow"}}
-        {{outlet constants.SLIDEOUT.OUTLET.DETAIL}}
+        {{outlet (constant "SLIDEOUT.OUTLET.DETAIL")}}
     {{/liquid-if}}
     {{outlet}}
 {{else}}
     <div class="menu">
         <div class="menu__section">
-            <div class="display-xs display-s display-m" >
-                {{#account-switcher
-                    activeOwner=stateManager.owner
-                    user=authService.authUser
-                    doLogOut=(route-action "logout")
-                    doRegisterContainer=(action (mut accountSwitcher))
+            <div class="display-xs display-s display-m">
+                {{#account-switcher user=authService.authUser
+                    onLogOut=(route-action "logout")
+                    doRegister=(action (mut accountSwitcher))
+                    activeName=stateManager.owner.name
+                    activeNumber=stateManager.owner.phone.content.number
                     toggleClass="xs-8-row-10"}}
-                    <button class="xs-2-row-10 textup-account-switcher__display" id="tour-mobileSettings"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                    <button id="tour-mobileSettings"
+                        class="xs-2-row-10 textup-account-switcher__display"
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
@@ -54,8 +54,8 @@
                     <div class="menu-item menu-header"
                         style="background-color:{{stateManager.owner.hexColor}};
                             color:{{contrast-color stateManager.owner.hexColor}};"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
-                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title=(concat "Account (" stateManager.owner.name ")")
                             classNames="btn-expand"}}
                             <h4 class="match-color">{{abbreviate stateManager.owner.name 1}}</h4>
@@ -63,8 +63,8 @@
                     </div>
                 {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
                     <div class="menu-item menu-header"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" constants.SLIDEOUT.OUTLET.DEFAULT}}>
-                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title=(concat "Account (" stateManager.owner.name ")")
                             classNames="btn-expand"}}
                             <span class="fa fa-user"></span>
@@ -75,21 +75,21 @@
             {{#if stateManager.owner.phone.isFulfilled}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
-                            <span id="tour-openAvailabilityButtonMobile">Availability</span>
+                            <span id="tour-openAvailabilityButtonMobile">Notifications</span>
                         </div>
                     </div>
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout
-                        {{if stateManager.owner.phone.content.availability.content.isAvailableNow "success"}}"
+                        {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
-                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
-                            title="Availability"
+                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
+                            title="Notifications"
                             classNames="btn-expand"}}
-                            {{#if stateManager.owner.phone.content.availability.content.isAvailableNow}}
+                            {{#if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow")}}
                                 <span class="fa fa-calendar-check-o" id="tour-openAvailabilityButton"></span>
                             {{else}}
                                 <span class="fa fa-calendar-times-o" id="tour-openAvailabilityButton"></span>
@@ -110,7 +110,7 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startComposeSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Compose"
                         classNames="btn-expand"}}
                         <span class="fa fa-comments" id="tour-openMessageButton"></span>
@@ -128,7 +128,7 @@
             <div class="display-l">
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startCallSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Call"
                         classNames="btn-expand"}}
                         <span class="fa fa-phone" id="tour-openCallButton"></span>
@@ -147,7 +147,7 @@
                 <div class="display-l">
                     <div class="menu-item menu-slideout"
                         onclick={{route-action "startMultipleExportSlideout"}}>
-                        {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Export"
                             classNames="btn-expand"}}
                             <span class="fa fa-file" id="tour-openExportButton"></span>
@@ -169,26 +169,26 @@
                 </div>
                 <div class="menu-item
                     {{if (and stateManager.viewingContacts
-                        (eq filter constants.CONTACT.FILTER.ALL)) "active"}}"
-                    {{action "showFilteredContacts" constants.CONTACT.FILTER.ALL}}>
+                        (eq filter (constant "CONTACT.FILTER.ALL"))) "active"}}"
+                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.ALL")}}>
                     <span>All</span>
                 </div>
                 <div class="menu-item
                     {{if (and stateManager.viewingContacts
-                        (eq filter constants.CONTACT.FILTER.UNREAD)) "active"}}"
-                    {{action "showFilteredContacts" constants.CONTACT.FILTER.UNREAD}}>
+                        (eq filter (constant "CONTACT.FILTER.UNREAD"))) "active"}}"
+                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD")}}>
                     <span>Unread</span>
                 </div>
                 <div class="menu-item
                     {{if (and stateManager.viewingContacts
-                        (eq filter constants.CONTACT.FILTER.ARCHIVED)) "active"}}"
-                    {{action "showFilteredContacts" constants.CONTACT.FILTER.ARCHIVED}}>
+                        (eq filter (constant "CONTACT.FILTER.ARCHIVED"))) "active"}}"
+                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED")}}>
                     <span>Archived</span>
                 </div>
                 <div class="menu-item
                     {{if (and stateManager.viewingContacts
-                        (eq filter constants.CONTACT.FILTER.BLOCKED)) "active"}}"
-                    {{action "showFilteredContacts" constants.CONTACT.FILTER.BLOCKED}}>
+                        (eq filter (constant "CONTACT.FILTER.BLOCKED"))) "active"}}"
+                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED")}}>
                     <span>Blocked</span>
                 </div>
             </div>
@@ -196,21 +196,21 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startNewContactSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Add Contact"
                         classNames="btn-expand"}}
                         <span class="fa fa-user-plus" id="tour-openNewContactButton"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "main.search" tagName="div" classNames="menu-item"}}
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Search Contacts"
                         classNames="btn-expand"}}
                         <span class="fa fa-search"></span>
                     {{/tool-tip}}
                 {{/link-to}}
                 {{#link-to "main.contacts" tagName="div" classNames="menu-item"}}
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Contacts"
                         classNames="btn-expand"}}
                         <span class="fa fa-user" id="tour-openContactListButton"></span>
@@ -231,7 +231,7 @@
                 </div>
                 {{#if model.phone.isFulfilled}}
                     {{#each model.phone.content.tags as |tag|}}
-                        {{#link-to "main.tag" tag.urlIdentifier
+                        {{#link-to "main.tag" (get tag (constant "PROP_NAME.URL_IDENT"))
                             tagName="div"
                             classNames="menu-item"}}
                             <span>
@@ -252,7 +252,7 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout" id='tour-openTagsListButton'
                     onclick={{route-action "startTagListSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"
                         classNames="btn-expand"}}
                         <span class="fa fa-tags" ></span>
@@ -271,7 +271,7 @@
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
                     onclick={{route-action "startFeedbackSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}
                         <span class="fa fa-question"></span>

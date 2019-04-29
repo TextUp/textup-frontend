@@ -1,4 +1,4 @@
-import * as AudioUtils from 'textup-frontend/utils/audio';
+import AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import sinon from 'sinon';
 import { module, test } from 'qunit';

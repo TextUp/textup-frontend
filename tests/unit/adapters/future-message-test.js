@@ -16,12 +16,10 @@ moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
     'service:state',
     'service:storage',
     'service:socket',
-    'service:constants',
     'model:future-message',
     'model:contact',
     'model:tag',
     'model:phone',
-    'model:shared-contact',
     'model:record-item',
     'model:record-text',
     'model:record-call',
@@ -32,12 +30,12 @@ moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
     'validator:inclusion',
     'validator:collection',
     'validator:has-any',
-    'validator:number'
+    'validator:number',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
-  }
+  },
 });
 
 test('building url when creating record', function(assert) {
@@ -48,7 +46,7 @@ test('building url when creating record', function(assert) {
       ctId = `${Math.random()}`,
       fMsg = store.createRecord('future-message', {
         contact: store.createRecord('contact', { id: cId }),
-        tag: store.createRecord('tag', { id: ctId })
+        tag: store.createRecord('tag', { id: ctId }),
       }),
       snapshot = { record: fMsg };
 

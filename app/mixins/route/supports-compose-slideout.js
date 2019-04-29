@@ -1,3 +1,6 @@
+import AppUtils from 'textup-frontend/utils/app';
+import TypeUtils from 'textup-frontend/utils/type';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { typeOf, copy, get } = Ember;
@@ -6,6 +9,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   dataService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  stateManager: Ember.inject.service('state'),
   tutorialService: Ember.inject.service(),
 
   setupController(controller) {
@@ -21,8 +25,8 @@ export default Ember.Mixin.create({
       this.send(
         'toggleSlideout',
         'slideouts/compose',
-        this.get('routeName'),
-        this.get('constants.SLIDEOUT.OUTLET.DEFAULT')
+        AppUtils.controllerNameForRoute(this),
+        Constants.SLIDEOUT.OUTLET.DEFAULT
       );
     },
     cancelComposeSlideout() {
@@ -35,13 +39,24 @@ export default Ember.Mixin.create({
       // in the multi-select in the future.
       const contents = this.get('controller.composeMessage'),
         recipients = this.get('controller.composeRecipients').map(recipient => {
-          return get(recipient, 'constructor.modelName') ? recipient : get(recipient, 'identifier');
+          return TypeUtils.isAnyModel(recipient)
+            ? recipient
+            : get(recipient, Constants.PROP_NAME.READABLE_IDENT);
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
       this.get('tutorialService').startCompleteTask('sendMessage');
       return this.get('dataService')
         .persist(rText)
-        .then(() => this.send('cancelComposeSlideout'))
+        .then(() => {
+          this.send('cancelComposeSlideout');
+          // [FUTURE] Right now, newly created contacts aren't pushed to the contacts list so the
+          // user needs to refresh before seeing the newly-created contacts. Consider making the
+          // contacts to phone relationship automatically managed by Ember Data like the
+          // record items to record owners
+          if (this.get('stateManager.viewingContacts')) {
+            this.controllerFor('main.contacts').doRefreshContacts();
+          }
+        })
         .catch(() => rText.rollbackAttributes());
     },
 
@@ -61,7 +76,7 @@ export default Ember.Mixin.create({
     composeRemoveRecipient(recipient) {
       this.get('controller.composeRecipients').removeObject(recipient);
       this._checkComposeHasRecipients();
-    }
+    },
   },
 
   _initialComposeProps() {
@@ -70,5 +85,5 @@ export default Ember.Mixin.create({
   _checkComposeHasRecipients() {
     const controller = this.get('controller');
     controller.set('composeHasRecipients', controller.get('composeRecipients.length') > 0);
-  }
+  },
 });

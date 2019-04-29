@@ -1,45 +1,43 @@
-import Ember from 'ember';
+import TypeUtils from 'textup-frontend/utils/type';
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
+import Ember from 'ember';
 
 const { get, merge } = Ember;
 
 export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
-  constants: Ember.inject.service(),
-
   attrs: {
-    hasInactivePhone: { serialize: false },
-    phone: { deserialize: 'records', serialize: 'records' }
+    phone: { deserialize: 'records', serialize: 'records' },
   },
 
   serialize(snapshot) {
     const json = this._super(...arguments),
-      constants = this.get('constants'),
       rec1 = snapshot.record,
       data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : Object.create(null),
       doActions = [];
     switch (rec1.get('phoneAction')) {
-      case constants.ACTION.PHONE.CHANGE_NUMBER:
+      case Constants.ACTION.PHONE.CHANGE_NUMBER:
         doActions.pushObject(changeToNewNumber(data));
         break;
-      case constants.ACTION.PHONE.DEACTIVATE:
+      case Constants.ACTION.PHONE.DEACTIVATE:
         doActions.pushObject(deactivate());
         break;
-      case constants.ACTION.PHONE.TRANSFER:
-        doActions.pushObject(transfer(data, this.get('constants.MODEL.STAFF')));
+      case Constants.ACTION.PHONE.TRANSFER:
+        doActions.pushObject(transfer(data));
         break;
     }
     if (doActions.length) {
       json.phone = merge(json.phone || Object.create(null), { doPhoneActions: doActions });
     }
     return json;
-  }
+  },
 });
 
 function changeToNewNumber(data) {
-  if (get(data, 'sid')) {
-    return { action: 'NUMBYID', numberId: get(data, 'sid') };
-  } else if (get(data, 'phoneNumber')) {
-    return { action: 'NUMBYNUM', number: get(data, 'phoneNumber') };
+  if (get(data, Constants.PROP_NAME.NEW_NUMBER_ID)) {
+    return { action: 'NUMBYID', numberId: get(data, Constants.PROP_NAME.NEW_NUMBER_ID) };
+  } else if (get(data, Constants.PROP_NAME.AVAILABLE_NUMBER)) {
+    return { action: 'NUMBYNUM', number: get(data, Constants.PROP_NAME.AVAILABLE_NUMBER) };
   } else {
     return Object.create(null);
   }
@@ -49,7 +47,7 @@ function deactivate() {
   return { action: 'DEACTIVATE' };
 }
 
-function transfer(data, staffType) {
-  const type = get(data, 'type') === staffType ? 'INDIVIDUAL' : 'GROUP';
-  return { action: 'TRANSFER', id: get(data, 'id'), type };
+function transfer(targetModel) {
+  const type = TypeUtils.isStaff(targetModel) ? 'INDIVIDUAL' : 'GROUP';
+  return { action: 'TRANSFER', id: get(targetModel, 'id'), type };
 }

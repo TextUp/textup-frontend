@@ -2,20 +2,16 @@ import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
-import PhoneNumber from 'textup-frontend/utils/phone-number';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
 const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
-  constants: Ember.inject.service(),
-
   // Overrides
   // ---------
 
   rollbackAttributes() {
-    this.get('_contactRecipients').clear();
-    this.get('_tagRecipients').clear();
-    this.get('_sharedContactRecipients').clear();
+    this.get('_recipients').clear();
     this.get('_newNumberRecipients').clear();
     tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
     return this._super(...arguments);
@@ -39,34 +35,22 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   media: DS.belongsTo('media'), // hasOne
 
   // belong to either a contact or a tag
-  contact: DS.belongsTo('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
-  tag: DS.belongsTo('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
+  contacts: DS.hasMany('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
+  tags: DS.hasMany('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
 
-  contactRecipients: computed.readOnly('_contactRecipients'),
-  sharedContactRecipients: computed.readOnly('_sharedContactRecipients'),
-  tagRecipients: computed.readOnly('_tagRecipients'),
+  recipients: computed.readOnly('_recipients'),
   newNumberRecipients: computed.readOnly('_newNumberRecipients'),
-  numRecipients: computed(
-    '_contactRecipients.[]',
-    '_tagRecipients.[]',
-    '_sharedContactRecipients.[]',
-    '_newNumberRecipients.[]',
-    function() {
-      return (
-        getWithDefault(this, '_contactRecipients.length', 0) +
-        getWithDefault(this, '_tagRecipients.length', 0) +
-        getWithDefault(this, '_sharedContactRecipients.length', 0) +
-        getWithDefault(this, '_newNumberRecipients.length', 0)
-      );
-    }
-  ),
+  numRecipients: computed('_recipients.[]', '_newNumberRecipients.[]', function() {
+    return (
+      getWithDefault(this, '_recipients.length', 0) +
+      getWithDefault(this, '_newNumberRecipients.length', 0)
+    );
+  }),
 
   // Private properties
   // ------------------
 
-  _contactRecipients: computed(() => []),
-  _tagRecipients: computed(() => []),
-  _sharedContactRecipients: computed(() => []),
+  _recipients: computed(() => []),
   _newNumberRecipients: computed(() => []),
 
   // Methods
@@ -77,38 +61,29 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   },
   removeRecipient(obj) {
     return removeRecipientFor(obj, getListFor(this, obj));
-  }
+  },
 });
 
 function getListFor(ctx, obj) {
-  const constants = ctx.get('constants');
-  let list;
-  if (typeOf(obj) === 'string') {
-    list = ctx.get('_newNumberRecipients');
-  } else if (typeOf(obj) === 'instance') {
-    const type = get(obj, 'constructor.modelName');
-    if (type === constants.MODEL.CONTACT) {
-      list = get(obj, 'isShared')
-        ? ctx.get('_sharedContactRecipients')
-        : ctx.get('_contactRecipients');
-    } else if (type === constants.MODEL.TAG) {
-      list = ctx.get('_tagRecipients');
-    }
-  }
-  return list;
+  return typeOf(obj) === 'string' ? ctx.get('_newNumberRecipients') : ctx.get('_recipients');
 }
 
 function addRecipientFor(obj, list) {
   if (!list) {
     return false;
   }
-  return typeOf(obj) === 'string'
-    ? _addRecipientForNumber(obj, list)
-    : _addRecipientForObject(obj, list);
+  const objType = typeOf(obj);
+  if (objType === 'string') {
+    return _addRecipientForNumber(obj, list);
+  } else if (objType === 'object' || objType === 'instance') {
+    return _addRecipientForObject(obj, list);
+  } else {
+    return false;
+  }
 }
 function _addRecipientForNumber(num, list) {
-  if (PhoneNumber.validate(num)) {
-    const cleanedNum = PhoneNumber.clean(num);
+  if (PhoneNumberUtils.validate(num)) {
+    const cleanedNum = PhoneNumberUtils.clean(num);
     if (!list.find(existingNum => existingNum === cleanedNum)) {
       list.pushObject(cleanedNum);
     }
@@ -127,13 +102,18 @@ function removeRecipientFor(obj, list) {
   if (!list) {
     return false;
   }
-  return typeOf(obj) === 'string'
-    ? _removeRecipientForNumber(obj, list)
-    : _removeRecipientForObject(obj, list);
+  const objType = typeOf(obj);
+  if (objType === 'string') {
+    return _removeRecipientForNumber(obj, list);
+  } else if (objType === 'object' || objType === 'instance') {
+    return _removeRecipientForObject(obj, list);
+  } else {
+    return false;
+  }
 }
 function _removeRecipientForNumber(num, list) {
-  if (PhoneNumber.validate(num)) {
-    const cleanedNum = PhoneNumber.clean(num),
+  if (PhoneNumberUtils.validate(num)) {
+    const cleanedNum = PhoneNumberUtils.clean(num),
       foundNum = list.find(existingNum => existingNum === cleanedNum);
     if (foundNum) {
       list.removeObject(cleanedNum);

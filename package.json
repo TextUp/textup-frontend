@@ -51,7 +51,6 @@
     "ember-cli-moment-shim": "3.7.1",
     "ember-cli-notifications": "^3.3.1",
     "ember-cli-pickadate": "1.3.5",
-    "ember-cli-pull-to-refresh": "0.0.14",
     "ember-cli-qunit": "^1.2.1",
     "ember-cli-release": "0.2.8",
     "ember-cli-sass": "5.3.1",

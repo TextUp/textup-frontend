@@ -1,3 +1,4 @@
+import TypeUtils from 'textup-frontend/utils/type';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordItem from 'textup-frontend/models/record-item';
@@ -29,5 +30,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isIncoming: computed('_isInternal', 'item.outgoing', function() {
     return !this.get('_isInternal') && !this.get('item.outgoing');
   }),
-  _isInternal: computed.equal('item.constructor.modelName', 'record-note'),
+  _isInternal: computed('item', function() {
+    return TypeUtils.isNote(this.get('item'));
+  }),
 });

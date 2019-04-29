@@ -12,7 +12,7 @@
     <div class='contact-summary'>
         <div class="horizontal-items clickable" onclick={{action _onEdit}}>
             <span class="clear-badge no-space clickable">
-                <h5>{{phone-number contact.identifier}}</h5>
+                <h5>{{phone-number contact.name}}</h5>
             </span>
             {{#if contact.name}}
                 <span class="clear-badge no-space clickable
@@ -46,14 +46,14 @@
                         </span>
                     </span>
                     <span class="display-s display-m display-l">
-                        {{#if contact.isSharedView}}
+                        {{#if contact.isViewPermission}}
                             Viewing only from
-                        {{else if contact.isSharedDelegate}}
+                        {{else if contact.isDelegatePermission}}
                             Collaborating with
                         {{else}}
                             Shared by
                         {{/if}}
-                        <span class="text-darken">{{contact.sharedBy}}</span>
+                        <span class="text-darken">{{contact.sharedByName}}</span>
                     </span>
                 </span>
                 {{#if contact.hasTags}}

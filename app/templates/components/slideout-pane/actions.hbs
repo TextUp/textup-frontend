@@ -1,21 +1,25 @@
-{{#if props.showDelete}}
+{{#if showDelete}}
     <div class="flex__item">
-        <button class="btn btn-plain btn-danger" type='button' onclick={{props.doMarkForDelete}}>
+        <button type="button"
+            class="btn btn-plain btn-danger slideout-pane__footer__delete"
+            onclick={{onMarkForDelete}}>
             <span class="fa fa-trash"></span>
         </button>
     </div>
 {{/if}}
-{{#if (not props.hideSecondary)}}
+{{#if (not hideSecondary)}}
     <div class="flex__item">
-        <button class="btn" type='button' onclick={{if props.doSecondary props.doSecondary doClose}}>
-            {{if props.secondaryLabel props.secondaryLabel 'Cancel'}}
+        <button type="button"
+            class="btn slideout-pane__footer__secondary"
+            onclick={{if onSecondary onSecondary onClose}}>
+            {{secondaryLabel}}
         </button>
     </div>
 {{/if}}
 <div class="flex__item">
-    {{async-button class=(if props.primaryClass props.primaryClass 'btn btn-default')
-        action=props.doPrimary
-        disableWhen=props.disablePrimary
-        default=props.primaryLabel
-        pending=props.primaryProgressLabel}}
+    {{async-button class=(if primaryClass primaryClass "btn btn-default")
+        action=onPrimary
+        disableWhen=disablePrimary
+        default=primaryLabel
+        pending=primaryProgressLabel}}
 </div>

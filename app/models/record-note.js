@@ -11,20 +11,18 @@ const { computed, typeOf, get, getWithDefault, tryInvoke } = Ember,
       },
       dependentKeys: ['isNew'],
       in: [1],
-      message: 'should have exactly one recipient'
+      message: 'should have exactly one recipient',
     }),
-    'contactRecipients.length': validator('has-any', {
-      disabled(model) {
-        return !model.get('isNew');
-      },
-      also: ['sharedContactRecipients.length', 'tagRecipients.length'],
+    'recipients.length': validator('has-any', {
+      disabled: model => !model.get('isNew'),
+      also: ['newNumberRecipients.length'],
       dependentKeys: ['isNew', 'numRecipients'],
-      description: 'a contact, a shared contact, or a tag'
+      description: 'a contact, a shared contact, or a tag',
     }),
     noteContents: validator('has-any', {
       also: ['media.hasElements', 'location.content'],
-      description: 'contents, images, or a location'
-    })
+      description: 'contents, images, or a location',
+    }),
   });
 
 export default RecordItem.extend(Validations, {
@@ -69,5 +67,5 @@ export default RecordItem.extend(Validations, {
     }
     this.set('_addAfterDate', get(rItem, 'whenCreated'));
     return true;
-  }
+  },
 });

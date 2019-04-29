@@ -1,14 +1,14 @@
 {{#slideout-pane
-    headerProps=(hash title=(phone-number model.identifier))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(phone-number (get model (constant "PROP_NAME.READABLE_IDENT"))))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishExistingContactSlideout")
+        onPrimary=(route-action "finishExistingContactSlideout")
         disablePrimary=(or (not model.allowEdits) (not (v-get model "isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action "cancelExistingContactSlideout")
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+    onClose=(route-action "cancelExistingContactSlideout")
     forceKeepOpen=model.isSaving
     focusSelector=".start-focus" as |slideout|}}
     {{form/contact-model contact=model
@@ -16,3 +16,4 @@
         onAddNumber=(route-action "onAddNumber")
         onRemoveNumber=(route-action "onRemoveNumber")}}
 {{/slideout-pane}}
+

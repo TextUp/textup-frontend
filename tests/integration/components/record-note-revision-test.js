@@ -1,4 +1,4 @@
-import * as LocationUtils from 'textup-frontend/utils/location';
+import LocationUtils from 'textup-frontend/utils/location';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -12,7 +12,7 @@ moduleForComponent('record-note-revision', 'Integration | Component | record not
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -75,9 +75,9 @@ test('rendering with location and media', function(assert) {
     const validRevision = store.createRecord('record-note-revision', {
         media: store.createRecord('media', {
           images: [mockValidMediaImage(store)],
-          audio: [mockValidMediaAudio(store)]
+          audio: [mockValidMediaAudio(store)],
         }),
-        location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } })
+        location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } }),
       }),
       buildUrlStub = sinon
         .stub(LocationUtils, 'buildPreviewUrl')

@@ -1,125 +1,82 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../../utils/default-if-absent';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-export default Ember.Component.extend({
-  title: defaultIfAbsent(''),
-  doRegister: null,
+const { computed, tryInvoke, RSVP, run } = Ember;
 
-  classNames: 'tab-container-item pending',
+export default Ember.Component.extend(PropTypesMixin, {
+  propTypes: {
+    doRegister: PropTypes.func.isRequired,
+    onDestroy: PropTypes.func.isRequired,
+    title: PropTypes.string,
+  },
+  getDefaultProps() {
+    return { title: '' };
+  },
 
-  _height: null,
+  classNames: 'tab-container__item',
+  classNameBindings: '_isPending:tab-container__item--pending',
 
-  // Computed properties
+  init() {
+    this._super(...arguments);
+    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+  },
+  didReceiveAttrs() {
+    this._super(...arguments);
+    run.scheduleOnce('afterRender', () => this.set('_publicAPI.title', this.get('title')));
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    tryInvoke(this, 'onDestroy', [this.get('_publicAPI')]);
+  },
+
+  // Internal properties
   // -------------------
 
-  publicAPI: Ember.computed(function() {
+  _isPending: true,
+  _shouldRender: false,
+  _publicAPI: computed(function() {
     return {
       title: this.get('title'),
-      height: this.get('_height'),
       actions: {
-        initialize: this.initialize.bind(this),
-        hide: this.hide.bind(this),
-        show: this.show.bind(this)
-      }
+        initialize: this._initialize.bind(this),
+        hide: this._hide.bind(this),
+        show: this._show.bind(this),
+      },
     };
   }),
 
-  // Events
-  // ------
-
-  didInitAttrs: function() {
-    this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
-  },
-
-  // Helpers
-  // -------
-
-  initialize: function(animation, shouldShow) {
-    const $el = this.$();
-    if (animation === 'slide') {
-      // set height for showing action
-      const height = $el.height();
-      this.set('_height', height);
-      // start with 0 width to allow for sliding in
-      $el.css({
-        width: 0,
-        height: height
-      });
+  _initialize(shouldShow) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
     }
-    if (shouldShow) {
-      this.show(animation);
-      // want to show animation in immediately
-      $el.removeClass('pending');
-    } else {
-      this.hide(animation).then(() => {
-        // don't want to show hiding so we
-        // show after hiding is complete
-        $el.removeClass('pending');
-      });
-    }
-  },
-  show: function(animation) {
-    const $el = this.$();
-    return new Ember.RSVP.Promise(resolve => {
-      if (animation === 'fade') {
-        $el
-          .fadeIn()
-          .promise()
-          .done(resolve);
-      } else if (animation === 'slide') {
-        $el.css('height', this.get('_height'));
-        $el.animate(
-          {
-            width: '100%'
-          },
-          {
-            complete: function() {
-              $el.css('height', 'auto');
-              resolve();
-            }
-          }
-        );
+    run.join(() => {
+      if (shouldShow) {
+        this._show().then(() => this._notPending());
       } else {
-        $el
-          .show(0, '')
-          .promise()
-          .done(resolve);
+        this._hide().then(() => this._notPending());
       }
     });
   },
-  hide: function(animation) {
-    const $el = this.$();
-    return new Ember.RSVP.Promise(resolve => {
-      if (animation === 'fade') {
-        $el
-          .fadeOut()
-          .promise()
-          .done(resolve);
-      } else if (animation === 'slide') {
-        const height = $el.height();
-        $el.css('height', height);
-        this.set('_height', height);
-        // start animation hide after setting new height
-        Ember.run.next(this, function() {
-          $el.animate(
-            {
-              width: '0'
-            },
-            {
-              complete: function() {
-                $el.css('height', 0);
-                resolve();
-              }
-            }
-          );
-        });
-      } else {
-        $el
-          .hide(0, '')
-          .promise()
-          .done(resolve);
-      }
+  _show() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    return run.join(() => {
+      this.set('_shouldRender', true);
+      return new RSVP.Promise(resolve => this.$().fadeIn('fast', resolve));
     });
-  }
+  },
+  _hide() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    return run.join(() => new RSVP.Promise(resolve => this.$().fadeOut('fast', resolve)));
+  },
+
+  _notPending() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run(() => this.set('_isPending', false));
+  },
 });

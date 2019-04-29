@@ -1,28 +1,25 @@
-<div class="infinite-container {{containerClass}}">
-	<div class="infinite-items {{itemsClass}} {{if _isDisplaying 'is-displaying'}}">
-		{{#each _items as |item index|}}
-			{{yield item index publicAPI}}
-		{{else}}
-			{{!-- don't show if loading more and empty --}}
-			{{#if (not _isLoading)}}
-				{{yield to='inverse'}}
-			{{/if}}
-		{{/each}}
-	</div>
-	<div class="infinite-control {{controlClass}}">
-		<div class="horizontal-items">
-			<span class='clear-badge'>{{loadingText}}</span>
-			<span class="clear-badge">
-				<span class="fa fa-circle-o-notch fa-spin"></span>
-			</span>
+{{#infinite-scroll/pull-to-refresh doRegister=(action (mut _pullToRefresh))
+	direction=direction
+	disabled=(not _scrollContainer.isAtStart)
+	onRefresh=(action _onRefresh)
+	refreshMessage=refreshMessage}}
+	{{#infinite-scroll/scroll-container doRegister=(action (mut _scrollContainer))
+		direction=direction
+		disabled=_pullToRefresh.isRefreshing
+		onNearEnd=(action _onLoad)
+		contentClass="infinite-scroll__loading-container"}}
+		<div class="infinite-scroll__loading-container__content {{contentClass}}">
+			{{#each data as |item index|}}
+				{{yield item index _publicAPI}}
+			{{else}}
+				<div class="infinite-scroll__loading-container__none">
+					{{yield to="inverse"}}
+				</div>
+			{{/each}}
 		</div>
-	</div>
-</div>
-<div class="infinite-scroll-refreshing {{refreshClass}}">
-	<div class="horizontal-items">
-		<span class='clear-badge'>{{refreshingText}}</span>
-		<span class="clear-badge">
-			<span class="fa fa-circle-o-notch fa-spin"></span>
-		</span>
-	</div>
-</div>
+		<div class="infinite-scroll__loading-container__message">
+			<span class="pad-r">{{loadMessage}}</span>
+    		<span class="fa fa-circle-o-notch fa-spin"></span>
+		</div>
+	{{/infinite-scroll/scroll-container}}
+{{/infinite-scroll/pull-to-refresh}}

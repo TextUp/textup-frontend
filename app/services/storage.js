@@ -23,7 +23,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // Events
   // ------
 
-  init: function() {
+  init() {
     this._super(...arguments);
     // override config properties
     const ns = config.storage.namespace,
@@ -37,7 +37,7 @@ export default Ember.Service.extend(Ember.Evented, {
     // bind storage event to handle sync
     Ember.$(window).on(`storage.${this.get('guid')}`, this._doSync.bind(this));
   },
-  willDestroy: function() {
+  willDestroy() {
     this._super(...arguments);
     // unbind events
     Ember.$(window).off(`storage.${this.get('guid')}`);
@@ -46,7 +46,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // Methods
   // -------
 
-  sync: function() {
+  sync() {
     return new Ember.RSVP.Promise(resolve => {
       // set request key to trigger storage event
       this.trySet(_l, this.get('requestKey'), Date.now());
@@ -65,23 +65,23 @@ export default Ember.Service.extend(Ember.Evented, {
       });
     });
   },
-  isItemPersistent: function(key) {
+  isItemPersistent(key) {
     return Ember.isPresent(_l.getItem(key));
   },
-  getItem: function(key) {
+  getItem(key) {
     return _s.getItem(key) || _l.getItem(key);
   },
-  setItem: function(key, value) {
+  setItem(key, value) {
     this.trySet(_s, key, value);
     if (this.get('persist')) {
       this.trySet(_l, key, value);
     }
   },
-  removeItem: function(key) {
+  removeItem(key) {
     _l.removeItem(key);
     _s.removeItem(key);
   },
-  sendStorage: function() {
+  sendStorage() {
     const ns = this.get('namespace');
     this.trySet(_l, ns, JSON.stringify(_s));
     // if not persisting in local storage, then immediately remove
@@ -92,14 +92,14 @@ export default Ember.Service.extend(Ember.Evented, {
   // Helpers
   // -------
 
-  trySet: function(storageObj, key, value) {
+  trySet(storageObj, key, value) {
     try {
       storageObj.setItem(key, value);
     } catch (e) {
       Ember.debug('storage.trySet: web storage not available: ' + e);
     }
   },
-  _doSync: function(event) {
+  _doSync(event) {
     const req = this.get('requestKey'),
       ns = this.get('namespace'),
       e = event.originalEvent;
@@ -109,11 +109,11 @@ export default Ember.Service.extend(Ember.Evented, {
       this._receiveStorage(JSON.parse(e.newValue));
     }
   },
-  _receiveStorage: function(data) {
+  _receiveStorage(data) {
     _s.clear();
     for (let key in data) {
       this.trySet(_s, key, data[key]);
     }
     this.trigger(config.events.storage.updated);
-  }
+  },
 });

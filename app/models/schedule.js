@@ -1,14 +1,20 @@
-import Dirtiable from '../mixins/model/dirtiable';
+import Constants from 'textup-frontend/constants';
+import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import { stringToIntervals, intervalsToString } from '../utils/schedule';
+import MF from 'model-fragments';
+import { stringToIntervals, intervalsToString } from 'textup-frontend/utils/schedule';
 
 const { defineProperty, computed, on } = Ember;
 
-export default DS.Model.extend(Dirtiable, {
-  constants: Ember.inject.service(),
-
+export default MF.Fragment.extend(Dirtiable, {
+  // this is a read-only value that represents the integrated value
+  // for whether or not this schedule is availability right now
   isAvailableNow: DS.attr('boolean'),
+
+  manual: DS.attr('boolean', { defaultValue: true }),
+  manualIsAvailable: DS.attr('boolean', { defaultValue: true }),
+
   nextAvailable: DS.attr('date'),
   nextUnavailable: DS.attr('date'),
 
@@ -24,33 +30,21 @@ export default DS.Model.extend(Dirtiable, {
   // -------------------
 
   defineProperties: on('init', function() {
-    this.get('constants.DAYS_OF_WEEK').forEach(dayOfWeek => {
+    Constants.DAYS_OF_WEEK.forEach(dayOfWeek => {
       const stringProp = `${dayOfWeek}String`;
       defineProperty(
         this,
         dayOfWeek,
         computed(stringProp, {
-          get: function() {
+          get() {
             return stringToIntervals(this.get(stringProp));
           },
-          set: function(key, intervals) {
+          set(key, intervals) {
             this.set(stringProp, intervalsToString(intervals));
             return intervals;
-          }
+          },
         })
       );
     });
   }),
-
-  // Methods
-  // -------
-
-  actions: {
-    replaceRange(dayOfWeek, newRanges) {
-      if (!this.get('constants.DAYS_OF_WEEK').contains(dayOfWeek)) {
-        return;
-      }
-      this.set(dayOfWeek, newRanges);
-    }
-  }
 });

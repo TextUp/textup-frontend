@@ -5,16 +5,15 @@ const { run } = Ember;
 
 moduleForModel('record-text', 'Unit | Model | record text', {
   needs: [
-    'service:constants',
     'model:contact',
-    'model:tag',
     'model:media',
-    'model:media/add',
     'model:media-element',
     'model:media-element-version',
+    'model:media/add',
+    'model:tag',
+    'validator:has-any',
     'validator:number',
-    'validator:has-any'
-  ]
+  ],
 });
 
 test('validating contents', function(assert) {
@@ -32,7 +31,7 @@ test('validating contents', function(assert) {
 
         model.setProperties({
           contents: 'a message',
-          media: null
+          media: null,
         });
         return model.validate();
       })
@@ -41,7 +40,7 @@ test('validating contents', function(assert) {
 
         model.setProperties({
           contents: null,
-          media: mediaObj
+          media: mediaObj,
         });
 
         return model.validate();

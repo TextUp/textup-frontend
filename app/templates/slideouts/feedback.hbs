@@ -1,7 +1,7 @@
 {{#slideout-pane
-	headerProps=(hash title='Support')
-    doClose=(route-action "finishFeedbackSlideout")
-    focusSelector='.start-focus'
+	headerComponent=(component "slideout-pane/title" title="Support")
+    onClose=(route-action "finishFeedbackSlideout")
+    focusSelector=".start-focus"
     bodyClass="full-height" as |slideout|}}
 
 	<div class="flex flex--direction-vertical full-height flex--align-stretch">
@@ -43,13 +43,13 @@
 				{{#if feedbackMessage}}
 					<div class="form__group flex flex--spacing-between flex--justify-center">
 				        <div class="flex__item">
-				            <button class="btn" type='button'
+				            <button class="btn" type="button"
 				                onclick={{action (mut feedbackMessage) ""}}>
 				                Clear
 				            </button>
 				        </div>
 				        <div class="flex__item">
-				            <button type='submit' class="btn btn-default">
+				            <button type="submit" class="btn btn-default">
 								Submit
 							</button>
 				    	</div>
@@ -65,11 +65,9 @@
 			</form>
 			<hr>
 		</div>
-		{{feedback-switcher
-			src=config.links.supportHub
-			text='Search the TextUp Support Hub'
+		{{feedback-switcher src=(config "links.supportHub")
+			text="Search the TextUp Support Hub"
 			hasCordovaClasses="flex__item flex__item--grow flex--direction-vertical flex--align-stretch flex"
-			noCordovaClasses="form__group"
-		}}
+			noCordovaClasses="form__group"}}
 	</div>
 {{/slideout-pane}}

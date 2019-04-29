@@ -14,32 +14,33 @@
             </span>
         </button>
     </span>
-    {{#liquid-if (get slideoutService.shouldShow constants.SLIDEOUT.OUTLET.DETAIL)
+    {{#liquid-if (get slideoutService.shouldShow (constant "SLIDEOUT.OUTLET.DETAIL"))
         class='animate-slide-from-right animated-overflow'}}
-        {{outlet constants.SLIDEOUT.OUTLET.DETAIL}}
+        {{outlet (constant "SLIDEOUT.OUTLET.DETAIL")}}
     {{/liquid-if}}
     {{outlet}}
 {{else}}
     <div class="menu">
         <div class="menu__section">
             <div class="display-xs display-s display-m">
-                {{#account-switcher activeOwner=stateManager.owner
-                    user=authService.authUser
-                    doLogOut=(route-action "logout")
-                    doRegisterContainer=(action (mut accountSwitcher))
+                {{#account-switcher user=authService.authUser
+                    onLogOut=(route-action "logout")
+                    doRegister=(action (mut accountSwitcher))
+                    activeName=stateManager.owner.name
+                    activeNumber=stateManager.owner.phone.content.number
                     toggleClass="xs-8-row-10"}}
                     <button class="xs-2-row-10 textup-account-switcher__display"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        onclick={{route-action "toggleSlideout" "slideouts/account" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
             </div>
             <div class="display-l">
                 <div class="menu-item menu-header menu-header-light"
-                    {{action "toggleSlideout" "slideouts/account" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                    {{action "toggleSlideout" "slideouts/account" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                     {{#tool-tip classNames="btn-expand"
                         title=(concat "Admin (" stateManager.owner.name ")")
-                        side=constants.TOOLTIP.SIDE.RIGHT}}
+                        side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="fa fa-home"></span>
                     {{/tool-tip}}
                 </div>
@@ -55,7 +56,7 @@
                     <div class="display-l">
                         {{#tool-tip classNames="btn-expand"
                             title=(concat "Pending (" numPending ")")
-                            side=constants.TOOLTIP.SIDE.RIGHT}}
+                            side=(constant "TOOLTIP.SIDE.RIGHT")}}
                             <span class="fa fa-clock-o"></span>
                         {{/tool-tip}}
                     </div>
@@ -71,35 +72,35 @@
                 <div class="menu-divider">
                     People
                     <button class="btn btn-plain v-center-right"
-                        {{action "toggleSlideout" "slideouts/staff/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         <span class="fa fa-plus"></span>
                     </button >
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "active")) "active"}}"
-                    {{action "changeFilter" "active"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.ACTIVE"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.ACTIVE")}}>
                     <span>Active</span>
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "admins")) "active"}}"
-                    {{action "changeFilter" "admins"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.ADMINS"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.ADMINS")}}>
                     <span>Admins</span>
                 </div>
                 <div class="menu-item
-                    {{if (and (not stateManager.viewingTeam) (eq filter "deactivated")) "active"}}"
-                    {{action "changeFilter" "deactivated"}}>
+                    {{if (and (not stateManager.viewingTeam) (eq filter (constant "STAFF.FILTER.DEACTIVATED"))) "active"}}"
+                    {{action "changeFilter" (constant "STAFF.FILTER.DEACTIVATED")}}>
                     <span>Deactivated</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="menu-item menu-slideout"
-                    {{action "toggleSlideout" "slideouts/staff/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
-                    {{#tool-tip classNames="btn-expand" title="Add Staff" side=constants.TOOLTIP.SIDE.RIGHT}}
+                    {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    {{#tool-tip classNames="btn-expand" title="Add Staff" side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="fa fa-user-plus"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "admin.people" tagName="div" classNames="menu-item"}}
-                    {{#tool-tip classNames="btn-expand" title="People" side=constants.TOOLTIP.SIDE.RIGHT}}
+                    {{#tool-tip classNames="btn-expand" title="People" side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="fa fa-user"></span>
                     {{/tool-tip}}
                 {{/link-to}}
@@ -111,7 +112,7 @@
                 <div class="menu-divider">
                     Teams
                     <button class="btn btn-plain v-center-right"
-                        {{action "toggleSlideout" "slideouts/team/create" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
+                        {{action "toggleSlideout" "slideouts/team/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         <span class="fa fa-plus"></span>
                     </button >
                 </div>
@@ -129,8 +130,8 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    {{action "toggleSlideout" "slideouts/team/list" "admin" constants.SLIDEOUT.OUTLET.DEFAULT}}>
-                    {{#tool-tip classNames="btn-expand" title="Teams" side=constants.TOOLTIP.SIDE.RIGHT}}
+                    {{action "toggleSlideout" "slideouts/team/list" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    {{#tool-tip classNames="btn-expand" title="Teams" side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="fa fa-users"></span>
                     {{/tool-tip}}
                 </div>
@@ -147,7 +148,7 @@
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
                     onclick={{route-action "startFeedbackSlideout"}}>
-                    {{#tool-tip side=constants.TOOLTIP.SIDE.RIGHT
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}
                         <span class="fa fa-question"></span>

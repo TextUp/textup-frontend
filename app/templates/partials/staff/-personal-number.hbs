@@ -1,50 +1,38 @@
-<div class="form__group">
-    <div class="xs-2-row-3 control-text">
-        <label class="form__label" for="Notifications">
-            Notifications
-        </label>
-    </div>
-    {{multi-toggle/binary classNames='xs-row-3'
-        value=staff.enableNotifications
-        falseColor='#76c9ec'
-        trueColor='#1BA5E0'
-        falseString='Off'
-        trueString='On'}}
-</div>
-{{#if staff.enableNotifications}}
-    <div class='bg-color pad-t pad-b'>
-        <div class="form__group form__group--no-vertical-space">
-            <label class="form__label" for='Personal Phone'>Personal Phone</label>
-            {{#hide-show classNames='input-group-element'
-                focusOnOpenSelector=".phone-control" as |hideShow|}}
-                {{#if hideShow.isOpen}}
-                    <div class="input-group">
-                        <span class="input-group-addon blend-in">
-                            <button class='btn' type='button' onclick={{hideShow.actions.close}}>
-                                <span class="fa fa-times"></span>
-                            </button>
-                        </span>
-                        {{#phone-control/mutable-validated number=staff.personalPhoneNumber
-                            controlClass='blend-in'
-                            forceDefaultValidate=true
-                            onValidateSuccess=(route-action 'persist' staff hideShow.actions.close)}}
-                        {{else}}
-                            <span class='fa fa-arrow-right'></span>
-                        {{/phone-control/mutable-validated}}
-                    </div>
+<div class="form__group form__group--no-vertical-space">
+    <label class="form__label" for="Personal Number">Personal Number</label>
+    {{#hide-show classNames="input-group-element"
+        focusOnOpenSelector=".phone-control" as |hideShow|}}
+        {{#if hideShow.isOpen}}
+            <div class="input-group">
+                <span class="input-group-addon blend-in">
+                    <button class="btn" type="button" onclick={{hideShow.actions.close}}>
+                        <span class="fa fa-times"></span>
+                    </button>
+                </span>
+                {{#phone-control/mutable-validated number=staff.personalNumber
+                    controlClass="blend-in"
+                    forceDefaultValidate=true
+                    onValidateSuccess=(route-action "persist" staff hideShow.actions.close)}}
                 {{else}}
-                    <div tabindex="0"
-                        onfocus={{hideShow.actions.open}}
-                        onclick={{hideShow.actions.open}}>
-                        {{#phone-control number=staff.personalPhoneNumber
-                            showControl=true
-                            controlClass='blend-in'}}
-                        {{else}}
-                            <span class='fa fa-pencil'></span>
-                        {{/phone-control}}
-                    </div>
-                {{/if}}
-            {{/hide-show}}
-        </div>
-    </div>
-{{/if}}
+                    <span class="fa fa-arrow-right"></span>
+                {{/phone-control/mutable-validated}}
+            </div>
+        {{else}}
+            <div tabindex="0"
+                onfocus={{hideShow.actions.open}}
+                onclick={{hideShow.actions.open}}>
+                {{#phone-control number=staff.personalNumber
+                    showControl=true
+                    controlClass="blend-in"}}
+                {{else}}
+                    <span class="fa fa-pencil"></span>
+                {{/phone-control}}
+            </div>
+            <div class="text-right margin-t-half">
+                <button class="btn-link" onclick={{action (mut staff.personalNumber) ""}}>
+                    Clear personal number
+                </button>
+            </div>
+        {{/if}}
+    {{/hide-show}}
+</div>

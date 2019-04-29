@@ -1,14 +1,13 @@
 {{#slideout-pane
-    headerProps=(hash title="New Note")
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title" title="New Note")
+    footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        doPrimary=(route-action "finishAddNoteSlideout")
+        onPrimary=(route-action "finishAddNoteSlideout")
         disablePrimary=(not (v-get newRecordNote "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    direction=constants.SLIDEOUT.DIRECTION.RIGHT
-    doClose=(route-action "cancelAddNoteSlideout")
+    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+    onClose=(route-action "cancelAddNoteSlideout")
     forceKeepOpen=newRecordNote.isSaving
     focusSelector=".start-focus" as |slideout|}}
     {{form/record-note class="pad-t"
@@ -20,5 +19,5 @@
         onRemoveLocation=(route-action "onNoteRemoveLocation" newRecordNote)
         onLocationError=(route-action "onLocationError")
         contentsClass="start-focus"
-        readOnly=(and (eq model.constructor.modelName constants.MODEL.CONTACT) (not model.allowEdits))}}
+        readOnly=(and (type/is-contact model) (not model.allowEdits))}}
 {{/slideout-pane}}

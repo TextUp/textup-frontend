@@ -4,14 +4,12 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  constants: Ember.inject.service(),
-
   propTypes: {
     numMedia: PropTypes.number,
     placeholder: PropTypes.string,
     contents: PropTypes.string,
     onClearContents: PropTypes.func,
-    onSend: PropTypes.func
+    onSend: PropTypes.func,
   },
   getDefaultProps() {
     return { numMedia: 0, placeholder: 'Enter your message...' };
@@ -40,5 +38,5 @@ export default Ember.Component.extend(PropTypesMixin, {
       textarea.blur();
     }
     return tryInvoke(this, 'onSend', [...arguments]);
-  }
+  },
 });

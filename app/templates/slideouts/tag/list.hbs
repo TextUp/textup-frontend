@@ -1,15 +1,15 @@
 {{#slideout-pane
-    headerProps=(hash title=(if model.phone.content.tags 'Tags' 'New Tag'))
-    footerComponent=constants.SLIDEOUT.FOOTER.ACTIONS
-    footerProps=(hash
+    headerComponent=(component "slideout-pane/title"
+        title=(if model.phone.content.tags "Tags" "New Tag"))
+    footerComponent=(component "slideout-pane/actions"
         showFooter=tagsListHideAway.isOpen
-        doPrimary=(route-action "finishCreateTagInTagList")
-        disablePrimary=(not (v-get newTag 'isValid'))
+        onPrimary=(route-action "finishCreateTagInTagList")
+        disablePrimary=(not (v-get newTag "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        doSecondary=(route-action "cancelCreateTagInTagList")
+        onSecondary=(route-action "cancelCreateTagInTagList")
         hideSecondary=(not model.phone.content.tags))
-    doClose=(route-action "closeTagListSlideout")
+    onClose=(route-action "closeTagListSlideout")
     forceKeepOpen=newTag.isSaving as |slideout|}}
     {{#hide-show doRegister=(action (mut tagsListHideAway))
         startOpen=(if model.phone.content.tags false true)
@@ -24,10 +24,10 @@
                     {{#each model.phone.content.tags as |tag|}}
                         <li class="result-item">
                             <div class="row">
-                                {{#link-to 'main.tag' tag.urlIdentifier
-                                    tagName='div'
-                                    classNames='control-text'
-                                    tabindex='0'}}
+                                {{#link-to "main.tag" (get tag (constant "PROP_NAME.URL_IDENT"))
+                                    tagName="div"
+                                    classNames="control-text"
+                                    tabindex="0"}}
                                     <div class="horizontal-items clickable pad-all">
                                         {{color-badge color=tag.hexColor text=tag.name}}
                                         <span class="badge">
@@ -44,7 +44,7 @@
             <div class="form">
                 <div class="form__group">
                     <button class="button button--expand"
-                        type='button'
+                        type="button"
                         onclick={{hideShow.actions.open}}>
                         <span class="fa fa-plus" id="tour-createNewTagButton"></span>
                     </button>

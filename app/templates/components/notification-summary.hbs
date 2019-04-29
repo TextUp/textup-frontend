@@ -1,0 +1,40 @@
+<div class="text-center">
+    <img class="notification-summary__brand" src="assets/images/logo-no-bg.png" />
+</div>
+<h1 class="notification-summary__message notification-summary__message--bold">
+    Howdy, {{notification.name}}!
+</h1>
+<p class="notification-summary__message">
+    Your phone has
+    {{#if notification.numIncoming}}
+        <span class="notification-summary__message--bold">
+            received
+            {{notification.numVoicemail}} {{pluralize "voicemail" notification.numVoicemail}},
+            {{notification.numIncomingText}} {{pluralize "text" notification.numIncomingText}},
+            {{notification.numIncomingCall}} {{pluralize "call" notification.numIncomingCall}}
+        </span>
+    {{/if}}
+    {{#if (and notification.numIncoming notification.numOutgoing)}}
+        and
+    {{/if}}
+    {{#if notification.numOutgoing}}
+        <span class="notification-summary__message--bold">
+            sent
+            {{notification.numOutgoingText}} scheduled {{pluralize "text" notification.numOutgoingText}},
+            {{notification.numOutgoingCall}} scheduled {{pluralize "call" notification.numOutgoingCall}}
+        </span>
+    {{/if}}
+</p>
+<p class="notification-summary__message">
+    Your phone's number is
+    <span class="notification-summary__message--bold">{{phone-number notification.phoneNumber}}</span>
+</p>
+{{#if _hasOnOpen}}
+    <div class="text-center">
+        <button type="button"
+            class="notification-summary__button"
+            onclick={{action _onOpen}}>
+            View all in app
+        </button>
+    </div>
+{{/if}}

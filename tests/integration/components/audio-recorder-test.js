@@ -1,4 +1,4 @@
-import * as AudioUtils from 'textup-frontend/utils/audio';
+import AudioUtils from 'textup-frontend/utils/audio';
 import AudioRecording from 'textup-frontend/objects/audio-recording';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
@@ -9,7 +9,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { typeOf, run } = Ember;
 
 moduleForComponent('audio-recorder', 'Integration | Component | audio recorder', {
-  integration: true
+  integration: true,
 });
 
 test('properties', function(assert) {
@@ -99,7 +99,7 @@ test('has error', function(assert) {
     errorMsg = `${Math.random()}`,
     recordingCreationStub = sinon.stub(AudioRecording, 'create').returns({
       on: onEventSpy,
-      startRecording: startRecordingSpy
+      startRecording: startRecordingSpy,
     });
 
   this.set('onError', onErrorSpy);
@@ -185,7 +185,7 @@ test('recording + reusing for another recording', function(assert) {
     onFinish,
     startMessage,
     recordingMessage,
-    processingMessage
+    processingMessage,
   });
 
   this.render(hbs`{{audio-recorder onError=onError

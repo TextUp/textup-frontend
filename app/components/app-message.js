@@ -56,5 +56,5 @@ export default Ember.Component.extend({
   _updateViewed(timestamp, data) {
     this.get('storage').trySet(localStorage, this.get('_lastViewedKey'), timestamp.toISOString());
     this.set('_data', data);
-  }
+  },
 });
