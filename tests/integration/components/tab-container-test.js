@@ -24,8 +24,11 @@ test('inputs', function(assert) {
 test('rendering no tabs or only one tab hides the navbar', function(assert) {
   this.render(hbs`{{tab-container}}`);
   assert.ok(this.$('.tab-container').length, 'did render');
-  assert.ok(this.$('.tab-container-nav.hidden').length, 'navbar is hidden');
-  assert.notOk(this.$('.tab-container-body').children().length, 'no children');
+  assert.ok(
+    this.$('.tab-container__nav:not(.tab-container__nav--overflow)').length,
+    'navbar is hidden'
+  );
+  assert.notOk(this.$('.tab-container__body').children().length, 'no children');
 
   this.render(hbs`
     {{#tab-container as |tabContainer|}}
@@ -34,8 +37,11 @@ test('rendering no tabs or only one tab hides the navbar', function(assert) {
     {{/tab-container}}
   `);
   assert.ok(this.$('.tab-container').length, 'did render');
-  assert.ok(this.$('.tab-container-nav.hidden').length, 'navbar is hidden');
-  assert.ok(this.$('.tab-container-body').children().length, 'has one tab');
+  assert.ok(
+    this.$('.tab-container__nav:not(.tab-container__nav--overflow)').length,
+    'navbar is hidden'
+  );
+  assert.ok(this.$('.tab-container__body').children().length, 'has one tab');
 });
 
 test('rendering multiple tabs', function(assert) {
@@ -48,11 +54,11 @@ test('rendering multiple tabs', function(assert) {
     {{/tab-container}}
   `);
   assert.ok(this.$('.tab-container').length, 'did render');
-  assert.notOk(this.$('.tab-container-nav.hidden').length, 'navbar is shown');
-  assert.ok(this.$('.tab-container-body').children().length, 'has one tab');
-
-  const $nav = this.$('.tab-container-nav');
-  assert.ok($nav.hasClass('overflow') || $nav.hasClass('inline'));
+  assert.ok(
+    this.$('.tab-container__nav:not(.tab-container__nav--no-multiple)').length,
+    'has multiple items'
+  );
+  assert.ok(this.$('.tab-container__body').children().length, 'has one tab');
 });
 
 test('switching tabs', function(assert) {
@@ -123,7 +129,7 @@ test('dynamically adding and removing tabs', function(assert) {
 
   assert.ok(this.$('.tab-container').length, 'did render');
   assert.ok(doRegister.calledOnce);
-  assert.equal(this.$('.tab-container-item').length, 2, 'two tabs');
+  assert.equal(this.$('.tab-container__item').length, 2, 'two tabs');
 
   const publicAPI = doRegister.firstCall.args[0];
   assert.equal(publicAPI.currentIndex, 1);
@@ -131,14 +137,14 @@ test('dynamically adding and removing tabs', function(assert) {
   this.set('shouldRemove', true);
   wait()
     .then(() => {
-      assert.equal(this.$('.tab-container-item').length, 1, 'one tab');
+      assert.equal(this.$('.tab-container__item').length, 1, 'one tab');
       assert.equal(publicAPI.currentIndex, 0, 'index is also adjusted');
 
       this.set('shouldAdd', true);
       return wait();
     })
     .then(() => {
-      assert.equal(this.$('.tab-container-item').length, 2, 'two tabs again');
+      assert.equal(this.$('.tab-container__item').length, 2, 'two tabs again');
       assert.equal(publicAPI.currentIndex, 0, 'index is not adjusted');
 
       done();

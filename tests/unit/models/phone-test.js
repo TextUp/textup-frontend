@@ -126,6 +126,16 @@ test('contact filter and statuses', function(assert) {
   });
 });
 
+test('resetting contacts filter', function(assert) {
+  const obj = this.subject();
+
+  obj.set('contactsFilter', Constants.CONTACT.FILTER.BLOCKED);
+
+  obj.resetContactsFilter();
+
+  assert.equal(obj.get('contactsFilter'), Constants.CONTACT.FILTER.ALL);
+});
+
 test('displaying contacts based on set filter', function(assert) {
   const obj = this.subject(),
     statuses = Constants.CONTACT.STATUS,

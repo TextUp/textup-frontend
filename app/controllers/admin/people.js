@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   queryParams: ['filter'],
   filter: computed.alias('adminController.filter'),
 
+  _peopleList: null,
   people: computed.alias('adminController.people'),
   numPeople: null,
   team: null,

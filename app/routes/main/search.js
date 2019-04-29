@@ -73,16 +73,17 @@ export default Ember.Route.extend({
     });
     callIfPresent(null, this.controller.get('searchList.actions.resetAll'));
   },
+
   _doSearch() {
     return new Ember.RSVP.Promise((resolve, reject) => {
       const search = this.controller.get('searchQuery'),
-        offset = this.controller.get('searchResults.length'),
-        teamId = this.get('stateManager.ownerAsTeam.id');
+        offset = this.controller.get('searchResults.length');
       if (isBlank(search)) {
         return resolve();
       }
+      // teamId added by `contact` adapter
       this.get('dataService')
-        .request(this.store.query('contact', { search, offset, teamId }))
+        .request(this.store.query('contact', { search, offset }))
         .then(results => {
           this.controller.updateResults(results);
           resolve();

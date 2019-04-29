@@ -1,17 +1,20 @@
-<div class="tab-container-nav {{if _hasMultipleTabs "" "hidden"}}">
-	<ul class="tab-container-nav-list {{_navListClass}}">
+<div class="tab-container__nav
+		{{if (not _hasMultipleTabs) "tab-container__nav--no-multiple"}}
+		{{if _hasTabOverflow "tab-container__nav--overflow"}}">
+	<ul class="tab-container__nav__list">
 		{{#each _items as |item index|}}
-			<li class="tab-container-nav-item {{if (eq _publicAPI.currentIndex index) "active"}}"
-				{{action _switchToIndex index}}>
+			<li class="tab-container__nav__list-item
+					{{if (eq _publicAPI.currentIndex index) "tab-container__nav__list-item--active"}}"
+				onclick={{action _switchToIndex index}}>
 				{{item.title}}
 			</li>
 		{{/each}}
 	</ul>
-	<div class="tab-container-nav-controls">
-		{{#hide-show as |hideShow|}}
+	<div class="tab-container__nav__controls">
+		{{#hide-show animate=false as |hideShow|}}
 			<div class="flex border-b">
 				<div class="flex__item flex__item--grow">
-					<button class="tab-container-nav-display btn btn-expand flex flex--spacing-between flex--justify-spread"
+					<button class="tab-container__nav__display flex flex--spacing-between flex--justify-spread"
 						type="button"
 						onclick={{hideShow.actions.toggle}}>
 						<span class="text-ellipsis flex__item flex__item--grow">
@@ -55,6 +58,6 @@
 		{{/hide-show}}
 	</div>
 </div>
-<div class="tab-container-body">
+<div class="tab-container__body">
 	{{yield _publicAPI}}
 </div>

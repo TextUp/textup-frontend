@@ -13,7 +13,7 @@ moduleForComponent('slideout-pane', 'Integration | Component | slideout pane', {
     Ember.getOwner(this).register(
       'component:slideout-pane-test',
       Ember.Component.extend({
-        didInitAttrs() {
+        init() {
           this._super(...arguments);
           tryInvoke(this, 'doRegister', [this]);
         },

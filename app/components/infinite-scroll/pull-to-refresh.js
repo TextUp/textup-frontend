@@ -4,8 +4,8 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, tryInvoke, typeOf, run } = Ember;
 
-export const MIN_REQUIRED_PULL_LENGTH_IN_PX = 50;
-export const MAX_PULL_LENGTH_IN_PX = 100;
+export const MIN_REQUIRED_PULL_LENGTH_IN_PX = 100;
+export const MAX_PULL_LENGTH_IN_PX = 150;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -30,7 +30,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     'disabled:infinite-scroll__pull-to-refresh--disabled',
   ],
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

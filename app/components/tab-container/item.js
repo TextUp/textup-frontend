@@ -13,7 +13,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     return { title: '' };
   },
 
-  classNames: 'tab-container-item pending',
+  classNames: 'tab-container__item',
+  classNameBindings: '_isPending:tab-container__item--pending',
 
   init() {
     this._super(...arguments);
@@ -31,6 +32,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
+  _isPending: true,
+  _shouldRender: false,
   _publicAPI: computed(function() {
     return {
       title: this.get('title'),
@@ -43,17 +46,37 @@ export default Ember.Component.extend(PropTypesMixin, {
   }),
 
   _initialize(shouldShow) {
-    const $el = this.$();
-    if (shouldShow) {
-      this._show().then(() => $el.removeClass('pending'));
-    } else {
-      this._hide().then(() => $el.removeClass('pending'));
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
     }
+    run.join(() => {
+      if (shouldShow) {
+        this._show().then(() => this._notPending());
+      } else {
+        this._hide().then(() => this._notPending());
+      }
+    });
   },
   _show() {
-    return new RSVP.Promise(resolve => this.$().fadeIn('fast', resolve));
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    return run.join(() => {
+      this.set('_shouldRender', true);
+      return new RSVP.Promise(resolve => this.$().fadeIn('fast', resolve));
+    });
   },
   _hide() {
-    return new RSVP.Promise(resolve => this.$().fadeOut('fast', resolve));
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    return run.join(() => new RSVP.Promise(resolve => this.$().fadeOut('fast', resolve)));
+  },
+
+  _notPending() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run(() => this.set('_isPending', false));
   },
 });

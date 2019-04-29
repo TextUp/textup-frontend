@@ -68,7 +68,7 @@ export default Ember.Component.extend({
   // Events
   // ------
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },

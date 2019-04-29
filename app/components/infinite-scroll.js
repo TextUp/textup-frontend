@@ -34,7 +34,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     '_publicAPI.isDone:infinite-scroll--done',
   ],
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
     this._scheduleResetAll();

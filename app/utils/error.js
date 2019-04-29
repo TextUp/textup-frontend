@@ -1,10 +1,11 @@
 import ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
 
-const { isArray, isPresent } = Ember,
-  ERRORS_PROP_NAME = 'errors',
-  STATUS_PROP_NAME = 'statusCode',
-  MESSAGE_PROP_NAME = 'message';
+const { isArray, isPresent } = Ember;
+
+export const ERRORS_PROP_NAME = 'errors';
+export const STATUS_PROP_NAME = 'statusCode';
+export const MESSAGE_PROP_NAME = 'message';
 
 export function isResponse(obj) {
   return isPresent(obj) && isArray(obj[ERRORS_PROP_NAME]);

@@ -7,7 +7,7 @@ const { computed, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     showText: PropTypes.string,
-    hideText: PropTypes.string
+    hideText: PropTypes.string,
   },
   getDefaultProps() {
     return { showText: 'Show more', hideText: 'Show less' };
@@ -57,6 +57,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   _startObservingContents() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     const $contents = this.get('_$contents'),
       observer = new MutationObserver(this._updateContentsHeight.bind(this));
     observer.observe($contents[0], { characterData: true, childList: true, subtree: true });
@@ -75,5 +78,5 @@ export default Ember.Component.extend(PropTypesMixin, {
       () => this.setProperties({ _contentsHeight: this.get('_$contents').outerHeight() }),
       1000
     );
-  }
+  },
 });

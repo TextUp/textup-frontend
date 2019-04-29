@@ -1,29 +1,21 @@
-import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
 const { isBlank, RSVP } = Ember;
 
 export default Ember.Service.extend({
-  stateManager: Ember.inject.service('state'),
   store: Ember.inject.service(),
 
-  doSearch(searchString) {
+  doSearch(search) {
     return new RSVP.Promise((resolve, reject) => {
-      if (isBlank(searchString)) {
+      if (isBlank(search)) {
         return resolve([]);
       }
-      const query = Object.create(null),
-        team = this.get('stateManager.ownerAsTeam');
-      query.search = searchString;
-      if (team) {
-        query.teamId = team.get('id');
-      }
+      // teamId added by `contact` adapter
       this.get('store')
-        .query('contact', query)
-        .then(results => {
-          resolve(results.toArray());
-        }, reject);
+        .query(Constants.MODEL.CONTACT, { search })
+        .then(results => resolve(results.toArray()), reject);
     });
   },
   createRecipient(val) {

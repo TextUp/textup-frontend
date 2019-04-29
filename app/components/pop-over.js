@@ -27,7 +27,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   },
   classNames: ['pop-over'],
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

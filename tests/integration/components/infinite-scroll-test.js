@@ -1,3 +1,4 @@
+import * as PullToRefreshComponent from 'textup-frontend/components/infinite-scroll/pull-to-refresh';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
@@ -221,35 +222,37 @@ test('loading + direction', function(assert) {
   assert.ok(onLoad.notCalled);
 
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight);
-  setTimeout(() => {
-    assert.ok(onLoad.calledOnce);
-
-    this.set('direction', Constants.INFINITE_SCROLL.DIRECTION.UP);
-    wait().then(() => {
-      assert.ok(this.$('.infinite-scroll--up').length, 'is up');
+  wait().then(() => {
+    $container.scrollTop(contentPxHeight);
+    setTimeout(() => {
       assert.ok(onLoad.calledOnce);
 
-      $container.scrollTop(0);
-      setTimeout(() => {
-        assert.ok(
-          onLoad.calledOnce,
-          'load is not triggered because the _didStartLoad flag is still set to true and needs to be cleared by the data observer'
-        );
+      this.set('direction', Constants.INFINITE_SCROLL.DIRECTION.UP);
+      wait().then(() => {
+        assert.ok(this.$('.infinite-scroll--up').length, 'is up');
+        assert.ok(onLoad.calledOnce);
 
-        // trigger data observer
-        run(() => this.get('data').pushObjects([]));
-        wait().then(() => {
+        $container.scrollTop(0);
+        setTimeout(() => {
           assert.ok(
-            onLoad.calledTwice,
-            'can load again because the _didStartLoad flag has been cleared by the data observer'
+            onLoad.calledOnce,
+            'load is not triggered because the _didStartLoad flag is still set to true and needs to be cleared by the data observer'
           );
 
-          done();
-        });
-      }, 1000);
-    });
-  }, 1000);
+          // trigger data observer
+          run(() => this.get('data').pushObjects([]));
+          wait().then(() => {
+            assert.ok(
+              onLoad.calledTwice,
+              'can load again because the _didStartLoad flag has been cleared by the data observer'
+            );
+
+            done();
+          });
+        }, 1000);
+      });
+    }, 1000);
+  });
 });
 
 test('load handler return value', function(assert) {
@@ -273,39 +276,41 @@ test('load handler return value', function(assert) {
 
   let resolveFn;
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight);
-  // `onLoad` handler does not return promise
-  setTimeout(() => {
-    assert.ok(onLoad.calledOnce);
-    assert.equal(
-      publicAPI.isLoading,
-      false,
-      'no loading state when the load handler does not return promise'
-    );
-    assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
-
-    onLoad.callsFake(() => new RSVP.Promise(resolve => (resolveFn = resolve)));
-    run(() => this.get('data').pushObjects([])); // need to clear `_didStartLoad` state`
+  wait().then(() => {
     $container.scrollTop(contentPxHeight);
+    // `onLoad` handler does not return promise
     setTimeout(() => {
-      assert.equal(onLoad.callCount, 2);
-      assert.ok(resolveFn, 'has resolve function to call later');
+      assert.ok(onLoad.calledOnce);
       assert.equal(
         publicAPI.isLoading,
-        true,
-        'has loading state when the load handler returns promise'
+        false,
+        'no loading state when the load handler does not return promise'
       );
-      assert.ok(this.$('.infinite-scroll--loading').length, 'is loading');
+      assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
 
-      resolveFn.call();
-      wait().then(() => {
-        assert.equal(publicAPI.isLoading, false, 'not loading after promise resolves');
-        assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
+      onLoad.callsFake(() => new RSVP.Promise(resolve => (resolveFn = resolve)));
+      run(() => this.get('data').pushObjects([])); // need to clear `_didStartLoad` state`
+      $container.scrollTop(contentPxHeight);
+      setTimeout(() => {
+        assert.equal(onLoad.callCount, 2);
+        assert.ok(resolveFn, 'has resolve function to call later');
+        assert.equal(
+          publicAPI.isLoading,
+          true,
+          'has loading state when the load handler returns promise'
+        );
+        assert.ok(this.$('.infinite-scroll--loading').length, 'is loading');
 
-        done();
-      });
+        resolveFn.call();
+        wait().then(() => {
+          assert.equal(publicAPI.isLoading, false, 'not loading after promise resolves');
+          assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
+
+          done();
+        });
+      }, 1000);
     }, 1000);
-  }, 1000);
+  });
 });
 
 test('avoid infinite loop if loading more does not yield different result', function(assert) {
@@ -329,17 +334,10 @@ test('avoid infinite loop if loading more does not yield different result', func
   assert.equal(publicAPI.isDone, false, 'not done');
 
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight);
-  setTimeout(() => {
-    assert.equal(onLoad.callCount, 1);
-    assert.equal(publicAPI.isLoading, false, 'not loading');
-    assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
-    assert.equal(publicAPI.isDone, false, 'not done');
-
-    this.setProperties({ data: [1], numTotal: null });
+  wait().then(() => {
     $container.scrollTop(contentPxHeight);
     setTimeout(() => {
-      assert.equal(onLoad.callCount, 2);
+      assert.equal(onLoad.callCount, 1);
       assert.equal(publicAPI.isLoading, false, 'not loading');
       assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
       assert.equal(publicAPI.isDone, false, 'not done');
@@ -347,36 +345,45 @@ test('avoid infinite loop if loading more does not yield different result', func
       this.setProperties({ data: [1], numTotal: null });
       $container.scrollTop(contentPxHeight);
       setTimeout(() => {
-        assert.equal(onLoad.callCount, 3);
+        assert.equal(onLoad.callCount, 2);
         assert.equal(publicAPI.isLoading, false, 'not loading');
         assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
+        assert.equal(publicAPI.isDone, false, 'not done');
 
-        assert.equal(
-          publicAPI.isDone,
-          false,
-          'need to trigger didReceiveAttrs a third time to check to see if anything has changed'
-        );
         this.setProperties({ data: [1], numTotal: null });
-        wait()
-          .then(() => {
-            assert.equal(
-              publicAPI.isDone,
-              true,
-              'is done because too many times try load with no change'
-            );
+        $container.scrollTop(contentPxHeight);
+        setTimeout(() => {
+          assert.equal(onLoad.callCount, 3);
+          assert.equal(publicAPI.isLoading, false, 'not loading');
+          assert.notOk(this.$('.infinite-scroll--loading').length, 'not loading');
 
-            publicAPI.actions.resetAll();
-            return wait();
-          })
-          .then(() => {
-            assert.equal(publicAPI.isLoading, false, 'loading state has been reset');
-            assert.equal(publicAPI.isDone, false, 'done state has been reset');
+          assert.equal(
+            publicAPI.isDone,
+            false,
+            'need to trigger didReceiveAttrs a third time to check to see if anything has changed'
+          );
+          this.setProperties({ data: [1], numTotal: null });
+          wait()
+            .then(() => {
+              assert.equal(
+                publicAPI.isDone,
+                true,
+                'is done because too many times try load with no change'
+              );
 
-            done();
-          });
+              publicAPI.actions.resetAll();
+              return wait();
+            })
+            .then(() => {
+              assert.equal(publicAPI.isLoading, false, 'loading state has been reset');
+              assert.equal(publicAPI.isDone, false, 'done state has been reset');
+
+              done();
+            });
+        }, 1000);
       }, 1000);
     }, 1000);
-  }, 1000);
+  });
 });
 
 test('marking done with number of items is greater than or equal to total number', function(assert) {
@@ -402,32 +409,34 @@ test('marking done with number of items is greater than or equal to total number
   let resolveFn;
   onLoad.callsFake(() => new RSVP.Promise(resolve => (resolveFn = resolve)));
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight);
-  setTimeout(() => {
-    assert.ok(onLoad.calledOnce);
-    assert.ok(this.$('.infinite-scroll--loading').length, 'is loading');
-    assert.equal(publicAPI.isLoading, true, 'is loading');
-    assert.equal(publicAPI.isDone, false, 'not done');
-    assert.ok(resolveFn, 'has resolve function to call');
+  wait().then(() => {
+    $container.scrollTop(contentPxHeight);
+    setTimeout(() => {
+      assert.ok(onLoad.calledOnce);
+      assert.ok(this.$('.infinite-scroll--loading').length, 'is loading');
+      assert.equal(publicAPI.isLoading, true, 'is loading');
+      assert.equal(publicAPI.isDone, false, 'not done');
+      assert.ok(resolveFn, 'has resolve function to call');
 
-    this.setProperties({ data: [1, 2], numTotal: 2 });
-    resolveFn.call();
-    wait()
-      .then(() => {
-        assert.notOk(this.$('.infinite-scroll--loading').length, ' not loading');
-        assert.equal(publicAPI.isLoading, false, 'not loading');
-        assert.equal(publicAPI.isDone, true, 'is done');
+      this.setProperties({ data: [1, 2], numTotal: 2 });
+      resolveFn.call();
+      wait()
+        .then(() => {
+          assert.notOk(this.$('.infinite-scroll--loading').length, ' not loading');
+          assert.equal(publicAPI.isLoading, false, 'not loading');
+          assert.equal(publicAPI.isDone, true, 'is done');
 
-        publicAPI.actions.resetAll();
-        return wait();
-      })
-      .then(() => {
-        assert.equal(publicAPI.isLoading, false, 'loading state has been reset');
-        assert.equal(publicAPI.isDone, false, 'done state has been reset');
+          publicAPI.actions.resetAll();
+          return wait();
+        })
+        .then(() => {
+          assert.equal(publicAPI.isLoading, false, 'loading state has been reset');
+          assert.equal(publicAPI.isDone, false, 'done state has been reset');
 
-        done();
-      });
-  }, 1000);
+          done();
+        });
+    }, 1000);
+  });
 });
 
 test('can manually specify data length for non-standard length logic', function(assert) {
@@ -486,15 +495,17 @@ test('refreshing is disabled when not at the start', function(assert) {
   );
 
   const $container = this.$('.infinite-scroll__scroll-container');
-  $container.scrollTop(contentPxHeight / 2);
-  setTimeout(() => {
-    assert.ok(
-      this.$('.infinite-scroll__pull-to-refresh--disabled').length,
-      'refresh disabled because no longer at start'
-    );
+  wait().then(() => {
+    $container.scrollTop(contentPxHeight / 2);
+    setTimeout(() => {
+      assert.ok(
+        this.$('.infinite-scroll__pull-to-refresh--disabled').length,
+        'refresh disabled because no longer at start'
+      );
 
-    done();
-  }, 1000);
+      done();
+    }, 1000);
+  });
 });
 
 test('refreshing + scroll container is disabled when refreshing', function(assert) {
@@ -529,7 +540,9 @@ test('refreshing + scroll container is disabled when refreshing', function(asser
   );
   const $refreshContent = this.$('.infinite-scroll__pull-to-refresh__content');
   $refreshContent.trigger(Ember.$.Event('mousedown', { pageY: 0 }));
-  $refreshContent.trigger(Ember.$.Event('mousemove', { pageY: 100 }));
+  $refreshContent.trigger(
+    Ember.$.Event('mousemove', { pageY: PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX })
+  );
   $refreshContent.trigger(Ember.$.Event('mouseup'));
   wait()
     .then(() => {
@@ -601,19 +614,20 @@ test('resetting all resets component internal state and resets to initial positi
   assert.ok(onLoad.notCalled);
   const publicAPI = doRegister.firstCall.args[0],
     $container = this.$('.infinite-scroll__scroll-container');
+  wait().then(() => {
+    $container.scrollTop(contentPxHeight / 2);
+    setTimeout(() => {
+      assert.ok($container.scrollTop() > 0, 'scroll is no longer at initial position');
 
-  $container.scrollTop(contentPxHeight / 2);
-  setTimeout(() => {
-    assert.ok($container.scrollTop() > 0, 'scroll is no longer at initial position');
+      publicAPI.actions.resetAll();
+      wait().then(() => {
+        assert.equal($container.scrollTop(), 0, 'scroll is back at initial position');
+        assert.ok(onLoad.notCalled, 'no need to load more because already overflow');
 
-    publicAPI.actions.resetAll();
-    wait().then(() => {
-      assert.equal($container.scrollTop(), 0, 'scroll is back at initial position');
-      assert.ok(onLoad.notCalled, 'no need to load more because already overflow');
-
-      done();
-    });
-  }, 1000);
+        done();
+      });
+    }, 1000);
+  });
 });
 
 test('resetting/restoring position via public API', function(assert) {
@@ -640,38 +654,31 @@ test('resetting/restoring position via public API', function(assert) {
 
   const $container = this.$('.infinite-scroll__scroll-container'),
     $content = this.$('.infinite-scroll__scroll-container__content');
-  $container.scrollTop(contentPxHeight / 2);
-  setTimeout(() => {
-    this.setProperties({ data: [1, 2] });
-    wait()
-      .then(() => {
-        assert.ok(
-          $content.height() - contentPxHeight * 2 < 100,
-          'content height has approx doubled'
-        );
-        assert.equal(
-          $container.scrollTop(),
-          contentPxHeight / 2,
-          'but scroll position retains the original, incorrect value'
-        );
+  wait().then(() => {
+    $container.scrollTop(contentPxHeight / 2);
+    setTimeout(() => {
+      this.setProperties({ data: [1, 2] });
+      wait()
+        .then(() => {
+          assert.ok(
+            $content.height() - contentPxHeight * 2 < 100,
+            'content height has approx doubled'
+          );
+          assert.ok(
+            $container.scrollTop() - ($content.outerHeight() - contentPxHeight / 2) < 50,
+            'when new items are added to data array, component will automatically restore position -- position is approx restored to original offset from the bottom (because scrolling up)'
+          );
 
-        return publicAPI.actions.restorePosition();
-      })
-      .then(() => {
-        assert.ok(
-          $container.scrollTop() - ($content.outerHeight() - contentPxHeight / 2) < 50,
-          'position is approx restored to original offset from the bottom (because scrolling up)'
-        );
+          return publicAPI.actions.resetPosition();
+        })
+        .then(() => {
+          assert.ok(
+            $container.scrollTop() - ($content.outerHeight() - $container.height()) < 50,
+            'position is approx reset to very bottom bottom (because scrolling up)'
+          );
 
-        return publicAPI.actions.resetPosition();
-      })
-      .then(() => {
-        assert.ok(
-          $container.scrollTop() - ($content.outerHeight() - $container.height()) < 50,
-          'position is approx reset to very bottom bottom (because scrolling up)'
-        );
-
-        done();
-      });
-  }, 1000);
+          done();
+        });
+    }, 1000);
+  });
 });

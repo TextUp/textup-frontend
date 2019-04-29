@@ -70,7 +70,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   classNames: 'care-record',
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

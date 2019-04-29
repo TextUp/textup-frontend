@@ -2,6 +2,8 @@ import Ember from 'ember';
 import PropertyUtils from 'textup-frontend/utils/property';
 import { module, test } from 'qunit';
 
+const { RSVP } = Ember;
+
 module('Unit | Utility | property');
 
 test('building url identifier', function(assert) {
@@ -21,4 +23,23 @@ test('must get', function(assert) {
 
   assert.throws(() => PropertyUtils.mustGet(obj1, propName, errorString), new Error(errorString));
   assert.equal(PropertyUtils.mustGet(obj2, propName, errorString), propVal);
+});
+
+test('ensuring promise', function(assert) {
+  const done = assert.async(),
+    notPromiseValue = Math.random(),
+    val2 = Math.random(),
+    promiseValue = new RSVP.Promise(resolve => resolve(val2));
+
+  PropertyUtils.ensurePromise(notPromiseValue)
+    .then(arg1 => {
+      assert.equal(arg1, notPromiseValue);
+
+      return PropertyUtils.ensurePromise(promiseValue);
+    })
+    .then(arg1 => {
+      assert.equal(arg1, val2);
+
+      done();
+    });
 });

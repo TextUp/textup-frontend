@@ -1,7 +1,7 @@
+import * as PullToRefreshComponent from 'textup-frontend/components/infinite-scroll/pull-to-refresh';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import * as PullToRefreshConstants from 'textup-frontend/components/infinite-scroll/pull-to-refresh';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -88,7 +88,7 @@ test('pulling via touch + refresh function returns a promise', function(assert) 
   const $content = this.$('.infinite-scroll__pull-to-refresh__content');
   $content.trigger(Ember.$.Event('touchstart', touchEvent(0)));
   $content.trigger(
-    Ember.$.Event('touchmove', touchEvent(PullToRefreshConstants.MAX_PULL_LENGTH_IN_PX * 5))
+    Ember.$.Event('touchmove', touchEvent(PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX * 5))
   );
   wait()
     .then(() => {
@@ -97,7 +97,7 @@ test('pulling via touch + refresh function returns a promise', function(assert) 
       assert.ok(onRefresh.notCalled);
       assert.equal(
         $content.attr('style'),
-        `transform: translateY(${PullToRefreshConstants.MAX_PULL_LENGTH_IN_PX}px);`,
+        `transform: translateY(${PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX}px);`,
         'constrained to max allowed overscroll threshold'
       );
 
@@ -143,7 +143,7 @@ test('pulling via mouse + refresh function does not return promise', function(as
   assert.equal(publicAPI.isRefreshing, false);
 
   const $content = this.$('.infinite-scroll__pull-to-refresh__content'),
-    pullLength = PullToRefreshConstants.MIN_REQUIRED_PULL_LENGTH_IN_PX + 10;
+    pullLength = PullToRefreshComponent.MIN_REQUIRED_PULL_LENGTH_IN_PX + 10;
   $content.trigger(Ember.$.Event('mousedown', mouseEvent(0)));
   $content.trigger(Ember.$.Event('mousemove', mouseEvent(pullLength)));
   wait()
@@ -197,7 +197,9 @@ test('pulling up instead of down', function(assert) {
 
   const $content = this.$('.infinite-scroll__pull-to-refresh__content');
   $content.trigger(Ember.$.Event('touchstart', touchEvent(500)));
-  $content.trigger(Ember.$.Event('touchmove', touchEvent(400)));
+  $content.trigger(
+    Ember.$.Event('touchmove', touchEvent(500 - PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX))
+  );
   wait()
     .then(() => {
       assert.ok(this.$('.infinite-scroll__pull-to-refresh--pulling').length, 'is pulling');
@@ -205,7 +207,7 @@ test('pulling up instead of down', function(assert) {
       assert.ok(onRefresh.notCalled);
       assert.equal(
         $content.attr('style'),
-        'transform: translateY(-100px);',
+        `transform: translateY(-${PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX}px);`,
         'translate in the opposite direction because direction is up'
       );
 
@@ -236,7 +238,7 @@ test('pulling insufficient distance', function(assert) {
   assert.equal(publicAPI.isRefreshing, false);
 
   const $content = this.$('.infinite-scroll__pull-to-refresh__content'),
-    pullLength = PullToRefreshConstants.MIN_REQUIRED_PULL_LENGTH_IN_PX - 10;
+    pullLength = PullToRefreshComponent.MIN_REQUIRED_PULL_LENGTH_IN_PX - 10;
   $content.trigger(Ember.$.Event('mousedown', mouseEvent(0)));
   $content.trigger(Ember.$.Event('mousemove', mouseEvent(pullLength)));
   wait()

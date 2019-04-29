@@ -24,14 +24,14 @@ export default Ember.Route.extend({
     this._super(...arguments);
     this.set('team', team);
     controller.set('team', team);
-    this._resetController(team);
+    this._resetController(controller, team);
   },
 
   actions: {
     didTransition() {
       this._super(...arguments);
       if (!this.get('stateManager.viewingTeam')) {
-        this._resetController(this.get('team'));
+        this._resetController(this.controller, this.get('team'));
       }
       this.get('team').rollbackAttributes();
       // return true to allow bubbling to close slideout handler
@@ -46,8 +46,12 @@ export default Ember.Route.extend({
     },
   },
 
-  _resetController(team) {
-    this.controller.set('people', []);
-    this.controller.set('numPeople', team.get('numMembers'));
+  _resetController(controller, team) {
+    controller.set('people', []);
+    controller.set('numPeople', team.get('numMembers'));
+    const peopleList = controller.get('_peopleList');
+    if (peopleList) {
+      peopleList.actions.resetAll();
+    }
   },
 });

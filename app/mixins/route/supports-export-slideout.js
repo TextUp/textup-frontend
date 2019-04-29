@@ -3,7 +3,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moment from 'moment';
 
-const { isArray } = Ember;
+const { isArray, RSVP } = Ember;
 
 export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
@@ -46,7 +46,7 @@ export default Ember.Mixin.create({
           ? [] // pass no record owners if we want to export entire phone
           : controller.get('exportRecordOwners');
 
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         this.get('recordItemService')
           .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
           .then(() => {
@@ -60,7 +60,7 @@ export default Ember.Mixin.create({
       return this.get('composeSlideoutService').doSearch(...arguments);
     },
     exportInsertRecordOwner(index, recordOwner) {
-      return new Ember.RSVP.Promise(resolve => {
+      return new RSVP.Promise(resolve => {
         this.get('controller.exportRecordOwners').replace(index, 1, [recordOwner]);
         resolve();
       });

@@ -29,7 +29,6 @@ export default Ember.Mixin.create({
       this.get('controller').set('newContact', null);
     },
     finishNewContactSlideout() {
-      const state = this.get('state');
       return this.get('contactService')
         .persistNewAndTryAddToPhone(this.get('controller.newContact'))
         .then(() => {

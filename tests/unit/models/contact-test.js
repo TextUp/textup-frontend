@@ -33,6 +33,15 @@ test('default values', function(assert) {
   assert.deepEqual(model.get('numbers'), []);
 });
 
+test('filter value', function(assert) {
+  const model = this.subject(),
+    name = Math.random();
+
+  run(() => model.setProperties({ name }));
+
+  assert.equal(model.get(Constants.PROP_NAME.FILTER_VAL), name);
+});
+
 test('rolling back', function(assert) {
   const model = this.subject();
   model.set('isSelected', true);

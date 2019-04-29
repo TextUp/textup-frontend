@@ -76,7 +76,7 @@
                         {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
-                            <span>Availability</span>
+                            <span>Notifications</span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                         {{if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title="Availability"
+                            title="Notifications"
                             classNames="btn-expand"}}
                             {{#if (get (owner-policy/self stateManager.owner.phone.content authService.authUser) "schedule.isAvailableNow")}}
                                 <span class="fa fa-calendar-check-o"></span>

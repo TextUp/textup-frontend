@@ -35,7 +35,7 @@ export default Ember.Route.extend({
     controller.set('numPeople', null);
     const peopleList = controller.get('_peopleList');
     if (peopleList) {
-      peopleList.actions.resetPosition();
+      peopleList.actions.resetAll();
     }
   },
 });

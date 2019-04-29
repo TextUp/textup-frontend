@@ -25,6 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _hideShow: null,
+  _hasTabOverflow: false,
   _items: computed(() => []),
   _currentItem: computed('_publicAPI.currentIndex', '_items.[]', function() {
     const index = this.get('_publicAPI.currentIndex'),
@@ -34,11 +35,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   _hasMultipleTabs: computed('_items.[]', function() {
     return this.get('_items.length') > 1;
   }),
-  _navListClass: computed(function() {
-    return `nav-list-${this.elementId}`;
-  }),
-  _$navlist: computed('_navListClass', function() {
-    return this.$().find(`.${this.get('_navListClass')}`);
+  _$navlist: computed(function() {
+    return this.$('.tab-container__nav__list');
   }),
   _publicAPI: computed(function() {
     return {
@@ -56,12 +54,18 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _addTabItem(item) {
+    if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     run.scheduleOnce('afterRender', () => {
       this.get('_items').pushObject(item);
       run.scheduleOnce('afterRender', this, this._tryInitializeNav);
     });
   },
   _removeTabItem(item) {
+    if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     run.scheduleOnce('afterRender', () => {
       this.get('_items').removeObject(item);
       run.scheduleOnce('afterRender', this, this._tryInitializeNav);
@@ -111,17 +115,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _setupMultipleTabs() {
     const $navlist = this.get('_$navlist'),
       contentWidth = $navlist[0].scrollWidth,
-      displayWidth = $navlist[0].clientWidth,
-      $parent = $navlist.parent();
-    if (contentWidth > displayWidth) {
-      $parent.addClass('overflow');
-    } else {
-      const $navItems = $navlist.children('.tab-container-nav-item'),
-        numItems = $navItems.length;
-      $parent.addClass('inline');
-      $navItems.each(function() {
-        Ember.$(this).css('width', `${100 / numItems}%`);
-      });
-    }
+      displayWidth = $navlist[0].clientWidth;
+    this.set('_hasTabOverflow', contentWidth > displayWidth);
   },
 });

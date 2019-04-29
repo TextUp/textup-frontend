@@ -69,3 +69,18 @@ test('serialized form', function(assert) {
     assert.ok(serialized.doShareActions.every(shareObj => !!shareObj.id), 'has id key');
   });
 });
+
+test('serializing view-only shared contact', function(assert) {
+  const status = Math.random(),
+    obj = this.subject();
+  run(() => {
+    obj.set('isViewPermission', true);
+    obj.set('status', status);
+  });
+
+  let serialized = obj.serialize(),
+    keys = Object.keys(serialized);
+
+  assert.equal(keys.length, 1, 'only serialize status if view-only shared contact');
+  assert.equal(serialized.status, status);
+});

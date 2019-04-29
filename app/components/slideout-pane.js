@@ -45,7 +45,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     '_publicAPI.isOpen:slideout-pane--open',
   ],
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

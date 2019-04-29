@@ -8,7 +8,7 @@ import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
 
-const { get } = Ember;
+const { get, RSVP, run } = Ember;
 
 export default Ember.Route.extend(
   HasSlideoutOutlet,
@@ -152,13 +152,21 @@ export default Ember.Route.extend(
       },
       updateTeamMemberships(teams, person, then = undefined) {
         const people = Ember.isArray(person) ? person : [person];
-        return this.get('dataService')
-          .persist(teams)
-          .then(() => {
-            this.get('dataService')
-              .request(Ember.RSVP.all(people.map(person => person.reload())))
-              .then(() => callIfPresent(this, then));
-          });
+        return new RSVP.Promise((resolve, reject) => {
+          this.get('dataService')
+            .persist(teams)
+            .then(() => {
+              // allows for some time for the backend to save the new membership state
+              run.later(() => {
+                this.get('dataService')
+                  .request(Ember.RSVP.all(people.map(person => person.reload())))
+                  .then(() => {
+                    callIfPresent(this, then);
+                    resolve();
+                  }, reject);
+              }, 1000);
+            });
+        });
       },
 
       // Phone

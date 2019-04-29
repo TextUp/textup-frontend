@@ -23,7 +23,7 @@
         contents=careRecordText.contents
         onContentChange=(action (mut careRecordText.contents))
 
-        images=careRecordText.media.content.displayedImages.content
+        images=careRecordText.media.content.displayedImages
         audio=careRecordText.media.content.displayedAudio
         onAddImage=(route-action "onAddImage" careRecordText)
         onAddAudio=(route-action "onAddAudio" careRecordText)

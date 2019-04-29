@@ -40,11 +40,11 @@ export default Ember.Controller.extend({
 
   doLoadMoreContacts() {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      const team = this.get('stateManager.ownerAsTeam'),
-        tag = this.get('tag'),
+      const tag = this.get('tag'),
         phone = this.get('phone');
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
       if (phone) {
+        // teamId added by `contact` adapter
         this.get('dataService')
           .request(
             this.get('store').query('contact', {
@@ -52,7 +52,6 @@ export default Ember.Controller.extend({
               status: phone.get('contactStatuses'),
               offset: phone.get('contacts.length'),
               tagId: tag ? tag.get('id') : null,
-              teamId: team ? team.get('id') : null,
             })
           )
           .then(results => {

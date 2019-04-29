@@ -19,6 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     clickOutToClose: PropTypes.bool,
     ignoreCloseSelector: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     focusOutToClose: PropTypes.bool,
+    animate: PropTypes.bool,
     disabled: PropTypes.bool,
   },
   getDefaultProps() {
@@ -27,11 +28,12 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       clickOutToClose: false,
       ignoreCloseSelector: '.slideout-pane, .c-notification__container',
       focusOutToClose: false,
+      animate: true,
       disabled: false,
     };
   },
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

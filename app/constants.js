@@ -72,7 +72,7 @@ export default {
     RECORD_CALL: 'record-call',
     RECORD_NOTE: 'record-note',
     RECORD_TEXT: 'record-text',
-    SCHEDULE: 'schdule',
+    SCHEDULE: 'schedule',
     STAFF: 'staff',
     TAG: 'tag',
     TEAM: 'team',

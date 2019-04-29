@@ -19,7 +19,7 @@ const Validations = buildValidations({
       ],
     },
   }),
-  { computed, getWithDefault, tryInvoke, isArray, isPresent, get } = Ember;
+  { computed, getWithDefault, tryInvoke, isPresent, get } = Ember;
 
 export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides
@@ -95,15 +95,12 @@ export default DS.Model.extend(Dirtiable, Validations, {
     this.set('contactsFilter', Constants.CONTACT.FILTER.ALL);
   },
 
-  addContacts(contacts, addToBeginning = false) {
+  // No need to add to beginning because we will sort contacts anyways
+  addContacts(contacts) {
     const list = this.get('_contacts'),
       toAdd = ArrayUtils.ensureArrayAndAllDefined(contacts);
     if (isPresent(toAdd)) {
-      if (addToBeginning) {
-        list.unshiftObjects(toAdd);
-      } else {
-        list.pushObjects(toAdd);
-      }
+      list.pushObjects(toAdd);
     }
   },
 

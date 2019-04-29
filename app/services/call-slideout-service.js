@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
@@ -12,9 +13,9 @@ export default Ember.Service.extend({
   validateAndCheckForName(number, { ctx }) {
     run.debounce(this, this._validateAndCheckForName, number, ctx, 250);
   },
-  makeCall() {
+  makeCall(contactToCall, number) {
     return new RSVP.Promise((resolve, reject) => {
-      this._ensureContactExists(...arguments).then(contact => {
+      this._ensureContactExists(contactToCall, number).then(contact => {
         this.get('dataService')
           .request(this.get('recordItemService').makeCall(contact))
           .then(() => resolve(contact), reject);
@@ -26,24 +27,24 @@ export default Ember.Service.extend({
   // ----------------
 
   _validateAndCheckForName(number, ctx) {
-    const maxNum = 30, // we want some options in case the earlier contacts are view-only
-      cleaned = PhoneNumberUtils.clean(number);
-    if (PhoneNumberUtils.validate(cleaned)) {
+    const max = 30, // we want some options in case the earlier contacts are view-only
+      callByNumber = PhoneNumberUtils.clean(number);
+    if (PhoneNumberUtils.validate(callByNumber)) {
       this.get('contactService')
-        .searchContactsByNumber(cleaned, { max: maxNum })
+        .searchContactsByNumber(callByNumber, { max })
         .then(results => {
           const noViewOnlyContacts = results.toArray().filterBy('isViewPermission', false),
             total = noViewOnlyContacts.length;
           ctx.setProperties({
-            callByNumber: cleaned,
+            callByNumber,
             callByNumberContact: noViewOnlyContacts.get('firstObject'),
-            callByNumberMoreNum: Math.max(total - 1, 0), // this is an approx total
             callByNumberIsValid: true,
+            callByNumberMoreNum: Math.max(total - 1, 0), // this is an approx total
           });
         });
     } else {
       ctx.setProperties({
-        callByNumber: cleaned,
+        callByNumber,
         callByNumberContact: null,
         callByNumberIsValid: false,
         callByNumberMoreNum: 0,
@@ -55,7 +56,9 @@ export default Ember.Service.extend({
       if (isPresent(contactToCall)) {
         resolve(contactToCall);
       } else {
-        const newContact = this.get('store').createRecord('contact', { numbers: [{ number }] });
+        const newContact = this.get('store').createRecord(Constants.MODEL.CONTACT, {
+          numbers: [{ number }],
+        });
         this.get('contactService')
           .persistNewAndTryAddToPhone(newContact)
           .then(() => resolve(newContact), reject);

@@ -23,7 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
   classNames: 'infinite-scroll__scroll-container',
   classNameBindings: 'disabled:infinite-scroll__scroll-container--disabled',
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },

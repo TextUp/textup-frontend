@@ -191,16 +191,20 @@ test('exporting record items', function(assert) {
   assert.ok(requests[0].requestHeaders['Content-Type'].indexOf('application/pdf') > -1);
   assert.ok(requests[0].requestHeaders['Authorization'].indexOf('Bearer') > -1);
 
-  assert.ok(requests[0].url.indexOf(encodeURI(`teamId=${teamId}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`timezone=${tz}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`format=${Constants.EXPORT.FORMAT.PDF}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`max=${Constants.EXPORT.LARGEST_MAX}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`since=${start.toISOString()}`) > -1));
-  assert.ok(requests[0].url.indexOf(encodeURI(`before=${end.toISOString()}`) > -1));
+  // For `escape` vs `encodeURI` vs `encodeURIComponent` see https://stackoverflow.com/a/23842171
+  assert.ok(requests[0].url.includes(`teamId=${encodeURIComponent(teamId)}`));
+  assert.ok(requests[0].url.includes(`timezone=${encodeURIComponent(tz)}`));
+  assert.ok(requests[0].url.includes(`format=${encodeURIComponent(Constants.EXPORT.FORMAT.PDF)}`));
+  assert.ok(requests[0].url.includes(`max=${encodeURIComponent(Constants.EXPORT.LARGEST_MAX)}`));
+  assert.ok(requests[0].url.includes(`start=${encodeURIComponent(start.toISOString())}`));
+
+  assert.ok(requests[0].url.includes(`end=${encodeURIComponent(end.toISOString())}`));
   assert.ok(
-    requests[0].url.indexOf(encodeURI(`exportFormatType=${Constants.EXPORT.TYPE.GROUPED}`) > -1)
+    requests[0].url.includes(
+      `exportFormatType=${encodeURIComponent(Constants.EXPORT.TYPE.GROUPED)}`
+    )
   );
-  assert.ok(requests[0].url.indexOf(encodeURI(`tagIds[]=${tagId}`) > -1));
+  assert.ok(requests[0].url.includes(encodeURI(`owners[]=${encodeURIComponent(tagId)}`)));
 
   requests[0].respond(200);
 

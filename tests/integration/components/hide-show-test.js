@@ -25,6 +25,7 @@ test('properties', function(assert) {
       clickOutToClose=false
       ignoreCloseSelector=".hi"
       focusOutToClose=false
+      animate=true
       disabled=false}}
   `);
 
@@ -40,6 +41,7 @@ test('properties', function(assert) {
         clickOutToClose=88
         ignoreCloseSelector=88
         focusOutToClose=88
+        animate=88
         disabled=88}}
     `);
   });
@@ -465,6 +467,28 @@ test('closing due to touch event', function(assert) {
 
       done();
     });
+});
+
+test('turning animation (via liquid-spacer) on and off', function(assert) {
+  const done = assert.async();
+  this.setProperties({ animate: false });
+
+  this.render(hbs`{{hide-show}}`);
+
+  assert.ok(this.$('.ember-view').length, 'did render');
+  assert.ok(this.$('.ember-view .hide-show').length, 'by default, will animate');
+
+  this.render(hbs`{{hide-show animate=animate}}`);
+
+  assert.ok(this.$('.ember-view').length, 'did render');
+  assert.notOk(this.$('.ember-view .hide-show').length, 'if not animate, nested inner div is gone');
+
+  this.set('animate', true);
+  wait().then(() => {
+    assert.ok(this.$('.ember-view .hide-show').length, 'if animate, nested inner div is present');
+
+    done();
+  });
 });
 
 function buildTouchEvent(identifier, screenX, screenY) {

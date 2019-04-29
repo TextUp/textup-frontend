@@ -17,13 +17,6 @@ export default DS.RESTAdapter.extend({
   // Helper methods
   // --------------
 
-  _addTeamIdIfCreate(url, requestType) {
-    if (requestType === 'createRecord') {
-      return this._tryAddTeamId(url);
-    } else {
-      return url;
-    }
-  },
   _tryAddTeamId(url) {
     const team = this.get('stateManager.ownerAsTeam');
     return this._addQueryParam(url, 'teamId', team && team.get('id'));

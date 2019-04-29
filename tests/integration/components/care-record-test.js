@@ -139,13 +139,15 @@ test('doRegister a reference to the public API', function(assert) {
 });
 
 test('text handler returns outcome', function(assert) {
-  const onText = sinon.stub(),
-    randVal = Math.random(),
+  const done = assert.async(),
+    onText = sinon.spy(),
     obj = CareRecordComponent.create({ onText });
-  onText.callsFake(() => randVal);
 
-  assert.equal(obj._onText(), randVal, 'send handler return outcome');
-  assert.ok(onText.calledOnce);
+  obj._onText().then(() => {
+    assert.ok(onText.calledOnce);
+
+    done();
+  });
 });
 
 test('cannot add to record', function(assert) {
@@ -458,10 +460,8 @@ test('restoring user position after loading via public API', function(assert) {
   assert.ok(this.$('.care-record').length, 'did render');
   assert.ok(doRegister.calledOnce);
 
-  const publicAPI = doRegister.firstCall.args[0],
-    $container = this.$('.infinite-scroll__scroll-container');
+  const $container = this.$('.infinite-scroll__scroll-container');
   let originalScrollPosition;
-
   // [IMPORTANT] need to wait first to allow the scroll-container to initialize its initial user offset
   wait()
     .then(() => {
@@ -471,19 +471,9 @@ test('restoring user position after loading via public API', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.equal(
-        $container.scrollTop(),
-        originalScrollPosition,
-        'scroll position stays the same because restore position not called'
-      );
-
-      publicAPI.actions.restorePosition();
-      return wait();
-    })
-    .then(() => {
       assert.ok(
         $container.scrollTop() > originalScrollPosition,
-        'scroll position is restored so changes'
+        'scroll position is restored automatically when the data array is added-to so the position changes'
       );
 
       done();
