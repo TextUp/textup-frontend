@@ -17,6 +17,7 @@ test('rendering', function(assert) {
 });
 
 test('displaying when cordova is active', function(assert) {
+  const oldCordova = window.cordova;
   window.cordova = true;
   const src = 'https://www.textup.org/embedded-search';
   const text = 'Search the TextUp Support Hub';
@@ -24,20 +25,23 @@ test('displaying when cordova is active', function(assert) {
   this.render(hbs`{{feedback-switcher src=src text=text}}`);
 
   assert.ok(this.$('a').length, 'did render link');
+  window.cordova = oldCordova;
 });
 
 test('displaying when cordova not is active', function(assert) {
+  const oldCordova = window.cordova;
   window.cordova = false;
   const src = 'https://www.textup.org/embedded-search';
   const text = 'Search the TextUp Support Hub';
   this.setProperties({ src, text });
   this.render(hbs`{{feedback-switcher src=src text=text}}`);
 
-  assert.equal(
+  assert.ok(
     this.$('span')
       .text()
-      .trim(),
-    text
+      .trim()
+      .includes(text)
   );
   assert.ok(this.$('iframe').length, 'did render iframe');
+  window.cordova = oldCordova;
 });

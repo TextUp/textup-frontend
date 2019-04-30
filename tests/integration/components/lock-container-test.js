@@ -58,12 +58,11 @@ test('validation locks/unlocks', function(assert) {
         hbs`{{lock-container val=val lockOnInit=true doUpdateVal=doUpdateValStub doValidate=doValidateStub username = 'bob'}}`
       );
       this.set('val', `${Math.random()}`);
-
       return wait();
     })
     .then(() => {
       // accept unlocks
-      assert.ok(this.$('.lock-pad').length === 0, 'unlocks properly');
+      assert.equal(this.$('.lock-pad').length, 0, 'unlocks properly');
 
       done();
     });
@@ -86,7 +85,7 @@ test('lock on user logged in, lock on inactivity', function(assert) {
   this.render(
     hbs`{{lock-container timeout=10 lockOnInit=false doUpdateVal=doUpdateValStub doValidate=doValidateStub username=username}}`
   );
-  assert.ok(this.$('.lock-pad').length === 0);
+  assert.equal(this.$('.lock-pad').length, 0);
   this.visibility.trigger(config.events.visibility.hidden);
 
   Ember.run.later(() => {
@@ -109,19 +108,19 @@ test('no locking when no user logged in', function(assert) {
   this.render(hbs`{{lock-container doUpdateVal=doUpdateValStub doValidate=doValidateStub}}`);
 
   // Unlocked on init when no user logged in
-  assert.ok(this.$('.lock-pad').length === 0, 'unlocked when no user on init');
+  assert.equal(this.$('.lock-pad').length, 0, 'unlocked when no user on init');
 
   // Unlocked after timeout when no user logged in
   this.render(
     hbs`{{lock-container timeout=10 lockOnInit=false doUpdateVal=doUpdateValStub doValidate=doValidateStub}}`
   );
-  assert.ok(this.$('.lock-pad').length === 0);
+  assert.equal(this.$('.lock-pad').length, 0);
   this.visibility.trigger(config.events.visibility.hidden);
 
   Ember.run.later(() => {
     this.visibility.trigger(config.events.visibility.visible);
     wait().then(() => {
-      assert.ok(this.$('.lock-pad').length === 0, 'unlocked when no user on inactive');
+      assert.equal(this.$('.lock-pad').length, 0, 'unlocked when no user on inactive');
       done();
     });
   }, 100);
@@ -159,7 +158,7 @@ test('fingerprint auth', function(assert) {
     show.firstCall.args[1].call();
 
     // how to make window show unlock?
-    assert.ok(!this.get('lockContainer').isLocked);
+    assert.equal(this.get('lockContainer').isLocked, false);
 
     assert.deepEqual(show.firstCall.args[0], {
       clientId: LockContainerComponent.CLIENT_ID,
