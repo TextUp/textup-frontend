@@ -2,7 +2,8 @@
 {{message-modal url=(config "appMessage.messageEndpoint")
     display=shouldShowAppMessage
     onClose=(action "closeAppUpdateMessage")}}
-{{tour-components/tour-manager doRegister=actions.registerTourManager}}
+{{tour-components/tour-manager doRegister=(action "registerTourManagerAndStartTour")
+    username=authService.authUser.username}}
 
 {{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
@@ -11,9 +12,10 @@
     bodyId="body"
     doRegister=(action (mut slidingMenu))
     as |drawer|}}
-    <span id="tour-testing123" class="display-xs display-s display-m menu-toggle">
-        <button class="btn btn-plain full-height"
-            onclick={{drawer.actions.toggle}} id='tour-openSlideoutButton'>
+    <span id="tour-mobile-parent" class="display-xs display-s display-m menu-toggle">
+        <button id="tour-openSlideoutButton"
+            class="btn btn-plain full-height"
+            onclick={{drawer.actions.toggle}}>
             {{#if stateManager.ownerIsTeam}}
                 <p class="halo halo-sm text-heading"
                     style="background-color:{{stateManager.owner.hexColor}};
@@ -35,15 +37,14 @@
 {{else}}
     <div class="menu">
         <div class="menu__section">
-            <div class="display-xs display-s display-m">
+            <div id="tour-mobileSettings" class="display-xs display-s display-m">
                 {{#account-switcher user=authService.authUser
                     onLogOut=(route-action "logout")
                     doRegister=(action (mut accountSwitcher))
                     activeName=stateManager.owner.name
                     activeNumber=stateManager.owner.phone.content.number
                     toggleClass="xs-8-row-10"}}
-                    <button id="tour-mobileSettings"
-                        class="xs-2-row-10 textup-account-switcher__display"
+                    <button class="xs-2-row-10 textup-account-switcher__display"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         <span class="fa fa-cog"></span>
                     </button>
@@ -121,7 +122,7 @@
                 <div class="menu-item menu-slideout"
                     onclick={{route-action "startCallSlideout"}}>
                     <div class="btn-expand">
-                        <span id='tour-openCallButtonMobile'>Call</span>
+                        <span id="tour-openCallButtonMobile">Call</span>
                     </div>
                 </div>
             </div>
@@ -140,7 +141,7 @@
                     <div class="menu-item menu-slideout"
                         onclick={{route-action "startMultipleExportSlideout"}}>
                         <div class="btn-expand">
-                            <span id='tour-openExportButtonMobile'>Export</span>
+                            <span id="tour-openExportButtonMobile">Export</span>
                         </div>
                     </div>
                 </div>
@@ -158,7 +159,7 @@
 
             {{!-- contacts --}}
 
-            <div class="display-xs display-s display-m" id="tour-mobileContactsButton">
+            <div class="display-xs display-s display-m">
                 <div class="menu-divider" >
                     Contacts
                     <button class="btn btn-plain v-center-right"
@@ -226,7 +227,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewTagSlideout"}}>
-                        <span class="fa fa-plus" id='tour-createNewTagButtonMobile'></span>
+                        <span class="fa fa-plus" id="tour-createNewTagButtonMobile"></span>
                     </button >
                 </div>
                 {{#if model.phone.isFulfilled}}
@@ -250,7 +251,7 @@
             </div>
             <div class="display-l">
                 <div class="menu-divider"></div>
-                <div class="menu-item menu-slideout" id='tour-openTagsListButton'
+                <div class="menu-item menu-slideout" id="tour-openTagsListButton"
                     onclick={{route-action "startTagListSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"

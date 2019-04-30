@@ -1,22 +1,22 @@
 {{#if _isLocked}}
-  <div class="single-container single-container-small">
-    <div class="single-header">
-      <img class="brand" src='assets/images/logo.png' />
-          <h3 class='text-white'>Enter lock code</h3>
+    <div class="single-container single-container-small">
+        <div class="single-header">
+            <img class="brand" src="assets/images/logo.png" />
+            <h3 class="text-white">Enter lock code</h3>
+        </div>
+        {{lock-pad
+            val= val
+            doUpdateVal=doUpdateVal
+            doValidate=(action _doValidate)}}
+        <div class="single-footer">
+            <p class="emphasize text-white">Not {{username}}?</p>
+            <h4>
+                <a href="" onclick={{route-action "logout"}} class="text-white">
+                Log Out
+                </a>
+            </h4>
+        </div>
     </div>
-    {{lock-pad
-      val= val
-      doUpdateVal=doUpdateVal
-      doValidate=(action _doValidate)}}
-    <div class="single-footer">
-      <p class="emphasize text-white">Not {{username}}?</p>
-          <h4>
-            <a href="" onclick={{route-action 'logout'}} class='text-white'>
-              Log Out
-            </a>
-        </h4>
-    </div>
-  </div>
 {{else}}
-  {{yield}}
+    {{yield}}
 {{/if}}

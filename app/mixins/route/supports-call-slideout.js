@@ -37,7 +37,7 @@ export default Ember.Mixin.create({
       return this.get('callSlideoutService')
         .makeCall(callByNumberContact, callByNumber)
         .then(contact => {
-          this.get('tutorialService').startCompleteTask('makeCall');
+          this.get('tutorialService').startCompleteTask(Constants.TASK.CALL);
           controller.set('isCallingForNumber', false);
           this.send('closeSlideout');
           run.next(() => {

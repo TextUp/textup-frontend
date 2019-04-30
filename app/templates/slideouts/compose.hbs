@@ -12,18 +12,18 @@
 	<div class="form">
 		{{#if model.phone.isFulfilled}}
 			<div class="form__group">
-                {{#tour-components/hint hintId='composeRecipient' }}
-				{{#multi-select data=model.phone.content.tags
-			    	selected=composeRecipients
-			    	filterProperty=(constant "PROP_NAME.FILTER_VAL")
-                    displayProperty=(constant "PROP_NAME.READABLE_IDENT")
-			    	identityProperty=(constant "PROP_NAME.URL_IDENT")
-			    	doSearch=(route-action "composeDoSearch")
-			    	doCreate=(route-action "composeCreateRecipient")
-			    	onInsert=(route-action "composeInsertRecipient")
-					onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
-					{{multi-select/display-badge entity=recipient}}
-				{{/multi-select}}
+                {{#tour-components/hint hintId=(constant "HINT.COMPOSE")}}
+    				{{#multi-select data=model.phone.content.tags
+    			    	selected=composeRecipients
+    			    	filterProperty=(constant "PROP_NAME.FILTER_VAL")
+                        displayProperty=(constant "PROP_NAME.READABLE_IDENT")
+    			    	identityProperty=(constant "PROP_NAME.URL_IDENT")
+    			    	doSearch=(route-action "composeDoSearch")
+    			    	doCreate=(route-action "composeCreateRecipient")
+    			    	onInsert=(route-action "composeInsertRecipient")
+    					onRemove=(route-action "composeRemoveRecipient") as |recipient select|}}
+    					{{multi-select/display-badge entity=recipient}}
+    				{{/multi-select}}
                 {{/tour-components/hint}}
 			</div>
 		{{/if}}

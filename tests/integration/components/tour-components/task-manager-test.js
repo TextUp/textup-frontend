@@ -1,82 +1,50 @@
 import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
-import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-
-const { run } = Ember;
-
-let onClose, onFinishCompleteTask, resetTasks;
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent(
   'tour-components/task-manager',
   'Integration | Component | tour components/task manager',
   {
     integration: true,
-    beforeEach() {
-      this.register('service:notifications', NotificationsService);
-
-      onClose = sinon.spy();
-      onFinishCompleteTask = sinon.spy();
-      resetTasks = sinon.spy();
-      this.register(
-        'service:tutorial-service',
-        Ember.Service.extend({
-          tasks: [
-            {
-              id: 'addContact',
-              title: 'Add a contact',
-              text: 'You can add multiple phone numbers to a contact if needed.',
-              elementsToPulse: ['#tour-openNewContactButton'],
-              elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
-            },
-            {
-              id: 'sendMessage',
-              title: 'Send a message',
-              text: 'Schedule future messages by clicking the + button.',
-              elementsToPulse: ['#tour-openMessageButton'],
-              elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-openMessageButtonMobile']
-            }
-          ],
-          onClose: onClose,
-          onFinishCompleteTask: onFinishCompleteTask,
-          resetTasks: resetTasks
-        })
-      );
-      this.inject.service('tutorial-service', { as: 'tutorialService' });
-    }
   }
 );
 
 test('calls the method on complete', function(assert) {
-  const tutorialService = Ember.getOwner(this).lookup('service:tutorial-service');
-  const doRegister = sinon.spy();
-  this.setProperties({
-    tutorialService,
-    doRegister,
-    firstIncompleteTask: tutorialService.tasks[0]
-  });
-  this.render(hbs`{{tour-components/task-manager
-    doRegister=doRegister
-    firstIncompleteTask=firstIncompleteTask
-    onClose=tutorialService.onClose
-    onFinishCompleteTask=tutorialService.onFinishCompleteTask
-    resetTasks=tutorialService.resetTasks}}`);
+  const doRegister = sinon.spy(),
+    onClose = sinon.spy(),
+    onFinishCompleteTask = sinon.spy(),
+    firstIncompleteTask = {
+      id: 'addContact',
+      stepNumber: 0,
+      title: 'Add a contact',
+      text: 'You can add multiple phone numbers to a contact if needed.',
+      elementsToPulse: ['#tour-openNewContactButton'],
+      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
+    };
+  this.setProperties({ doRegister, onClose, onFinishCompleteTask, firstIncompleteTask });
+
+  this.render(hbs`
+    {{tour-components/task-manager
+      doRegister=doRegister
+      firstIncompleteTask=firstIncompleteTask
+      onClose=onClose
+      onFinishCompleteTask=onFinishCompleteTask}}
+  `);
   assert.ok(doRegister.calledOnce);
 
   Ember.$('.task-step__button--skip')
     .first()
     .click();
-  assert.ok(tutorialService.onFinishCompleteTask.calledWith('addContact'));
+  assert.ok(onFinishCompleteTask.calledWith('addContact'));
   Ember.$('.task-manager__title__button:eq(1)')
     .first()
     .click();
-  assert.ok(tutorialService.onClose.calledOnce);
+  assert.ok(onClose.calledOnce);
 });
 
 test('renders correct step', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
   const doRegister = sinon.spy(),
     onClose = sinon.spy(),
     onFinishCompleteTask = sinon.spy(),
@@ -87,15 +55,15 @@ test('renders correct step', function(assert) {
         title: 'Send a message',
         text: 'Schedule future messages by clicking the + button.',
         elementsToPulse: ['#tour-openMessageButton'],
-        elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-openMessageButtonMobile']
+        elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-openMessageButtonMobile'],
       },
       {
         id: 'addContact',
         title: 'Add a contact',
         text: 'You can add multiple phone numbers to a contact if needed.',
         elementsToPulse: ['#tour-openNewContactButton'],
-        elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
-      }
+        elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
+      },
     ],
     firstIncompleteTask = {
       id: 'addContact',
@@ -103,7 +71,7 @@ test('renders correct step', function(assert) {
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
       elementsToPulse: ['#tour-openNewContactButton'],
-      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
+      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
     };
 
   this.setProperties({
@@ -112,15 +80,17 @@ test('renders correct step', function(assert) {
     onFinishCompleteTask,
     resetTasks,
     firstIncompleteTask,
-    tasks
+    tasks,
   });
 
-  this.render(hbs`{{tour-components/task-manager
-    doRegister=doRegister
-    firstIncompleteTask=firstIncompleteTask
-    onClose=onClose
-    onFinishCompleteTask=onFinishCompleteTask
-    resetTasks=resetTasks tasks=tasks}}`);
+  this.render(hbs`
+    {{tour-components/task-manager
+      doRegister=doRegister
+      firstIncompleteTask=firstIncompleteTask
+      onClose=onClose
+      onFinishCompleteTask=onFinishCompleteTask
+      resetTasks=resetTasks tasks=tasks}}
+  `);
 
   const taskManagerText = this.$('.task-manager__content').text();
   assert.ok(taskManagerText.includes('Add a contact'));
@@ -133,18 +103,17 @@ test('renders correct step', function(assert) {
 });
 
 test('shouldShow works', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
   const doRegister = sinon.spy(),
     onClose = sinon.spy(),
     onFinishCompleteTask = sinon.spy(),
     resetTasks = sinon.spy(),
     firstIncompleteTask = {
       id: 'addContact',
+      stepNumber: 0,
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
       elementsToPulse: ['#tour-openNewContactButton'],
-      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
+      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
     };
 
   this.setProperties({
@@ -153,19 +122,18 @@ test('shouldShow works', function(assert) {
     onFinishCompleteTask,
     resetTasks,
     firstIncompleteTask,
-    shouldShow: false
+    shouldShow: false,
   });
-
-  this.render(hbs`{{tour-components/task-manager
-    doRegister=doRegister
-    firstIncompleteTask=firstIncompleteTask
-    onClose=onClose
-    onFinishCompleteTask=onFinishCompleteTask
-    resetTasks=resetTasks
-    shouldShow=shouldShow}}`);
-
-  var taskManagerShown = this.$('.task-manager__content').is(':visible');
-  assert.ok(!taskManagerShown);
+  this.render(hbs`
+    {{tour-components/task-manager
+      doRegister=doRegister
+      firstIncompleteTask=firstIncompleteTask
+      onClose=onClose
+      onFinishCompleteTask=onFinishCompleteTask
+      resetTasks=resetTasks
+      shouldShow=shouldShow}}
+  `);
+  assert.notOk(this.$('.task-manager__content').is(':visible'));
 
   this.setProperties({
     doRegister,
@@ -173,9 +141,8 @@ test('shouldShow works', function(assert) {
     onFinishCompleteTask,
     resetTasks,
     firstIncompleteTask,
-    shouldShow: true
+    shouldShow: true,
   });
-
   this.render(hbs`{{tour-components/task-manager
     doRegister=doRegister
     firstIncompleteTask=firstIncompleteTask
@@ -183,14 +150,10 @@ test('shouldShow works', function(assert) {
     onFinishCompleteTask=onFinishCompleteTask
     resetTasks=resetTasks
     shouldShow=shouldShow}}`);
-
-  taskManagerShown = this.$('.task-manager__content').is(':visible');
-  assert.ok(taskManagerShown);
+  assert.ok(this.$('.task-manager__content').is(':visible'));
 });
 
 test('onClose is called', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
   assert.ok(true);
   const doRegister = sinon.spy(),
     onClose = sinon.spy(),
@@ -198,10 +161,11 @@ test('onClose is called', function(assert) {
     resetTasks = sinon.spy(),
     firstIncompleteTask = {
       id: 'addContact',
+      stepNumber: 0,
       title: 'Add a contact',
       text: 'You can add multiple phone numbers to a contact if needed.',
       elementsToPulse: ['#tour-openNewContactButton'],
-      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton']
+      elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
     };
 
   this.setProperties({
@@ -209,20 +173,20 @@ test('onClose is called', function(assert) {
     onClose,
     onFinishCompleteTask,
     resetTasks,
-    firstIncompleteTask
+    firstIncompleteTask,
   });
 
-  this.render(hbs`{{tour-components/task-manager
-    doRegister=doRegister
-    firstIncompleteTask=firstIncompleteTask
-    onClose=onClose
-    onFinishCompleteTask=onFinishCompleteTask
-    resetTasks=resetTasks}}`);
+  this.render(hbs`
+    {{tour-components/task-manager
+      doRegister=doRegister
+      firstIncompleteTask=firstIncompleteTask
+      onClose=onClose
+      onFinishCompleteTask=onFinishCompleteTask
+      resetTasks=resetTasks}}
+    `);
 
   assert.ok(doRegister.calledOnce);
-  const publicAPI = doRegister.firstCall.args[0];
-  run(() => {
-    publicAPI.actions.finishCompleteTask();
-  });
+
+  doRegister.firstCall.args[0].actions.finishCompleteTask();
   assert.ok(onFinishCompleteTask.calledOnce, 'finish complete task is called');
 });

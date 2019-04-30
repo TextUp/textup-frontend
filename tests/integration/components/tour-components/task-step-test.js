@@ -1,8 +1,8 @@
 import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent(
   'tour-components/task-step',
@@ -13,8 +13,6 @@ moduleForComponent(
 );
 
 test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
   this.setProperties({
     id: 'addContacts',
     text: 'Task Text',
@@ -34,7 +32,7 @@ test('it renders', function(assert) {
       stepNumber=stepNumber
       elementsToPulse=elementsToPulse
       elementsToPulseMobile=elementsToPulseMobile}}
-      `);
+  `);
 
   assert.ok(
     this.$()
@@ -42,7 +40,6 @@ test('it renders', function(assert) {
       .includes('Step 1: Task Title')
   );
 
-  // // Template block usage:
   this.render(hbs`
     {{#tour-components/task-step
         id=id
@@ -72,29 +69,28 @@ test('calls doRegister', function(assert) {
     id: 'addContacts',
     text: 'Task Text',
     title: 'Task Title',
-    completeTask: completeTask,
-    doRegister: doRegister,
+    completeTask,
+    doRegister,
     stepNumber: 1,
     elementsToPulse: ['#step1', '#step2'],
     elementsToPulseMobile: ['#step1', '#step2'],
   });
 
   this.render(hbs`
-      <div id='step1'></div>
-      <div id='step2'></div>
+    <div id='step1'></div>
+    <div id='step2'></div>
+    {{tour-components/task-step
+      id=id
+      text=text
+      title=title
+      completeTask=completeTask
+      doRegister=doRegister
+      stepNumber=stepNumber
+      elementsToPulse=elementsToPulse
+      shouldShow=true
+      elementsToPulseMobile=elementsToPulseMobile}}
+  `);
 
-
-      {{tour-components/task-step
-        id=id
-        text=text
-        title=title
-        completeTask=completeTask
-        doRegister=doRegister
-        stepNumber=stepNumber
-        elementsToPulse=elementsToPulse
-        shouldShow=true
-        elementsToPulseMobile=elementsToPulseMobile}}
-        `);
   assert.ok(doRegister.calledOnce, 'doRegister is called');
 
   wait()

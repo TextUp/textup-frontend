@@ -6,18 +6,18 @@
         type="text"
         placeholder="Tag Name"
         validateObj=tag
-        validateField='name'
-        validate='bottom'}}
+        validateField="name"
+        validate="bottom"}}
 </div>
 <div class="form__group">
-    {{#tour-components/hint hintId='tagColor'}}
+    {{#tour-components/hint hintId=(constant "HINT.TAG_COLOR")}}
         <label class="form__label" for="Tag Color">Tag Color</label>
         {{color-control color=tag.hexColor
             disabled=tag.isDeleted}}
     {{/tour-components/hint}}
 </div>
 <div class="form__group">
-    {{#tour-components/hint hintId='tagLanguage'}}
+    {{#tour-components/hint hintId=(constant "HINT.TAG_LANGUAGE")}}
         <div class="row">
             <div class="xs-2-row-3 control-text">
                 <label  class="form__label"for="Language">

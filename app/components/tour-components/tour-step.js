@@ -1,67 +1,97 @@
 import Ember from 'ember';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
+import PlatformUtils from 'textup-frontend/utils/platform';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, $, run } = Ember;
+const { computed, run, tryInvoke, RSVP } = Ember;
 
-export default Ember.Component.extend(HasWormhole, PropTypesMixin, {
+export const BODY_DRAWER_CLASS = 'tour-step__root';
+
+export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
   propTypes: {
     title: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
-    elementToHighlight: PropTypes.string,
-    elementToOpenMobile: PropTypes.string,
-    elementToHighlightMobile: PropTypes.string,
     onNext: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
     onFinish: PropTypes.func.isRequired,
     isLastStep: PropTypes.bool.isRequired,
-    isFirstStep: PropTypes.bool.isRequired
+    isFirstStep: PropTypes.bool.isRequired,
+    elementToHighlight: PropTypes.string,
+    elementToOpenMobile: PropTypes.string,
+    elementToHighlightMobile: PropTypes.string,
   },
 
-  classNames: ['tour-step'],
+  classNames: 'tour-step',
 
-  didRender() {
+  didReceiveAttrs() {
     this._super(...arguments);
-    const elementName = this.get('elementToHighlightMobile');
-    if (elementName) {
-      const elementToScrollTo = $(elementName)[0];
-      if (elementToScrollTo) {
-        run.scheduleOnce('afterRender', () => {
-          this.get('_mobileOverlay').actions.removeCutout();
-          elementToScrollTo.scrollIntoView({ behavior: 'smooth' });
-          run.later(() => this.get('_mobileOverlay').actions.calculateCutout(), 1000);
-        });
-      }
-    }
-    run.scheduleOnce('afterRender', () => this.get('_desktopOverlay').actions.calculateCutout());
+    run.scheduleOnce('afterRender', this, this._setUpCutouts);
   },
   didInsertElement() {
     this._super(...arguments);
-    Ember.run.scheduleOnce('afterRender', () => {
-      Ember.$(Ember.getOwner(this).rootElement).addClass(this.get('_bodyDrawerClass'));
-    });
+    run.scheduleOnce('afterRender', () => this.get('_root').addClass(BODY_DRAWER_CLASS));
   },
   willDestroyElement() {
     this._super(...arguments);
-    Ember.$(Ember.getOwner(this).rootElement).removeClass(this.get('_bodyDrawerClass'));
+    this.get('_root').removeClass(BODY_DRAWER_CLASS);
   },
 
+  // Internal properties
+  // -------------------
+
+  _isSettingUp: false,
   _mobileOverlay: null,
   _desktopOverlay: null,
-  _bodyDrawerClass: 'tour-step__root',
-
-  // Internal properties
-  // -----------------
-  _elementToWormhole: computed('_containerId', function() {
-    // return this.$(`${this.get('_containerId')}`);
+  _elementToWormhole: computed(function() {
     return this.$('.tour-step__wormhole');
   }),
 
-  _isMobile: computed('', function() {
-    return $(window).innerWidth() < 480;
-  }),
+  // Internal handlers
+  // -----------------
 
-  _containerId: computed('elementToHighlight', function() {
-    return `${this.get('elementToHighlight')}__container`;
-  })
+  _onNextOrFinish() {
+    tryInvoke(this, this.get('isLastStep') ? 'onFinish' : 'onNext');
+  },
+
+  _setUpCutouts() {
+    if (PlatformUtils.isMobile()) {
+      this._clickAndScrollToAndCalculateCutout(
+        this.get('elementToOpenMobile'),
+        this.get('elementToHighlightMobile'),
+        this.get('_mobileOverlay')
+      );
+    } else {
+      this._tryCalculateCutout(this.get('_desktopOverlay'));
+    }
+  },
+  _clickAndScrollToAndCalculateCutout(clickSelector, highlightSelector, overlay) {
+    this._tryRemoveCutout(overlay);
+    const $click = Ember.$(clickSelector);
+    if ($click.length) {
+      $click.click();
+      run.later(this, this._scrollToAndCalculateCutout, highlightSelector, overlay, 500);
+    } else {
+      this._scrollToAndCalculateCutout(highlightSelector, overlay);
+    }
+  },
+  _scrollToAndCalculateCutout(highlightSelector, overlay) {
+    const scrollToEl = Ember.$(highlightSelector)[0];
+    if (scrollToEl) {
+      scrollToEl.scrollIntoView({ behavior: 'smooth' });
+      // Need to hardcode a delay because `scrollIntoView` does not take a completion callback
+      // or return a promise -- trying to find the scrollParent programmatically is too complicated
+      run.later(this, this._tryCalculateCutout, overlay, 500);
+    }
+  },
+  _tryRemoveCutout(overlay) {
+    if (overlay) {
+      overlay.actions.removeCutout();
+    }
+  },
+  _tryCalculateCutout(overlay) {
+    if (overlay) {
+      overlay.actions.calculateCutout();
+    }
+  },
 });

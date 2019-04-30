@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 const { tryInvoke, RSVP } = Ember;
@@ -41,7 +42,7 @@ export default Ember.Mixin.create({
         this.get('recordItemService')
           .makeCall(this.get('currentModel'))
           .then(() => {
-            this.get('tutorialService').startCompleteTask('makeCall');
+            this.get('tutorialService').startCompleteTask(Constants.TASK.CALL);
             resolve();
           })
           .catch(reject);
@@ -52,7 +53,7 @@ export default Ember.Mixin.create({
         .persist(this.get('controller.careRecordText'))
         .then(() => {
           this._initCareRecordText();
-          this.get('tutorialService').startCompleteTask('sendMessage');
+          this.get('tutorialService').startCompleteTask(Constants.TASK.MESSAGE);
         });
     },
 
@@ -61,7 +62,7 @@ export default Ember.Mixin.create({
     },
 
     onFinishCareRecordTutorial() {
-      this.get('tutorialService').startCompleteTask('additionalActions');
+      this.get('tutorialService').startCompleteTask(Constants.TASK.CLIENT_RECORD);
     },
   },
 

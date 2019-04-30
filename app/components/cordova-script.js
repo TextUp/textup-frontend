@@ -1,5 +1,5 @@
-import Ember from 'ember';
 import config from 'textup-frontend/config/environment';
+import Ember from 'ember';
 
 export default Ember.Component.extend({
   tagName: 'script',

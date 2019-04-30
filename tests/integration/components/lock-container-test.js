@@ -8,6 +8,9 @@ import * as LockContainerComponent from 'textup-frontend/components/lock-contain
 
 moduleForComponent('lock-container', 'Integration | Component | lock container', {
   integration: true,
+  beforeEach() {
+    this.inject.service('visibility');
+  },
 });
 
 test('component renders', function(assert) {
@@ -84,10 +87,10 @@ test('lock on user logged in, lock on inactivity', function(assert) {
     hbs`{{lock-container timeout=10 lockOnInit=false doUpdateVal=doUpdateValStub doValidate=doValidateStub username=username}}`
   );
   assert.ok(this.$('.lock-pad').length === 0);
-  this.container.lookup('service:visibility').trigger(config.events.visibility.hidden);
+  this.visibility.trigger(config.events.visibility.hidden);
 
   Ember.run.later(() => {
-    this.container.lookup('service:visibility').trigger(config.events.visibility.visible);
+    this.visibility.trigger(config.events.visibility.visible);
     wait().then(() => {
       assert.ok(this.$('.lock-pad').length, 'locked when user on unactive');
       done();
@@ -113,10 +116,10 @@ test('no locking when no user logged in', function(assert) {
     hbs`{{lock-container timeout=10 lockOnInit=false doUpdateVal=doUpdateValStub doValidate=doValidateStub}}`
   );
   assert.ok(this.$('.lock-pad').length === 0);
-  this.container.lookup('service:visibility').trigger(config.events.visibility.hidden);
+  this.visibility.trigger(config.events.visibility.hidden);
 
   Ember.run.later(() => {
-    this.container.lookup('service:visibility').trigger(config.events.visibility.visible);
+    this.visibility.trigger(config.events.visibility.visible);
     wait().then(() => {
       assert.ok(this.$('.lock-pad').length === 0, 'unlocked when no user on inactive');
       done();
@@ -169,38 +172,3 @@ test('fingerprint auth', function(assert) {
     done();
   });
 });
-
-// how to test route dependent?
-// logout what happens?
-// test('attempts locks out', function(assert) {
-//   const doUpdateValStub = sinon.stub(),
-//     doValidateStub = sinon.stub(),
-//     doLogoutStub = sinon.stub(),
-//     done = assert.async();
-//
-//   this.setProperties({ val: '', doUpdateValStub, doValidateStub, doLogoutStub });
-//   this.render(
-//     hbs`{{lock-container val=val lockOnInit=true doUpdateVal=doUpdateValStub doValidate=doValidateStub doLogout=doLogoutStub}}`
-//   );
-//   doValidateStub.rejects();
-//
-//   this.set('val', `${Math.random()}`);
-//   wait()
-//     .then(() => {
-//       this.set('val', `${Math.random()}`);
-//       return wait();
-//     })
-//     .then(() => {
-//       this.set('val', `${Math.random()}`);
-//       return wait();
-//     })
-//     .then(() => {
-//       assert.equal(doLogoutStub.callCount, 0, 'no logout after 4 attempts');
-//       this.set('val', `${Math.random()}`);
-//       return wait();
-//     })
-//     .then(() => {
-//       assert.equal(doLogoutStub.callCount, 1, 'logout after 5 attempts');
-//       done();
-//     });
-// });

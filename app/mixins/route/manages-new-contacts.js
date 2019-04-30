@@ -34,7 +34,7 @@ export default Ember.Mixin.create({
         .persistNewAndTryAddToPhone(this.get('controller.newContact'))
         .then(() => {
           this.send('closeSlideout');
-          this.get('tutorialService').startCompleteTask('addContact');
+          this.get('tutorialService').startCompleteTask(Constants.TASK.CONTACT);
           this.get('controller').set('newContact', null);
         });
     },

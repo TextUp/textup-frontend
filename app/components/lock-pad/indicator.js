@@ -10,14 +10,11 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
 
   getDefaultProps() {
-    return {
-      indicatorNum: 0,
-      numFilled: 0,
-    };
+    return { indicatorNum: 0, numFilled: 0 };
   },
 
   classNames: 'lock-pad__indicator',
-  classNameBindings: ['_isFilled:lock-pad__indicator--filled'],
+  classNameBindings: '_isFilled:lock-pad__indicator--filled',
 
   // Internal properties
   // -------------------

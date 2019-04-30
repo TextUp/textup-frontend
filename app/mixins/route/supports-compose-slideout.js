@@ -44,7 +44,7 @@ export default Ember.Mixin.create({
             : get(recipient, Constants.PROP_NAME.READABLE_IDENT);
         }),
         rText = this.get('recordItemService').createNewText(recipients, { contents });
-      this.get('tutorialService').startCompleteTask('sendMessage');
+      this.get('tutorialService').startCompleteTask(Constants.TASK.MESSAGE);
       return this.get('dataService')
         .persist(rText)
         .then(() => {

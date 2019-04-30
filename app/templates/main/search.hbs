@@ -28,8 +28,8 @@
 			<span class="fa fa-search"></span>
 		</button>
 	</div>
-    <div class="flex flex--align-stretch flex--direction-vertical">
-    	{{#infinite-scroll classNames="flex__item flex__item--grow section-body bg-color bg-lightest"
+    <div class="section-body flex flex--align-stretch flex--direction-vertical">
+    	{{#infinite-scroll classNames="flex__item flex__item--grow bg-color bg-lightest"
             contentClass="result-list"
             data=searchResults
             numTotal=numTotalSearchResults
@@ -55,15 +55,14 @@
             </div>
         {{/infinite-scroll}}
         <div id="task-manager__container" class="section-footer flex__item flex__item--no-shrink">
-            {{tour-components/task-manager
-                shouldShow=tutorialService.publicAPI.shouldShowTaskManager
-                doRegister=(action (mut tutorialService.taskManager))
-                firstIncompleteTask=tutorialService.publicAPI.firstIncompleteTask
-                onClose=tutorialService.publicAPI.actions.closeTaskManager
-                getTaskStatus=tutorialService.publicAPI.actions.getTaskStatus
-                onFinishCompleteTask=tutorialService.publicAPI.actions.finishCompleteTask
-                resetTasks=tutorialService.publicAPI.actions.resetTasks
-                tasks=tutorialService.publicAPI.tasks}}
+            {{tour-components/task-manager doRegister=(action (mut tutorialService.taskManager))
+                firstIncompleteTask=tutorialService.firstIncompleteTask
+                getTaskStatus=(service-action "tutorialService" "getTaskStatus")
+                onClose=(service-action "tutorialService" "closeTaskManager")
+                onFinishCompleteTask=(service-action "tutorialService" "finishCompleteTask")
+                resetTasks=(service-action "tutorialService" "resetTasks")
+                shouldShow=tutorialService.shouldShowTaskManager
+                tasks=tutorialService.tasks}}
         </div>
     </div>
 </div>

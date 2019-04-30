@@ -7,8 +7,7 @@ export default Ember.Mixin.create({
 
   setupController(controller) {
     this._super(...arguments);
-    const tutorialService = this.get('tutorialService');
-    controller.setProperties({ feedbackMessage: null, tutorialService });
+    controller.setProperties({ feedbackMessage: null });
   },
 
   actions: {

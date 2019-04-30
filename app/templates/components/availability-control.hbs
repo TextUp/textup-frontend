@@ -1,12 +1,12 @@
 <div class="form__group">
-    {{#tour-components/hint hintId='setAvailability'}}
+    {{#tour-components/hint hintId=(constant "HINT.AVAILABILITY")}}
         <div class="row">
             <div class="xs-row-2 control-text">
-                <label for="Availability" class='form__label'>
+                <label for="Availability" class="form__label">
                     Set availability
                 </label>
             </div>
-            {{#multi-toggle classNames='xs-row-2'
+            {{#multi-toggle classNames="xs-row-2"
                 selectIndex=(if self.schedule.manual 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.BRAND")
@@ -25,11 +25,11 @@
 {{#if self.schedule.manual}}
     <div class="form__group">
         <div class="xs-row-2 control-text">
-            <label for="Availability" class='form__label'>
+            <label for="Availability" class="form__label">
                 Available now?
             </label>
         </div>
-        {{#multi-toggle classNames='xs-row-2'
+        {{#multi-toggle classNames="xs-row-2"
             selectIndex=(if self.schedule.manualIsAvailable 0 1) as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.BRAND")
@@ -45,7 +45,7 @@
     </div>
     {{#if others}}
         <div class="form__group">
-            <label for="Team Member Availabilities" class='form__label'>
+            <label for="Team Member Availabilities" class="form__label">
                 Team Members
             </label>
         </div>

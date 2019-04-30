@@ -22,13 +22,13 @@ export default Ember.Mixin.create({
         authUser = this.get('authService.authUser');
       model.rollbackAttributes();
       authUser.rollbackAttributes();
-      this.get('tutorialService').startCompleteTask('setAvailability');
+      this.get('tutorialService').startCompleteTask(Constants.TASK.AVAILABILITY);
       this.send('closeSlideout');
     },
     finishAvailabilitySlideout() {
       const model = this.get('currentModel'),
         authUser = this.get('authService.authUser');
-      this.get('tutorialService').startCompleteTask('setAvailability');
+      this.get('tutorialService').startCompleteTask(Constants.TASK.AVAILABILITY);
       return this.get('dataService')
         .persist([model, authUser])
         .then(() => {

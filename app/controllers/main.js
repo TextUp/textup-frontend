@@ -1,7 +1,7 @@
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 
-const { computed, get } = Ember;
+const { computed, get, run } = Ember;
 
 export default Ember.Controller.extend({
   // displaying active menu items
@@ -15,17 +15,10 @@ export default Ember.Controller.extend({
     closeAppUpdateMessage() {
       this.set('shouldShowAppMessage', false);
     },
-    registerTourManager(tourManager) {
-      if (tourManager.startTourImmediately) {
-        Ember.run.scheduleOnce('afterRender', () => {
-          const mobileParent = Ember.$('#tour-testing123');
-          if (mobileParent.is(':visible')) {
-            const openBeforeTour = mobileParent.children('#tour-openSlideoutButton');
-            openBeforeTour.click();
-          }
-          Ember.run.scheduleOnce('afterRender', tourManager.actions.startTour);
-        });
+    registerTourManagerAndStartTour(tourManager) {
+      if (tourManager && tourManager.startTourImmediately) {
+        run.scheduleOnce('afterRender', tourManager.actions.startTour);
       }
-    }
-  }
+    },
+  },
 });

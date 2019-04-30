@@ -5,7 +5,6 @@ import Ember from 'ember';
 import moment from 'moment';
 import TypeUtils from 'textup-frontend/utils/type';
 import { tryGetFileNameFromXHR, download } from 'textup-frontend/utils/file';
-import RecordCall from 'textup-frontend/models/record-call';
 
 const { assign, isArray, get } = Ember;
 
@@ -80,7 +79,7 @@ export default Ember.Service.extend({
   },
 
   endOngoingCall(rCall) {
-    if (rCall instanceof RecordCall) {
+    if (TypeUtils.isCall(rCall)) {
       rCall.set('endOngoing', true);
       this.get('dataService').persist(rCall);
     }

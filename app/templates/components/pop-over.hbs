@@ -1,7 +1,7 @@
 {{yield _publicAPI}}
 
 {{!-- body will be hoisted up to wormhole --}}
-<div class="pop-over__body {{bodyClass}}
+<div class="pop-over__body
     {{if _isOpening 'pop-over__body--opening'}}
     {{if _isClosing 'pop-over__body--closing'}}
     {{if _publicAPI.isOpen 'pop-over__body--open'}}

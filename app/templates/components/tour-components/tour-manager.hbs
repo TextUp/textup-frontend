@@ -1,14 +1,20 @@
 {{#if _tourOngoing}}
-  {{#tour-components/tour-step title=_currentStep.title text=_currentStep.text elementToHighlight=_currentStep.elementToHighlight
-    elementToOpenMobile=_currentStep.elementToOpenMobile elementToHighlightMobile=_currentStep.elementToHighlightMobile
-    onNext=_publicAPI.actions.nextStep onBack=_publicAPI.actions.previousStep onFinish=_publicAPI.actions.endTour
-    isLastStep=_lastStep isFirstStep=_firstStep }}
-
-    {{#each _steps as |step|}}
-      <span class="fa fa-circle
-          tour-step__status-dot tour-step__status-dot--{{if (lte step.stepNumber _currentStepNumber) "complete" "incomplete"}}"></span>
-    {{/each}}
-  {{/tour-components/tour-step}}
+    {{#tour-components/tour-step title=_currentStep.title
+        text=_currentStep.text
+        elementToHighlight=_currentStep.elementToHighlight
+        elementToOpenMobile=_currentStep.elementToOpenMobile
+        elementToHighlightMobile=_currentStep.elementToHighlightMobile
+        onNext=(action _nextStep)
+        onBack=(action _previousStep)
+        onFinish=(action _endTour)
+        isLastStep=_lastStep isFirstStep=_firstStep }}
+        {{#each _steps as |step index|}}
+            <span class="fa fa-circle
+                tour-step__status-dot
+                tour-step__status-dot--{{if (lte index _currentStepIndex) "complete" "incomplete"}}">
+            </span>
+        {{/each}}
+    {{/tour-components/tour-step}}
 {{/if}}
 
 {{yield _publicAPI}}

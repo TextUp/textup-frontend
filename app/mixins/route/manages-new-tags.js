@@ -35,7 +35,7 @@ export default Ember.Mixin.create({
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => {
           this.send('closeSlideout');
-          this.get('tutorialService').startCompleteTask('createTag');
+          this.get('tutorialService').startCompleteTask(Constants.TASK.TAG);
         });
     },
 
@@ -67,7 +67,7 @@ export default Ember.Mixin.create({
         .persistNew(this.controller.get('newTag'), { model: this.get('currentModel') })
         .then(() => {
           this._tryCloseTagsListHideAway();
-          this.get('tutorialService').startCompleteTask('createTag');
+          this.get('tutorialService').startCompleteTask(Constants.TASK.TAG);
         });
     },
   },

@@ -1,34 +1,25 @@
 import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
-import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import hbs from 'htmlbars-inline-precompile';
-import * as HintUtil from 'textup-frontend/utils/hint-info';
+import HintUtils from 'textup-frontend/utils/hint-info';
 import sinon from 'sinon';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('tour-components/hint', 'Integration | Component | tour components/hint', {
   integration: true,
   beforeEach() {
-    this.register('service:notifications', NotificationsService);
-  }
+    this.register('service:tutorialService', Ember.Service);
+    this.inject.service('tutorialService');
+  },
 });
 
 test('it renders', function(assert) {
-  const getMessage = sinon.stub(HintUtil, 'getMessage');
-  const getTitle = sinon.stub(HintUtil, 'getTitle');
+  const getMessage = sinon.stub(HintUtils, 'getMessage'),
+    getTitle = sinon.stub(HintUtils, 'getTitle');
 
-  this.register(
-    'service:tutorial-service',
-    Ember.Service.extend({
-      publicAPI: {
-        shouldShowTaskManager: true
-      }
-    })
-  );
-  // Template block usage:
-  this.setProperties({
-    hintId: 'testHint1'
-  });
+  this.tutorialService.setProperties({ shouldShowTaskManager: true });
   getMessage.returns('hint message');
+
+  this.setProperties({ hintId: 'testHint1' });
   this.render(hbs`
     {{#tour-components/hint hintId=hintId}}
       template block text
@@ -53,23 +44,14 @@ test('it renders', function(assert) {
 });
 
 test('title renders when is present', function(assert) {
-  const getMessage = sinon.stub(HintUtil, 'getMessage');
-  const getTitle = sinon.stub(HintUtil, 'getTitle');
+  const getMessage = sinon.stub(HintUtils, 'getMessage'),
+    getTitle = sinon.stub(HintUtils, 'getTitle');
 
-  this.register(
-    'service:tutorial-service',
-    Ember.Service.extend({
-      publicAPI: {
-        shouldShowTaskManager: true
-      }
-    })
-  );
-  // Template block usage:
-  this.setProperties({
-    hintId: 'testHint1'
-  });
+  this.tutorialService.setProperties({ shouldShowTaskManager: true });
   getMessage.returns('hint message');
   getTitle.returns('hint title');
+
+  this.setProperties({ hintId: 'testHint1' });
   this.render(hbs`
     {{#tour-components/hint hintId=hintId}}
       template block text
@@ -101,22 +83,13 @@ test('title renders when is present', function(assert) {
 });
 
 test('no show when shouldShowTaskManager is false', function(assert) {
-  const getMessage = sinon.stub(HintUtil, 'getMessage');
-  const getTitle = sinon.stub(HintUtil, 'getTitle');
+  const getMessage = sinon.stub(HintUtils, 'getMessage'),
+    getTitle = sinon.stub(HintUtils, 'getTitle');
 
-  this.register(
-    'service:tutorial-service',
-    Ember.Service.extend({
-      publicAPI: {
-        shouldShowTaskManager: false
-      }
-    })
-  );
-  // Template block usage:
-  this.setProperties({
-    hintId: 'testHint1'
-  });
+  this.tutorialService.setProperties({ shouldShowTaskManager: false });
   getMessage.returns('hint message');
+
+  this.setProperties({ hintId: 'testHint1' });
   this.render(hbs`
     {{#tour-components/hint hintId=hintId}}
       template block text

@@ -1,30 +1,26 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
-import sinon from 'sinon';
-import wait from 'ember-test-helpers/wait';
 import config from 'textup-frontend/config/environment';
-import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
+import Constants from 'textup-frontend/constants';
+import Ember from 'ember';
+import sinon from 'sinon';
+import StorageUtils from 'textup-frontend/utils/storage';
+import wait from 'ember-test-helpers/wait';
+import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
-
   beforeEach() {
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notifications', Ember.Service);
     this.register(
-      'service:auth-service',
-      Ember.Service.extend(Ember.Evented, {
-        authUser: {
-          username: 'someUsername',
-        },
-      })
+      'service:authService',
+      Ember.Service.extend(Ember.Evented, { authUser: { username: 'someUsername' } })
     );
+
+    this.inject.service('notifications');
+    this.inject.service('authService');
   },
 });
 
-// Replace this with your real tests.
 test('it exists', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.ok(service.tasks);
   service.tasks.forEach((task, index) => {
     assert.ok(task.id);
@@ -35,86 +31,93 @@ test('it exists', function(assert) {
   });
 });
 
-test('logging out and loggin in', function(assert) {
-  let service = this.subject();
+test('logging out and logging in', function(assert) {
+  const service = this.subject(),
+    done = assert.async();
 
-  const authService = Ember.getOwner(this).lookup('service:auth-service');
-
-  authService.set('authUser', { username: 'un1' });
-  authService.trigger(config.events.auth.success);
+  this.authService.set('authUser', { username: 'un1' });
+  this.authService.trigger(config.events.auth.success);
+  this.notifications.setProperties({ info: sinon.spy() });
 
   service.resetTasks();
-  assert.ok(service._shouldShowTaskManager, true);
-  service.closeTaskManager();
-  assert.ok(service._shouldShowTaskManager, false);
+  wait()
+    .then(() => {
+      assert.equal(service.get('shouldShowTaskManager'), true);
 
-  authService.set('authUser', { username: 'un2' });
-  authService.trigger(config.events.auth.success);
+      service.closeTaskManager();
+      return wait();
+    })
+    .then(() => {
+      assert.equal(service.get('shouldShowTaskManager'), false);
 
-  assert.ok(service._shouldShowTaskManager, true);
+      this.authService.set('authUser', { username: 'un2' });
+      this.authService.trigger(config.events.auth.success);
+      return wait();
+    })
+    .then(() => {
+      assert.equal(service.get('shouldShowTaskManager'), true);
+
+      done();
+    });
 });
 
 test('_setTaskStatus and getTaskStatus', function(assert) {
-  const getItem = sinon.stub(window.localStorage, 'getItem'),
+  const service = this.subject(),
+    getItem = sinon.stub(window.localStorage, 'getItem'),
     setItem = sinon.stub(window.localStorage, 'setItem');
 
-  let service = this.subject();
   service.resetTasks();
-
   getItem.resetHistory();
   setItem.resetHistory();
+
   getItem.returns('random string');
-  assert.equal(service.getTaskStatus('addContact'), false);
+  assert.equal(service.getTaskStatus(Constants.TASK.CONTACT), false);
   assert.equal(getItem.callCount, 1);
-  assert.ok(getItem.firstCall.args[0].includes('addContact'));
+  assert.ok(getItem.firstCall.args[0].includes(Constants.TASK.CONTACT));
 
-  getItem.returns('false');
-  assert.equal(service.getTaskStatus('addContact'), false);
+  getItem.returns(StorageUtils.FALSE);
+  assert.equal(service.getTaskStatus(Constants.TASK.CONTACT), false);
 
-  getItem.returns('true');
-  assert.equal(service.getTaskStatus('addContact'), true);
+  getItem.returns(StorageUtils.TRUE);
+  assert.equal(service.getTaskStatus(Constants.TASK.CONTACT), true);
 
-  service._setTaskStatus('addContact', true);
+  service._setTaskStatus(Constants.TASK.CONTACT, true);
   assert.equal(setItem.callCount, 1);
   assert.ok(setItem.firstCall.args[1]);
-  assert.ok(setItem.firstCall.args[0].includes('addContact'));
+  assert.ok(setItem.firstCall.args[0].includes(Constants.TASK.CONTACT));
 
   getItem.restore();
   setItem.restore();
 });
 
 test('startCompleteTask with different Ids', function(assert) {
-  let service = this.subject();
-  const completeTask = sinon.spy(),
-    done = assert.async();
-  const taskManager = {
-    actions: {
-      startCompleteTask: completeTask,
-    },
-  };
-  const taskId = 'taskId';
-  const firstIncomplete = {
-    id: taskId,
-  };
+  const service = this.subject(),
+    completeTask = sinon.spy(),
+    done = assert.async(),
+    taskManager = { actions: { startCompleteTask: completeTask } },
+    taskId = 'taskId',
+    firstIncomplete = { id: taskId };
 
-  service.taskManager = taskManager;
-  service._firstIncompleteTask = firstIncomplete;
+  service.setProperties({ taskManager, firstIncompleteTask: firstIncomplete });
 
   service.startCompleteTask('wrongTask');
   wait()
     .then(() => {
       assert.ok(completeTask.notCalled, 'completeTask in taskManager is not called');
+
       service.startCompleteTask(taskId);
       return wait();
     })
     .then(() => {
       assert.ok(completeTask.calledOnce, 'completeTask in taskManager is called');
+
       done();
     });
 });
 
 test('completeTask and resetTasks', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
+
   service.resetTasks();
   service.tasks.forEach(task => {
     const id = task.id;
@@ -122,6 +125,7 @@ test('completeTask and resetTasks', function(assert) {
     service.finishCompleteTask(id);
     assert.strictEqual(service.getTaskStatus(id), true);
   });
+
   service.resetTasks();
   service.tasks.forEach(task => {
     const id = task.id;
@@ -130,10 +134,10 @@ test('completeTask and resetTasks', function(assert) {
 });
 
 test('firstIncompleteTask', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   service.resetTasks();
   service.tasks.forEach(task => {
-    const firstIncomplete = service.get('_firstIncompleteTask');
+    const firstIncomplete = service.get('firstIncompleteTask');
     assert.strictEqual(task, firstIncomplete);
     service.finishCompleteTask(task.id);
   });
@@ -141,20 +145,21 @@ test('firstIncompleteTask', function(assert) {
 });
 
 test('closeTaskManager', function(assert) {
-  let service = this.subject();
-  const info = sinon.spy(),
+  const service = this.subject(),
+    info = sinon.spy(),
     done = assert.async();
-  service.notifications = {
-    info: info,
-  };
+
+  this.notifications.setProperties({ info });
+
   service.closeTaskManager();
   wait().then(() => {
     assert.strictEqual(
-      service.shouldShowTaskManagerInternal,
+      service._shouldShowTaskManager,
       false,
       'after closing, should show is false'
     );
     assert.strictEqual(info.calledOnce, true, 'notification service is called');
+
     done();
   });
 });

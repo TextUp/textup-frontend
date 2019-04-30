@@ -1,20 +1,22 @@
-import * as HintUtil from 'textup-frontend/utils/hint-info';
+import Constants from 'textup-frontend/constants';
+import HintData from 'textup-frontend/data/hint-data';
+import HintUtils from 'textup-frontend/utils/hint-info';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | hint info');
 
-// Replace this with your real tests.
-test('getTitle and getMessage', function(assert) {
-  let title = HintUtil.getTitle('testHint1');
-  assert.equal(title, 'Test Hint 1');
-  let message = HintUtil.getMessage('testHint1');
+test('getting title', function(assert) {
+  assert.equal(HintUtils.getTitle(null), HintUtils.ERROR_TITLE);
   assert.equal(
-    message,
-    'This is a super super super super super super super super super super super super long test hint'
+    HintUtils.getTitle(Constants.HINT.CONTACT_ADD),
+    HintData[Constants.HINT.CONTACT_ADD].title
   );
+});
 
-  title = HintUtil.getTitle('non existent test key');
-  message = HintUtil.getMessage('non existent test key');
-  assert.strictEqual(title, 'Error');
-  assert.strictEqual(message, '');
+test('getting message', function(assert) {
+  assert.equal(HintUtils.getMessage(null), '');
+  assert.equal(
+    HintUtils.getMessage(Constants.HINT.CONTACT_ADD),
+    HintData[Constants.HINT.CONTACT_ADD].message
+  );
 });

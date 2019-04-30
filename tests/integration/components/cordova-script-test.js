@@ -1,24 +1,33 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import config from 'textup-frontend/config/environment';
 import hbs from 'htmlbars-inline-precompile';
+import sinon from 'sinon';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('cordova-script', 'Integration | Component | cordova script', {
-  integration: true
+  integration: true,
 });
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('rendering', function(assert) {
+  const hasCordova = sinon.stub(config, 'hasCordova');
 
+  hasCordova.get(() => false);
   this.render(hbs`{{cordova-script}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$('script[type="text/javascript"]').length, 'did render');
+  assert.notOk(
+    this.$('script[type="text/javascript"]').attr('src'),
+    'not source because no cordova'
+  );
 
-  // Template block usage:
-  this.render(hbs`
-    {{#cordova-script}}
-      template block text
-    {{/cordova-script}}
-  `);
+  hasCordova.get(() => true);
+  this.render(hbs`{{cordova-script}}`);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.ok(this.$('script[type="text/javascript"]').length, 'did render');
+  assert.equal(
+    this.$('script[type="text/javascript"]').attr('src'),
+    'cordova.js',
+    'source is cordova script'
+  );
+
+  hasCordova.restore();
 });

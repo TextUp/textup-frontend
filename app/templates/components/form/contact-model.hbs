@@ -1,7 +1,7 @@
 {{#if contact.isShared}}
     <div class="bg-color margin-b border-radius-all
         pad-t pad-l pad-r pad-b-half">
-        <p class='margin-b-half'>
+        <p class="margin-b-half">
             <span class="text-bold">
                 {{phone-number contact.sharedByName}}
             </span>
@@ -21,13 +21,13 @@
     </div>
 {{/if}}
 <div class="form__group">
-    {{#tour-components/hint hintId='contactsAddSupport'}}
+    {{#tour-components/hint hintId=(constant "HINT.CONTACT_ADD")}}
     <label class="form__label" for="Name">Name</label>
     {{input value=contact.name
         validateObj=contact
-        validateField='name'
-        validate='bottom'
-        disabled=(if (not contact.allowEdits) 'disabled')
+        validateField="name"
+        validate="bottom"
+        disabled=(if (not contact.allowEdits) "disabled")
         type="text" placeholder="Name" class="form__input start-focus"
         autocorrect="off"}}
         {{/tour-components/hint}}
@@ -36,17 +36,17 @@
     <label class="form__label" for="Note">Note</label>
     {{textarea rows="3"
         placeholder="Enter notes here..."
-        disabled=(if (not contact.allowEdits) 'disabled')
+        disabled=(if (not contact.allowEdits) "disabled")
         autoresize=true
         class="form__input form__input--multiline"
         maxLength=1000
         validateObj=contact
-        validateField='note'
-        validate='bottom'
+        validateField="note"
+        validate="bottom"
         value=contact.note}}
 </div>
 <div class="form__group">
-    {{#tour-components/hint hintId='contactsLanguage'}}
+    {{#tour-components/hint hintId=(constant "HINT.CONTACT_LANGUAGE")}}
         <div class="row">
             <div class="xs-2-row-3 control-text">
                 <label class="form__label" for="Language">
@@ -67,18 +67,18 @@
     {{/tour-components/hint}}
 </div>
 <div class="form__group">
-    {{#tour-components/hint hintId='contactsNumbers'}}
+    {{#tour-components/hint hintId=(constant "HINT.CONTACT_NUMBERS")}}
         <label class="form__label" for="Numbers">Numbers</label>
         {{#if contact.numberDuplicates}}
             <div class="bg-color margin-b border-radius-all pad-t pad-l pad-r pad-b-half">
                 {{#each contact.numberDuplicates as |dupObj|}}
                     {{#with (get dupObj.duplicates.lastObject (constant "PROP_NAME.READABLE_IDENT")) as |lastIdent|}}
-                        <p class='margin-b-half'>
+                        <p class="margin-b-half">
                             <span class="text-bold">{{phone-number dupObj.number}}</span>
                             also belongs to
                             {{#each dupObj.duplicates as |dupContact|}}
                                 {{#with (get dupContact (constant "PROP_NAME.READABLE_IDENT")) as |thisIdent|}}
-                                    <span class='link'
+                                    <span class="link"
                                         onclick={{action _onGoToDuplicates dupContact.id}}>
                                         {{!-- tildes present to trim whitespace --}}
                                         {{~phone-number thisIdent ~}}
@@ -97,7 +97,7 @@
             onAdd=(action _onAddNumber)
             onRemove=(action _onRemoveNumber)
             validateObj=contact
-            validateField='numbers'
-            validate='bottom'}}
+            validateField="numbers"
+            validate="bottom"}}
     {{/tour-components/hint}}
 </div>

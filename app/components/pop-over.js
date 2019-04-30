@@ -1,16 +1,11 @@
+import BoundUtils from 'textup-frontend/utils/bounds';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MutationObserver from 'npm:mutation-observer';
+import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { isIOS, isAndroid } from 'textup-frontend/utils/native-platform';
-import {
-  hasMoreViewportSpaceOnTop,
-  shouldAlignToLeftEdge,
-  buildFloatingStyles,
-  buildDimensionStyles,
-} from 'textup-frontend/utils/bounds';
 
 const { computed, RSVP, run, tryInvoke } = Ember;
 
@@ -22,10 +17,9 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     onReposition: PropTypes.func,
     bodyClickWillClose: PropTypes.bool,
     position: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
-    bodyClass: PropTypes.string,
   },
   getDefaultProps() {
-    return { bodyClickWillClose: true, bodyClass: '' };
+    return { bodyClickWillClose: true };
   },
   classNames: ['pop-over'],
 
@@ -132,7 +126,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   _tryCloseOnBody() {
     if (this.get('bodyClickWillClose')) {
       // on iOS event order is different
-      if (isIOS() || isAndroid()) {
+      if (PlatformUtils.isIOS() || PlatformUtils.isAndroid()) {
         run.later(this, this._close, 400);
       } else {
         this._close();
@@ -189,9 +183,9 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       const triggerEl = this.element,
         bodyEl = this.get('_bodyContents')[0],
         isTop = this._determineIsTop(),
-        alignLeft = shouldAlignToLeftEdge(triggerEl),
-        floatStyles = buildFloatingStyles(isTop, alignLeft, triggerEl, bodyEl),
-        dimensionStyles = buildDimensionStyles(isTop, alignLeft, triggerEl, bodyEl);
+        alignLeft = BoundUtils.shouldAlignToLeftEdge(triggerEl),
+        floatStyles = BoundUtils.buildFloatingStyles(isTop, alignLeft, triggerEl, bodyEl),
+        dimensionStyles = BoundUtils.buildDimensionStyles(isTop, alignLeft, triggerEl, bodyEl);
 
       run(() => {
         this.setProperties({
@@ -211,7 +205,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     } else if (position === Constants.POP_OVER.POSITION.BOTTOM) {
       return false;
     } else {
-      return hasMoreViewportSpaceOnTop(this.element);
+      return BoundUtils.hasMoreViewportSpaceOnTop(this.element);
     }
   },
 

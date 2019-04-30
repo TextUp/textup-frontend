@@ -1,11 +1,18 @@
+import ArrayUtils from 'textup-frontend/utils/array';
 import Ember from 'ember';
-import { PropTypes } from 'ember-prop-types';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
+import PlatformUtils from 'textup-frontend/utils/platform';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, run, $, tryInvoke } = Ember;
 
-export default Ember.Component.extend(HasEvents, HasAppRoot, {
+export const PULSING_CLASS = 'task-element__should-animate-pulse';
+export const TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS = 2000;
+export const SHOW_ME_START_DELAY_IN_MS = 200;
+export const SHOW_ME_BETWEEN_STEPS_DELAY_IN_MS = 1500;
+
+export default Ember.Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
   propTypes: {
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -17,159 +24,122 @@ export default Ember.Component.extend(HasEvents, HasAppRoot, {
     elementsToPulse: PropTypes.arrayOf(PropTypes.string),
     elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string),
   },
-
   getDefaultProps() {
     return { shouldShow: true };
   },
 
-  classNames: ['task-step'],
-
-  _publicAPI: computed(function() {
-    return {
-      actions: {
-        completeTask: this._completeThisTask.bind(this),
-        showUserSteps: this._debounceShowUserSteps.bind(this),
-        removeAllPulsing: this._removeAllPulsing.bind(this),
-      },
-    };
-  }),
-
-  _temporaryComplete: null,
+  classNames: 'task-step',
 
   init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
-
-  didReceiveAttrs({ oldAttrs, newAttrs }) {
+  didReceiveAttrs({ oldAttrs }) {
     this._super(...arguments);
     this.set('_temporaryComplete', false);
-
     if (oldAttrs) {
-      const oldPulsingElements = oldAttrs.elementsToPulse.value;
-      const oldPulsingElementsMobile = oldAttrs.elementsToPulseMobile.value;
-      if (oldPulsingElements) {
-        oldPulsingElements.forEach(element => {
-          if (!newAttrs.elementsToPulse.value.includes(element)) {
-            this._removePulseFromElement(element);
-          }
-        });
-      }
-      if (oldPulsingElementsMobile) {
-        oldPulsingElementsMobile.forEach(element => {
-          if (!newAttrs.elementsToPulseMobile.value.includes(element)) {
-            this._removePulseFromElement(element);
-          }
-        });
-      }
+      this._removeAllPulsingFromList(oldAttrs.elementsToPulse.value);
+      this._removeAllPulsingFromList(oldAttrs.elementsToPulseMobile.value);
     }
-
     if (this.get('shouldShow')) {
       run.next(this, this._startPulsing);
     }
   },
-
-  _startPulsing() {
-    const mobile = $(window).innerWidth() < 750;
-
-    var elementsToPulse, num_elems;
-
-    if (mobile) {
-      elementsToPulse = this.get('elementsToPulseMobile');
-      num_elems = elementsToPulse.length;
-    } else {
-      elementsToPulse = this.get('elementsToPulse');
-      num_elems = elementsToPulse.length;
-    }
-
-    const $root = this.get('_root');
-
-    elementsToPulse.forEach((element, index) => {
-      if (index < num_elems - 1) {
-        this._pulseElement(element);
-        $root.on(this._event('click'), element, () => {
-          run.next(this, this._pulseElement, elementsToPulse[index + 1]);
-        });
-      } else {
-        this._pulseElement(element);
-      }
-    });
-  },
-
   willDestroyElement() {
-    this._removeAllPulsing();
+    this._super(...arguments);
+    this._removeAllCurrentPulsing();
   },
+
+  // Internal properties
+  // -------------------
+
+  _temporaryComplete: null,
+  _publicAPI: computed(function() {
+    return {
+      actions: {
+        completeTask: this._completeThisTask.bind(this),
+        showUserSteps: this._debounceShowUserSteps.bind(this),
+        removeAllPulsing: this._removeAllCurrentPulsing.bind(this),
+      },
+    };
+  }),
+
+  // Internal handlers
+  // -----------------
 
   _completeThisTask(taskId, shouldShowCompleteMessage = true) {
-    const mobile = $(window).innerWidth() < 750;
-    var elementsToPulse, num_elems;
-
-    if (mobile) {
-      elementsToPulse = this.get('elementsToPulseMobile');
-      num_elems = elementsToPulse.length;
-    } else {
-      elementsToPulse = this.get('elementsToPulse');
-      num_elems = elementsToPulse.length;
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
     }
-
-    elementsToPulse.forEach(element => {
-      this._removePulseFromElement(element);
-    });
-
+    this._removeAllCurrentPulsing();
     if (taskId === this.get('id') && shouldShowCompleteMessage) {
       this.set('_temporaryComplete', true);
-      run.later(() => this.get('completeTask')(taskId), 2000);
+      run.later(this, this.get('completeTask'), taskId, TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS);
     } else {
       this.get('completeTask')(taskId);
     }
   },
-
   _debounceShowUserSteps() {
     run.debounce(this, this._showUserSteps, 1000, true);
   },
-
   _showUserSteps() {
-    // check if element needs to be opened, open if it's visible
-    const mobile = $(window).innerWidth() < 750;
-
-    var elementsToClick;
-
-    if (mobile) {
-      elementsToClick = this.get('elementsToPulseMobile');
-    } else {
-      elementsToClick = this.get('elementsToPulse');
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
     }
-
-    elementsToClick.forEach((element, index) => {
-      run.later(() => {
-        $(element).click();
-      }, 200 + index * 1500);
+    this._getCurrentElementSelectors().forEach((elementSelector, index) => {
+      run.later(
+        () => $(elementSelector).click(),
+        SHOW_ME_START_DELAY_IN_MS + index * SHOW_ME_BETWEEN_STEPS_DELAY_IN_MS
+      );
     });
   },
-
-  _pulseElement(elementIdToPulse) {
-    const elementToPulse = $(elementIdToPulse);
-    elementToPulse.addClass('task-element__should-animate-pulse');
+  _getCurrentElementSelectors() {
+    return ArrayUtils.ensureArrayAndAllDefined(
+      PlatformUtils.isMobile() ? this.get('elementsToPulseMobile') : this.get('elementsToPulse')
+    );
   },
 
-  _removePulseFromElement(elementIdToRemovePulse) {
-    const $root = this.get('_root');
-    run.scheduleOnce('afterRender', () => {
-      const elementToRemove = $(elementIdToRemovePulse);
-      $root.off(this._event('click'));
-      elementToRemove.removeClass('task-element__should-animate-pulse');
+  _startPulsing() {
+    const $root = this.get('_root'),
+      elementsToPulse = this._getCurrentElementSelectors(),
+      numElems = elementsToPulse.length;
+    elementsToPulse.forEach((elementSelector, index) => {
+      this._pulseElement(elementSelector);
+      if (index < numElems - 1) {
+        $root.on(
+          this._event('click'),
+          elementSelector,
+          this._pulseElementAfterDelay.bind(this, elementsToPulse[index + 1])
+        );
+      }
     });
   },
-
-  _removeAllPulsing() {
-    const elements = this.get('elementsToPulse');
-    const elementsMobile = this.get('elementsToPulseMobile');
-
-    elements.forEach(element => {
-      this._removePulseFromElement(element);
+  _pulseElementAfterDelay(elementSelector) {
+    run.next(this, this._pulseElement, elementSelector);
+  },
+  _pulseElement(elementSelector) {
+    $(elementSelector).addClass(PULSING_CLASS);
+  },
+  _removeAllCurrentPulsing() {
+    // Do not include `isDestroying` because that is true when `willDestroyElement` hook is called
+    if (this.get('isDestroyed')) {
+      return;
+    }
+    this.get('_root').off(this._event('click'));
+    this._removeAllPulsingFromList(this.get('elementsToPulse'));
+    this._removeAllPulsingFromList(this.get('elementsToPulseMobile'));
+  },
+  _removePulseFromElement(elementSelector) {
+    run.join(() => {
+      run.scheduleOnce('afterRender', () => {
+        this.get('_root').off(this._event('click'), elementSelector);
+        $(elementSelector).removeClass(PULSING_CLASS);
+      });
     });
-    elementsMobile.forEach(element => {
-      this._removePulseFromElement(element);
-    });
+  },
+  _removeAllPulsingFromList(list) {
+    ArrayUtils.ensureArrayAndAllDefined(list).forEach(elementSelector =>
+      this._removePulseFromElement(elementSelector)
+    );
   },
 });

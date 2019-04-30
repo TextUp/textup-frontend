@@ -175,4 +175,22 @@ export default {
   POP_OVER: {
     POSITION: { TOP: 'top', BOTTOM: 'bottom' },
   },
+  HINT: {
+    CONTACT_ADD: 'contactsAddSupport',
+    CONTACT_LANGUAGE: 'contactsLanguage',
+    CONTACT_NUMBERS: 'contactsNumbers',
+    COMPOSE: 'composeRecipient',
+    AVAILABILITY: 'setAvailability',
+    TAG_LANGUAGE: 'tagLanguage',
+    TAG_COLOR: 'tagColor',
+  },
+  TASK: {
+    CONTACT: 'addContact',
+    MESSAGE: 'sendMessage',
+    CALL: 'makeCall',
+    AVAILABILITY: 'setAvailability',
+    TAG: 'createTag',
+    EXPORT: 'exportMessage',
+    CLIENT_RECORD: 'additionalActions',
+  },
 };

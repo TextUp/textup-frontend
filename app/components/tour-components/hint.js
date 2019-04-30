@@ -1,24 +1,25 @@
 import Ember from 'ember';
-import { PropTypes } from 'ember-prop-types';
-import * as HintUtil from 'textup-frontend/utils/hint-info';
+import HintUtils from 'textup-frontend/utils/hint-info';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed } = Ember;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(PropTypesMixin, {
   tutorialService: Ember.inject.service(),
 
   propTypes: {
-    hintId: PropTypes.string.isRequired
+    hintId: PropTypes.string.isRequired,
   },
 
-  classNames: ['hint'],
+  classNames: 'hint',
 
-  hintTitle: computed('hintId', function() {
-    const hintId = this.get('hintId');
-    return HintUtil.getTitle(hintId);
+  // Internal properties
+  // -------------------
+
+  _hintTitle: computed('hintId', function() {
+    return HintUtils.getTitle(this.get('hintId'));
   }),
-  hintText: computed('hintId', function() {
-    const hintId = this.get('hintId');
-    return HintUtil.getMessage(hintId);
-  })
+  _hintText: computed('hintId', function() {
+    return HintUtils.getMessage(this.get('hintId'));
+  }),
 });

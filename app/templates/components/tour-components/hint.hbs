@@ -1,8 +1,9 @@
-{{#if tutorialService.publicAPI.shouldShowTaskManager}}
-  {{yield}}
-  <p class="hint__text form__label form__label--multiline">
-    <b>{{if hintTitle hintTitle "Hint"}}: </b>{{hintText}}
-  </p>
+{{#if tutorialService.shouldShowTaskManager}}
+    {{yield}}
+    <p class="hint__text form__label form__label--multiline">
+        <b>{{if _hintTitle _hintTitle "Hint"}}:</b>
+        {{_hintText}}
+    </p>
 {{else}}
-  {{yield}}
+    {{yield}}
 {{/if}}

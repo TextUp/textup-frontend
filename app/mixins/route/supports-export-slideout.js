@@ -52,7 +52,7 @@ export default Ember.Mixin.create({
           .exportRecordItems(dateStart, dateEnd, exportAsGrouped, exportRecordOwners)
           .then(() => {
             this.send('closeSlideout');
-            this.get('tutorialService').startCompleteTask('exportMessage');
+            this.get('tutorialService').startCompleteTask(Constants.TASK.EXPORT);
             resolve();
           }, reject);
       });

@@ -8,7 +8,7 @@ moduleForComponent(
   'tour-components/tour-step',
   'Integration | Component | tour components/tour step',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -19,17 +19,22 @@ test('pressing buttons work and renders correctly - first step', function(assert
   const title = 'Welcome to TextUp',
     text = 'This is the welcome text';
   this.setProperties({
-    title: title,
-    text: text,
+    title,
+    text,
     isFirstStep: true,
     isLastStep: false,
     onNext: next,
     onBack: back,
-    onFinish: () => null
+    onFinish: () => null,
   });
   this.render(hbs`
-    {{tour-components/tour-step title=title text=text isFirstStep=isFirstStep
-    isLastStep=isLastStep onNext=onNext onBack=onBack onFinish=onFinish}}
+    {{tour-components/tour-step title=title
+      text=text
+      isFirstStep=isFirstStep
+      isLastStep=isLastStep
+      onNext=onNext
+      onBack=onBack
+      onFinish=onFinish}}
   `);
   assert.strictEqual(
     Ember.$('.tour-step__header__text')
@@ -54,13 +59,13 @@ test('pressing buttons work and renders correctly - first step', function(assert
   );
   Ember.$('.tour-step__button.tour-step__button--back')
     .first()
-    .click();
+    .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.notCalled, 'back is called');
       Ember.$('.tour-step__button.tour-step__button--next')
         .first()
-        .click();
+        .triggerHandler('click');
       return wait();
     })
     .then(() => {
@@ -77,17 +82,22 @@ test('pressing buttons work and renders correctly - middle step', function(asser
   const title = 'Welcome to TextUp',
     text = 'This is the welcome text';
   this.setProperties({
-    title: title,
-    text: text,
+    title,
+    text,
     isFirstStep: false,
     isLastStep: false,
     onNext: next,
     onBack: back,
-    onFinish: () => null
+    onFinish: () => null,
   });
   this.render(hbs`
-    {{tour-components/tour-step title=title text=text isFirstStep=isFirstStep
-    isLastStep=isLastStep onNext=onNext onBack=onBack onFinish=onFinish}}
+    {{tour-components/tour-step title=title
+      text=text
+      isFirstStep=isFirstStep
+      isLastStep=isLastStep
+      onNext=onNext
+      onBack=onBack
+      onFinish=onFinish}}
   `);
   assert.strictEqual(
     Ember.$('.tour-step__header__text')
@@ -112,17 +122,18 @@ test('pressing buttons work and renders correctly - middle step', function(asser
   );
   Ember.$('.tour-step__button.tour-step__button--back')
     .first()
-    .click();
+    .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.calledOnce, 'back is called');
       Ember.$('.tour-step__button.tour-step__button--next')
         .first()
-        .click();
+        .triggerHandler('click');
       return wait();
     })
     .then(() => {
       assert.ok(next.calledOnce, 'finish is called');
+
       done();
     });
 });
@@ -135,17 +146,22 @@ test('pressing buttons work and renders correctly - last step', function(assert)
   const title = 'Welcome to TextUp',
     text = 'This is the welcome text';
   this.setProperties({
-    title: title,
-    text: text,
+    title,
+    text,
     isFirstStep: false,
     isLastStep: true,
     onNext: () => null,
     onBack: back,
-    onFinish: finish
+    onFinish: finish,
   });
   this.render(hbs`
-    {{tour-components/tour-step title=title text=text isFirstStep=isFirstStep
-    isLastStep=isLastStep onNext=onNext onBack=onBack onFinish=onFinish}}
+    {{tour-components/tour-step title=title
+      text=text
+      isFirstStep=isFirstStep
+      isLastStep=isLastStep
+      onNext=onNext
+      onBack=onBack
+      onFinish=onFinish}}
   `);
   assert.strictEqual(
     Ember.$('.tour-step__header__text')
@@ -170,17 +186,18 @@ test('pressing buttons work and renders correctly - last step', function(assert)
   );
   Ember.$('.tour-step__button.tour-step__button--back')
     .first()
-    .click();
+    .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.calledOnce, 'back is called');
       Ember.$('.tour-step__button.tour-step__button--next')
         .first()
-        .click();
+        .triggerHandler('click');
       return wait();
     })
     .then(() => {
       assert.ok(finish.calledOnce, 'finish is called');
+
       done();
     });
 });

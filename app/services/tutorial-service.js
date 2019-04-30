@@ -1,8 +1,13 @@
-import Ember from 'ember';
-import * as TaskUtil from 'textup-frontend/utils/task-info';
 import config from 'textup-frontend/config/environment';
+import Ember from 'ember';
+import StorageUtils from 'textup-frontend/utils/storage';
+import TaskData from 'textup-frontend/data/task-data';
 
-const { computed, set } = Ember;
+const { assign, computed, set, isPresent } = Ember;
+
+export const TASK_ID_KEY = 'id';
+export const TASK_STATUS_KEY = 'status';
+export const TASK_STEP_NUMBER_KEY = 'stepNumber';
 
 export default Ember.Service.extend({
   notifications: Ember.inject.service(),
@@ -10,116 +15,103 @@ export default Ember.Service.extend({
 
   init() {
     this._super(...arguments);
-    const tasks = TaskUtil.getTasks();
-    tasks.forEach((task, index) => {
-      task.status = this.getTaskStatus(task.id);
-      task.stepNumber = index + 1;
+    const tasks = [];
+    TaskData.forEach((task, index) => {
+      tasks.pushObject(
+        assign({}, task, {
+          [TASK_STATUS_KEY]: this.getTaskStatus(task[TASK_ID_KEY]),
+          [TASK_STEP_NUMBER_KEY]: index + 1,
+        })
+      );
     });
     this.set('tasks', tasks);
-    this.get('authService').on(config.events.auth.success, this._setShouldShow.bind(this));
+    // initialize `_shouldShowTaskManager` and ensure it gets re-initialized on future logins
+    this._setShouldShowFromStorage();
+    this.get('authService').on(
+      config.events.auth.success,
+      this._setShouldShowFromStorage.bind(this)
+    );
   },
+
+  // Properties
+  // ----------
 
   taskManager: null,
-
   tasks: null,
-
-  publicAPI: computed('_firstIncompleteTask', '_shouldShowTaskManager', function() {
-    return {
-      actions: {
-        getTaskStatus: this.getTaskStatus.bind(this),
-        startCompleteTask: this.startCompleteTask.bind(this),
-        finishCompleteTask: this.finishCompleteTask.bind(this),
-        closeTaskManager: this.closeTaskManager.bind(this),
-        resetTasks: this.resetTasks.bind(this),
-      },
-      tasks: this.get('tasks'),
-      firstIncompleteTask: this.get('_firstIncompleteTask'),
-      shouldShowTaskManager: this.get('_shouldShowTaskManager'),
-    };
+  firstIncompleteTask: computed(`tasks.@each.${TASK_STATUS_KEY}`, function() {
+    return this.get('tasks').find(task => task && task[TASK_STATUS_KEY] === false);
+  }),
+  shouldShowTaskManager: computed('_shouldShowTaskManager', function() {
+    const shouldShow = this.get('_shouldShowTaskManager');
+    return shouldShow === null || shouldShow;
   }),
 
-  _setShouldShow() {
-    const shouldShow = window.localStorage.getItem(
-      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`
-    );
-    this.set('shouldShowTaskManagerInternal', shouldShow !== 'false');
-  },
+  // Methods
+  // -------
 
   getTaskStatus(taskId) {
-    const status = window.localStorage.getItem(
-      `task-manager-${this.get('authService.authUser.username')}-${taskId}`
+    return (
+      window.localStorage.getItem(StorageUtils.taskKey(this.get('_username'), taskId)) ===
+      StorageUtils.TRUE
     );
-    return status === 'true';
   },
-
-  _setTaskStatus(taskId, status) {
-    const task = this.get('tasks').find(function(task) {
-      return task.id === taskId;
-    });
-    if (task) {
-      window.localStorage.setItem(
-        `task-manager-${this.get('authService.authUser.username')}-${taskId}`,
-        status
-      );
-      set(task, 'status', status);
-    }
-  },
-
   startCompleteTask(taskId) {
-    if (taskId === this.get('_firstIncompleteTask').id) {
-      this.taskManager.actions.startCompleteTask(taskId);
+    if (taskId === this.get('firstIncompleteTask.id')) {
+      const taskManager = this.get('taskManager');
+      if (taskManager) {
+        taskManager.actions.startCompleteTask(taskId);
+      }
     }
   },
-
   finishCompleteTask(taskId) {
     this._setTaskStatus(taskId, true);
   },
-
   closeTaskManager() {
     this.get('notifications').info(
       'Access the “Getting Started” tour at anytime through <button class="btn-link">the Support menu</button>.',
-      {
-        htmlContent: true,
-        onClick: this._openSupportSlideout.bind(this),
-      }
+      { htmlContent: true, onClick: this._openSupportSlideout.bind(this) }
     );
-    this.set('shouldShowTaskManagerInternal', false);
+    this.set('_shouldShowTaskManager', false);
     window.localStorage.setItem(
-      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`,
-      false
+      StorageUtils.showManagerKey(this.get('_username')),
+      StorageUtils.FALSE
     );
+  },
+  resetTasks() {
+    this.get('tasks').forEach(task => this._setTaskStatus(task[TASK_ID_KEY], false));
+    window.localStorage.setItem(
+      StorageUtils.showManagerKey(this.get('_username')),
+      StorageUtils.TRUE
+    );
+    this.set('_shouldShowTaskManager', true);
+  },
+
+  // Internal
+  // --------
+
+  _username: computed.alias('authService.authUser.username'),
+  _shouldShowTaskManager: null,
+
+  _setShouldShowFromStorage() {
+    const shouldShow = window.localStorage.getItem(
+      StorageUtils.showManagerKey(this.get('_username'))
+    );
+    this.set('_shouldShowTaskManager', shouldShow !== StorageUtils.FALSE);
+  },
+  _setTaskStatus(taskId, status) {
+    const task = this.get('tasks').find(task => task && task[TASK_ID_KEY] === taskId);
+    if (task) {
+      window.localStorage.setItem(
+        StorageUtils.taskKey(this.get('_username'), taskId),
+        status ? StorageUtils.TRUE : StorageUtils.FALSE
+      );
+      set(task, TASK_STATUS_KEY, status);
+    }
   },
   _openSupportSlideout() {
     Ember.getOwner(this)
       .lookup('route:main')
       .send('startFeedbackSlideout');
+    this.get('notifications').clearAll();
   },
-
-  resetTasks() {
-    const tasks = this.get('tasks');
-    tasks.forEach(task => this._setTaskStatus(task.id, false));
-    window.localStorage.setItem(
-      `task-manager-${this.get('authService.authUser.username')}-shouldShowTaskManager`,
-      true
-    );
-    this.set('shouldShowTaskManagerInternal', true);
-  },
-
-  _firstIncompleteTask: computed('tasks.@each.status', function() {
-    const tasks = this.get('tasks');
-    const firstIncomplete = tasks.find(function(task) {
-      return task.status === false;
-    });
-    return firstIncomplete;
-  }),
-
-  shouldShowTaskManagerInternal: null,
-
-  _shouldShowTaskManager: computed('shouldShowTaskManagerInternal', function() {
-    const shouldShow = this.get('shouldShowTaskManagerInternal');
-    if (shouldShow === null) {
-      return true;
-    }
-    return shouldShow;
-  }),
 });
