@@ -1,10 +1,10 @@
-{{title 'Edit'}}
+{{title "Edit"}}
 
 <div class="details full-height">
 	<div class="section-header">
 		<div class="pull-left horizontal-items s-2-row-3">
 			<div class="clear-badge display-xs display-s no-space">
-				{{#link-to (if team.isDeleted 'admin.people' 'admin.team')}}
+				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
 					<span class="pad-all">
 						<span class="fa fa-chevron-left"></span>
 					</span>
@@ -18,21 +18,21 @@
 				<span class="fa fa-user"></span>
 			</div>
 			<span class="no-space clear-badge display-m display-l">
-                <button class="btn btn-danger btn-plain" type='button'
-                    onclick={{route-action 'markForDelete' team}}>
+                <button class="btn btn-danger btn-plain" type="button"
+                    onclick={{service-action "dataService" "markForDelete" team}}>
                     <span class="fa fa-trash"></span>
                 </button>
 			</span>
 		</div>
 		<div class="pull-right horizontal-items s-row-3">
 			<span class="no-space clear-badge display-xs display-s">
-                <button class="btn btn-danger btn-plain" type='button'
-                    onclick={{route-action 'markForDelete' team}}>
+                <button class="btn btn-danger btn-plain" type="button"
+                    onclick={{service-action "dataService" "markForDelete" team}}>
                     <span class="fa fa-trash"></span>
                 </button>
 			</span>
 			<span class="no-space clear-badge display-m display-l">
-				{{#link-to (if team.isDeleted 'admin.people' 'admin.team')}}
+				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
 					<span class="pad-all">
 						<span class="fa fa-times"></span>
 					</span>
@@ -46,16 +46,16 @@
 				<p>{{team.name}} is about to be deleted.</p>
 				<div class="horizontal-items text-center margin-t-double margin-b">
 			        <div class="clear-badge no-space">
-			            <button class="btn btn-plain" type='button'
-			                onclick={{route-action 'revert' team}}>
+			            <button class="btn btn-plain" type="button"
+			                onclick={{service-action "dataService" "revert" team}}>
 			                Undo
 			            </button>
 			        </div>
 			        <div class="clear-badge no-space">
-			        	{{async-button classNames='btn btn-plain btn-danger'
-		                    action=(route-action 'persist' team)
-		                    default='Confirm Delete'
-		                    pending='Deleting...'}}
+			        	{{async-button classNames="btn btn-plain btn-danger"
+		                    action=(service-action "dataService" "persist" team)
+		                    default="Confirm Delete"
+		                    pending="Deleting..."}}
 			        </div>
 			    </div>
 			</div>
@@ -70,27 +70,27 @@
     	<div class="section-body bg-color bg-lightest">
 		    <div class="form">
 		    	{{#with team as |newTeam|}}
-		    		{{partial 'partials/team/create-edit'}}
+		    		{{partial "partials/team/create-edit"}}
 		    	{{/with}}
 		    </div>
 	    	{{#if (or team.hasDirtyAttributes team.hasManualChanges)}}
 	    		<div class="flex flex--justify-center flex--spacing-between">
 			        <div class="flex__item">
-			            <button class="btn" type='button'
-			                onclick={{route-action 'revert' team}}>
+			            <button class="btn" type="button"
+			                onclick={{service-action "dataService" "revert" team}}>
 			                Cancel
 			            </button>
 			        </div>
 			        <div class="flex__item">
-			            {{async-button classNames='btn btn-default'
-	                        disableWhen=(not (v-get team 'isValid'))
-	                        action=(route-action 'persistWithPhone' team)
-	                        default='Update'
-	                        pending='Updating...'}}
+			            {{async-button classNames="btn btn-default"
+	                        disableWhen=(not (v-get team "isValid"))
+	                        action=(route-action "persistWithPhone" team)
+	                        default="Update"
+	                        pending="Updating..."}}
 			        </div>
 			    </div>
 	    	{{/if}}
-			{{form/location-model entity=team onLocationError=(service-action "dataService" "handleMapError")}}
+			{{form/location-model entity=team onLocationError=(service-action "mapService" "handleError")}}
 	    </div>
     {{/if}}
 </div>

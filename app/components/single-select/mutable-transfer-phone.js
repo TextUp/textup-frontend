@@ -7,8 +7,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { get, computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  authService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
   store: Ember.inject.service(),
 
   propTypes: {
@@ -38,13 +37,11 @@ export default Ember.Component.extend(PropTypesMixin, {
     search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
         const orgId = this.get('org.id');
-        this.get('dataService')
-          .request(
-            this.get('authService').authRequest({
-              type: Constants.REQUEST_METHOD.GET,
-              url: `${config.host}/v1/staff?organizationId=${orgId}&search=${val}`,
-            })
-          )
+        this.get('requestService')
+          .authRequest({
+            type: Constants.REQUEST_METHOD.GET,
+            url: `${config.host}/v1/staff?organizationId=${orgId}&search=${val}`,
+          })
           .then(data => {
             const store = this.get('store'),
               staffs = data.staff,

@@ -4,16 +4,23 @@ export default {
     POST: 'POST',
     PUT: 'PUT',
   },
-  SOCKET_EVENT: {
-    CONTACTS: 'contacts',
-    FUTURE_MESSAGES: 'futureMessages',
-    RECORD_ITEMS: 'recordItems',
-    PHONES: 'phones',
+  REQUEST_HEADER: {
+    AUTH: 'Authorization',
+    CONTENT_TYPE: 'Content-Type',
   },
   RESPONSE_STATUS: {
+    OK: 200,
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,
     TIMED_OUT: 0,
+  },
+  RESPONSE_KEY: {
+    ACCESS_TOKEN: 'access_token',
+    REFRESH_TOKEN: 'refresh_token',
+  },
+  MIME_TYPE: {
+    PDF: 'application/pdf',
+    JSON: 'application/json',
   },
   PROP_NAME: {
     AVAILABLE_NUMBER: 'phoneNumber',
@@ -26,10 +33,6 @@ export default {
     SHARING_PERMISSION: 'permission',
     SHARING_PHONE_ID_BUCKETS: 'sharedWith',
     URL_IDENT: 'urlIdentifier',
-  },
-  MIME_TYPE: {
-    PDF: 'application/pdf',
-    JSON: 'application/json',
   },
   EXPORT: {
     FORMAT: { PDF: 'pdf' },
@@ -67,9 +70,11 @@ export default {
   DAYS_OF_WEEK: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
   MODEL: {
     CONTACT: 'contact',
+    FUTURE_MESSAGE: 'future-message',
     ORG: 'organization',
     PHONE: 'phone',
     RECORD_CALL: 'record-call',
+    RECORD_ITEM: 'record-item',
     RECORD_NOTE: 'record-note',
     RECORD_TEXT: 'record-text',
     SCHEDULE: 'schedule',

@@ -6,6 +6,28 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | type');
 
+test('determining if transition', function(assert) {
+  assert.equal(TypeUtils.isTransition(), false);
+  assert.equal(TypeUtils.isTransition('hi'), false);
+  assert.equal(
+    TypeUtils.isTransition({ abort: () => null, targetName: 'hi' }),
+    false,
+    'must be an `EmberObject`'
+  );
+  assert.equal(
+    TypeUtils.isTransition(Ember.Object.create({ abort: () => null, targetName: 'hi' })),
+    true
+  );
+  assert.equal(
+    TypeUtils.isTransition(Ember.Object.create({ abort: 'hi', targetName: 'hi' })),
+    false
+  );
+  assert.equal(
+    TypeUtils.isTransition(Ember.Object.create({ abort: () => null, targetName: 123 })),
+    false
+  );
+});
+
 test('determining if model at all', function(assert) {
   const modelObj = mockModel(1, 'modelName');
 

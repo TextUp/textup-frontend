@@ -5,6 +5,7 @@ import Ember from 'ember';
 const { alias } = Ember.computed;
 
 export default Ember.Controller.extend({
+  requestService: Ember.inject.service(),
   signupController: Ember.inject.controller('signup'),
 
   selected: alias('signupController.selected'),
@@ -22,8 +23,8 @@ export default Ember.Controller.extend({
     },
     search(val) {
       return new Ember.RSVP.Promise((resolve, reject) => {
-        this.get('dataService')
-          .request(
+        this.get('requestService')
+          .handleIfError(
             Ember.$.ajax({
               type: Constants.REQUEST_METHOD.GET,
               url: `${config.host}/v1/public/organizations?search=${val}`,

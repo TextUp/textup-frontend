@@ -144,14 +144,14 @@
             {{/if}}
         {{/infinite-scroll}}
         <div id="task-manager__container" class="section-footer flex__item flex__item--no-shrink">
-            {{tour-components/task-manager doRegister=(action (mut tutorialService.taskManager))
-                firstIncompleteTask=tutorialService.firstIncompleteTask
+            {{tour-components/task-manager doRegister=(service-mut "tutorialService" "taskManager")
+                firstIncompleteTask=(service-prop "tutorialService" "firstIncompleteTask")
                 getTaskStatus=(service-action "tutorialService" "getTaskStatus")
                 onClose=(service-action "tutorialService" "closeTaskManager")
                 onFinishCompleteTask=(service-action "tutorialService" "finishCompleteTask")
                 resetTasks=(service-action "tutorialService" "resetTasks")
-                shouldShow=tutorialService.shouldShowTaskManager
-                tasks=tutorialService.tasks}}
+                shouldShow=(service-prop "tutorialService" "shouldShowTaskManager")
+                tasks=(service-prop "tutorialService" "tasks")}}
         </div>
     </div>
 </div>

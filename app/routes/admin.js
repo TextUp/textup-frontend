@@ -17,6 +17,11 @@ export default Ember.Route.extend(
   SupportsFeedbackSlideout,
   {
     adminService: Ember.inject.service(),
+    authService: Ember.inject.service(),
+    dataService: Ember.inject.service(),
+    requestService: Ember.inject.service(),
+    stateService: Ember.inject.service(),
+
     slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
     beforeModel() {
@@ -32,7 +37,7 @@ export default Ember.Route.extend(
     },
     afterModel(org) {
       this._super(...arguments);
-      this.get('stateManager').set('owner', org);
+      this.get('stateService').set('owner', org);
     },
     setupController(controller, org) {
       this._super(...arguments);
@@ -49,8 +54,8 @@ export default Ember.Route.extend(
 
     actions: {
       toggleSelected(staff) {
-        if (!this.get('stateManager.viewingMany')) {
-          if (this.get('stateManager.viewingTeam')) {
+        if (!this.get('stateService.viewingMany')) {
+          if (this.get('stateService.viewingTeam')) {
             this.transitionTo('admin.team.many');
           } else {
             this.transitionTo('admin.people.many');
@@ -90,20 +95,6 @@ export default Ember.Route.extend(
             }
             callIfPresent(this, then);
           });
-      },
-      resetPassword(username) {
-        return this.get('authService')
-          .resetPassword(username)
-          .then(
-            () => {
-              this.notifications.success(`All good! The password reset
-          has been sent to the email address associated with ${username}.`);
-            },
-            () => {
-              this.notifications.error(`Hmm. We could not find that account.
-          Please try again.`);
-            }
-          );
       },
       markStaff(data) {
         const people = Ember.isArray(data) ? data : [data];
@@ -158,8 +149,8 @@ export default Ember.Route.extend(
             .then(() => {
               // allows for some time for the backend to save the new membership state
               run.later(() => {
-                this.get('dataService')
-                  .request(Ember.RSVP.all(people.map(person => person.reload())))
+                this.get('requestService')
+                  .handleIfError(Ember.RSVP.all(people.map(person => person.reload())))
                   .then(() => {
                     callIfPresent(this, then);
                     resolve();

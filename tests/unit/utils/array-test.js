@@ -27,3 +27,15 @@ test('ensure no null or undefined values', function(assert) {
   assert.equal(ArrayUtils.ensureAllDefined('hi'), 'hi');
   assert.deepEqual(ArrayUtils.ensureAllDefined([null, 'hi', undefined]), ['hi']);
 });
+
+test('trying to call all callbacks', function(assert) {
+  const fn = sinon.spy();
+
+  ArrayUtils.tryCallAll(null); // does not throw
+
+  ArrayUtils.tryCallAll(fn);
+  assert.ok(fn.calledOnce);
+
+  ArrayUtils.tryCallAll([null, fn, fn, null]);
+  assert.equal(fn.callCount, 3);
+});

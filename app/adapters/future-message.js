@@ -1,11 +1,9 @@
-import ApplicationAdapter from './application';
+import ApplicationAdapter from 'textup-frontend/adapters/application';
 import Ember from 'ember';
 
 const { dasherize, pluralize } = Ember.String;
 
 export default ApplicationAdapter.extend({
-  authService: Ember.inject.service(),
-
   pathForType(modelName) {
     return pluralize(dasherize(modelName));
   },

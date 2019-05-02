@@ -4,8 +4,8 @@ import Ember from 'ember';
 const { computed, RSVP } = Ember;
 
 export default Ember.Service.extend({
+  requestService: Ember.inject.service(),
   store: Ember.inject.service(),
-  dataService: Ember.inject.service(),
 
   // Properties
   // ----------
@@ -23,8 +23,8 @@ export default Ember.Service.extend({
   },
   loadPendingStaff(orgId, offset = 0) {
     return new RSVP.Promise((resolve, reject) => {
-      this.get('dataService')
-        .request(
+      this.get('requestService')
+        .handleIfError(
           this.get('store').query('staff', {
             organizationId: orgId,
             status: [Constants.STAFF.STATUS.PENDING],

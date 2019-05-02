@@ -178,7 +178,7 @@ test('exporting record items', function(assert) {
   fakeXhr.onCreate = req1 => requests.pushObject(req1);
 
   service.setProperties({
-    stateManager: Ember.Object.create({ ownerAsTeam: { id: teamId } }),
+    stateService: Ember.Object.create({ ownerAsTeam: { id: teamId } }),
     authService: Ember.Object.create({ timezone: tz }),
   });
 

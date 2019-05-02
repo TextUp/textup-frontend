@@ -6,6 +6,8 @@ import Ember from 'ember';
 const { computed } = Ember;
 
 export default Ember.Controller.extend({
+  requestService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
   tutorialService: Ember.inject.service(),
 
   queryParams: ['filter'],
@@ -13,7 +15,7 @@ export default Ember.Controller.extend({
   tag: null,
   contactsList: null,
 
-  phone: computed.alias('stateManager.owner.phone.content'),
+  phone: computed.alias('stateService.owner.phone.content'),
   filterName: computed('phone.contactsFilter', function() {
     return TextUtils.capitalize(this.get('phone.contactsFilter') || Constants.CONTACT.FILTER.ALL);
   }),
@@ -47,8 +49,8 @@ export default Ember.Controller.extend({
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
       if (phone) {
         // teamId added by `contact` adapter
-        this.get('dataService')
-          .request(
+        this.get('requestService')
+          .handleIfError(
             this.get('store').query('contact', {
               max: 20,
               status: phone.get('contactStatuses'),

@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   adminService: Ember.inject.service(),
+  dataService: Ember.inject.service(),
 
   model(params) {
     const id = params.id;
@@ -27,7 +28,7 @@ export default Ember.Route.extend({
     // still the model of the route we are about to leave
     willTransition() {
       this._super(...arguments);
-      this.send('revert', this.get('currentModel'));
+      this.get('dataService').revert(this.get('currentModel'));
       return true;
     },
     didTransition() {

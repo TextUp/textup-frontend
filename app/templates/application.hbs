@@ -1,21 +1,26 @@
 {{title "TextUp"}}
 
-{{#liquid-if (get slideoutService.shouldShow (constant "SLIDEOUT.OUTLET.DEFAULT"))
-	class='animate-slide-from-left animated-overflow'}}
-	<div class="{{if lockContainer.isLocked 'hidden'}}">
+{{#liquid-if (get (service-prop "slideoutService" "shouldShow") (constant "SLIDEOUT.OUTLET.DEFAULT"))
+	class="animate-slide-from-left animated-overflow"}}
+	<div class="{{if (service-prop "lockService" "isLocked") "hidden"}}">
 		{{outlet (constant "SLIDEOUT.OUTLET.DEFAULT")}}
 	</div>
 {{/liquid-if}}
 
 <div id="container">
-	{{#lock-container doRegister=(action (mut lockContainer))
-	  val= lockCode
-	  doUpdateVal= (action (mut lockCode))
-	  doValidate=(route-action 'verifyLockCode')
-	  timeout= authService.authUser.org.content.timeout
-	  username= authService.authUser.name
-	}}
-	  {{liquid-outlet}}
+	{{!-- TODO check if curried service-prop routeName will actually recalculate --}}
+	{{#lock-container doRegister=(service-mut "lockService" "lockContainer")
+		onChange=(service-mut "lockService" "lockCode")
+		onValidate=(service-action "lockService" "verifyLockCode")
+		onCheckShouldLock=(service-action "lockService"
+			"onCheckShouldLock"
+			(service-prop "stateService" "currentRouteName"))
+		onLogOut=(service-action "lockService" "resetAndLogOut")
+		shouldStartLocked=(service-prop "lockService" "shouldStartLocked")
+		val=(service-prop "lockService" "lockCode")
+		username=(service-prop "lockService" "authName")
+		timeout=(service-prop "lockService" "timeout")}}
+	  	{{liquid-outlet}}
 	{{/lock-container}}
 </div>
 

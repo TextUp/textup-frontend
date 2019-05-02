@@ -9,7 +9,8 @@
     {{/if}}
 </div>
 
-{{number-control val=val
+{{number-control class=_numberControlClass
+    val=val
     numDigits=totalPadDigits
     hasError=_isError
     doChange=(action _doUpdateVal)}}

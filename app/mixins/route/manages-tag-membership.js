@@ -7,7 +7,7 @@ const { isArray } = Ember;
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
   tagService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  stateService: Ember.inject.service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -18,7 +18,7 @@ export default Ember.Mixin.create({
     startTagMembershipSlideout(contacts) {
       this.get('controller').setProperties({
         tagMembershipContacts: isArray(contacts) ? contacts : [contacts],
-        tagMembershipTags: this.get('stateManager.owner.phone.content.tags'),
+        tagMembershipTags: this.get('stateService.owner.phone.content.tags'),
       });
       this.send(
         'toggleSlideout',

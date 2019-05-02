@@ -2,6 +2,8 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  stateService: Ember.inject.service(),
+
   controllerName: 'admin/people',
   templateName: 'admin/people',
 
@@ -30,7 +32,7 @@ export default Ember.Route.extend({
   actions: {
     didTransition() {
       this._super(...arguments);
-      if (!this.get('stateManager.viewingTeam')) {
+      if (!this.get('stateService.viewingTeam')) {
         this._resetController(this.controller, this.get('team'));
       }
       this.get('team').rollbackAttributes();

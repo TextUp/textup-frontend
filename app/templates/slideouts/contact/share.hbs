@@ -10,9 +10,7 @@
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(route-action "cancelContactSharingSlideout") as |slideout|}}
-    {{#if stateManager.shareCandidates.isFulfilled}}
-        {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
-            contacts=sharingContacts
-            staffs=stateManager.shareCandidates.content}}
-    {{/if}}
+    {{multi-toggle/share anyChanges=(mut contactAnySharingChange)
+        contacts=sharingContacts
+        staffs=(service-prop "sharingService" "staffCandidates")}}
 {{/slideout-pane}}

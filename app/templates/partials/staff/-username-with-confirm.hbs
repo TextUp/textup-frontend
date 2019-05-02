@@ -1,7 +1,7 @@
 {{#hide-show doRegister=(action (mut usernameDropdown))
     focusOnOpenSelector=".start-focus"
     onOpen=(action (mut storedUsername) authService.authUser.username)
-    onClose=(route-action "revert" staff
+    onClose=(service-action "dataService" "revert" staff
         (action (mut newUPassword) null)
         (action (mut storedUsername) null)) as |hideShow|}}
     <div class="form__group">
@@ -61,17 +61,17 @@
                 {{#if (eq storedUsername (unbound staff.username))}}
                     {{async-button classNames="btn btn-default"
                         disableWhen=(not (v-get staff "isValid"))
-                        action=(route-action "validate" storedUsername newUPassword
-                            (route-action "persist" staff
+                        action=(service-action "validateAuthService" "checkPassword" storedUsername newUPassword
+                            (service-action "dataService" "persist" staff
                                 hideShow.actions.close
-                                (route-action "logout")))
+                                (service-action "authService" "logout")))
                         default="Update"
                         pending="Updating..."}}
                 {{else}}
                     {{async-button classNames="btn btn-default"
                         disableWhen=(not (v-get staff "isValid"))
-                        action=(route-action "validate" storedUsername newUPassword
-                            (route-action "persist" staff
+                        action=(service-action "validateAuthService" "checkPassword" storedUsername newUPassword
+                            (service-action "dataService" "persist" staff
                                 hideShow.actions.close))
                         default="Update"
                         pending="Updating..."}}

@@ -50,7 +50,7 @@ test('building url', function(assert) {
   const obj = this.subject(),
     tId = `${Math.random()}`;
 
-  obj.set('stateManager', { ownerAsTeam: Ember.Object.create({ id: tId }) });
+  obj.set('stateService', { ownerAsTeam: Ember.Object.create({ id: tId }) });
 
   assert.equal(
     obj.buildURL('record-item', 8, null, 'valid type'),

@@ -2,7 +2,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  dataService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
 
   queryParams: {
     token: { refreshModel: true },
@@ -12,7 +12,7 @@ export default Ember.Route.extend({
     this._super(...arguments);
     const token = params.token;
     if (token) {
-      return this.get('dataService').request(this.store.findRecord('notification', token));
+      return this.get('requestService').handleIfError(this.store.findRecord('notification', token));
     } else {
       this.transitionTo('login');
     }

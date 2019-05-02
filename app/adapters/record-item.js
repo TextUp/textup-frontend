@@ -1,4 +1,4 @@
-import ApplicationAdapter from './application';
+import ApplicationAdapter from 'textup-frontend/adapters/application';
 
 export default ApplicationAdapter.extend({
   pathForType() {

@@ -3,6 +3,15 @@ import Ember from 'ember';
 
 const { typeOf, isPresent, get } = Ember;
 
+// Can't get access to the Transition class declaration so cannot use `detect`
+export function isTransition(obj) {
+  return (
+    typeOf(obj) === 'instance' &&
+    typeOf(obj.abort) === 'function' &&
+    typeOf(obj.targetName) === 'string'
+  );
+}
+
 export function isAnyModel(obj) {
   return typeOf(obj) === 'instance' && isPresent(get(obj, Constants.PROP_NAME.MODEL_NAME));
 }

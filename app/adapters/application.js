@@ -1,24 +1,27 @@
+import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';
-import config from '../config/environment';
+
+const { computed } = Ember;
 
 export default DS.RESTAdapter.extend({
   authService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  stateService: Ember.inject.service(),
 
   host: config.host,
   namespace: 'v1',
   coalesceFindRequests: true,
-  headers: Ember.computed('authService.token', function() {
-    const token = this.get('authService.token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
+  headers: computed('authService.authHeader', function() {
+    const authHeader = this.get('authService.authHeader');
+    return authHeader ? { [Constants.REQUEST_HEADER.AUTH]: authHeader } : {};
   }),
 
   // Helper methods
   // --------------
 
   _tryAddTeamId(url) {
-    const team = this.get('stateManager.ownerAsTeam');
+    const team = this.get('stateService.ownerAsTeam');
     return this._addQueryParam(url, 'teamId', team && team.get('id'));
   },
   _addQueryParam(url, queryKey, queryVal) {

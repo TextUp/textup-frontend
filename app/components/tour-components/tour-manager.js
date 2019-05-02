@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import StorageUtils from 'textup-frontend/utils/storage';
 import TourData from 'textup-frontend/data/tour-data';
 
 const { computed, tryInvoke, run } = Ember;
@@ -8,9 +7,7 @@ const { computed, tryInvoke, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     doRegister: PropTypes.func,
-    beforeTour: PropTypes.func,
-    afterTour: PropTypes.func,
-    username: PropTypes.string,
+    onTourFinish: PropTypes.func,
   },
 
   init() {
@@ -27,16 +24,12 @@ export default Ember.Component.extend(PropTypesMixin, {
   _currentStepIndex: 0,
   _publicAPI: computed(function() {
     return {
-      startTourImmediately: this.get('_startTourImmediately'),
+      isOngoing: false,
       actions: {
         startTour: this._startTour.bind(this),
         endTour: this._endTour.bind(this),
       },
     };
-  }),
-  _startTourImmediately: computed('username', function() {
-    const finishedTour = window.localStorage.getItem(StorageUtils.tourKey(this.get('username')));
-    return finishedTour !== StorageUtils.TRUE;
   }),
   _firstStep: computed('_currentStepIndex', function() {
     return this.get('_currentStepIndex') === 0;
@@ -52,17 +45,16 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _startTour() {
-    run.join(() => {
-      this.set('_tourOngoing', true);
-      tryInvoke(this, 'beforeTour');
-    });
+    this._setTourOngoing(true);
   },
   _endTour() {
-    run.join(() => {
-      window.localStorage.setItem(StorageUtils.tourKey(this.get('username')), StorageUtils.TRUE);
-      this.set('_tourOngoing', false);
-      tryInvoke(this, 'afterTour');
-    });
+    this._setTourOngoing(false);
+    tryInvoke(this, 'onTourFinish');
+  },
+  _setTourOngoing(isOngoing) {
+    run.join(() =>
+      this.setProperties({ _tourOngoing: isOngoing, '_publicAPI.isOngoing': isOngoing })
+    );
   },
 
   _nextStep() {

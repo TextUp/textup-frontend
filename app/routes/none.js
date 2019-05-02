@@ -4,6 +4,9 @@ import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 
 export default Ember.Route.extend(IsAuthenticated, RequiresSetup, {
+  authService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
+
   controllerName: 'main',
 
   beforeModel() {
@@ -11,6 +14,6 @@ export default Ember.Route.extend(IsAuthenticated, RequiresSetup, {
     AppAccessUtils.determineAppropriateLocation(this, this.get('authService.authUser'));
   },
   afterModel() {
-    this.get('stateManager').set('owner', null);
+    this.get('stateService').set('owner', null);
   },
 });

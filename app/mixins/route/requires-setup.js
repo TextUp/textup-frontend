@@ -1,11 +1,17 @@
 import Ember from 'ember';
 
+const { isNone } = Ember;
+
 export default Ember.Mixin.create({
+  authService: Ember.inject.service(),
+  userSetupService: Ember.inject.service(),
+
   beforeModel() {
     this._super(...arguments);
-    const user = this.get('authService.authUser'),
-      hasSkippedSetup = this.get('stateManager.hasSkippedSetup');
-    if (!hasSkippedSetup && !Ember.isPresent(user.get('personalNumber'))) {
+    if (
+      !this.get('userSetupService').hasSkippedSetup() &&
+      !isNone(this.get('authService.authUser.personalNumber'))
+    ) {
       this.transitionTo('setup');
     }
   },

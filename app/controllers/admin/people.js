@@ -4,6 +4,9 @@ import Ember from 'ember';
 const { computed, run } = Ember;
 
 export default Ember.Controller.extend({
+  requestService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
+
   adminController: Ember.inject.controller('admin'),
 
   queryParams: ['filter'],
@@ -58,10 +61,10 @@ export default Ember.Controller.extend({
 
   _loadMore(offset = 0) {
     return new Ember.RSVP.Promise((resolve, reject) => {
-      const org = this.get('stateManager.ownerAsOrg'),
+      const org = this.get('stateService.ownerAsOrg'),
         team = this.get('team');
-      this.get('dataService')
-        .request(
+      this.get('requestService')
+        .handleIfError(
           this.get('store').query('staff', {
             max: 20,
             offset,

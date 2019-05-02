@@ -2,18 +2,18 @@
 
 <div class="single-container single-container-small">
     <div class="single-header">
-    	<img class="brand" src='assets/images/logo.png' />
-        <h3 class='text-white'>Log in</h3>
+    	<img class="brand" src="assets/images/logo.png" />
+        <h3 class="text-white">Log in</h3>
     </div>
     <div class="single-body">
         {{#hide-show focusOnOpenSelectors=".form__input"
             onClose=(action (mut resetUsername) null) as |hideShow|}}
             <div class="single-body-header">
                 {{#if hideShow.isOpen}}
-                    <h4 class='text-center pad-b'>Forgot password?</h4>
+                    <h4 class="text-center pad-b">Forgot password?</h4>
                     <p class="text-justify">Don't worry! Happens to all of us. Just type in your username and we'll send a reset email to the email address associated with your account.</p>
                 {{else}}
-                    <h4 class='text-center'>Welcome back!</h4>
+                    <h4 class="text-center">Welcome back!</h4>
                 {{/if}}
             </div>
             <div class="form">
@@ -26,7 +26,7 @@
                             class="form__input"
                             autocorrect="off"
                             autocapitalize="off"
-                            enter=(route-action 'resetPassword' resetUsername)}}
+                            enter=(service-action "passwordResetService" "getToken" resetUsername)}}
                     </div>
                 {{else}}
                     <div class="form__group">
@@ -37,7 +37,7 @@
                             class="form__input"
                             autocorrect="off"
                             autocapitalize="off"
-                            enter=(route-action 'login' username password storeCredentials)}}
+                            enter=(route-action "login" username password storeCredentials)}}
                     </div>
                     <div class="form__group">
                         <label class="form__label" for="Password">Password</label>
@@ -46,7 +46,7 @@
                             placeholder="Password"
                             class="form__input"
                             allowShowPassword=true
-                            enter=(route-action 'login' username password storeCredentials)}}
+                            enter=(route-action "login" username password storeCredentials)}}
                     </div>
                     <div class="form__group">
                         <div class="xs-row-2 flex flex--align-center">
@@ -76,11 +76,11 @@
                         </button>
                     </div>
                     <div class="flex__item">
-                        {{async-button classNames='btn btn-default'
+                        {{async-button classNames="btn btn-default"
                             disableWhen=(not resetUsername)
-                            action=(route-action 'resetPassword' resetUsername)
-                            default='Send reset'
-                            pending='Sending...'}}
+                            action=(service-action "passwordResetService" "getToken" resetUsername)
+                            default="Send reset"
+                            pending="Sending..."}}
                     </div>
                 {{else}}
                     <div class="flex__item">

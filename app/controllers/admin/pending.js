@@ -5,7 +5,11 @@ const { computed } = Ember;
 
 export default Ember.Controller.extend({
   adminService: Ember.inject.service(),
+  dataService: Ember.inject.service(),
   numberService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
+
   adminController: Ember.inject.controller('admin'),
 
   pendingStaff: computed.alias('adminController.pending'),
@@ -27,10 +31,10 @@ export default Ember.Controller.extend({
     loadMore() {
       return new Ember.RSVP.Promise((resolve, reject) => {
         const pendingStaff = this.get('pendingStaff');
-        this.get('dataService')
-          .request(
+        this.get('requestService')
+          .handleIfError(
             this.get('adminService').loadPendingStaff(
-              this.get('stateManager.ownerAsOrg.id'),
+              this.get('stateService.ownerAsOrg.id'),
               pendingStaff.get('length')
             )
           )

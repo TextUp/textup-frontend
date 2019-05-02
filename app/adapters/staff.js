@@ -1,11 +1,9 @@
-import ApplicationAdapter from './application';
-import Ember from 'ember';
+import ApplicationAdapter from 'textup-frontend/adapters/application';
+import LocaleUtils from 'textup-frontend/utils/locale';
 
 export default ApplicationAdapter.extend({
-  authService: Ember.inject.service(),
-
   buildURL() {
     const url = this._super(...arguments);
-    return this._addQueryParam(url, 'timezone', this.get('authService.timezone'));
+    return this._addQueryParam(url, 'timezone', LocaleUtils.getTimezone());
   },
 });

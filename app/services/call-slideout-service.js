@@ -6,8 +6,8 @@ const { isPresent, run, RSVP } = Ember;
 
 export default Ember.Service.extend({
   contactService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
   store: Ember.inject.service(),
 
   validateAndCheckForName(number, { ctx }) {
@@ -16,8 +16,8 @@ export default Ember.Service.extend({
   makeCall(contactToCall, number) {
     return new RSVP.Promise((resolve, reject) => {
       this._ensureContactExists(contactToCall, number).then(contact => {
-        this.get('dataService')
-          .request(this.get('recordItemService').makeCall(contact))
+        this.get('requestService')
+          .handleIfError(this.get('recordItemService').makeCall(contact))
           .then(() => resolve(contact), reject);
       });
     });

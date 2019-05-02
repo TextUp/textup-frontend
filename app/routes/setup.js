@@ -1,55 +1,32 @@
 import Ember from 'ember';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 
+const { isPresent } = Ember;
+
 export default Ember.Route.extend(IsAuthenticated, {
-  numberService: Ember.inject.service(),
-  storage: Ember.inject.service(),
+  authService: Ember.inject.service(),
+  userSetupService: Ember.inject.service(),
 
   redirect() {
     this._super(...arguments);
-    const user = this.get('authService.authUser');
-    if (Ember.isPresent(user.get('personalNumber'))) {
-      this.transitionTo('main', user);
+    const authUser = this.get('authService.authUser');
+    if (isPresent(authUser.get('personalNumber'))) {
+      this.transitionTo('main', authUser);
     }
   },
-  setupController(controller) {
+  activate() {
     this._super(...arguments);
-    controller.setProperties({
-      personalNumber: this.get('storage').getItem(this._buildStorageKeyForStaff()),
-      verificationCode: null,
-    });
+    this.get('userSetupService').tryRestorePreviousState();
   },
   actions: {
-    startVerifyPersonalPhone(personalNumber) {
-      this.get('storage').trySet(localStorage, this._buildStorageKeyForStaff(), personalNumber);
-      return this.get('numberService').startVerify(personalNumber);
-    },
-    finishVerifyPersonalPhone(personalNumber, verificationCode) {
-      return this.get('numberService')
-        .finishVerify(personalNumber, verificationCode)
-        .then(() => {
-          // no need to store personal phone number in local storage once is validated
-          this.get('storage').removeItem(this._buildStorageKeyForStaff());
-
-          const staff = this.get('authService.authUser');
-          staff.set('personalNumber', personalNumber);
-          return this.get('dataService')
-            .persist(staff)
-            .then(() => {
-              this.transitionTo('main', staff);
-            });
-        });
+    finishPersonalNumberSetup() {
+      this.get('userSetupService')
+        .finishPersonalNumberSetup()
+        .then(setupUser => this.transitionTo('main', setupUser));
     },
     skipSetup() {
-      this.get('stateManager').skipSetup();
+      this.get('userSetupService').skipSetup();
       this.transitionTo('main', this.get('authService.authUser'));
     },
-  },
-
-  // Internal methods
-  // ----------------
-
-  _buildStorageKeyForStaff() {
-    return this.get('authService.authUser.username') + '-personal-number';
   },
 });

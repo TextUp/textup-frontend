@@ -4,7 +4,8 @@ import Ember from 'ember';
 const { isBlank, isPresent, computed, run } = Ember;
 
 export default Ember.Route.extend({
-  storage: Ember.inject.service(),
+  requestService: Ember.inject.service(),
+  storageService: Ember.inject.service(),
 
   queryParams: { searchQuery: { refreshModel: true } },
 
@@ -12,7 +13,7 @@ export default Ember.Route.extend({
   _prevUrlIsSearch: computed.match('_prevUrl', /main\/.*\/search/),
 
   activate() {
-    this.set('_prevUrl', this.get('storage').getItem('currentUrl'));
+    this.set('_prevUrl', this.get('storageService').getItem('currentUrl'));
   },
   deactivate() {
     this.controller.set('searchQuery', null);
@@ -82,8 +83,8 @@ export default Ember.Route.extend({
         return resolve();
       }
       // teamId added by `contact` adapter
-      this.get('dataService')
-        .request(this.store.query('contact', { search, offset }))
+      this.get('requestService')
+        .handleIfError(this.store.query('contact', { search, offset }))
         .then(results => {
           this.controller.updateResults(results);
           resolve();

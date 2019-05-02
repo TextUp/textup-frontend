@@ -3,6 +3,9 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  authService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
+
   setupController(controller) {
     const signupController = this.controllerFor('signup'),
       newStaff = signupController.get('staff'),
@@ -32,8 +35,8 @@ export default Ember.Route.extend({
             location: org.get('location.content').toJSON(),
           }
         : { id: org.get('id') };
-      return this.get('dataService')
-        .request(
+      return this.get('requestService')
+        .handleIfError(
           Ember.$.ajax({
             type: Constants.REQUEST_METHOD.POST,
             url: `${config.host}/v1/public/staff`,
@@ -48,8 +51,8 @@ export default Ember.Route.extend({
   _logInAfterCreate(staffObj, password) {
     this.get('notifications').success(`Almost done creating your account...`);
     const staff = this.store.push(this.store.normalize(Constants.MODEL.STAFF, staffObj));
-    return this.get('dataService')
-      .request(this.get('authService').login(staff.get('username'), password))
+    return this.get('authService')
+      .login(staff.get('username'), password)
       .then(() => {
         this.get('notifications').success(`Success! Welcome ${staff.get('name')}!`);
         this.transitionTo('none');

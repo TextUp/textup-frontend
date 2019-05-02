@@ -5,11 +5,13 @@ import MainContactsRoute from 'textup-frontend/routes/main/contacts';
 const { computed } = Ember;
 
 export default MainContactsRoute.extend({
+  stateService: Ember.inject.service(),
+
   queryParams: null,
   controllerName: 'main/contacts',
   templateName: 'main/contacts',
 
-  phone: computed.alias('stateManager.owner.phone.content'),
+  phone: computed.alias('stateService.owner.phone.content'),
 
   serialize(model) {
     return { tag_identifier: model.get(Constants.PROP_NAME.URL_IDENT) };

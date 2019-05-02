@@ -1,3 +1,4 @@
+import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Ember from 'ember';
 
 const { typeOf, isArray } = Ember;
@@ -24,4 +25,9 @@ export function ensureArray(obj) {
 
 export function ensureAllDefined(obj) {
   return isArray(obj) ? obj.filter(val => val !== null && val !== undefined) : obj;
+}
+
+// [FUTURE] remove this sort of chained callback throughout the app
+export function tryCallAll(callbacks) {
+  ensureArrayAndAllDefined(callbacks).forEach(fn => callIfPresent(null, fn));
 }

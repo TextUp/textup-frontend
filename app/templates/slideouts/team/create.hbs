@@ -8,7 +8,7 @@
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     onOpen=(route-action "initializeNewTeam")
-    onClose=(route-action "revert" newTeam
+    onClose=(service-action "dataService" "revert" newTeam
         (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving
     focusSelector=".start-focus" as |slideout|}}
@@ -16,5 +16,5 @@
         {{partial "partials/team/create-edit"}}
     </div>
     {{form/location-model entity=newTeam
-        onLocationError=(service-action "dataService" "handleMapError")}}
+        onLocationError=(service-action "mapService" "handleError")}}
 {{/slideout-pane}}

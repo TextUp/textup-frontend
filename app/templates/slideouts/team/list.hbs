@@ -6,21 +6,21 @@
         disablePrimary=(not (v-get newTeam "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        onSecondary=(route-action "revert" newTeam teamsListHideAway.actions.close)
+        onSecondary=(service-action "dataService" "revert" newTeam teamsListHideAway.actions.close)
         hideSecondary=(not model.existingTeams.content))
-    onClose=(route-action "revert" newTeam (route-action "closeSlideout"))
+    onClose=(service-action "dataService" "revert" newTeam (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving as |slideout|}}
     {{#hide-show doRegister=(action (mut teamsListHideAway))
         startOpen=(if model.teams false true)
         focusOnOpenSelector=".start-focus"
         onOpen=(route-action "initializeNewTeam")
-        onClose=(route-action "revert" newTeam) as |hideShow|}}
+        onClose=(service-action "dataService" "revert" newTeam) as |hideShow|}}
         {{#if hideShow.isOpen}}
             <div class="pad-t">
                 {{partial "partials/team/create-edit"}}
             </div>
             {{form/location-model entity=newTeam
-                onLocationError=(service-action "dataService" "handleMapError")}}
+                onLocationError=(service-action "mapService" "handleError")}}
         {{else}}
             <ul class="result-list">
                 {{#each model.teams as |team|}}

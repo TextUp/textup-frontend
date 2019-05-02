@@ -1,5 +1,4 @@
 import ArrayUtils from 'textup-frontend/utils/array';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
@@ -103,7 +102,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     );
   },
 
-  _close(forceClose, ...then) {
+  _close(forceClose, ...thens) {
     run.join(() => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {
         return;
@@ -112,7 +111,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
         this.set('_publicAPI.isOpen', false);
         this._removeOverlay();
         tryInvoke(this, 'onClose', [this.get('_publicAPI')]);
-        ArrayUtils.ensureArrayAndAllDefined(then).forEach(fn => callIfPresent(this, fn));
+        ArrayUtils.tryCallAll(thens);
       }
     });
   },

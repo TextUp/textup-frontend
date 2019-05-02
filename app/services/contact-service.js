@@ -6,23 +6,23 @@ const { RSVP } = Ember;
 
 export default Ember.Service.extend({
   dataService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  stateService: Ember.inject.service(),
   store: Ember.inject.service(),
 
   createNew() {
     return this.get('store').createRecord(Constants.MODEL.CONTACT, {
-      language: this.get('stateManager.owner.phone.content.language'),
+      language: this.get('stateService.owner.phone.content.language'),
     });
   },
   persistNewAndTryAddToPhone(contact) {
-    const stateManager = this.get('stateManager'),
-      phone = stateManager.get('owner.phone.content');
+    const stateService = this.get('stateService'),
+      phone = stateService.get('owner.phone.content');
     return this.get('dataService')
       .persist(contact)
       .then(() => {
         // add new contact to the beginning of the currently-shown list if it is viewing all contacts
         // and not a specific tag's contacts. Phone will handle filtering for statuses + sorting.
-        if (TypeUtils.isPhone(phone) && stateManager.get('viewingContacts')) {
+        if (TypeUtils.isPhone(phone) && stateService.get('viewingContacts')) {
           phone.addContacts(contact);
         }
       });

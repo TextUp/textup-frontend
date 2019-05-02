@@ -1,18 +1,14 @@
 import ArrayUtils from 'textup-frontend/utils/array';
-import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
-import ErrorUtils from 'textup-frontend/utils/error';
-import PropertyUtils from 'textup-frontend/utils/property';
+import TypeUtils from 'textup-frontend/utils/type';
 
-const { RSVP, isArray } = Ember;
+const { get, RSVP, isArray } = Ember;
 
 export default Ember.Service.extend({
-  notifications: Ember.inject.service(),
   loadingSlider: Ember.inject.service(),
-  authService: Ember.inject.service(),
-  router: Ember.inject.service(),
+  requestService: Ember.inject.service(),
 
-  persist(data) {
+  persist(data, ...thens) {
     return new RSVP.Promise((resolve, reject) => {
       const changedModels = ArrayUtils.ensureArray(data)
         .filterBy('isDirty')
@@ -21,15 +17,19 @@ export default Ember.Service.extend({
         return resolve(data);
       }
       this.get('loadingSlider').startLoading();
-      this.request(RSVP.all(changedModels.map(model => model.save())))
-        .then(success => resolve(isArray(data) ? success : success[0]), reject)
+      this.get('requestService')
+        .handleIfError(RSVP.all(changedModels.map(model => model.save())))
+        .then(success => {
+          ArrayUtils.tryCallAll(thens);
+          resolve(isArray(data) ? success : success[0]);
+        }, reject)
         .finally(() => this.get('loadingSlider').endLoading());
     });
   },
 
   markForDelete(data) {
     ArrayUtils.ensureArray(data).forEach(model => {
-      if (model.get('isNew')) {
+      if (TypeUtils.isAnyModel(model) && model.get('isNew')) {
         model.rollbackAttributes();
       } else {
         model.deleteRecord();
@@ -37,46 +37,29 @@ export default Ember.Service.extend({
     });
   },
 
-  request(promise) {
-    return new RSVP.Promise((resolve, reject) => {
-      PropertyUtils.ensurePromise(promise).then(resolve, failureObj => {
-        this.handleError(failureObj);
-        reject(failureObj);
-      });
-    });
-  },
-
-  handleMapError() {
-    this.get('notifications').error(
-      `Sorry! We are having trouble loading the map. Please try again.`
+  clearList(models, propName, ...thens) {
+    ArrayUtils.ensureArrayAndAllDefined(models).forEach(
+      model => TypeUtils.isAnyModel(model) && ArrayUtils.ensureArray(model.get(propName)).clear()
     );
+    ArrayUtils.tryCallAll(thens);
   },
 
-  handleError(failureObj) {
-    this._tryHandleResponseError(failureObj);
-    Ember.debug('dataService.handleError: ' + failureObj);
+  revert(models, ...thens) {
+    ArrayUtils.ensureArrayAndAllDefined(models).forEach(
+      model => TypeUtils.isAnyModel(model) && model.rollbackAttributes()
+    );
+    ArrayUtils.tryCallAll(thens);
   },
 
-  // Internal handlers
-  // -----------------
-
-  _tryHandleResponseError(failureObj) {
-    if (ErrorUtils.isResponse(failureObj)) {
-      if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.UNAUTHORIZED)) {
-        this.get('authService').logout();
-        this.get('notifications').info('Please log in first.');
-      } else if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.NOT_FOUND)) {
-        this.get('router').transitionTo('index');
-      } else if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.TIMED_OUT)) {
-        this.get('notifications').error(
-          `Sorry, we're having trouble connecting to the server. This problem is usually the result of a broken Internet connection. You can try refreshing this page.`,
-          { clearDuration: 10000 }
-        );
-      } else {
-        ErrorUtils.tryExtractResponseMessages(failureObj).forEach(message => {
-          this.get('notifications').error(message);
-        });
+  revertAttribute(models, attributeName, ...thens) {
+    ArrayUtils.ensureArrayAndAllDefined(models).forEach(model => {
+      if (TypeUtils.isAnyModel(model)) {
+        const changes = get(model.changedAttributes(), attributeName);
+        if (isArray(changes)) {
+          model.set(attributeName, changes[0]);
+        }
       }
-    }
+    });
+    ArrayUtils.tryCallAll(thens);
   },
 });

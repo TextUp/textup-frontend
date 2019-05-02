@@ -2,12 +2,14 @@
 
 <div class="single-container">
     <div class="single-header">
-        <img class="brand" src='assets/images/logo.png' />
-        <h3 class='text-white'>Hello, {{authService.authUser.name}}!</h3>
+        <img class="brand" src="assets/images/logo.png" />
+        <h3 class="text-white">Hello, {{authService.authUser.name}}!</h3>
         <div class="subtitle display-m display-l">
-            <a class='text-white' href="#" onclick={{route-action 'logout'}}>
-                Done editing info? <b>Log out.</b>
-            </a>
+            <button type="button"
+                class="btn-link text-white"
+                onclick={{service-action "authService" "logout"}}>
+                Log Out
+            </button>
         </div>
     </div>
     <div class="single-body">
@@ -23,42 +25,44 @@
                 {{else}}
                     <span>Your administrator has not assigned you a TextUp phone and has not assigned you to a team with a TextUp phone.</span>
                 {{/if}}
-                <span>If you have any questions, feel free to contact us at <span class='text-bold'>connect@textup.org</span></span>
+                <span>If you have any questions, feel free to contact us at <span class="text-bold">connect@textup.org</span></span>
             </p>
         </div>
         <div class="single-body-content">
             {{#with authService.authUser as |staff|}}
-                {{partial 'partials/staff/settings'}}
+                {{partial "partials/staff/settings"}}
                 {{#if staff.hasDirtyAttributes}}
                     {{!-- separate if loops to prevent multiple-set deprecation --}}
                     {{#if (and (not usernameDropdown.isOpen)
                         (not passwordDropdown.isOpen)
                         (not codeDropdown.isOpen))}}
                         <div class="pad-t text-center">
-                            <button class="btn" type='button'
-                                onclick={{route-action 'revert' staff}}>
+                            <button class="btn" type="button"
+                                onclick={{service-action "dataService" "revert" staff}}>
                                 Cancel
                             </button>
-                            {{async-button classNames='btn btn-default'
-                                disableWhen=(not (v-get staff 'isValid'))
-                                action=(route-action 'persist' staff)
-                                default='Update'
-                                pending='Updating...'}}
+                            {{async-button classNames="btn btn-default"
+                                disableWhen=(not (v-get staff "isValid"))
+                                action=(service-action "dataService" "persist" staff)
+                                default="Update"
+                                pending="Updating..."}}
                         </div>
                     {{/if}}
                 {{/if}}
                 <hr>
-                {{partial 'partials/staff/code-with-confirm'}}
-                {{partial 'partials/staff/username-with-confirm'}}
-                {{partial 'partials/staff/password-with-confirm'}}
+                {{partial "partials/staff/code-with-confirm"}}
+                {{partial "partials/staff/username-with-confirm"}}
+                {{partial "partials/staff/password-with-confirm"}}
             {{/with}}
         </div>
     </div>
     <div class="single-footer">
         <div class="display-xs display-s text-bold margin-t margin-b">
-            <a class='text-white' href="#" onclick={{route-action 'logout'}}>
+            <button type="button"
+                class="btn-link text-white"
+                onclick={{service-action "authService" "logout"}}>
                 Done editing info? <b>Log out.</b>
-            </a>
+            </button>
         </div>
     </div>
 </div>

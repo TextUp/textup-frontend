@@ -2,27 +2,32 @@ import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { $ } = Ember;
-
 export default {
   name: 'intercept-inappbrowser',
   initialize() {
     if (config.hasCordova) {
-      $(document).on('deviceready', onDeviceReady);
+      Ember.$(document).on('deviceready', onDeviceReady);
     }
   },
 };
 
-function onDeviceReady() {
-  const brandHexCode = Constants.COLOR.BRAND;
+export function onDeviceReady() {
+  // overriden the `open` function with the cordova-specific version
   window.open = window.cordova.InAppBrowser.open;
-  $(document).on('click', 'a[target="_system"], a[target="_blank"]', function(e) {
-    e.preventDefault();
-    window.cordova.InAppBrowser.open(
-      this.href,
-      '_blank',
-      // styling for inappbrowser
-      `footer=yes,closebuttoncolor=${brandHexCode},location=no,navigationbuttoncolor=${brandHexCode}`
-    );
-  });
+  Ember.$(document).on(
+    'click',
+    'a[target="_system"], a[target="_blank"]',
+    overrideAnchorTagBehavior
+  );
+}
+
+export function overrideAnchorTagBehavior(event) {
+  const brandColor = Constants.COLOR.BRAND;
+  event.preventDefault();
+  window.cordova.InAppBrowser.open(
+    event.target.href, // TODO test
+    '_blank',
+    // styling for inappbrowser
+    `footer=yes,closebuttoncolor=${brandColor},location=no,navigationbuttoncolor=${brandColor}`
+  );
 }

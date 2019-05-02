@@ -5,12 +5,12 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed, run, RSVP, typeOf, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
-  storage: Ember.inject.service(),
+  storageService: Ember.inject.service(),
 
   propTypes: {
     url: PropTypes.string.isRequired,
     display: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
   },
   getDefaultProps() {
     return { display: false };
@@ -30,7 +30,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _lastViewedKey: computed.alias('url'),
   _lastViewed: computed('url', function() {
-    return moment(this.get('storage').getItem(this.get('_lastViewedKey')));
+    return moment(this.get('storageService').getItem(this.get('_lastViewedKey')));
   }),
 
   // Internal handlers
@@ -71,12 +71,10 @@ export default Ember.Component.extend(PropTypesMixin, {
     return new RSVP.Promise((resolve, reject) => {
       this.incrementProperty('_requestId');
       const thisReqId = this.get('_requestId');
-      Ember.$
-        .get(this.get('url'))
-        .then(
-          this._onLoadSuccess.bind(this, thisReqId, resolve),
-          this._onLoadFailure.bind(this, thisReqId, reject)
-        );
+      Ember.$.get(this.get('url')).then(
+        this._onLoadSuccess.bind(this, thisReqId, resolve),
+        this._onLoadFailure.bind(this, thisReqId, reject)
+      );
     });
   },
   _onLoadSuccess(thisReqId, resolve, data, textStatus, xhr) {
@@ -95,14 +93,14 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     // store when this url was displayed as an ISO string
-    this.get('storage').trySet(localStorage, this.get('_lastViewedKey'), moment().toISOString());
+    this.get('storageService').setItem(this.get('_lastViewedKey'), moment().toISOString());
     resolve();
   },
   _onLoadFailure(thisReqId, reject, xhr, textStatus, errorThrown) {
     if (this.isDestroying || this.isDestroyed || thisReqId !== this.get('_requestId')) {
       return;
     }
-    Ember.debug('app-message: could not retrieve message', errorThrown);
+    Ember.debug('message-modal: could not retrieve message', errorThrown);
     reject();
-  }
+  },
 });

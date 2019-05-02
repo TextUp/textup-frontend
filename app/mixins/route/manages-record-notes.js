@@ -4,6 +4,7 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
   dataService: Ember.inject.service(),
+  mapService: Ember.inject.service(),
   mediaService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
 
@@ -28,7 +29,7 @@ export default Ember.Mixin.create({
       return this.get('recordItemService').removeLocationFromNote(rNote);
     },
     onLocationError() {
-      return this.get('dataService').handleMapError();
+      return this.get('mapService').handleError();
     },
 
     startAddNoteSlideout(addAfterRecordItem = null) {

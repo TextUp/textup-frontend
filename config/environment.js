@@ -1,5 +1,7 @@
 /* jshint node: true */
 
+// TODO restore test credentials in .zshrc
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'textup-frontend',
@@ -22,10 +24,13 @@ module.exports = function(environment) {
       maxWidth: 1280,
       maxHeight: 1280,
     },
-    lock: { lockOnHidden: true, maxNumAttempts: 4 },
+    lock: {
+      lockOnHidden: true,
+      maxNumAttempts: 3,
+      ignoreLockRouteNames: ['setup', 'notify'],
+    },
     moment: { includeTimezone: 'subset', outputFormat: 'llll' },
     socket: { authKey: process.env.TEXTUP_FRONTEND_API_PUSHER },
-    storage: { namespace: 'textup' },
     appMessage: {
       messageEndpoint: 'https://static.textup.org/latest-message/',
       oldestMessageInDays: 14,
@@ -35,18 +40,11 @@ module.exports = function(environment) {
       privacyPolicy: 'https://static.textup.org/privacy-policy/',
       termsOfUse: 'https://static.textup.org/terms-of-use/',
     },
-    state: {
-      ignoreTracking: ['reset', 'setup', 'notify'],
-      ignoreLock: ['setup', 'notify'],
-    },
+    state: { ignoreRestoreStoredUrlRouteNames: ['reset', 'setup', 'notify'] },
     events: {
       auth: { success: 'authSuccess', clear: 'authClear' },
       storage: { updated: 'storageUpdated' },
-      visibility: {
-        change: 'visibilityChange',
-        visible: 'visibilityVisible',
-        hidden: 'visibilityHidden',
-      },
+      visibility: { visible: 'visibilityVisible', hidden: 'visibilityHidden' },
     },
   };
 

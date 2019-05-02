@@ -13,8 +13,8 @@
                 placeholder="Your Name"
                 class="form__input start-focus"
                 validateObj=staff
-                validateField='name'
-                validate='bottom'}}
+                validateField="name"
+                validate="bottom"}}
         </div>
         <div class="form__group">
             <label class="form__label" for="Username">Username</label>
@@ -25,8 +25,8 @@
                 autocorrect="off"
                 autocapitalize="off"
                 validateObj=staff
-                validateField='username'
-                validate='bottom'}}
+                validateField="username"
+                validate="bottom"}}
         </div>
         <div class="form__group">
             <label class="form__label" for="Email">Email</label>
@@ -35,8 +35,8 @@
                 placeholder="Email"
                 class="form__input"
                 validateObj=staff
-                validateField='email'
-                validate='bottom'}}
+                validateField="email"
+                validate="bottom"}}
         </div>
         <div class="form__group">
             <label class="form__label" for="Password">Password</label>
@@ -54,20 +54,18 @@
                 placeholder="Confirm Password"
                 class=(concat "form__input "
                     (if (and confirmPassword (not (eq staff.password confirmPassword)))
-                        'form-error'))}}
+                        "form-error"))}}
             {{#if (and confirmPassword (not (eq staff.password confirmPassword)))}}
                 <p class="form-error">Passwords must match.</p>
             {{/if}}
         </div>
-        <div class='form__group form__group--no-vertical-space'>
-            <label for='Lock Code' class='form__label'>Lock Code</label>
-            {{lock-control val=staff.lockCode
-                lockOnMultipleFailure=false
-                numDigits=4
-                doUpdate=(action (mut staff.lockCode))}}
+        <div class="form__group form__group--no-vertical-space">
+            <label for="Lock Code" class="form__label">Lock Code</label>
+            {{lock-pad val=staff.lockCode
+                doUpdateVal=(action (mut staff.lockCode))}}
         </div>
-        {{#if (v-get staff 'lockCode' 'isInvalid')}}
-            <p class="form-error">{{v-get staff 'lockCode' 'message'}}</p>
+        {{#if (v-get staff "lockCode" "isInvalid")}}
+            <p class="form-error">{{v-get staff "lockCode" "message"}}</p>
         {{/if}}
     </div>
     <div class="bg-color pad-t pad-b">
@@ -97,20 +95,20 @@
             onClose=(action (mut showPrivacyPolicy) false)}}
     </div>
     <div class="single-body-footer text-center">
-        {{async-button classNames='btn btn-default'
-            disableWhen=(or (not (v-get staff 'isValid'))
+        {{async-button classNames="btn btn-default"
+            disableWhen=(or (not (v-get staff "isValid"))
                 (not isValidCaptcha)
                 (not staff.lockCode)
                 (not staff.password)
                 (not (eq staff.password confirmPassword))
                 (not didAcceptPolicies))
-            action=(route-action 'createStaff' staff)
-            default='Finish'
-            pending='Almost...'
+            action=(route-action "createStaff" staff)
+            default="Finish"
+            pending="Almost..."
             reset=staff.captcha}}
     </div>
 </div>
-<div class='single-footer'>
+<div class="single-footer">
     {{#if selected.isNew}}
         <p class="emphasize text-white">Want to edit your new organization?</p>
         <h4>

@@ -3,7 +3,9 @@ import Ember from 'ember';
 const { computed } = Ember;
 
 export default Ember.Controller.extend({
-  phone: computed.alias('stateManager.owner.phone.content'),
+  stateService: Ember.inject.service(),
+
+  phone: computed.alias('stateService.owner.phone.content'),
 
   // routes that want to use this controller but do not reuse the
   // contacts controller can override these properties

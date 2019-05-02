@@ -9,7 +9,7 @@ export default Ember.Mixin.create({
   composeSlideoutService: Ember.inject.service(),
   dataService: Ember.inject.service(),
   recordItemService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  stateService: Ember.inject.service(),
   tutorialService: Ember.inject.service(),
 
   setupController(controller) {
@@ -53,7 +53,7 @@ export default Ember.Mixin.create({
           // user needs to refresh before seeing the newly-created contacts. Consider making the
           // contacts to phone relationship automatically managed by Ember Data like the
           // record items to record owners
-          if (this.get('stateManager.viewingContacts')) {
+          if (this.get('stateService.viewingContacts')) {
             this.controllerFor('main.contacts').doRefreshContacts();
           }
         })

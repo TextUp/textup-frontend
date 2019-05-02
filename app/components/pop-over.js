@@ -129,7 +129,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       if (PlatformUtils.isIOS() || PlatformUtils.isAndroid()) {
         run.later(this, this._close, 400);
       } else {
-        this._close();
+        run.next(this, this._close);
       }
     }
   },
@@ -142,7 +142,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       // but actually closing because of the overlay, not the trigger
       const counter = this.get('_closeCounter') + 1;
       run.later(this._finishClosing.bind(this, counter, resolve), 500);
-      run(() =>
+      run.join(() =>
         this.setProperties({
           _isClosing: true, // intermediate state for closing animation
           _bodyPositionTop: null,

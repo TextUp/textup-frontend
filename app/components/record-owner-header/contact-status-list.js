@@ -22,7 +22,9 @@ export default Ember.Component.extend(PropTypesMixin, {
   }),
   _singleStatus: computed('contacts.status', 'contacts.@each.status', function() {
     const contacts = this.get('contacts');
-    return isArray(contacts) ? null : getWithDefault(contacts, 'status', '').toLowerCase();
+    return isArray(contacts)
+      ? null
+      : contacts && getWithDefault(contacts, 'status', '').toLowerCase();
   }),
   _singleContactIsUnread: computed('_singleStatus', function() {
     return this.get('_singleStatus') === Constants.CONTACT.STATUS.UNREAD.toLowerCase();

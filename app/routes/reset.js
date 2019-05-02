@@ -1,8 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  // Events
-  // ------
+  passwordResetService: Ember.inject.service(),
 
   redirect(model, transition) {
     const token = Ember.get(transition, 'queryParams.token');
@@ -21,13 +20,9 @@ export default Ember.Route.extend({
 
   actions: {
     completeReset(newPassword) {
-      const token = this.controller.get('token');
-      return this.get('dataService')
-        .request(this.get('authService').completeResetPassword(token, newPassword))
-        .then(() => {
-          this.notifications.success('Successfully reset your password!');
-          this.transitionTo('login');
-        });
+      return this.get('passwordResetService')
+        .updatePasswordWithToken(this.controller.get('token'), newPassword)
+        .then(() => this.transitionTo('login'));
     },
   },
 });

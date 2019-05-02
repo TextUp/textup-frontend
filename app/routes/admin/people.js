@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  stateService: Ember.inject.service(),
+
   queryParams: { filter: { refreshModel: true } },
 
   setupController() {
@@ -11,7 +13,7 @@ export default Ember.Route.extend({
   actions: {
     didTransition() {
       this._super(...arguments);
-      if (!this.get('stateManager.viewingPeople') || this.get('_changedFilter')) {
+      if (!this.get('stateService.viewingPeople') || this.get('_changedFilter')) {
         this._resetController();
       }
       this.set('_changedFilter', false);

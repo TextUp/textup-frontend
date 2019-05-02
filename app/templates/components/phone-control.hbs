@@ -1,35 +1,35 @@
 {{!-- phone number input --}}
-<div class="input-group input-group--full-width {{if (or (not _isValidating) (not onValidate)) "" 'hidden'}}">
+<div class="input-group input-group--full-width {{if (or (not _isValidating) (not onValidate)) "" "hidden"}}">
 	{{!-- for editing phone number --}}
-	<div class="input-group-element {{if (not _isEditingInput) 'hidden'}}">
-		<input type="tel" pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength='10'
-			class="phone-number-input form-control text-center {{if (not allowChanges) 'disabled'}}"
-    		value={{_number}} readonly={{if (not allowChanges) 'readonly'}}>
+	<div class="input-group-element {{if (not _isEditingInput) "hidden"}}">
+		<input type="tel" pattern="[0-9]*" tabindex="0" placeholder="### ### ####" maxlength="10"
+			class="phone-number-input form-control text-center {{if (not allowChanges) "disabled"}}"
+    		value={{_number}} readonly={{if (not allowChanges) "readonly"}}>
 	</div>
 	{{!-- for display phone number --}}
     <div class="input-group-element phone-number-display-container
-    	{{if _isEditingInput 'hidden'}}
-    	{{if (not allowChanges) 'form-disabled'}}">
+    	{{if _isEditingInput "hidden"}}
+    	{{if (not allowChanges) "form-disabled"}}">
 		<span class="phone-number-display input-group">
 		    <span class="input-group-text-display">(</span>
 	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
-	    		placeholder="###" disabled='{{if (not allowChanges) 'disabled'}}'>
+	    		placeholder="###" disabled="{{if (not allowChanges) "disabled"}}">
 		    <span class="input-group-text-display">)</span>
 	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
-	    		placeholder="###" disabled='{{if (not allowChanges) 'disabled'}}'>
+	    		placeholder="###" disabled="{{if (not allowChanges) "disabled"}}">
 		    <span class="input-group-text-display">-</span>
 	    	<input type="tel" class="form-control text-center" pattern="[0-9]*"
-	    		placeholder="####" disabled='{{if (not allowChanges) 'disabled'}}'>
+	    		placeholder="####" disabled="{{if (not allowChanges) "disabled"}}">
 		</span>
 		<span class="phone-number-display-overlay"></span>
 	</div>
 	{{#if (and (not disabled) (or showControl onClick onValidate))}}
 		<span class="input-group-addon {{controlClass}} no-select">
-			<button type='button' class='btn {{controlButtonClass}}' tabindex='0'
-				disabled={{if (or (not someNumberPresent) _hasError) 'disabled'}}
-				onclick={{action 'submitInput' bubbles=false}}>
-				{{#if (hasBlock 'inverse')}}
-					{{yield to='inverse'}}
+			<button type="button" class="btn {{controlButtonClass}}" tabindex="0"
+				disabled={{if (or (not someNumberPresent) _hasError) "disabled"}}
+				onclick={{action "submitInput" bubbles=false}}>
+				{{#if (hasBlock "inverse")}}
+					{{yield to="inverse"}}
 				{{else}}
 			        <span class="fa fa-plus"></span>
 				{{/if}}
@@ -39,26 +39,26 @@
 </div>
 {{!-- external validation --}}
 <div class="input-group no-select
-		{{if (or (not _isValidating) (not onValidate)) 'hidden' ""}}">
+		{{if (or (not _isValidating) (not onValidate)) "hidden" ""}}">
 	{{#if (and hasBlock (not forceDefaultValidate))}}
 		{{yield publicAPI}}
 	{{else}}
 		<span class="input-group-addon blend-in">
-	    	<button type='button' class='btn btn-default' tabindex='0'
-	    		onclick={{action 'revertExternalValidation' bubbles=false}}>
-	        	<span class='fa fa-undo'></span>
+	    	<button type="button" class="btn btn-default" tabindex="0"
+	    		onclick={{action "revertExternalValidation" bubbles=false}}>
+	        	<span class="fa fa-undo"></span>
 	    	</button>
 	    </span>
-	    {{input tabindex='0'
-	    	class='phone-number-validate form-control'
-	    	placeholder='Verify number'
+	    {{input tabindex="0"
+	    	class="phone-number-validate form-control"
+	    	placeholder="Verify number"
 	    	value=_externalValidationCode
-	    	enter='submitExternalValidation'}}
+	    	enter="submitExternalValidation"}}
 		<span class="input-group-addon blend-in">
-	    	<button class='btn btn-default' type='button' tabindex='0'
-	    		disabled={{if (not _externalValidationCode) 'disabled'}}
-	    		{{action 'submitExternalValidation' bubbles=false}}>
-	        	<span class='fa fa-check'></span>
+	    	<button class="btn btn-default" type="button" tabindex="0"
+	    		disabled={{if (not _externalValidationCode) "disabled"}}
+	    		{{action "submitExternalValidation" bubbles=false}}>
+	        	<span class="fa fa-check"></span>
 	    	</button>
 	    </span>
 	{{/if}}

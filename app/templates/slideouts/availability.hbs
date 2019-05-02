@@ -1,6 +1,6 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat stateManager.owner.name " Notifications"))
+        title=(concat stateService.owner.name " Notifications"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=(or model.isDirty authService.authUser.isDirty)
         onPrimary=(route-action "finishAvailabilitySlideout")
@@ -14,9 +14,9 @@
         model.isDirty authService.authUser.isDirty) as |slideout|}}
     <div class="form">
         <div class="form__group">
-            <label for="Away Message" class="form__label form__label--emphasize">{{stateManager.owner.name}}'s Away Message</label>
+            <label for="Away Message" class="form__label form__label--emphasize">{{stateService.owner.name}}'s Away Message</label>
             <span class="form__label form__label--multiline">
-                TextUp will reply with this message to texts <b>received by {{stateManager.owner.name}}</b> when {{if stateManager.ownerIsTeam "no one is" "you are not"}} available. TextUp automatically adds an emergency disclaimer to your custom message.
+                TextUp will reply with this message to texts <b>received by {{stateService.owner.name}}</b> when {{if stateService.ownerIsTeam "no one is" "you are not"}} available. TextUp automatically adds an emergency disclaimer to your custom message.
             </span>
             {{#hide-show focusOnOpenSelector="textarea"
                 clickOutToClose=true
@@ -44,7 +44,7 @@
             {{/hide-show}}
         </div>
         <div class="form__group">
-            <label for="Voicemail" class="form__label form__label--emphasize">{{stateManager.owner.name}}'s Voicemail</label>
+            <label for="Voicemail" class="form__label form__label--emphasize">{{stateService.owner.name}}'s Voicemail</label>
             <div class="row margin-t">
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-false"

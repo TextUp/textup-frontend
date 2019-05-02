@@ -5,10 +5,11 @@
     	<img class="brand" src="assets/images/logo.png" />
         <h3 class="text-white">Set Up Account</h3>
         <div class="subtitle">
-        	<a href="" class="text-bold text-white"
-        		{{action "logout"}}>
-        		Log out
-    		</a>
+            <button type="button"
+                class="btn-link text-bold text-white"
+                onclick={{service-action "authService" "logout"}}>
+                Log out
+            </button>
         </div>
     </div>
     <div class="single-body margin-b-double">
@@ -20,11 +21,11 @@
             <p class="text-bold text-big margin-b">Request a verification code</p>
             <div class="row">
                 {{phone-control classNames="xs-full-row m-7-row-10 margin-b"
-                    number=personalNumber
-                    onChange=(action (mut personalNumber))}}
+                    number=(service-prop "userSetupService" "inProgressPersonalNumber")
+                    onChange=(service-mut "userSetupService" "inProgressPersonalNumber")}}
                 {{#action-button classNames='btn-default xs-full-row m-3-row-10'
-                    disabled=(not personalNumber)
-                    onAction=(route-action "startVerifyPersonalPhone" personalNumber)}}
+                    disabled=(not (service-prop "userSetupService" "inProgressPersonalNumber"))
+                    onAction=(service-action "userSetupService" "startPersonalNumberSetup")}}
                     Get code
                 {{/action-button}}
             </div>
@@ -32,17 +33,18 @@
             <p class="text-bold text-big margin-b">Have a verification code already?</p>
             <div class="row">
                 <div class="xs-full-row m-7-row-10 margin-b">
+                    {{!-- TODO will this work without a service-mut? --}}
                     {{input class="form-control"
-                        value=verificationCode
+                        value=(service-prop "userSetupService" "verificationCode")
                         type="text"
                         placeholder="Enter verification code..."
                         autocorrect="off"
                         autocapitalize="off"
-                        enter=(route-action "finishVerifyPersonalPhone" personalNumber verificationCode)}}
+                        enter=(route-action "finishPersonalNumberSetup")}}
                 </div>
                 {{#action-button classNames='btn-default xs-full-row m-3-row-10'
-                    disabled=(not verificationCode)
-                    onAction=(route-action "finishVerifyPersonalPhone" personalNumber verificationCode)}}
+                    disabled=(not (service-prop "userSetupService" "verificationCode"))
+                    onAction=(route-action "finishPersonalNumberSetup")}}
                     Finish set up
                 {{/action-button}}
             </div>

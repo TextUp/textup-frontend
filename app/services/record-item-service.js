@@ -2,27 +2,32 @@ import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
+import FileUtils from 'textup-frontend/utils/file';
+import LocaleUtils from 'textup-frontend/utils/locale';
 import moment from 'moment';
 import TypeUtils from 'textup-frontend/utils/type';
-import { tryGetFileNameFromXHR, download } from 'textup-frontend/utils/file';
 
-const { assign, isArray, get } = Ember;
+const { assign, isArray, get, RSVP } = Ember;
+
+export const FALLBACK_FILE_NAME = 'textup-export.pdf';
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
   dataService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  renewTokenService: Ember.inject.service(),
+  requestService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
   store: Ember.inject.service(),
 
   loadRecordItems(model, { refresh } = { refresh: false }) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       const query = this._buildQueryFor([model]);
       query.max = 20;
       if (!refresh) {
         query.offset = model.get('numRecordItems');
       }
-      this.get('dataService')
-        .request(this.get('store').query('record-item', query))
+      this.get('requestService')
+        .handleIfError(this.get('store').query('record-item', query))
         .then(results => {
           model.set('totalNumRecordItems', get(results, 'meta.total'));
           resolve(results);
@@ -30,18 +35,18 @@ export default Ember.Service.extend({
     });
   },
 
-  // if no record owners specified, will just return export for all records for the
-  // currently-active phone
-  exportRecordItems(dateStart, dateEnd, shouldGroupEntities, recordOwners = []) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+  // if no record owners specified, will just return export for all records for the currently-active phone
+  /* jshint unused:vars */
+  exportRecordItems(dateStart, dateEnd, shouldGroup, recordOwners = [], alreadyRetried = false) {
+    return new RSVP.Promise((resolve, reject) => {
       const query = {
-        teamId: this.get('stateManager.ownerAsTeam.id'),
-        timezone: this.get('authService.timezone'),
+        teamId: this.get('stateService.ownerAsTeam.id'),
+        timezone: LocaleUtils.getTimezone(),
         format: Constants.EXPORT.FORMAT.PDF,
         max: Constants.EXPORT.LARGEST_MAX,
         start: moment(dateStart).toISOString(),
         end: moment(dateEnd).toISOString(),
-        exportFormatType: shouldGroupEntities
+        exportFormatType: shouldGroup
           ? Constants.EXPORT.TYPE.GROUPED
           : Constants.EXPORT.TYPE.SINGLE,
       };
@@ -50,12 +55,13 @@ export default Ember.Service.extend({
       // We need this because the server returns the raw binary data. In order for the binary data
       // to be properly outputted in the handler, we need to specify the `arrayBuffer` responseType
       // For browser support: https://caniuse.com/#feat=xhr2
+      // [NOTE] not using jQuery means that we will need to manually add in renew token logic
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', `${config.host}/v1/records?${Ember.$.param(query)}`);
+      xhr.open(Constants.REQUEST_METHOD.GET, `${config.host}/v1/records?${Ember.$.param(query)}`);
       xhr.responseType = 'arraybuffer';
-      xhr.setRequestHeader('Content-Type', Constants.MIME_TYPE.PDF);
-      xhr.setRequestHeader('Authorization', `Bearer ${this.get('authService.token')}`);
-      xhr.onload = () => this._handleExportOutcome(xhr, resolve, reject);
+      xhr.setRequestHeader(Constants.REQUEST_HEADER.CONTENT_TYPE, Constants.MIME_TYPE.PDF);
+      xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));
+      xhr.onload = this._handleExportOutcome.bind(this, [...arguments], xhr, resolve, reject);
       xhr.send();
     });
   },
@@ -107,12 +113,29 @@ export default Ember.Service.extend({
     };
   },
 
-  _handleExportOutcome(xhr, resolve, reject) {
-    if (xhr.status === 200) {
-      const fileType = Constants.MIME_TYPE.PDF,
-        fallbackName = 'textup-export.pdf';
-      download(xhr.response, fileType, tryGetFileNameFromXHR(xhr, fallbackName));
+  // TODO test to see if this works
+  _handleExportOutcome(originalArguments, xhr, resolve, reject) {
+    console.log('_handleExportOutcome xhr.status', xhr.status);
+    console.log('\t originalArguments', originalArguments);
+
+    const alreadyRetried = originalArguments[originalArguments.length - 1];
+
+    console.log('\t alreadyRetried', alreadyRetried);
+
+    if (xhr.status === Constants.RESPONSE_STATUS.OK) {
+      FileUtils.download(
+        xhr.response,
+        Constants.MIME_TYPE.PDF,
+        FileUtils.tryGetFileNameFromXHR(xhr, FALLBACK_FILE_NAME)
+      );
       resolve();
+    } else if (!alreadyRetried) {
+      const retryArgs = [...originalArguments];
+      retryArgs[retryArgs.length - 1] = true; // set the last arg (`alreadyRetried`) to true
+      this.get('renewTokenService')
+        .tryRenewToken()
+        .then(() => this.exportRecordItems(...retryArgs), reject)
+        .then(resolve, reject);
     } else {
       reject();
     }

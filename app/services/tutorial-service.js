@@ -3,15 +3,16 @@ import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TaskData from 'textup-frontend/data/task-data';
 
-const { assign, computed, set, isPresent } = Ember;
+const { assign, computed, set } = Ember;
 
 export const TASK_ID_KEY = 'id';
 export const TASK_STATUS_KEY = 'status';
 export const TASK_STEP_NUMBER_KEY = 'stepNumber';
 
 export default Ember.Service.extend({
-  notifications: Ember.inject.service(),
   authService: Ember.inject.service(),
+  notifications: Ember.inject.service(),
+  storageService: Ember.inject.service(),
 
   init() {
     this._super(...arguments);
@@ -51,8 +52,9 @@ export default Ember.Service.extend({
 
   getTaskStatus(taskId) {
     return (
-      window.localStorage.getItem(StorageUtils.taskKey(this.get('_username'), taskId)) ===
-      StorageUtils.TRUE
+      this.get('storageService').getItem(
+        StorageUtils.taskKey(this.get('authService.authUser'), taskId)
+      ) === StorageUtils.TRUE
     );
   },
   startCompleteTask(taskId) {
@@ -72,15 +74,15 @@ export default Ember.Service.extend({
       { htmlContent: true, onClick: this._openSupportSlideout.bind(this) }
     );
     this.set('_shouldShowTaskManager', false);
-    window.localStorage.setItem(
-      StorageUtils.showManagerKey(this.get('_username')),
+    this.get('storageService').setItem(
+      StorageUtils.showManagerKey(this.get('authService.authUser')),
       StorageUtils.FALSE
     );
   },
   resetTasks() {
     this.get('tasks').forEach(task => this._setTaskStatus(task[TASK_ID_KEY], false));
-    window.localStorage.setItem(
-      StorageUtils.showManagerKey(this.get('_username')),
+    this.get('storageService').setItem(
+      StorageUtils.showManagerKey(this.get('authService.authUser')),
       StorageUtils.TRUE
     );
     this.set('_shouldShowTaskManager', true);
@@ -89,20 +91,19 @@ export default Ember.Service.extend({
   // Internal
   // --------
 
-  _username: computed.alias('authService.authUser.username'),
   _shouldShowTaskManager: null,
 
   _setShouldShowFromStorage() {
-    const shouldShow = window.localStorage.getItem(
-      StorageUtils.showManagerKey(this.get('_username'))
+    const shouldShow = this.get('storageService').getItem(
+      StorageUtils.showManagerKey(this.get('authService.authUser'))
     );
     this.set('_shouldShowTaskManager', shouldShow !== StorageUtils.FALSE);
   },
   _setTaskStatus(taskId, status) {
     const task = this.get('tasks').find(task => task && task[TASK_ID_KEY] === taskId);
     if (task) {
-      window.localStorage.setItem(
-        StorageUtils.taskKey(this.get('_username'), taskId),
+      this.get('storageService').setItem(
+        StorageUtils.taskKey(this.get('authService.authUser'), taskId),
         status ? StorageUtils.TRUE : StorageUtils.FALSE
       );
       set(task, TASK_STATUS_KEY, status);

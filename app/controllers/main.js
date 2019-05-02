@@ -1,24 +1,10 @@
-import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 
-const { computed, get, run } = Ember;
+const { computed } = Ember;
 
 export default Ember.Controller.extend({
+  stateService: Ember.inject.service(),
+
   // displaying active menu items
-  filter: computed.alias('stateManager.owner.phone.content.contactsFilter'),
-
-  shouldShowAppMessage: computed(function() {
-    return get(config, 'appMessage.oldestMessageInDays');
-  }),
-
-  actions: {
-    closeAppUpdateMessage() {
-      this.set('shouldShowAppMessage', false);
-    },
-    registerTourManagerAndStartTour(tourManager) {
-      if (tourManager && tourManager.startTourImmediately) {
-        run.scheduleOnce('afterRender', tourManager.actions.startTour);
-      }
-    },
-  },
+  filter: computed.alias('stateService.owner.phone.content.contactsFilter'),
 });

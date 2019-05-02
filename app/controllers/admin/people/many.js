@@ -3,6 +3,9 @@ import Ember from 'ember';
 const { filterBy } = Ember.computed;
 
 export default Ember.Controller.extend({
+  authService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
+
   peopleController: Ember.inject.controller('admin.people'),
 
   selected: filterBy('peopleController.people', 'isSelected', true),
@@ -51,7 +54,7 @@ export default Ember.Controller.extend({
     this.get('selected').forEach(person => person.set('isSelected', false));
   },
   _exitMany() {
-    if (this.get('stateManager.viewingTeam')) {
+    if (this.get('stateService.viewingTeam')) {
       this.transitionToRoute('admin.team');
     } else {
       this.transitionToRoute('admin.people');

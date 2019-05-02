@@ -53,11 +53,11 @@ test('adding team id as query param to url', function(assert) {
 
   assert.equal(obj._tryAddTeamId(null), null);
 
-  obj.set('stateManager', { ownerAsTeam: Ember.Object.create({ id: null }) });
+  obj.set('stateService', { ownerAsTeam: Ember.Object.create({ id: null }) });
 
   assert.equal(obj._tryAddTeamId(url), url);
 
-  obj.set('stateManager.ownerAsTeam.id', tId);
+  obj.set('stateService.ownerAsTeam.id', tId);
 
   assert.equal(obj._tryAddTeamId(url), `${url}?teamId=${tId}`);
 });

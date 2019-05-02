@@ -64,8 +64,8 @@
     </div>
 {{/if}}
 {{#if (eq owner.phoneAction (constant "ACTION.PHONE.TRANSFER"))}}
-    {{single-select/mutable-transfer-phone data=stateManager.ownerAsOrg.teams.content
-        org=stateManager.ownerAsOrg
+    {{single-select/mutable-transfer-phone data=stateService.ownerAsOrg.teams.content
+        org=stateService.ownerAsOrg
         phoneOwner=owner
         selected=(mut owner.phoneActionData)
         classNames="form__group"}}

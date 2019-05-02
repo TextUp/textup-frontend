@@ -12,7 +12,7 @@
                 {{#phone-control/mutable-validated number=staff.personalNumber
                     controlClass="blend-in"
                     forceDefaultValidate=true
-                    onValidateSuccess=(route-action "persist" staff hideShow.actions.close)}}
+                    onValidateSuccess=(service-action "dataService" "persist" staff hideShow.actions.close)}}
                 {{else}}
                     <span class="fa fa-arrow-right"></span>
                 {{/phone-control/mutable-validated}}

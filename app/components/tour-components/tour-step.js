@@ -4,7 +4,7 @@ import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run, tryInvoke, RSVP } = Ember;
+const { computed, run, tryInvoke } = Ember;
 
 export const BODY_DRAWER_CLASS = 'tour-step__root';
 

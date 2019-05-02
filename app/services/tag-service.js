@@ -5,12 +5,13 @@ const { RSVP, run } = Ember;
 
 export default Ember.Service.extend({
   dataService: Ember.inject.service(),
-  stateManager: Ember.inject.service('state'),
+  requestService: Ember.inject.service(),
+  stateService: Ember.inject.service(),
   store: Ember.inject.service(),
 
   createNew() {
     return this.get('store').createRecord(Constants.MODEL.TAG, {
-      language: this.get('stateManager.owner.phone.content.language'),
+      language: this.get('stateService.owner.phone.content.language'),
     });
   },
   persistNew(tag, { model }) {
@@ -33,8 +34,8 @@ export default Ember.Service.extend({
   _reloadContactsAfterDelay(contacts) {
     return new RSVP.Promise((resolve, reject) => {
       run.later(() => {
-        this.get('dataService')
-          .request(Ember.RSVP.all(contacts.map(contact => contact.reload())))
+        this.get('requestService')
+          .handleIfError(Ember.RSVP.all(contacts.map(contact => contact.reload())))
           .then(resolve, reject);
       }, 1000);
     });

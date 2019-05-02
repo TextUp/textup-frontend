@@ -10,12 +10,12 @@ module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     // See https://github.com/ember-cli/ember-cli-preprocessor-registry/issues/8#issuecomment-281373733
     minifyCSS: {
-      options: { processImport: false }
+      options: { processImport: false },
     },
     minifyJS: {
-      enabled: false
+      enabled: false,
     },
-    sassOptions: { includePaths: ['bower_components'] }
+    sassOptions: { includePaths: ['bower_components'] },
   });
 
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.js');
@@ -24,32 +24,32 @@ module.exports = function(defaults) {
   var faTree = new Funnel(app.bowerDirectory + '/font-awesome/fonts', {
     srcDir: '/',
     include: ['*.*'],
-    destDir: '/assets/fonts'
+    destDir: '/assets/fonts',
   });
   var mapboxTree = new Funnel(app.bowerDirectory + '/mapbox.js/images', {
     srcDir: '/',
     include: ['*.*'],
-    destDir: '/assets/images'
+    destDir: '/assets/images',
   });
   // [FUTURE] upgrade to Ember 2.15 for native support using app.import to import files
   // from node_modules directly
   var cookieConsentTree = new Funnel(app.project.root + '/node_modules/cookieconsent/build', {
     srcDir: '/',
     include: ['*.css'],
-    destDir: '/assets/css'
+    destDir: '/assets/css',
   });
 
   var mp3EncoderTree = new Funnel(app.project.root + '/node_modules/lamejs', {
     srcDir: '/',
     include: ['lame.min.js'],
-    destDir: '/workers/encoders'
+    destDir: '/workers/encoders',
   });
   var webworkersTree = new Funnel(
     new BabelTranspiler(app.project.root + '/app/workers', { browserPolyfill: true }),
     {
       srcDir: '/',
       include: ['*'],
-      destDir: '/workers'
+      destDir: '/workers',
     }
   );
 

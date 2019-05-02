@@ -59,7 +59,7 @@
                                 <ul class="dropdown">
                                     <li tabindex="0"
                                         class="dropdown-item"
-                                        onclick={{route-action "resetPassword" person.username}}>
+                                        onclick={{service-action "passwordResetService" "getToken" person.username}}>
                                         Send password reset
                                     </li>
                                     <li tabindex="0" class="dropdown-item"
@@ -103,7 +103,7 @@
 		</div>
     </div>
     <div class="section-body bg-color bg-lightest">
-        {{#tab-container onChange=(route-action "revert" person)
+        {{#tab-container onChange=(service-action "dataService" "revert" person)
             animation="fade" as |tabContainer1|}}
             {{#tab-container/item doRegister=tabContainer1.actions.register
                 onDestroy=tabContainer1.actions.unregister
@@ -120,7 +120,7 @@
                             <div class="flex flex--justify-center flex--spacing-between">
                                 <div class="flex__item">
                                     <button class="btn" type="button"
-                                        onclick={{route-action "revert" person
+                                        onclick={{service-action "dataService" "revert" person
                                             (action (mut person.phoneAction) null)}}>
                                         Cancel
                                     </button>
@@ -159,13 +159,13 @@
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">
                                             <button class="btn" type='button'
-                                            onclick={{route-action 'revert' phoneOwner}}>
+                                            onclick={{service-action "dataService" "revert" phoneOwner}}>
                                                 Cancel
                                             </button>
                                         </div>
                                         <div class="flex__item">
                                             {{async-button classNames='btn btn-default'
-                                            action=(route-action 'persist' phoneOwner)
+                                            action=(service-action "dataService" "persist" phoneOwner)
                                             default='Update'
                                             pending='Updating...'}}
                                         </div>
@@ -181,13 +181,13 @@
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">
                                             <button class="btn" type='button'
-                                            onclick={{route-action 'revert' phoneOwner}}>
+                                            onclick={{service-action "dataService" "revert" phoneOwner}}>
                                                 Cancel
                                             </button>
                                         </div>
                                         <div class="flex__item">
                                             {{async-button classNames='btn btn-default'
-                                            action=(route-action 'persist' phoneOwner)
+                                            action=(service-action "dataService" "persist" phoneOwner)
                                             default='Update'
                                             pending='Updating...'}}
                                         </div>

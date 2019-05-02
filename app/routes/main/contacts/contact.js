@@ -26,7 +26,9 @@ export default Ember.Route.extend(
         const found = this.store.peekRecord('contact', id);
         return found
           ? found
-          : this.store.findRecord('contact', id).catch(failure => Ember.RSVP.reject(failure));
+          : this.store
+              .findRecord('contact', id)
+              .catch(() => this.transitionTo(this.get('backRouteName')));
       } else {
         this.transitionTo(this.get('backRouteName'));
       }

@@ -1,20 +1,20 @@
 {{#slideout-pane
-    headerComponent=(component "slideout-pane/title" title='New Staff')
+    headerComponent=(component "slideout-pane/title" title="New Staff")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action 'createStaff' newStaff
-            (route-action 'cleanNewStaff' newStaff
+        onPrimary=(route-action "createStaff" newStaff
+            (route-action "cleanNewStaff" newStaff
                 (route-action "closeSlideout")))
-        disablePrimary=(not (v-get newStaff 'isValid'))
+        disablePrimary=(not (v-get newStaff "isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onOpen=(route-action 'initializeNewStaff')
-    onClose=(route-action 'revert' newStaff
-        (route-action 'cleanNewStaff' newStaff
+    onOpen=(route-action "initializeNewStaff")
+    onClose=(service-action "dataService" "revert" newStaff
+        (route-action "cleanNewStaff" newStaff
             (route-action "closeSlideout")))
     forceKeepOpen=newStaff.isSaving
-    focusSelector='.start-focus' as |slideout|}}
+    focusSelector=".start-focus" as |slideout|}}
     <div class="form">
-        {{partial 'partials/staff/create'}}
+        {{partial "partials/staff/create"}}
     </div>
 {{/slideout-pane}}

@@ -7,7 +7,7 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 // and this component may no longer be necessary.
 
 export default Ember.Component.extend(PropTypesMixin, {
-  stateManager: Ember.inject.service('state'),
+  stateService: Ember.inject.service(),
   numberService: Ember.inject.service(),
 
   propTypes: {

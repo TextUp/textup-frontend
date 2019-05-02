@@ -1,80 +1,119 @@
 <!DOCTYPE html>
 <html manifest="manifest.appcache">
-  <head>
+    <head>
+        <script type="text/javascript">
+            window.addEventListener(
+                'load',
+                function(a) {
+                    window.applicationCache.addEventListener(
+                        'updateready',
+                        function(a) {
+                            window.applicationCache.status == window.applicationCache.UPDATEREADY &&
+                                window.confirm(
+                                    'A new version of TextUp is available. Install now?'
+                                ) &&
+                                (window.applicationCache.swapCache(), window.location.reload());
+                        },
+                        !1
+                    );
+                },
+                !1
+            );
+        </script>
 
-    <script type='text/javascript'>window.addEventListener("load",function(a){window.applicationCache.addEventListener("updateready",function(a){window.applicationCache.status==window.applicationCache.UPDATEREADY&&window.confirm("A new version of TextUp is available. Install now?")&&(window.applicationCache.swapCache(),window.location.reload())},!1)},!1);</script>
+        <!-- CONFIGURATION -->
 
-    <!-- CONFIGURATION -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="TextUp" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-title" content="TextUp">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="mobile-web-app-capable" content="yes">
+        <!-- ICONS -->
 
-    <!-- ICONS -->
+        <!-- For Chrome for Android-->
+        <link rel="icon" sizes="192x192" href="assets/images/touch-icon-192.png" />
+        <!-- For Apple devices -->
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="180x180"
+            href="assets/images/apple-touch-icon-180x180-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="167x167"
+            href="assets/images/apple-touch-icon-167x167-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="152x152"
+            href="assets/images/apple-touch-icon-152x152-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="120x120"
+            href="assets/images/apple-touch-icon-120x120-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="87x87"
+            href="assets/images/apple-touch-icon-87x87-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="80x80"
+            href="assets/images/apple-touch-icon-80x80-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="76x76"
+            href="assets/images/apple-touch-icon-76x76-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="58x58"
+            href="assets/images/apple-touch-icon-58x58-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="40x40"
+            href="assets/images/apple-touch-icon-40x40-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            sizes="29x29"
+            href="assets/images/apple-touch-icon-29x29-precomposed.png"
+        />
+        <link
+            rel="apple-touch-icon-precomposed"
+            href="assets/images/apple-touch-icon-precomposed.png"
+        />
+        <!-- 58x58px -->
 
-    <!-- For Chrome for Android-->
-    <link rel="icon"
-        sizes="192x192"
-        href="assets/images/touch-icon-192.png">
-    <!-- For Apple devices -->
-    <link rel="apple-touch-icon-precomposed"
-        sizes="180x180"
-        href="assets/images/apple-touch-icon-180x180-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="167x167"
-        href="assets/images/apple-touch-icon-167x167-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="152x152"
-        href="assets/images/apple-touch-icon-152x152-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="120x120"
-        href="assets/images/apple-touch-icon-120x120-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="87x87"
-        href="assets/images/apple-touch-icon-87x87-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="80x80"
-        href="assets/images/apple-touch-icon-80x80-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="76x76"
-        href="assets/images/apple-touch-icon-76x76-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="58x58"
-        href="assets/images/apple-touch-icon-58x58-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="40x40"
-        href="assets/images/apple-touch-icon-40x40-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        sizes="29x29"
-        href="assets/images/apple-touch-icon-29x29-precomposed.png">
-    <link rel="apple-touch-icon-precomposed"
-        href="assets/images/apple-touch-icon-precomposed.png"> <!-- 58x58px -->
+        {{content-for "head"}}
 
-    {{content-for "head"}}
+        <link rel="stylesheet" href="assets/vendor.css" />
+        <link rel="stylesheet" href="assets/textup-frontend.css" />
 
-    <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/textup-frontend.css">
+        {{content-for "head-footer"}}
+    </head>
+    <body>
+        <div id="textup-splash-screen" class="overlay bg-color bg-brand">
+            <div class="center xs-full-row text-center">
+                <img class="brand" src="assets/images/logo.png" />
+            </div>
+        </div>
 
-    {{content-for "head-footer"}}
-  </head>
-  <body>
+        {{content-for "body"}}
 
-    <div id="initializer" class='overlay bg-color bg-brand'>
-      <div class="center xs-full-row text-center">
-        <img class="brand" src='assets/images/logo.png' />
-      </div>
-    </div>
+        <script src="assets/vendor.js"></script>
+        <script src="assets/textup-frontend.js"></script>
 
-    {{content-for "body"}}
-
-    <script src="assets/vendor.js"></script>
-    <script src="assets/textup-frontend.js"></script>
-
-    {{content-for "body-footer"}}
-  </body>
+        {{content-for "body-footer"}}
+    </body>
 </html>

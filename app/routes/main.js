@@ -24,8 +24,11 @@ export default Ember.Route.extend(
   SupportsExportSlideout,
   SupportsFeedbackSlideout,
   {
-    slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
+    authService: Ember.inject.service(),
     sharingService: Ember.inject.service(),
+    stateService: Ember.inject.service(),
+
+    slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
     // Events
     // ------
@@ -58,16 +61,14 @@ export default Ember.Route.extend(
     afterModel(model = null) {
       this._super(...arguments);
       if (AppAccessUtils.isActivePhoneOwner(model)) {
-        this.get('stateManager').set('owner', model);
+        this.get('stateService').set('owner', model);
       } else {
         AppAccessUtils.determineAppropriateLocation(this, this.get('authService.authUser'));
       }
     },
     setupController(controller, model) {
       this._super(...arguments);
-      this.get('sharingService')
-        .loadStaffForSharing(model)
-        .then(staffs => this.get('stateManager').set('relevantStaffs', staffs));
+      this.get('sharingService').loadStaffCandidatesForPhoneOwner(model);
     },
     redirect(model, transition) {
       this._super(...arguments);
@@ -81,10 +82,10 @@ export default Ember.Route.extend(
 
     actions: {
       toggleSelected(contact) {
-        if (!this.get('stateManager.viewingMany')) {
-          if (this.get('stateManager.viewingTag')) {
+        if (!this.get('stateService.viewingMany')) {
+          if (this.get('stateService.viewingTag')) {
             this.transitionTo('main.tag.many');
-          } else if (this.get('stateManager.viewingSearch')) {
+          } else if (this.get('stateService.viewingSearch')) {
             this.transitionTo('main.search.many');
           } else {
             this.transitionTo('main.contacts.many');

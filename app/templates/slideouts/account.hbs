@@ -1,33 +1,33 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/accounts"
         title="Your Account"
-        activeName=stateManager.owner.name
-        activeNumber=stateManager.owner.phone.content.number
+        activeName=stateService.owner.name
+        activeNumber=stateService.owner.phone.content.number
         user=authService.authUser
-        onLogOut=(route-action "logout"))
+        onLogOut=(service-action "authService" "logout"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(and (or stateManager.owner.isDirty authService.authUser.isDirty)
+        showFooter=(and (or stateService.owner.isDirty authService.authUser.isDirty)
                 (not usernameDropdown.isOpen)
                 (not passwordDropdown.isOpen)
                 (not codeDropdown.isOpen))
-        onPrimary=(route-action "persist"
-            (if (eq accountSettingsTabs.currentIndex 1) authService.authUser stateManager.owner)
+        onPrimary=(service-action "dataService" "persist"
+            (if (eq accountSettingsTabs.currentIndex 1) authService.authUser stateService.owner)
             (route-action "closeSlideout"))
         disablePrimary=(or
-            (not (v-get stateManager.owner "isValid"))
+            (not (v-get stateService.owner "isValid"))
             (not (v-get authService.authUser "isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
-        onSecondary=(route-action "revert" stateManager.owner
-            (route-action "revert" authService.authUser)))
-    onClose=(route-action "revert" stateManager.owner
-        (route-action "revert" authService.authUser)
+        onSecondary=(service-action "dataService" "revert" stateService.owner
+            (service-action "dataService" "revert" authService.authUser)))
+    onClose=(service-action "dataService" "revert" stateService.owner
+        (service-action "dataService" "revert" authService.authUser)
         (route-action "closeSlideout"))
-    forceKeepOpen=(or stateManager.owner.isSaving authService.authUser.isSaving)}}
+    forceKeepOpen=(or stateService.owner.isSaving authService.authUser.isSaving)}}
     {{#tab-container doRegister=(action (mut accountSettingsTabs))
-        onChange=(route-action "revert" stateManger.owner
-            (route-action "revert" authService.authUser)) as |tabContainer|}}
-        {{#with stateManager.ownerAsOrg as |org|}}
+        onChange=(service-action "dataService" "revert" stateManger.owner
+            (service-action "dataService" "revert" authService.authUser)) as |tabContainer|}}
+        {{#with stateService.ownerAsOrg as |org|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=org.name}}
@@ -68,7 +68,7 @@
                             {{#if (not (unbound org.isTimeoutStandard))}}
                                 {{#multi-toggle/item doRegister=doRegister
                                     color=(constant "COLOR.LIGHT_GRAY")
-                                    onSelect=(route-action "revertAttribute" org "timeout")}}
+                                    onSelect=(service-action "dataService" "revertAttribute" org "timeout")}}
                                     {{org.timeoutInSeconds}} seconds
                                 {{/multi-toggle/item}}
                             {{/if}}
@@ -89,18 +89,18 @@
                             value=org.awayMessageSuffix}}
                     </div>
                     {{form/location-model entity=org
-                        onLocationError=(service-action "dataService" "handleMapError")}}
+                        onLocationError=(service-action "mapService" "handleError")}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
-        {{#with stateManager.ownerAsTeam as |team|}}
+        {{#with stateService.ownerAsTeam as |team|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=team.name}}
                 <div class="form">
                     {{partial "partials/team/settings"}}
                     {{form/location-model entity=team
-                        onLocationError=(service-action "dataService" "handleMapError")}}
+                        onLocationError=(service-action "mapService" "handleError")}}
                 </div>
             {{/tab-container/item}}
         {{/with}}
