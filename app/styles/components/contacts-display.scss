@@ -1,0 +1,48 @@
+.contacts-display {
+  &__header {
+    background-color: $color-light-seafoam;
+    padding: $padding/2;
+    display: flex;
+    justify-content: space-between;
+    color: $color-brand-dark;
+  }
+
+  &__toggle {
+    @extend .btn-link;
+    margin-right: 10vw;
+  }
+
+  &__stats {
+    text-align: right;
+  }
+
+  &__contact_item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &__checkbox {
+      padding: $padding/2;
+      padding-left: $padding;
+    }
+
+    &__container {
+      padding: $padding/2;
+      display: flex;
+      flex-direction: column;
+      width: 100vh;
+
+      & {
+        border-top: 1px solid $border-color;
+      }
+    }
+
+    &__name {
+      font-size: $font-size * 1.2;
+      padding-bottom: $padding/4;
+    }
+
+    &__numbers {
+    }
+  }
+}

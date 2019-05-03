@@ -1,17 +1,25 @@
-<div style="background: white; height: 100%; width: 100%;">
-  {{link-to "Log In" "login"}}
+<div style="background: white; height: 100vh; width: 30em; overflow-y: scroll;">
+  <!-- {{link-to "Log In" "login"}}
   <br>
   <h1>Testing Route!!</h1>
   <h2>Used to test components</h2>
-  <br><br>
+  <br><br> -->
 
+  <br><br><hr>
   {{contacts-upload onImport=(action (mut contactObjectsToImport))}}
+  <br><br><hr>
+  {{contacts-display contactObjects=contactObjectsToImport
+    onImport=(route-action "saveContacts")}}
 
+<!--
   <br><br>
   <p> --Above is upload-----Below is display----- </p>
   <br><br>
 
   {{contacts-display contactObjects=contactObjectsToImport
     onImport=(route-action "saveContacts")}}
-    
+
+    <br><br>
+    {{contacts-load}} ! -->
+
 </div>

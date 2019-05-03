@@ -11,18 +11,19 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   classNames: 'contacts_display',
 
-  didInitAttrs() {
-    this._super(...arguments);
-  },
-
   // Internal properties
   // -------------------
 
-  _someSelected: computed('_contactItems.@each.isSelect', function() {
-    return this.get('_contactItems').any(child => child.isSelect);
-  }),
-
   _contactItems: computed(() => []),
+  _someSelected: computed('_contactItems.@each.isSelect', function() {
+    return this.get('_contactItems').any(child => child && child.isSelect);
+  }),
+  _numSelect: computed('_contactItems.@each.isSelect', function() {
+    return this.get('_contactItems').filter(child => child && child.isSelect).length;
+  }),
+  _numTotal: computed('_contactItems.[]', function() {
+    return this.get('_contactItems.length');
+  }),
 
   // Internal handlers
   // -----------------

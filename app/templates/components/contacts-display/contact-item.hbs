@@ -1,7 +1,15 @@
-<input type="checkbox"
-  checked={{if _publicAPI.isSelect "checked" ""}}
-  onchange={{action _onChange}}>
-<h2> {{data.name}} </h2>
-{{#each data.numbers as |number|}}
-  <h2> {{number}} </h2>
-{{/each}}
+<div class="contacts-display__contact_item__checkbox">
+  <input type="checkbox"
+    checked={{if _publicAPI.isSelect "checked" ""}}
+    onchange={{action _onChange}}>
+</div>
+<div class = "contacts-display__contact_item__container">
+  <div class="contacts-display__contact_item__name">
+    {{data.name}}
+  </div>
+  <div class="contacts-display__contact_item_numbers">
+    {{#each data.numbers as |number index|}}
+      {{number}}
+    {{/each}}
+  </div>
+</div>

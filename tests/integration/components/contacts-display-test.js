@@ -35,6 +35,8 @@ test('toggle button', function(assert) {
 });
 
 test('imports contacts', function(assert) {
+  // TODO: use spy to make streamlined, assert on args
+  // use let instead of var, or const when
   var contacts = [];
   contacts.push(ContactObject.create({ name: 'Person A', numbers: ['111-111-1111'] }));
   contacts.push(ContactObject.create({ name: 'Person B', numbers: ['111-111-1111'] }));

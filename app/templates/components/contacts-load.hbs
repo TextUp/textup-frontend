@@ -1,1 +1,7 @@
-{{yield}}
+<p>
+{{#if _isLoading}}
+  {{_numLeft}} out of {{_numTotal}}
+{{else}}
+  not loading
+{{/if}}
+</p>

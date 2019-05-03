@@ -10,9 +10,23 @@ export default Ember.Component.extend(PropTypesMixin, {
     onImport: PropTypes.func.isRequired,
   },
 
+  classNames: ['contacts-upload'],
+  classNameBindings: ['_isError:contacts-upload--error'],
+
+  // Internal properties
+  // -------------------
+  _isError: false,
+  _isLoading: false,
+  _isLoaded: false,
+  _hasCordova: computed(function() {
+    return config.hasCordova;
+  }),
+
+  // Internal Handlers
+  // -----------------
+
   _handleChange(event) {
     const fr = new FileReader();
-
     fr.onloadend = event => {
       const contents = event.target.result,
         error = event.target.error;
@@ -35,7 +49,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       try {
         fr.readAsText(event.target.files[0]);
       } catch (err) {
-        console.log('ERROR');
+        // in case a malformed input causes an error
         this.set('_isError', true);
       }
     } else {
@@ -43,8 +57,6 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
   },
 
-  // Actions
-  // -------
   _parseVcard(contents) {
     const contacts = contents.split('BEGIN:VCARD');
     const namePattern = new RegExp('[F][N][:].*');
@@ -68,6 +80,29 @@ export default Ember.Component.extend(PropTypesMixin, {
           if (number.length > 10 && number[0] === '1') {
             number = number.substring(1);
           }
+
+          // format number string
+          // TODO: this might mess with uploading, move
+          if (number.length > 10) {
+            number =
+              '+' +
+              number.substring(0, 1) +
+              ' (' +
+              number.substring(1, 4) +
+              ')  ' +
+              number.substring(4, 7) +
+              ' - ' +
+              number.substring(7);
+          } else {
+            number =
+              ' (' +
+              number.substring(0, 3) +
+              ')  ' +
+              number.substring(3, 6) +
+              ' - ' +
+              number.substring(6);
+          }
+
           // remove duplicate numbers from same contact
           if (numbers.indexOf(number) === -1) {
             numbers.push(number);
@@ -80,10 +115,4 @@ export default Ember.Component.extend(PropTypesMixin, {
     }
     this.set('_contacts', formatted);
   },
-
-  // Computed Values
-  // ---------------
-  _hasCordova: computed(function() {
-    return config.hasCordova;
-  }),
 });

@@ -1,12 +1,15 @@
-<input type="button"
-  class="contacts-display-toggle"
-  value={{if _someSelected "Deselect All" "Select All"}}
-  onclick={{action _toggleSelect}}>
+<div class="contacts-display__header">
+  <button type="button"
+    class="contacts-display__toggle"
+    onclick={{action _toggleSelect}}>
+      {{if _someSelected "Deselect All" "Select All"}}
+  </button>
 
-<br><br>
-{{_someSelected}}
+  <Span class="contacts-display__stats">
+    Import {{_numSelect}} of {{_numTotal}} contacts
+  </Span>
+</div>
 
-<h2> Name Number</h2>
 {{#each contactObjects as |person|}}
   {{contacts-display/contact-item doRegister=(action _registerChild)
     data=person}}
