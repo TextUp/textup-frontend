@@ -8,10 +8,11 @@ let server;
 
 moduleFor('service:number-service', 'Unit | Service | number service', {
   needs: [
-    'service:auth-service',
-    'service:data-service',
-    'service:loading-slider',
-    'service:storage',
+    'service:authService',
+    'service:dataService',
+    'service:loadingSlider',
+    'service:storageService',
+    'service:requestService',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169

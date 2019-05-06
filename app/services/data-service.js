@@ -10,10 +10,12 @@ export default Ember.Service.extend({
 
   persist(data, ...thens) {
     return new RSVP.Promise((resolve, reject) => {
-      const changedModels = ArrayUtils.ensureArray(data)
+      const changedModels = ArrayUtils.ensureArrayAndAllDefined(data)
+        .filter(TypeUtils.isAnyModel)
         .filterBy('isDirty')
         .uniq(); // uniq so we don't send duplicate requests
       if (Ember.isEmpty(changedModels)) {
+        ArrayUtils.tryCallAll(thens);
         return resolve(data);
       }
       this.get('loadingSlider').startLoading();
@@ -28,38 +30,45 @@ export default Ember.Service.extend({
   },
 
   markForDelete(data) {
-    ArrayUtils.ensureArray(data).forEach(model => {
-      if (TypeUtils.isAnyModel(model) && model.get('isNew')) {
-        model.rollbackAttributes();
-      } else {
-        model.deleteRecord();
-      }
-    });
+    ArrayUtils.ensureArrayAndAllDefined(data)
+      .filter(TypeUtils.isAnyModel)
+      .forEach(model => {
+        if (model.get('isNew')) {
+          model.rollbackAttributes();
+        } else {
+          model.deleteRecord();
+        }
+      });
   },
 
   clearList(models, propName, ...thens) {
-    ArrayUtils.ensureArrayAndAllDefined(models).forEach(
-      model => TypeUtils.isAnyModel(model) && ArrayUtils.ensureArray(model.get(propName)).clear()
-    );
+    ArrayUtils.ensureArrayAndAllDefined(models)
+      .filter(TypeUtils.isAnyModel)
+      .forEach(model => {
+        const val = model.get(propName);
+        if (isArray(val)) {
+          val.clear();
+        }
+      });
     ArrayUtils.tryCallAll(thens);
   },
 
   revert(models, ...thens) {
-    ArrayUtils.ensureArrayAndAllDefined(models).forEach(
-      model => TypeUtils.isAnyModel(model) && model.rollbackAttributes()
-    );
+    ArrayUtils.ensureArrayAndAllDefined(models)
+      .filter(TypeUtils.isAnyModel)
+      .forEach(model => model.rollbackAttributes());
     ArrayUtils.tryCallAll(thens);
   },
 
-  revertAttribute(models, attributeName, ...thens) {
-    ArrayUtils.ensureArrayAndAllDefined(models).forEach(model => {
-      if (TypeUtils.isAnyModel(model)) {
-        const changes = get(model.changedAttributes(), attributeName);
+  revertProperty(models, propName, ...thens) {
+    ArrayUtils.ensureArrayAndAllDefined(models)
+      .filter(TypeUtils.isAnyModel)
+      .forEach(model => {
+        const changes = get(model.changedAttributes(), propName);
         if (isArray(changes)) {
-          model.set(attributeName, changes[0]);
+          model.set(propName, changes[0]);
         }
-      }
-    });
+      });
     ArrayUtils.tryCallAll(thens);
   },
 });

@@ -1,12 +1,14 @@
+import config from 'textup-frontend/config/environment';
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:app-message-service', 'Unit | Service | app message service', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
-});
+moduleFor('service:app-message-service', 'Unit | Service | app message service');
 
-// Replace this with your real tests.
-test('it exists', function(assert) {
-  let service = this.subject();
-  assert.ok(service);
+test('managing if should show', function(assert) {
+  const service = this.subject();
+
+  assert.equal(service.get('shouldShow'), config.appMessage.oldestMessageInDays);
+
+  service.closeMessage();
+
+  assert.equal(service.get('shouldShow'), false);
 });

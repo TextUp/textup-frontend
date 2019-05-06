@@ -11,26 +11,32 @@ import Ember from 'ember';
 
 const { computed, run } = Ember;
 
+export const SPLASH_SCREEN_ID = 'textup-splash-screen';
+
 export default Ember.Service.extend({
   hasSplashScreen: computed.readOnly('_hasSplashScreen'),
 
   tryRemove() {
-    if (this.get('_hasSplashScreen')) {
-      run.scheduleOnce('afterRender', this, this._removeSplashScreen);
-    }
+    run.join(() => {
+      if (this.get('_hasSplashScreen')) {
+        run.scheduleOnce('afterRender', this, this._removeSplashScreen);
+      }
+    });
   },
 
   // Internal
   // --------
 
   _hasSplashScreen: true,
-  _$splash: computed(() => Ember.$('#textup-splash-screen')),
 
   _removeSplashScreen() {
-    const $splash = this.get('_$splash');
+    // fine to re-fetch each time since this method should only be called once
+    const $splash = Ember.$('#' + SPLASH_SCREEN_ID);
     $splash.fadeOut('fast', () => {
-      $splash.remove();
-      this.set('_hasSplashScreen', false);
+      run.join(() => {
+        $splash.remove();
+        this.set('_hasSplashScreen', false);
+      });
     });
   },
 });

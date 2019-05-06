@@ -1,4 +1,5 @@
 import ArrayUtils from 'textup-frontend/utils/array';
+import sinon from 'sinon';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array');

@@ -15,8 +15,10 @@ export const KEY_STATUS = 'status';
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
 
-  init() {
-    this._super(...arguments);
+  // Methods
+  // -------
+
+  startWatchingAjaxRequests() {
     Ember.$.ajaxPrefilter(this._tryRenewTokenOnError.bind(this));
   },
 
@@ -66,15 +68,15 @@ export default Ember.Service.extend({
     // we override the error handler on `options` so that this current request
     // that is going out will exhibit the intercepted error behavior in the case
     // that this current ajax request being made results in a 401 error
-    options[KEY_ERROR_FN] = this._newBeforeSend.bind(this, originalOptions);
+    options[KEY_ERROR_FN] = this._newError.bind(this, originalOptions);
   },
 
-  _newBeforeSend(originalBeforeSend, xhr) {
-    callIfPresent(null, originalBeforeSend, [...arguments]);
+  _newBeforeSend(originalBeforeSend, xhr, ...otherArgs) {
+    callIfPresent(null, originalBeforeSend, [xhr, ...otherArgs]);
     xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));
   },
 
-  _newError(originalOptions, xhr) {
+  _newError(originalOptions, xhr, ...otherArgs) {
     if (
       xhr[KEY_STATUS] === Constants.RESPONSE_STATUS.UNAUTHORIZED &&
       !originalOptions[KEY_ALREADY_RENEWED]
@@ -82,10 +84,10 @@ export default Ember.Service.extend({
       originalOptions[KEY_ALREADY_RENEWED] = true;
       this.tryRenewToken().then(
         () => Ember.$.ajax(originalOptions),
-        originalOptions[KEY_ERROR_FN].bind(this, ...arguments)
+        originalOptions[KEY_ERROR_FN].bind(null, xhr, ...otherArgs)
       );
     } else {
-      originalOptions[KEY_ERROR_FN](...arguments);
+      originalOptions[KEY_ERROR_FN](xhr, ...otherArgs);
     }
   },
 });

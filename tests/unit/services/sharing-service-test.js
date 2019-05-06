@@ -1,56 +1,53 @@
 import Constants from 'textup-frontend/constants';
-import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
+import Ember from 'ember';
 import sinon from 'sinon';
-import { mockModel } from 'textup-frontend/tests/helpers/utilities';
+import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
-let server;
-
 moduleFor('service:sharing-service', 'Unit | Service | sharing service', {
-  needs: [
-    'model:staff',
-    'serializer:staff',
-    'service:auth-service',
-    'service:data-service',
-    'service:loading-slider',
-    'validator:belongs-to',
-    'validator:format',
-    'validator:inclusion',
-    'validator:length',
-    'validator:presence',
-  ],
   beforeEach() {
-    // see https://github.com/stonecircle/ember-cli-notifications/issues/169
-    this.register('service:notifications', NotificationsService);
+    this.register('service:requestService', Ember.Service);
+    this.inject.service('requestService');
+    this.register('service:store', Ember.Service);
+    this.inject.service('store');
+  },
+});
 
-    server = sinon.createFakeServer({ respondImmediately: true });
-  },
-  afterEach() {
-    server.restore();
-  },
+test('loading share staff errors', function(assert) {
+  const service = this.subject(),
+    done = assert.async();
+
+  this.requestService.setProperties({ handleIfError: sinon.stub() });
+
+  service.loadStaffCandidatesForPhoneOwner(null).catch(() => {
+    assert.ok(this.requestService.handleIfError.notCalled);
+
+    done();
+  });
 });
 
 test('loading staff that user can share with for staff', function(assert) {
   const service = this.subject(),
-    ownerId = Math.random(),
-    phoneOwner = mockModel(1, Constants.MODEL.STAFF, { id: ownerId }),
+    staffObj = TestUtils.mockModel(88, Constants.MODEL.STAFF),
+    shareCandidates = [Math.random()],
+    resultObj = { toArray: sinon.stub().returns(shareCandidates) },
     done = assert.async();
 
-  server.respondWith(/\/staffs*/, xhr => {
-    assert.ok(xhr.url.indexOf(Constants.STAFF.STATUS.ADMIN) > -1);
-    assert.ok(xhr.url.indexOf(Constants.STAFF.STATUS.STAFF) > -1);
-    assert.notOk(xhr.url.indexOf(`teamId=${ownerId}`) > -1);
-    assert.ok(xhr.url.indexOf(`shareStaffId=${ownerId}`) > -1);
+  this.requestService.setProperties({ handleIfError: sinon.stub() });
+  this.store.setProperties({ query: sinon.stub().resolves() });
 
-    xhr.respond(
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ staffs: [{ id: 1 }, { id: 2 }] })
-    );
-  });
+  this.requestService.handleIfError.resolves(resultObj);
+  service.loadStaffCandidatesForPhoneOwner(staffObj).then(() => {
+    assert.ok(this.requestService.handleIfError.calledOnce);
+    assert.ok(this.store.query.calledWith(Constants.MODEL.STAFF), 'querying for staff');
+    assert.deepEqual(this.store.query.firstCall.args[1].status, [
+      Constants.STAFF.STATUS.ADMIN,
+      Constants.STAFF.STATUS.STAFF,
+    ]);
+    assert.equal(this.store.query.firstCall.args[1].teamId, null, 'not a team');
+    assert.equal(this.store.query.firstCall.args[1].shareStaffId, staffObj.get('id'), 'is a staff');
 
-  service.loadStaffForSharing(phoneOwner).then(staffs => {
-    assert.equal(staffs.length, 2);
+    assert.deepEqual(service.get('staffCandidates'), shareCandidates);
 
     done();
   });
@@ -58,25 +55,26 @@ test('loading staff that user can share with for staff', function(assert) {
 
 test('loading staff that user can share with for team', function(assert) {
   const service = this.subject(),
-    ownerId = Math.random(),
-    phoneOwner = mockModel(1, Constants.MODEL.TEAM, { id: ownerId }),
+    teamObj = TestUtils.mockModel(88, Constants.MODEL.TEAM),
+    shareCandidates = [Math.random()],
+    resultObj = { toArray: sinon.stub().returns(shareCandidates) },
     done = assert.async();
 
-  server.respondWith(/\/staffs*/, xhr => {
-    assert.ok(xhr.url.indexOf(Constants.STAFF.STATUS.ADMIN) > -1);
-    assert.ok(xhr.url.indexOf(Constants.STAFF.STATUS.STAFF) > -1);
-    assert.ok(xhr.url.indexOf(`teamId=${ownerId}`) > -1);
-    assert.notOk(xhr.url.indexOf(`shareStaffId=${ownerId}`) > -1);
+  this.requestService.setProperties({ handleIfError: sinon.stub() });
+  this.store.setProperties({ query: sinon.stub().resolves() });
 
-    xhr.respond(
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({ staffs: [{ id: 1 }] })
-    );
-  });
+  this.requestService.handleIfError.resolves(resultObj);
+  service.loadStaffCandidatesForPhoneOwner(teamObj).then(() => {
+    assert.ok(this.requestService.handleIfError.calledOnce);
+    assert.ok(this.store.query.calledWith(Constants.MODEL.STAFF), 'querying for staff');
+    assert.deepEqual(this.store.query.firstCall.args[1].status, [
+      Constants.STAFF.STATUS.ADMIN,
+      Constants.STAFF.STATUS.STAFF,
+    ]);
+    assert.equal(this.store.query.firstCall.args[1].teamId, teamObj.get('id'), 'is a team');
+    assert.equal(this.store.query.firstCall.args[1].shareStaffId, null, 'not a staff');
 
-  service.loadStaffForSharing(phoneOwner).then(staffs => {
-    assert.equal(staffs.length, 1);
+    assert.deepEqual(service.get('staffCandidates'), shareCandidates);
 
     done();
   });

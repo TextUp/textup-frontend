@@ -36,6 +36,7 @@ export default Ember.Service.extend({
     const connection = this.get('_connection');
     if (connection) {
       connection.disconnect();
+      this.set('_connection', null);
     }
   },
 

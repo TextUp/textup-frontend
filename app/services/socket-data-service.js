@@ -1,5 +1,5 @@
-import Constants from 'textup-frontend/constants';
 import config from 'textup-frontend/config/environment';
+import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
 // [NOTE] We start watching for auth changes in an instance initializer
@@ -29,8 +29,8 @@ export default Ember.Service.extend({
 
   startWatchingAuthChanges() {
     this.get('authService')
-      .on(config.events.auth.success, this._bindSocketEvents.bind(this))
-      .on(config.events.auth.clear, this._unbindSocketEvents.bind(this));
+      .on(config.events.auth.success, this, this._bindSocketEvents)
+      .on(config.events.auth.clear, this, this._unbindSocketEvents);
   },
 
   // Internal

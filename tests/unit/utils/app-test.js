@@ -17,8 +17,27 @@ test('getting controller name for route with fallback to route name', function(a
   assert.equal(AppUtils.controllerNameForRoute(route2), routeName);
 });
 
-// test("aborting transition", function(assert) {
-//   const isTransition = sinon.stub(TypeUtils, "isTransition")
+test('aborting transition', function(assert) {
+  const isTransition = sinon.stub(TypeUtils, 'isTransition'),
+    forward = sinon.stub(window.history, 'forward'),
+    transitionObj = { abort: sinon.spy() };
 
-//   isTransition.restore()
-// })
+  isTransition.returns(false);
+  AppUtils.abortTransition(transitionObj);
+
+  assert.ok(isTransition.calledOnce);
+  assert.ok(isTransition.firstCall.calledWith(transitionObj));
+  assert.ok(transitionObj.abort.notCalled);
+  assert.ok(forward.notCalled);
+
+  isTransition.returns(true);
+  AppUtils.abortTransition(transitionObj);
+
+  assert.ok(isTransition.calledTwice);
+  assert.ok(isTransition.secondCall.calledWith(transitionObj));
+  assert.ok(transitionObj.abort.calledOnce);
+  assert.ok(forward.calledOnce);
+
+  isTransition.restore();
+  forward.restore();
+});

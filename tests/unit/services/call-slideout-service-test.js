@@ -9,14 +9,13 @@ moduleFor('service:call-slideout-service', 'Unit | Service | call slideout servi
   needs: ['service:analytics'],
   beforeEach() {
     this.register('service:contactService', Ember.Service);
-    this.register('service:dataService', Ember.Service);
-    this.register('service:recordItemService', Ember.Service);
-    this.register('service:store', Ember.Service);
-
     this.inject.service('contactService');
-    this.inject.service('dataService');
+    this.register('service:recordItemService', Ember.Service);
     this.inject.service('recordItemService');
+    this.register('service:store', Ember.Service);
     this.inject.service('store');
+    this.register('service:requestService', Ember.Service);
+    this.inject.service('requestService');
   },
 });
 
@@ -73,7 +72,7 @@ test('making call', function(assert) {
   this.contactService.setProperties({
     persistNewAndTryAddToPhone: sinon.stub().resolves(contactObj2),
   });
-  this.dataService.setProperties({ request: sinon.stub().resolves() });
+  this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });
   this.recordItemService.setProperties({ makeCall: sinon.stub().resolves() });
 
   service
@@ -82,7 +81,7 @@ test('making call', function(assert) {
       assert.equal(retVal, contactObj1, 'existing contact');
       assert.ok(this.store.createRecord.notCalled);
       assert.ok(this.contactService.persistNewAndTryAddToPhone.notCalled);
-      assert.ok(this.dataService.request.calledOnce);
+      assert.ok(this.requestService.handleIfError.calledOnce);
       assert.ok(this.recordItemService.makeCall.calledOnce);
       assert.ok(this.recordItemService.makeCall.firstCall.calledWith(contactObj1));
 
@@ -96,7 +95,7 @@ test('making call', function(assert) {
       );
       assert.ok(this.contactService.persistNewAndTryAddToPhone.calledOnce);
       assert.ok(this.contactService.persistNewAndTryAddToPhone.calledWith(contactObj2));
-      assert.ok(this.dataService.request.calledTwice);
+      assert.ok(this.requestService.handleIfError.calledTwice);
       assert.ok(this.recordItemService.makeCall.calledTwice);
       assert.ok(this.recordItemService.makeCall.secondCall.calledWith(contactObj2));
 

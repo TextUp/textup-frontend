@@ -19,7 +19,7 @@ export default Ember.Service.extend({
     if (tourManager) {
       this.set('_tourManager', tourManager);
       if (this._shouldStartTour()) {
-        run.scheduleOnce('afterRender', tourManager.actions.startTour);
+        run.join(() => run.scheduleOnce('afterRender', tourManager.actions.startTour));
       }
     }
   },

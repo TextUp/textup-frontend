@@ -3,8 +3,10 @@ import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import LocaleUtils from 'textup-frontend/utils/locale';
+import StorageUtils from 'textup-frontend/utils/storage';
+import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, RSVP } = Ember;
+const { computed, isPresent, RSVP, typeOf } = Ember;
 
 export const LOG_IN_FAIL_MSG = 'Incorrect or blank username or password';
 
@@ -15,10 +17,6 @@ export default Ember.Service.extend(Ember.Evented, {
   storageService: Ember.inject.service(),
   store: Ember.inject.service(),
 
-  init() {
-    this._super(...arguments);
-    this.get('storageService').on(config.events.storage.updated, this, this._handleStorageChange);
-  },
   willDestroy() {
     this._super(...arguments);
     this.get('storageService').off(config.events.storage.updated, this);
@@ -30,7 +28,9 @@ export default Ember.Service.extend(Ember.Evented, {
   token: null,
   refreshToken: null,
   authUser: null,
-  isLoggedIn: computed.and('token', 'authUser'),
+  isLoggedIn: computed('token', 'authUser', function() {
+    return isPresent(this.get('token')) && isPresent(this.get('authUser'));
+  }),
   authHeader: computed('token', function() {
     return `Bearer ${this.get('token')}`;
   }),
@@ -39,12 +39,15 @@ export default Ember.Service.extend(Ember.Evented, {
   // -------
 
   trySetUpFromStorage() {
+    // start listening for storage events from other tabs
+    this.get('storageService').on(config.events.storage.updated, this, this._handleStorageChange);
     // validate stored token for staff, if any. This will reject if the staff is not logged in
     // so we always resolve because we want the app set-up to always proceed.
     return new RSVP.Promise(resolve =>
       this.get('storageService')
         .sync()
         .then(this._setUpFromStorage.bind(this))
+        .catch(e => Ember.debug('authService.trySetUpFromStorage ' + e))
         .finally(resolve)
     );
   },
@@ -80,18 +83,20 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   storeAuthResponseSuccess(responseObj, resolve = null) {
-    const store = this.get('store'),
-      staffObj = store.push(
-        store.normalize(Constants.MODEL.STAFF, responseObj[Constants.MODEL.STAFF])
+    if (typeOf(responseObj) === 'object') {
+      const store = this.get('store'),
+        staffObj = store.push(
+          store.normalize(Constants.MODEL.STAFF, responseObj[Constants.MODEL.STAFF])
+        );
+      this._storeAuthData(
+        responseObj[Constants.RESPONSE_KEY.ACCESS_TOKEN],
+        responseObj[Constants.RESPONSE_KEY.REFRESH_TOKEN],
+        staffObj
       );
-    this._storeAuthData(
-      responseObj[Constants.RESPONSE_KEY.ACCESS_TOKEN],
-      responseObj[Constants.RESPONSE_KEY.REFRESH_TOKEN],
-      staffObj
-    );
-    this._retryAttemptedTransitionAfterLogIn().finally(() =>
-      callIfPresent(null, resolve, [staffObj])
-    );
+      this._retryAttemptedTransitionAfterLogIn().finally(() =>
+        callIfPresent(null, resolve, [staffObj])
+      );
+    }
   },
 
   // Internal
@@ -118,7 +123,7 @@ export default Ember.Service.extend(Ember.Evented, {
   },
 
   _handleStorageChange() {
-    const storedTokenVal = this.get('storageService').getItem('token');
+    const storedTokenVal = this.get('storageService').getItem(StorageUtils.authTokenKey());
     // short circuit if nothing really has changed
     if (storedTokenVal === this.get('token')) {
       return;
@@ -142,20 +147,23 @@ export default Ember.Service.extend(Ember.Evented, {
 
   _setUpFromStorage() {
     return new RSVP.Promise((resolve, reject) => {
-      const storage = this.get('storageService'),
-        token = storage.getItem('token'),
-        refreshToken = storage.getItem('refreshToken'),
-        userId = storage.getItem('userId');
+      const storageService = this.get('storageService'),
+        token = storageService.getItem(StorageUtils.authTokenKey()),
+        refreshToken = storageService.getItem(StorageUtils.authRefreshTokenKey()),
+        userId = storageService.getItem(StorageUtils.authUserIdKey());
       if (token && refreshToken && userId) {
         // set token so application adapter can help make our request
         // set refresh token so we can renew token if current is expired
         this.setProperties({ token, refreshToken });
         // set storage to also update localstorage only if current information is already persisted there
-        storage.set('persistBetweenSessions', storage.isItemPersistent('token'));
+        storageService.set(
+          'persistBetweenSessions',
+          storageService.isItemPersistent(StorageUtils.authTokenKey())
+        );
         // once all of the pertinent values in the authService are configured
         // then make the initial call to the backend to retrieve the staff
         this.get('store')
-          .findRecord('staff', userId)
+          .findRecord(Constants.MODEL.STAFF, userId)
           .then(staff => {
             // we re-fetch the token and refresh token values because
             // over the course of the findRecord call, we may have updated
@@ -170,31 +178,31 @@ export default Ember.Service.extend(Ember.Evented, {
     });
   },
 
-  _storeAuthData(token, refreshToken, staff = undefined) {
+  _storeAuthData(token, refreshToken, staff = null) {
     // storing appropriate items
-    const storage = this.get('storageService');
-    storage.setItem('token', token);
-    storage.setItem('refreshToken', refreshToken);
+    const storageService = this.get('storageService');
+    storageService.setItem(StorageUtils.authTokenKey(), token);
+    storageService.setItem(StorageUtils.authRefreshTokenKey(), refreshToken);
     this.setProperties({ token, refreshToken });
-    // the only time that staff should be undefined is if we are setting
+    // the only time that staff should be null is if we are setting
     // up and we are calling the server to retrieve the staff member
     // we then only set the token on auth success and don't set the authuser
     // or trigger any events
-    if (staff) {
-      storage.setItem('userId', staff.get('id'));
+    if (TypeUtils.isAnyModel(staff)) {
+      storageService.setItem(StorageUtils.authUserIdKey(), staff.get('id'));
       this.set('authUser', staff);
-      // send storage event to notify other tabs, if necessary
-      storage.sendStorageToOtherTabs();
+      // send storage event to notify other tabs only if the logged-in user has changed
+      storageService.sendStorageToOtherTabs();
       this.trigger(config.events.auth.success);
     }
   },
 
   _clearAuthData(reject = null) {
-    const storage = this.get('storageService');
-    storage.removeItem('token');
-    storage.removeItem('refreshToken');
-    storage.removeItem('userId');
-    storage.sendStorageToOtherTabs();
+    const storageService = this.get('storageService');
+    storageService.removeItem(StorageUtils.authTokenKey());
+    storageService.removeItem(StorageUtils.authRefreshTokenKey());
+    storageService.removeItem(StorageUtils.authUserIdKey());
+    storageService.sendStorageToOtherTabs();
     this.setProperties({ token: null, refreshToken: null, authUser: null });
     this.trigger(config.events.auth.clear);
     callIfPresent(null, reject);

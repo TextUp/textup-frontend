@@ -54,6 +54,18 @@ export function currentUrlKey() {
   return 'textup-current-url';
 }
 
+export function authTokenKey() {
+  return 'textup-auth-token';
+}
+
+export function authRefreshTokenKey() {
+  return 'textup-auth-refresh-token';
+}
+
+export function authUserIdKey() {
+  return 'textup-auth-user-id';
+}
+
 export function throwMissingInputError() {
-  throw new Error('NO_AUTH_USER_ERROR_MSG');
+  throw new Error(NO_AUTH_USER_ERROR_MSG);
 }

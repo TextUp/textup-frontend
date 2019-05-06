@@ -24,6 +24,8 @@ moduleFor('service:admin-service', 'Unit | Service | admin service', {
     server = sinon.createFakeServer({ respondImmediately: true });
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
+    this.register('service:requestService', Ember.Service);
+    this.inject.service('requestService');
   },
   afterEach() {
     server.restore();
@@ -49,6 +51,8 @@ test('loading pending staff', function(assert) {
     offset = 888,
     totalNum = 1000,
     done = assert.async();
+
+  this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });
 
   server.respondWith(/\/staffs*/, function(xhr) {
     assert.ok(xhr.url.indexOf(`offset=${offset}`) > -1);

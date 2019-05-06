@@ -1,10 +1,10 @@
 import destroyApp from 'textup-frontend/tests/helpers/destroy-app';
 import Ember from 'ember';
 import sinon from 'sinon';
-import { initialize } from 'textup-frontend/instance-initializers/socket-data';
+import { initialize } from 'textup-frontend/instance-initializers/setup-tutorial-state';
 import { module, test } from 'qunit';
 
-module('Unit | Instance Initializer | socket data', {
+module('Unit | Instance Initializer | setup tutorial state', {
   beforeEach: function() {
     Ember.run(() => {
       this.application = Ember.Application.create();
@@ -17,14 +17,14 @@ module('Unit | Instance Initializer | socket data', {
   },
 });
 
-test('socketDatService will start watching for auth changes', function(assert) {
-  const serviceObj = { startWatchingAuthChanges: sinon.spy() },
-    lookup = sinon.stub(this.appInstance, 'lookup').returns(serviceObj);
+test('it works', function(assert) {
+  const setUpTutorial = sinon.spy(),
+    lookup = sinon.stub(this.appInstance, 'lookup').returns({ setUpTutorial });
 
   initialize(this.appInstance);
 
-  assert.ok(lookup.calledWith('service:socketDataService'));
-  assert.ok(serviceObj.startWatchingAuthChanges.calledOnce);
+  assert.ok(lookup.calledWith('service:tutorialService'));
+  assert.ok(setUpTutorial.calledOnce);
 
   lookup.restore();
 });

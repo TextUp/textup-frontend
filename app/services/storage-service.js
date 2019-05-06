@@ -4,7 +4,7 @@ import Ember from 'ember';
 // Provides a consistent interface for storage + syncing between tabs
 // See http://blog.guya.net/2015/06/12/sharing-sessionstorage-between-tabs-for-secure-multi-tab-authentication/
 
-const { computed, isPresent, run, RSVP } = Ember;
+const { computed, isPresent, run, RSVP, typeOf } = Ember;
 
 export const KEY_REQUEST_SEND_STORAGE_FOR_THIS_TAB = 'textup-request-storage-data-to-be-sent';
 export const KEY_RECEIVE_REQUESTED_STORAGE_FROM_OTHER_TAB = 'textup-receive-requested-storage-data';
@@ -88,7 +88,7 @@ export default Ember.Service.extend(Ember.Evented, {
     try {
       storageObj.setItem(key, value);
     } catch (e) {
-      Ember.debug('storage.trySet: web storage not available: ' + e);
+      Ember.debug('storageService.trySet: web storage not available: ' + e);
     }
   },
   _onStorageSync({ originalEvent }) {
@@ -96,17 +96,24 @@ export default Ember.Service.extend(Ember.Evented, {
       this.sendStorageToOtherTabs();
     } else if (
       originalEvent.key === KEY_RECEIVE_REQUESTED_STORAGE_FROM_OTHER_TAB &&
-      originalEvent.storageArea === localStorage &&
+      originalEvent.storageArea === window.localStorage &&
       isPresent(originalEvent.newValue)
     ) {
-      this._receiveStorageFromOtherTab(JSON.parse(originalEvent.newValue));
+      this._receiveStorageFromOtherTab(originalEvent.newValue);
     }
   },
   _receiveStorageFromOtherTab(data) {
-    window.sessionStorage.clear();
-    for (let key in data) {
-      this._safeSet(window.sessionStorage, key, data[key]);
+    try {
+      const dataObj = JSON.parse(data);
+      if (typeOf(dataObj) === 'object') {
+        window.sessionStorage.clear();
+        for (let key in dataObj) {
+          this._safeSet(window.sessionStorage, key, dataObj[key]);
+        }
+        this.trigger(config.events.storage.updated);
+      }
+    } catch (e) {
+      Ember.debug('storageService._receiveStorageFromOtherTab: ' + e);
     }
-    this.trigger(config.events.storage.updated);
   },
 });

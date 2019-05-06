@@ -4,7 +4,7 @@ import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, run } = Ember;
+const { computed, run, typeOf } = Ember;
 
 export default Ember.Service.extend({
   router: Ember.inject.service(),
@@ -12,7 +12,7 @@ export default Ember.Service.extend({
 
   willDestroy() {
     this._super(...arguments);
-    Ember.removeObserver(this, 'router.currentURL', this, this._scheduleUpdateTrackedUrl);
+    Ember.removeObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
   },
 
   // Properties
@@ -46,10 +46,10 @@ export default Ember.Service.extend({
 
   startTrackingAndGetUrlToRestoreIfNeeded(targetRouteName) {
     // start tracking
-    Ember.addObserver(this, 'router.currentURL', this, this._scheduleUpdateTrackedUrl);
+    Ember.addObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
     // determing if stored url should be restored
     const storedUrl = this.get('storageService').getItem(StorageUtils.currentUrlKey());
-    if (storedUrl && targetRouteName) {
+    if (storedUrl && typeOf(targetRouteName) === 'string') {
       // We do NOT want to restore if we are heading towards certain specific targets
       const shouldIgnoreRestore = ArrayUtils.ensureArrayAndAllDefined(
         config.state.ignoreRestoreStoredUrlRouteNames

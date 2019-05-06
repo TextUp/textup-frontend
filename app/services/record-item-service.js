@@ -112,16 +112,9 @@ export default Ember.Service.extend({
         .mapBy('id'),
     };
   },
-
   // TODO test to see if this works
   _handleExportOutcome(originalArguments, xhr, resolve, reject) {
-    console.log('_handleExportOutcome xhr.status', xhr.status);
-    console.log('\t originalArguments', originalArguments);
-
     const alreadyRetried = originalArguments[originalArguments.length - 1];
-
-    console.log('\t alreadyRetried', alreadyRetried);
-
     if (xhr.status === Constants.RESPONSE_STATUS.OK) {
       FileUtils.download(
         xhr.response,
@@ -131,7 +124,7 @@ export default Ember.Service.extend({
       resolve();
     } else if (!alreadyRetried) {
       const retryArgs = [...originalArguments];
-      retryArgs[retryArgs.length - 1] = true; // set the last arg (`alreadyRetried`) to true
+      retryArgs[retryArgs.length - 1] = true; // set the last arg `alreadyRetried` to true
       this.get('renewTokenService')
         .tryRenewToken()
         .then(() => this.exportRecordItems(...retryArgs), reject)

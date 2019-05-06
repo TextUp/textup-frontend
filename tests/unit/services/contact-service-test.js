@@ -9,11 +9,11 @@ moduleFor('service:contact-service', 'Unit | Service | contact service', {
   needs: ['service:analytics'],
   beforeEach() {
     this.register('service:dataService', Ember.Service);
-    this.register('service:state', Ember.Service);
+    this.register('service:stateService', Ember.Service);
     this.register('service:store', Ember.Service);
 
     this.inject.service('dataService');
-    this.inject.service('state');
+    this.inject.service('stateService');
     this.inject.service('store');
   },
 });
@@ -87,7 +87,7 @@ test('persisting a new contact and trying to add that contact to the current pho
     contactObj = Ember.Object.create(),
     phone = TestUtils.mockModel(1, Constants.MODEL.PHONE, { addContacts: sinon.spy() });
 
-  this.state.setProperties({ viewingContacts: true, owner: { phone: { content: phone } } });
+  this.stateService.setProperties({ viewingContacts: true, owner: { phone: { content: phone } } });
   this.dataService.setProperties({ persist: sinon.stub().resolves() });
 
   service.persistNewAndTryAddToPhone(contactObj).then(() => {
@@ -106,7 +106,7 @@ test('creating new contact with language default', function(assert) {
     val2 = Math.random();
 
   this.store.setProperties({ createRecord: sinon.stub().returns(val2) });
-  this.state.setProperties({ owner: { phone: { content: { language: val1 } } } });
+  this.stateService.setProperties({ owner: { phone: { content: { language: val1 } } } });
 
   assert.equal(service.createNew(), val2);
   assert.ok(this.store.createRecord.calledOnce);

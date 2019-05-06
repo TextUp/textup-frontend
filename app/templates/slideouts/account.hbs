@@ -68,7 +68,7 @@
                             {{#if (not (unbound org.isTimeoutStandard))}}
                                 {{#multi-toggle/item doRegister=doRegister
                                     color=(constant "COLOR.LIGHT_GRAY")
-                                    onSelect=(service-action "dataService" "revertAttribute" org "timeout")}}
+                                    onSelect=(service-action "dataService" "revertProperty" org "timeout")}}
                                     {{org.timeoutInSeconds}} seconds
                                 {{/multi-toggle/item}}
                             {{/if}}

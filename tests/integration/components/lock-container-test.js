@@ -1,10 +1,10 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import * as LockContainerComponent from 'textup-frontend/components/lock-container';
+import config from 'textup-frontend/config/environment';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
-import config from 'textup-frontend/config/environment';
-import * as LockContainerComponent from 'textup-frontend/components/lock-container';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('lock-container', 'Integration | Component | lock container', {
   integration: true,

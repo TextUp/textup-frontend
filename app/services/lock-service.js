@@ -6,7 +6,9 @@ import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, RSVP } = Ember;
+const { computed, RSVP, typeOf } = Ember;
+
+export const VERIFY_FAIL_MESSAGE = 'Incorrect lock code.';
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
@@ -81,8 +83,8 @@ export default Ember.Service.extend({
   // --------
 
   _shouldLockForRouteName(routeName) {
-    return (
-      routeName &&
+    return !!(
+      typeOf(routeName) === 'string' &&
       !ArrayUtils.ensureArrayAndAllDefined(config.lock.ignoreLockRouteNames).any(loc =>
         routeName.includes(loc)
       )
@@ -95,7 +97,7 @@ export default Ember.Service.extend({
     callIfPresent(null, resolve);
   },
   _onVerifyFail(reject) {
-    this.get('notifications').error('Incorrect lock code.');
+    this.get('notifications').error(VERIFY_FAIL_MESSAGE);
     this._recordOneMoreAttempt();
     callIfPresent(null, reject);
   },

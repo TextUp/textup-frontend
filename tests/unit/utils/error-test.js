@@ -4,6 +4,26 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | error');
 
+test('normalizing error object', function(assert) {
+  const responseObj = { [ErrorUtils.ERRORS_PROP_NAME]: [] },
+    responseJSONObject = { hi: Math.random() },
+    status = Math.random(),
+    statusText = Math.random();
+
+  assert.equal(ErrorUtils.normalizeErrorObject(null), null);
+  assert.equal(ErrorUtils.normalizeErrorObject('not object'), 'not object');
+  assert.equal(ErrorUtils.normalizeErrorObject(responseObj), responseObj);
+  assert.equal(
+    ErrorUtils.normalizeErrorObject({ responseJSON: responseJSONObject }),
+    responseJSONObject
+  );
+  assert.deepEqual(ErrorUtils.normalizeErrorObject({ status, statusText }), {
+    [ErrorUtils.ERRORS_PROP_NAME]: [
+      { [ErrorUtils.STATUS_PROP_NAME]: status, [ErrorUtils.MESSAGE_PROP_NAME]: statusText },
+    ],
+  });
+});
+
 test('checking if response', function(assert) {
   assert.equal(ErrorUtils.isResponse(), false);
   assert.equal(ErrorUtils.isResponse(null), false);

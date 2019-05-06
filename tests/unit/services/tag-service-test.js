@@ -9,11 +9,12 @@ moduleFor('service:tag-service', 'Unit | Service | tag service', {
   needs: ['service:analytics'],
   beforeEach() {
     this.register('service:dataService', Ember.Service);
-    this.register('service:state', Ember.Service);
-    this.register('service:store', Ember.Service);
-
     this.inject.service('dataService');
-    this.inject.service('state');
+    this.register('service:requestService', Ember.Service);
+    this.inject.service('requestService');
+    this.register('service:stateService', Ember.Service);
+    this.inject.service('stateService');
+    this.register('service:store', Ember.Service);
     this.inject.service('store');
   },
 });
@@ -24,7 +25,7 @@ test('creating new tag with language default', function(assert) {
     val2 = Math.random();
 
   this.store.setProperties({ createRecord: sinon.stub().returns(val1) });
-  this.state.setProperties({ owner: { phone: { content: { language: val2 } } } });
+  this.stateService.setProperties({ owner: { phone: { content: { language: val2 } } } });
 
   assert.equal(service.createNew(), val1);
   assert.ok(this.store.createRecord.calledOnce);
@@ -58,16 +59,14 @@ test('updating tag membership', function(assert) {
     contactObj = Ember.Object.create({ reload: sinon.stub().resolves() }),
     tagObj = Ember.Object.create();
 
-  this.dataService.setProperties({
-    persist: sinon.stub().resolves(),
-    request: sinon.stub().resolves(),
-  });
+  this.dataService.setProperties({ persist: sinon.stub().resolves() });
+  this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });
 
   service.updateTagMemberships([tagObj], [contactObj]).then(() => {
     assert.ok(this.dataService.persist.calledOnce);
     assert.ok(this.dataService.persist.calledWith([tagObj]));
     assert.ok(contactObj.reload.calledOnce);
-    assert.ok(this.dataService.request.calledOnce);
+    assert.ok(this.requestService.handleIfError.calledOnce);
 
     done();
   });

@@ -25,7 +25,7 @@ export function overrideAnchorTagBehavior(event) {
   const brandColor = Constants.COLOR.BRAND;
   event.preventDefault();
   window.cordova.InAppBrowser.open(
-    event.target.href, // TODO test
+    event.target.href,
     '_blank',
     // styling for inappbrowser
     `footer=yes,closebuttoncolor=${brandColor},location=no,navigationbuttoncolor=${brandColor}`

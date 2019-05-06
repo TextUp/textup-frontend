@@ -1,7 +1,8 @@
+import destroyApp from 'textup-frontend/tests/helpers/destroy-app';
 import Ember from 'ember';
+import sinon from 'sinon';
 import { initialize } from 'textup-frontend/instance-initializers/notification-settings';
 import { module, test } from 'qunit';
-import destroyApp from '../../helpers/destroy-app';
 
 module('Unit | Instance Initializer | notification settings', {
   beforeEach: function() {
@@ -13,13 +14,18 @@ module('Unit | Instance Initializer | notification settings', {
   afterEach: function() {
     Ember.run(this.appInstance, 'destroy');
     destroyApp(this.application);
-  }
+  },
 });
 
-// Replace this with your real tests.
-test('it works', function(assert) {
+test('proper defaults are set on notification service', function(assert) {
+  const serviceObj = { setDefaultClearNotification: sinon.spy(), setDefaultAutoClear: sinon.spy() },
+    lookup = sinon.stub(this.appInstance, 'lookup').returns(serviceObj);
+
   initialize(this.appInstance);
 
-  // you would normally confirm the results of the initializer here
-  assert.ok(true);
+  assert.ok(lookup.calledWith('service:notifications'));
+  assert.ok(serviceObj.setDefaultClearNotification.calledWith(5000));
+  assert.ok(serviceObj.setDefaultAutoClear.calledWith(true));
+
+  lookup.restore();
 });

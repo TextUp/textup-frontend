@@ -14,8 +14,11 @@ export default Ember.Service.extend({
   notifications: Ember.inject.service(),
   storageService: Ember.inject.service(),
 
-  init() {
-    this._super(...arguments);
+  // Properties
+  // ----------
+
+  taskManager: null,
+  tasks: computed(function() {
     const tasks = [];
     TaskData.forEach((task, index) => {
       tasks.pushObject(
@@ -25,20 +28,8 @@ export default Ember.Service.extend({
         })
       );
     });
-    this.set('tasks', tasks);
-    // initialize `_shouldShowTaskManager` and ensure it gets re-initialized on future logins
-    this._setShouldShowFromStorage();
-    this.get('authService').on(
-      config.events.auth.success,
-      this._setShouldShowFromStorage.bind(this)
-    );
-  },
-
-  // Properties
-  // ----------
-
-  taskManager: null,
-  tasks: null,
+    return tasks;
+  }),
   firstIncompleteTask: computed(`tasks.@each.${TASK_STATUS_KEY}`, function() {
     return this.get('tasks').find(task => task && task[TASK_STATUS_KEY] === false);
   }),
@@ -49,6 +40,15 @@ export default Ember.Service.extend({
 
   // Methods
   // -------
+
+  setUpTutorial() {
+    // initialize `_shouldShowTaskManager` and ensure it gets re-initialized on future logins
+    this._setShouldShowFromStorage();
+    this.get('authService').on(
+      config.events.auth.success,
+      this._setShouldShowFromStorage.bind(this)
+    );
+  },
 
   getTaskStatus(taskId) {
     return (
@@ -109,6 +109,7 @@ export default Ember.Service.extend({
       set(task, TASK_STATUS_KEY, status);
     }
   },
+
   _openSupportSlideout() {
     Ember.getOwner(this)
       .lookup('route:main')
