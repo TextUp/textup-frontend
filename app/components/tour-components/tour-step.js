@@ -17,9 +17,9 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
     onFinish: PropTypes.func.isRequired,
     isLastStep: PropTypes.bool.isRequired,
     isFirstStep: PropTypes.bool.isRequired,
-    elementToHighlight: PropTypes.string,
-    elementToOpenMobile: PropTypes.string,
-    elementToHighlightMobile: PropTypes.string,
+    elementToHighlight: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    elementToOpenMobile: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
+    elementToHighlightMobile: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
   },
 
   classNames: 'tour-step',

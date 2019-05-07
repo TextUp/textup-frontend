@@ -7,7 +7,7 @@ const { computed, tryInvoke, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     doRegister: PropTypes.func,
-    elementToHighlight: PropTypes.string,
+    elementToHighlight: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     showOverlay: PropTypes.bool,
     svgClasses: PropTypes.string,
   },

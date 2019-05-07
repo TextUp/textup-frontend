@@ -199,7 +199,7 @@ test('syncing lock status with transition', function(assert) {
     abortTransition = sinon.stub(AppUtils, 'abortTransition'),
     _shouldLockForRouteName = sinon.stub(service, '_shouldLockForRouteName'),
     targetName = Math.random() + '',
-    transitionObj = Ember.Object.create({ abort: sinon.spy(), targetName }),
+    transitionObj = { abort: sinon.spy(), targetName },
     lockContainerObj = { isLocked: false, actions: { unlock: sinon.spy(), lock: sinon.spy() } };
 
   service.set('lockContainer', lockContainerObj);

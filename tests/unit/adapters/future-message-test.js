@@ -10,43 +10,44 @@ const { run } = Ember;
 
 moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
   needs: [
-    'serializer:future-message',
-    'service:auth-service',
-    'service:data-service',
-    'service:state',
-    'service:storage',
-    'service:socket',
-    'model:future-message',
     'model:contact',
-    'model:tag',
-    'model:phone',
-    'model:record-item',
-    'model:record-text',
-    'model:record-call',
-    'model:record-note',
+    'model:future-message',
     'model:media',
-    'validator:presence',
-    'validator:length',
-    'validator:inclusion',
+    'model:phone',
+    'model:record-call',
+    'model:record-item',
+    'model:record-note',
+    'model:record-text',
+    'model:tag',
+    'serializer:future-message',
+    'service:analytics',
+    'service:authService',
+    'service:dataService',
+    'service:requestService',
+    'service:stateService',
+    'service:storageService',
     'validator:collection',
     'validator:has-any',
+    'validator:inclusion',
+    'validator:length',
     'validator:number',
+    'validator:presence',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
+    this.inject.service('store');
   },
 });
 
 test('building url when creating record', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
-      adapter = this.subject(),
+    const adapter = this.subject(),
       cId = `${Math.random()}`,
       ctId = `${Math.random()}`,
-      fMsg = store.createRecord('future-message', {
-        contact: store.createRecord('contact', { id: cId }),
-        tag: store.createRecord('tag', { id: ctId }),
+      fMsg = this.store.createRecord('future-message', {
+        contact: this.store.createRecord('contact', { id: cId }),
+        tag: this.store.createRecord('tag', { id: ctId }),
       }),
       snapshot = { record: fMsg };
 

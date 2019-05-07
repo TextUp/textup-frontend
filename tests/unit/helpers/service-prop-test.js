@@ -58,6 +58,34 @@ test('observes for value changes + cleaned-up on destroy', function(assert) {
   getOwner.restore();
 });
 
+test('observing for value change also works for array properties', function(assert) {
+  const helper = ServicePropHelper.create(),
+    recompute = sinon.stub(helper, 'recompute'),
+    lookup = sinon.stub(),
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
+    serviceName = Math.random(),
+    propName = 'string-prop-name',
+    val1 = Math.random(),
+    val2 = Math.random(),
+    val3 = Math.random(),
+    serviceObj = Ember.Object.create({ [propName]: [val1] });
+
+  lookup.returns(serviceObj);
+  assert.deepEqual(helper.compute([serviceName, propName]), [val1]);
+  assert.ok(recompute.notCalled);
+
+  serviceObj.get(propName).pushObject(val2);
+  assert.ok(recompute.calledOnce);
+
+  run(() => helper.destroy());
+
+  serviceObj.get(propName).pushObject(val3);
+  assert.ok(recompute.calledOnce);
+
+  recompute.restore();
+  getOwner.restore();
+});
+
 test('setup is only called at the beginning', function(assert) {
   const helper = ServicePropHelper.create(),
     lookup = sinon.stub(),

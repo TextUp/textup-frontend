@@ -1,22 +1,24 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat stateService.owner.name " Notifications"))
+        title=(concat (service-prop "stateService" "owner.name") " Notifications"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(or model.isDirty authService.authUser.isDirty)
+        showFooter=(or model.isDirty (service-prop "authService" "authUser.isDirty"))
         onPrimary=(route-action "finishAvailabilitySlideout")
         disablePrimary=(or
             (not (v-get model "isValid"))
-            (not (v-get authService.authUser "isValid")))
+            (not (service-prop "authService" "authUser.validations.isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     onClose=(route-action "cancelAvailabilitySlideout")
-    forceKeepOpen=(or model.isSaving authService.authUser.isSaving
-        model.isDirty authService.authUser.isDirty) as |slideout|}}
+    forceKeepOpen=(or model.isSaving
+        (service-prop "authService" "authUser.isSaving")
+        model.isDirty
+        (service-prop "authService" "authUser.isDirty")) as |slideout|}}
     <div class="form">
         <div class="form__group">
-            <label for="Away Message" class="form__label form__label--emphasize">{{stateService.owner.name}}'s Away Message</label>
+            <label for="Away Message" class="form__label form__label--emphasize">{{service-prop "stateService" "owner.name"}}'s Away Message</label>
             <span class="form__label form__label--multiline">
-                TextUp will reply with this message to texts <b>received by {{stateService.owner.name}}</b> when {{if stateService.ownerIsTeam "no one is" "you are not"}} available. TextUp automatically adds an emergency disclaimer to your custom message.
+                TextUp will reply with this message to texts <b>received by {{service-prop "stateService" "owner.name"}}</b> when {{if stateService.ownerIsTeam "no one is" "you are not"}} available. TextUp automatically adds an emergency disclaimer to your custom message.
             </span>
             {{#hide-show focusOnOpenSelector="textarea"
                 clickOutToClose=true
@@ -44,7 +46,7 @@
             {{/hide-show}}
         </div>
         <div class="form__group">
-            <label for="Voicemail" class="form__label form__label--emphasize">{{stateService.owner.name}}'s Voicemail</label>
+            <label for="Voicemail" class="form__label form__label--emphasize">{{service-prop "stateService" "owner.name"}}'s Voicemail</label>
             <div class="row margin-t">
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-false"
@@ -94,8 +96,8 @@
                             {{async-button classNames="button"
                                 disabledWhen=(or
                                     (not (v-get model "isValid"))
-                                    (not authService.authUser.personalNumber))
-                                action=(route-action "onRequestVoicemailGreetingCall" authService.authUser.personalNumber)
+                                    (not (service-prop "authService" "authUser.personalNumber")))
+                                action=(route-action "onRequestVoicemailGreetingCall" (service-prop "authService" "authUser.personalNumber"))
                                 default="Call me to record"
                                 pending="Calling your personal phone..."}}
                         </div>
@@ -103,7 +105,7 @@
                 {{/audio-control}}
             </div>
         </div>
-        {{#with (owner-policy/self model.phone.content authService.authUser) as |selfPolicy|}}
+        {{#with (owner-policy/self model.phone.content (service-prop "authService" "authUser")) as |selfPolicy|}}
             <hr>
             <div class="form__group">
                 <label for="notification-type" class="control-text form__label xs-full-row s-row-2">
@@ -162,16 +164,16 @@
 
         <hr>
 
-        {{#if (not authService.authUser.hasPersonalNumber)}}
+        {{#if (not (service-prop "authService" "authUser.hasPersonalNumber"))}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have connected a personal phone number to your account. Even if you are available, <span class="text-bold">you will not be notified</span> and <span class="text-bold">an away message will be sent</span> as if you were not available. <span class="link" {{action slideout.actions.close (route-action "toggleSlideout" "slideouts/account" "main")}}>Please add a personal phone number to your account.</span>
             </div>
         {{/if}}
         {{availability-control
-            self=(owner-policy/self model.phone.content authService.authUser)
-            others=(owner-policy/others model.phone.content authService.authUser)
-            onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manual")))
-            onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content authService.authUser) "schedule.manualIsAvailable")))
-            onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self model.phone.content authService.authUser) "schedule"))}}
+            self=(owner-policy/self model.phone.content (service-prop "authService" "authUser"))
+            others=(owner-policy/others model.phone.content (service-prop "authService" "authUser"))
+            onAvailabilityTypeChange=(action (mut (get (owner-policy/self model.phone.content (service-prop "authService" "authUser")) "schedule.manual")))
+            onManualAvailabilityChange=(action (mut (get (owner-policy/self model.phone.content (service-prop "authService" "authUser")) "schedule.manualIsAvailable")))
+            onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self model.phone.content (service-prop "authService" "authUser")) "schedule"))}}
     </div>
 {{/slideout-pane}}

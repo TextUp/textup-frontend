@@ -1,5 +1,3 @@
-/* global localStorage */
-
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
@@ -13,16 +11,18 @@ moduleForComponent('message-modal', 'Integration | Component | message modal', {
   integration: true,
   beforeEach() {
     server = sinon.createFakeServer({ respondImmediately: true });
+    this.register('service:storageService', Ember.Service);
+    this.inject.service('storageService');
   },
   afterEach() {
     server.restore();
-  }
+  },
 });
 
 test('inputs', function(assert) {
   this.setProperties({
     url: 'http://www.example.com',
-    onClose: () => {}
+    onClose: () => {},
   });
 
   assert.throws(() => this.render(hbs`{{message-modal}}`), 'requires message location url');
@@ -90,37 +90,50 @@ test('manually controlling hide/show + rerendering on url change', function(asse
 
 test('controlling display via oldest threshold', function(assert) {
   const url = `http://www.example.com/${Math.random()}`,
-    lastModified = moment().toISOString(),
+    lastModified = moment()
+      .subtract(1, 'day')
+      .toISOString(),
+    lastViewed = moment().toISOString(),
     done = assert.async();
 
+  this.storageService.setProperties({ setItem: sinon.spy(), getItem: sinon.stub() });
+
   this.setProperties({ url });
-  localStorage.removeItem(url);
 
   server.respondWith('GET', url, xhr => {
     xhr.respond(200, { 'Content-Type': 'text/html', 'last-modified': lastModified }, 'OK');
   });
 
+  this.storageService.getItem.returns(null);
   this.render(hbs`{{message-modal url=url display=30}}`);
   wait()
     .then(() => {
       assert.equal(server.requests.length, 1);
+      assert.ok(this.storageService.getItem.calledWith(url));
       assert.ok(
-        moment(localStorage.getItem(url)).isAfter(lastModified),
-        'when this url has been accessed is stored in local storage'
+        this.storageService.setItem.calledWith(url),
+        'update last viewed if we show the modal'
       );
       assert.ok(Ember.$('.textup-modal').length, 'modal is displayed');
 
+      this.storageService.getItem.resetHistory();
+      this.storageService.setItem.resetHistory();
+      this.storageService.getItem.returns(lastViewed);
       this.render(hbs`{{message-modal url=url display=30}}`);
       return wait();
     })
     .then(() => {
       assert.equal(server.requests.length, 2);
+      assert.ok(this.storageService.getItem.calledWith(url));
+      assert.ok(
+        this.storageService.setItem.notCalled,
+        'do not update last viewed because we do not show the modal'
+      );
       assert.notOk(
         Ember.$('.textup-modal').length,
         'modal is not displayed because last viewed timestamp is newer than last modified'
       );
 
-      localStorage.removeItem(url);
       done();
     });
 });

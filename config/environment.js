@@ -1,7 +1,4 @@
 /* jshint node: true */
-
-// TODO restore test credentials in .zshrc
-
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'textup-frontend',
@@ -27,7 +24,7 @@ module.exports = function(environment) {
     lock: {
       lockOnHidden: true,
       maxNumAttempts: 3,
-      ignoreLockRouteNames: ['setup', 'notify'],
+      ignoreLockRouteNames: ['reset', 'setup', 'notify'],
     },
     moment: { includeTimezone: 'subset', outputFormat: 'llll' },
     socket: { authKey: process.env.TEXTUP_FRONTEND_API_PUSHER },
@@ -49,8 +46,8 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    ENV.host = 'http://localhost:8080'; // TODO
-    // ENV.host = 'https://dev.textup.org';
+    // ENV.host = 'http://localhost:8080';
+    ENV.host = 'https://dev.textup.org';
     // ENV.host = 'https://v2.textup.org';
 
     ENV.lock.lockOnHidden = false;

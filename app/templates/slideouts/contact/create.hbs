@@ -10,7 +10,7 @@
     forceKeepOpen=newContact.isSaving
     focusSelector=".start-focus" as |slideout|}}
     {{form/contact-model contact=newContact
-        onGoToDuplicates=(route-action "goToDuplicateContact")
-        onAddNumber=(route-action "onAddNumber")
-        onRemoveNumber=(route-action "onRemoveNumber")}}
+        onGoToDuplicates=(route-action "newContactGoToDuplicateContact")
+        onAddNumber=(service-action "contactService" "checkNumberDuplicate" newContact)
+        onRemoveNumber=(service-action "contactService" "removeNumberDuplicate" newContact)}}
 {{/slideout-pane}}

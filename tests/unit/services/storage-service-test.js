@@ -29,8 +29,12 @@ test('getting an item', function(assert) {
   const service = this.subject(),
     getItemFromLocal = sinon.stub(window.localStorage, 'getItem'),
     getItemFromSession = sinon.stub(window.sessionStorage, 'getItem'),
-    key = Math.random(),
+    key = Math.random() + '',
     val = Math.random();
+
+  assert.equal(service.getItem(['not a string']), undefined);
+  assert.ok(getItemFromSession.notCalled, 'passing in a non-string key returns nothing');
+  assert.ok(getItemFromLocal.notCalled);
 
   getItemFromSession.returns(val);
   getItemFromLocal.returns(val);

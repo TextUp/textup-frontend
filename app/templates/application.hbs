@@ -8,7 +8,6 @@
 {{/liquid-if}}
 
 <div id="container">
-	{{!-- TODO check if curried service-prop routeName will actually recalculate --}}
 	{{#lock-container doRegister=(service-mut "lockService" "lockContainer")
 		onChange=(service-mut "lockService" "lockCode")
 		onValidate=(service-action "lockService" "verifyLockCode")

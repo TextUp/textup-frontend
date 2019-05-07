@@ -1,5 +1,8 @@
 import Ember from 'ember';
 
+// [NOTE] this helper is not compatible with the `v-get` helper. The `v-get` helper expects a
+// stream and this helper does not return a stream
+
 const { isPresent, typeOf, get, computed } = Ember;
 
 export default Ember.Helper.extend({
@@ -34,18 +37,18 @@ export default Ember.Helper.extend({
       throw new Error(`Service with name '${serviceName}' could not be found`);
     }
     if (typeOf(propName) !== 'string') {
-      throw new Error(`Property name '${propName}' evaluate to a string`);
+      throw new Error(`Property name '${propName}' must evaluate to a string`);
     }
     this.setProperties({ _service: service, _propName: propName });
     if (service && propName) {
-      Ember.addObserver(service, propName, this, this.recompute);
+      Ember.addObserver(service, propName + '.[]', this, this.recompute); // in case is an array
     }
   },
   _tryStopObserving() {
     const service = this.get('_service'),
       propName = this.get('_propName');
     if (service && propName) {
-      Ember.removeObserver(service, propName, this, this.recompute);
+      Ember.removeObserver(service, propName + '.[]', this, this.recompute);
     }
   },
 });

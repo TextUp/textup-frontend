@@ -19,7 +19,7 @@
     {{#if hideShow.isOpen}}
         <div class="form__group">
             <label class="form__label" for="Your Password">
-                {{authService.authUser.name}}'s Password
+                {{service-prop "authService" "authUser.name"}}'s Password
             </label>
             {{input type="password"
                 allowShowPassword=true
@@ -45,8 +45,10 @@
                 <div class="flex__item">
                     {{async-button classNames="btn btn-default"
                         disableWhen=(not (v-get staff "isValid"))
-                        action=(service-action "validateAuthService" "checkPassword"
-                                authService.authUser.username newCPassword
+                        action=(service-action "validateAuthService"
+                                "checkPassword"
+                                (service-prop "authService" "authUser.username")
+                                newCPassword
                             (service-action "dataService" "persist" staff hideShow.actions.close))
                         default="Update"
                         pending="Updating..."}}

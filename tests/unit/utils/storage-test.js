@@ -8,13 +8,6 @@ const { typeOf } = Ember;
 
 module('Unit | Utility | storage');
 
-test('throw missing input error', function(assert) {
-  assert.throws(
-    () => StorageUtils.throwMissingInputError(),
-    new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG)
-  );
-});
-
 test('generating keys with no input', function(assert) {
   assert.equal(typeOf(StorageUtils.numAttemptsKey()), 'string');
   assert.equal(typeOf(StorageUtils.currentUrlKey()), 'string');
@@ -28,10 +21,7 @@ test('task manager key', function(assert) {
     authUser = TestUtils.mockModel(authId, Constants.MODEL.STAFF);
 
   assert.ok(StorageUtils.showManagerKey(authUser).includes(authId));
-  assert.throws(
-    () => StorageUtils.showManagerKey(),
-    new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG)
-  );
+  assert.notOk(StorageUtils.showManagerKey());
 });
 
 test('task key', function(assert) {
@@ -41,7 +31,7 @@ test('task key', function(assert) {
 
   assert.ok(StorageUtils.taskKey(authUser, taskId).includes(authId));
   assert.ok(StorageUtils.taskKey(authUser, taskId).includes(taskId));
-  assert.throws(() => StorageUtils.taskKey(), new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG));
+  assert.notOk(StorageUtils.taskKey());
 });
 
 test('tour key', function(assert) {
@@ -49,7 +39,7 @@ test('tour key', function(assert) {
     authUser = TestUtils.mockModel(authId, Constants.MODEL.STAFF);
 
   assert.ok(StorageUtils.tourKey(authUser).includes(authId));
-  assert.throws(() => StorageUtils.tourKey(), new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG));
+  assert.notOk(StorageUtils.tourKey());
 });
 
 test('skip setup key', function(assert) {
@@ -57,7 +47,7 @@ test('skip setup key', function(assert) {
     authUser = TestUtils.mockModel(authId, Constants.MODEL.STAFF);
 
   assert.ok(StorageUtils.skipSetupKey(authUser).includes(authId));
-  assert.throws(() => StorageUtils.skipSetupKey(), new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG));
+  assert.notOk(StorageUtils.skipSetupKey());
 });
 
 test('skip setup in-progress phone number key', function(assert) {
@@ -65,8 +55,5 @@ test('skip setup in-progress phone number key', function(assert) {
     authUser = TestUtils.mockModel(authId, Constants.MODEL.STAFF);
 
   assert.ok(StorageUtils.setupInProgressPhoneNumberKey(authUser).includes(authId));
-  assert.throws(
-    () => StorageUtils.setupInProgressPhoneNumberKey(),
-    new Error(StorageUtils.NO_AUTH_USER_ERROR_MSG)
-  );
+  assert.notOk(StorageUtils.setupInProgressPhoneNumberKey());
 });

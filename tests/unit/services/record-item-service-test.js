@@ -208,7 +208,12 @@ test('handle export outcome failure + retry', function(assert) {
   this.renewTokenService.setProperties({ tryRenewToken: sinon.stub().resolves() });
 
   exportRecordItems.resolves();
-  service._handleExportOutcome([arg1, arg2, arg3], { status: 'not 200' }, resolveSpy, rejectSpy);
+  service._handleExportOutcome(
+    [arg1, arg2, arg3],
+    { status: Constants.RESPONSE_STATUS.UNAUTHORIZED },
+    resolveSpy,
+    rejectSpy
+  );
   wait()
     .then(() => {
       assert.ok(this.renewTokenService.tryRenewToken.calledOnce);
@@ -223,7 +228,12 @@ test('handle export outcome failure + retry', function(assert) {
       assert.ok(rejectSpy.notCalled);
 
       exportRecordItems.rejects();
-      service._handleExportOutcome([arg1, arg3], { status: 'not 200' }, resolveSpy, rejectSpy);
+      service._handleExportOutcome(
+        [arg1, arg3],
+        { status: Constants.RESPONSE_STATUS.UNAUTHORIZED },
+        resolveSpy,
+        rejectSpy
+      );
       return wait();
     })
     .then(() => {
@@ -366,6 +376,16 @@ test('exporting record items', function(assert) {
   requests[0].respond(200);
 
   assert.ok(_handleExportOutcome.calledOnce);
+  assert.equal(
+    _handleExportOutcome.firstCall.args[0].length,
+    5,
+    'all five args passed to outcome handler'
+  );
+  assert.equal(_handleExportOutcome.firstCall.args[0][0], start);
+  assert.equal(_handleExportOutcome.firstCall.args[0][1], end);
+  assert.equal(_handleExportOutcome.firstCall.args[0][2], true);
+  assert.deepEqual(_handleExportOutcome.firstCall.args[0][3], [mockTag]);
+  assert.equal(_handleExportOutcome.firstCall.args[0][4], false);
   assert.equal(_handleExportOutcome.firstCall.args[1], requests[0]);
   _handleExportOutcome.firstCall.args[2].call(); // resolve
 

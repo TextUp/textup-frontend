@@ -137,6 +137,41 @@ test('trigger log out + user has no phones and is not admin', function(assert) {
     });
 });
 
+test('trigger log out + when no user is provided', function(assert) {
+  const onLogOut = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ onLogOut });
+
+  this.render(hbs`{{account-switcher onLogOut=onLogOut}}`);
+  assert.ok(this.$('.textup-account-switcher').length, 'did render');
+  assert.ok(this.$('.textup-account-switcher__display').length, 'has toggle');
+  assert.notOk(this.$('.textup-account-switcher__accounts').length, 'no accounts shown');
+
+  this.$('.textup-account-switcher__display')
+    .eq(0)
+    .triggerHandler('click');
+  wait()
+    .then(() => {
+      assert.ok(this.$('.textup-account-switcher__accounts').length, 'accounts shown');
+      assert.ok(onLogOut.notCalled);
+
+      assert.equal(
+        this.$('.textup-account-switcher__accounts .menu-item').length,
+        1,
+        'only option is to log out'
+      );
+      this.$('.textup-account-switcher__accounts .menu-item')
+        .eq(0)
+        .triggerHandler('click');
+      return wait();
+    })
+    .then(() => {
+      assert.ok(onLogOut.calledOnce);
+
+      done();
+    });
+});
+
 // [NOTE] cannot test routing as a limitation of component integration testing. Either factor out
 // routing logic out of this component or write an acceptance test
 test('accounts when user has phones and is admin', function(assert) {

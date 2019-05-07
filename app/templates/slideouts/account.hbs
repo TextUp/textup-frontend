@@ -1,33 +1,33 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/accounts"
         title="Your Account"
-        activeName=stateService.owner.name
-        activeNumber=stateService.owner.phone.content.number
-        user=authService.authUser
+        activeName=(service-prop "stateService" "owner.name")
+        activeNumber=(service-prop "stateService" "owner.phone.content.number")
+        user=(service-prop "authService" "authUser")
         onLogOut=(service-action "authService" "logout"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(and (or stateService.owner.isDirty authService.authUser.isDirty)
+        showFooter=(and (or (service-prop "stateService" "owner.isDirty") (service-prop "authService" "authUser.isDirty"))
                 (not usernameDropdown.isOpen)
                 (not passwordDropdown.isOpen)
                 (not codeDropdown.isOpen))
         onPrimary=(service-action "dataService" "persist"
-            (if (eq accountSettingsTabs.currentIndex 1) authService.authUser stateService.owner)
+            (if (eq accountSettingsTabs.currentIndex 1) (service-prop "authService" "authUser") (service-prop "stateService" "owner"))
             (route-action "closeSlideout"))
         disablePrimary=(or
-            (not (v-get stateService.owner "isValid"))
-            (not (v-get authService.authUser "isValid")))
+            (not (service-prop "stateService" "owner.validations.isValid"))
+            (not (service-prop "authService" "authUser.validations.isValid")))
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
-        onSecondary=(service-action "dataService" "revert" stateService.owner
-            (service-action "dataService" "revert" authService.authUser)))
-    onClose=(service-action "dataService" "revert" stateService.owner
-        (service-action "dataService" "revert" authService.authUser)
+        onSecondary=(service-action "dataService" "revert" (service-prop "stateService" "owner")
+            (service-action "dataService" "revert" (service-prop "authService" "authUser"))))
+    onClose=(service-action "dataService" "revert" (service-prop "stateService" "owner")
+        (service-action "dataService" "revert" (service-prop "authService" "authUser"))
         (route-action "closeSlideout"))
-    forceKeepOpen=(or stateService.owner.isSaving authService.authUser.isSaving)}}
+    forceKeepOpen=(or (service-prop "stateService" "owner.isSaving") (service-prop "authService" "authUser.isSaving"))}}
     {{#tab-container doRegister=(action (mut accountSettingsTabs))
         onChange=(service-action "dataService" "revert" stateManger.owner
-            (service-action "dataService" "revert" authService.authUser)) as |tabContainer|}}
-        {{#with stateService.ownerAsOrg as |org|}}
+            (service-action "dataService" "revert" (service-prop "authService" "authUser"))) as |tabContainer|}}
+        {{#with (service-prop "stateService" "ownerAsOrg") as |org|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=org.name}}
@@ -93,7 +93,7 @@
                 </div>
             {{/tab-container/item}}
         {{/with}}
-        {{#with stateService.ownerAsTeam as |team|}}
+        {{#with (service-prop "stateService" "ownerAsTeam") as |team|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=team.name}}
@@ -108,7 +108,7 @@
             onDestroy=tabContainer.actions.unregister
             title="My Account"}}
             <div class="form">
-                {{#with authService.authUser as |staff|}}
+                {{#with (service-prop "authService" "authUser") as |staff|}}
                     {{partial "partials/staff/settings"}}
                     {{partial "partials/staff/personal-number"}}
                     <hr>

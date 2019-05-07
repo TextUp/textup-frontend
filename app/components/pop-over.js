@@ -125,10 +125,11 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
 
   _tryCloseOnBody() {
     if (this.get('bodyClickWillClose')) {
-      // on iOS event order is different
       if (PlatformUtils.isIOS() || PlatformUtils.isAndroid()) {
+        // on iOS event order is different so wait to allow action to happen before closing
         run.later(this, this._close, 400);
       } else {
+        // allow action to happen first before removing the floating style on the pop-over
         run.next(this, this._close);
       }
     }

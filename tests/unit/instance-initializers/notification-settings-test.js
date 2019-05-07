@@ -23,7 +23,10 @@ test('proper defaults are set on notification service', function(assert) {
 
   initialize(this.appInstance);
 
-  assert.ok(lookup.calledWith('service:notifications'));
+  assert.ok(
+    lookup.calledWith('notification-messages:service'),
+    'non-standard registration for this plug-in provided service'
+  );
   assert.ok(serviceObj.setDefaultClearNotification.calledWith(5000));
   assert.ok(serviceObj.setDefaultAutoClear.calledWith(true));
 

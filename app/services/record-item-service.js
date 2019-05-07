@@ -61,7 +61,13 @@ export default Ember.Service.extend({
       xhr.responseType = 'arraybuffer';
       xhr.setRequestHeader(Constants.REQUEST_HEADER.CONTENT_TYPE, Constants.MIME_TYPE.PDF);
       xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));
-      xhr.onload = this._handleExportOutcome.bind(this, [...arguments], xhr, resolve, reject);
+      xhr.onload = this._handleExportOutcome.bind(
+        this,
+        [dateStart, dateEnd, shouldGroup, recordOwners, alreadyRetried],
+        xhr,
+        resolve,
+        reject
+      );
       xhr.send();
     });
   },
@@ -112,7 +118,6 @@ export default Ember.Service.extend({
         .mapBy('id'),
     };
   },
-  // TODO test to see if this works
   _handleExportOutcome(originalArguments, xhr, resolve, reject) {
     const alreadyRetried = originalArguments[originalArguments.length - 1];
     if (xhr.status === Constants.RESPONSE_STATUS.OK) {
@@ -122,7 +127,7 @@ export default Ember.Service.extend({
         FileUtils.tryGetFileNameFromXHR(xhr, FALLBACK_FILE_NAME)
       );
       resolve();
-    } else if (!alreadyRetried) {
+    } else if (xhr.status === Constants.RESPONSE_STATUS.UNAUTHORIZED && !alreadyRetried) {
       const retryArgs = [...originalArguments];
       retryArgs[retryArgs.length - 1] = true; // set the last arg `alreadyRetried` to true
       this.get('renewTokenService')

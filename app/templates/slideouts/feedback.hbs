@@ -55,9 +55,9 @@
 				    	</div>
 				    </div>
 				{{/if}}
-			    <input type="text" class="hidden" name="entry.1271619718" value={{authService.authUser.name}}>
-			    <input type="text" class="hidden" name="entry.826110677" value={{authService.authUser.username}}>
-			    <input type="text" class="hidden" name="entry.1793501464" value={{authService.authUser.email}}>
+			    <input type="text" class="hidden" name="entry.1271619718" value={{service-prop "authService" "authUser.name"}}>
+			    <input type="text" class="hidden" name="entry.826110677" value={{service-prop "authService" "authUser.username"}}>
+			    <input type="text" class="hidden" name="entry.1793501464" value={{service-prop "authService" "authUser.email"}}>
 
 			    <input type="hidden" name="fvv" value="1">
 				<input type="hidden" name="pageHistory" value="0">

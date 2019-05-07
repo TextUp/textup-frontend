@@ -17,7 +17,7 @@
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.BRAND")
                     onSelect=(action (mut exportForEntirePhone) true)}}
-                    all of {{stateService.owner.name}}
+                    all of {{service-prop "stateService" "owner.name"}}
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.LIGHT_BLUE")

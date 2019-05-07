@@ -1,4 +1,4 @@
-{{title stateService.owner.name prepend=false separator=" - "}}
+{{title (service-prop "stateService" "owner.name") prepend=false separator=" - "}}
 
 {{tour-components/tour-manager doRegister=(service-action "tourService" "registerManagerAndTryStart")
     onTourFinish=(service-action "tourService" "onTourFinish")}}
@@ -19,11 +19,11 @@
         <button id="tour-openSlideoutButton"
             class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}}>
-            {{#if stateService.ownerIsTeam}}
+            {{#if (service-prop "stateService" "ownerIsTeam")}}
                 <p class="halo halo-sm text-heading"
-                    style="background-color:{{stateService.owner.hexColor}};
-                        color:{{contrast-color stateService.owner.hexColor}};">
-                    {{abbreviate stateService.owner.name 1}}
+                    style="background-color:{{service-prop "stateService" "owner.hexColor"}};
+                        color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};">
+                    {{abbreviate (service-prop "stateService" "owner.name") 1}}
                 </p>
             {{else}}
                 <span class="halo halo-sm bg-color bg-brand text-heading">
@@ -41,11 +41,11 @@
     <div class="menu">
         <div class="menu__section">
             <div id="tour-mobileSettings" class="display-xs display-s display-m">
-                {{#account-switcher user=authService.authUser
+                {{#account-switcher user=(service-prop "authService" "authUser")
                     onLogOut=(service-action "authService" "logout")
                     doRegister=(action (mut accountSwitcher))
-                    activeName=stateService.owner.name
-                    activeNumber=stateService.owner.phone.content.number
+                    activeName=(service-prop "stateService" "owner.name")
+                    activeNumber=(service-prop "stateService" "owner.phone.content.number")
                     toggleClass="xs-8-row-10"}}
                     <button class="xs-2-row-10 textup-account-switcher__display"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
@@ -54,32 +54,32 @@
                 {{/account-switcher}}
             </div>
             <div class="display-l">
-                {{#if stateService.ownerIsTeam}}
+                {{#if (service-prop "stateService" "ownerIsTeam")}}
                     <div class="menu-item menu-header"
-                        style="background-color:{{stateService.owner.hexColor}};
-                            color:{{contrast-color stateService.owner.hexColor}};"
+                        style="background-color:{{service-prop "stateService" "owner.hexColor"}};
+                            color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" stateService.owner.name ")")
+                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
                             classNames="btn-expand"}}
-                            <h4 class="match-color">{{abbreviate stateService.owner.name 1}}</h4>
+                            <h4 class="match-color">{{abbreviate (service-prop "stateService" "owner.name") 1}}</h4>
                         {{/tool-tip}}
                     </div>
                 {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
                     <div class="menu-item menu-header"
                         onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" stateService.owner.name ")")
+                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
                             classNames="btn-expand"}}
                             <span class="fa fa-user"></span>
                         {{/tool-tip}}
                     </div>
                 {{/if}}
             </div>
-            {{#if stateService.owner.phone.isFulfilled}}
+            {{#if (service-prop "stateService" "owner.phone.isFulfilled")}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
-                        {{if (get (owner-policy/self stateService.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
+                        {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         <div class="btn-expand">
                             <span id="tour-openAvailabilityButtonMobile">Notifications</span>
@@ -88,12 +88,12 @@
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout
-                        {{if (get (owner-policy/self stateService.owner.phone.content authService.authUser) "schedule.isAvailableNow") "success"}}"
+                        {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
                         onclick={{route-action "startAvailabilitySlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Notifications"
                             classNames="btn-expand"}}
-                            {{#if (get (owner-policy/self stateService.owner.phone.content authService.authUser) "schedule.isAvailableNow")}}
+                            {{#if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow")}}
                                 <span class="fa fa-calendar-check-o" id="tour-openAvailabilityButton"></span>
                             {{else}}
                                 <span class="fa fa-calendar-times-o" id="tour-openAvailabilityButton"></span>
@@ -172,25 +172,25 @@
                     </button >
                 </div>
                 <div class="menu-item
-                    {{if (and stateService.viewingContacts
+                    {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.ALL"))) "active"}}"
                     {{action "showFilteredContacts" (constant "CONTACT.FILTER.ALL")}}>
                     <span>All</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateService.viewingContacts
+                    {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.UNREAD"))) "active"}}"
                     {{action "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD")}}>
                     <span>Unread</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateService.viewingContacts
+                    {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.ARCHIVED"))) "active"}}"
                     {{action "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED")}}>
                     <span>Archived</span>
                 </div>
                 <div class="menu-item
-                    {{if (and stateService.viewingContacts
+                    {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.BLOCKED"))) "active"}}"
                     {{action "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED")}}>
                     <span>Blocked</span>

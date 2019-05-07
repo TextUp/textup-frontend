@@ -4,27 +4,30 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('adapter:application', 'Unit | Adapter | application', {
   needs: [
-    'service:auth-service',
-    'service:state',
-    'service:data-service',
-    'service:storage',
-    'service:socket',
+    'service:analytics',
+    'service:authService',
+    'service:dataService',
+    'service:requestService',
+    'service:stateService',
+    'service:storageService',
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notifications', NotificationsService);
+    this.inject.service('authService');
+    this.inject.service('stateService');
   },
 });
 
 test('adding an authorization token header if present', function(assert) {
   const obj = this.subject(),
-    token = `${Math.random()}`;
+    authHeader = `${Math.random()}`;
 
   assert.deepEqual(obj.get('headers'), {});
 
-  obj.set('authService', { token });
+  this.authService.setProperties({ authHeader });
 
-  assert.deepEqual(obj.get('headers'), { Authorization: `Bearer ${token}` });
+  assert.deepEqual(obj.get('headers'), { Authorization: authHeader });
 });
 
 test('adding query parameter helper', function(assert) {
@@ -53,11 +56,11 @@ test('adding team id as query param to url', function(assert) {
 
   assert.equal(obj._tryAddTeamId(null), null);
 
-  obj.set('stateService', { ownerAsTeam: Ember.Object.create({ id: null }) });
+  this.stateService.setProperties({ ownerAsTeam: Ember.Object.create({ id: null }) });
 
   assert.equal(obj._tryAddTeamId(url), url);
 
-  obj.set('stateService.ownerAsTeam.id', tId);
+  this.stateService.set('ownerAsTeam.id', tId);
 
   assert.equal(obj._tryAddTeamId(url), `${url}?teamId=${tId}`);
 });

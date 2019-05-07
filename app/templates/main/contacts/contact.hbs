@@ -15,7 +15,7 @@
         canAddToRecord=model.allowEdits
         canModifyExistingInRecord=model.allowEdits
         nextFutureFire=model.nextFutureFire
-        personalNumber=authService.authUser.personalNumber
+        personalNumber=(service-prop "authService" "authUser.personalNumber")
         recordClusters=model.recordClusters
         numRecordItems=model.numRecordItems
         totalNumRecordItems=model.totalNumRecordItems

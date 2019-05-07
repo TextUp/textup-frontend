@@ -42,7 +42,7 @@
                             hideShow.actions.close)}}
                     {{form/future-message classNames="pad-t pad-b-double border-b"
                         futureMessage=existingFutureMessage
-                        personalNumber=authService.authUser.personalNumber
+                        personalNumber=(service-prop "authService" "authUser.personalNumber")
                         onAddImage=(route-action "onAddImage" existingFutureMessage)
                         onAddAudio=(route-action "onAddAudio" existingFutureMessage)
                         onRemoveMedia=(route-action "onRemoveMedia" existingFutureMessage)}}

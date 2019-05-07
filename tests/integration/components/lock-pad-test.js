@@ -1,8 +1,8 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('lock-pad', 'Integration | Component | lock pad', {
   integration: true,
@@ -13,11 +13,15 @@ test('it renders', function(assert) {
     doValidateStub = sinon.stub();
 
   this.setProperties({ doUpdateValStub, doValidateStub });
+
+  this.render(hbs`{{lock-pad doUpdateVal=doUpdateValStub}}`);
+  assert.ok(this.$('.lock-pad').length, '`doValidation` is nog required');
+
   this.render(hbs`{{lock-pad doUpdateVal=doUpdateValStub doValidate=doValidateStub}}`);
   assert.ok(this.$('.lock-pad').length);
 
   // requires proptypes
-  assert.throws(() => this.render(hbs`{{lock-pad}}`));
+  assert.throws(() => this.render(hbs`{{lock-pad}}`), '`doUpdateVal` is required');
 });
 
 test('correct indicators', function(assert) {
@@ -32,6 +36,30 @@ test('correct indicators', function(assert) {
     hbs`{{lock-pad doUpdateVal=doUpdateValStub doValidate=doValidateStub totalPadDigits=5}}`
   );
   assert.ok(this.$('.lock-pad__indicator').length === 5);
+});
+
+test('focusing on init', function(assert) {
+  const doUpdateVal = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ doUpdateVal });
+
+  this.render(hbs`{{lock-pad doUpdateVal=doUpdateVal focusOnInit=true}}`);
+
+  wait()
+    .then(() => {
+      assert.ok(this.$('.number-control').is(document.activeElement), 'number control is focused');
+
+      this.render(hbs`{{lock-pad doUpdateVal=doUpdateVal focusOnInit=false}}`);
+      return wait();
+    })
+    .then(() => {
+      assert.notOk(
+        this.$('.number-control').is(document.activeElement),
+        'number control is NOT focused'
+      );
+
+      done();
+    });
 });
 
 test('updating validation', function(assert) {

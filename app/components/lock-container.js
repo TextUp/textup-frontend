@@ -23,7 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     shouldStartLocked: PropTypes.bool,
     val: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
     username: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
-    timeout: PropTypes.number,
+    timeout: PropTypes.oneOfType([PropTypes.number, PropTypes.null]),
     disabled: PropTypes.bool,
   },
 
@@ -129,9 +129,11 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     if (inactiveTime >= this.get('timeout')) {
       // Will lock if (1) `onCheckShouldLock` is not provided or (2) resolves a Promise
       // Need to check because we may be on a page that should NOT lock on hidden
-      PropertyUtils.ensurePromise(tryInvoke(this, 'onCheckShouldLock')).then(
-        this._doLock.bind(this)
-      );
+      PropertyUtils.ensurePromise(tryInvoke(this, 'onCheckShouldLock'))
+        .then(this._doLock.bind(this))
+        .catch(() =>
+          Ember.debug('lock-container._checkInactiveTime: do not lock even if timed out')
+        );
     }
   },
 

@@ -51,7 +51,9 @@ export default Ember.Service.extend(Ember.Evented, {
     return isPresent(window.localStorage.getItem(key));
   },
   getItem(key) {
-    return window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+    if (typeOf(key) === 'string') {
+      return window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+    }
   },
   setItem(key, value) {
     this._safeSet(window.sessionStorage, key, value);

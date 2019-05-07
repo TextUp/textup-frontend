@@ -32,7 +32,8 @@ export default Ember.Service.extend(Ember.Evented, {
     return isPresent(this.get('token')) && isPresent(this.get('authUser'));
   }),
   authHeader: computed('token', function() {
-    return `Bearer ${this.get('token')}`;
+    const token = this.get('token');
+    return token ? `Bearer ${token}` : null;
   }),
 
   // Methods

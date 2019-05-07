@@ -1,8 +1,9 @@
-import { moduleForComponent, test } from 'ember-qunit';
 import Ember from 'ember';
-import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
+import PlatformUtils from 'textup-frontend/utils/platform';
+import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent(
   'tour-components/tour-step',
@@ -200,4 +201,55 @@ test('pressing buttons work and renders correctly - last step', function(assert)
 
       done();
     });
+});
+
+test('on mobile, click then scroll-to element to highlight then calculating overlay', function(assert) {
+  const onClick = sinon.spy(),
+    done = assert.async(),
+    clickElementId = 'element-to-click',
+    highlightElementId = 'element-to-highlight',
+    isMobile = sinon.stub(PlatformUtils, 'isMobile').returns(true);
+  this.setProperties({
+    onClick,
+    clickElementId,
+    highlightElementId,
+    elementToOpenMobile: null,
+    elementToHighlightMobile: null,
+    fn: sinon.spy(),
+  });
+  this.render(hbs`
+    <button type="buton" onclick={{onClick}} id={{clickElementId}}></button>
+    <div id={{highlightElementId}}></div>
+    {{tour-components/tour-step title="hi"
+      text="hi"
+      isFirstStep=false
+      isLastStep=false
+      onNext=fn
+      onBack=fn
+      onFinish=fn
+      elementToOpenMobile=elementToOpenMobile
+      elementToHighlightMobile=elementToHighlightMobile}}
+  `);
+
+  assert.ok(this.$('.tour-step').length, 'did render');
+
+  setTimeout(() => {
+    assert.ok(onClick.notCalled);
+    assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 1, 'no overlay cutout');
+
+    this.set('elementToHighlightMobile', '#' + highlightElementId);
+    setTimeout(() => {
+      assert.ok(onClick.notCalled);
+      assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
+
+      this.set('elementToOpenMobile', '#' + clickElementId);
+      setTimeout(() => {
+        assert.ok(onClick.calledOnce, 'click is called');
+        assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
+
+        isMobile.restore();
+        done();
+      }, 2000); // long wait because of manual delay on these actions
+    }, 2000);
+  }, 2000);
 });

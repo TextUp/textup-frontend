@@ -1,3 +1,4 @@
+import AuthService from 'textup-frontend/services/auth-service';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import moduleForAcceptance from 'textup-frontend/tests/helpers/module-for-acceptance';
@@ -5,28 +6,22 @@ import sinon from 'sinon';
 import { test } from 'qunit';
 
 const { run } = Ember;
-let store, server;
+let store, server, mockAuthService;
 
 moduleForAcceptance('Acceptance | determining appropriate position', {
   beforeEach() {
-    store = this.application.__container__.lookup('service:store');
+    const container = this.application.__container__;
+    store = container.lookup('service:store');
     server = sinon.createFakeServer({ respondImmediately: true });
-    // to bypass track location in application route's redirect method
-    // note for some reason, the artifact name needs to be plural
-    // see: https://davidtang.io/2017/09/03/mocking-dependencies-in-ember-acceptance-tests.html
-    this.application.register('services:storage', Ember.Object.extend({ getItem: sinon.spy() }));
-    this.application.inject('route:application', 'storage', 'services:storage');
-
-    // to avoid hanging when redirecting to the login page
-    this.application.register(
-      'services:notifications',
-      Ember.Object.extend({
-        info: sinon.spy(),
-        setDefaultClearNotification: sinon.spy(),
-        setDefaultAutoClear: sinon.spy(),
-      })
-    );
-    this.application.inject('route', 'notifications', 'services:notifications');
+    // For some reason, modifying the real authService, injecting the mock into all routes,
+    // injecting the mock into the `application` route all break our testing set-up
+    this.application.register('service:mockAuthService', AuthService);
+    this.application.inject('route:admin', 'authService', 'service:mockAuthService');
+    this.application.inject('route:login', 'authService', 'service:mockAuthService');
+    this.application.inject('route:main', 'authService', 'service:mockAuthService');
+    this.application.inject('route:none', 'authService', 'service:mockAuthService');
+    this.application.inject('route:setup', 'authService', 'service:mockAuthService');
+    mockAuthService = container.lookup('service:mockAuthService');
   },
   afterEach() {
     server.restore();
@@ -55,11 +50,7 @@ test('logged in user with nonexistent url segment logs user out', function(asser
     urlIdent2 = 'different-url-segment',
     staff = run(() => store.createRecord('staff', { [Constants.PROP_NAME.URL_IDENT]: urlIdent1 }));
 
-  this.application.register(
-    'services:auth-service',
-    Ember.Object.extend({ isLoggedIn: true, authUser: staff })
-  );
-  this.application.inject('route:main', 'authService', 'services:auth-service');
+  mockAuthService.setProperties({ token: Math.random() + '', authUser: staff });
 
   visit(`/main/${urlIdent2}`);
   andThen(() => {
@@ -73,12 +64,7 @@ test('logged in user with no personal phone goes through setup', function(assert
   const urlIdent = 'testing-staff-segment',
     staff = run(() => store.createRecord('staff', { [Constants.PROP_NAME.URL_IDENT]: urlIdent }));
 
-  this.application.register(
-    'services:auth-service',
-    Ember.Object.extend({ isLoggedIn: true, authUser: staff })
-  );
-  this.application.inject('route:main', 'authService', 'services:auth-service');
-  this.application.inject('route:setup', 'authService', 'services:auth-service');
+  mockAuthService.setProperties({ token: Math.random() + '', authUser: staff });
 
   visit(`/main/${urlIdent}`);
   andThen(() => {
@@ -97,12 +83,7 @@ test('logged in user has no phones and is not admin', function(assert) {
       })
     );
 
-  this.application.register(
-    'services:auth-service',
-    Ember.Object.extend({ isLoggedIn: true, authUser: staff })
-  );
-  this.application.inject('route:main', 'authService', 'services:auth-service');
-  this.application.inject('route:none', 'authService', 'services:auth-service');
+  mockAuthService.setProperties({ token: Math.random() + '', authUser: staff });
 
   visit(`/main/${urlIdent}`);
   andThen(() => {
@@ -122,15 +103,7 @@ test('logged in user has no phones and is admin', function(assert) {
         [Constants.PROP_NAME.URL_IDENT]: urlIdent,
       })
     );
-
-  this.application.register(
-    'services:auth-service',
-    Ember.Object.extend({ isLoggedIn: true, authUser: staff })
-  );
-  this.application.inject('route:main', 'authService', 'services:auth-service');
-  this.application.inject('route:admin', 'authService', 'services:auth-service');
-  this.application.inject('controller:admin', 'authService', 'services:auth-service');
-
+  mockAuthService.setProperties({ token: Math.random() + '', authUser: staff });
   server.respondWith(/\/v1\/staff\/*/, xhr => {
     xhr.respond(200, { 'Content-Type': 'application/json' }, JSON.stringify({ staff: [] }));
   });
@@ -155,15 +128,7 @@ test('logged in user has phones and is admin', function(assert) {
       })
     );
 
-  this.application.register(
-    'services:auth-service',
-    Ember.Object.extend({ isLoggedIn: true, authUser: staff })
-  );
-  this.application.inject('route:main', 'authService', 'services:auth-service');
-  this.application.inject('controller:main', 'authService', 'services:auth-service');
-  this.application.inject('route:admin', 'authService', 'services:auth-service');
-  this.application.inject('controller:admin', 'authService', 'services:auth-service');
-
+  mockAuthService.setProperties({ token: Math.random() + '', authUser: staff });
   server.respondWith(/\/v1\/contacts\/*/, xhr => {
     xhr.respond(200, { 'Content-Type': 'application/json' }, JSON.stringify({ contacts: [] }));
   });
