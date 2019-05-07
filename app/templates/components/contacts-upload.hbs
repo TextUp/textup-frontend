@@ -1,0 +1,43 @@
+{{#if _hasCordova}}
+  <p class="contacts-upload__text"> Loading spinner </p>
+  <p class="contacts-upload__text"> if user denied settings instructions and try again button </p>
+{{else}}
+  <p class="contacts-upload__text">
+    TextUp accepts contacts in the standard vCard format
+    suppported by all major contacts managers.
+  </p>
+  <p class="contacts-upload__text">
+    See our importing contacts guide for
+    more information on how to import multiple contacts from vCard files.
+  </p>
+
+  <input type="file"
+      id="{{elementId}}__input"
+      class="contacts-upload__input"
+      accept="text/vcard"
+      multiple="multiple"
+      onchange={{action _handleChange}}>
+
+  <label for="{{elementId}}__input">
+    <div class="contacts-upload__label">
+      {{#if _isLoading}}
+        <span class="contacts-upload__label-text"> Loading ... </span>
+      {{else if _isError}}
+        <span class="contacts-upload__label-text">
+          Something went wrong. Please try upload again.
+        </span>
+        <span class="contacts-upload__label-text contacts-upload__label-text--lesser"> or </span>
+        <span class="contacts-upload__label-text contacts-upload__label-text--underline" >
+          Click here to select a file from your computer
+        </span>
+      {{else}}
+        <span class="contacts-upload__label-text"> Upload contacts vCard file. </span>
+        <span class="contacts-upload__label-text contacts-upload__label-text--lesser"> or </span>
+        <span class="contacts-upload__label-text contacts-upload__label-text--underline" >
+          Click here to select a file from your computer
+        </span>
+      {{/if}}
+    </div>
+  </label>
+
+{{/if}}

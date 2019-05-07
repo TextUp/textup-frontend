@@ -1,0 +1,17 @@
+<div class="contacts-display__header">
+  <button type="button"
+    class="contacts-display__toggle"
+    onclick={{action _toggleSelect}}>
+      {{if _someSelected "Deselect All" "Select All"}}
+  </button>
+
+  <Span class="contacts-display__stats">
+    Import {{_numSelect}} of {{_numTotal}} contacts
+  </Span>
+</div>
+<div class="contacts-display__contact-item-container">
+  {{#each contactObjects as |person|}}
+    {{contacts-display/contact-item doRegister=(action _registerChild)
+      data=person}}
+  {{/each}}
+</div>

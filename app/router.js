@@ -52,6 +52,9 @@ Router.map(function() {
       this.route('edit');
     });
   });
+
+  // TODO: just for testing
+  this.route('testing');
 });
 
 export default Router;
