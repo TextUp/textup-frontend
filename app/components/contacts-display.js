@@ -9,7 +9,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     contactObjects: PropTypes.array,
   },
 
-  classNames: 'contacts_display',
+  classNames: 'contacts-display',
 
   // Internal properties
   // -------------------

@@ -9,11 +9,9 @@
     Import {{_numSelect}} of {{_numTotal}} contacts
   </Span>
 </div>
-
-{{#each contactObjects as |person|}}
-  {{contacts-display/contact-item doRegister=(action _registerChild)
-    data=person}}
-{{/each}}
-
-<br><br>
-<input type="button" id = "contacts-display-import" value="Import" onclick={{action _submitContacts}}>
+<div class="contacts-display__contact-item-container">
+  {{#each contactObjects as |person|}}
+    {{contacts-display/contact-item doRegister=(action _registerChild)
+      data=person}}
+  {{/each}}
+</div>
