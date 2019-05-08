@@ -10,7 +10,8 @@
 }
 
 [class^='icon-'],
-[class*=' icon-'] {
+[class*=' icon-'],
+.icon {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
   speak: none;
@@ -55,8 +56,9 @@
 .icon-resize:before {
   content: '\e906';
 }
+$icon-x: '\e907';
 .icon-x:before {
-  content: '\e907';
+  content: $icon-x;
 }
 .icon-checkmark-circle-filled:before {
   content: '\e908';
