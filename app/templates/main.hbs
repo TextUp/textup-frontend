@@ -94,9 +94,9 @@
                             title="Notifications"
                             classNames="btn-expand"}}
                             {{#if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow")}}
-                                <span class="fa fa-calendar-check-o" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-yes" id="tour-openAvailabilityButton"></span>
                             {{else}}
-                                <span class="fa fa-calendar-times-o" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-no" id="tour-openAvailabilityButton"></span>
                             {{/if}}
                         {{/tool-tip}}
                     </div>
@@ -117,7 +117,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Compose"
                         classNames="btn-expand"}}
-                        <span class="fa fa-comments" id="tour-openMessageButton"></span>
+                        <span class="icon-speech" id="tour-openMessageButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -135,7 +135,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Call"
                         classNames="btn-expand"}}
-                        <span class="fa fa-phone" id="tour-openCallButton"></span>
+                        <span class="icon-phone" id="tour-openCallButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -168,7 +168,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewContactSlideout"}}>
-                        <span class="fa fa-plus" id="tour-addNewContactButton"></span>
+                        <span class="icon-thin-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
                 <div class="menu-item
@@ -203,21 +203,21 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Add Contact"
                         classNames="btn-expand"}}
-                        <span class="fa fa-user-plus" id="tour-openNewContactButton"></span>
+                        <span class="icon-add-contact" id="tour-openNewContactButton"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "main.search" tagName="div" classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Search Contacts"
                         classNames="btn-expand"}}
-                        <span class="fa fa-search"></span>
+                        <span class="icon-search"></span>
                     {{/tool-tip}}
                 {{/link-to}}
                 {{#link-to "main.contacts" tagName="div" classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Contacts"
                         classNames="btn-expand"}}
-                        <span class="fa fa-user" id="tour-openContactListButton"></span>
+                        <span class="icon-person" id="tour-openContactListButton"></span>
                     {{/tool-tip}}
                 {{/link-to}}
             </div>
@@ -230,7 +230,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewTagSlideout"}}>
-                        <span class="fa fa-plus" id="tour-createNewTagButtonMobile"></span>
+                        <span class="icon-thin-plus" id="tour-createNewTagButtonMobile"></span>
                     </button >
                 </div>
                 {{#if model.phone.isFulfilled}}
@@ -259,7 +259,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"
                         classNames="btn-expand"}}
-                        <span class="fa fa-tags" ></span>
+                        <span class="icon-tag" ></span>
                     {{/tool-tip}}
                 </div>
             </div>
