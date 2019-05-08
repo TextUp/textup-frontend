@@ -1,97 +1,97 @@
 .slideout-pane {
-    @extend %liquid-fire-full-height;
+  @extend %liquid-fire-full-height;
 
-    position: absolute;
-    top: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  max-width: 100%;
+  z-index: $slideout-z-index;
+  background-color: $bg-lightest-color;
+
+  &--direction {
+    &-left {
+      left: 0;
+      box-shadow: 4px 0 10px -4px rgba(0, 0, 0, 0.3);
+      border-right: 1px solid $border-color;
+    }
+    &-right {
+      right: 0;
+      box-shadow: -4px 0 10px -4px rgba(0, 0, 0, 0.3);
+      border-left: 1px solid $border-color;
+    }
+  }
+  &--keep-open + &__overlay {
+    opacity: 0.5;
+  }
+  &:not(&--open) + &__overlay {
+    opacity: 0;
+  }
+
+  &__overlay {
+    position: fixed;
+    content: '';
+    top: 50%;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: $slideout-z-index - 1;
+
+    background-color: $border-color;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  &__body {
+    @extend %vertical-scroll;
+
     width: 100%;
-    max-width: 100%;
-    z-index: $slideout-z-index;
-    background-color: $bg-lightest-color;
+    outline: 0;
+  }
+  &__header,
+  &__footer {
+    flex-shrink: 0;
+    width: 100%;
+    z-index: 20;
+  }
+  &__header {
+    justify-content: flex-start;
+    height: $header-height;
+    border-bottom: 1px solid $border-color;
 
-    &--direction {
-        &-left {
-            left: 0;
-            box-shadow: 4px 0 10px -4px rgba(0, 0, 0, 0.3);
-            border-right: 1px solid $border-color;
-        }
-        &-right {
-            right: 0;
-            box-shadow: -4px 0 10px -4px rgba(0, 0, 0, 0.3);
-            border-left: 1px solid $border-color;
-        }
-    }
-    &--keep-open + &__overlay {
-        opacity: 0.5;
-    }
-    &:not(&--open) + &__overlay {
-        opacity: 0;
+    &__control {
+      @extend .icon;
+      @extend .icon-left-arrow;
     }
 
-    &__overlay {
-        position: fixed;
-        content: '';
-        top: 50%;
-        left: 0;
-        height: 100vh;
-        width: 100vw;
-        z-index: $slideout-z-index - 1;
+    @include mq($from: desktop) {
+      flex-direction: row-reverse;
 
-        background-color: $border-color;
-        opacity: 0;
-        transition: opacity 0.5s;
+      &__control:before {
+        content: $icon-x;
+      }
+
+      & > :first-child {
+        padding-left: $padding / 2;
+        padding-right: $padding;
+      }
+      & > :last-child {
+        padding-left: $padding;
+        padding-right: $padding / 2;
+      }
     }
-    &__body {
-        @extend %vertical-scroll;
+  }
+  &__footer {
+    justify-content: center;
+    padding: $padding;
+    border-top: 1px solid $border-color;
+    overflow: hidden;
 
-        width: 100%;
-        outline: 0;
+    opacity: 1;
+    transition: all 0.2s, opacity 0.1s;
+
+    &--hidden {
+      height: 0;
+      padding: 0;
+      opacity: 0;
     }
-    &__header,
-    &__footer {
-        flex-shrink: 0;
-        width: 100%;
-        z-index: 20;
-    }
-    &__header {
-        justify-content: flex-start;
-        height: $header-height;
-        border-bottom: 1px solid $border-color;
-
-        &__control {
-            @extend .fa;
-            @extend .fa-chevron-left;
-        }
-
-        @include mq($from: desktop) {
-            flex-direction: row-reverse;
-
-            &__control:before {
-                content: $fa-var-times;
-            }
-
-            & > :first-child {
-                padding-left: $padding / 2;
-                padding-right: $padding;
-            }
-            & > :last-child {
-                padding-left: $padding;
-                padding-right: $padding / 2;
-            }
-        }
-    }
-    &__footer {
-        justify-content: center;
-        padding: $padding;
-        border-top: 1px solid $border-color;
-        overflow: hidden;
-
-        opacity: 1;
-        transition: all 0.2s, opacity 0.1s;
-
-        &--hidden {
-            height: 0;
-            padding: 0;
-            opacity: 0;
-        }
-    }
+  }
 }

@@ -57,7 +57,7 @@
                         {{#tool-tip classNames="btn-expand"
                             title=(concat "Pending (" numPending ")")
                             side=(constant "TOOLTIP.SIDE.RIGHT")}}
-                            <span class="fa fa-clock-o"></span>
+                            <span class="icon-clock"></span>
                         {{/tool-tip}}
                     </div>
                 {{/link-to}}
@@ -73,7 +73,7 @@
                     People
                     <button class="btn btn-plain v-center-right"
                         {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        <span class="fa fa-plus"></span>
+                        <span class="icon-thin-plus"></span>
                     </button >
                 </div>
                 <div class="menu-item
@@ -96,12 +96,12 @@
                 <div class="menu-item menu-slideout"
                     {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                     {{#tool-tip classNames="btn-expand" title="Add Staff" side=(constant "TOOLTIP.SIDE.RIGHT")}}
-                        <span class="fa fa-user-plus"></span>
+                        <span class="icon-add-contact"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "admin.people" tagName="div" classNames="menu-item"}}
                     {{#tool-tip classNames="btn-expand" title="People" side=(constant "TOOLTIP.SIDE.RIGHT")}}
-                        <span class="fa fa-user"></span>
+                        <span class="icon-person"></span>
                     {{/tool-tip}}
                 {{/link-to}}
             </div>
@@ -113,7 +113,7 @@
                     Teams
                     <button class="btn btn-plain v-center-right"
                         {{action "toggleSlideout" "slideouts/team/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        <span class="fa fa-plus"></span>
+                        <span class="icon-thin-plus"></span>
                     </button >
                 </div>
                 {{#each model.teams as |team|}}
@@ -132,7 +132,7 @@
                 <div class="menu-item menu-slideout"
                     {{action "toggleSlideout" "slideouts/team/list" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
                     {{#tool-tip classNames="btn-expand" title="Teams" side=(constant "TOOLTIP.SIDE.RIGHT")}}
-                        <span class="fa fa-users"></span>
+                        <span class="icon-group"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}
-                        <span class="fa fa-question"></span>
+                        <span class="icon-question"></span>
                     {{/tool-tip}}
                 </div>
             </div>

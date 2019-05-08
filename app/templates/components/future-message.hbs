@@ -22,14 +22,17 @@
                 {{/tool-tip}}
             {{else}}
                 {{#tool-tip title='Send via phone call'}}
-                    <span class="fa fa-phone"></span>
+                    <span class="icon-phone"></span>
                 {{/tool-tip}}
             {{/if}}
         </span>
         <span class="badge {{if message.notifySelfOnSend 'bg-color bg-dark'}}">
             {{#tool-tip title=(if message.notifySelfOnSend 'Notify me when sending' 'Do not notify me when sending')}}
-                <span class="fa fa-user
-                    {{if (not message.notifySelfOnSend) 'fa-inverse'}}"></span>
+                {{#if (not message.notifySelfOnSend)}}
+                    <span class="icon-person-outline"></span>
+                {{else}}
+                    <span class="icon-person"></span>
+                {{/if}}
             {{/tool-tip}}
         </span>
     </div>

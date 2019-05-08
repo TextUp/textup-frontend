@@ -13,7 +13,7 @@
 	                    <span class="text-bold">
 	                    	{{pendingStaff.length}}
 	                    </span>
-						<span class="fa fa-user"></span>
+						<span class="icon-person"></span>
 	                {{/tool-tip}}
 				</div>
 			</div>
@@ -38,7 +38,7 @@
 					{{#if (and selected.phoneActionData
 						(not (eq selected.pendingAction "reject")))}}
 						<span class="text-bold control-text">
-							<span class="fa fa-phone pad-r-half"></span>
+							<span class="icon-phone pad-r-half"></span>
 							{{phone-number selected.phoneActionData.phoneNumber}}
 						</span>
 					{{/if}}
@@ -74,7 +74,7 @@
 										{{#if hideShow.isOpen}}
 											Cancel add phone
 										{{else}}
-											<span class="fa fa-plus"></span> phone
+											<span class="icon-thin-plus"></span> phone
 										{{/if}}
 									</span>
 								</button>
@@ -84,14 +84,14 @@
 							<button class="btn btn-plain btn-success"
 								type="button"
 								onclick={{action (mut selected.pendingAction) "approve"}}>
-								<span class="fa fa-check"></span>
+								<span class="icon-checkmark"></span>
 							</button>
 						</div>
 						<div class="flex__item">
 							<button class="btn btn-plain btn-danger"
 								type="button"
 								onclick={{action (mut selected.pendingAction) "reject"}}>
-								<span class="fa fa-times"></span>
+								<span class="icon-x"></span>
 							</button>
 						</div>
 					{{/if}}

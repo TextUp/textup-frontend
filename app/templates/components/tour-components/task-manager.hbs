@@ -14,9 +14,9 @@
                 class="btn btn-plain btn-expand btn-default task-manager__title__button"
                 onclick= {{hideShow.actions.toggle}}>
                 {{#if hideShow.isOpen}}
-                    <span class="fa fa-minus-circle task-manager__title--fa"></span>
+                    <span class="icon-thin-down-arrow task-manager__title--fa"></span>
                 {{else}}
-                    <span class="fa fa-chevron-circle-up task-manager__title--fa"></span>
+                    <span class="icon-thin-up-arrow task-manager__title--fa"></span>
                 {{/if}}
             </button>
         </div>
@@ -24,7 +24,7 @@
             <button type="button"
                 class="btn btn-plain btn-expand btn-default task-manager__title__button"
                 onclick= {{action _onClose}}>
-                <span class="fa fa-times-circle task-manager__title--fa"></span>
+                <span class="icon-thin-x task-manager__title--fa"></span>
             </button>
         </div>
     </div>

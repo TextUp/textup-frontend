@@ -1,0 +1,237 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url('fonts/icomoon.eot?k2umgf');
+  src: url('fonts/icomoon.eot?k2umgf#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?k2umgf') format('truetype'),
+    url('fonts/icomoon.woff?k2umgf') format('woff'),
+    url('fonts/icomoon.svg?k2umgf#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^='icon-'],
+[class*=' icon-'],
+.icon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-dollar-sign-outline:before {
+  content: '\e942';
+}
+.icon-dollar-sign:before {
+  content: '\e943';
+}
+.icon-graph:before {
+  content: '\e944';
+}
+.icon-pencil:before {
+  content: '\e900';
+}
+.icon-exclamation:before {
+  content: '\e901';
+}
+.icon-i:before {
+  content: '\e902';
+}
+.icon-question:before {
+  content: '\e903';
+}
+.icon-checkmark:before {
+  content: '\e904';
+}
+.icon-resize-smaller:before {
+  content: '\e905';
+}
+.icon-resize:before {
+  content: '\e906';
+}
+$icon-x: '\e907';
+.icon-x:before {
+  content: $icon-x;
+}
+.icon-checkmark-circle-filled:before {
+  content: '\e908';
+}
+.icon-down-left-arrow:before {
+  content: '\e909';
+}
+.icon-down-right-arrow:before {
+  content: '\e90a';
+}
+.icon-exclamation-circle-filled:before {
+  content: '\e90b';
+}
+.icon-i-circle-filled:before {
+  content: '\e90c';
+}
+.icon-question-circle-filled:before {
+  content: '\e90d';
+}
+.icon-checkmark-circle:before {
+  content: '\e90e';
+}
+.icon-exclamation-circle:before {
+  content: '\e90f';
+}
+.icon-i-circle:before {
+  content: '\e910';
+}
+.icon-question-circle:before {
+  content: '\e911';
+}
+.icon-hamburger:before {
+  content: '\e912';
+}
+.icon-person-add-outline:before {
+  content: '\e913';
+}
+.icon-person-remove-outline:before {
+  content: '\e914';
+}
+.icon-plus-filled-circle:before {
+  content: '\e915';
+}
+.icon-x-circle:before {
+  content: '\e916';
+}
+.icon-minus-filled-circle:before {
+  content: '\e917';
+}
+.icon-thin-down-arrow:before {
+  content: '\e918';
+}
+.icon-thin-left-arrow:before {
+  content: '\e919';
+}
+.icon-thin-right-arrow:before {
+  content: '\e91a';
+}
+.icon-thin-up-arrow:before {
+  content: '\e91b';
+}
+.icon-down-arrow:before {
+  content: '\e91c';
+}
+.icon-person-outline-circle:before {
+  content: '\e91d';
+}
+.icon-person-outline:before {
+  content: '\e91e';
+}
+.icon-right-left-arrow:before {
+  content: '\e91f';
+}
+.icon-horizontal-hamburger-dot:before {
+  content: '\e920';
+}
+.icon-left-arrow:before {
+  content: '\e921';
+}
+.icon-right-arrow:before {
+  content: '\e922';
+}
+.icon-up-arrow:before {
+  content: '\e923';
+}
+.icon-vertical-hamburger-dot:before {
+  content: '\e924';
+}
+.icon-add-outline:before {
+  content: '\e925';
+}
+.icon-minus-outline:before {
+  content: '\e926';
+}
+.icon-thin-back-arrow:before {
+  content: '\e927';
+}
+.icon-thin-minus:before {
+  content: '\e928';
+}
+.icon-thin-plus:before {
+  content: '\e929';
+}
+.icon-calendar:before {
+  content: '\e92a';
+}
+.icon-star-circle:before {
+  content: '\e92b';
+}
+.icon-thin-x:before {
+  content: '\e92c';
+}
+.icon-clock:before {
+  content: '\e92d';
+}
+.icon-eye:before {
+  content: '\e92e';
+}
+.icon-group:before {
+  content: '\e92f';
+}
+.icon-star-circle-inverse:before {
+  content: '\e930';
+}
+.icon-bell:before {
+  content: '\e931';
+}
+.icon-phone-circle:before {
+  content: '\e932';
+}
+.icon-phone-outline-circle:before {
+  content: '\e933';
+}
+.icon-phone-outline:before {
+  content: '\e934';
+}
+.icon-star-outline:before {
+  content: '\e935';
+}
+.icon-add-contact:before {
+  content: '\e936';
+}
+.icon-backspace:before {
+  content: '\e937';
+}
+.icon-send:before {
+  content: '\e938';
+}
+.icon-tag:before {
+  content: '\e939';
+}
+.icon-availability-no:before {
+  content: '\e93a';
+}
+.icon-availability-yes .path1:before {
+  content: '\e93b';
+}
+.icon-availability-yes .path2:before {
+  content: '\e93c';
+  margin-left: -1.6rem;
+}
+.icon-speech:before {
+  content: '\e93d';
+}
+.icon-save:before {
+  content: '\e93e';
+}
+.icon-search:before {
+  content: '\e93f';
+}
+.icon-person:before {
+  content: '\e940';
+}
+.icon-phone:before {
+  content: '\e941';
+}
