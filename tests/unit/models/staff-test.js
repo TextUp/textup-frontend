@@ -38,6 +38,7 @@ test('default values', function(assert) {
   assert.equal(model.get('password'), '');
   assert.equal(model.get('lockCode'), '');
   assert.equal(model.get('isSelected'), false);
+  assert.equal(model.get('shouldAddToGeneralUpdatesList'), false);
 });
 
 test('rolling back', function(assert) {

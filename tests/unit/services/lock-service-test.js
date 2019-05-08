@@ -7,11 +7,14 @@ import StorageUtils from 'textup-frontend/utils/storage';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:lock-service', 'Unit | Service | lock service', {
+  needs: ['service:analytics'],
   beforeEach() {
     this.register('service:authService', Ember.Service);
     this.inject.service('authService');
     this.register('service:notifications', Ember.Service);
     this.inject.service('notifications');
+    this.register('service:router', Ember.Service);
+    this.inject.service('router');
     this.register('service:storageService', Ember.Service);
     this.inject.service('storageService');
     this.register('service:validateAuthService', Ember.Service);
@@ -199,50 +202,63 @@ test('syncing lock status with transition', function(assert) {
     abortTransition = sinon.stub(AppUtils, 'abortTransition'),
     _shouldLockForRouteName = sinon.stub(service, '_shouldLockForRouteName'),
     targetName = Math.random() + '',
+    currentRouteName = Math.random() + '',
     transitionObj = { abort: sinon.spy(), targetName },
     lockContainerObj = { isLocked: false, actions: { unlock: sinon.spy(), lock: sinon.spy() } };
 
+  this.router.setProperties({ currentRouteName });
   service.set('lockContainer', lockContainerObj);
 
   service.syncLockStatusWithTransition(null);
 
   assert.ok(_shouldLockForRouteName.notCalled, 'must pass in a transition object');
 
-  Ember.set(lockContainerObj, 'isLocked', false);
+  _shouldLockForRouteName.withArgs(currentRouteName).returns(false);
   _shouldLockForRouteName.withArgs(targetName).returns(false);
   service.syncLockStatusWithTransition(transitionObj);
 
-  assert.equal(_shouldLockForRouteName.callCount, 1);
   assert.ok(abortTransition.notCalled);
   assert.ok(lockContainerObj.actions.unlock.notCalled);
   assert.ok(lockContainerObj.actions.lock.notCalled);
 
-  Ember.set(lockContainerObj, 'isLocked', false);
+  _shouldLockForRouteName.withArgs(currentRouteName).returns(false);
   _shouldLockForRouteName.withArgs(targetName).returns(true);
   service.syncLockStatusWithTransition(transitionObj);
 
-  assert.equal(_shouldLockForRouteName.callCount, 2);
   assert.ok(abortTransition.notCalled);
   assert.ok(lockContainerObj.actions.unlock.notCalled);
   assert.ok(lockContainerObj.actions.lock.calledOnce);
 
-  Ember.set(lockContainerObj, 'isLocked', true);
+  _shouldLockForRouteName.withArgs(currentRouteName).returns(true);
   _shouldLockForRouteName.withArgs(targetName).returns(false);
   service.syncLockStatusWithTransition(transitionObj);
 
-  assert.equal(_shouldLockForRouteName.callCount, 3);
   assert.ok(abortTransition.notCalled);
   assert.ok(lockContainerObj.actions.unlock.calledOnce);
   assert.ok(lockContainerObj.actions.lock.calledOnce);
 
-  Ember.set(lockContainerObj, 'isLocked', true);
+  Ember.set(lockContainerObj, 'isLocked', false);
+  _shouldLockForRouteName.withArgs(currentRouteName).returns(true);
   _shouldLockForRouteName.withArgs(targetName).returns(true);
   service.syncLockStatusWithTransition(transitionObj);
 
-  assert.equal(_shouldLockForRouteName.callCount, 4);
-  assert.ok(abortTransition.calledOnce);
+  assert.ok(abortTransition.notCalled, 'do not abort transition if not currently locked');
   assert.ok(lockContainerObj.actions.unlock.calledOnce);
   assert.ok(lockContainerObj.actions.lock.calledOnce);
+
+  Ember.set(lockContainerObj, 'isLocked', true);
+  _shouldLockForRouteName.withArgs(currentRouteName).returns(true);
+  _shouldLockForRouteName.withArgs(targetName).returns(true);
+  service.syncLockStatusWithTransition(transitionObj);
+
+  assert.ok(
+    abortTransition.calledOnce,
+    'do abort transition if currently locked and moving between pages that require locking'
+  );
+  assert.ok(lockContainerObj.actions.unlock.calledOnce);
+  assert.ok(lockContainerObj.actions.lock.calledOnce);
+
+  assert.ok(_shouldLockForRouteName.callCount > 0);
 
   abortTransition.restore();
   _shouldLockForRouteName.restore();

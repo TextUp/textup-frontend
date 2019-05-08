@@ -3,7 +3,7 @@ import Constants from 'textup-frontend/constants';
 export default {
   [Constants.HINT.CONTACT_ADD]: {
     title: '',
-    message: 'The number for our Customer Support Hotline is (401) 519-7932',
+    message: 'The number for our demo contact is (401) 466-4559. Try it out!',
   },
   [Constants.HINT.CONTACT_LANGUAGE]: {
     title: '',

@@ -70,6 +70,7 @@ export default DS.Model.extend(
 
     email: DS.attr('string'),
     org: DS.belongsTo('organization'),
+    shouldAddToGeneralUpdatesList: DS.attr('boolean', { defaultValue: false }),
     isSelected: false,
 
     [Constants.PROP_NAME.SHARING_IDENT]: computed.alias('phone.content.id'),

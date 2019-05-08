@@ -12,7 +12,6 @@ export const NOT_LOGGED_IN_MSG = 'Please log in first.';
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
   notifications: Ember.inject.service(),
-  router: Ember.inject.service(),
 
   authRequest(options = {}) {
     return new RSVP.Promise((resolve, reject) => {
@@ -56,8 +55,6 @@ export default Ember.Service.extend({
       if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.UNAUTHORIZED)) {
         this.get('authService').logout();
         this.get('notifications').info(NOT_LOGGED_IN_MSG);
-      } else if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.NOT_FOUND)) {
-        this.get('router').transitionTo('index');
       } else if (ErrorUtils.isResponseStatus(failureObj, Constants.RESPONSE_STATUS.TIMED_OUT)) {
         this.get('notifications').error(CONNECTION_ERROR_MSG, { clearDuration: 10000 });
       } else {

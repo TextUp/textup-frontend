@@ -21,8 +21,10 @@ export default Ember.Mixin.create({
       );
     },
     finishFeedbackSlideout() {
+      // We do not clear the `feedbackMessage`` property when closing because the
+      // form `submit`` event needs to read the message for submission.
+      // Instead, we reset the `feedbackMessage` when opening this slideout`
       this.send('closeSlideout');
-      this.controller.set('feedbackMessage', null);
     },
     restartTour() {
       this.get('tutorialService').resetTasks();

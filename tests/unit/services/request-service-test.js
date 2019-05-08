@@ -56,7 +56,6 @@ test('handling error', function(assert) {
   assert.ok(this.authService.logout.notCalled);
   assert.ok(this.notifications.info.notCalled);
   assert.ok(this.notifications.error.notCalled);
-  assert.ok(this.router.transitionTo.notCalled);
 
   service.handleResponseErrorObj({
     [ErrorUtils.ERRORS_PROP_NAME]: [
@@ -66,18 +65,6 @@ test('handling error', function(assert) {
   assert.equal(this.authService.logout.callCount, 1);
   assert.equal(this.notifications.info.callCount, 1);
   assert.ok(this.notifications.error.notCalled);
-  assert.ok(this.router.transitionTo.notCalled);
-
-  service.handleResponseErrorObj({
-    [ErrorUtils.ERRORS_PROP_NAME]: [
-      { [ErrorUtils.STATUS_PROP_NAME]: Constants.RESPONSE_STATUS.NOT_FOUND },
-    ],
-  });
-  assert.equal(this.authService.logout.callCount, 1);
-  assert.equal(this.notifications.info.callCount, 1);
-  assert.ok(this.notifications.error.notCalled);
-  assert.equal(this.router.transitionTo.callCount, 1);
-  assert.ok(this.router.transitionTo.firstCall.calledWith('index'));
 
   service.handleResponseErrorObj({
     [ErrorUtils.ERRORS_PROP_NAME]: [
@@ -87,21 +74,24 @@ test('handling error', function(assert) {
   assert.equal(this.authService.logout.callCount, 1);
   assert.equal(this.notifications.info.callCount, 1);
   assert.equal(this.notifications.error.callCount, 1);
-  assert.equal(this.router.transitionTo.callCount, 1);
 
   service.handleResponseErrorObj({
     [ErrorUtils.ERRORS_PROP_NAME]: [
-      { [ErrorUtils.MESSAGE_PROP_NAME]: msg1 },
-      { [ErrorUtils.MESSAGE_PROP_NAME]: msg2 },
+      { [ErrorUtils.STATUS_PROP_NAME]: 888, [ErrorUtils.MESSAGE_PROP_NAME]: msg1 },
+      { [ErrorUtils.STATUS_PROP_NAME]: 888, [ErrorUtils.MESSAGE_PROP_NAME]: msg2 },
     ],
   });
 
   assert.equal(this.authService.logout.callCount, 1);
   assert.equal(this.notifications.info.callCount, 1);
-  assert.equal(this.router.transitionTo.callCount, 1);
   assert.equal(this.notifications.error.callCount, 3);
   assert.ok(this.notifications.error.calledWith(msg1));
   assert.ok(this.notifications.error.calledWith(msg2));
+
+  assert.ok(
+    this.router.transitionTo.notCalled,
+    'error handler should never transition as it did in the past because this is too invasive'
+  );
 });
 
 test('handling wrapping request for error handling', function(assert) {

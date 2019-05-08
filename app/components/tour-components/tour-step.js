@@ -81,7 +81,8 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
       scrollToEl.scrollIntoView({ behavior: 'smooth' });
       // Need to hardcode a delay because `scrollIntoView` does not take a completion callback
       // or return a promise -- trying to find the scrollParent programmatically is too complicated
-      run.later(this, this._tryCalculateCutout, overlay, 500);
+      // Making the delay 500ms results in the cutout not being scroll into view yet
+      run.later(this, this._tryCalculateCutout, overlay, 1000);
     }
   },
   _tryRemoveCutout(overlay) {

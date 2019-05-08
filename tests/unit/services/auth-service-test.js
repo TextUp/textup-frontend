@@ -52,6 +52,9 @@ test('storing auth data + triggering event', function(assert) {
     refreshToken1 = Math.random(),
     token2 = Math.random(),
     refreshToken2 = Math.random(),
+    token3 = Math.random(),
+    refreshToken3 = Math.random(),
+    notStaffObj = TestUtils.mockModel(88, Constants.MODEL.TEAM),
     staffObj = TestUtils.mockModel(88, Constants.MODEL.STAFF),
     onSuccess = sinon.spy();
 
@@ -65,19 +68,31 @@ test('storing auth data + triggering event', function(assert) {
   );
   assert.equal(service.get('token'), token1);
   assert.equal(service.get('refreshToken'), refreshToken1);
+  assert.notOk(service.get('authUser'));
   assert.ok(this.storageService.sendStorageToOtherTabs.notCalled);
   assert.ok(onSuccess.notCalled);
 
-  service._storeAuthData(token2, refreshToken2, staffObj);
+  service._storeAuthData(token2, refreshToken2, notStaffObj);
   assert.ok(this.storageService.setItem.calledWith(StorageUtils.authTokenKey(), token2));
   assert.ok(
     this.storageService.setItem.calledWith(StorageUtils.authRefreshTokenKey(), refreshToken2)
   );
+  assert.equal(service.get('token'), token2);
+  assert.equal(service.get('refreshToken'), refreshToken2);
+  assert.notOk(service.get('authUser'));
+  assert.ok(this.storageService.sendStorageToOtherTabs.notCalled);
+  assert.ok(onSuccess.notCalled);
+
+  service._storeAuthData(token3, refreshToken3, staffObj);
+  assert.ok(this.storageService.setItem.calledWith(StorageUtils.authTokenKey(), token3));
+  assert.ok(
+    this.storageService.setItem.calledWith(StorageUtils.authRefreshTokenKey(), refreshToken3)
+  );
   assert.ok(
     this.storageService.setItem.calledWith(StorageUtils.authUserIdKey(), staffObj.get('id'))
   );
-  assert.equal(service.get('token'), token2);
-  assert.equal(service.get('refreshToken'), refreshToken2);
+  assert.equal(service.get('token'), token3);
+  assert.equal(service.get('refreshToken'), refreshToken3);
   assert.equal(service.get('authUser'), staffObj);
   assert.ok(this.storageService.sendStorageToOtherTabs.calledOnce);
   assert.ok(onSuccess.calledOnce);

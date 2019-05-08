@@ -5,7 +5,7 @@ export default [
     id: Constants.TASK.CONTACT,
     title: 'Add a contact',
     text:
-      'Before you can message clients, you have to add a contact. Click the Add Contact button and add our Customer Support Line as a contact.',
+      'Before you can message clients, you have to add a contact. Click the Add Contact button.',
     elementsToPulse: ['#tour-openNewContactButton'],
     elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-addNewContactButton'],
   },
@@ -13,7 +13,7 @@ export default [
     id: Constants.TASK.MESSAGE,
     title: 'Send a message',
     text:
-      "Now let's send a text. Click the Compose button. If you don't know who to message, you can message the Customer Support contact you just added.",
+      "Now let's send a text. Click the Compose button. If you don't know who to message, you can message the contact you just added.",
     elementsToPulse: ['#tour-openMessageButton'],
     elementsToPulseMobile: ['#tour-openSlideoutButton', '#tour-openMessageButtonMobile'],
   },

@@ -10,11 +10,10 @@ const { run } = Ember;
 moduleFor('service:socket-data-service', 'Unit | Service | socket data service', {
   beforeEach() {
     this.register('service:authService', Ember.Service);
-    this.register('service:store', Ember.Service);
-    this.register('service:websocketService', Ember.Service);
-
     this.inject.service('authService');
+    this.register('service:store', Ember.Service);
     this.inject.service('store');
+    this.register('service:websocketService', Ember.Service);
     this.inject.service('websocketService');
   },
 });
@@ -79,6 +78,7 @@ test('handling data for various model types', function(assert) {
 
 test('right handler is bound to the right event', function(assert) {
   const service = this.subject(),
+    channelName = Math.random(),
     _handlePhones = sinon.stub(service, '_handlePhones'),
     _handleFutureMsgs = sinon.stub(service, '_handleFutureMsgs'),
     _handleRecordItems = sinon.stub(service, '_handleRecordItems'),
@@ -91,6 +91,16 @@ test('right handler is bound to the right event', function(assert) {
   });
 
   service._bindSocketEvents();
+  assert.ok(
+    this.websocketService.connect.notCalled,
+    'will not bind to socket events if no `channelName` found'
+  );
+  assert.ok(this.websocketService.bind.notCalled);
+
+  this.authService.setProperties({ authUser: { channelName } });
+  service._bindSocketEvents();
+  assert.ok(this.websocketService.connect.callCount > 0, 'has been called');
+  assert.ok(this.websocketService.bind.callCount > 0);
 
   this.websocketService.bind.args
     .find(fnArgs => fnArgs[1] === SocketDataService.EVENT_RECORD_ITEMS)[2]
