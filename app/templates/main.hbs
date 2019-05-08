@@ -27,7 +27,7 @@
                 </p>
             {{else}}
                 <span class="halo halo-sm bg-color bg-brand text-heading">
-                    <span class="fa fa-user"></span>
+                    <span class="icon-person"></span>
                 </span>
             {{/if}}
         </button>
@@ -54,27 +54,16 @@
                 {{/account-switcher}}
             </div>
             <div class="display-l">
-                {{#if (service-prop "stateService" "ownerIsTeam")}}
-                    <div class="menu-item menu-header"
-                        style="background-color:{{service-prop "stateService" "owner.hexColor"}};
-                            color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
-                            classNames="btn-expand"}}
-                            <h4 class="match-color">{{abbreviate (service-prop "stateService" "owner.name") 1}}</h4>
-                        {{/tool-tip}}
-                    </div>
-                {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
-                    <div class="menu-item menu-header"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
-                            classNames="btn-expand"}}
-                            <span class="fa fa-user"></span>
-                        {{/tool-tip}}
-                    </div>
-                {{/if}}
+                <div class="menu-item menu-header"
+                    style="background-color:{{service-prop "stateService" "owner.hexColor"}};
+                        color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
+                    onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
+                        title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
+                        classNames="btn-expand"}}
+                        <h4 class="match-color">{{abbreviate (service-prop "stateService" "owner.name") 1}}</h4>
+                    {{/tool-tip}}
+                </div>
             </div>
             {{#if (service-prop "stateService" "owner.phone.isFulfilled")}}
                 <div class="display-xs display-s display-m">
@@ -94,9 +83,15 @@
                             title="Notifications"
                             classNames="btn-expand"}}
                             {{#if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow")}}
-                                <span class="icon-availability-yes" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-yes" id="tour-openAvailabilityButton">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </span>
                             {{else}}
-                                <span class="icon-availability-no" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-no" id="tour-openAvailabilityButton">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </span>
                             {{/if}}
                         {{/tool-tip}}
                     </div>
@@ -154,7 +149,7 @@
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Export"
                             classNames="btn-expand"}}
-                            <span class="fa fa-file" id="tour-openExportButton"></span>
+                            <span class="icon-save" id="tour-openExportButton"></span>
                         {{/tool-tip}}
                     </div>
                 </div>
@@ -278,7 +273,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}
-                        <span class="fa fa-question"></span>
+                        <span class="icon-question"></span>
                     {{/tool-tip}}
                 </div>
             </div>

@@ -4,7 +4,7 @@
             {{#tool-tip tagName='span'
                 side=(constant "TOOLTIP.SIDE.RIGHT")
                 title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
-                <span class="fa fa-phone"></span>
+                <span class="icon-phone"></span>
             {{/tool-tip}}
         </span>
     {{else}}
@@ -13,12 +13,12 @@
                 class='text-lighten'
                 side=(constant "TOOLTIP.SIDE.RIGHT")
                 title='Has inactive phone'}}
-                <span class="fa fa-phone"></span>
+                <span class="icon-phone"></span>
             {{/tool-tip}}
         </span>
     {{/if}}
 {{/if}}
 <span class="badge">
     {{team.numMembers}}
-    <span class="fa fa-user"></span>
+    <span class="icon-person"></span>
 </span>

@@ -6,7 +6,7 @@
 			<div class="clear-badge display-xs display-s no-space">
 				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
 					<span class="pad-all">
-						<span class="fa fa-chevron-left"></span>
+						<span class="icon-thin-left-arrow"></span>
 					</span>
 	        	{{/link-to}}
 			</div>
@@ -15,7 +15,7 @@
 			</div>
 			<div class="badge margin-l">
 				{{team.numMembers}}
-				<span class="fa fa-user"></span>
+				<span class="icon-person"></span>
 			</div>
 			<span class="no-space clear-badge display-m display-l">
                 <button class="btn btn-danger btn-plain" type="button"
@@ -34,7 +34,7 @@
 			<span class="no-space clear-badge display-m display-l">
 				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
 					<span class="pad-all">
-						<span class="fa fa-times"></span>
+						<span class="icon-x"></span>
 					</span>
 	        	{{/link-to}}
 			</span>

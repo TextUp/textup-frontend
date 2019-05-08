@@ -1,41 +1,40 @@
 @font-face {
-    font-family: 'Lato';
-    src: url('fonts/Lato-Regular.woff2') format('woff2'),
-        url('fonts/Lato-Regular.woff') format('woff'),
-        url('fonts/Lato-Regular.ttf') format('truetype');
-    font-style: normal;
-    font-weight: $font-weight-std;
+  font-family: 'Lato';
+  src: url('fonts/Lato-Regular.woff2') format('woff2'),
+    url('fonts/Lato-Regular.woff') format('woff'), url('fonts/Lato-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: $font-weight-std;
 }
 @font-face {
-    font-family: 'Lato';
-    src: url('fonts/Lato-Bold.woff2') format('woff2'), url('fonts/Lato-Bold.woff') format('woff'),
-        url('fonts/Lato-Bold.ttf') format('truetype');
-    font-style: normal;
-    font-weight: $font-weight-bold;
+  font-family: 'Lato';
+  src: url('fonts/Lato-Bold.woff2') format('woff2'), url('fonts/Lato-Bold.woff') format('woff'),
+    url('fonts/Lato-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: $font-weight-bold;
 }
 
 body {
-    margin: 0;
-    font-family: 'Lato', helvetica, arial, sans-serif;
-    font-style: normal;
-    font-weight: $font-weight-std;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: $font-size;
-    color: $font-color;
+  margin: 0;
+  font-family: 'Lato', helvetica, arial, sans-serif;
+  font-style: normal;
+  font-weight: $font-weight-std;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: $font-size;
+  color: $font-color;
 }
 a {
-    color: $font-color;
-    transition: color 0.5s;
-    &:hover,
-    &:active,
-    &:active {
-        color: darken($font-color, 20%);
-    }
+  color: $font-color;
+  transition: color 0.5s;
+  &:hover,
+  &:active,
+  &:active {
+    color: darken($font-color, 20%);
+  }
 }
 p {
-    color: inherit;
-    margin: 0;
+  color: inherit;
+  margin: 0;
 }
 
 // Headers
@@ -46,121 +45,124 @@ h2,
 h3,
 h4,
 h5 {
-    @extend .text-heading;
+  @extend .text-heading;
 
-    margin: 0;
-    color: $title-color;
+  margin: 0;
+  color: $title-color;
 }
 h1 {
-    font-size: 2em;
+  font-size: 2em;
 }
 h2 {
-    font-size: 1.8em;
+  font-size: 1.8em;
 }
 h3 {
-    font-size: 1.6em;
+  font-size: 1.6em;
 }
 h4 {
-    font-size: 1.4em;
+  font-size: 1.4em;
 }
 h5 {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 // Modifier classes
 // ----------------
 
 .text-heading {
-    font-family: 'Lato', helvetica, arial, sans-serif;
-    text-transform: none;
+  font-family: 'Lato', helvetica, arial, sans-serif;
+  text-transform: none;
 }
 
 .match-color {
-    color: inherit;
+  color: inherit;
 }
 .text-darken {
-    color: $title-color;
+  color: $title-color;
 }
 .text--deemphasize {
-    color: tint($font-color, 0.8);
+  color: tint($font-color, 0.8);
 }
 .text-lighten {
-    color: tint($font-color, 3.5);
+  color: tint($font-color, 3.5);
 }
 .text-white {
-    color: $font-light-color;
+  color: $font-light-color;
 }
 .text-brand {
-    color: $brand-color;
+  color: $brand-color;
+  &:before {
+    color: $brand-color !important;
+  }
 }
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 .text-justify {
-    text-align: justify;
+  text-align: justify;
 }
 .text-left {
-    text-align: left;
+  text-align: left;
 }
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 .text-bold {
-    font-weight: $font-weight-bold;
+  font-weight: $font-weight-bold;
 }
 .text-normal {
-    font-weight: $font-weight-std;
+  font-weight: $font-weight-std;
 }
 
 .text-ellipsis {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .text-wrap {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .text-biggest {
-    font-size: 1.5em;
+  font-size: 1.5em;
 
-    &.form-control,
-    .form-control {
-        padding: 0 0.7em;
-    }
+  &.form-control,
+  .form-control {
+    padding: 0 0.7em;
+  }
 }
 .text-bigger {
-    font-size: 1.3em;
+  font-size: 1.3em;
 
-    &.form-control,
-    .form-control {
-        padding: 0 0.8em;
-    }
+  &.form-control,
+  .form-control {
+    padding: 0 0.8em;
+  }
 }
 .text-big {
-    font-size: 1.1em;
+  font-size: 1.1em;
 
-    &.form-control,
-    .form-control {
-        padding: 0 0.9em;
-    }
+  &.form-control,
+  .form-control {
+    padding: 0 0.9em;
+  }
 }
 .text-small {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 .text-smaller {
-    font-size: 0.7em;
+  font-size: 0.7em;
 }
 .text-smallest {
-    font-size: 0.5em;
+  font-size: 0.5em;
 }
 
 .emphasize {
-    @extend .text-darken;
-    @extend .text-bold;
-    margin-bottom: 0.3em;
+  @extend .text-darken;
+  @extend .text-bold;
+  margin-bottom: 0.3em;
 }

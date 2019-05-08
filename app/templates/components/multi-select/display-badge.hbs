@@ -1,13 +1,13 @@
 <span class="clear-badge">
     {{#if (type/is-tag entity)}}
-        <span class="fa fa-tag"></span>
+        <span class="icon-tag"></span>
     {{else if (type/is-contact entity)}}
         {{#if entity.isShared}}
             {{#tool-tip title=(concat 'Shared by ' entity.sharedByName)}}
                 <span class="fa fa-share"></span>
             {{/tool-tip}}
         {{else}}
-            <span class="fa fa-user"></span>
+            <span class="icon-person"></span>
         {{/if}}
     {{else}}
         <span class="fa fa-asterisk"></span>

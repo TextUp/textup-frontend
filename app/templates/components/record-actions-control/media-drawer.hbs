@@ -11,7 +11,7 @@
                 <button type="button"
                     class="button"
                     onclick={{action _onRemoveMedia audioElement index}}>
-                    <span class="fa fa-times"></span>
+                    <span class="icon-x"></span>
                 </button>
             {{else}}
                 {{#if _isAddingAudio}}
@@ -21,7 +21,7 @@
                         <button type="button"
                             class="button"
                             onclick={{action (mut _isAddingAudio) false}}>
-                            <span class="fa fa-times"></span>
+                            <span class="icon-x"></span>
                         </button>
                     </div>
                 {{/if}}

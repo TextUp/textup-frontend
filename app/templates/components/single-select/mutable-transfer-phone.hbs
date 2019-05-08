@@ -19,7 +19,7 @@
 				{{#tool-tip class='pad-l'
 			        tagName='span'
 			        title=(concat 'Team of ' item.numMembers)}}
-			        <span class="fa fa-users"></span>
+			        <span class="icon-group"></span>
 			    {{/tool-tip}}
             {{/if}}
             {{#if item.phone.content}}
@@ -27,13 +27,13 @@
                     {{#tool-tip class='pad-l'
                         tagName='span'
                         title=(concat 'TextUp Phone ' (phone-number item.phone.content.number))}}
-                        <span class="fa fa-phone"></span>
+                        <span class="icon-phone"></span>
                     {{/tool-tip}}
                 {{else}}
                     {{#tool-tip class='pad-l text-lighten'
                         tagName='span'
                         title='Has inactive phone'}}
-                        <span class="fa fa-phone"></span>
+                        <span class="icon-phone"></span>
                     {{/tool-tip}}
                 {{/if}}
             {{/if}}

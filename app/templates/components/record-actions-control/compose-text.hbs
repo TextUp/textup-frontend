@@ -12,12 +12,12 @@
     <button class="compose-text__control compose-text__remove-control"
         type="button"
         onclick={{action _onClearContents}}>
-        <span class="fa fa-times"></span>
+        <span class="icon-x"></span>
     </button>
 {{/if}}
 {{yield}}
 {{#action-button classNames="compose-text__control btn-plain btn-default"
     disabled=_isInvalid
     onAction=(action _onSend)}}
-    <span class="fa fa-paper-plane-o"></span>
+    <span class="icon-send"></span>
 {{/action-button}}
