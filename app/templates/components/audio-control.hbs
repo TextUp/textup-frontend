@@ -4,7 +4,7 @@
             flex flex--spacing-between">
             {{yield hideShow}}
             {{#if _showAdd}}
-                <div class="flex__item {{if (not hasBlock) 'flex__item--grow'}}">
+                <div class="flex__item flex__item--no-shrink {{if (not hasBlock) 'flex__item--grow'}}">
                     <button type="button"
                         class="button {{if (not hasBlock) 'button--expand'}}"
                         onclick={{hideShow.actions.toggle}}>

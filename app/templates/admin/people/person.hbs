@@ -147,7 +147,7 @@
                 {{#tab-container/item classNames="pad-all"
                     doRegister=tabContainer1.actions.register
                     onDestroy=tabContainer1.actions.unregister
-                    title=(concat "Availability (" person.allActivePhoneOwners.length " phones)")}}
+                    title=(concat "Availability (" person.allActivePhoneOwners.length " " (pluralize "phone" person.allActivePhoneOwners.length)")")}}
                     {{#tab-container classNames="flex__item tab-container--nav-outline"
                         animation="fade" as |tabContainer2|}}
                         {{#each person.allActivePhoneOwners as |phoneOwner|}}
