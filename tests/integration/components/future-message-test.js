@@ -59,7 +59,7 @@ test('rendering type of message', function(assert) {
     fMsg.set('type', Constants.FUTURE_MESSAGE.TYPE.CALL);
 
     wait().then(() => {
-      assert.ok(this.$('.fa-phone').length, 'has call icon');
+      assert.ok(this.$('.icon-phone').length, 'has call icon');
 
       done();
     });
@@ -116,13 +116,13 @@ test('rendering notify self', function(assert) {
     this.render(hbs`{{future-message message=fMsg}}`);
 
     assert.ok(this.$('.ember-view').length);
-    assert.ok(this.$('.fa-user.fa-inverse').length, 'user icon is greyed out');
+    assert.ok(this.$('.icon-person-outline').length, 'user icon is greyed out');
 
     fMsg.set('notifySelfOnSend', true);
 
     wait().then(() => {
-      assert.notOk(this.$('.fa-user.fa-inverse').length, 'user icon is greyed out');
-      assert.ok(this.$('.fa-user').length, 'user icon is greyed out');
+      assert.notOk(this.$('.icon-person-outline').length, 'user icon is greyed out');
+      assert.ok(this.$('.icon-person').length, 'user icon is greyed out');
 
       done();
     });

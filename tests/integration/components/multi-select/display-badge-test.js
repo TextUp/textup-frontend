@@ -39,7 +39,7 @@ test('displaying tag', function(assert) {
   this.render(hbs`{{multi-select/display-badge entity=mockTag}}`);
 
   assert.ok(this.$('.horizontal-items').length, 'did render');
-  assert.ok(this.$('.fa-tag').length);
+  assert.ok(this.$('.icon-tag').length);
 
   const text = this.$().text();
   assert.ok(text.includes(identifier));
@@ -58,7 +58,7 @@ test('displaying contact', function(assert) {
   this.render(hbs`{{multi-select/display-badge entity=mockContact}}`);
 
   assert.ok(this.$('.horizontal-items').length, 'did render');
-  assert.ok(this.$('.fa-user').length);
+  assert.ok(this.$('.icon-person').length);
 
   const text = this.$().text();
   assert.ok(text.includes(identifier));

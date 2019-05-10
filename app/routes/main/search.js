@@ -70,7 +70,7 @@ export default Ember.Route.extend({
     this.controller.setProperties({
       _searchQuery: this.controller.get('searchQuery'),
       searchResults: [],
-      numResults: null,
+      numTotalSearchResults: null,
     });
     callIfPresent(null, this.controller.get('searchList.actions.resetAll'));
   },

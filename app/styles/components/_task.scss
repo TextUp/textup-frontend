@@ -19,6 +19,10 @@
     &--fa {
       color: rgba(255, 255, 255, 0.7);
       font-size: 1.2em;
+
+      &:before {
+        color: rgba(255, 255, 255, 0.7);
+      }
     }
   }
 

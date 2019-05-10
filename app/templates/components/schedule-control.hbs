@@ -6,10 +6,10 @@
                     class="btn btn--keep-case btn-plain relative-parent"
                     onclick={{hideShow.actions.toggle}}>
                     {{#if hideShow.isOpen}}
-                        <span class="fa fa-times-circle text-brand text-biggest pull-left-to-edge"></span>
+                        <span class="icon-x-circle text-brand text-biggest pull-left-to-edge"></span>
                         <span class="text-normal text-small margin-l text-ellipsis">Cancel adding new available time range</span>
                     {{else}}
-                        <span class="fa fa-plus-circle text-brand text-biggest pull-left-to-edge"></span>
+                        <span class="icon-plus-filled-circle text-brand text-biggest pull-left-to-edge"></span>
                         <span class="text-normal text-small margin-l">Add an available time range</span>
                     {{/if}}
                 </button>
@@ -70,7 +70,7 @@
                         <button type="button"
                             class="btn btn-span btn-plain"
                             onclick={{action _handleRemove _day _dataIndex}}>
-                            <span class="fa fa-minus-circle text-brand text-biggest"></span>
+                            <span class="icon-minus-filled-circle text-brand text-biggest"></span>
                         </button>
                     </div>
                 </div>
@@ -79,4 +79,3 @@
         </div>
     {{/each}}
 </div>
-

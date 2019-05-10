@@ -7,14 +7,17 @@
 // import core textup styles library
 @import 'core/main';
 
+// putting icons file here so that other scss files can have access to the vars
+@import 'partials/icons';
+
 // import component styles
 @import 'components/account-switcher';
 @import 'components/action-button';
 @import 'components/async-button';
 @import 'components/audio-control';
 @import 'components/captcha-control';
-@import 'components/care-record';
 @import 'components/care-record-preview';
+@import 'components/care-record';
 @import 'components/color-control';
 @import 'components/compose-text';
 @import 'components/contacts-display';
@@ -60,6 +63,6 @@
 // import app-specific styles
 // put this last so these styles take precendence over all
 // styles specified in earlier files in the event of a conflict
-@import 'partials/structure';
 @import 'partials/display';
+@import 'partials/structure';
 @import 'partials/tweaks';

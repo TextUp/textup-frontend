@@ -3,16 +3,16 @@ import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
+import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed, RSVP, typeOf } = Ember;
 
-export const VERIFY_FAIL_MESSAGE = 'Incorrect lock code.';
-
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
   notifications: Ember.inject.service(),
+  router: Ember.inject.service(),
   storageService: Ember.inject.service(),
   validateAuthService: Ember.inject.service(),
 
@@ -38,11 +38,9 @@ export default Ember.Service.extend({
     });
   },
   resetAndLogOut() {
+    // [NOTE] do not need to unlock the lock container here. The `syncLockStatusWithTransition`
+    // will ensure the appropriate lock status
     this.get('authService').logout();
-    const lockContainer = this.get('lockContainer');
-    if (lockContainer) {
-      lockContainer.actions.unlock();
-    }
   },
 
   checkIfShouldStartLocked(routeName) {
@@ -52,17 +50,24 @@ export default Ember.Service.extend({
     if (!TypeUtils.isTransition(transition)) {
       return;
     }
+    // Determining whether or not we should lock on timeout is the job of `lock-container`
+    // This function manages lock/unlock when moving to and from pages that should be locked
+    // and those that don't require a lock. If we are unlocked on a page that requires locking
+    // and moving to another page that requires locking we DO NOT want to lock because this would
+    // for the user to type in their lock code for every single page transition.
     const lockContainer = this.get('lockContainer'),
       isCurrentlyLocked = this.get('isLocked'),
+      canLockOnCurrentPage = this._shouldLockForRouteName(this.get('router.currentRouteName')),
       willLockDestination = this._shouldLockForRouteName(transition.targetName);
     if (lockContainer) {
-      if (isCurrentlyLocked && willLockDestination) {
-        // (1) requires lock -> requires lock = forbid transition to prevent data loading
+      if (isCurrentlyLocked && canLockOnCurrentPage && willLockDestination) {
+        // (1) requires lock -> requires lock AND is currently locked =
+        //     forbid transition to prevent data loading
         AppUtils.abortTransition(transition);
-      } else if (isCurrentlyLocked && !willLockDestination) {
+      } else if (canLockOnCurrentPage && !willLockDestination) {
         // (2) requires lock -> no lock = unlock
         lockContainer.actions.unlock();
-      } else if (!isCurrentlyLocked && willLockDestination) {
+      } else if (!canLockOnCurrentPage && willLockDestination) {
         // (3) no lock -> requires lock = lock
         lockContainer.actions.lock();
       }
@@ -83,12 +88,19 @@ export default Ember.Service.extend({
   // --------
 
   _shouldLockForRouteName(routeName) {
-    return !!(
-      typeOf(routeName) === 'string' &&
-      !ArrayUtils.ensureArrayAndAllDefined(config.lock.ignoreLockRouteNames).any(loc =>
-        routeName.includes(loc)
-      )
-    );
+    if (typeOf(routeName) !== 'string') {
+      return true;
+    } else {
+      const shouldIgnoreLock = ArrayUtils.ensureArrayAndAllDefined(
+        config.lock.ignoreLockRouteNames
+      ).any(loc => routeName.includes(loc));
+      if (shouldIgnoreLock) {
+        return false;
+      } else {
+        const lookedUpRoute = Ember.getOwner(this).lookup(`route:${routeName}`);
+        return IsPublicRouteMixin.detect(lookedUpRoute) ? false : true;
+      }
+    }
   },
 
   _onVerifySuccess(resolve) {
@@ -97,7 +109,6 @@ export default Ember.Service.extend({
     callIfPresent(null, resolve);
   },
   _onVerifyFail(reject) {
-    this.get('notifications').error(VERIFY_FAIL_MESSAGE);
     this._recordOneMoreAttempt();
     callIfPresent(null, reject);
   },
@@ -116,7 +127,7 @@ export default Ember.Service.extend({
     this.get('storageService').setItem(StorageUtils.numAttemptsKey(), this._getAttempts() + 1);
   },
   _resetAttempts() {
-    this.get('storageService').setItem(StorageUtils.numAttemptsKey(), 0);
+    this.get('storageService').removeItem(StorageUtils.numAttemptsKey());
   },
   _getAttempts() {
     const numAttempts = parseInt(this.get('storageService').getItem(StorageUtils.numAttemptsKey()));

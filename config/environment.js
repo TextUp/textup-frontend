@@ -93,6 +93,9 @@ module.exports = function(environment) {
       };
     } else {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_STAGING;
+      ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
+      ENV.links.privacyPolicy = 'http://staging-static.textup.org/privacy-policy/';
+      ENV.links.termsOfUse = 'http://staging-static.textup.org/terms-of-use/';
     }
   }
 

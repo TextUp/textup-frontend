@@ -27,7 +27,7 @@
                 </p>
             {{else}}
                 <span class="halo halo-sm bg-color bg-brand text-heading">
-                    <span class="fa fa-user"></span>
+                    <span class="icon-person"></span>
                 </span>
             {{/if}}
         </button>
@@ -54,27 +54,16 @@
                 {{/account-switcher}}
             </div>
             <div class="display-l">
-                {{#if (service-prop "stateService" "ownerIsTeam")}}
-                    <div class="menu-item menu-header"
-                        style="background-color:{{service-prop "stateService" "owner.hexColor"}};
-                            color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
-                            classNames="btn-expand"}}
-                            <h4 class="match-color">{{abbreviate (service-prop "stateService" "owner.name") 1}}</h4>
-                        {{/tool-tip}}
-                    </div>
-                {{else}} {{!-- is staff member, see admin.hbs for admin menu bar --}}
-                    <div class="menu-item menu-header"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
-                        {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
-                            title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
-                            classNames="btn-expand"}}
-                            <span class="fa fa-user"></span>
-                        {{/tool-tip}}
-                    </div>
-                {{/if}}
+                <div class="menu-item menu-header"
+                    style="background-color:{{service-prop "stateService" "owner.hexColor"}};
+                        color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
+                    onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
+                        title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
+                        classNames="btn-expand"}}
+                        <h4 class="match-color">{{abbreviate (service-prop "stateService" "owner.name") 1}}</h4>
+                    {{/tool-tip}}
+                </div>
             </div>
             {{#if (service-prop "stateService" "owner.phone.isFulfilled")}}
                 <div class="display-xs display-s display-m">
@@ -94,9 +83,15 @@
                             title="Notifications"
                             classNames="btn-expand"}}
                             {{#if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow")}}
-                                <span class="fa fa-calendar-check-o" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-yes" id="tour-openAvailabilityButton">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </span>
                             {{else}}
-                                <span class="fa fa-calendar-times-o" id="tour-openAvailabilityButton"></span>
+                                <span class="icon-availability-no" id="tour-openAvailabilityButton">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </span>
                             {{/if}}
                         {{/tool-tip}}
                     </div>
@@ -117,7 +112,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Compose"
                         classNames="btn-expand"}}
-                        <span class="fa fa-comments" id="tour-openMessageButton"></span>
+                        <span class="fa fa-comment" id="tour-openMessageButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -135,7 +130,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Call"
                         classNames="btn-expand"}}
-                        <span class="fa fa-phone" id="tour-openCallButton"></span>
+                        <span class="icon-phone" id="tour-openCallButton"></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -178,7 +173,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewContactSlideout"}}>
-                        <span class="fa fa-plus" id="tour-addNewContactButton"></span>
+                        <span class="icon-thin-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
                 <div class="menu-item
@@ -213,21 +208,21 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Add Contact"
                         classNames="btn-expand"}}
-                        <span class="fa fa-user-plus" id="tour-openNewContactButton"></span>
+                        <span class="icon-add-contact" id="tour-openNewContactButton"></span>
                     {{/tool-tip}}
                 </div>
                 {{#link-to "main.search" tagName="div" classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Search Contacts"
                         classNames="btn-expand"}}
-                        <span class="fa fa-search"></span>
+                        <span class="icon-search"></span>
                     {{/tool-tip}}
                 {{/link-to}}
                 {{#link-to "main.contacts" tagName="div" classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Contacts"
                         classNames="btn-expand"}}
-                        <span class="fa fa-user" id="tour-openContactListButton"></span>
+                        <span class="icon-person" id="tour-openContactListButton"></span>
                     {{/tool-tip}}
                 {{/link-to}}
             </div>
@@ -240,7 +235,7 @@
                     <button class="btn btn-plain v-center-right"
                         type="button"
                         onclick={{route-action "startNewTagSlideout"}}>
-                        <span class="fa fa-plus" id="tour-createNewTagButtonMobile"></span>
+                        <span class="icon-thin-plus" id="tour-createNewTagButtonMobile"></span>
                     </button >
                 </div>
                 {{#if model.phone.isFulfilled}}
@@ -269,7 +264,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"
                         classNames="btn-expand"}}
-                        <span class="fa fa-tags" ></span>
+                        <span class="icon-tag" ></span>
                     {{/tool-tip}}
                 </div>
             </div>
@@ -288,7 +283,7 @@
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}
-                        <span class="fa fa-question"></span>
+                        <span class="icon-question"></span>
                     {{/tool-tip}}
                 </div>
             </div>

@@ -189,7 +189,7 @@ export default Ember.Service.extend(Ember.Evented, {
     // up and we are calling the server to retrieve the staff member
     // we then only set the token on auth success and don't set the authuser
     // or trigger any events
-    if (TypeUtils.isAnyModel(staff)) {
+    if (TypeUtils.isStaff(staff)) {
       storageService.setItem(StorageUtils.authUserIdKey(), staff.get('id'));
       this.set('authUser', staff);
       // send storage event to notify other tabs only if the logged-in user has changed

@@ -93,7 +93,7 @@
                     cancelAddMessage="Cancel redo" as |hideShow|}}
                     {{#if hideShow.isOpen}}
                         <div class="flex__item">
-                            {{async-button classNames="button"
+                            {{async-button classNames="button button--expand"
                                 disabledWhen=(or
                                     (not (v-get model "isValid"))
                                     (not (service-prop "authService" "authUser.personalNumber")))

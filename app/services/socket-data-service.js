@@ -39,17 +39,19 @@ export default Ember.Service.extend({
   _bindSocketEvents() {
     const websocketService = this.get('websocketService'),
       channelName = this.get('authService.authUser.channelName');
-    websocketService.connect({
-      encrypted: true,
-      authEndpoint: `${config.host}/v1/sockets`,
-      auth: {
-        headers: { [Constants.REQUEST_HEADER.AUTH]: this.get('authService.authHeader') },
-      },
-    });
-    websocketService.bind(channelName, EVENT_RECORD_ITEMS, this._handleRecordItems.bind(this));
-    websocketService.bind(channelName, EVENT_CONTACTS, this._handleContacts.bind(this));
-    websocketService.bind(channelName, EVENT_FUTURE_MESSAGES, this._handleFutureMsgs.bind(this));
-    websocketService.bind(channelName, EVENT_PHONES, this._handlePhones.bind(this));
+    if (channelName) {
+      websocketService.connect({
+        encrypted: true,
+        authEndpoint: `${config.host}/v1/sockets`,
+        auth: {
+          headers: { [Constants.REQUEST_HEADER.AUTH]: this.get('authService.authHeader') },
+        },
+      });
+      websocketService.bind(channelName, EVENT_RECORD_ITEMS, this._handleRecordItems.bind(this));
+      websocketService.bind(channelName, EVENT_CONTACTS, this._handleContacts.bind(this));
+      websocketService.bind(channelName, EVENT_FUTURE_MESSAGES, this._handleFutureMsgs.bind(this));
+      websocketService.bind(channelName, EVENT_PHONES, this._handlePhones.bind(this));
+    }
   },
   _unbindSocketEvents() {
     this.get('websocketService').disconnect();

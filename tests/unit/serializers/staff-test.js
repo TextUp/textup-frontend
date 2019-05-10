@@ -43,6 +43,10 @@ test('serialized form', function(assert) {
   assert.ok(keys.contains('org'));
   assert.ok(keys.contains('personalNumber'));
   assert.ok(keys.contains('status'));
+  assert.ok(
+    keys.contains('shouldAddToGeneralUpdatesList'),
+    'for opting in to updates list on creation'
+  );
 });
 
 test('serializing password and lock code', function(assert) {

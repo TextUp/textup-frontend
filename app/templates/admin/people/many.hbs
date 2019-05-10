@@ -6,7 +6,7 @@
 			<span class="clear-badge display-xs display-s no-space">
                 <button class="btn btn-plain" type='button'
                     {{action 'leave'}}>
-                    <span class="fa fa-chevron-left"></span>
+                    <span class="icon-left-arrow"></span>
                 </button>
             </span>
             <span class="clear-badge no-space">
@@ -14,7 +14,7 @@
                     <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                         <span class="display-xs">{{selected.length}} selected</span>
                         <span class="display-s display-m display-l">Select</span>
-                        <span class="fa fa-caret-down"></span>
+                        <span class="icon-thin-down-arrow"></span>
                     </button>
                 {{else}}
                     <ul class="dropdown">
@@ -38,7 +38,7 @@
                     title=(concat selected.length ' '
                         (pluralize 'person' selected.length) ' selected')}}
                     <span class='text-bold'>{{selected.length}}</span>
-                    <span class="fa fa-user"></span>
+                    <span class="icon-person"></span>
                 {{/tool-tip}}
         	</span>
             <span class='clear-badge display-s display-m display-l'>
@@ -46,7 +46,7 @@
                     title=(concat selectedAdmins.length ' '
                         (pluralize 'admin' selectedAdmins.length) ' selected')}}
                     <span class='text-bold'>{{selectedAdmins.length}}</span>
-                    <span class="fa fa-star-o"></span>
+                    <span class="icon-star-outline"></span>
                 {{/tool-tip}}
             </span>
 		</div>
@@ -56,7 +56,7 @@
                     {{#pop-over as |popOver|}}
                         <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                             Actions
-                            <span class="fa fa-caret-down"></span>
+                            <span class="icon-thin-down-arrow"></span>
                         </button>
                     {{else}}
                         <ul class="dropdown">
@@ -79,7 +79,7 @@
                         {{#pop-over as |popOver|}}
                             <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
                                 Status
-                                <span class="fa fa-caret-down"></span>
+                                <span class="icon-thin-down-arrow"></span>
                             </button>
                         {{else}}
                             <ul class="dropdown">
@@ -100,7 +100,7 @@
                 <span class="clear-badge display-m display-l">
                     <button class="btn btn-plain" type='button'
                         {{action 'leave'}}>
-                        <span class="fa fa-times"></span>
+                        <span class="icon-x"></span>
                     </button>
                 </span>
             </div>
@@ -118,7 +118,7 @@
 						<span class="pull-right">
                             <button class="btn btn-plain" type='button'
                                 {{action 'deselect' person}}>
-                                <span class="fa fa-times"></span>
+                                <span class="icon-x"></span>
                             </button>
                         </span>
 					</div>

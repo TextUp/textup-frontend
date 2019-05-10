@@ -74,7 +74,7 @@
             onExpiration=(action (mut isValidCaptcha) false)}}
     </div>
     <div class="single-body-content">
-        <div class="flex flex--spacing-between flex--align-stretch">
+        <div class="flex flex--spacing-between flex--align-stretch pad-b">
             {{input id="signup-account-accept-policies" type="checkbox" checked=didAcceptPolicies}}
             <label class="form__label form__label--no-spacing form__label--emphasize" for="signup-account-accept-policies">
                 I have read and accept the
@@ -85,6 +85,12 @@
                 <button class="btn-link"
                     type="button"
                     onclick={{action (mut showPrivacyPolicy) true}}>Privacy Policy</button>
+            </label>
+        </div>
+        <div class="flex flex--spacing-between flex--align-stretch">
+            {{input id="signup-account-users-list" type="checkbox" checked=staff.shouldAddToGeneralUpdatesList}}
+            <label class="form__label form__label--no-spacing form__label--emphasize" for="signup-account-users-list">
+                Send me email updates about new features in TextUp (optional)
             </label>
         </div>
         {{message-modal url=(config "links.termsOfUse")

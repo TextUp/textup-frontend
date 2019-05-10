@@ -7,13 +7,12 @@
     <label for={{concat this.elementId "--toggle"}}
         class="entity-display__toggle__label">
         <span class="sr-only">Select {{entityIdentifier}}</span>
-        <i class="fa fa-check center" aria-hidden="true"></i>
+        <i class="icon-checkmark center" aria-hidden="true"></i>
     </label>
 </div>
 {{#link-to linkTarget linkParam
-    tagName="div"
     class=(concat "entity-display__body " bodyClass)}}
     <div>
-        {{yield}}        
+        {{yield}}
     </div>
 {{/link-to}}
