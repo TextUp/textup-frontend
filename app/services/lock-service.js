@@ -7,7 +7,7 @@ import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, RSVP, typeOf } = Ember;
+const { computed, run, RSVP, typeOf } = Ember;
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
@@ -43,8 +43,10 @@ export default Ember.Service.extend({
     this.get('authService').logout();
   },
 
-  checkIfShouldStartLocked(routeName) {
-    this.set('shouldStartLocked', this._shouldLockForRouteName(routeName));
+  scheduleCheckIfShouldStartLocked() {
+    if (this.get('_isInitialRender')) {
+      run.join(() => run.scheduleOnce('afterRender', this, this._checkIfShouldStartLocked));
+    }
   },
   syncLockStatusWithTransition(transition) {
     if (!TypeUtils.isTransition(transition)) {
@@ -86,6 +88,15 @@ export default Ember.Service.extend({
 
   // Internal
   // --------
+
+  _isInitialRender: true,
+
+  _checkIfShouldStartLocked() {
+    this.setProperties({
+      shouldStartLocked: this._shouldLockForRouteName(this.get('router.currentRouteName')),
+      _isInitialRender: false,
+    });
+  },
 
   _shouldLockForRouteName(routeName) {
     if (typeOf(routeName) !== 'string') {

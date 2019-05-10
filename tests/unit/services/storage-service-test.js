@@ -160,6 +160,8 @@ test('handling the storage event', function(assert) {
     _receiveStorageFromOtherTab = sinon.stub(service, '_receiveStorageFromOtherTab'),
     newValue = Math.random();
 
+  service.startWatchingStorageUpdates();
+
   Ember.$(window).trigger(Ember.$.Event('storage', { originalEvent: { key: 'matches-nothing' } }));
   assert.ok(sendStorageToOtherTabs.notCalled);
   assert.ok(_receiveStorageFromOtherTab.notCalled);

@@ -9,18 +9,6 @@ export const STATE_VISIBLE = 'visible';
 export const STATE_PROP_NAME = 'visibilityState';
 
 export default Ember.Service.extend(Ember.Evented, {
-  init() {
-    this._super(...arguments);
-    if (this._noPageVisibility()) {
-      Ember.$(window)
-        .on(this._wrapEvent('blur'), this._markHidden.bind(this))
-        .on(this._wrapEvent('focus'), this._markVisible.bind(this));
-      this._markVisible();
-    } else {
-      Ember.$(document).on(this._wrapEvent('visibilitychange'), this._checkVisibility.bind(this));
-      this._checkVisibility();
-    }
-  },
   willDestroy() {
     this._super(...arguments);
     Ember.$(window).off(this._wrapEvent());
@@ -31,6 +19,21 @@ export default Ember.Service.extend(Ember.Evented, {
   // ----------
 
   isVisible: true,
+
+  // Methods
+  // -------
+
+  startWatchingVisibilityChanges() {
+    if (this._noPageVisibility()) {
+      Ember.$(window)
+        .on(this._wrapEvent('blur'), this._markHidden.bind(this))
+        .on(this._wrapEvent('focus'), this._markVisible.bind(this));
+      this._markVisible();
+    } else {
+      Ember.$(document).on(this._wrapEvent('visibilitychange'), this._checkVisibility.bind(this));
+      this._checkVisibility();
+    }
+  },
 
   // Internal
   // --------

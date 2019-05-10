@@ -5,11 +5,12 @@ import Ember from 'ember';
 
 const { RSVP } = Ember;
 
-export const KEY_ALREADY_OVERRIDEN = '_alreadyOverriden';
+export const KEY_ALREADY_OVERRIDDEN = '_alreadyOverriden';
 export const KEY_ALREADY_RENEWED = '_alreadyTriedToRenew';
 
 export const KEY_BEFORE_SEND_FN = 'beforeSend';
 export const KEY_ERROR_FN = 'error';
+export const KEY_ORIGINAL_ERROR_FN = '_error';
 export const KEY_STATUS = 'status';
 
 export default Ember.Service.extend({
@@ -26,7 +27,8 @@ export default Ember.Service.extend({
   tryRenewToken() {
     return new RSVP.Promise((resolve, reject) => {
       Ember.$.ajax({
-        [KEY_ALREADY_OVERRIDEN]: true, // short circuit `_tryRenewTokenOnError`
+        // do not want to retry this attempt if this fails or else we'd be in an infinite loop
+        [KEY_ALREADY_OVERRIDDEN]: true,
         type: Constants.REQUEST_METHOD.POST,
         url: `${config.host}/oauth/access_token`,
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -43,32 +45,37 @@ export default Ember.Service.extend({
   // Internal
   // --------
 
-  _tryRenewTokenOnError(options, originalOptions) {
-    // Don't try to override error handler to try to renew token if
-    // (1) we've already overriden handler
-    // (2) no error handler is attached
-    // (3) don't have an refresh token
-    // (4) don't have an access token
-    if (
-      originalOptions[KEY_ALREADY_OVERRIDEN] ||
-      !originalOptions[KEY_ERROR_FN] ||
-      !this.get('authService.refreshToken') ||
-      !this.get('authService.token')
-    ) {
+  // Not only retry the request but also re-wrap the jqXHR object in a new Deferred object so that
+  // the promise callbacks will resolve based on the outcome of the retry attempt
+  // See https://stackoverflow.com/a/12840617
+  _tryRenewTokenOnError(options, originalOptions, xhr) {
+    // Don't try to override error handler to try to renew token if we've already overridden handler
+    // or if we don't have a refresh token to get a new token to retry the request
+    if (originalOptions[KEY_ALREADY_OVERRIDDEN] || !this.get('authService.refreshToken')) {
       return;
     }
-    originalOptions[KEY_ALREADY_OVERRIDEN] = true;
-    // override before send on `originalOptions` so that our updated access token
-    // will show up in subsequent request if it is renewed and the ajax
-    // call is retried using the `originalOptions`
+    // create our own deferred object to handle done/fail callbacks
+    const deferred = Ember.$.Deferred();
+    // if the request works, return normally
+    xhr.done(deferred.resolve);
+    // mark as overridden so we don't try to override again
+    originalOptions[KEY_ALREADY_OVERRIDDEN] = true;
+    // override before send on `originalOptions` so that our updated access token will show up
+    // in subsequent request if renewed and the ajax call is retried using the `originalOptions`
     originalOptions[KEY_BEFORE_SEND_FN] = this._newBeforeSend.bind(
       this,
       originalOptions[KEY_BEFORE_SEND_FN]
     );
-    // we override the error handler on `options` so that this current request
-    // that is going out will exhibit the intercepted error behavior in the case
-    // that this current ajax request being made results in a 401 error
-    options[KEY_ERROR_FN] = this._newError.bind(this, originalOptions);
+    // save the original error callback for later + if the request fails, try to renew token and
+    // call the original error callback only if the retry attempt fails
+    if (originalOptions[KEY_ERROR_FN]) {
+      originalOptions[KEY_ORIGINAL_ERROR_FN] = originalOptions[KEY_ERROR_FN];
+    }
+    options[KEY_ERROR_FN] = Ember.$.noop();
+    xhr.fail(this._newError.bind(this, deferred, originalOptions));
+    // return the xhr wrapped in this new deferred object to prevent the original callbacks
+    // from immediately firing
+    return deferred.promise(xhr);
   },
 
   _newBeforeSend(originalBeforeSend, xhr, ...otherArgs) {
@@ -76,18 +83,30 @@ export default Ember.Service.extend({
     xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));
   },
 
-  _newError(originalOptions, xhr, ...otherArgs) {
+  _newError(deferred, originalOptions, xhr, ...otherArgs) {
+    // if the failure is `UNAUTHORIZED` and we have not already tried to renew the token then retry
     if (
       xhr[KEY_STATUS] === Constants.RESPONSE_STATUS.UNAUTHORIZED &&
       !originalOptions[KEY_ALREADY_RENEWED]
     ) {
       originalOptions[KEY_ALREADY_RENEWED] = true;
       this.tryRenewToken().then(
-        () => Ember.$.ajax(originalOptions),
-        originalOptions[KEY_ERROR_FN].bind(null, xhr, ...otherArgs)
+        // if renewing token is successful, then we resolve or reject based on the second attempt
+        () => Ember.$.ajax(originalOptions).then(deferred.resolve, deferred.reject),
+        // if renewing token fails, then we go ahead and reject with original error
+        () => this._rejectWithOriginal(deferred, originalOptions, xhr, otherArgs)
       );
     } else {
-      originalOptions[KEY_ERROR_FN](xhr, ...otherArgs);
+      // if we opt not to retry, then we immediately reject with the original error
+      this._rejectWithOriginal(deferred, originalOptions, xhr, otherArgs);
     }
+  },
+
+  _rejectWithOriginal(deferred, originalOptions, xhr, otherArgs) {
+    if (originalOptions[KEY_ORIGINAL_ERROR_FN]) {
+      deferred.fail(originalOptions[KEY_ORIGINAL_ERROR_FN]);
+    }
+    // Ember expects the first argument passed to the error handler to be the xhr object itself
+    deferred.rejectWith(xhr, [xhr, ...otherArgs]);
   },
 });

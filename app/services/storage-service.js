@@ -11,10 +11,6 @@ export const KEY_RECEIVE_REQUESTED_STORAGE_FROM_OTHER_TAB = 'textup-receive-requ
 export const STORAGE_EVENT_SYNC_TIMEOUT_IN_MS = 750;
 
 export default Ember.Service.extend(Ember.Evented, {
-  init() {
-    this._super(...arguments);
-    Ember.$(window).on(this.get('_storageSyncEvent'), this._onStorageSync.bind(this));
-  },
   willDestroy() {
     this._super(...arguments);
     Ember.$(window).off(this.get('_storageSyncEvent'));
@@ -27,6 +23,10 @@ export default Ember.Service.extend(Ember.Evented, {
 
   // Methods
   // -------
+
+  startWatchingStorageUpdates() {
+    Ember.$(window).on(this.get('_storageSyncEvent'), this._onStorageSync.bind(this));
+  },
 
   // Trigger a sync and return a promise to allow blocking until sync is complete. This Promise
   // will resolve in two ways: (1) the sync event takes too long and it times out or

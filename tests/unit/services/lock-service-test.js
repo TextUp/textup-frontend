@@ -4,6 +4,7 @@ import Ember from 'ember';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
+import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:lock-service', 'Unit | Service | lock service', {
@@ -203,17 +204,34 @@ test('checking if should lock', function(assert) {
 
 test('checking if should start locked', function(assert) {
   const service = this.subject(),
-    routeName = Math.random(),
+    done = assert.async(),
+    currentRouteName = Math.random(),
     retVal = Math.random(),
     _shouldLockForRouteName = sinon.stub(service, '_shouldLockForRouteName').returns(retVal);
 
+  this.router.setProperties({ currentRouteName });
+
   assert.equal(service.get('shouldStartLocked'), true, 'default for starting locked is true');
 
-  service.checkIfShouldStartLocked(routeName);
-  assert.ok(_shouldLockForRouteName.calledWith(routeName));
-  assert.equal(service.get('shouldStartLocked'), retVal);
+  service.scheduleCheckIfShouldStartLocked();
+  wait()
+    .then(() => {
+      assert.ok(_shouldLockForRouteName.calledOnce);
+      assert.ok(_shouldLockForRouteName.calledWith(currentRouteName));
+      assert.equal(service.get('shouldStartLocked'), retVal);
 
-  _shouldLockForRouteName.restore();
+      service.scheduleCheckIfShouldStartLocked();
+      return wait();
+    })
+    .then(() => {
+      assert.ok(
+        _shouldLockForRouteName.calledOnce,
+        'once initialized, will short circuit for future calls'
+      );
+
+      _shouldLockForRouteName.restore();
+      done();
+    });
 });
 
 test('syncing lock status with transition', function(assert) {

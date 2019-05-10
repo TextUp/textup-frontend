@@ -13,6 +13,8 @@ test('when the page visibility API is available', function(assert) {
     visibilityState = sinon.stub(document, PageVisibilityService.STATE_PROP_NAME),
     onVisible = sinon.spy(),
     onHidden = sinon.spy();
+
+  service.startWatchingVisibilityChanges();
   service
     .on(config.events.visibility.visible, onVisible)
     .on(config.events.visibility.hidden, onHidden);
@@ -53,6 +55,7 @@ test('when the page visibility API is NOT available', function(assert) {
     onVisible = sinon.spy(),
     onHidden = sinon.spy();
 
+  service.startWatchingVisibilityChanges();
   service
     .on(config.events.visibility.visible, onVisible)
     .on(config.events.visibility.hidden, onHidden);
