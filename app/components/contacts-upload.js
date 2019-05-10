@@ -25,16 +25,38 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -----------------
 
   _handleChange(event) {
+    // short circuit on isLoading
+    if (this.get('_isLoading')) {
+      return;
+    }
     this.set('_isError', false);
     if (event.target.files.length > 0) {
       this.set('_isLoading', true);
 
       VcardUtils.process(event)
-        .then(
-          data => run(() => tryInvoke(this, 'onImport', [data])),
-          () => run(() => this.set('_isError', true))
-        )
-        .finally(() => run(() => this.set('_isLoading', false)));
+        .then(this._onSuccess.bind(this), this._onFailure.bind(this))
+        .finally(this._onFinish.bind(this));
     }
+  },
+
+  _onSuccess(data) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    tryInvoke(this, 'onImport', [data]);
+  },
+
+  _onFailure() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run(() => this.set('_isError', true));
+  },
+
+  _onFinish() {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    run(() => this.set('_isLoading', false));
   },
 });

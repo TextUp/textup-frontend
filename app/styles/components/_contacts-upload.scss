@@ -1,6 +1,6 @@
 .contacts-upload {
   &__text {
-    margin: 2vh;
+    margin: $baseunit;
     margin-bottom: 3vh;
     text-align: left;
   }
@@ -16,20 +16,20 @@
 
   &__label {
     cursor: pointer;
-    margin: 2vh;
-    height: 20vh;
+    margin: $baseunit;
     border: 1px solid black;
-    border-radius: 0.5vh;
+    border-radius: $baseunit / 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
     color: $color-brand-dark;
     border-color: $color-brand-light;
+    height: $baseunit * 13;
   }
 
   &__label-text {
     text-align: center;
-    margin: 1vh;
+    margin: $baseunit / 1.5;
     display: block;
 
     &--underline {

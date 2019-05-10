@@ -1,0 +1,40 @@
+.contacts-load {
+  max-height: $baseunit * 10;
+  opacity: 1;
+  transition: max-height 0.1s, opacity 0.05s;
+
+  &--hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  &__container {
+    background-color: $color-brand-medium;
+    border-bottom: 1px solid $color-brand-dark;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    color: $color-white;
+    font-size: $font-size;
+    display: block;
+    padding: $baseunit;
+    padding-top: $baseunit / 1.5;
+  }
+
+  &__loading-container {
+    background-color: $color-white;
+    margin-bottom: $baseunit;
+    margin-left: $baseunit;
+    margin-right: $baseunit;
+    display: block;
+    border-radius: $baseunit;
+  }
+
+  &__loading-bar {
+    background-color: $color-brand;
+    height: $baseunit / 4;
+  }
+}

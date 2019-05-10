@@ -1,0 +1,17 @@
+{{#slideout-pane
+    headerComponent=(component "slideout-pane/title" title="Importing Multiple Contacts")
+    footerComponent=(component "slideout-pane/actions"
+        showFooter=true
+        onPrimary=(route-action "batchImportContacts")
+        disablePrimary=(not (service-prop "contactImportService" "hasContactsSelected"))
+        primaryLabel="Import")
+    onClose=(route-action "cancelMultipleExportSlideout")
+    forceKeepOpen=(service-prop "contactImportService" "hasContactsSelected")
+    focusSelector=".start-focus" as |slideout|}}
+    {{#if (service-prop "contactImportService" "hasContactsUploaded")}}
+      {{contacts-display contactObjects=(service-prop "contactImportService" "contactsUploaded")
+        onChange=(service-mut "contactImportService" "contactsSelected")}}
+    {{else}}
+      {{contacts-upload onImport=(service-mut "contactImportService" "contactsUploaded")}}
+    {{/if}}
+{{/slideout-pane}}

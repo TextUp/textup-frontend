@@ -162,6 +162,16 @@
 
             {{!-- contacts --}}
 
+            <!-- TODO: remove CONTACT INPUT TEST ! -->
+            <div class="menu-item menu-slideout"
+                onclick={{route-action "startMultipleContactImport"}}>
+                {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
+                    title="TESTING"
+                    classNames="btn-expand"}}
+                    <span class="fa fa-file" id="tour-openExportButton"></span>
+                {{/tool-tip}}
+            </div>
+
             <div class="display-xs display-s display-m">
                 <div class="menu-divider" >
                     Contacts

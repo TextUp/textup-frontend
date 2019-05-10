@@ -4,36 +4,16 @@ const { computed, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
-    doRegister: PropTypes.func,
-    _numTotal: PropTypes.number,
-    _isLoading: false,
+    numSaved: PropTypes.number,
+    numTotal: PropTypes.number,
+    isSaving: PropTypes.bool,
   },
 
-  classNames: 'contacts-load',
+  classNames: ['contacts-load'],
+  classNameBindings: ['isSaving:contacts-load:contacts-load--hidden'],
 
-  didInitAttrs() {
-    this._super(...arguments);
-    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
-  },
-
-  // Internal properties
-  // -------------------
-
-  _publicAPI: computed(function() {
-    return {
-      isLoading: false,
-      actions: {
-        // _addToQueue: this._select.bind(this),
-      },
-    };
+  _progressWidth: computed('numSaved', 'numTotal', function() {
+    let widthVal = (this.get('numSaved') / this.get('numTotal')) * 100;
+    return Ember.String.htmlSafe(`width: ${widthVal}%;`);
   }),
-
-  _updateIsLoading(status) {
-    this.setProperties({
-      _isLoading: status,
-      '_publicAPI.isLoading': status,
-    });
-  },
-
-  _addToQueue() {},
 });

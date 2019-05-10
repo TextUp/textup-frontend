@@ -7,6 +7,7 @@ const { tryInvoke, computed, run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     doRegister: PropTypes.func,
+    onChange: PropTypes.func,
     data: PropTypes.instanceOf(ContactObject),
   },
 
@@ -41,18 +42,21 @@ export default Ember.Component.extend(PropTypesMixin, {
   _onChange(event) {
     run.join(() => {
       this.set('_publicAPI.isSelect', event.target.checked);
+      tryInvoke(this, 'onChange');
     });
   },
 
   _select() {
     run.join(() => {
       this.set('_publicAPI.isSelect', true);
+      tryInvoke(this, 'onChange');
     });
   },
 
   _deselect() {
     run.join(() => {
       this.set('_publicAPI.isSelect', false);
+      tryInvoke(this, 'onChange');
     });
   },
 });

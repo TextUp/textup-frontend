@@ -3,6 +3,7 @@ $brand-color: #28a6de;
 $color-brand: $brand-color;
 $color-brand-dark: #145571;
 $color-brand-light: #89aab8;
+$color-brand-medium: #3f86b3;
 
 $danger-color: #c9302c;
 $color-error: $danger-color;
@@ -39,13 +40,25 @@ $font-weight-bold: 700;
 $spacing: 1rem;
 $baseunit: 1rem;
 $border-radius: 3px;
-$spacing-scaling: (1: 'default', 0.5: 'half', 0.25: 'quarter', 2: 'double', 3: 'triple', 4: '4x');
-$directions-with-abbr: (left: 'l', right: 'r', top: 't', bottom: 'b');
+$spacing-scaling: (
+  1: 'default',
+  0.5: 'half',
+  0.25: 'quarter',
+  2: 'double',
+  3: 'triple',
+  4: '4x',
+);
+$directions-with-abbr: (
+  left: 'l',
+  right: 'r',
+  top: 't',
+  bottom: 'b',
+);
 $corners-with-abbr: (
-    'top-left': 'tl',
-    'top-right': 'tr',
-    'bottom-left': 'bl',
-    'bottom-right': 'br'
+  'top-left': 'tl',
+  'top-right': 'tr',
+  'bottom-left': 'bl',
+  'bottom-right': 'br',
 );
 $padding: 1em;
 $button-accent-size: 3px;
@@ -77,7 +90,17 @@ $slideout-z-index: 50;
 
 // grid
 $grid-splits: 2, 3, 10, 20;
-$breakpoint-abbrs: (mobile: 'xs', mobileLandscape: 's', tablet: 'm', desktop: 'l');
+$breakpoint-abbrs: (
+  mobile: 'xs',
+  mobileLandscape: 's',
+  tablet: 'm',
+  desktop: 'l',
+);
 
 // mq configuration
-$mq-breakpoints: (mobile: 320px, mobileLandscape: 480px, tablet: 740px, desktop: 980px);
+$mq-breakpoints: (
+  mobile: 320px,
+  mobileLandscape: 480px,
+  tablet: 740px,
+  desktop: 980px,
+);

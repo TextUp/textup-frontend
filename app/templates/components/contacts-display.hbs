@@ -12,6 +12,8 @@
 <div class="contacts-display__contact-item-container">
   {{#each contactObjects as |person|}}
     {{contacts-display/contact-item doRegister=(action _registerChild)
-      data=person}}
+      data=person
+      onChange=(action _onCheckboxChange)
+    }}
   {{/each}}
 </div>

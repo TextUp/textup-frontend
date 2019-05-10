@@ -11,6 +11,12 @@ export const VALID_MP3_URL_1 =
 export const VALID_MP3_URL_2 =
   'http://com.twilio.music.electronica.s3.amazonaws.com/Kaer_Trouz_-_Seawall_Stepper.mp3';
 
+export const GOOD_VCARD_DATA =
+  'BEGIN:VCARD\nVERSION:3.0\nN:Gump;Forrest;;Mr.;\nFN:Forrest Gump\nTEL;TYPE=WORK,VOICE:(111) 555-1212\nTEL;TYPE=HOME,VOICE:(404) 555-1212\nADR;TYPE=WORK,PREF:;;100 Waters Edge;Baytown;LA;30314;United States of America\nEND:VCARD' +
+  'BEGIN:VCARD\nVERSION:3.0\nN:Gump;Forrest;;Mr.;\nFN:Forrest Gump 2\nTEL;TYPE=WORK,VOICE:(111) 555-1212\nADR;TYPE=WORK,PREF:;;100 Waters Edge;Baytown;LA;30314;United States of America\nEND:VCARD';
+export const BAD_VCARD_DATA =
+  'BEGIN:VCARD\nVERSION:3.0TEL;TYPE=WORK,VOICE:(111) 555-1212\nTEL;TYPE=HOME,VOICE:(404) 555-1212\nADR;TYPE=WORK,PREF:;;100 Waters Edge;Baytown;LA;30314;United States of America\nEND:VCARD';
+
 export function mockInvalidMediaImage(store) {
   return run(() => {
     const mediaImage = store.createFragment('media-element', {

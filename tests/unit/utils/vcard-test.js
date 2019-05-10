@@ -1,8 +1,10 @@
 import vcard from 'textup-frontend/utils/vcard';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import { GOOD_VCARD_DATA, BAD_VCARD_DATA } from 'textup-frontend/tests/helpers/utilities.js';
+import { GOOD_VCARD_DATA, BAD_VCARD_DATA } from 'textup-frontend/tests/helpers/utilities';
+
 module('Unit | Utility | vcard');
+
 // Consts for testing
 const goodEvent = {
   target: {

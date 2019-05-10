@@ -47,7 +47,7 @@ module.exports = function(environment) {
 
   if (environment === 'development') {
     // ENV.host = 'http://localhost:8080';
-    ENV.host = 'https://dev.textup.org';
+    ENV.host = 'https://eb9c9f39.ngrok.io';
     // ENV.host = 'https://v2.textup.org';
 
     ENV.lock.lockOnHidden = false;
