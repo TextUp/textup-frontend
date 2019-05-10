@@ -1,13 +1,13 @@
-import * as LockService from 'textup-frontend/services/lock-service';
 import AppUtils from 'textup-frontend/utils/app';
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
+import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:lock-service', 'Unit | Service | lock service', {
-  needs: ['service:analytics'],
+  needs: ['service:analytics', 'service:loadingSlider'],
   beforeEach() {
     this.register('service:authService', Ember.Service);
     this.inject.service('authService');
@@ -54,7 +54,10 @@ test('resetting and logging out', function(assert) {
   service.resetAndLogOut();
 
   assert.ok(this.authService.logout.calledOnce);
-  assert.ok(lockContainerObj.actions.unlock.calledOnce);
+  assert.ok(
+    lockContainerObj.actions.unlock.notCalled,
+    'unlocking is handled by `syncLockStatusWithTransition`'
+  );
 });
 
 test('getting number of attempts from storage', function(assert) {
@@ -84,10 +87,10 @@ test('incrementing number of attempts', function(assert) {
 test('resetting number of attempts', function(assert) {
   const service = this.subject();
 
-  this.storageService.setProperties({ setItem: sinon.spy() });
+  this.storageService.setProperties({ removeItem: sinon.spy() });
 
   service._resetAttempts();
-  assert.ok(this.storageService.setItem.calledWith(StorageUtils.numAttemptsKey(), 0));
+  assert.ok(this.storageService.removeItem.calledWith(StorageUtils.numAttemptsKey()));
 });
 
 test('recording one more attempt', function(assert) {
@@ -122,11 +125,8 @@ test('verifying lock code fail', function(assert) {
     _recordOneMoreAttempt = sinon.stub(service, '_recordOneMoreAttempt'),
     rejectFn = sinon.spy();
 
-  this.notifications.setProperties({ error: sinon.spy() });
-
   service._onVerifyFail(rejectFn);
 
-  assert.ok(this.notifications.error.calledWith(LockService.VERIFY_FAIL_MESSAGE));
   assert.ok(_recordOneMoreAttempt.calledOnce);
   assert.ok(rejectFn.calledOnce);
 
@@ -150,12 +150,31 @@ test('verifying lock code success', function(assert) {
 });
 
 test('determining if should lock given route name', function(assert) {
-  const service = this.subject();
+  const service = this.subject(),
+    publicRouteName = 'lock-service-test-public-route',
+    nonPublicRouteName = 'lock-service-test-not-public-route';
 
-  assert.equal(service._shouldLockForRouteName(null), false);
-  assert.equal(service._shouldLockForRouteName(['not a string']), false);
+  this.register(`route:${publicRouteName}`, Ember.Route.extend(IsPublicRouteMixin));
+  this.register(`route:${nonPublicRouteName}`, Ember.Route);
+
+  assert.equal(service._shouldLockForRouteName(null), true);
+  assert.equal(service._shouldLockForRouteName(['not a string']), true);
   assert.equal(service._shouldLockForRouteName('should-lock-route-name'), true);
-  assert.equal(service._shouldLockForRouteName(config.lock.ignoreLockRouteNames[0]), false);
+  assert.equal(
+    service._shouldLockForRouteName(config.lock.ignoreLockRouteNames[0]),
+    false,
+    'should not lock for explicitly ignored route names'
+  );
+  assert.equal(
+    service._shouldLockForRouteName(publicRouteName),
+    false,
+    'should not lock for explicitly public routes'
+  );
+  assert.equal(
+    service._shouldLockForRouteName(nonPublicRouteName),
+    true,
+    'SHOULD lock for non-public or unspecific-public routes'
+  );
 });
 
 test('checking if should lock', function(assert) {

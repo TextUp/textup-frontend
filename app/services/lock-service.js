@@ -3,12 +3,11 @@ import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
+import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed, RSVP, typeOf } = Ember;
-
-export const VERIFY_FAIL_MESSAGE = 'Incorrect lock code.';
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
@@ -39,11 +38,9 @@ export default Ember.Service.extend({
     });
   },
   resetAndLogOut() {
+    // [NOTE] do not need to unlock the lock container here. The `syncLockStatusWithTransition`
+    // will ensure the appropriate lock status
     this.get('authService').logout();
-    const lockContainer = this.get('lockContainer');
-    if (lockContainer) {
-      lockContainer.actions.unlock();
-    }
   },
 
   checkIfShouldStartLocked(routeName) {
@@ -91,12 +88,19 @@ export default Ember.Service.extend({
   // --------
 
   _shouldLockForRouteName(routeName) {
-    return !!(
-      typeOf(routeName) === 'string' &&
-      !ArrayUtils.ensureArrayAndAllDefined(config.lock.ignoreLockRouteNames).any(loc =>
-        routeName.includes(loc)
-      )
-    );
+    if (typeOf(routeName) !== 'string') {
+      return true;
+    } else {
+      const shouldIgnoreLock = ArrayUtils.ensureArrayAndAllDefined(
+        config.lock.ignoreLockRouteNames
+      ).any(loc => routeName.includes(loc));
+      if (shouldIgnoreLock) {
+        return false;
+      } else {
+        const lookedUpRoute = Ember.getOwner(this).lookup(`route:${routeName}`);
+        return IsPublicRouteMixin.detect(lookedUpRoute) ? false : true;
+      }
+    }
   },
 
   _onVerifySuccess(resolve) {
@@ -105,7 +109,6 @@ export default Ember.Service.extend({
     callIfPresent(null, resolve);
   },
   _onVerifyFail(reject) {
-    this.get('notifications').error(VERIFY_FAIL_MESSAGE);
     this._recordOneMoreAttempt();
     callIfPresent(null, reject);
   },
@@ -124,7 +127,7 @@ export default Ember.Service.extend({
     this.get('storageService').setItem(StorageUtils.numAttemptsKey(), this._getAttempts() + 1);
   },
   _resetAttempts() {
-    this.get('storageService').setItem(StorageUtils.numAttemptsKey(), 0);
+    this.get('storageService').removeItem(StorageUtils.numAttemptsKey());
   },
   _getAttempts() {
     const numAttempts = parseInt(this.get('storageService').getItem(StorageUtils.numAttemptsKey()));
