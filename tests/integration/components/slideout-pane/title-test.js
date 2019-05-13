@@ -23,6 +23,10 @@ test('rendering title', function(assert) {
 
   this.render(hbs`{{slideout-pane/title onClose=onClose title=title}}`);
   assert.ok(this.$('.slideout-pane__header').length, 'did render');
+  assert.notOk(
+    this.$('.slideout-pane__header .slideout-pane__header__link').length,
+    'no link rendered because no link info provided'
+  );
 
   assert.ok(
     this.$()
@@ -40,14 +44,50 @@ test('triggering close', function(assert) {
 
   this.render(hbs`{{slideout-pane/title onClose=onClose title=title}}`);
   assert.ok(this.$('.slideout-pane__header').length, 'did render');
-  assert.ok(this.$('.slideout-pane__header button').length, 'has button');
+  assert.ok(
+    this.$('.slideout-pane__header .slideout-pane__header__control').length,
+    'has close button'
+  );
   assert.ok(onClose.notCalled);
 
-  this.$('.slideout-pane__header button')
+  this.$('.slideout-pane__header button:not(.slideout-pane__header__link)')
     .eq(0)
     .triggerHandler('click');
   wait().then(() => {
     assert.ok(onClose.calledOnce);
+
+    done();
+  });
+});
+
+test('rendering link + trigger link action', function(assert) {
+  const onClose = sinon.spy(),
+    title = Math.random() + '',
+    linkLabel = Math.random() + '',
+    onClickLink = sinon.spy(),
+    done = assert.async();
+  this.setProperties({ onClose, title, linkLabel, onClickLink });
+
+  this.render(hbs`
+    {{slideout-pane/title onClose=onClose
+      title=title
+      linkLabel=linkLabel
+      onClickLink=onClickLink}}
+  `);
+  assert.ok(this.$('.slideout-pane__header').length, 'did render');
+  assert.ok(this.$('.slideout-pane__header .slideout-pane__header__link').length, 'has link');
+
+  assert.ok(
+    this.$('.slideout-pane__header .slideout-pane__header__link')
+      .text()
+      .includes(linkLabel),
+    'link has appropriate text'
+  );
+
+  this.$('.slideout-pane__header .slideout-pane__header__link').triggerHandler('click');
+  wait().then(() => {
+    assert.ok(onClose.notCalled);
+    assert.ok(onClickLink.calledOnce);
 
     done();
   });
