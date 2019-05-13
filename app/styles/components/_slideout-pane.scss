@@ -57,6 +57,11 @@
     height: $header-height;
     border-bottom: 1px solid $border-color;
 
+    &__contents {
+      display: flex;
+      padding-right: $baseunit;
+    }
+
     &__control {
       @extend .icon;
       @extend .icon-left-arrow;
@@ -64,6 +69,10 @@
 
     @include mq($from: desktop) {
       flex-direction: row-reverse;
+
+      &__contents {
+        padding-right: 0;
+      }
 
       &__control:before {
         content: $icon-x;

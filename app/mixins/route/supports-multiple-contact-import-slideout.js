@@ -2,14 +2,10 @@ import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
-const { tryInvoke } = Ember;
-
 export default Ember.Mixin.create({
   contactImportService: Ember.inject.service(),
 
   actions: {
-    // <!-- TODO: remove CONTACT INPUT TEST ! -->
-
     // 1. open slideout
     startMultipleContactImport() {
       this.send(

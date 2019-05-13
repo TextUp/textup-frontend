@@ -2,6 +2,7 @@ import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import VcardUtils from 'textup-frontend/utils/vcard';
+import { ContactObject } from 'textup-frontend/objects/contact-object';
 
 const { tryInvoke, computed, run } = Ember;
 
@@ -17,12 +18,34 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
   _isError: false,
   _isLoading: false,
+  _cordovaContactDenied: false,
   _hasCordova: computed(function() {
     return config.hasCordova;
   }),
 
   // Internal Handlers
   // -----------------
+
+  didInitAttrs() {
+    if (this.get('_hasCordova')) {
+      this._nativeImport();
+    }
+  },
+
+  _nativeImport() {
+    // find all contacts
+    this.set('_isLoading', true);
+    const options = new window.ContactFindOptions();
+    options.filter = '';
+    options.multiple = true;
+    const filter = ['displayName', 'phoneNumbers'];
+    navigator.contacts.find(
+      filter,
+      this._onMobileSuccess.bind(this),
+      this._onMobileFailure.bind(this),
+      options
+    );
+  },
 
   _handleChange(event) {
     // short circuit on isLoading
@@ -58,5 +81,37 @@ export default Ember.Component.extend(PropTypesMixin, {
       return;
     }
     run(() => this.set('_isLoading', false));
+  },
+
+  _onMobileSuccess(data) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    this.set('_cordovaContactDenied', false);
+
+    // parse data into contact objects
+    const contacts = data
+      // remove contacts without any numbers
+      .filter(contact => {
+        return contact.phoneNumbers != null && contact.name.formatted != null;
+      })
+      .map(contact => {
+        const numbers = contact.phoneNumbers.map(number => {
+          // each number is an object with the number string stored in value
+          return VcardUtils.formatNumber(number.value);
+        });
+        return ContactObject.create({ name: contact.name.formatted, numbers: numbers });
+      });
+    tryInvoke(this, 'onImport', [contacts]);
+    this.set('_isLoading', false);
+  },
+
+  _onMobileFailure() {
+    // if user rejects app access to contacts
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
+    this.set('_isLoading', false);
+    this.set('_cordovaContactDenied', true);
   },
 });

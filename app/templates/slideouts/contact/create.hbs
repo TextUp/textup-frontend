@@ -1,9 +1,8 @@
-{{!-- TODO swap out with actual action for import multiple --}}
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
         title="New Contact"
         linkLabel="Import multiple"
-        onClickLink=(route-action "toggleSelected"))
+        onClickLink=(route-action "startMultipleContactImport"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
         onPrimary=(route-action "finishNewContactSlideout")

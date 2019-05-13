@@ -60,7 +60,7 @@ export default Ember.Service.extend({
   // Internal
   // --------
 
-  _onSaveSuccess(data) {
+  _onSaveSuccess() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }

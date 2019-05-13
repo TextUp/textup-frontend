@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-const { computed, tryInvoke } = Ember;
+const { computed } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {

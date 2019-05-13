@@ -16,6 +16,15 @@ export function process(event) {
   });
 }
 
+export function formatNumber(number) {
+  number = number.substring(number.indexOf(':') + 1).replace(numTrim, '');
+  // remove leading 1 for US numbers
+  if (number.length > 10 && number[0] === '1') {
+    number = number.substring(1);
+  }
+  return number;
+}
+
 // create a function to call once file loaded
 export function _onFileLoad(resolve, reject, event) {
   const contents = event.target.result,
@@ -65,11 +74,8 @@ function _parseIndividual(contactInfo) {
     }
     // check line for number pattern
     if (numPattern.test(contactInfo[j])) {
-      let number = contactInfo[j].substring(contactInfo[j].indexOf(':') + 1).replace(numTrim, '');
-      // remove leading 1 for US numbers
-      if (number.length > 10 && number[0] === '1') {
-        number = number.substring(1);
-      }
+      let number = formatNumber(contactInfo[j]);
+
       // don't add duplicate numbers
       if (numbers.indexOf(number) === -1) {
         numbers.push(number);

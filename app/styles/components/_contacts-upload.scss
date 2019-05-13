@@ -3,6 +3,12 @@
     margin: $baseunit;
     margin-bottom: 3vh;
     text-align: left;
+
+    &--boxed {
+      padding: $baseunit;
+      background-color: $bg-color;
+      border-radius: $border-radius;
+    }
   }
 
   &--error &__label {

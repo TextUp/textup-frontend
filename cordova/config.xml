@@ -74,7 +74,7 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <plugin name="cordova-plugin-fingerprint-aio" spec="^1.6.0">
-        <variable name="FACEID_USAGE_DESCRIPTION" value=" " />
+        <variable name="FACEID_USAGE_DESCRIPTION" value="Please verify your identity" />
     </plugin>
     <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
     <edit-config file="*-Info.plist" mode="merge" target="NSContactsUsageDescription">
