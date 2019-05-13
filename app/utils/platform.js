@@ -25,3 +25,20 @@ export function isAndroid() {
 export function isMobile() {
   return Ember.$(window).innerWidth() < PLATFORM_MOBILE_MAX_WIDTH_IN_PX;
 }
+
+// enabled if (1) manifest generation is enabled, (2) not a native app, (3) appCache is available
+export function isAppCacheCapable() {
+  return !!(
+    config.manifest &&
+    config.manifest.enabled &&
+    !config.hasCordova &&
+    window.applicationCache
+  );
+}
+
+// [UNTESTED] Cannot test this because we can't mock `window.location`
+export function tryReloadWindow() {
+  if (window && window.location && window.location.reload) {
+    window.location.reload();
+  }
+}

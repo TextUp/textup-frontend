@@ -29,17 +29,19 @@ module.exports = function(environment) {
     moment: { includeTimezone: 'subset', outputFormat: 'llll' },
     socket: { authKey: process.env.TEXTUP_FRONTEND_API_PUSHER },
     appMessage: {
-      messageEndpoint: 'https://static.textup.org/latest-message/',
+      messageEndpoint: 'https://staging-static.textup.org/latest-message/',
       oldestMessageInDays: 14,
     },
     links: {
-      supportHub: 'https://www.textup.org/embedded-search',
-      privacyPolicy: 'https://static.textup.org/privacy-policy/',
-      termsOfUse: 'https://static.textup.org/terms-of-use/',
+      privacyPolicy: 'https://staging-static.textup.org/privacy-policy/',
+      supportHubEmbedded: 'https://www.textup.org/embedded-search',
+      supportHubNativeApp: 'https://www.textup.org/native-app-support',
+      termsOfUse: 'https://staging-static.textup.org/terms-of-use/',
     },
     state: { ignoreRestoreStoredUrlRouteNames: ['reset', 'setup', 'notify'] },
     events: {
       auth: { success: 'authSuccess', clear: 'authClear' },
+      lock: { unlocked: 'unlocked' },
       storage: { updated: 'storageUpdated' },
       visibility: { visible: 'visibilityVisible', hidden: 'visibilityHidden' },
     },
@@ -51,9 +53,8 @@ module.exports = function(environment) {
     // ENV.host = 'https://v2.textup.org';
 
     ENV.lock.lockOnHidden = false;
-    ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
-    ENV.links.privacyPolicy = 'http://staging-static.textup.org/privacy-policy/';
-    ENV.links.termsOfUse = 'http://staging-static.textup.org/terms-of-use/';
+    // ENV.manifest = { enabled: true };
+
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -79,6 +80,9 @@ module.exports = function(environment) {
     // TODO: set up automated deployment for cordova apps
     if (process.env.TRAVIS_BRANCH === 'master' || ENV.hasCordova) {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_PRODUCTION;
+      ENV.appMessage.messageEndpoint = 'https://static.textup.org/latest-message/';
+      ENV.links.privacyPolicy = 'https://static.textup.org/privacy-policy/';
+      ENV.links.termsOfUse = 'https://static.textup.org/terms-of-use/';
       ENV.analytics = {
         options: { limitRouteInformation: true },
         integrations: [
@@ -93,9 +97,6 @@ module.exports = function(environment) {
       };
     } else {
       ENV.host = process.env.TEXTUP_FRONTEND_HOST_STAGING;
-      ENV.appMessage.messageEndpoint = 'http://staging-static.textup.org/latest-message/';
-      ENV.links.privacyPolicy = 'http://staging-static.textup.org/privacy-policy/';
-      ENV.links.termsOfUse = 'http://staging-static.textup.org/terms-of-use/';
     }
   }
 

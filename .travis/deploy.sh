@@ -4,7 +4,7 @@
 
 app_path=$1
 bucket_name=$2
-optional_cloudfront_id=$3
+cloudfront_id=$3
 
 echo "Synchronizing files..."
 aws s3 sync ${app_path} s3://${bucket_name} --size-only --delete --exclude "index.html"
@@ -17,10 +17,10 @@ aws s3 sync ${app_path} s3://${bucket_name} --exclude "*" --include "index.html"
 aws s3 sync ${app_path} s3://${bucket_name} --exclude "*" --include "manifest.appcache"
 echo "...done"
 
-if [ ${optional_cloudfront_id} ]
+if [ ${cloudfront_id} ]
 then
     echo "Triggering cache invalidation..."
-    aws cloudfront create-invalidation --distribution-id ${optional_cloudfront_id} --paths "/*"
+    aws cloudfront create-invalidation --distribution-id ${cloudfront_id} --paths "/*"
     echo "...done"
 else
     echo "Skipping cache invalidation"

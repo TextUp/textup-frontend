@@ -137,6 +137,7 @@ test('verifying lock code fail', function(assert) {
 test('verifying lock code success', function(assert) {
   const service = this.subject(),
     _resetAttempts = sinon.stub(service, '_resetAttempts'),
+    trigger = sinon.stub(service, 'trigger'),
     resolveFn = sinon.spy();
 
   this.notifications.setProperties({ clearAll: sinon.spy() });
@@ -146,8 +147,10 @@ test('verifying lock code success', function(assert) {
   assert.ok(this.notifications.clearAll.calledOnce);
   assert.ok(_resetAttempts.calledOnce);
   assert.ok(resolveFn.calledOnce);
+  assert.ok(trigger.calledWith(config.events.lock.unlocked));
 
   _resetAttempts.restore();
+  trigger.restore();
 });
 
 test('determining if should lock given route name', function(assert) {

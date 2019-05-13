@@ -23,6 +23,7 @@ test('it works', function(assert) {
     socketDataService = { startWatchingAuthChanges: sinon.spy() },
     storageService = { startWatchingStorageUpdates: sinon.spy() },
     tutorialService = { setUpTutorial: sinon.spy() },
+    webAppCacheService = { trySetUpAndWatchUpdateEvents: sinon.spy() },
     lookup = sinon.stub(this.appInstance, 'lookup');
 
   lookup.withArgs('service:pageVisibilityService').returns(pageVisibilityService);
@@ -30,6 +31,7 @@ test('it works', function(assert) {
   lookup.withArgs('service:socketDataService').returns(socketDataService);
   lookup.withArgs('service:storageService').returns(storageService);
   lookup.withArgs('service:tutorialService').returns(tutorialService);
+  lookup.withArgs('service:webAppCacheService').returns(webAppCacheService);
 
   initialize(this.appInstance);
 
@@ -38,6 +40,7 @@ test('it works', function(assert) {
   assert.ok(socketDataService.startWatchingAuthChanges.calledOnce);
   assert.ok(storageService.startWatchingStorageUpdates.calledOnce);
   assert.ok(tutorialService.setUpTutorial.calledOnce);
+  assert.ok(webAppCacheService.trySetUpAndWatchUpdateEvents.calledOnce);
 
   lookup.restore();
 });

@@ -44,3 +44,41 @@ test('determining if mobile', function(assert) {
 
   jQuery.restore();
 });
+
+test('determining if has appCache', function(assert) {
+  const hasCordova = sinon.stub(config, 'hasCordova'),
+    oldManifest = config.manifest,
+    applicationCache = sinon.stub(window, 'applicationCache');
+
+  hasCordova.get(() => false);
+  config.manifest = { enabled: false };
+  applicationCache.get(() => null);
+  assert.equal(PlatformUtils.isAppCacheCapable(), false, 'not cordova, but manifest disabled');
+
+  hasCordova.get(() => true);
+  config.manifest = { enabled: true };
+  applicationCache.get(() => Math.random());
+  assert.equal(PlatformUtils.isAppCacheCapable(), false, 'manifest is enabled but is cordova');
+
+  hasCordova.get(() => false);
+  config.manifest = { enabled: true };
+  applicationCache.get(() => null);
+  assert.equal(
+    PlatformUtils.isAppCacheCapable(),
+    false,
+    'not cordova, manifest is enabled but appCache unavailable'
+  );
+
+  hasCordova.get(() => false);
+  config.manifest = { enabled: true };
+  applicationCache.get(() => Math.random());
+  assert.equal(
+    PlatformUtils.isAppCacheCapable(),
+    true,
+    'not cordova, manifest is enabled, appCache available'
+  );
+
+  hasCordova.restore();
+  config.manifest = oldManifest;
+  applicationCache.restore();
+});

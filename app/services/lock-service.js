@@ -9,7 +9,7 @@ import TypeUtils from 'textup-frontend/utils/type';
 
 const { computed, run, RSVP, typeOf } = Ember;
 
-export default Ember.Service.extend({
+export default Ember.Service.extend(Ember.Evented, {
   authService: Ember.inject.service(),
   notifications: Ember.inject.service(),
   router: Ember.inject.service(),
@@ -115,6 +115,7 @@ export default Ember.Service.extend({
   },
 
   _onVerifySuccess(resolve) {
+    this.trigger(config.events.lock.unlocked);
     this.get('notifications').clearAll();
     this._resetAttempts();
     callIfPresent(null, resolve);

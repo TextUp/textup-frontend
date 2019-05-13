@@ -6,6 +6,7 @@ const { computed } = Ember;
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     src: PropTypes.string.isRequired,
+    nativeAppSrc: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     hasCordovaClasses: PropTypes.string,
     noCordovaClasses: PropTypes.string,
