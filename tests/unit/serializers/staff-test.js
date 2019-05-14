@@ -36,15 +36,15 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.notOk(keys.contains('teams'));
-  assert.ok(keys.contains('username'));
-  assert.ok(keys.contains('name'));
-  assert.ok(keys.contains('email'));
-  assert.ok(keys.contains('org'));
-  assert.ok(keys.contains('personalNumber'));
-  assert.ok(keys.contains('status'));
+  assert.notOk(keys.includes('teams'));
+  assert.ok(keys.includes('username'));
+  assert.ok(keys.includes('name'));
+  assert.ok(keys.includes('email'));
+  assert.ok(keys.includes('org'));
+  assert.ok(keys.includes('personalNumber'));
+  assert.ok(keys.includes('status'));
   assert.ok(
-    keys.contains('shouldAddToGeneralUpdatesList'),
+    keys.includes('shouldAddToGeneralUpdatesList'),
     'for opting in to updates list on creation'
   );
 });
@@ -57,8 +57,8 @@ test('serializing password and lock code', function(assert) {
 
   // if lock and password do not have values (that is, they do not need to be updated),
   // then delete these two keys
-  assert.notOk(keys.contains('password'));
-  assert.notOk(keys.contains('lockCode'));
+  assert.notOk(keys.includes('password'));
+  assert.notOk(keys.includes('lockCode'));
 
   run(() => obj.setProperties({ password: 'hi', lockCode: 'hi' }));
 
@@ -66,8 +66,8 @@ test('serializing password and lock code', function(assert) {
   keys = Object.keys(serialized);
 
   // if password and lock code need to be updated, then ensure that these are present
-  assert.ok(keys.contains('password'));
-  assert.ok(keys.contains('lockCode'));
+  assert.ok(keys.includes('password'));
+  assert.ok(keys.includes('lockCode'));
 });
 
 test('serializing organization', function(assert) {

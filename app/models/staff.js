@@ -109,7 +109,7 @@ export default DS.Model.extend(
     isAnyStatus(raw) {
       return ArrayUtils.ensureArrayAndAllDefined(raw)
         .map(stat => String(stat).toLowerCase())
-        .contains(String(this.get('status')).toLowerCase());
+        .includes(String(this.get('status')).toLowerCase());
     },
     makeStaff() {
       if (!this.get('isAuthUser')) {

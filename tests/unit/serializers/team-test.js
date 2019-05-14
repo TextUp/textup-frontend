@@ -37,11 +37,11 @@ test('serialized form', function(assert) {
 
   assert.equal(serialized.staffId, sId);
 
-  assert.notOk(keys.contains('numMembers'));
-  assert.ok(keys.contains('name'));
-  assert.ok(keys.contains('hexColor'));
-  assert.ok(keys.contains('org'));
-  assert.ok(keys.contains('location'));
+  assert.notOk(keys.includes('numMembers'));
+  assert.ok(keys.includes('name'));
+  assert.ok(keys.includes('hexColor'));
+  assert.ok(keys.includes('org'));
+  assert.ok(keys.includes('location'));
 });
 
 test('serializing team actions', function(assert) {
@@ -53,7 +53,7 @@ test('serializing team actions', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('doTeamActions'));
+  assert.ok(keys.includes('doTeamActions'));
   assert.deepEqual(serialized.doTeamActions, []);
 
   obj.set('actions', [null]);
@@ -61,7 +61,7 @@ test('serializing team actions', function(assert) {
   serialized = obj.serialize();
   keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('doTeamActions'));
+  assert.ok(keys.includes('doTeamActions'));
   assert.deepEqual(serialized.doTeamActions, [null]);
 
   obj.set('actions', [{ itemId, bucketId, otherProp }]);
@@ -69,6 +69,6 @@ test('serializing team actions', function(assert) {
   serialized = obj.serialize();
   keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('doTeamActions'));
+  assert.ok(keys.includes('doTeamActions'));
   assert.deepEqual(serialized.doTeamActions, [{ id: itemId, otherProp }]);
 });

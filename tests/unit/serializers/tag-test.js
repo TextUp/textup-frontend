@@ -19,21 +19,21 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('name'));
-  assert.ok(keys.contains('hexColor'));
-  assert.notOk(keys.contains('phone'));
-  assert.notOk(keys.contains('numMembers'));
-  assert.notOk(keys.contains('lastRecordActivity'));
-  assert.notOk(keys.contains('_recordItems'));
-  assert.notOk(keys.contains('_futureMessages'));
-  assert.notOk(keys.contains('futureMessages'));
-  assert.notOk(keys.contains('doTagActions'), 'no tag actions key if none specified');
+  assert.ok(keys.includes('name'));
+  assert.ok(keys.includes('hexColor'));
+  assert.notOk(keys.includes('phone'));
+  assert.notOk(keys.includes('numMembers'));
+  assert.notOk(keys.includes('lastRecordActivity'));
+  assert.notOk(keys.includes('_recordItems'));
+  assert.notOk(keys.includes('_futureMessages'));
+  assert.notOk(keys.includes('futureMessages'));
+  assert.notOk(keys.includes('doTagActions'), 'no tag actions key if none specified');
 
   obj.set('actions', [{ itemId: 1, bucketId: 2 }]);
   serialized = obj.serialize();
   keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('doTagActions'), 'tag membership actions specified');
+  assert.ok(keys.includes('doTagActions'), 'tag membership actions specified');
   assert.ok(serialized.doTagActions.every(tagObj => !tagObj.bucketId), 'no bucket id');
   assert.ok(serialized.doTagActions.every(tagObj => !tagObj.itemId), 'no item id');
   assert.ok(serialized.doTagActions.every(tagObj => !!tagObj.id), 'has id key');

@@ -22,34 +22,34 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.notOk(keys.contains('_repeatIntervalInDays'));
-  assert.notOk(keys.contains('contact'));
-  assert.notOk(keys.contains('hasEndDate'));
-  assert.notOk(keys.contains('isDone'));
-  assert.notOk(keys.contains('isRepeating'));
-  assert.notOk(keys.contains('media'));
-  assert.notOk(keys.contains('nextFireDate'));
-  assert.notOk(keys.contains('tag'));
-  assert.notOk(keys.contains('timesTriggered'));
-  assert.notOk(keys.contains('whenCreated'));
-  assert.ok(keys.contains('language'));
-  assert.ok(keys.contains('message'));
-  assert.ok(keys.contains('notifySelfOnSend'));
-  assert.ok(keys.contains('startDate'));
-  assert.ok(keys.contains('type'));
-  assert.ok(keys.contains('doMediaActions'));
+  assert.notOk(keys.includes('_repeatIntervalInDays'));
+  assert.notOk(keys.includes('contact'));
+  assert.notOk(keys.includes('hasEndDate'));
+  assert.notOk(keys.includes('isDone'));
+  assert.notOk(keys.includes('isRepeating'));
+  assert.notOk(keys.includes('media'));
+  assert.notOk(keys.includes('nextFireDate'));
+  assert.notOk(keys.includes('tag'));
+  assert.notOk(keys.includes('timesTriggered'));
+  assert.notOk(keys.includes('whenCreated'));
+  assert.ok(keys.includes('language'));
+  assert.ok(keys.includes('message'));
+  assert.ok(keys.includes('notifySelfOnSend'));
+  assert.ok(keys.includes('startDate'));
+  assert.ok(keys.includes('type'));
+  assert.ok(keys.includes('doMediaActions'));
   // not repeating by default
-  assert.notOk(keys.contains('repeatCount'));
-  assert.notOk(keys.contains('repeatIntervalInDays'));
-  assert.notOk(keys.contains('endDate'));
+  assert.notOk(keys.includes('repeatCount'));
+  assert.notOk(keys.includes('repeatIntervalInDays'));
+  assert.notOk(keys.includes('endDate'));
 
   obj.set('isRepeating', true);
   serialized = obj.serialize();
   keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('repeatCount'));
-  assert.ok(keys.contains('repeatIntervalInDays'));
-  assert.ok(keys.contains('endDate'));
+  assert.ok(keys.includes('repeatCount'));
+  assert.ok(keys.includes('repeatIntervalInDays'));
+  assert.ok(keys.includes('endDate'));
 });
 
 test('serializing when repeating', function(assert) {
@@ -65,11 +65,11 @@ test('serializing when repeating', function(assert) {
     let serialized = obj.serialize(),
       keys = Object.keys(serialized);
 
-    assert.notOk(keys.contains('hasEndDate'));
-    assert.notOk(keys.contains('isRepeating'));
-    assert.ok(keys.contains('repeatCount'));
-    assert.ok(keys.contains('repeatIntervalInDays'));
-    assert.ok(keys.contains('endDate'));
+    assert.notOk(keys.includes('hasEndDate'));
+    assert.notOk(keys.includes('isRepeating'));
+    assert.ok(keys.includes('repeatCount'));
+    assert.ok(keys.includes('repeatIntervalInDays'));
+    assert.ok(keys.includes('endDate'));
     assert.notOk(serialized.repeatCount, 'repeat count is set to null when we have end date');
     assert.ok(serialized.endDate);
 

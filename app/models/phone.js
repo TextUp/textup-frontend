@@ -81,7 +81,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   _contacts: computed(() => []),
   _filteredContacts: computed('_contactStatuses', '_contacts.@each.status', function() {
     const statuses = this.get('_contactStatuses');
-    return this.get('_contacts').filter(contact => statuses.contains(get(contact, 'status')));
+    return this.get('_contacts').filter(contact => statuses.includes(get(contact, 'status')));
   }),
   _uniqueContacts: computed.uniqBy('_filteredContacts', 'id'),
   _contactSortOptions: ['intStatus:asc', 'lastRecordActivity:desc'],

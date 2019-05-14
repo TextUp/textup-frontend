@@ -10,8 +10,8 @@ test('serializes', function(assert) {
     keys = Object.keys(serializedRecord);
 
   assert.ok(
-    keys.contains('staffId'),
+    keys.includes('staffId'),
     'needs staff id to be able to identify who this policy belongs to'
   );
-  assert.notOk(keys.contains('name'));
+  assert.notOk(keys.includes('name'));
 });

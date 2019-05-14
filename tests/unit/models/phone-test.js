@@ -99,30 +99,30 @@ test('contact filter and statuses', function(assert) {
     assert.throws(() => obj.set('contactStatuses', []));
 
     assert.equal(obj.get('contactStatuses').length, 2, 'contact status default value');
-    assert.ok(obj.get('contactStatuses').contains(statuses.UNREAD));
-    assert.ok(obj.get('contactStatuses').contains(statuses.ACTIVE));
+    assert.ok(obj.get('contactStatuses').includes(statuses.UNREAD));
+    assert.ok(obj.get('contactStatuses').includes(statuses.ACTIVE));
 
     obj.set('contactsFilter', filters.UNREAD);
     assert.equal(obj.get('contactStatuses').length, 1);
-    assert.ok(obj.get('contactStatuses').contains(statuses.UNREAD));
+    assert.ok(obj.get('contactStatuses').includes(statuses.UNREAD));
 
     obj.set('contactsFilter', 'invalid value');
     assert.equal(obj.get('contactStatuses').length, 2);
-    assert.ok(obj.get('contactStatuses').contains(statuses.UNREAD));
-    assert.ok(obj.get('contactStatuses').contains(statuses.ACTIVE));
+    assert.ok(obj.get('contactStatuses').includes(statuses.UNREAD));
+    assert.ok(obj.get('contactStatuses').includes(statuses.ACTIVE));
 
     obj.set('contactsFilter', filters.ARCHIVED);
     assert.equal(obj.get('contactStatuses').length, 1);
-    assert.ok(obj.get('contactStatuses').contains(statuses.ARCHIVED));
+    assert.ok(obj.get('contactStatuses').includes(statuses.ARCHIVED));
 
     obj.set('contactsFilter', filters.ALL);
     assert.equal(obj.get('contactStatuses').length, 2);
-    assert.ok(obj.get('contactStatuses').contains(statuses.UNREAD));
-    assert.ok(obj.get('contactStatuses').contains(statuses.ACTIVE));
+    assert.ok(obj.get('contactStatuses').includes(statuses.UNREAD));
+    assert.ok(obj.get('contactStatuses').includes(statuses.ACTIVE));
 
     obj.set('contactsFilter', filters.BLOCKED);
     assert.equal(obj.get('contactStatuses').length, 1);
-    assert.ok(obj.get('contactStatuses').contains(statuses.BLOCKED));
+    assert.ok(obj.get('contactStatuses').includes(statuses.BLOCKED));
   });
 });
 

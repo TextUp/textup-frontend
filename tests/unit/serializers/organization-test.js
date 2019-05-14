@@ -18,14 +18,14 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.notOk(keys.contains('numAdmins'));
-  assert.notOk(keys.contains('teams'));
-  assert.notOk(keys.contains('timeoutMin'));
-  assert.notOk(keys.contains('timeoutMax'));
-  assert.notOk(keys.contains('awayMessageSuffixMaxLength'));
-  assert.ok(keys.contains('name'));
-  assert.ok(keys.contains('location'));
-  assert.ok(keys.contains('status'));
-  assert.ok(keys.contains('timeout'));
-  assert.ok(keys.contains('awayMessageSuffix'));
+  assert.notOk(keys.includes('numAdmins'));
+  assert.notOk(keys.includes('teams'));
+  assert.notOk(keys.includes('timeoutMin'));
+  assert.notOk(keys.includes('timeoutMax'));
+  assert.notOk(keys.includes('awayMessageSuffixMaxLength'));
+  assert.ok(keys.includes('name'));
+  assert.ok(keys.includes('location'));
+  assert.ok(keys.includes('status'));
+  assert.ok(keys.includes('timeout'));
+  assert.ok(keys.includes('awayMessageSuffix'));
 });

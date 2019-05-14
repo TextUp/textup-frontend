@@ -26,16 +26,16 @@ test('serialized form', function(assert) {
     serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('type'), 'type is converted back to backend format');
+  assert.ok(keys.includes('type'), 'type is converted back to backend format');
   assert.equal(serialized.type, undefined, 'record-items are not accepted by the backend');
 
-  assert.notOk(keys.contains('whenCreated'), 'no whenCreated');
-  assert.notOk(keys.contains('outgoing'), 'no outgoing');
-  assert.notOk(keys.contains('hasAwayMessage'), 'no hasAwayMessage');
-  assert.notOk(keys.contains('receipts'), 'no receipts');
-  assert.notOk(keys.contains('media'), 'no media');
-  assert.notOk(keys.contains('contact'), 'no contact');
-  assert.notOk(keys.contains('tag'), 'no tag');
+  assert.notOk(keys.includes('whenCreated'), 'no whenCreated');
+  assert.notOk(keys.includes('outgoing'), 'no outgoing');
+  assert.notOk(keys.includes('hasAwayMessage'), 'no hasAwayMessage');
+  assert.notOk(keys.includes('receipts'), 'no receipts');
+  assert.notOk(keys.includes('media'), 'no media');
+  assert.notOk(keys.includes('contact'), 'no contact');
+  assert.notOk(keys.includes('tag'), 'no tag');
 });
 
 test('serializing with media actions', function(assert) {
@@ -118,12 +118,12 @@ test('serializing recipients', function(assert) {
 
   assert.equal(typeOf(serialized.ids), 'array');
   assert.equal(serialized.ids.length, 6);
-  assert.ok(serialized.ids.contains(newContact1.get('id')));
-  assert.ok(serialized.ids.contains(newContact2.get('id')));
-  assert.ok(serialized.ids.contains(newTag1.get('id')));
-  assert.ok(serialized.ids.contains(newTag2.get('id')));
-  assert.ok(serialized.ids.contains(newShared1.get('id')));
-  assert.ok(serialized.ids.contains(newShared2.get('id')));
+  assert.ok(serialized.ids.includes(newContact1.get('id')));
+  assert.ok(serialized.ids.includes(newContact2.get('id')));
+  assert.ok(serialized.ids.includes(newTag1.get('id')));
+  assert.ok(serialized.ids.includes(newTag2.get('id')));
+  assert.ok(serialized.ids.includes(newShared1.get('id')));
+  assert.ok(serialized.ids.includes(newShared2.get('id')));
 
   assert.equal(typeOf(serialized.numbers), 'array');
   assert.deepEqual(serialized.numbers, [PhoneNumberUtils.clean(newNum1)]);

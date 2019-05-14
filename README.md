@@ -2,60 +2,60 @@
 
 This is the frontend Ember app that connects to the [TextUp Grails backend](https://github.com/TextUp/textup-backend).
 
-| Service | Master | Dev |
-| --- | --- | --- |
+| Service   | Master                                                                                                                          | Dev                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | CI Status | [![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=master)](https://travis-ci.org/TextUp/textup-frontend) | [![Build Status](https://travis-ci.org/TextUp/textup-frontend.svg?branch=dev)](https://travis-ci.org/TextUp/textup-frontend) |
 
 ## Installation
 
-* Ensure that the following pre-requisites are fulfilled
-    * `node` LTS Argon: install with `nvm`
-    * `yarn`: install with `npm install --global yarn`
-    * `bower`: install with `yarn global add bower`
-* Clone the repository.
-    * `git clone --recursive <repository-url>` to also associate the [core styles](https://github.com/TextUp/textup-styles) repo. See [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) for more details.
-    * `git remote add styles git@github.com:TextUp/textup-styles.git` to create a remote to the core styles repository for easier pulling/pushing later on
-* `yarn install --ignore-engines`
-* `bower install`
+- Ensure that the following pre-requisites are fulfilled
+  - `node` LTS Argon: install with `nvm`
+  - `yarn`: install with `npm install --global yarn@1.10.1`
+  - `bower`: install with `yarn global add bower@1.8.4`
+- Clone the repository.
+  - `git clone --recursive <repository-url>` to also associate the [core styles](https://github.com/TextUp/textup-styles) repo. See [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) for more details.
+  - `git remote add styles git@github.com:TextUp/textup-styles.git` to create a remote to the core styles repository for easier pulling/pushing later on
+- `yarn install --ignore-engines`
+- `bower install`
 
 ## Environment variables
 
 In order to successfully build, certain environment variables are accessed in `config/environment.js`. These variables are:
 
-* `TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS`
-* `TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA`
-* `TEXTUP_FRONTEND_API_MAPBOX`
-* `TEXTUP_FRONTEND_API_PUSHER`
-* `TEXTUP_FRONTEND_HOST_PRODUCTION`
-* `TEXTUP_FRONTEND_HOST_STAGING`
+- `TEXTUP_FRONTEND_API_GOOGLE_ANALYTICS`
+- `TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA`
+- `TEXTUP_FRONTEND_API_MAPBOX`
+- `TEXTUP_FRONTEND_API_PUSHER`
+- `TEXTUP_FRONTEND_HOST_PRODUCTION`
+- `TEXTUP_FRONTEND_HOST_STAGING`
 
 Environment variables used by Travis when building and deploying are:
 
-* `AWS_ACCESS_KEY_ID`
-* `AWS_CLOUDFRONT_ID_PRODUCTION`
-* `AWS_DEFAULT_REGION`
-* `AWS_SECRET_ACCESS_KEY`
-* `S3_PRODUCTION`
-* `S3_STAGING`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_CLOUDFRONT_ID_PRODUCTION`
+- `AWS_DEFAULT_REGION`
+- `AWS_SECRET_ACCESS_KEY`
+- `S3_PRODUCTION`
+- `S3_STAGING`
 
 ## Pulling / Pushing
 
-*When pushing or pulling from this repository, use the standard methods.* However, when making updates to styles that you want to propagate to other TextUp repos, some specialized commands are needed.
+_When pushing or pulling from this repository, use the standard methods._ However, when making updates to styles that you want to propagate to other TextUp repos, some specialized commands are needed.
 
 To update your copy of the core styles:
 
-* `git subtree pull  --prefix=app/styles/core --squash styles master`
+- `git subtree pull --prefix=app/styles/core --squash styles master`
 
 To backport any changes to the core styles repository:
 
-* `git subtree push  --prefix=app/styles/core --squash styles master`
+- `git subtree push --prefix=app/styles/core --squash styles master`
 
 Note the main drawback of this command is that all commits that touched the subtree and used. If we need more control, we can cherry pick the commits we want to push to the subtree. [More details about this and about all git-subtree related commands can be found at this tutorial](https://medium.com/@porteneuve/mastering-git-subtrees-943d29a798ec#.s0lfst7jk)
 
 ## Running / Development
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+- `ember serve`
+- Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ### Code Generators
 
@@ -63,33 +63,33 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Running Tests
 
-* `ember test`
-* `ember test --server`
+- `ember test`
+- `ember test --server`
 
 ### Building
 
-* `ember build` (development)
-* `ember build --environment=production` (production)
+- `ember build` (development)
+- `ember build --environment=production` (production)
 
 ### Deploying
 
 #### Deploying to staging
 
-* Push to the `dev` branch to trigger a Travis CI build OR
-* Run `./deploy.sh dist demo.textup.org`
+- Push to the `dev` branch to trigger a Travis CI build OR
+- Run `./deploy.sh dist demo.textup.org`
 
 #### Deploying to production
 
-* Push to the `master` branch to trigger a Travis CI build OR
-* Run `./deploy.sh dist app.textup.org`
+- Push to the `master` branch to trigger a Travis CI build OR
+- Run `./deploy.sh dist app.textup.org`
 
 ## Further Reading / Useful Links
 
-* [ember.js](http://emberjs.com/)
-* [ember-cli](http://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+- [ember.js](http://emberjs.com/)
+- [ember-cli](http://ember-cli.com/)
+- Development Browser Extensions
+  - [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
+  - [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
 
 ## License
 
@@ -99,7 +99,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,

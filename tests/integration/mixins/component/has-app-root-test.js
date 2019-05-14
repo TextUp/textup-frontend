@@ -25,7 +25,7 @@ test('getting app root when not testing', function(assert) {
   Ember.testing = false;
   const obj = HasAppRootComponent.create();
 
-  assert.equal(obj.get('_root').selector, `#${appRootId}`);
+  assert.equal(obj.get('_root').attr('id'), appRootId);
   assert.equal(obj.get('_root').length, 1);
 
   getOwnerStub.restore();
@@ -39,7 +39,7 @@ test('getting app root when testing', function(assert) {
   Ember.testing = true;
   const obj = HasAppRootComponent.create();
 
-  assert.equal(obj.get('_root').selector, `#ember-testing`);
+  assert.equal(obj.get('_root').attr('id'), 'ember-testing');
   assert.equal(obj.get('_root').length, 1);
 
   Ember.testing = oldTestingVal;

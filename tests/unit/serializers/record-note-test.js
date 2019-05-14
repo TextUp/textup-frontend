@@ -33,20 +33,20 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('type'), 'type is converted back to backend format');
+  assert.ok(keys.includes('type'), 'type is converted back to backend format');
   assert.equal(serialized.type, 'NOTE');
 
-  assert.notOk(keys.contains('whenChanged'));
-  assert.notOk(keys.contains('isReadOnly'));
-  assert.ok(keys.contains('location'));
+  assert.notOk(keys.includes('whenChanged'));
+  assert.notOk(keys.includes('isReadOnly'));
+  assert.ok(keys.includes('location'));
 
-  assert.notOk(keys.contains('hasBeenDeleted'));
-  assert.ok(keys.contains('isDeleted'));
+  assert.notOk(keys.includes('hasBeenDeleted'));
+  assert.ok(keys.includes('isDeleted'));
 
-  assert.notOk(keys.contains('_revisions'));
-  assert.notOk(keys.contains('revisions'));
+  assert.notOk(keys.includes('_revisions'));
+  assert.notOk(keys.includes('revisions'));
 
-  assert.ok(keys.contains('after'));
+  assert.ok(keys.includes('after'));
   assert.equal(obj.serialize().after, null);
 
   run(() => {
@@ -55,7 +55,7 @@ test('serialized form', function(assert) {
 
     keys = Object.keys(obj.serialize());
 
-    assert.ok(keys.contains('after'));
+    assert.ok(keys.includes('after'));
     assert.equal(typeOf(obj.serialize().after), 'date');
   });
 });

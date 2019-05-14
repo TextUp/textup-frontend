@@ -24,8 +24,8 @@ test('serialized form', function(assert) {
     serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.ok(keys.contains('type'), 'type is converted back to backend format');
+  assert.ok(keys.includes('type'), 'type is converted back to backend format');
   assert.equal(serialized.type, 'TEXT');
 
-  assert.ok(keys.contains('contents'));
+  assert.ok(keys.includes('contents'));
 });

@@ -16,15 +16,15 @@ test('serialized form', function(assert) {
   let serialized = obj.serialize(),
     keys = Object.keys(serialized);
 
-  assert.notOk(keys.contains('isActive'));
-  assert.notOk(keys.contains('number'));
-  assert.notOk(keys.contains('tags'));
-  assert.notOk(keys.contains('awayMessageMaxLength'));
-  assert.ok(keys.contains('allowSharingWithOtherTeams'));
-  assert.ok(keys.contains('awayMessage'));
-  assert.ok(keys.contains('language'));
-  assert.ok(keys.contains('requestVoicemailGreetingCall'));
-  assert.ok(keys.contains('useVoicemailRecordingIfPresent'));
-  assert.ok(keys.contains('voice'));
-  assert.ok(keys.contains('policies'));
+  assert.notOk(keys.includes('isActive'));
+  assert.notOk(keys.includes('number'));
+  assert.notOk(keys.includes('tags'));
+  assert.notOk(keys.includes('awayMessageMaxLength'));
+  assert.ok(keys.includes('allowSharingWithOtherTeams'));
+  assert.ok(keys.includes('awayMessage'));
+  assert.ok(keys.includes('language'));
+  assert.ok(keys.includes('requestVoicemailGreetingCall'));
+  assert.ok(keys.includes('useVoicemailRecordingIfPresent'));
+  assert.ok(keys.includes('voice'));
+  assert.ok(keys.includes('policies'));
 });

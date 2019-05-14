@@ -5,14 +5,14 @@ import HasAnyValidator from 'textup-frontend/validators/has-any';
 const { typeOf, set } = Ember;
 
 moduleFor('validator:has-any', 'Unit | Validator | has-any', {
-  needs: ['validator:messages']
+  needs: ['validator:messages'],
 });
 
 test('validation with varying options', function(assert) {
   var obj = this.subject(),
     model = {
       key1: null,
-      key2: { nested: null }
+      key2: { nested: null },
     },
     attribute = 'key 1';
 
@@ -33,7 +33,7 @@ test('validation with valid inputs', function(assert) {
   var obj = this.subject(),
     options = { also: ['key2.nested', 'missingValue'] },
     model = {
-      key2: { nested: null }
+      key2: { nested: null },
     },
     attribute = 'key 1';
 
@@ -53,15 +53,15 @@ test('validation with valid inputs', function(assert) {
 
 test('dependent key generation', function(assert) {
   let generatedKeys = HasAnyValidator.getDependentsFor('key1', {});
-  ['model.key1', 'model.key1.[]'].forEach(key => assert.ok(generatedKeys.contains(key)));
+  ['model.key1', 'model.key1.[]'].forEach(key => assert.ok(generatedKeys.includes(key)));
 
   generatedKeys = HasAnyValidator.getDependentsFor('key1', { also: 'invalid not a list' });
   ['model.key1', 'model.key1.[]', '_model.key1', '_model.key1.[]'].forEach(key =>
-    assert.ok(generatedKeys.contains(key))
+    assert.ok(generatedKeys.includes(key))
   );
 
   generatedKeys = HasAnyValidator.getDependentsFor('key1', {
-    also: ['key2', 'key3.nested', {}, []]
+    also: ['key2', 'key3.nested', {}, []],
   });
   [
     'model.key1',
@@ -75,6 +75,6 @@ test('dependent key generation', function(assert) {
     'model.key3.nested',
     'model.key3.nested.[]',
     '_model.key3.nested',
-    '_model.key3.nested.[]'
-  ].forEach(key => assert.ok(generatedKeys.contains(key)));
+    '_model.key3.nested.[]',
+  ].forEach(key => assert.ok(generatedKeys.includes(key)));
 });
