@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 const { computed } = Ember;
 
-// TODO - test this service
+// TODO - write tests for this
 
 export default Ember.Service.extend({
   contactService: Ember.inject.service(),

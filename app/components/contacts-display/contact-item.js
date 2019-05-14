@@ -11,7 +11,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     data: PropTypes.instanceOf(ContactObject),
   },
 
-  classNames: 'contacts-display__contact_item',
+  classNames: 'contacts-display__contact-item',
 
   didInitAttrs() {
     this._super(...arguments);

@@ -2,6 +2,8 @@ import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 const { computed } = Ember;
 
+// TODO: write tests for this
+
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     numSaved: PropTypes.number,

@@ -16,20 +16,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _contactItems: computed(() => []),
-
-  // TODO
-  // _someSelected: computed('_contactItems.@each.isSelect', function() {
-  //   return this.get('_contactItems').any(child => child && child.isSelect);
-  // }),
-  // _numSelect: computed('_contactItems.@each.isSelect', function() {
-  //   const selected = this.get('_contactItems').filter(child => child && child.isSelect);
-  //   // tryInvoke(this, 'onChange', [selected.mapBy('data')]); // TODO
-  //   return selected.length;
-  // }),
-  // _numTotal: computed('_contactItems.[]', function() {
-  //   return this.get('_contactItems.length');
-  // }),
-
   _someSelected: computed.gt('_numSelect', 0),
   _numSelect: computed.alias('_selectedItems.length'),
   _selectedItems: computed.filterBy('_contactItems', 'isSelect', true),

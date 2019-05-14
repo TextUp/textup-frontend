@@ -12,7 +12,7 @@ moduleForComponent(
 
 test('it renders', function(assert) {
   this.render(hbs`{{contacts-display/contact-item}}`);
-  assert.ok(this.$('.contacts_display__contact_item').length);
+  assert.ok(this.$('.contacts-display__contact-item').length);
 });
 
 test('public api', function(assert) {
@@ -29,10 +29,10 @@ test('public api', function(assert) {
   // test select
   items[0].actions.select();
   assert.ok(items[0].isSelect);
-  assert.ok($('div.contacts_display__contact_item').find('input')[0].checked);
+  assert.ok($('div.contacts-display__contact-item').find('input')[0].checked);
 
   // test deselect
   items[0].actions.deselect();
   assert.equal(false, items[0].isSelect);
-  assert.equal(false, $('div.contacts_display__contact_item').find('input')[0].checked);
+  assert.equal(false, $('div.contacts-display__contact-item').find('input')[0].checked);
 });

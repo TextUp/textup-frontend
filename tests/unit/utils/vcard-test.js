@@ -29,7 +29,6 @@ test('parses good vcard', function(assert) {
   const rejectStub = sinon.stub();
   vcard._onFileLoad(resolveStub, rejectStub, goodEvent);
   assert.equal(resolveStub.calledOnce, true, 'resolved');
-  console.log(resolveStub.firstCall.args[0]);
   assert.equal(resolveStub.firstCall.args[0][0].name, 'Forrest Gump');
   assert.equal(resolveStub.firstCall.args[0][1].name, 'Forrest Gump 2');
   assert.equal(resolveStub.firstCall.args[0][0].numbers[1], '4045551212');

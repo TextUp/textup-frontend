@@ -2,6 +2,8 @@ import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 
+// TODO: write tests for this
+
 export default Ember.Mixin.create({
   contactImportService: Ember.inject.service(),
 

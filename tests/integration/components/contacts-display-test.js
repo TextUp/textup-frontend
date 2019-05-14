@@ -21,7 +21,7 @@ test('displays contact items', function(assert) {
   this.setProperties({ contacts });
   this.render(hbs`{{contacts-display contactObjects=contacts}}`);
   // displays 2 contact_items
-  assert.equal($('.contacts-display__contact_item').length, 2);
+  assert.equal($('.contacts-display__contact-item').length, 2);
 });
 
 test('toggle button checks', function(assert) {
@@ -29,13 +29,13 @@ test('toggle button checks', function(assert) {
   this.render(hbs`{{contacts-display contactObjects=contacts}}`);
 
   // before toggle unchecked
-  assert.equal(false, $('.contacts-display__contact_item').find('input')[0].checked);
+  assert.equal(false, $('.contacts-display__contact-item').find('input')[0].checked);
   // after toggle on checked
   this.$('.contacts-display__toggle').click();
-  assert.equal(true, $('.contacts-display__contact_item').find('input')[0].checked);
+  assert.equal(true, $('.contacts-display__contact-item').find('input')[0].checked);
   // after toggle off unchecked
   this.$('.contacts-display__toggle').click();
-  assert.equal(false, $('.contacts-display__contact_item').find('input')[0].checked);
+  assert.equal(false, $('.contacts-display__contact-item').find('input')[0].checked);
 });
 
 test('x of y imported banner', function(assert) {
@@ -55,18 +55,3 @@ test('x of y imported banner', function(assert) {
       .includes('2 of 2')
   );
 });
-
-// TODO - once I figure out how import works test
-/* test('imports contacts', function(assert) {
-  // TODO: use spy to make streamlined, assert on args
-  // use let instead of var, or const when
-  var contacts2;
-  var onImport = data => {
-    contacts2 = data;
-  };
-  this.setProperties({ contacts, onImport });
-  this.render(hbs`{{contacts-display contactObjects=contacts onImport=(action onImport)}}`);
-  this.$('.contacts-display__toggle').click();
-  this.$('.contacts-display__import').click();
-  assert.equal(contacts2.length, contacts.length);
-}); */
