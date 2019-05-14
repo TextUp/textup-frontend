@@ -1,115 +1,119 @@
 // Removal of query param allows fetching of this font from app cache
 // rather than making a call to the server each time
 @font-face {
-	font-family: 'FontAwesome';
-	src: url('fonts/fontawesome-webfont.eot');
-	src: url('fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
-		url('fonts/fontawesome-webfont.woff2') format('woff2'),
-		url('fonts/fontawesome-webfont.woff') format('woff'),
-		url('fonts/fontawesome-webfont.ttf') format('truetype'),
-		url('fonts/fontawesome-webfont.svg?#fontawesomeregular') format('svg');
-	font-weight: normal;
-	font-style: normal;
+  font-family: 'FontAwesome';
+  src: url('fonts/fontawesome-webfont.eot');
+  src: url('fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+    url('fonts/fontawesome-webfont.woff2') format('woff2'),
+    url('fonts/fontawesome-webfont.woff') format('woff'),
+    url('fonts/fontawesome-webfont.ttf') format('truetype'),
+    url('fonts/fontawesome-webfont.svg?#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 // when we want element of an animated div to overflow
 // when absolute positioned, such as for slideouts
 .animated-overflow {
-	overflow: visible;
-	z-index: $slideout-z-index;
+  overflow: visible;
+  z-index: $slideout-z-index;
 
-	& > * {
-		overflow: visible;
-	}
+  & > * {
+    overflow: visible;
+  }
 }
 .loading-slider > span {
-	background-color: $brand-color;
+  background-color: $brand-color;
+}
+
+.native-app {
+  user-select: none;
 }
 
 // main/contacts
 // -------------
 
 .menu-toggle {
-	position: absolute;
-	top: $header-height / 2;
-	left: $contacts-h-space / 2;
-	transform: translate(-50%, -50%);
-	z-index: $details-z-index - 1;
+  position: absolute;
+  top: $header-height / 2;
+  left: $contacts-h-space / 2;
+  transform: translate(-50%, -50%);
+  z-index: $details-z-index - 1;
 }
 .tag-title {
-	@include v-center(left, $contacts-h-space);
-	width: calc(100% - #{$padding * 7.2});
-	@include mq($from: desktop) {
-		left: $padding * 2;
-		width: calc(100% - #{$padding * 6});
-	}
+  @include v-center(left, $contacts-h-space);
+  width: calc(100% - #{$padding * 7.2});
+  @include mq($from: desktop) {
+    left: $padding * 2;
+    width: calc(100% - #{$padding * 6});
+  }
 }
 .contacts-title {
-	@include v-center(left, $contacts-h-space);
-	width: calc(100% - #{$padding * 4});
-	@include mq($from: desktop) {
-		left: $padding;
-	}
+  @include v-center(left, $contacts-h-space);
+  width: calc(100% - #{$padding * 4});
+  @include mq($from: desktop) {
+    left: $padding;
+  }
 }
 
 // main/contacts/contact
 // ---------------------
 
 .contact-info {
-	$contact-details-height: $badge-height + $badge-v-space * 3;
+  $contact-details-height: $badge-height + $badge-v-space * 3;
 
-	overflow: hidden;
+  overflow: hidden;
 
-	.contact-summary {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		transition: height 0.5s;
+  .contact-summary {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: height 0.5s;
 
-		.horizontal-items {
-			@extend .pull-left;
-		}
-	}
-	.contact-details {
-		width: 100%;
-		height: 0;
-		opacity: 0;
-		transition: opacity 0.5s, height 0.5s;
+    .horizontal-items {
+      @extend .pull-left;
+    }
+  }
+  .contact-details {
+    width: 100%;
+    height: 0;
+    opacity: 0;
+    transition: opacity 0.5s, height 0.5s;
 
-		.clear-badge .fa {
-			margin-top: -3px;
-		}
-	}
-	@include mq($until: desktop) {
-		// displaying shared status
-		&.is-shared {
-			.contact-summary .horizontal-items {
-				left: $padding / 2;
-				top: 60%;
-			}
-			.contact-summary {
-				height: calc(100% - #{$contact-details-height});
-			}
-			.contact-details {
-				height: $contact-details-height;
-				opacity: 1;
-			}
-		}
-	}
-	@include mq($from: desktop) {
-		// displaying shared status and tags
-		&.has-details {
-			&:hover,
-			&:active,
-			&:focus {
-				.contact-summary {
-					height: calc(100% - #{$contact-details-height});
-				}
-				.contact-details {
-					height: $contact-details-height;
-					opacity: 1;
-				}
-			}
-		}
-	}
+    .clear-badge .fa {
+      margin-top: -3px;
+    }
+  }
+  @include mq($until: desktop) {
+    // displaying shared status
+    &.is-shared {
+      .contact-summary .horizontal-items {
+        left: $padding / 2;
+        top: 60%;
+      }
+      .contact-summary {
+        height: calc(100% - #{$contact-details-height});
+      }
+      .contact-details {
+        height: $contact-details-height;
+        opacity: 1;
+      }
+    }
+  }
+  @include mq($from: desktop) {
+    // displaying shared status and tags
+    &.has-details {
+      &:hover,
+      &:active,
+      &:focus {
+        .contact-summary {
+          height: calc(100% - #{$contact-details-height});
+        }
+        .contact-details {
+          height: $contact-details-height;
+          opacity: 1;
+        }
+      }
+    }
+  }
 }
