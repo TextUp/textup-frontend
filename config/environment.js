@@ -3,7 +3,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'textup-frontend',
     environment: environment,
-    baseURL: '/',
+    rootURL: '/',
     locationType: 'hash',
     EmberENV: { FEATURES: {} },
     APP: {},
@@ -68,7 +68,6 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter

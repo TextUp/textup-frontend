@@ -54,7 +54,7 @@ Note the main drawback of this command is that all commits that touched the subt
 
 ## Running / Development
 
-* `ember server`
+* `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ### Code Generators

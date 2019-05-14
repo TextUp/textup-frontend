@@ -73,12 +73,11 @@
             rel="apple-touch-icon-precomposed"
             href="assets/images/apple-touch-icon-precomposed.png"
         />
-        <!-- 58x58px -->
 
         {{content-for "head"}}
 
-        <link rel="stylesheet" href="assets/vendor.css" />
-        <link rel="stylesheet" href="assets/textup-frontend.css" />
+        <link rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+        <link rel="stylesheet" href="{{rootURL}}assets/textup-frontend.css">
 
         {{content-for "head-footer"}}
     </head>
@@ -91,8 +90,8 @@
 
         {{content-for "body"}}
 
-        <script src="assets/vendor.js"></script>
-        <script src="assets/textup-frontend.js"></script>
+        <script src="{{rootURL}}assets/vendor.js"></script>
+        <script src="{{rootURL}}assets/textup-frontend.js"></script>
 
         {{content-for "body-footer"}}
     </body>
