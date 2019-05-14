@@ -1,3 +1,5 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
+
 import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 
@@ -18,6 +20,12 @@ moduleForModel('record-note', 'Unit | Serializer | record note', {
     'validator:number',
     'validator:presence',
   ],
+  beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
+  },
 });
 
 test('serialized form', function(assert) {

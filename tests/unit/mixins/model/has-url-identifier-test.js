@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import Ember from 'ember';
@@ -9,8 +10,12 @@ const { run } = Ember,
 
 moduleFor('mixin:model/has-url-identifier', 'Unit | Mixin | model/has url identifier', {
   beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
     this.register(`model:${MODEL_NAME}`, DS.Model.extend(ModelHasUrlIdentifierMixin));
     this.inject.service('store');
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
   },
   subject() {
     return this.store.createRecord(MODEL_NAME);

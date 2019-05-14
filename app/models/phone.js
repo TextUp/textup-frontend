@@ -4,7 +4,6 @@ import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
 import MF from 'model-fragments';
-import uniqBy from 'textup-frontend/utils/uniq-by';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -84,7 +83,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
     const statuses = this.get('_contactStatuses');
     return this.get('_contacts').filter(contact => statuses.contains(get(contact, 'status')));
   }),
-  _uniqueContacts: uniqBy('_filteredContacts', 'id'),
+  _uniqueContacts: computed.uniqBy('_filteredContacts', 'id'),
   _contactSortOptions: ['intStatus:asc', 'lastRecordActivity:desc'],
   _sortedContacts: computed.sort('_uniqueContacts', '_contactSortOptions'),
 

@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import FileUtils from 'textup-frontend/utils/file';
@@ -36,6 +37,8 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
     'validator:presence',
   ],
   beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
+
     this.register('service:authService', Ember.Service);
     this.inject.service('authService');
     this.register('service:dataService', Ember.Service);
@@ -48,6 +51,9 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
     this.inject.service('requestService');
 
     this.inject.service('store');
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
   },
 });
 

@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import sinon from 'sinon';
@@ -26,6 +27,12 @@ moduleForModel('future-message', 'Unit | Model | future message', {
     'validator:has-any',
     'validator:number',
   ],
+  beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
+  },
 });
 
 test('dirty checking', function(assert) {
@@ -161,13 +168,13 @@ test('getting and setting owner', function(assert) {
 
     obj.set('owner', validContact);
 
-    assert.deepEqual(obj.get('owner.content'), validContact);
+    assert.equal(obj.get('owner.content'), validContact);
     assert.ok(obj.get('contact.content'));
     assert.notOk(obj.get('tag.content'));
 
     obj.set('owner', validTag);
 
-    assert.deepEqual(obj.get('owner.content'), validTag);
+    assert.equal(obj.get('owner.content'), validTag);
     assert.notOk(obj.get('contact.content'));
     assert.ok(obj.get('tag.content'));
   });

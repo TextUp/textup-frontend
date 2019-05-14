@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import CareRecordComponent from 'textup-frontend/components/care-record';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
@@ -12,7 +13,11 @@ const { typeOf, run } = Ember;
 moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
   beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
     this.inject.service('store');
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
   },
 });
 

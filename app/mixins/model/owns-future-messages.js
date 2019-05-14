@@ -1,6 +1,5 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import uniqBy from 'textup-frontend/utils/uniq-by';
 
 const { computed, typeOf } = Ember;
 
@@ -19,7 +18,7 @@ export default Ember.Mixin.create({
   // ------------------
 
   _futureMessages: DS.hasMany('future-message'),
-  _uniqueFutureMessages: uniqBy('_futureMessages.content', 'id'),
+  _uniqueFutureMessages: computed.uniqBy('_futureMessages', 'id'),
   _futureMessagesSorting: ['nextFireDate:asc'],
   _sortedFutureMessages: computed.sort('_uniqueFutureMessages', '_futureMessagesSorting'),
 

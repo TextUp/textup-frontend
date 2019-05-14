@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
@@ -9,7 +10,11 @@ let store;
 moduleForComponent('record-cluster/item', 'Integration | Component | record cluster/item', {
   integration: true,
   beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
     store = Ember.getOwner(this).lookup('service:store');
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
   },
 });
 

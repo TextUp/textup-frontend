@@ -8,5 +8,5 @@ export default Ember.Mixin.create({
       ? '#ember-testing'
       : Ember.getOwner(this).lookup('application:main').rootElement;
     return Ember.$(rootSelector);
-  })
+  }),
 });

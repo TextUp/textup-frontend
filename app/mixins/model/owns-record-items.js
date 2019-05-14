@@ -1,6 +1,5 @@
 import DS from 'ember-data';
 import Ember from 'ember';
-import uniqBy from 'textup-frontend/utils/uniq-by';
 import { pluralize } from 'textup-frontend/utils/text';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
@@ -24,7 +23,7 @@ export default Ember.Mixin.create({
 
   // polymorphic needs `inverse: '_recordItems'` in `models/record-item`
   _recordItems: DS.hasMany('record-item', { polymorphic: true }),
-  _uniqueRecordItems: uniqBy('_recordItems.content', 'id'),
+  _uniqueRecordItems: computed.uniqBy('_recordItems', 'id'),
   _recordsSorting: ['whenCreated:asc'],
   _sortedRecordItems: computed.sort('_uniqueRecordItems', '_recordsSorting'),
 

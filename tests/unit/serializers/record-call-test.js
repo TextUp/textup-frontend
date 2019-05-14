@@ -1,3 +1,4 @@
+import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('record-call', 'Unit | Serializer | record call', {
@@ -10,6 +11,12 @@ moduleForModel('record-call', 'Unit | Serializer | record call', {
     'validator:has-any',
     'validator:inclusion',
   ],
+  beforeEach() {
+    AliasModelNameInitializer.aliasModelName();
+  },
+  afterEach() {
+    AliasModelNameInitializer.cleanUpModelNameAlias();
+  },
 });
 
 test('serialized form', function(assert) {

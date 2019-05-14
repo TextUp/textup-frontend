@@ -26,7 +26,7 @@ export default {
     AVAILABLE_NUMBER: 'phoneNumber',
     FILTER_VAL: 'filterValue',
     MEDIA_ID: 'uid',
-    MODEL_NAME: 'constructor.modelName',
+    MODEL_NAME: 'modelName',
     NEW_NUMBER_ID: 'sid',
     READABLE_IDENT: 'readableIdentifier',
     SHARING_IDENT: 'sharingIdentifier',

@@ -7,7 +7,7 @@ import sinon from 'sinon';
 const HasAppRootComponent = Ember.Component.extend(HasAppRoot);
 
 moduleForComponent('', 'Integration | Mixin | component/has app root', {
-  integration: true
+  integration: true,
 });
 
 test('getting app root when not testing', function(assert) {
@@ -15,30 +15,32 @@ test('getting app root when not testing', function(assert) {
     app = owner.lookup('application:main'),
     appRootId = 'testing-app-root',
     originalRootElement = app.get('rootElement'),
-    testingStatusStub = sinon.stub(Ember, 'testing').get(() => false),
+    oldTestingVal = Ember.testing,
     getOwnerStub = sinon.stub(Ember, 'getOwner').returns(owner);
   app.set('rootElement', `#${appRootId}`);
 
   this.setProperties({ appRootId });
   this.render(hbs`<div id={{appRootId}}></div>`);
 
+  Ember.testing = false;
   const obj = HasAppRootComponent.create();
 
   assert.equal(obj.get('_root').selector, `#${appRootId}`);
   assert.equal(obj.get('_root').length, 1);
 
   getOwnerStub.restore();
-  testingStatusStub.restore();
+  Ember.testing = oldTestingVal;
   app.set('rootElement', originalRootElement);
 });
 
 test('getting app root when testing', function(assert) {
-  const testingStatusStub = sinon.stub(Ember, 'testing').get(() => true);
+  const oldTestingVal = Ember.testing;
 
+  Ember.testing = true;
   const obj = HasAppRootComponent.create();
 
   assert.equal(obj.get('_root').selector, `#ember-testing`);
   assert.equal(obj.get('_root').length, 1);
 
-  testingStatusStub.restore();
+  Ember.testing = oldTestingVal;
 });
