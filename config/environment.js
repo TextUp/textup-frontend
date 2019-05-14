@@ -8,6 +8,10 @@ module.exports = function(environment) {
     EmberENV: { FEATURES: {} },
     APP: {},
 
+    // Default options from `broccoli-manifest` are merged in during the build process but these
+    // default values seem to not be available to our classes unless we explicitly declare them here
+    // see https://github.com/racido/broccoli-manifest
+    manifest: { enabled: true },
     hasCordova: process.argv.some(obj => obj === '--cordova'),
     apiKeys: { mapbox: process.env.TEXTUP_FRONTEND_API_MAPBOX },
     gReCaptcha: { siteKey: process.env.TEXTUP_FRONTEND_API_GOOGLE_RECAPTCHA },
@@ -53,7 +57,7 @@ module.exports = function(environment) {
     // ENV.host = 'https://v2.textup.org';
 
     ENV.lock.lockOnHidden = false;
-    // ENV.manifest = { enabled: true };
+    ENV.manifest.enabled = false;
 
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
