@@ -7,7 +7,7 @@ export const PLATFORM_ANDROID = 'Android';
 export const PLATFORM_MOBILE_MAX_WIDTH_IN_PX = 980;
 
 export function isIOS() {
-  if (config.hasCordova) {
+  if (config.hasCordova && window.device) {
     return window.device.platform === PLATFORM_IOS;
   } else {
     return false;
@@ -15,7 +15,7 @@ export function isIOS() {
 }
 
 export function isAndroid() {
-  if (config.hasCordova) {
+  if (config.hasCordova && window.device) {
     return window.device.platform === PLATFORM_ANDROID;
   } else {
     return false;

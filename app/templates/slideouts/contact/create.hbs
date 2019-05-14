@@ -1,5 +1,8 @@
 {{#slideout-pane
-    headerComponent=(component "slideout-pane/title" title="New Contact")
+    headerComponent=(component "slideout-pane/title"
+        title="New Contact"
+        linkLabel="Import multiple"
+        onClickLink=(route-action "startMultipleContactImport"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
         onPrimary=(route-action "finishNewContactSlideout")

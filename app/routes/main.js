@@ -11,6 +11,7 @@ import SupportsCallSlideout from 'textup-frontend/mixins/route/supports-call-sli
 import SupportsComposeSlideout from 'textup-frontend/mixins/route/supports-compose-slideout';
 import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
+import SupportsMultipleContactImportSlideout from 'textup-frontend/mixins/route/supports-multiple-contact-import-slideout';
 
 export default Ember.Route.extend(
   HasSlideoutOutlet,
@@ -23,6 +24,7 @@ export default Ember.Route.extend(
   SupportsComposeSlideout,
   SupportsExportSlideout,
   SupportsFeedbackSlideout,
+  SupportsMultipleContactImportSlideout,
   {
     authService: Ember.inject.service(),
     sharingService: Ember.inject.service(),

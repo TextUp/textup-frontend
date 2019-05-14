@@ -6,7 +6,7 @@
   }
   &__title {
     padding: 0.5em 0.25em 0.5em 1em;
-    background: #3f86b3;
+    background: $color-brand-medium;
 
     &__text {
       color: #ffffff;
@@ -17,7 +17,9 @@
     }
 
     &--fa {
+      color: rgba(255, 255, 255, 0.7);
       font-size: 1.2em;
+
       &:before {
         color: rgba(255, 255, 255, 0.7);
       }
@@ -54,11 +56,11 @@
   }
 
   &__button {
-    border: 1px solid #3f86b3;
+    border: 1px solid $color-brand-medium;
     border-radius: 5px;
     padding: calc(0.5 * #{$padding}) calc(1.5 * #{$padding});
     color: #ffffff;
-    background: #3f86b3;
+    background: $color-brand-medium;
   }
   &__text {
     color: #505050;
@@ -90,7 +92,7 @@
     max-height: 70%;
   }
   &__button {
-    border: 1px solid #3f86b3;
+    border: 1px solid $color-brand-medium;
     border-radius: 5px;
     padding: 0.5em 1.5em;
 
@@ -100,7 +102,7 @@
     }
     &--show-me {
       color: #ffffff;
-      background: #3f86b3;
+      background: $color-brand-medium;
       margin-left: 0.8em;
     }
     &--container {

@@ -1,0 +1,54 @@
+.contacts-upload {
+  &__text {
+    margin: $baseunit;
+    margin-bottom: 3vh;
+    text-align: left;
+
+    &--boxed {
+      padding: $baseunit;
+      background-color: $bg-color;
+      border-radius: $border-radius;
+    }
+  }
+
+  &--error &__label {
+    border-color: $color-error-light;
+    color: $color-error-dark;
+  }
+
+  &--error &__label-text--lesser {
+    color: $color-error-light;
+  }
+
+  &__label {
+    cursor: pointer;
+    margin: $baseunit;
+    border: 1px solid black;
+    border-radius: $baseunit / 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: $color-brand-dark;
+    border-color: $color-brand-light;
+    height: $baseunit * 13;
+  }
+
+  &__label-text {
+    text-align: center;
+    margin: $baseunit / 1.5;
+    display: block;
+
+    &--underline {
+      text-decoration: underline;
+    }
+
+    &--lesser {
+      color: $color-brand-light;
+    }
+  }
+
+  &__input {
+    display: none;
+    opacity: 0;
+  }
+}

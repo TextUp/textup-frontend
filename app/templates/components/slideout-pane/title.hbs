@@ -3,6 +3,17 @@
         <span class="slideout-pane__header__control"></span>
     </button>
 </div>
-<div class="flex__item flex__item--grow">
-    <h5 class="text-ellipsis">{{title}}</h5>
+<div class="flex__item flex__item--grow slideout-pane__header__contents">
+    <div class="flex__item flex__item--grow">
+        <h5 class="text-ellipsis">{{title}}</h5>
+    </div>
+    {{#if _hasLink}}
+        <div class="flex__item flex__item--no-shrink">
+            <button type="button"
+                class="btn-link slideout-pane__header__link"
+                onclick={{action _onClickLink}}>
+                {{linkLabel}}
+            </button>
+        </div>
+    {{/if}}
 </div>

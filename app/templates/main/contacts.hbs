@@ -143,15 +143,20 @@
                 <div class="no-results">No contacts match this criteria.</div>
             {{/if}}
         {{/infinite-scroll}}
-        <div id="task-manager__container" class="section-footer flex__item flex__item--no-shrink">
-            {{tour-components/task-manager doRegister=(service-mut "tutorialService" "taskManager")
-                firstIncompleteTask=(service-prop "tutorialService" "firstIncompleteTask")
-                getTaskStatus=(service-action "tutorialService" "getTaskStatus")
-                onClose=(service-action "tutorialService" "closeTaskManager")
-                onFinishCompleteTask=(service-action "tutorialService" "finishCompleteTask")
-                resetTasks=(service-action "tutorialService" "resetTasks")
-                shouldShow=(service-prop "tutorialService" "shouldShowTaskManager")
-                tasks=(service-prop "tutorialService" "tasks")}}
+        <div class="section-footer flex__item flex__item--no-shrink">
+          {{contacts-load isSaving=(service-prop "contactImportService" "isSaving")
+                  numTotal=(service-prop "contactImportService" "numTotal")
+                  numSaved=(service-prop "contactImportService" "numSaved")}}
+          <div id="task-manager__container">
+              {{tour-components/task-manager doRegister=(service-mut "tutorialService" "taskManager")
+                  firstIncompleteTask=(service-prop "tutorialService" "firstIncompleteTask")
+                  getTaskStatus=(service-action "tutorialService" "getTaskStatus")
+                  onClose=(service-action "tutorialService" "closeTaskManager")
+                  onFinishCompleteTask=(service-action "tutorialService" "finishCompleteTask")
+                  resetTasks=(service-action "tutorialService" "resetTasks")
+                  shouldShow=(service-prop "tutorialService" "shouldShowTaskManager")
+                  tasks=(service-prop "tutorialService" "tasks")}}
+          </div>
         </div>
     </div>
 </div>

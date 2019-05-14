@@ -1,194 +1,194 @@
 @include mq($until: mobileLandscape) {
-    .tour-step {
-        $container-height: 68vh;
+  .tour-step {
+    $container-height: 68vh;
 
-        &__root {
-            position: relative;
+    &__root {
+      position: relative;
 
-            #container {
-                height: $container-height;
-            }
-        }
-        &__wormhole {
-            position: absolute;
-            left: 0;
-            top: $container-height;
-            height: calc(100vh - #{$container-height});
-            width: 100%;
-            border-top: 1px solid $color-brand-dark;
-            z-index: 6000;
-            overflow-y: scroll;
-        }
-
-        &__message-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            padding: 0;
-            min-height: 25vh;
-            max-height: 55vh;
-            border-radius: $border-radius;
-            box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
-            background-color: $color-white;
-
-            &--mobile {
-                display: flex;
-            }
-            &--desktop {
-                display: none;
-            }
-        }
-
-        &__header {
-            flex-shrink: 0;
-            height: 3em;
-            background: #50a5d9;
-            padding-left: 1em;
-
-            &__text {
-                font-size: 1.4em;
-                color: #ffffff;
-            }
-        }
-
-        &__content {
-            flex-shrink: 0;
-            padding: 1em;
-            background-color: $color-white;
-            font-size: 1.1em;
-        }
-
-        &__footer {
-            flex-shrink: 0;
-            justify-content: flex-end;
-            padding-right: 1em;
-            padding-bottom: 0.5em;
-            margin-top: auto;
-            background-color: $color-white;
-        }
-
-        &__button {
-            background: none;
-            border: none;
-            padding: 0.5em;
-            &--finish {
-                color: #5a5a5a;
-            }
-            &--next {
-                color: #5a5a5a;
-            }
-            &--skip {
-                color: #828282;
-            }
-        }
+      #container {
+        height: $container-height;
+      }
     }
+    &__wormhole {
+      position: absolute;
+      left: 0;
+      top: $container-height;
+      height: calc(100vh - #{$container-height});
+      width: 100%;
+      border-top: 1px solid $color-brand-dark;
+      z-index: 6000;
+      overflow-y: scroll;
+    }
+
+    &__message-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      padding: 0;
+      min-height: 25vh;
+      max-height: 55vh;
+      border-radius: $border-radius;
+      box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
+      background-color: $color-white;
+
+      &--mobile {
+        display: flex;
+      }
+      &--desktop {
+        display: none;
+      }
+    }
+
+    &__header {
+      flex-shrink: 0;
+      height: 3em;
+      background: #50a5d9;
+      padding-left: 1em;
+
+      &__text {
+        font-size: 1.4em;
+        color: #ffffff;
+      }
+    }
+
+    &__content {
+      flex-shrink: 0;
+      padding: 1em;
+      background-color: $color-white;
+      font-size: 1.1em;
+    }
+
+    &__footer {
+      flex-shrink: 0;
+      justify-content: flex-end;
+      padding-right: 1em;
+      padding-bottom: 0.5em;
+      margin-top: auto;
+      background-color: $color-white;
+    }
+
+    &__button {
+      background: none;
+      border: none;
+      padding: 0.5em;
+      &--finish {
+        color: #5a5a5a;
+      }
+      &--next {
+        color: #5a5a5a;
+      }
+      &--skip {
+        color: #828282;
+      }
+    }
+  }
 }
 
 @include mq($from: mobileLandscape) {
-    .tour-step {
-        &__status-dot {
-            font-size: 0.6em;
-            padding-right: 0.5em;
+  .tour-step {
+    &__status-dot {
+      font-size: 0.6em;
+      padding-right: 0.5em;
 
-            &--container {
-                padding: $padding 0;
-                justify-content: space-between;
-                max-width: 25%;
-            }
+      &--container {
+        padding: $padding 0;
+        justify-content: space-between;
+        max-width: 25%;
+      }
 
-            &--complete {
-                color: #50a5d9;
-            }
-            &--incomplete {
-                color: #c4c4c4;
-            }
-        }
-
-        &__mobile-drawer *:after {
-            display: none;
-        }
-
-        &__message-container {
-            z-index: 6000;
-            width: 50%;
-            max-width: 30 * $baseunit;
-            display: flex;
-            flex-direction: column;
-            min-height: 25vh;
-            max-height: 50vh;
-            padding: 0;
-            box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.5);
-
-            &--mobile {
-                display: none;
-            }
-            &--desktop {
-                display: flex;
-            }
-        }
-
-        &__header {
-            width: 100%;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            background: #3f86b3;
-            padding: $padding calc(1.5 * #{$padding});
-
-            &__text {
-                font-size: 1.2em;
-                color: #ffffff;
-            }
-        }
-
-        &__content {
-            width: 100%;
-            padding: $padding calc(1.5 * #{$padding});
-            line-height: 1.5em;
-        }
-
-        &__footer {
-            display: flex;
-            margin-top: auto;
-            width: 100%;
-            padding: 0 calc(1.5 * #{$padding}) calc(1.5 * #{$padding}) calc(1.5 * #{$padding});
-        }
-
-        &__button {
-            padding: calc(0.4 * #{$padding}) calc(1.5 * #{$padding});
-            border-radius: $border-radius;
-
-            &--inactive {
-                border: 1px solid rgba(63, 134, 179, 0.5);
-                color: rgba(63, 134, 179, 0.5);
-                background: none;
-                margin-right: $spacing;
-            }
-            &--finish {
-                color: #5a5a5a;
-            }
-            &--next {
-                background: #3f86b3;
-                border: 1px solid #3f86b3;
-                box-sizing: border-box;
-                color: #ffffff;
-            }
-            &--back {
-                border: 1px solid rgba(63, 134, 179, 0.5);
-                margin-right: $spacing;
-                background: none;
-            }
-        }
+      &--complete {
+        color: #50a5d9;
+      }
+      &--incomplete {
+        color: #c4c4c4;
+      }
     }
+
+    &__mobile-drawer *:after {
+      display: none;
+    }
+
+    &__message-container {
+      z-index: 6000;
+      width: 50%;
+      max-width: 30 * $baseunit;
+      display: flex;
+      flex-direction: column;
+      min-height: 25vh;
+      max-height: 50vh;
+      padding: 0;
+      box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.5);
+
+      &--mobile {
+        display: none;
+      }
+      &--desktop {
+        display: flex;
+      }
+    }
+
+    &__header {
+      width: 100%;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      background: $color-brand-medium;
+      padding: $padding calc(1.5 * #{$padding});
+
+      &__text {
+        font-size: 1.2em;
+        color: #ffffff;
+      }
+    }
+
+    &__content {
+      width: 100%;
+      padding: $padding calc(1.5 * #{$padding});
+      line-height: 1.5em;
+    }
+
+    &__footer {
+      display: flex;
+      margin-top: auto;
+      width: 100%;
+      padding: 0 calc(1.5 * #{$padding}) calc(1.5 * #{$padding}) calc(1.5 * #{$padding});
+    }
+
+    &__button {
+      padding: calc(0.4 * #{$padding}) calc(1.5 * #{$padding});
+      border-radius: $border-radius;
+
+      &--inactive {
+        border: 1px solid rgba(63, 134, 179, 0.5);
+        color: rgba(63, 134, 179, 0.5);
+        background: none;
+        margin-right: $spacing;
+      }
+      &--finish {
+        color: #5a5a5a;
+      }
+      &--next {
+        background: $color-brand-medium;
+        border: 1px solid $color-brand-medium;
+        box-sizing: border-box;
+        color: #ffffff;
+      }
+      &--back {
+        border: 1px solid rgba(63, 134, 179, 0.5);
+        margin-right: $spacing;
+        background: none;
+      }
+    }
+  }
 }
 
 .overlay--svg {
-    height: 100vh;
-    left: 0;
-    opacity: 0.5;
-    position: fixed;
-    top: 0;
-    transition: all 0.3s ease-out;
-    width: 100vw;
-    z-index: 5000;
+  height: 100vh;
+  left: 0;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  transition: all 0.3s ease-out;
+  width: 100vw;
+  z-index: 5000;
 }
