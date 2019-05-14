@@ -33,7 +33,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
 
   classNames: 'lock-container',
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
   },
