@@ -19,10 +19,9 @@
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-fingerprint-aio": "^1.6.0",
+    "cordova-plugin-ionic-webview": "^4.0.1",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
-    "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
-    "cordova-plugin-whitelist": "^1.3.3",
-    "cordova-plugin-wkwebview-engine": "^1.1.4"
+    "cordova-plugin-whitelist": "^1.3.3"
   },
   "cordova": {
     "plugins": {
@@ -33,8 +32,9 @@
       "cordova-plugin-contacts": {},
       "cordova-plugin-local-notification": {},
       "cordova-plugin-device": {},
-      "cordova-plugin-wkwebview-engine": {},
-      "cordova-plugin-statusbar": {}
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      }
     },
     "platforms": [
       "ios",
