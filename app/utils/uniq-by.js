@@ -4,7 +4,7 @@ import Ember from 'ember';
 const { get } = Ember;
 
 function filterUniques(objs, propertyKey) {
-  const uniqMap = Object.create(null),
+  const uniqMap = {},
     uniqs = [];
   objs.forEach(obj => {
     const prop = String(get(obj, propertyKey));
@@ -25,7 +25,7 @@ export default function uniqBy(dependentKey, propertyKey) {
           this.get(dependentKey).then(objs => {
             resolve(filterUniques(objs, propertyKey));
           }, reject);
-        })
+        }),
       });
     } else {
       return filterUniques(this.get(dependentKey), propertyKey);

@@ -20,7 +20,9 @@ test('inputs', function(assert) {
     'must pass in a function'
   );
 
-  this.set('onAdd', () => {});
+  this.set('onAdd', () => {
+    return {};
+  });
 
   this.render(hbs`{{photo-control/add onAdd=onAdd}}`);
 
@@ -35,7 +37,12 @@ test('inputs', function(assert) {
 test('rendering nonblock vs block forms', function(assert) {
   const testClassName = 'photo-control-add-block-form';
 
-  this.setProperties({ onAdd: () => {}, testClassName });
+  this.setProperties({
+    onAdd: () => {
+      return {};
+    },
+    testClassName,
+  });
 
   this.render(hbs`{{photo-control/add onAdd=onAdd}}`);
 

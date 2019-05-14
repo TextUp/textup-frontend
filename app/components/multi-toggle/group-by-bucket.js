@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import defaultIfAbsent from '../../utils/default-if-absent';
+import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 export default Ember.Component.extend({
   anyChanges: false,
@@ -69,7 +69,7 @@ export default Ember.Component.extend({
     return this.get('itemList.length') > 1;
   }),
   firstItemBucketMemberships: Ember.computed('buckets', 'itemList', 'hasManyItems', function() {
-    const memberships = Object.create(null);
+    const memberships = {};
     if (this.get('hasManyItems')) {
       return memberships;
     }
@@ -126,18 +126,16 @@ export default Ember.Component.extend({
     this.clearActions(bucket, false);
     const prop = this.get('actionProperty'),
       actions = Ember.get(bucket, prop);
-    this.get('itemList').forEach(
-      function(item) {
-        actions.pushObject(this._makeAction(bucket, item, command));
-      }.bind(this)
-    );
+    this.get('itemList').forEach(item => {
+      actions.pushObject(this._makeAction(bucket, item, command));
+    });
     Ember.set(bucket, prop, actions);
     this.set('anyChanges', true);
   },
   _makeAction(bucket, item, command) {
     const itemIdProp = this.get('itemIdentityProperty'),
       bucketIdProp = this.get('bucketIdentityProperty'),
-      action = Object.create(null);
+      action = {};
     action[this.get('_actionBucketIdProp')] = Ember.get(bucket, bucketIdProp);
     action[this.get('_actionItemIdProp')] = Ember.get(item, itemIdProp);
     action[this.get('_actionCommandProp')] = command;

@@ -68,7 +68,11 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
 
   _imagePlaceholders: computed('images.[]', function() {
     const images = this.get('images');
-    return images ? images.map(() => Object.create(null)) : null;
+    return images
+      ? images.map(() => {
+          return {};
+        })
+      : null;
   }),
   _elementToWormhole: computed(function() {
     return this.get('element').querySelector('.pswp');

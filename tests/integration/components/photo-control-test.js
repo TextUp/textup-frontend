@@ -26,7 +26,16 @@ test('inputs + rendering', function(assert) {
 
   assert.ok(this.$('.photo-control').length, 'images can be an empty array');
 
-  this.setProperties({ images: [], onAdd: () => {}, onRemove: () => {}, addComponentClass });
+  this.setProperties({
+    images: [],
+    onAdd: () => {
+      return {};
+    },
+    onRemove: () => {
+      return {};
+    },
+    addComponentClass,
+  });
   this.render(hbs`
     {{photo-control images=images
       addComponentClass=addComponentClass

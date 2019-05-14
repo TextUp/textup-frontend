@@ -8,7 +8,11 @@ const { typeOf } = Ember;
 
 moduleFor('mixin:serializer/owns-phone', 'Unit | Mixin | serializer/owns phone', {
   subject() {
-    const BaseClass = Ember.Object.extend({ serialize: () => Object.create(null) });
+    const BaseClass = Ember.Object.extend({
+      serialize: () => {
+        return {};
+      },
+    });
     const SerializerOwnsPhoneObject = BaseClass.extend(SerializerOwnsPhoneMixin);
     return SerializerOwnsPhoneObject.create();
   },
@@ -27,7 +31,7 @@ test('no phone action', function(assert) {
   let json = obj.serialize({ record: Ember.Object.create() });
 
   assert.equal(typeOf(json), 'object');
-  assert.deepEqual(json, Object.create(null));
+  assert.deepEqual(json, {});
 });
 
 test('changing phone number', function(assert) {
@@ -40,7 +44,7 @@ test('changing phone number', function(assert) {
   });
 
   assert.equal(typeOf(json), 'object');
-  assert.deepEqual(json.phone, { doPhoneActions: [Object.create(null)] });
+  assert.deepEqual(json.phone, { doPhoneActions: [{}] });
 
   json = obj.serialize({
     record: Ember.Object.create({

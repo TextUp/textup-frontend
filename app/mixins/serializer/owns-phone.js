@@ -13,7 +13,7 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
   serialize(snapshot) {
     const json = this._super(...arguments),
       rec1 = snapshot.record,
-      data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : Object.create(null),
+      data = rec1.get('hasPhoneActionData') ? rec1.get('phoneActionData') : {},
       doActions = [];
     switch (rec1.get('phoneAction')) {
       case Constants.ACTION.PHONE.CHANGE_NUMBER:
@@ -27,7 +27,7 @@ export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
         break;
     }
     if (doActions.length) {
-      json.phone = merge(json.phone || Object.create(null), { doPhoneActions: doActions });
+      json.phone = merge(json.phone || {}, { doPhoneActions: doActions });
     }
     return json;
   },
@@ -39,7 +39,7 @@ function changeToNewNumber(data) {
   } else if (get(data, Constants.PROP_NAME.AVAILABLE_NUMBER)) {
     return { action: 'NUMBYNUM', number: get(data, Constants.PROP_NAME.AVAILABLE_NUMBER) };
   } else {
-    return Object.create(null);
+    return {};
   }
 }
 

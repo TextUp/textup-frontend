@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import GroupByBucket from './group-by-bucket';
+import GroupByBucket from 'textup-frontend/components/multi-toggle/group-by-bucket';
 
 export default GroupByBucket.extend({
   layoutName: 'components/multi-toggle/group-by-bucket',
@@ -29,13 +29,11 @@ export default GroupByBucket.extend({
     this.clearActions(bucket, false);
     const items = this.get('itemList'),
       actionProperty = this.get('actionProperty');
-    items.forEach(
-      function(item) {
-        const actions = Ember.get(item, actionProperty) || [];
-        actions.pushObject(this._makeAction(bucket, item, command));
-        Ember.set(item, actionProperty, actions);
-      }.bind(this)
-    );
+    items.forEach(item => {
+      const actions = Ember.get(item, actionProperty) || [];
+      actions.pushObject(this._makeAction(bucket, item, command));
+      Ember.set(item, actionProperty, actions);
+    });
     this.set('anyChanges', true);
   },
   _determineAnyChanges() {

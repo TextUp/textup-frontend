@@ -4,7 +4,7 @@ import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('mixin:component/displays-images', 'Unit | Mixin | component/displays images', {
-  needs: ['model:media-element', 'model:media-element-version']
+  needs: ['model:media-element', 'model:media-element-version'],
 });
 
 test('validating input props', function(assert) {
@@ -27,14 +27,16 @@ test('validating input props', function(assert) {
     () =>
       ComponentDisplaysImagesObject.create({
         images: [mockValidMediaImage(store)],
-        onLoadEnd: 'not a function'
+        onLoadEnd: 'not a function',
       }),
     'onLoadEnd must be a function'
   );
   assert.ok(
     ComponentDisplaysImagesObject.create({
       images: [mockValidMediaImage(store)],
-      onLoadEnd: () => {}
+      onLoadEnd: () => {
+        return {};
+      },
     })
   );
 });

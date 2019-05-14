@@ -318,7 +318,7 @@ export default Ember.Component.extend({
     } else {
       this.setProperties({
         _results: [],
-        _resultIds: Object.create(null),
+        _resultIds: {},
       });
       this._doSyncResults(val);
       if (val === this.get('_prevSearchVal')) {
@@ -383,8 +383,8 @@ export default Ember.Component.extend({
       results: matching,
     };
   },
-  buildIds(data, existingIds = Object.create(null)) {
-    const ids = Object.create(null);
+  buildIds(data, existingIds = {}) {
+    const ids = {};
     if (this.get('checkIdentity')) {
       data.mapBy(this.get('identityProperty')).forEach(matchId => {
         if (matchId && !Ember.get(existingIds, matchId)) {

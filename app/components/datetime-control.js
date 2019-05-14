@@ -4,7 +4,11 @@ import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isPresent, computed: { and } } = Ember;
+const {
+  computed,
+  isPresent,
+  computed: { and },
+} = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
@@ -19,7 +23,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
     showDate: PropTypes.bool,
     showTime: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.null, PropTypes.date]), // cannot be number because time input does not populate correctly
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
   },
   getDefaultProps() {
     return {
@@ -31,7 +35,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
       disabled: false,
       showDate: true,
       showTime: true,
-      wormholeClass: 'datetime-control-wormhole'
+      wormholeClass: 'datetime-control-wormhole',
     };
   },
 
@@ -82,7 +86,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
 
   _dateOptions: computed('dateFormat', 'mMin', 'max', function() {
     const options = {
-        format: this.get('dateFormat')
+        format: this.get('dateFormat'),
       },
       mMin = this.get('mMin'),
       max = this.get('max');
@@ -155,7 +159,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
           }
         });
       }
-    }
+    },
   },
 
   // Helpers
@@ -197,7 +201,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
       decimalIndex = decimalFormAsString.indexOf('.');
     return {
       hours: parseInt(decimalFormAsString.slice(0, decimalIndex)),
-      minutes: parseInt(decimalFormAsString.slice(decimalIndex + 1)) / 100 * 60
+      minutes: (parseInt(decimalFormAsString.slice(decimalIndex + 1)) / 100) * 60,
     };
   },
 
@@ -238,7 +242,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
     // Need to initialize object as {} and not Object.create(null)
     // because picker calls `hasOwnProperty`, which is only added using the {} constructor
     const options = {
-        format: this.get('timeFormat')
+        format: this.get('timeFormat'),
       },
       forMin = this.get('isValueSameDayAsMin'),
       forMax = this.get('isValueSameDayAsMax');
@@ -251,5 +255,5 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
   },
   _includeIfSameDay(isSameDay, val) {
     return isSameDay ? val : false;
-  }
+  },
 });

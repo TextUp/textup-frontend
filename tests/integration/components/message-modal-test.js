@@ -22,7 +22,9 @@ moduleForComponent('message-modal', 'Integration | Component | message modal', {
 test('inputs', function(assert) {
   this.setProperties({
     url: 'http://www.example.com',
-    onClose: () => {},
+    onClose: () => {
+      return {};
+    },
   });
 
   assert.throws(() => this.render(hbs`{{message-modal}}`), 'requires message location url');

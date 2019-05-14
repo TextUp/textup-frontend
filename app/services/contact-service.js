@@ -43,7 +43,7 @@ export default Ember.Service.extend({
     contact.removeDuplicatesForNumber(removedNum);
   },
 
-  searchContactsByNumber(number, params = Object.create(null)) {
+  searchContactsByNumber(number, params = {}) {
     return new RSVP.Promise((resolve, reject) => {
       params.search = number;
       // teamId added by `contact` adapter

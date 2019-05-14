@@ -11,8 +11,8 @@ export default Ember.Service.extend({
   // Internal properties
   // -------------------
 
-  _outletNameToTemplateName: Object.create(null),
-  _outletNameToCurrentSlideoutName: Object.create(null),
+  _outletNameToTemplateName: {},
+  _outletNameToCurrentSlideoutName: {},
 
   // Methods
   // -------
@@ -38,5 +38,5 @@ export default Ember.Service.extend({
     Object.keys(currentSlideout).forEach(outletName => {
       set(currentSlideout, outletName, null);
     });
-  }
+  },
 });

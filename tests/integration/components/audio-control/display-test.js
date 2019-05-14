@@ -5,7 +5,7 @@ import { formatSecondsAsTimeElapsed } from 'textup-frontend/utils/time';
 import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('audio-control/display', 'Integration | Component | audio control/display', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {
@@ -13,7 +13,13 @@ test('inputs', function(assert) {
 
   assert.ok(this.$('.audio-control__display').length, 'did render');
 
-  this.setProperties({ number: 123, string: '123', func: () => {} });
+  this.setProperties({
+    number: 123,
+    string: '123',
+    func: () => {
+      return {};
+    },
+  });
 
   this.render(hbs`
     {{audio-control/display message=string
@@ -71,7 +77,7 @@ test('displaying time elapsed', function(assert) {
   assert.ok(
     this.$('.audio-control__display__progress')
       .attr('style')
-      .includes(Math.floor(numSeconds1 / numSeconds2 * 100))
+      .includes(Math.floor((numSeconds1 / numSeconds2) * 100))
   );
   let text = this.$()
     .text()

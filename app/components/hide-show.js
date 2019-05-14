@@ -64,7 +64,9 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       },
     };
   }),
-  _touchCoordinates: Ember.computed(() => Object.create(null)),
+  _touchCoordinates: Ember.computed(() => {
+    return {};
+  }),
 
   // Internal handlers
   // -----------------

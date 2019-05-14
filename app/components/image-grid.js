@@ -10,13 +10,15 @@ export default Ember.Component.extend(DisplaysImages, {
 
   didUpdateAttrs() {
     this._super(...arguments);
-    this.setProperties({ _numImagesLoaded: 0, _loadResults: Object.create(null) });
+    this.setProperties({ _numImagesLoaded: 0, _loadResults: {} });
   },
 
   // Internal properties
   // -------------------
 
-  _loadResults: computed(() => Object.create(null)),
+  _loadResults: computed(() => {
+    return {};
+  }),
   _images: computed.filterBy('images', 'isImage', true),
   _numImagesLoaded: 0,
   _shouldReturnResults: computed('_images.[]', '_numImagesLoaded', function() {
