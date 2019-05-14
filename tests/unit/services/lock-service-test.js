@@ -205,36 +205,63 @@ test('checking if should lock', function(assert) {
     });
 });
 
-test('checking if should start locked', function(assert) {
+test('checking if should start locked is only called once on initial render', function(assert) {
   const service = this.subject(),
     done = assert.async(),
-    currentRouteName = Math.random(),
-    retVal = Math.random(),
-    _shouldLockForRouteName = sinon.stub(service, '_shouldLockForRouteName').returns(retVal);
-
-  this.router.setProperties({ currentRouteName });
-
-  assert.equal(service.get('shouldStartLocked'), true, 'default for starting locked is true');
+    _checkIfShouldStartLocked = sinon.stub(service, '_checkIfShouldStartLocked').callThrough();
 
   service.scheduleCheckIfShouldStartLocked();
   wait()
     .then(() => {
-      assert.ok(_shouldLockForRouteName.calledOnce);
-      assert.ok(_shouldLockForRouteName.calledWith(currentRouteName));
-      assert.equal(service.get('shouldStartLocked'), retVal);
+      assert.ok(_checkIfShouldStartLocked.calledOnce);
 
       service.scheduleCheckIfShouldStartLocked();
       return wait();
     })
     .then(() => {
       assert.ok(
-        _shouldLockForRouteName.calledOnce,
+        _checkIfShouldStartLocked.calledOnce,
         'once initialized, will short circuit for future calls'
       );
 
-      _shouldLockForRouteName.restore();
+      _checkIfShouldStartLocked.restore();
       done();
     });
+});
+
+test('checking if should start locked', function(assert) {
+  const service = this.subject(),
+    currentRouteName = Math.random(),
+    retVal = Math.random(),
+    _shouldLockForRouteName = sinon.stub(service, '_shouldLockForRouteName'),
+    lockContainer = { actions: { lock: sinon.spy(), unlock: sinon.spy() } };
+
+  this.router.setProperties({ currentRouteName });
+
+  assert.equal(service.get('shouldStartLocked'), true, 'default for starting locked is true');
+
+  _shouldLockForRouteName.returns(retVal);
+  service._checkIfShouldStartLocked();
+
+  assert.ok(_shouldLockForRouteName.calledOnce);
+  assert.ok(_shouldLockForRouteName.calledWith(currentRouteName));
+  assert.equal(service.get('shouldStartLocked'), retVal);
+
+  service.setProperties({ lockContainer });
+
+  _shouldLockForRouteName.returns(false);
+  service._checkIfShouldStartLocked();
+
+  assert.ok(lockContainer.actions.unlock.calledOnce);
+  assert.ok(lockContainer.actions.lock.notCalled);
+
+  _shouldLockForRouteName.returns(true);
+  service._checkIfShouldStartLocked();
+
+  assert.ok(lockContainer.actions.unlock.calledOnce);
+  assert.ok(lockContainer.actions.lock.calledOnce);
+
+  _shouldLockForRouteName.restore();
 });
 
 test('syncing lock status with transition', function(assert) {

@@ -92,10 +92,21 @@ export default Ember.Service.extend(Ember.Evented, {
   _isInitialRender: true,
 
   _checkIfShouldStartLocked() {
-    this.setProperties({
-      shouldStartLocked: this._shouldLockForRouteName(this.get('router.currentRouteName')),
-      _isInitialRender: false,
-    });
+    const lockContainer = this.get('lockContainer'),
+      shouldStartLocked = this._shouldLockForRouteName(this.get('router.currentRouteName'));
+    // If lock-container has not already initialized, then setting `shouldStartLocked` will cause
+    // it to start unlocked
+    this.setProperties({ shouldStartLocked, _isInitialRender: false });
+    // if lock-container has already been initialized, then setting `shouldStartLocked` may not
+    // have its intended effect. Instead, we will call the appropriate action on the registered
+    // lockContainer object to ensure that our initialized state is what we want.
+    if (lockContainer) {
+      if (shouldStartLocked) {
+        lockContainer.actions.lock();
+      } else {
+        lockContainer.actions.unlock();
+      }
+    }
   },
 
   _shouldLockForRouteName(routeName) {
