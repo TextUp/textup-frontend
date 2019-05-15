@@ -1,7 +1,7 @@
 ---
 language: node_js
 node_js:
-  - '4'
+  - '6'
 
 # workaround from https://github.com/travis-ci/travis-ci/issues/8836#issuecomment-348227535
 sudo: required
@@ -18,11 +18,11 @@ cache: yarn
 before_install:
   - pip install --user awscli
   - npm config set spin false
-  - npm install --global yarn@1.10.1
-  - yarn global add bower@1.8.4
+  - npm install --global yarn@1.16.0
+  - yarn global add bower@1.8.8
 
 install:
-  - yarn install --ignore-engines
+  - yarn install
   - bower install
 
 before_script:

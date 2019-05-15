@@ -9,13 +9,13 @@ This is the frontend Ember app that connects to the [TextUp Grails backend](http
 ## Installation
 
 - Ensure that the following pre-requisites are fulfilled
-  - `node` LTS Argon: install with `nvm`
-  - `yarn`: install with `npm install --global yarn@1.10.1`
-  - `bower`: install with `yarn global add bower@1.8.4`
+  - `node` LTS Boron: install with `nvm`
+  - `yarn`: install with `npm install --global yarn@1.16.0`
+  - `bower`: install with `yarn global add bower@1.8.8`
 - Clone the repository.
   - `git clone --recursive <repository-url>` to also associate the [core styles](https://github.com/TextUp/textup-styles) repo. See [`git subtree`](https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt) for more details.
   - `git remote add styles git@github.com:TextUp/textup-styles.git` to create a remote to the core styles repository for easier pulling/pushing later on
-- `yarn install --ignore-engines`
+- `yarn install`
 - `bower install`
 
 ## Environment variables
