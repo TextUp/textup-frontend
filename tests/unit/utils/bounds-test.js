@@ -1,4 +1,5 @@
 import BoundUtils from 'textup-frontend/utils/bounds';
+import Ember from 'ember';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | bounds');
@@ -193,7 +194,7 @@ test('floating and dimension style invalid inputs', function(assert) {
 });
 
 test('building floating and dimension styles for top/left', function(assert) {
-  const viewportWidth = $(window).innerWidth();
+  const viewportWidth = Ember.$(window).innerWidth();
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
@@ -314,8 +315,8 @@ test('building floating and dimension styles for top/right', function(assert) {
 });
 
 test('building floating and dimension styles for bottom/left', function(assert) {
-  const viewportHeight = $(window).innerHeight(),
-    viewportWidth = $(window).innerWidth();
+  const viewportHeight = Ember.$(window).innerHeight(),
+    viewportWidth = Ember.$(window).innerWidth();
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };
@@ -365,7 +366,7 @@ test('building floating and dimension styles for bottom/left', function(assert) 
 });
 
 test('building floating and dimension styles for bottom/right', function(assert) {
-  const viewportHeight = $(window).innerHeight();
+  const viewportHeight = Ember.$(window).innerHeight();
 
   let triggerEl = withBoundingRect({ top: 500, left: 500, width: 100, height: 100 });
   let bodyEl = { scrollWidth: 200, scrollHeight: 100 };

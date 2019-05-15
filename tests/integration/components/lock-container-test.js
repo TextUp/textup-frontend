@@ -176,7 +176,7 @@ test('fingerprint auth', function(assert) {
   assert.ok(isAvailable.notCalled, 'Not called at start');
   assert.ok(show.notCalled);
 
-  $(document).trigger($.Event('deviceready'));
+  Ember.$(document).trigger(Ember.$.Event('deviceready'));
 
   wait().then(() => {
     assert.ok(this.get('lockContainer').isLocked);

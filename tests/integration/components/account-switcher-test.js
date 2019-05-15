@@ -13,7 +13,7 @@ moduleForComponent('account-switcher', 'Integration | Component | account switch
   },
 });
 
-test('inputs', function(assert) {
+test('valid inputs', function(assert) {
   const staff = run(() => this.store.createRecord('staff'));
   this.setProperties({ staff, fn: sinon.spy() });
 
@@ -26,8 +26,6 @@ test('inputs', function(assert) {
       toggleClass="hi"}}
   `);
   assert.ok(this.$('.textup-account-switcher').length, 'did render');
-
-  assert.throws(() => this.render(hbs`{{account-switcher}}`));
 });
 
 test("registering hide show's public API", function(assert) {

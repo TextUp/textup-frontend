@@ -1,5 +1,4 @@
-/*jshint node:true*/
-/* global require, module */
+/* eslint-env node */
 
 var BabelTranspiler = require('broccoli-babel-transpiler');
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -8,7 +7,7 @@ var mergeTrees = require('broccoli-merge-trees');
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
-    // See https://github.com/ember-cli/ember-cli-preprocessor-registry/issues/8#issuecomment-281373733
+    // see https://github.com/ember-cli/ember-cli-preprocessor-registry/issues/8#issuecomment-281373733
     minifyCSS: {
       options: { processImport: false },
     },

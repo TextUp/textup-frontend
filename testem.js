@@ -1,4 +1,4 @@
-/*jshint node:true*/
+/* eslint-env node */
 module.exports = {
   framework: 'qunit',
   test_page: 'tests/index.html?hidepassed',
@@ -14,7 +14,7 @@ module.exports = {
       '--window-size=1440,900',
       // see https://stackoverflow.com/a/28268629
       '--use-fake-ui-for-media-stream',
-      '--use-fake-device-for-media-stream'
-    ]
-  }
+      '--use-fake-device-for-media-stream',
+    ],
+  },
 };

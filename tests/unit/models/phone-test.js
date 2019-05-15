@@ -82,7 +82,7 @@ test('validation', function(assert) {
         model.set('awayMessage', 'hello! I am a reasonable length message.');
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), true);
 
         done();

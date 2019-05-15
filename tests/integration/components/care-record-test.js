@@ -329,7 +329,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
         'add buttons displayed, one for each single-item cluster'
       );
       assert.equal(
-        $('.record-item--note button').length,
+        Ember.$('.record-item--note button').length,
         recordClusters.length,
         'each rendered note has a dropdown menu'
       );
@@ -341,7 +341,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
       this.set('canModifyExistingInRecord', false);
 
       assert.notOk(
-        $('.record-item--note button').length,
+        Ember.$('.record-item--note button').length,
         'if cannot modify existing in record + no revisions, note dropdown menus are hidden'
       );
 
@@ -388,7 +388,7 @@ test('adding note in the past', function(assert) {
         'add buttons displayed, one for each single-item cluster'
       );
       assert.equal(
-        $('.record-item--note button').length,
+        Ember.$('.record-item--note button').length,
         recordClusters.length,
         'each rendered note has a dropdown menu'
       );

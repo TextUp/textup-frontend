@@ -49,7 +49,7 @@ test('rendering disabled', function(assert) {
   // after a slight delay.
   setTimeout(function() {
     $inputs.each(function() {
-      const $input = $(this);
+      const $input = Ember.$(this);
       // before click
       assert.equal($input.prop('disabled'), true, 'is disabled before click');
       assert.equal($input.attr('aria-expanded'), 'false', 'is not expanded before click');
@@ -162,9 +162,9 @@ test('rendering different time intervals', function(assert) {
     // and check offsets for all time option items
     let prevValue = null;
     Ember.$(`#${$timeInput.attr('aria-owns')} li`).each(function() {
-      const itemValue = $(this).data('pick');
+      const itemValue = Ember.$(this).data('pick');
       // don't run assertion for first item (val is 0) and last item (value is undefined)
-      if (!!itemValue) {
+      if (itemValue) {
         assert.equal(itemValue - prevValue, timeInterval, 'time options have appropriate offset');
       }
       prevValue = itemValue;

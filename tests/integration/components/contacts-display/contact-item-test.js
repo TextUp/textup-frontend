@@ -1,6 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-// import sinon from 'sinon';
+import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent(
   'contacts-display/contact-item',
@@ -29,10 +29,10 @@ test('public api', function(assert) {
   // test select
   items[0].actions.select();
   assert.ok(items[0].isSelect);
-  assert.ok($('div.contacts_display__contact_item').find('input')[0].checked);
+  assert.ok(Ember.$('div.contacts_display__contact_item').find('input')[0].checked);
 
   // test deselect
   items[0].actions.deselect();
   assert.equal(false, items[0].isSelect);
-  assert.equal(false, $('div.contacts_display__contact_item').find('input')[0].checked);
+  assert.equal(false, Ember.$('div.contacts_display__contact_item').find('input')[0].checked);
 });

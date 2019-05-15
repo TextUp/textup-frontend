@@ -2,7 +2,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { run } = Ember;
+const { assign, run } = Ember;
 
 export const VALID_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
@@ -48,11 +48,9 @@ export function mockValidMediaAudio(store) {
   });
 }
 
-/* jshint ignore:start */
 export function mockModel(id, modelName, otherProps = {}) {
-  return Ember.Object.create({ id, constructor: { modelName }, modelName, ...otherProps });
+  return Ember.Object.create(assign(otherProps, { id, constructor: { modelName }, modelName }));
 }
-/* jshint ignore:end */
 
 export function mockRecordClusters(
   store,

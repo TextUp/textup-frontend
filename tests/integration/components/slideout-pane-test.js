@@ -344,7 +344,7 @@ test('forcing slideout to remain open even when trying to close', function(asser
   const publicAPI = doRegister.firstCall.args[0];
   assert.equal(publicAPI.isOpen, true, 'is open');
 
-  $('.test-external-item').click();
+  Ember.$('.test-external-item').click();
   wait()
     .then(() => {
       assert.ok(this.$('.slideout-pane--open').length, 'is open');
@@ -357,7 +357,7 @@ test('forcing slideout to remain open even when trying to close', function(asser
     .then(() => {
       assert.notOk(this.$('.slideout-pane--keep-open').length, 'no longer force keep open');
 
-      $('.test-external-item').click();
+      Ember.$('.test-external-item').click();
       return wait();
     })
     .then(() => {

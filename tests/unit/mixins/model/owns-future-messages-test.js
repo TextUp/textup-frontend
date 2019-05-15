@@ -1,3 +1,4 @@
+import DS from 'ember-data';
 import Ember from 'ember';
 import ModelOwnsFutureMessagesMixin from 'textup-frontend/mixins/model/owns-future-messages';
 import { moduleFor, test } from 'ember-qunit';
@@ -15,7 +16,7 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
     'validator:presence',
     'validator:number',
     'validator:inclusion',
-    'validator:has-any'
+    'validator:has-any',
   ],
   subject() {
     // The scope here is the module, so we have access to the registration stuff.
@@ -29,7 +30,7 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
       const store = Ember.getOwner(this).lookup('service:store');
       return store.createRecord('owns-future-messages-mixin-model');
     });
-  }
+  },
 });
 
 test('adding future messages', function(assert) {
@@ -72,15 +73,15 @@ test('calculating next fire date', function(assert) {
       fMsg1 = store.createRecord('future-message', { id: `${Math.random()}` }),
       fMsg2 = store.createRecord('future-message', {
         id: `${Math.random()}`,
-        nextFireDate: date1
+        nextFireDate: date1,
       }),
       fMsg3 = store.createRecord('future-message', {
         id: `${Math.random()}`,
-        nextFireDate: date2
+        nextFireDate: date2,
       }),
       fMsg4 = store.createRecord('future-message', {
         id: `${Math.random()}`,
-        nextFireDate: date3
+        nextFireDate: date3,
       });
 
     assert.equal(obj.get('numFutureMessages'), 0);

@@ -41,7 +41,7 @@ test('validating recipients', function(assert) {
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(
           validations.get('isTruelyValid'),
           false,

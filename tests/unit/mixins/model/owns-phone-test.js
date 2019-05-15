@@ -1,4 +1,5 @@
 import Constants from 'textup-frontend/constants';
+import DS from 'ember-data';
 import Ember from 'ember';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import ModelOwnsPhoneMixin, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';

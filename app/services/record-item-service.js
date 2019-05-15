@@ -36,7 +36,6 @@ export default Ember.Service.extend({
   },
 
   // if no record owners specified, will just return export for all records for the currently-active phone
-  /* jshint unused:vars */
   exportRecordItems(dateStart, dateEnd, shouldGroup, recordOwners = [], alreadyRetried = false) {
     return new RSVP.Promise((resolve, reject) => {
       const query = {

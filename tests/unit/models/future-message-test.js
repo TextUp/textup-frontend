@@ -276,7 +276,7 @@ test('repeat-related properties are only validated if message is repeating', fun
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), true);
 
         done();
@@ -319,7 +319,7 @@ test('validating repeating future message', function(assert) {
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), true);
 
         done();
@@ -367,7 +367,7 @@ test('validating contents', function(assert) {
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), true, 'media now has elements');
 
         done();

@@ -1,5 +1,5 @@
 // import CookieConsent to load the library
-import CookieConsent from 'npm:cookieconsent'; // jshint ignore:line
+import CookieConsent from 'npm:cookieconsent'; // eslint-disable-line
 import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import LocaleUtils from 'textup-frontend/utils/locale';
@@ -10,7 +10,7 @@ const { run } = Ember;
 export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
   propTypes: {
     theme: PropTypes.string,
-    learnMoreLink: PropTypes.string
+    learnMoreLink: PropTypes.string,
   },
   getDefaultProps() {
     return { theme: 'cookie-consent', learnMoreLink: 'https://cookiesandyou.com/' };
@@ -29,7 +29,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
       container: this.get('_root'),
       content: { href: this.get('learnMoreLink') },
       theme: this.get('theme'),
-      law: { countryCode: LocaleUtils.getCountryCode() }
+      law: { countryCode: LocaleUtils.getCountryCode() },
     });
-  }
+  },
 });

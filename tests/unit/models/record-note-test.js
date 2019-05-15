@@ -184,7 +184,7 @@ test('validating content', function(assert) {
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), true, 'also valid with just location');
 
         done();
@@ -238,7 +238,7 @@ test('validating recipients', function(assert) {
 
         return model.validate();
       })
-      .then(({ model, validations }) => {
+      .then(({ validations }) => {
         assert.equal(validations.get('isTruelyValid'), false, 'must only have one recipient');
 
         done();
