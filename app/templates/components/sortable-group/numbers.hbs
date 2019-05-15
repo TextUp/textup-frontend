@@ -1,22 +1,26 @@
-{{#sortable-group classNames="existing-numbers"
-    onChange="reorderNumbers" as |group|}}
-    {{#each numbers as |num i|}}
+{{#sortable-group classNames="existing-numbers" onChange=(action _onReorder) as |group|}}
+    {{#each _numbers as |thisNum i|}}
         {{#sortable-item classNames="input-group"
-            model=num group=group handle=".handle"}}
+            onDragStart=(action (mut _isReordering) true)
+            onDragStop=(action (mut _isReordering) false)
+            model=thisNum
+            group=group
+            handle=".handle"}}
             {{#if (not readonly)}}
                 <div class="input-group-addon blend-in no-select">
-                    <button class="btn" type="button" {{action "removeNumber" i}}>
+                    <button class="btn" type="button" onclick={{action _onRemove i}}>
                         <span class="fa fa-trash"></span>
                     </button>
                 </div>
             {{/if}}
             {{#phone-control
-                number=(readonly num.number)
+                number=(readonly thisNum.number)
                 disabled=readonly
                 controlClass="blend-in handle"
                 controlButtonClass="btn-default"
-                onChange=(action "updateNumber" num i)
-                onFocusLeave=(action "removeIfEmpty" i)
+                onChange=(action (mut thisNum.number))
+                onClick=(action _onUpdateExisting i)
+                onFocusLeave=(action _onUpdateExisting i)
                 showControl=true}}
             {{else}}
                 <span class="fa fa-arrows-v"></span>
@@ -26,12 +30,11 @@
 {{/sortable-group}}
 {{#if (not readonly)}}
     {{#hide-show classNames="margin-t"
-        startOpen=(if numbers false true)
         focusOnOpenSelector=".phone-control"
-        onClose=(action (mut newNumber) "") as |hideShow|}}
+        onClose=(action (mut _newNumberString) "") as |hideShow|}}
         {{#if hideShow.isOpen}}
             <div class="input-group">
-                {{#if hasNumbers}}
+                {{#if _hasNumbers}}
                     <span class="input-group-addon blend-in no-select">
                         <button class="btn" type="button"
                             onclick={{hideShow.actions.close}}>
@@ -39,11 +42,11 @@
                         </button>
                     </span>
                 {{/if}}
-                {{phone-control number=newNumber
+                {{phone-control number=_newNumberString
                     controlButtonClass="btn-success"
-                    onChange=(action "storeNewNumber")
-                    onClick=(action "addNewNumber")
-                    onFocusLeave=(action "addNewNumber")}}
+                    onChange=(action (mut _newNumberString))
+                    onClick=(action _onAdd)
+                    onFocusLeave=(action _onAdd)}}
             </div>
         {{else}}
             <button class="button button--expand"

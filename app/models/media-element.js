@@ -2,7 +2,7 @@ import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import MF from 'model-fragments';
+import MF from 'ember-data-model-fragments';
 
 const { computed, isPresent } = Ember;
 

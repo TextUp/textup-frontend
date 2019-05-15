@@ -47,6 +47,9 @@ export default Ember.Mixin.create({
     this._super(...arguments);
 
     scheduleOnce('afterRender', this, function() {
+      if (this.get('isDestroying') || this.get('isDestroyed')) {
+        return;
+      }
       // bind event handlers
       const eventsToBind = `
           focusout.${this.elementId}
@@ -56,9 +59,12 @@ export default Ember.Mixin.create({
         `,
         fields = this.get('$validateFields'),
         threshold = this.get('validateFreq'),
-        eventAction = function() {
-          debounce(this, this.doValidate, threshold, false);
-        }.bind(this);
+        eventAction = () => {
+          if (this.get('isDestroying') || this.get('isDestroyed')) {
+            return;
+          }
+          debounce(this, this.doValidate, threshold, true);
+        };
       if (typeof fields === 'string') {
         this.$().on(eventsToBind, fields, eventAction);
       } else {
@@ -66,9 +72,9 @@ export default Ember.Mixin.create({
       }
       // need to schedule next because we need to wait a little bit
       // for the validateObj to not be null, if it is present
-      next(this, function() {
+      next(() => {
         // watch out if it's now destroyed after the wait
-        if (this.isDestroying || this.isDestroyed) {
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
           return;
         }
         // observe field validity in case is changed by
@@ -86,6 +92,7 @@ export default Ember.Mixin.create({
   },
   willDestroyElement() {
     this._super(...arguments);
+
     const $errors = this.get('$errors');
     if ($errors && $errors.length) {
       $errors.remove();
@@ -106,7 +113,7 @@ export default Ember.Mixin.create({
   // ----------
 
   doValidate() {
-    if (!this.get('canDoValidate')) {
+    if (!this.get('canDoValidate') || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     const $errors = this.get$Errors(),
@@ -117,12 +124,7 @@ export default Ember.Mixin.create({
     }
     if (model && model.validate) {
       model
-        .validate(
-          {
-            on: [field],
-          },
-          true
-        )
+        .validate({ on: [field] }, true)
         .then(this._processValidate.bind(this, model, field, $errors));
     }
   },

@@ -1,4 +1,5 @@
 import Constants from 'textup-frontend/constants';
+import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
 import Ember from 'ember';
 import sinon from 'sinon';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
@@ -9,11 +10,10 @@ moduleFor('service:contact-service', 'Unit | Service | contact service', {
   needs: ['service:analytics'],
   beforeEach() {
     this.register('service:dataService', Ember.Service);
-    this.register('service:stateService', Ember.Service);
-    this.register('service:store', Ember.Service);
-
     this.inject.service('dataService');
+    this.register('service:stateService', Ember.Service);
     this.inject.service('stateService');
+    this.register('service:store', Ember.Service);
     this.inject.service('store');
   },
 });
@@ -57,7 +57,11 @@ test('finding duplicate contacts that have the same number', function(assert) {
   assert.ok(service.searchContactsByNumber.notCalled);
   assert.ok(contactObj.addDuplicatesForNumber.notCalled);
 
-  service.checkNumberDuplicate(contactObj, addedNum);
+  service.checkNumberDuplicate(contactObj, { number: addedNum });
+  assert.ok(service.searchContactsByNumber.notCalled, 'must be a `ContactNumberObject`');
+  assert.ok(contactObj.addDuplicatesForNumber.notCalled);
+
+  service.checkNumberDuplicate(contactObj, ContactNumberObject.create({ number: addedNum }));
   wait().then(() => {
     assert.ok(service.searchContactsByNumber.calledOnce);
     assert.ok(service.searchContactsByNumber.calledWith(addedNum));
@@ -76,7 +80,10 @@ test('removing contact duplicates given a specific number', function(assert) {
   service.removeNumberDuplicate(contactObj, null);
   assert.ok(contactObj.removeDuplicatesForNumber.notCalled);
 
-  service.removeNumberDuplicate(contactObj, removedNum);
+  service.removeNumberDuplicate(contactObj, { number: removedNum });
+  assert.ok(contactObj.removeDuplicatesForNumber.notCalled, 'must be a `ContactNumberObject`');
+
+  service.removeNumberDuplicate(contactObj, ContactNumberObject.create({ number: removedNum }));
   assert.ok(contactObj.removeDuplicatesForNumber.calledOnce);
   assert.ok(contactObj.removeDuplicatesForNumber.calledWith(removedNum));
 });

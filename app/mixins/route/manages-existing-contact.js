@@ -25,15 +25,9 @@ export default Ember.Mixin.create({
         .then(() => this.send('closeSlideout'));
     },
 
-    goToDuplicateContact(dupId) {
+    existingContactGoToDuplicateContact(dupId) {
       this.send('cancelExistingContactSlideout');
       this.transitionTo(this.get('routeName'), dupId);
-    },
-    onAddNumber() {
-      this.get('contactService').checkNumberDuplicate(this.get('currentModel'), ...arguments);
-    },
-    onRemoveNumber() {
-      this.get('contactService').removeNumberDuplicate(this.get('currentModel'), ...arguments);
     },
   },
 });

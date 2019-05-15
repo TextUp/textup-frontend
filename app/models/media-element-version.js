@@ -1,7 +1,7 @@
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import MF from 'model-fragments';
+import MF from 'ember-data-model-fragments';
 
 const { computed } = Ember;
 
@@ -11,5 +11,5 @@ export default MF.Fragment.extend(Dirtiable, {
   source: computed.alias('link'),
   // only for images
   width: DS.attr('number', { defaultValue: null }),
-  height: DS.attr('number', { defaultValue: null })
+  height: DS.attr('number', { defaultValue: null }),
 });

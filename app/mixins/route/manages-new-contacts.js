@@ -22,12 +22,11 @@ export default Ember.Mixin.create({
       );
     },
     cancelNewContactSlideout() {
-      this._tryRevertNewContact();
+      const newContact = this.get('controller.newContact');
+      if (newContact) {
+        newContact.rollbackAttributes();
+      }
       this.send('closeSlideout');
-      // nullify newContact to avoid sortable numbers component setting
-      // a copied version of the numbers array after the newContact is
-      // rolled back (thus deleted) which triggers an error from ember data
-      this.get('controller').set('newContact', null);
     },
     finishNewContactSlideout() {
       return this.get('contactService')
@@ -42,12 +41,5 @@ export default Ember.Mixin.create({
       this.send('cancelNewContactSlideout');
       this.transitionTo('main.contacts.contact', dupId);
     },
-  },
-
-  _tryRevertNewContact() {
-    const newContact = this.get('controller.newContact');
-    if (newContact) {
-      newContact.rollbackAttributes();
-    }
   },
 });

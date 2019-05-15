@@ -60,7 +60,7 @@ module.exports = function(environment) {
   if (environment === 'development') {
     // ENV.host = 'http://localhost:8080';
     // ENV.host = 'https://dev.textup.org';
-    ENV.host = 'https://v2.textup.org'; // TODO restore
+    ENV.host = 'https://v2.textup.org'; // TODO
 
     ENV.lock.lockOnHidden = false;
     ENV.manifest.enabled = false;

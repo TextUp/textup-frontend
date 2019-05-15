@@ -8,6 +8,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     contact: PropTypes.instanceOf(Contact),
     onGoToDuplicates: PropTypes.func,
+    onChangeNumbers: PropTypes.func,
     onAddNumber: PropTypes.func,
     onRemoveNumber: PropTypes.func,
   },
@@ -19,6 +20,9 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _onGoToDuplicates() {
     tryInvoke(this, 'onGoToDuplicates', [...arguments]);
+  },
+  _onChangeNumbers() {
+    tryInvoke(this, 'onChangeNumbers', [...arguments]);
   },
   _onAddNumber() {
     tryInvoke(this, 'onAddNumber', [...arguments]);

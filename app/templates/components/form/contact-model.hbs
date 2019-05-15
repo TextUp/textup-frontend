@@ -91,11 +91,11 @@
                 {{/each}}
             </div>
         {{/if}}
-        {{!-- TODO: If contacts is clicked many times, this will cause the page to crash --}}
         {{sortable-group/numbers numbers=contact.numbers
             readonly=(not contact.allowEdits)
-            onAdd=(action _onAddNumber)
-            onRemove=(action _onRemoveNumber)
+            onChange=(action _onChangeNumbers)
+            onAdded=(action _onAddNumber)
+            onRemoved=(action _onRemoveNumber)
             validateObj=contact
             validateField="numbers"
             validate="bottom"}}

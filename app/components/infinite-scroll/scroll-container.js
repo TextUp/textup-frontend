@@ -25,7 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
 
   init() {
     this._super(...arguments);
-    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didInsertElement() {
     this._super(...arguments);

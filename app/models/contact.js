@@ -5,7 +5,7 @@ import DS from 'ember-data';
 import Ember from 'ember';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
-import MF from 'model-fragments';
+import MF from 'ember-data-model-fragments';
 import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-messages';
 import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import Shareable from 'textup-frontend/mixins/model/shareable';

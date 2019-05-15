@@ -11,6 +11,7 @@
     focusSelector=".start-focus" as |slideout|}}
     {{form/contact-model contact=newContact
         onGoToDuplicates=(route-action "newContactGoToDuplicateContact")
+        onChangeNumbers=(action (mut newContact.numbers))
         onAddNumber=(service-action "contactService" "checkNumberDuplicate" newContact)
         onRemoveNumber=(service-action "contactService" "removeNumberDuplicate" newContact)}}
 {{/slideout-pane}}

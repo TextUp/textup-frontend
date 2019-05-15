@@ -17,7 +17,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
 
   init() {
     this._super(...arguments);
-    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   // Internal properties

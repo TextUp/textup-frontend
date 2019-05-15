@@ -36,7 +36,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
     this._scheduleResetAll();
   },
 
@@ -184,7 +184,9 @@ export default Ember.Component.extend(PropTypesMixin, {
         _didStartLoad: false,
         '_publicAPI.isDone': this.get('_numTimesWithoutChanges') >= 3 || currentHasLoadedAll,
       });
-      callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd'));
+      // Need to schedule to run in the next run loop to all for appropriate restoring of the user's
+      // position before we attempt to check if near end
+      run.next(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
     } else {
       // When items are added to the data array and the user does not manually trigger a restore,
       // then we want to restore the user position here regardless

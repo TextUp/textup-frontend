@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke } = Ember;
+const { computed, run, tryInvoke } = Ember;
 
 export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
@@ -19,7 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    tryInvoke(this, 'doRegister', [this.get('_publicAPI')]);
+    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   classNames: 'task-manager',

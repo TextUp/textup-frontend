@@ -1,5 +1,4 @@
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
-import CareRecordComponent from 'textup-frontend/components/care-record';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
@@ -59,7 +58,7 @@ test('empty + invalid inputs', function(assert) {
       startCallMessage=88
       addNoteInPastMessage=88}}
   `);
-  }, 'invalid types');
+  });
 });
 
 test('all valid inputs', function(assert) {
@@ -143,18 +142,6 @@ test('doRegister a reference to the public API', function(assert) {
   );
   assert.equal(typeOf(doRegister.firstCall.args[0].actions.resetAll), 'function');
   assert.equal(typeOf(doRegister.firstCall.args[0].actions.restorePosition), 'function');
-});
-
-test('text handler returns outcome', function(assert) {
-  const done = assert.async(),
-    onText = sinon.spy(),
-    obj = CareRecordComponent.create({ onText });
-
-  obj._onText().then(() => {
-    assert.ok(onText.calledOnce);
-
-    done();
-  });
 });
 
 test('cannot add to record', function(assert) {

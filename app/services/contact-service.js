@@ -1,4 +1,5 @@
 import Constants from 'textup-frontend/constants';
+import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
 import Ember from 'ember';
 import TypeUtils from 'textup-frontend/utils/type';
 
@@ -28,19 +29,17 @@ export default Ember.Service.extend({
       });
   },
 
-  checkNumberDuplicate(contact, addedNum) {
-    if (!contact || !addedNum) {
-      return;
+  checkNumberDuplicate(contact, contactNumObj) {
+    if (contact && contactNumObj instanceof ContactNumberObject) {
+      this.searchContactsByNumber(contactNumObj.number).then(results => {
+        contact.addDuplicatesForNumber(contactNumObj.number, results.toArray());
+      });
     }
-    this.searchContactsByNumber(addedNum).then(results => {
-      contact.addDuplicatesForNumber(addedNum, results.toArray());
-    });
   },
-  removeNumberDuplicate(contact, removedNum) {
-    if (!contact || !removedNum) {
-      return;
+  removeNumberDuplicate(contact, contactNumObj) {
+    if (contact && contactNumObj instanceof ContactNumberObject) {
+      contact.removeDuplicatesForNumber(contactNumObj.number);
     }
-    contact.removeDuplicatesForNumber(removedNum);
   },
 
   searchContactsByNumber(number, params = {}) {
