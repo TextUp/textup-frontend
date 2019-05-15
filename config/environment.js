@@ -5,7 +5,13 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'hash',
-    EmberENV: { FEATURES: {} },
+    EmberENV: {
+      FEATURES: {},
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false,
+      },
+    },
     APP: {},
 
     // Default options from `broccoli-manifest` are merged in during the build process but these
