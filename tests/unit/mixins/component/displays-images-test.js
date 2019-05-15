@@ -3,6 +3,8 @@ import Ember from 'ember';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
+// TODO fix
+
 moduleFor('mixin:component/displays-images', 'Unit | Mixin | component/displays images', {
   needs: ['model:media-element', 'model:media-element-version'],
 });
