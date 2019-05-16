@@ -54,16 +54,19 @@ test('record items relationship is polymorphic', function(assert) {
     assert.equal(obj.get('numRecordItems'), 0);
     assert.deepEqual(obj.get('recordItems'), []);
 
-    assert.ok(obj.addRecordItems(validItems));
+    assert.equal(obj.addRecordItems(validItems), true, 'all successfully added');
 
     assert.equal(obj.get('numRecordItems'), validItems.length, 'polymorphic items added');
     assert.deepEqual(obj.get('recordItems'), validItems);
 
-    assert.throws(
-      () => obj.addRecordItem(rev1),
-      Error,
-      'cannot add item not in polymorphic hierarchy'
+    assert.equal(
+      obj.addRecordItem(rev1),
+      false,
+      'failed to add -- item not in polymorphic hierarchy'
     );
+
+    assert.equal(obj.get('numRecordItems'), validItems.length, 'non polymorphic items ignored');
+    assert.deepEqual(obj.get('recordItems'), validItems);
   });
 });
 

@@ -4,10 +4,13 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 
-const HasAppRootComponent = Ember.Component.extend(HasAppRoot);
+const componentIdent = 'component:has-app-root-test-component';
 
 moduleForComponent('', 'Integration | Mixin | component/has app root', {
   integration: true,
+  beforeEach() {
+    this.register(componentIdent, Ember.Component.extend(HasAppRoot));
+  },
 });
 
 test('getting app root when not testing', function(assert) {
@@ -23,7 +26,7 @@ test('getting app root when not testing', function(assert) {
   this.render(hbs`<div id={{appRootId}}></div>`);
 
   Ember.testing = false;
-  const obj = HasAppRootComponent.create();
+  const obj = owner.factoryFor(componentIdent).create();
 
   assert.equal(obj.get('_root').attr('id'), appRootId);
   assert.equal(obj.get('_root').length, 1);
@@ -37,7 +40,9 @@ test('getting app root when testing', function(assert) {
   const oldTestingVal = Ember.testing;
 
   Ember.testing = true;
-  const obj = HasAppRootComponent.create();
+  const obj = Ember.getOwner(this)
+    .factoryFor(componentIdent)
+    .create();
 
   assert.equal(obj.get('_root').attr('id'), 'ember-testing');
   assert.equal(obj.get('_root').length, 1);

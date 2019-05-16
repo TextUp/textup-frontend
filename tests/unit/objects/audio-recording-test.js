@@ -1,9 +1,6 @@
 import AudioRecording from 'textup-frontend/objects/audio-recording';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
-
-const { run } = Ember;
 
 let recorder, errorSpy, dataSpy;
 
@@ -14,7 +11,7 @@ module('Unit | Object | audio recording', {
     dataSpy = sinon.spy();
     recorder.on('error', errorSpy);
     recorder.on('dataavailable', dataSpy);
-  }
+  },
 });
 
 test('recording with native media recorder', function(assert) {
@@ -23,10 +20,10 @@ test('recording with native media recorder', function(assert) {
   recorder.startRecording();
   recorder.startRecording(); // repeated calls are ignored
 
-  run.later(() => {
+  setTimeout(() => {
     recorder.stopRecording();
 
-    run.later(() => {
+    setTimeout(() => {
       assert.ok(errorSpy.notCalled);
       assert.ok(dataSpy.calledOnce);
       assert.ok(dataSpy.firstCall.args[0] instanceof window.Blob);
@@ -45,10 +42,10 @@ test('recording WITHOUT native media recorder', function(assert) {
   recorder.startRecording();
   recorder.startRecording(); // repeated calls are ignored
 
-  run.later(() => {
+  setTimeout(() => {
     recorder.stopRecording();
 
-    run.later(() => {
+    setTimeout(() => {
       assert.ok(errorSpy.notCalled);
       assert.ok(dataSpy.calledOnce);
       assert.ok(dataSpy.firstCall.args[0] instanceof window.Blob);
@@ -66,7 +63,7 @@ test('calling stop before starting', function(assert) {
   recorder.stopRecording();
   recorder.stopRecording();
 
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(errorSpy.notCalled);
     assert.ok(dataSpy.notCalled);
 

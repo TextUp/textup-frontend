@@ -24,12 +24,6 @@ test('inputs', function(assert) {
     hbs`{{care-record-preview name="hi" noItemsMessage="hi" recordClusters=array onOpen=func}}`
   );
   assert.ok(this.$('.care-record-preview').length, 'did render');
-
-  assert.throws(() => {
-    this.render(
-      hbs`{{care-record-preview name=func noItemsMessage=func recordClusters=func onOpen=array}}`
-    );
-  });
 });
 
 test('opening up record owner', function(assert) {

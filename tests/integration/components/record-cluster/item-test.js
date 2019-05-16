@@ -26,8 +26,6 @@ test('inputs', function(assert) {
       invalidOpts = 'hi';
     this.setProperties({ rItem, rCall, validOpts, invalidOpts });
 
-    assert.throws(() => this.render(hbs`{{record-cluster/item}}`), 'requires item or subclass');
-
     this.render(hbs`{{record-cluster/item item=rItem}}`);
 
     assert.ok(this.$('.record-cluster__item').length, 'did render');
@@ -37,14 +35,6 @@ test('inputs', function(assert) {
     );
 
     assert.ok(this.$('.record-cluster__item').length, 'did render');
-
-    assert.throws(
-      () =>
-        this.render(
-          hbs`{{record-cluster/item item=rCall callOptions=invalidOpts noteOptions=invalidOpts}}`
-        ),
-      'if specified, options must be an object'
-    );
   });
 });
 

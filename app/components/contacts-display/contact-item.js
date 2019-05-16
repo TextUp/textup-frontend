@@ -12,7 +12,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   classNames: 'contacts_display__contact_item',
 
-  didInitAttrs() {
+  init() {
     this._super(...arguments);
     run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },

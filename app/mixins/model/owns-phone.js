@@ -8,7 +8,7 @@ import { validator } from 'ember-cp-validations';
 const { computed, getWithDefault, tryInvoke } = Ember;
 // Validations are ininheritable: https://github.com/offirgolan/ember-cp-validations/issues/111
 // [NOTE] don't mix into this mixin because of a bug where all classes that mix in this class
-// will have their own validations overriden with the last class that mixed in this mixin
+// will have their own validations overridden with the last class that mixed in this mixin
 export const OwnsPhoneValidations = {
   phone: { description: 'Phone', validators: [validator('belongs-to')] },
   phoneAction: {

@@ -3,11 +3,11 @@ import { getAudioStream } from 'textup-frontend/utils/audio';
 
 // Borrows heavily from: https://github.com/kaliatech/web-audio-recording-tests/blob/master/src/shared/RecorderService.js
 
-const { computed, Evented, tryInvoke } = Ember,
+const { computed, run, tryInvoke } = Ember,
   SCRIPT_PROCESSOR_BUFFER_SIZE = 2048,
   NUM_CHANNELS = 1;
 
-export default Ember.Object.extend(Evented, {
+export default Ember.Object.extend(Ember.Evented, {
   willDestroy() {
     this._super(...arguments);
     this._cleanup(); // ensure proper cleanup
@@ -109,7 +109,7 @@ export default Ember.Object.extend(Evented, {
       _outputGainNode: outputGainNode,
       _destinationNode: destinationNode,
       _encoderWorker: encoderWorker,
-      _scriptProcessor: scriptProcessor
+      _scriptProcessor: scriptProcessor,
     });
   },
   _connectSourceToAudioGraph(inputStream) {
@@ -139,7 +139,7 @@ export default Ember.Object.extend(Evented, {
     this.setProperties({
       _inputStream: inputStream,
       _sourceNode: sourceNode,
-      _mediaRecorder: mediaRecorder
+      _mediaRecorder: mediaRecorder,
     });
   },
 
@@ -187,40 +187,42 @@ export default Ember.Object.extend(Evented, {
   },
 
   _cleanup() {
-    const audioNodeProperties = [
-        '_sourceNode',
-        '_inputGainNode',
-        '_outputGainNode',
-        '_destinationNode',
-        '_scriptProcessor'
-      ],
-      ctx = this.get('_context'),
-      inputStream = this.get('_inputStream'),
-      encoderWorker = this.get('_encoderWorker');
-    // disconnect and clear references to all nodes in the audio graph
-    audioNodeProperties.forEach(audioNodeProp => {
-      const audioNode = this.get(audioNodeProp);
-      if (audioNode) {
-        audioNode.disconnect();
-        this.set('audioNodeProp', null);
+    run.join(() => {
+      const audioNodeProperties = [
+          '_sourceNode',
+          '_inputGainNode',
+          '_outputGainNode',
+          '_destinationNode',
+          '_scriptProcessor',
+        ],
+        ctx = this.get('_context'),
+        inputStream = this.get('_inputStream'),
+        encoderWorker = this.get('_encoderWorker');
+      // disconnect and clear references to all nodes in the audio graph
+      audioNodeProperties.forEach(audioNodeProp => {
+        const audioNode = this.get(audioNodeProp);
+        if (audioNode) {
+          audioNode.disconnect();
+          this.set('audioNodeProp', null);
+        }
+      });
+      // call appropriate clean-up methods for the other references
+      if (encoderWorker) {
+        encoderWorker.postMessage(['close']);
       }
+      if (inputStream) {
+        inputStream.getTracks().forEach(track => track.stop());
+      }
+      if (ctx) {
+        ctx.close();
+      }
+      // clear references to these additional properties
+      this.setProperties({
+        _context: null,
+        _inputStream: null,
+        _encoderWorker: null,
+        _mediaRecorder: null,
+      });
     });
-    // call appropriate clean-up methods for the other references
-    if (encoderWorker) {
-      encoderWorker.postMessage(['close']);
-    }
-    if (inputStream) {
-      inputStream.getTracks().forEach(track => track.stop());
-    }
-    if (ctx) {
-      ctx.close();
-    }
-    // clear references to these additional properties
-    this.setProperties({
-      _context: null,
-      _inputStream: null,
-      _encoderWorker: null,
-      _mediaRecorder: null
-    });
-  }
+  },
 });

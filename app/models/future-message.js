@@ -22,26 +22,26 @@ const { computed, tryInvoke, getWithDefault } = Ember,
       ],
     },
     intervalSize: {
-      disabled(model) {
-        return !model.get('isRepeating');
-      },
-      dependentKeys: ['isRepeating'],
+      disabled: computed('model.isRepeating', function() {
+        return !this.get('model.isRepeating');
+      }),
+      dependentKeys: ['model.isRepeating'],
       description: 'Repeat interval size in days',
       validators: [validator('number', { allowString: true, gt: 0 })],
     },
     repeatInterval: {
-      disabled(model) {
-        return !model.get('isRepeating');
-      },
-      dependentKeys: ['isRepeating'],
+      disabled: computed('model.isRepeating', function() {
+        return !this.get('model.isRepeating');
+      }),
+      dependentKeys: ['model.isRepeating'],
       description: 'Repeat interval',
       validators: [validator('number', { allowString: true, gt: 0 })],
     },
     repeatCount: {
-      disabled(model) {
-        return !model.get('isRepeating');
-      },
-      dependentKeys: ['isRepeating'],
+      disabled: computed('model.isRepeating', function() {
+        return !this.get('model.isRepeating');
+      }),
+      dependentKeys: ['model.isRepeating'],
       description: 'Number of times to repeat',
       validators: [
         validator('number', { allowBlank: true, allowString: true, gt: 0 }),

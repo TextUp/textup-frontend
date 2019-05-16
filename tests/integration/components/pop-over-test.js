@@ -41,16 +41,6 @@ test('properties', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-
-  assert.throws(() => {
-    this.render(hbs`{{pop-over doRegister=88
-      onOpen=88
-      onClose=88
-      onReposition=88
-      bodyClickWillClose=88
-      position=88}}
-    `);
-  });
 });
 
 test('opening', function(assert) {
@@ -132,7 +122,9 @@ test('registering', function(assert) {
     .open()
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--opening').length);
+      assert.ok(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.notCalled);
@@ -142,7 +134,9 @@ test('registering', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--opening').length);
+      assert.ok(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.notCalled);
@@ -152,7 +146,9 @@ test('registering', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
-      assert.notOk(Ember.$('.pop-over__body--opening').length);
+      assert.notOk(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.calledOnce);
@@ -162,7 +158,9 @@ test('registering', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--opening').length);
+      assert.ok(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledTwice);
       assert.ok(onClose.calledOnce);
@@ -172,7 +170,9 @@ test('registering', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
-      assert.notOk(Ember.$('.pop-over__body--opening').length);
+      assert.notOk(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledTwice);
       assert.ok(onClose.calledTwice);
@@ -294,7 +294,9 @@ test('truncate body if overflow', function(assert) {
   const publicAPI = doRegister.firstCall.args[0];
   publicAPI.actions.open().then(() => {
     assert.equal(publicAPI.isOpen, true);
-    assert.ok(Ember.$('.pop-over__body--opening').length);
+    assert.ok(
+      Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+    );
     assert.ok(doRegister.calledOnce);
     assert.ok(onReposition.notCalled);
 
@@ -332,7 +334,9 @@ test('appropriate positioning on repeating openings', function(assert) {
     .open()
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--opening').length);
+      assert.ok(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
 
       const floatingTop = $floatingContainer.css('top');
@@ -342,7 +346,9 @@ test('appropriate positioning on repeating openings', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
-      assert.notOk(Ember.$('.pop-over__body--opening').length);
+      assert.notOk(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
 
       bottom = triggerElement.getBoundingClientRect().bottom;
@@ -350,7 +356,9 @@ test('appropriate positioning on repeating openings', function(assert) {
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--opening').length);
+      assert.ok(
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      );
       assert.ok(doRegister.calledOnce);
 
       const floatingTop = $floatingContainer.css('top');
@@ -384,7 +392,7 @@ test('reposition on resize, orientation change, and mutation of child nodes', fu
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length,
+        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length,
         'wrapping up opening so not completely done yet'
       );
       assert.equal(onReposition.callCount, 0);

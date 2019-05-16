@@ -2,7 +2,7 @@ import Ember from 'ember';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 
-const { run, typeOf } = Ember;
+const { typeOf } = Ember;
 
 let encoderWorker;
 
@@ -26,7 +26,7 @@ test('invalid message', function(assert) {
   encoderWorker.postMessage(['correct format but not invalid action name']);
 
   // `wait` doesn't wait long enough
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(encoderWorker.onmessage.notCalled);
     assert.ok(encoderWorker.onerror.notCalled);
     assert.ok(encoderWorker.onmessageerror.notCalled);
@@ -43,7 +43,7 @@ test('calling actions without initializing', function(assert) {
   encoderWorker.postMessage(['close']);
 
   // `wait` doesn't wait long enough
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(encoderWorker.onmessage.notCalled, 'all ignored');
     assert.ok(encoderWorker.onerror.notCalled, 'not valid');
     assert.ok(encoderWorker.onmessageerror.notCalled);
@@ -59,7 +59,7 @@ test('initializing valid worker', function(assert) {
   encoderWorker.postMessage(['init', 123]); // calling repeat times is okay
 
   // `wait` doesn't wait long enough
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(encoderWorker.onmessage.notCalled);
     assert.ok(encoderWorker.onerror.notCalled);
     assert.ok(encoderWorker.onmessageerror.notCalled);
@@ -74,7 +74,7 @@ test('initializing invalid worker', function(assert) {
   encoderWorker.postMessage(['init', 'not a valid number']);
 
   // `wait` doesn't wait long enough
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(encoderWorker.onmessage.notCalled);
     assert.ok(encoderWorker.onerror.calledOnce);
     assert.ok(encoderWorker.onmessageerror.notCalled);
@@ -92,7 +92,7 @@ test('encoding data overall', function(assert) {
   encoderWorker.postMessage(['close']);
 
   // `wait` doesn't wait long enough
-  run.later(() => {
+  setTimeout(() => {
     assert.ok(encoderWorker.onerror.notCalled);
     assert.ok(encoderWorker.onmessageerror.notCalled);
     assert.ok(encoderWorker.onmessage.calledOnce);

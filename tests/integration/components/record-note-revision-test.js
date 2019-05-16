@@ -1,7 +1,8 @@
-import LocationUtils from 'textup-frontend/utils/location';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import LocationUtils from 'textup-frontend/utils/location';
 import sinon from 'sinon';
+import wait from 'ember-test-helpers/wait';
 import { mockValidMediaImage, mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
@@ -21,16 +22,9 @@ test('inputs', function(assert) {
       validRevision = store.createRecord('record-note-revision');
     this.setProperties({ invalidRevision, validRevision });
 
-    assert.throws(() => this.render(hbs`{{record-note-revision}}`), 'requires revision');
-
     this.render(hbs`{{record-note-revision revision=validRevision}}`);
 
     assert.ok(this.$('.record-note-revision').length, 'did render');
-
-    assert.throws(
-      () => this.render(hbs`{{record-note-revision revision=invalidRevision}}`),
-      'requires revision to be a RecordNoteRevision'
-    );
   });
 });
 
@@ -72,7 +66,8 @@ test('rendering with only note', function(assert) {
 
 test('rendering with location and media', function(assert) {
   run(() => {
-    const validRevision = store.createRecord('record-note-revision', {
+    const done = assert.async(),
+      validRevision = store.createRecord('record-note-revision', {
         media: store.createRecord('media', {
           images: [mockValidMediaImage(store)],
           audio: [mockValidMediaAudio(store)],
@@ -86,12 +81,15 @@ test('rendering with location and media', function(assert) {
 
     this.render(hbs`{{record-note-revision revision=validRevision}}`);
 
-    assert.ok(this.$('.record-note-revision').length, 'did render');
-    assert.ok(this.$('.record-item__metadata').length, 'has metadata');
-    assert.ok(this.$('.image-stack').length, 'has images');
-    assert.ok(this.$('.audio-wrapper__player-item').length, 'has audio');
-    assert.ok(this.$('.location-preview').length, 'has location');
+    wait().then(() => {
+      assert.ok(this.$('.record-note-revision').length, 'did render');
+      assert.ok(this.$('.record-item__metadata').length, 'has metadata');
+      assert.ok(this.$('.image-stack').length, 'has images');
+      assert.ok(this.$('.audio-wrapper__player-item').length, 'has audio');
+      assert.ok(this.$('.location-preview').length, 'has location');
 
-    buildUrlStub.restore();
+      buildUrlStub.restore();
+      done();
+    });
   });
 });

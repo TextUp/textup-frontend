@@ -25,10 +25,6 @@ test('inputs', function(assert) {
 
     this.render(hbs`{{notification-summary notification=notification onOpen=onOpen}}`);
     assert.ok(this.$('.notification-summary').length, 'did render');
-
-    assert.throws(() =>
-      this.render(hbs`{{notification-summary notification="invalid" onOpen="invalid"}}`)
-    );
   });
 });
 

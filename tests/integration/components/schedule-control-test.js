@@ -1,6 +1,7 @@
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
 const { run } = Ember;
@@ -15,8 +16,6 @@ moduleForComponent('schedule-control', 'Integration | Component | schedule contr
 test('rendering without any data', function(assert) {
   run(() => {
     const daysOfWeek = Constants.DAYS_OF_WEEK;
-
-    assert.throws(() => this.render(hbs`{{schedule-control}}`), 'requires schedule');
 
     // with schedule class
     this.set('scheduleObj', this.store.createFragment('schedule', {}));
@@ -38,7 +37,8 @@ test('rendering without any data', function(assert) {
 
 test('rendering a schedule', function(assert) {
   run(() => {
-    const daysOfWeek = Constants.DAYS_OF_WEEK,
+    const done = assert.async(),
+      daysOfWeek = Constants.DAYS_OF_WEEK,
       initialData = {},
       scheduleClass = 'test-schedule-class';
     daysOfWeek.forEach(day => {
@@ -61,13 +61,17 @@ test('rendering a schedule', function(assert) {
     assert.ok(renderedText.indexOf('show team availability') === -1, 'no team info');
     assert.ok(renderedText.indexOf('add an available time range') > -1, 'can add new range');
 
-    this.$(`.${scheduleClass} input`).each(function(index) {
-      if (index % 2 === 0) {
-        assert.strictEqual(this.value, '1:30 AM', 'even is starting time in range');
-      } else {
-        // note 9:00 not 8:35 because we display the first 30-minute time point AFTER the specified time
-        assert.strictEqual(this.value, '9:00 AM', 'odd is starting time in range');
-      }
+    wait().then(() => {
+      this.$(`.${scheduleClass} input`).each(function(index) {
+        if (index % 2 === 0) {
+          assert.strictEqual(this.value, '1:30 AM', 'even is starting time in range');
+        } else {
+          // note 9:00 not 8:35 because we display the first 30-minute time point AFTER the specified time
+          assert.strictEqual(this.value, '9:00 AM', 'odd is starting time in range');
+        }
+      });
+
+      done();
     });
   });
 });

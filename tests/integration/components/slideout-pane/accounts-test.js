@@ -27,8 +27,6 @@ test('inputs', function(assert) {
   `);
   assert.ok(this.$('.slideout-pane__header').length, 'did render');
   assert.ok(this.$('.textup-account-switcher').length, 'did render');
-
-  assert.throws(() => this.render(hbs`{{slideout-pane/accounts}}`));
 });
 
 test('displaying title + active owner', function(assert) {

@@ -17,7 +17,7 @@ moduleForComponent('audio-player', 'Integration | Component | audio player', {
     el2 = store.createFragment('mediaElement');
     el1.addVersion('audio/mpeg', VALID_MP3_URL_1);
     el2.addVersion('audio/mpeg', VALID_MP3_URL_2);
-  }
+  },
 });
 
 test('properties + rendering message and sources', function(assert) {
@@ -41,10 +41,6 @@ test('properties + rendering message and sources', function(assert) {
       .text()
       .indexOf(message) > -1
   );
-
-  assert.throws(() => {
-    this.render(hbs`{{audio-player audio=false disabled="a string" message=true}}`);
-  });
 });
 
 test('disabled', function(assert) {

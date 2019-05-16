@@ -7,13 +7,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { RSVP } = Ember;
 
 moduleForComponent('action-button', 'Integration | Component | action button', {
-  integration: true
+  integration: true,
 });
 
 test('mandatory inputs', function(assert) {
   this.setProperties({ onAction: () => null });
-
-  assert.throws(() => this.render(hbs`{{action-button}}`), 'requires action');
 
   this.render(hbs`{{action-button onAction=onAction}}`);
 
@@ -21,13 +19,6 @@ test('mandatory inputs', function(assert) {
 });
 
 test('inputs validation', function(assert) {
-  this.setProperties({ onAction: 'not a function', disabled: 'not bool', error: 'not bool' });
-
-  assert.throws(
-    () => this.render(hbs`{{action-button onAction=onAction disabled=disabled error=error}}`),
-    'invalid inputs'
-  );
-
   this.setProperties({ onAction: () => null, disabled: true, error: true });
 
   this.render(hbs`{{action-button onAction=onAction disabled=disabled error=error}}`);

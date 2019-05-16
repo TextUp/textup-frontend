@@ -21,19 +21,9 @@ test('inputs', function(assert) {
     invalidOpts = 'hi';
   this.setProperties({ rCluster, validOpts, invalidOpts });
 
-  assert.throws(() => this.render(hbs`{{record-cluster}}`), 'requires cluster');
-
   this.render(hbs`{{record-cluster cluster=rCluster callOptions=validOpts noteOptions=validOpts}}`);
 
   assert.ok(this.$('.ember-view').length, 'did render');
-
-  assert.throws(
-    () =>
-      this.render(
-        hbs`{{record-cluster cluster=rCluster callOptions=invalidOpts noteOptions=invalidOpts}}`
-      ),
-    'if specified, note options must be an object'
-  );
 });
 
 test('rendering block empty cluster', function(assert) {

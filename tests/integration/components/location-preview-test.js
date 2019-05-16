@@ -20,35 +20,6 @@ moduleForComponent('location-preview', 'Integration | Component | location previ
   },
 });
 
-test('invalid inputs', function(assert) {
-  this.setProperties({
-    location: {},
-    onSuccess: 'not a function',
-    onFailure: 'not a function',
-    loadingMessage: 88,
-    errorMessage: 88,
-  });
-
-  assert.throws(() => this.render(hbs`{{location-preview}}`), 'requires location');
-
-  assert.throws(
-    () => this.render(hbs`{{location-preview location=location}}`),
-    'location must be Location model'
-  );
-
-  assert.throws(
-    () =>
-      this.render(hbs`
-          {{location-preview location=location
-            onSuccess=onSuccess
-            onFailure=onFailure
-            loadingMessage=loadingMessage
-            errorMessage=errorMessage}}
-        `),
-    'optional properties are of invalid type'
-  );
-});
-
 test('valid inputs', function(assert) {
   run(() => {
     const store = Ember.getOwner(this).lookup('service:store'),

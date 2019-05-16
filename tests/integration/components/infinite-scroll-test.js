@@ -33,19 +33,6 @@ test('inputs', function(assert) {
       onLoad=fn}}
   `);
   assert.ok(this.$('.infinite-scroll').length, 'did render');
-
-  assert.throws(() => {
-    this.render(hbs`
-    {{infinite-scroll data="hi"
-      numTotal="hi"
-      direction="hi"
-      loadMessage=array
-      refreshMessage=array
-      doRegister="hi"
-      onRefresh="hi"
-      onLoad="hi"}}
-  `);
-  });
 });
 
 test('customizing messages', function(assert) {
@@ -472,7 +459,7 @@ test('can manually specify data length for non-standard length logic', function(
       return wait();
     })
     .then(() => {
-      assert.equal(publicAPI.isDone, false, 'not done because data length overriden by 1');
+      assert.equal(publicAPI.isDone, false, 'not done because data length overridden by 1');
 
       done();
     });
@@ -566,7 +553,7 @@ test('refreshing + scroll container is disabled when refreshing', function(asser
         'scroll container not disabled because not refreshing'
       );
       assert.ok(onRefresh.calledOnce);
-      assert.ok(onLoad.calledTwice);
+      assert.ok(onLoad.calledOnce, 'onLoad not called again because we are already refreshing');
 
       done();
     });

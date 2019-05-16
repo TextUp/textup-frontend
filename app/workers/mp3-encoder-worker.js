@@ -74,7 +74,7 @@ function addToResults(data) {
   if (data.length > 0) {
     // lamejs encoding takes in 16-bit integer array as input and outputs 8-bit integer array
     // see https://github.com/zhuker/lamejs/blob/bfb7f6c6d7877e0fe1ad9e72697a871676119a0e/worker-example/worker-realtime.js#L16
-    resultArrays.push(new window.Int8Array(data));
+    resultArrays.push(new Int8Array(data)); // eslint-disable-line
   }
 }
 
@@ -85,8 +85,8 @@ function extractAndClearResults() {
 }
 
 function float32ToInt16Array(floatData) {
-  const input = new window.Float32Array(floatData),
-    output = new window.Int16Array(floatData.length);
+  const input = new Float32Array(floatData), // eslint-disable-line
+    output = new Int16Array(floatData.length); // eslint-disable-line
   for (let i = 0; i < input.length; i++) {
     // the Web Audio API returns an AudioBuffer that is a "32bits floating point buffer, with each
     // sample between -1.0 and 1.0". Therefore our input is a floating point number that is

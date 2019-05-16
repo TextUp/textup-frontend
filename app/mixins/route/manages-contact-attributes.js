@@ -50,7 +50,7 @@ export default Ember.Mixin.create({
         // updating the contact's status. Note that this action should ONLY be to start observing
         // NOT to also check if status is unread. If we also check if status is unread here
         // then users will not be able to manually mark contacts as unread because this change
-        // will just be overriden here.
+        // will just be overridden here.
         .finally(() => this._tryStartObserveContactStatus());
     },
 

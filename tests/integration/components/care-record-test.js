@@ -20,49 +20,11 @@ moduleForComponent('care-record', 'Integration | Component | care record', {
   },
 });
 
-test('empty + invalid inputs', function(assert) {
-  this.render(hbs`{{care-record}}`);
-
-  assert.ok(this.$('.care-record').length, 'no inputs is ok');
-
-  assert.throws(() => {
-    this.render(hbs`
-    {{care-record canAddToRecord=88
-      canModifyExistingInRecord=88
-      nextFutureFire=88
-      personalNumber=88
-      recordClusters=88
-      numRecordItems="not a number"
-      totalNumRecordItems="not a number"
-      images=88
-      audio=88
-      contents=88
-      doRegister=88
-      onEndOngoingCall=88
-      onEditNote=88
-      onRestoreNote=88
-      onViewNoteHistory=88
-      onLoadRecordItems=88
-      onRefreshRecordItems=88
-      onViewScheduledMessages=88
-      onContentChange=88
-      onAddImage=88
-      onAddAudio=88
-      onRemoveMedia=88
-      onAddNote=88
-      onCall=88
-      onText=88
-      onScheduleMessage=88
-      noRecordItemsMessage=88
-      noAddToRecordMessage=88
-      startCallMessage=88
-      addNoteInPastMessage=88}}
-  `);
-  });
-});
-
-test('all valid inputs', function(assert) {
+test('valid inputs', function(assert) {
   this.setProperties({ date: new Date(), array: [], func: () => null });
+
+  this.render(hbs`{{care-record}}`);
+  assert.ok(this.$('.care-record').length, 'no inputs is ok');
 
   this.render(hbs`
     {{care-record canAddToRecord=true
@@ -142,6 +104,20 @@ test('doRegister a reference to the public API', function(assert) {
   );
   assert.equal(typeOf(doRegister.firstCall.args[0].actions.resetAll), 'function');
   assert.equal(typeOf(doRegister.firstCall.args[0].actions.restorePosition), 'function');
+});
+
+test('text handler returns outcome', function(assert) {
+  const done = assert.async(),
+    onText = sinon.spy(),
+    obj = Ember.getOwner(this)
+      .factoryFor('component:care-record')
+      .create({ onText });
+
+  obj._onText().then(() => {
+    assert.ok(onText.calledOnce);
+
+    done();
+  });
 });
 
 test('cannot add to record', function(assert) {

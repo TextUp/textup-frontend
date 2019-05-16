@@ -23,9 +23,6 @@ test('inputs', function(assert) {
       done = assert.async();
     this.setProperties({ rItem, rCall, onEndOngoing });
 
-    assert.throws(() => this.render(hbs`{{record-item/call}}`), 'requires call');
-    assert.throws(() => this.render(hbs`{{record-item/call call=rItem}}`), 'requires call');
-
     this.render(hbs`{{record-item/call call=rCall onEndOngoing=onEndOngoing}}`);
 
     assert.ok(this.$('.record-item').length);

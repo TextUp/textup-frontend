@@ -8,7 +8,7 @@ moduleForComponent(
   'upcoming-future-messages',
   'Integration | Component | upcoming future messages',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -24,11 +24,6 @@ test('date input', function(assert) {
   this.render(hbs`{{upcoming-future-messages nextFutureFire=validDate}}`);
 
   assert.ok(this.$('.upcoming-future-messages').length, 'did render');
-
-  assert.throws(
-    () => this.render(hbs`{{upcoming-future-messages nextFutureFire=invalidDate}}`),
-    'if specified, must be date'
-  );
 });
 
 test('click handler input', function(assert) {
@@ -39,11 +34,6 @@ test('click handler input', function(assert) {
   this.render(hbs`{{upcoming-future-messages onClick=validFunc}}`);
 
   assert.ok(this.$('.upcoming-future-messages').length, 'did render');
-
-  assert.throws(
-    () => this.render(hbs`{{upcoming-future-messages onClick=invalidFunc}}`),
-    'if specified, must be function'
-  );
 });
 
 test('rendering no date', function(assert) {

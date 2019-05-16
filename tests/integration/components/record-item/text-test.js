@@ -11,7 +11,7 @@ moduleForComponent('record-item/text', 'Integration | Component | record item/te
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -20,9 +20,6 @@ test('inputs', function(assert) {
       rText = store.createRecord('record-text', { outgoing: true }),
       done = assert.async();
     this.setProperties({ rItem, rText });
-
-    assert.throws(() => this.render(hbs`{{record-item/text}}`), 'requires text');
-    assert.throws(() => this.render(hbs`{{record-item/text text=rItem}}`), 'requires text');
 
     this.render(hbs`{{record-item/text text=rText}}`);
 
@@ -61,7 +58,7 @@ test('inputs', function(assert) {
 test('text with only contents', function(assert) {
   run(() => {
     const rText = store.createRecord('record-text', {
-      contents: `${Math.random()}`
+      contents: `${Math.random()}`,
     });
     this.setProperties({ rText });
 
@@ -85,7 +82,7 @@ test('text with media and away message', function(assert) {
   run(() => {
     const rText = store.createRecord('record-text', {
       hasAwayMessage: true,
-      media: store.createRecord('media')
+      media: store.createRecord('media'),
     });
     rText.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
     rText.get('media.content').addAudio('audio/mpeg', VALID_MP3_URL_1);

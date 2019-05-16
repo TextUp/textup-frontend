@@ -22,8 +22,6 @@ test('properties', function(assert) {
   this.render(hbs`{{multi-select/display-badge entity=obj}}`);
 
   assert.ok(this.$('.horizontal-items').length, 'did render');
-
-  assert.throws(() => this.render(hbs`{{multi-select/display-badge entity="not Ember obj"}}`));
 });
 
 test('displaying tag', function(assert) {

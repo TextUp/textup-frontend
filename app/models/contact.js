@@ -22,7 +22,7 @@ const { isEmpty, computed } = Ember,
       validators: [
         validator('collection', {
           collection: true,
-          dependentKeys: ['numbers.@each.number'],
+          dependentKeys: ['model.numbers.@each.number'],
           message: 'All phone numbers must be valid, with area code',
           for: 'every',
           test(numObj) {

@@ -12,9 +12,6 @@ test('rendering', function(assert) {
   this.setProperties({ src, nativeAppSrc, text });
   this.render(hbs`{{feedback-switcher src=src nativeAppSrc=nativeAppSrc text=text}}`);
   assert.ok(this.$('.feedback-switcher').length, 'did render');
-
-  // requires src input
-  assert.throws(() => this.render(hbs`{{feedback-switcher}}`));
 });
 
 test('displaying when cordova is active', function(assert) {

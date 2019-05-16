@@ -119,7 +119,8 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       }
       this.setProperties({ _isOpening: false, '_publicAPI.isOpen': true });
       tryInvoke(this, 'onOpen');
-      resolve();
+      // schedule after render to allow the DOM to reflect the property changes
+      run.scheduleOnce('afterRender', resolve);
     }, reject);
   },
 
@@ -165,7 +166,8 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     }
     this.setProperties({ _isClosing: false, '_publicAPI.isOpen': false });
     tryInvoke(this, 'onClose');
-    resolve();
+    // schedule after render to allow the DOM to reflect the property changes
+    run.scheduleOnce('afterRender', resolve);
   },
 
   _reposition() {

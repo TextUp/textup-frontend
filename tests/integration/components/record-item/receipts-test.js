@@ -11,7 +11,7 @@ moduleForComponent('record-item/receipts', 'Integration | Component | record ite
   integration: true,
   beforeEach() {
     store = Ember.getOwner(this).lookup('service:store');
-  }
+  },
 });
 
 test('inputs', function(assert) {
@@ -19,8 +19,6 @@ test('inputs', function(assert) {
     const rItem = store.createRecord('record-item'),
       rText = store.createRecord('record-text');
     this.setProperties({ rItem, rText });
-
-    assert.throws(() => this.render(hbs`{{record-item/receipts}}`), 'requires item');
 
     this.render(hbs`{{record-item/receipts item=rItem}}`);
 
@@ -91,7 +89,7 @@ test('rendering block form', function(assert) {
 test('trigger text', function(assert) {
   run(() => {
     const rItem = store.createRecord('record-item', {
-        receipts: { success: null, pending: null, busy: null, failed: null }
+        receipts: { success: null, pending: null, busy: null, failed: null },
       }),
       blockContent = Math.random(),
       done = assert.async();
@@ -195,8 +193,8 @@ test('viewing receipt details', function(assert) {
           success: [Math.random()],
           pending: [Math.random()],
           busy: [Math.random()],
-          failed: [Math.random()]
-        }
+          failed: [Math.random()],
+        },
       }),
       done = assert.async();
     this.setProperties({ rItem });

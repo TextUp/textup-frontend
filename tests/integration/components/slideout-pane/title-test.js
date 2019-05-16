@@ -12,8 +12,6 @@ test('inputs', function(assert) {
 
   this.render(hbs`{{slideout-pane/title onClose=onClose title="hi"}}`);
   assert.ok(this.$('.slideout-pane__header'.length), 'did render');
-
-  assert.throws(() => this.render(hbs`{{slideout-pane/title}}`));
 });
 
 test('rendering title', function(assert) {

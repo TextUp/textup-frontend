@@ -29,17 +29,6 @@ test('inputs', function(assert) {
   `);
 
   assert.ok(this.$('.audio-control__display').length, 'did render');
-
-  assert.throws(
-    () =>
-      this.render(hbs`
-        {{audio-control/display message=number
-          maxNumSeconds=string
-          currentNumSeconds=string
-          onSelect=string}}
-      `),
-    'incorrect types'
-  );
 });
 
 test('displaying long message', function(assert) {

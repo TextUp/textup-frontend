@@ -9,7 +9,7 @@ const Validations = buildValidations({
   }),
   'recipients.length': validator('has-any', {
     also: ['newNumberRecipients.length'],
-    dependentKeys: ['numRecipients'],
+    dependentKeys: ['model.numRecipients'],
     description: 'a contact or shared contact recipient',
   }),
 });

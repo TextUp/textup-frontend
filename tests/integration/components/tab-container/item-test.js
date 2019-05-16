@@ -10,11 +10,6 @@ moduleForComponent('tab-container/item', 'Integration | Component | tab containe
 test('inputs', function(assert) {
   this.setProperties({ fn: sinon.spy() });
 
-  assert.throws(() => this.render(hbs`{{tab-container/item}}`));
-  assert.throws(() =>
-    this.render(hbs`{{tab-container/item doRegister="hi" onDestroy="hi" title=fn}}`)
-  );
-
   this.render(hbs`{{tab-container/item doRegister=fn onDestroy=fn title="hi"}}`);
   assert.ok(this.$('.tab-container__item').length, 'did render');
 });

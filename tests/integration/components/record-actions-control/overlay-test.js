@@ -7,7 +7,7 @@ moduleForComponent(
   'record-actions-control/overlay',
   'Integration | Component | record actions control/overlay',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -20,7 +20,7 @@ test('valid inputs', function(assert) {
     show: true,
     onClose: () => null,
     closeButtonLabel: 'hi',
-    showCloseButton: true
+    showCloseButton: true,
   });
   this.render(hbs`
     {{record-actions-control/overlay show=show
@@ -30,60 +30,6 @@ test('valid inputs', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control__overlay').length, 'all valid props');
-});
-
-test('invalid inputs', function(assert) {
-  const noOp = () => null;
-
-  this.setProperties({ show: 88, onClose: noOp, closeButtonLabel: 'hi', showCloseButton: true });
-
-  this.setProperties({ invalidShow: 'ok' });
-  assert.throws(
-    () =>
-      this.render(hbs`
-        {{record-actions-control/overlay show=invalidShow
-          onClose=onClose
-          closeButtonLabel=closeButtonLabel
-          showCloseButton=showCloseButton}}
-      `),
-    'show is invalid'
-  );
-
-  this.setProperties({ invalidCloseButton: 'ok' });
-  assert.throws(
-    () =>
-      this.render(hbs`
-        {{record-actions-control/overlay show=show
-          onClose=invalidCloseButton
-          closeButtonLabel=closeButtonLabel
-          showCloseButton=showCloseButton}}
-      `),
-    'onClose is invalid'
-  );
-
-  this.setProperties({ invalidCloseButtonLabel: [] });
-  assert.throws(
-    () =>
-      this.render(hbs`
-        {{record-actions-control/overlay show=show
-          onClose=onClose
-          closeButtonLabel=invalidCloseButtonLabel
-          showCloseButton=showCloseButton}}
-      `),
-    'closeButtonLabel is invalid'
-  );
-
-  this.setProperties({ invalidShowCloseButton: [] });
-  assert.throws(
-    () =>
-      this.render(hbs`
-        {{record-actions-control/overlay show=show
-          onClose=onClose
-          closeButtonLabel=closeButtonLabel
-          showCloseButton=invalidShowCloseButton}}
-      `),
-    'showCloseButton is invalid'
-  );
 });
 
 test('rendering', function(assert) {

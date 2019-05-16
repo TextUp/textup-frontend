@@ -35,7 +35,9 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    run.join(() =>
+      run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
+    );
   },
 
   didInsertElement() {
@@ -66,6 +68,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     return {
       isLocked: false,
       actions: {
+        tryValidate: this._onValidate.bind(this), // mostly for testing purposes
         lock: this._doLock.bind(this),
         unlock: this._doUnlock.bind(this),
       },

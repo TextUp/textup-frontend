@@ -23,12 +23,6 @@ test('inputs', function(assert) {
     hbs`{{infinite-scroll/scroll-container direction=direction doRegister=fn onNearEnd=fn disabled=false contentClass="hi"}}`
   );
   assert.ok(this.$('.infinite-scroll__scroll-container').length, 'did render');
-
-  assert.throws(() => {
-    this.render(
-      hbs`{{infinite-scroll/scroll-container direction=fn doRegister="hi" onNearEnd="hi" disabled="hi" contentClass=true}}`
-    );
-  });
 });
 
 test('registering', function(assert) {

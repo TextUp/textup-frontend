@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import Ember from 'ember';
+import RecordItemModel from 'textup-frontend/models/record-item';
 import { pluralize } from 'textup-frontend/utils/text';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
@@ -66,11 +67,12 @@ export default Ember.Mixin.create({
   },
 
   addRecordItem(item) {
-    if (!item) {
+    if (item instanceof RecordItemModel) {
+      this.get('_recordItems').pushObject(item);
+      return true;
+    } else {
       return false;
     }
-    this.get('_recordItems').pushObject(item);
-    return true;
   },
 });
 

@@ -17,65 +17,48 @@ test('component renders', function(assert) {
   const doUpdateValStub = sinon.stub(),
     doValidateStub = sinon.stub();
 
+  this.render(hbs`{{lock-container}}`);
+
+  assert.ok(this.$('.lock-container').length, 'no required props');
+
   this.setProperties({ doUpdateValStub, doValidateStub });
   this.render(hbs`{{lock-container onChange=doUpdateValStub onValidate=doValidateStub}}`);
   assert.ok(this.$('.lock-container').length, 'it renders');
-
-  // check requires proptypes
-  assert.throws(() => this.render(hbs`{{lock-pad}}`), 'throws errors for required props');
 });
 
-test('validation locks/unlocks', function(assert) {
+test('successful validation unlocks', function(assert) {
   const done = assert.async(),
-    doValidateStub = sinon.stub(),
-    doUpdateValStub = sinon.stub();
+    val = Math.random() + '',
+    doRegister = sinon.spy(),
+    onValidate = sinon.stub();
 
-  this.setProperties({ val: '', doUpdateValStub, doValidateStub });
+  this.setProperties({ val, doRegister, onValidate });
   this.render(hbs`
     {{lock-container val=val
+      doRegister=doRegister
       shouldStartLocked=true
-      onChange=doUpdateValStub
-      onValidate=doValidateStub
+      onValidate=onValidate
       username="bob"}}
   `);
 
-  this.set('val', `${Math.random()}`);
-  wait()
-    .then(() => {
-      // changing val calls doValidate
-      // gracefully exits when no promise
-      assert.equal(doValidateStub.callCount, 1, 'handles no promise');
+  assert.ok(this.$('.lock-container').length, 'did render');
+  assert.ok(this.$('.lock-pad').length, 'is locked');
+  assert.ok(doRegister.calledOnce);
 
-      doValidateStub.rejects();
-      this.render(hbs`
-        {{lock-container val=val
-          shouldStartLocked=true
-          onChange=doUpdateValStub
-          onValidate=doValidateStub
-          username="bob"}}
-      `);
-      this.set('val', `${Math.random()}`);
-      return wait();
+  onValidate.rejects();
+  doRegister.firstCall.args[0].actions
+    .tryValidate()
+    .catch(() => {
+      assert.equal(onValidate.callCount, 1);
+      assert.ok(onValidate.calledWith(val));
+      assert.ok(this.$('.lock-pad').length, 'still locked because rejected');
+
+      onValidate.resolves();
+      return doRegister.firstCall.args[0].actions.tryValidate();
     })
     .then(() => {
-      // reject causes lock
-      assert.ok(this.$('.lock-pad--error').length, 'errors properly');
-
-      doValidateStub.resolves();
-      this.render(hbs`
-        {{lock-container
-          val=val
-          shouldStartLocked=true
-          onChange=doUpdateValStub
-          onValidate=doValidateStub
-          username="bob"}}
-      `);
-      this.set('val', `${Math.random()}`);
-      return wait();
-    })
-    .then(() => {
-      // accept unlocks
-      assert.equal(this.$('.lock-pad').length, 0, 'unlocks properly');
+      assert.equal(onValidate.callCount, 2);
+      assert.notOk(this.$('.lock-pad--error').length, 'unlocked because successfully validated');
 
       done();
     });

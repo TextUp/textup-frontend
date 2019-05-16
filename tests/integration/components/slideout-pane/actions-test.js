@@ -28,8 +28,6 @@ test('inputs', function(assert) {
       showDelete=true}}
   `);
   assert.ok(this.$('.slideout-pane__footer').length, 'did render');
-
-  assert.throws(() => this.render(hbs`{{slideout-pane/actions}}`));
 });
 
 test('whether footer should be shown at all', function(assert) {

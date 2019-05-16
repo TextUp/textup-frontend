@@ -27,8 +27,6 @@ test('inputs', function(assert) {
     },
   });
 
-  assert.throws(() => this.render(hbs`{{message-modal}}`), 'requires message location url');
-
   assert.notOk(Ember.$('.ember-view').length, 'did NOT render');
 
   this.render(hbs`{{message-modal url=url onClose=onClose}}`);

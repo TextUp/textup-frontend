@@ -1,4 +1,4 @@
-import ComposeTextComponent from 'textup-frontend/components/record-actions-control/compose-text';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -8,7 +8,7 @@ moduleForComponent(
   'record-actions-control/compose-text',
   'Integration | Component | record actions control/compose text',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -28,16 +28,6 @@ test('inputs', function(assert) {
   `);
 
   assert.ok(this.$('.compose-text').length, 'valid inputs');
-
-  assert.throws(() => {
-    this.render(hbs`
-      {{record-actions-control/compose-text numMedia="hi"
-        placeholder=88
-        contents=88
-        onClearContents="hi"
-        onSend="hi"}}
-    `);
-  }, 'invalid props');
 });
 
 test('rendering block', function(assert) {
@@ -170,7 +160,9 @@ test('triggering send from action button', function(assert) {
 test('send handler returns outcome', function(assert) {
   const onSend = sinon.stub(),
     randVal = Math.random(),
-    obj = ComposeTextComponent.create({ onSend });
+    obj = Ember.getOwner(this)
+      .factoryFor('component:record-actions-control/compose-text')
+      .create({ onSend });
   onSend.callsFake(() => randVal);
 
   assert.equal(obj._onSend(), randVal, 'send handler return outcome');

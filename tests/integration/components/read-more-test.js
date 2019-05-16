@@ -6,12 +6,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 const { run } = Ember;
 
 moduleForComponent('read-more', 'Integration | Component | read more', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {
-  assert.throws(() => this.render(hbs`{{read-more showText=true hideText=true}}`));
-
   this.render(hbs`{{read-more}}`);
 
   assert.ok(this.$('.read-more').length, 'did render');

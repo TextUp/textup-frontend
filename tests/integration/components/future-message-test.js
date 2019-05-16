@@ -16,15 +16,11 @@ moduleForComponent('future-message', 'Integration | Component | future message',
 
 test('inputs', function(assert) {
   run(() => {
-    assert.throws(() => this.render(hbs`{{future-message}}`));
-
     const fMsg = this.store.createRecord('future-message');
     this.setProperties({ fMsg });
     this.render(hbs`{{future-message message=fMsg}}`);
 
     assert.ok(this.$('.ember-view').length);
-
-    assert.throws(() => this.render(hbs`{{future-message message="not a future message"}}`));
   });
 });
 

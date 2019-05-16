@@ -33,19 +33,6 @@ test('properties', function(assert) {
 
   assert.ok(this.$('.audio-control').length, 'did render');
   assert.ok(this.$('.audio-control--recording').length);
-
-  assert.throws(() => {
-    this.render(hbs`{{audio-recorder
-      onError=aBool
-      onFinish=aBool
-      disabled=aFunc
-      message=aBool
-      unsupportedMessage=aBool
-      startMessage=aBool
-      recordingMessage=aBool
-      processingMessage=aBool}}
-    `);
-  });
 });
 
 test('disabled', function(assert) {

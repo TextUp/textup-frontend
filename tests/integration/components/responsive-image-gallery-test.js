@@ -2,7 +2,6 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import PhotoUtils from 'textup-frontend/utils/photo';
-import ResponsiveImageGallery from 'textup-frontend/components/responsive-image-gallery';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
@@ -14,7 +13,7 @@ moduleForComponent(
   'responsive-image-gallery',
   'Integration | Component | responsive image gallery',
   {
-    integration: true
+    integration: true,
   }
 );
 
@@ -46,8 +45,11 @@ test('inputs + rendering block form', function(assert) {
   assert.equal(this.$(`.${testClass}`).length, images.length);
 });
 
-test('overriden options', function(assert) {
-  const component = ResponsiveImageGallery.create({ images: [] });
+test('overridden options', function(assert) {
+  // see https://discuss.emberjs.com/t/ember-component-creation-error-in-2-10/12087/7
+  const component = Ember.getOwner(this)
+    .factoryFor('component:responsive-image-gallery')
+    .create({ images: [] });
 
   assert.equal(component.get('showHideOpacity'), true);
   assert.equal(component.get('history'), false);

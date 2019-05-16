@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('count-badge', 'Integration | Component | count badge', {
-  integration: true
+  integration: true,
 });
 
 test('properties', function(assert) {
@@ -13,8 +13,6 @@ test('properties', function(assert) {
   this.render(hbs`{{count-badge count=88 hideBadgeIfNone=false}}`);
 
   assert.ok(this.$('.count-badge').length);
-
-  assert.throws(() => this.render(hbs`{{count-badge count="hi" hideBadgeIfNone="hi"}}`));
 });
 
 test('rendering', function(assert) {

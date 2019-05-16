@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 const { run } = Ember;
 
 moduleForComponent('record-item/system-note', 'Integration | Component | record item/system note', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {
@@ -15,9 +15,6 @@ test('inputs', function(assert) {
       note = store.createRecord('record-note');
 
     this.setProperties({ item, note });
-
-    assert.throws(() => this.render(hbs`{{record-item/system-note}}`), 'requires note');
-    assert.throws(() => this.render(hbs`{{record-item/system-note note=item}}`), 'requires note');
 
     this.render(hbs`{{record-item/system-note note=note}}`);
 

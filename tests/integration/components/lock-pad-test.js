@@ -19,9 +19,6 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{lock-pad doUpdateVal=doUpdateValStub doValidate=doValidateStub}}`);
   assert.ok(this.$('.lock-pad').length);
-
-  // requires proptypes
-  assert.throws(() => this.render(hbs`{{lock-pad}}`), '`doUpdateVal` is required');
 });
 
 test('correct indicators', function(assert) {

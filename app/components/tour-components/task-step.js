@@ -34,13 +34,10 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     this._super(...arguments);
     run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
-  didReceiveAttrs({ oldAttrs }) {
+  didReceiveAttrs() {
     this._super(...arguments);
     this.set('_temporaryComplete', false);
-    if (oldAttrs) {
-      this._removeAllPulsingFromList(oldAttrs.elementsToPulse.value);
-      this._removeAllPulsingFromList(oldAttrs.elementsToPulseMobile.value);
-    }
+    this._cleanupPulses();
     if (this.get('shouldShow')) {
       run.next(this, this._startPulsing);
     }
@@ -53,6 +50,8 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
   // Internal properties
   // -------------------
 
+  _oldElementsToPulse: null,
+  _oldElementsToPulseMobile: null,
   _temporaryComplete: null,
   _publicAPI: computed(function() {
     return {
@@ -99,6 +98,20 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     );
   },
 
+  _cleanupPulses() {
+    const oldElementsToPulse = this.get('_oldElementsToPulse'),
+      oldElementsToPulseMobile = this.get('_oldElementsToPulseMobile');
+    if (oldElementsToPulse) {
+      this._removeAllPulsingFromList(oldElementsToPulse);
+    }
+    if (oldElementsToPulseMobile) {
+      this._removeAllPulsingFromList(oldElementsToPulseMobile);
+    }
+    this.setProperties({
+      _oldElementsToPulse: this.get('elementsToPulse'),
+      _oldElementsToPulseMobile: this.get('elementsToPulseMobile'),
+    });
+  },
   _startPulsing() {
     const $root = this.get('_root'),
       elementsToPulse = this._getCurrentElementSelectors(),

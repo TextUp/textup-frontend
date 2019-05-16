@@ -25,8 +25,6 @@ moduleForComponent('slideout-pane', 'Integration | Component | slideout pane', {
 test('inputs', function(assert) {
   this.setProperties({ fn: sinon.spy(), direction: Constants.SLIDEOUT.DIRECTION.RIGHT });
 
-  assert.throws(() => this.render(hbs`{{slideout-pane}}`));
-
   this.render(hbs`
   {{slideout-pane onClose=fn
     doRegister=fn
@@ -42,8 +40,6 @@ test('inputs', function(assert) {
     onOpen=fn}}
 `);
   assert.ok(this.$('.slideout-pane').length, 'did render');
-
-  assert.throws(() => this.render(hbs`{{slideout-pane onClose=fn direction="invalid"}}`));
 });
 
 test('adding custom class to body', function(assert) {

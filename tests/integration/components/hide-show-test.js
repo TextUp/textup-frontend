@@ -30,21 +30,6 @@ test('properties', function(assert) {
   `);
 
   assert.ok(this.$('.ember-view').length);
-
-  assert.throws(() => {
-    this.render(hbs`
-      {{hide-show doRegister="hi"
-        onOpen=88
-        onClose=88
-        focusOnOpenSelector=88
-        startOpen=88
-        clickOutToClose=88
-        ignoreCloseSelector=88
-        focusOutToClose=88
-        animate=88
-        disabled=88}}
-    `);
-  });
 });
 
 test('registering + calling event handlers', function(assert) {

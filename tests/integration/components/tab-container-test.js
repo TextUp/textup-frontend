@@ -15,10 +15,6 @@ test('inputs', function(assert) {
 
   this.render(hbs`{{tab-container startIndex=-1 doRegister=fn onChange=fn}}`);
   assert.ok(this.$('.tab-container').length, 'did render');
-
-  assert.throws(() =>
-    this.render(hbs`{{tab-container startIndex=fn doRegister="hi" onChange="hi"}}`)
-  );
 });
 
 test('rendering no tabs or only one tab hides the navbar', function(assert) {

@@ -75,7 +75,9 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    run.join(() =>
+      run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
+    );
   },
 
   // Internal properties

@@ -28,12 +28,6 @@ test('properties', function(assert) {
     );
 
     assert.ok(this.$('.audio-wrapper').length);
-
-    assert.throws(() => {
-      this.render(
-        hbs`{{audio-control showAddIfNone="bad" audio="bad" onAdd="bad" onRemove="bad" readOnly="bad"}}`
-      );
-    });
   });
 });
 
@@ -272,14 +266,20 @@ test('trying to add when recording is not supported', function(assert) {
 });
 
 test('handling no audio initially', function(assert) {
-  this.render(hbs`{{audio-control showAddIfNone=true}}`);
+  const done = assert.async();
 
-  assert.ok(this.$('.audio-wrapper').length);
-  assert.notOk(
-    this.$('.audio-wrapper button:not(.audio-control__button)').length,
-    'add button is hidden'
-  );
-  assert.ok(this.$('.audio-control--recording').length, 'recorder is shown');
+  this.render(hbs`{{audio-control showAddIfNone=true}}`);
+  assert.ok(this.$('.audio-wrapper').length, 'did render');
+
+  wait().then(() => {
+    assert.notOk(
+      this.$('.audio-wrapper button:not(.audio-control__button)').length,
+      'add button is hidden'
+    );
+    assert.ok(this.$('.audio-control--recording').length, 'recorder is shown');
+
+    done();
+  });
 });
 
 test('handling no audio on subsequent update', function(assert) {

@@ -14,7 +14,7 @@ moduleForComponent(
     integration: true,
     beforeEach() {
       this.inject.service('store');
-    }
+    },
   }
 );
 
@@ -27,7 +27,7 @@ test('inputs', function(assert) {
     this.setProperties({
       audio: [mockValidMediaAudio(this.store)],
       images: [mockValidMediaImage(this.store)],
-      func: () => null
+      func: () => null,
     });
   });
 
@@ -40,17 +40,6 @@ test('inputs', function(assert) {
   `);
 
   assert.ok(this.$('.ember-view').length, 'valid inputs');
-
-  this.set('invalidMedia', ['not a MediaImage']);
-  assert.throws(() => {
-    this.render(hbs`
-      {{record-actions-control/media-drawer images=invalidMedia
-        audio=invalidMedia
-        doRegister=88
-        onAddAudio=88
-        onRemoveMedia=88}}
-    `);
-  }, 'images must be an array of MediaImages');
 });
 
 test('render block', function(assert) {

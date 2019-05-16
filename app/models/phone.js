@@ -6,19 +6,19 @@ import Ember from 'ember';
 import MF from 'ember-data-model-fragments';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const Validations = buildValidations({
+const { computed, getWithDefault, tryInvoke, isPresent, get } = Ember,
+  Validations = buildValidations({
     awayMessage: {
       description: 'Away Message',
       validators: [
         validator('length', {
           allowBlank: false,
           min: 1,
-          max: model => model.get('awayMessageMaxLength'),
+          max: computed.readOnly('model.awayMessageMaxLength'),
         }),
       ],
     },
-  }),
-  { computed, getWithDefault, tryInvoke, isPresent, get } = Ember;
+  });
 
 export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides

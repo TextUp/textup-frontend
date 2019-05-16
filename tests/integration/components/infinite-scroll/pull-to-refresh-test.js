@@ -30,16 +30,6 @@ test('inputs', function(assert) {
       refreshMessage="hi"}}
   `);
   assert.ok(this.$('.infinite-scroll__pull-to-refresh').length, 'did render');
-
-  assert.throws(() => {
-    this.render(hbs`
-      {{infinite-scroll/pull-to-refresh direction="hi"
-        disabled="hi"
-        doRegister="hi"
-        onRefresh="hi"
-        refreshMessage=fn}}
-    `);
-  });
 });
 
 test('registering publicAPI', function(assert) {

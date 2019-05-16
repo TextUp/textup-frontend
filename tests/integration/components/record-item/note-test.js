@@ -21,9 +21,6 @@ test('mandatory inputs', function(assert) {
       rNote = store.createRecord('record-note');
     this.setProperties({ rItem, rNote });
 
-    assert.throws(() => this.render(hbs`{{record-item/note}}`), 'requires note');
-    assert.throws(() => this.render(hbs`{{record-item/note note=rItem}}`), 'requires note');
-
     this.render(hbs`{{record-item/note note=rNote}}`);
 
     assert.ok(this.$('.record-item').length);
@@ -37,15 +34,6 @@ test('optional inputs', function(assert) {
     const store = Ember.getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note');
     this.setProperties({ rNote, onEdit: '', onRestore: '', onViewHistory: '' });
-
-    assert.throws(() =>
-      this.render(hbs`
-      {{record-item/note note=rNote
-        onEdit=onEdit
-        onRestore=onRestore
-        onViewHistory=onViewHistory}}
-    `)
-    );
 
     const noOp = () => null;
     this.setProperties({ rNote, onEdit: noOp, onRestore: noOp, onViewHistory: noOp });

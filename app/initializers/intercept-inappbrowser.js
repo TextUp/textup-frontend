@@ -12,7 +12,7 @@ export default {
 };
 
 export function onDeviceReady() {
-  // overriden the `open` function with the cordova-specific version
+  // overridden the `open` function with the cordova-specific version
   window.open = window.cordova.InAppBrowser.open;
   Ember.$(document).on(
     'click',

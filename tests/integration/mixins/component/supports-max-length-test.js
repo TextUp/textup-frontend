@@ -4,18 +4,19 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import SupportsMaxLength from 'textup-frontend/mixins/component/supports-max-length';
+import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
+
+const invalidComponentIdent = 'component:invalid-supports-max-length',
+  validComponentIdent = 'component:valid-supports-max-length';
 
 moduleForComponent('', 'Integration | Mixin | component/supports max length', {
   integration: true,
   beforeEach() {
+    this.register(invalidComponentIdent, Ember.Component.extend(SupportsMaxLength));
     this.register(
-      'component:invalid-supports-max-length',
-      Ember.Component.extend(SupportsMaxLength)
-    );
-    this.register(
-      'component:valid-supports-max-length',
+      validComponentIdent,
       Ember.Component.extend(SupportsMaxLength, {
         tagName: 'textarea',
         _buildCurrentValueLength() {
@@ -42,17 +43,25 @@ test('properties', function(assert) {
   assert.ok(Ember.$('.ember-view').length, 'did render');
 
   assert.throws(() => {
-    this.render(hbs`{{valid-supports-max-length maxLength="hi"
-      maxLengthPosition=88
-      showMaxLengthPercentThreshold="hi"
-      maxLengthIndicatorClass=(hash not="valid")
-      maxLengthContainerClass=88}}`);
-  });
+    Ember.getOwner(this)
+      .factoryFor(validComponentIdent)
+      .create({
+        maxLength: 'hi',
+        maxLengthPosition: 88,
+        showMaxLengthPercentThreshold: 'hi',
+        maxLengthIndicatorClass: 88,
+        maxLengthContainerClass: 88,
+      });
+  }, TestUtils.ERROR_PROP_WRONG_TYPE);
 });
 
-test('components implementing the mandatory handler', function(assert) {
+test('invalid implementation does not implement mandatory handler', function(assert) {
   // mandatory hook not implemented
-  assert.throws(() => this.render(hbs`{{invalid-supports-max-length}}`));
+  assert.throws(() =>
+    Ember.getOwner(this)
+      .factoryFor(invalidComponentIdent)
+      .create()
+  );
 });
 
 test('rendering', function(assert) {

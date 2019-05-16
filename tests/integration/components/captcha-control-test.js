@@ -21,10 +21,6 @@ moduleForComponent('captcha-control', 'Integration | Component | captcha control
 test('inputs', function(assert) {
   this.setProperties({ fn: () => null });
 
-  assert.throws(() =>
-    this.render(hbs`{{captcha-control onSuccess=123 onFailure=123 onExpiration=123}}`)
-  );
-
   this.render(hbs`{{captcha-control onSuccess=fn onFailure=fn onExpiration=fn}}`);
   assert.ok(this.$('.captcha-control').length, 'did render');
 });

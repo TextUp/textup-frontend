@@ -9,7 +9,7 @@ export default Ember.Component.extend(DisplaysImages, {
   propTypes: {
     onAdd: PropTypes.func,
     onRemove: PropTypes.func,
-    imageDisplayComponent: PropTypes.string,
+    imageDisplayComponent: PropTypes.oneOf(Object.values(Constants.PHOTO_CONTROL.DISPLAY)),
     addComponentClass: PropTypes.string,
     readOnly: PropTypes.bool,
   },

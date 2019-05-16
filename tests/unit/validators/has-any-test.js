@@ -56,9 +56,7 @@ test('dependent key generation', function(assert) {
   ['model.key1', 'model.key1.[]'].forEach(key => assert.ok(generatedKeys.includes(key)));
 
   generatedKeys = HasAnyValidator.getDependentsFor('key1', { also: 'invalid not a list' });
-  ['model.key1', 'model.key1.[]', '_model.key1', '_model.key1.[]'].forEach(key =>
-    assert.ok(generatedKeys.includes(key))
-  );
+  ['model.key1', 'model.key1.[]'].forEach(key => assert.ok(generatedKeys.includes(key)));
 
   generatedKeys = HasAnyValidator.getDependentsFor('key1', {
     also: ['key2', 'key3.nested', {}, []],
@@ -66,15 +64,9 @@ test('dependent key generation', function(assert) {
   [
     'model.key1',
     'model.key1.[]',
-    '_model.key1',
-    '_model.key1.[]',
     'model.key2',
     'model.key2.[]',
-    '_model.key2',
-    '_model.key2.[]',
     'model.key3.nested',
     'model.key3.nested.[]',
-    '_model.key3.nested',
-    '_model.key3.nested.[]',
   ].forEach(key => assert.ok(generatedKeys.includes(key)));
 });

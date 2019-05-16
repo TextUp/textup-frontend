@@ -8,7 +8,7 @@ import { phoneNumber } from 'textup-frontend/helpers/phone-number';
 const { run } = Ember;
 
 moduleForComponent('record-item/metadata', 'Integration | Component | record item/metadata', {
-  integration: true
+  integration: true,
 });
 
 test('inputs', function(assert) {
@@ -25,10 +25,6 @@ test('inputs', function(assert) {
   this.render(hbs`{{record-item/metadata timestamp=validTime author=validAuthor}}`);
 
   assert.ok(this.$('.record-item__metadata').length, 'valid inputs');
-
-  assert.throws(() =>
-    this.render(hbs`{{record-item/metadata timestamp=invalidTime author=invalidAuthor}}`)
-  );
 });
 
 test('rendering', function(assert) {

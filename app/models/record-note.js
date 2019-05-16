@@ -6,17 +6,19 @@ import { validator, buildValidations } from 'ember-cp-validations';
 const { computed, typeOf, get, getWithDefault, tryInvoke } = Ember,
   Validations = buildValidations({
     numRecipients: validator('inclusion', {
-      disabled(model) {
-        return !model.get('isNew');
-      },
-      dependentKeys: ['isNew'],
+      disabled: computed('model.isNew', function() {
+        return !this.get('model.isNew');
+      }),
+      dependentKeys: ['model.isNew'],
       in: [1],
       message: 'should have exactly one recipient',
     }),
     'recipients.length': validator('has-any', {
-      disabled: model => !model.get('isNew'),
+      disabled: computed('model.isNew', function() {
+        return !this.get('model.isNew');
+      }),
       also: ['newNumberRecipients.length'],
-      dependentKeys: ['isNew', 'numRecipients'],
+      dependentKeys: ['model.isNew', 'model.numRecipients'],
       description: 'a contact, a shared contact, or a tag',
     }),
     noteContents: validator('has-any', {

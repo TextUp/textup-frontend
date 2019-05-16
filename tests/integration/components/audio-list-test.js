@@ -28,15 +28,6 @@ test('properties', function(assert) {
   `);
 
   assert.ok(this.$('.ember-view').length);
-
-  assert.throws(() => {
-    this.render(hbs`{{audio-list
-      audio="not an array"
-      maxNumToDisplay="hi"
-      sortPropName=88
-      sortLowToHigh=88}}
-    `);
-  });
 });
 
 test('ignores non-audio media elements', function(assert) {

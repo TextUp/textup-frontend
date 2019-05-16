@@ -25,6 +25,7 @@ test('valid inputs', function(assert) {
       activeNumber="hi"
       toggleClass="hi"}}
   `);
+
   assert.ok(this.$('.textup-account-switcher').length, 'did render');
 });
 

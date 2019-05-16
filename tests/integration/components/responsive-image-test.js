@@ -39,12 +39,6 @@ test('inputs', function(assert) {
     this.$('img.responsive-image').length,
     'renders successfully when passed in MediaImageVersions'
   );
-
-  this.set('versions', [{ test: 'required source prop not provided' }]);
-  assert.throws(
-    () => this.render(hbs`{{responsive-image versions=versions}}`),
-    'when provided, objects in versions list must conform to spec'
-  );
 });
 
 test('rendering success + rerendering on attribute change', function(assert) {

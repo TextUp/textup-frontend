@@ -4,6 +4,16 @@ import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { assign, run } = Ember;
 
+export const ERROR_PROP_WRONG_TYPE = error => {
+  const errorMsg = error.toString().toLowerCase();
+  return errorMsg.includes('expected') || errorMsg.includes('is not one of');
+};
+export const ERROR_PROP_MISSING = error =>
+  error
+    .toString()
+    .toLowerCase()
+    .includes('required');
+
 export const VALID_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
 export const VALID_MP3_URL_1 =

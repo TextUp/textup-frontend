@@ -9,7 +9,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   propTypes: {
     audio: PropTypes.oneOfType([
       PropTypes.null,
-      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     ]),
     listProps: PropTypes.oneOfType([PropTypes.null, PropTypes.object]),
     onAdd: PropTypes.func,
@@ -17,7 +17,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     readOnly: PropTypes.bool,
     showAddIfNone: PropTypes.bool,
     startAddMessage: PropTypes.string,
-    cancelAddMessage: PropTypes.string
+    cancelAddMessage: PropTypes.string,
   },
   getDefaultProps() {
     return {
@@ -25,7 +25,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       readOnly: false,
       showAddIfNone: false,
       startAddMessage: 'Add recording',
-      cancelAddMessage: 'Cancel add recording'
+      cancelAddMessage: 'Cancel add recording',
     };
   },
   classNames: 'audio-wrapper',
@@ -33,7 +33,8 @@ export default Ember.Component.extend(PropTypesMixin, {
   didReceiveAttrs() {
     this._super(...arguments);
     if (this.get('_openIfNoAudio')) {
-      run.scheduleOnce('afterRender', this, this._startAdding);
+      // the hide-show is not immediately registered to prevent any double-render errors
+      run.next(this, this._startAdding);
     }
   },
 
@@ -71,5 +72,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   },
   _onRemove() {
     tryInvoke(this, 'onRemove', [...arguments]);
-  }
+  },
 });

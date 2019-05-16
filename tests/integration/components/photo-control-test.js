@@ -45,16 +45,6 @@ test('inputs + rendering', function(assert) {
 
   assert.ok(this.$('.photo-control').length);
   assert.ok(this.$(`.photo-control .${addComponentClass}`));
-
-  this.setProperties({ images: [], onAdd: 'not a function', onRemove: 'not a function' });
-
-  assert.throws(
-    () =>
-      this.render(
-        hbs`{{photo-control images=images addComponentClass=88 onAdd=onAdd onRemove=onRemove}}`
-      ),
-    'add and removing handlers must be functions'
-  );
 });
 
 test('changing image display type', function(assert) {
@@ -71,13 +61,6 @@ test('changing image display type', function(assert) {
   assert.ok(this.$('.photo-control').length);
   assert.notOk(this.$('.image-stack').length, 'can specify image grid');
   assert.ok(this.$('.image-grid').length, 'can specify image grid');
-
-  this.setProperties({ images: [], invalidDisplay: 'not recognized value' });
-
-  assert.throws(
-    () => this.render(hbs`{{photo-control images=images imageDisplayComponent=invalidDisplay}}`),
-    'throws error when display is an invalid value'
-  );
 });
 
 test('displaying images', function(assert) {

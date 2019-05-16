@@ -49,7 +49,7 @@ test('when the page visibility API is NOT available', function(assert) {
   const visibilityState = sinon.stub(document, PageVisibilityService.STATE_PROP_NAME);
   visibilityState.get(() => undefined); // page visbility API not available
 
-  // service creation must happen AFTER the visibilityState is overriden
+  // service creation must happen AFTER the visibilityState is overridden
   const service = this.subject(),
     done = assert.async(),
     onVisible = sinon.spy(),

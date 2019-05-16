@@ -1,7 +1,6 @@
 import AudioUtils from 'textup-frontend/utils/audio';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import RecordActionsControlComponent from 'textup-frontend/components/record-actions-control';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -38,26 +37,6 @@ test('inputs', function(assert) {
   `);
 
   assert.ok(this.$('.record-actions-control').length, 'all valid inputs');
-
-  assert.throws(() => {
-    this.render(hbs`
-      {{record-actions-control hasPersonalNumber=888
-        hasItemsInRecord=888
-        images=888
-        audio=888
-        contents=888
-        onHeightChange=888
-        onContentChange=888
-        onAddImage=888
-        onAddAudio=888
-        onRemoveMedia=888
-        onAddNoteInPast=888
-        onAddNote=888
-        onCall=888
-        onText=888
-        onScheduleMessage=888}}
-    `);
-  }, 'invalid inputs');
 });
 
 test('rendering block', function(assert) {
@@ -179,7 +158,9 @@ test('updating content follows DDAU', function(assert) {
 test('send text handler returns outcome', function(assert) {
   const onText = sinon.stub(),
     randVal = Math.random(),
-    obj = RecordActionsControlComponent.create({ onText });
+    obj = Ember.getOwner(this)
+      .factoryFor('component:record-actions-control')
+      .create({ onText });
   onText.callsFake(() => randVal);
 
   assert.equal(obj._onSendText(), randVal, 'send handler return outcome');

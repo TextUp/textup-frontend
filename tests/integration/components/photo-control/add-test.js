@@ -12,17 +12,7 @@ moduleForComponent('photo-control/add', 'Integration | Component | photo control
 });
 
 test('inputs', function(assert) {
-  assert.throws(() => this.render(hbs`{{photo-control/add}}`), 'must pass in onAdd handler');
-
-  this.set('onAdd', 'not a function');
-  assert.throws(
-    () => this.render(hbs`{{photo-control/add onAdd=onAdd}}`),
-    'must pass in a function'
-  );
-
-  this.set('onAdd', () => {
-    return {};
-  });
+  this.set('onAdd', () => null);
 
   this.render(hbs`{{photo-control/add onAdd=onAdd}}`);
 
