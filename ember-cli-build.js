@@ -14,13 +14,13 @@ module.exports = function(defaults) {
     minifyJS: {
       enabled: false,
     },
-    sassOptions: { includePaths: ['bower_components'] },
+    sassOptions: { includePaths: ['node_modules'] },
   });
 
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.js');
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.css');
 
-  var faTree = new Funnel(app.bowerDirectory + '/font-awesome/fonts', {
+  var faTree = new Funnel(app.project.root + '/node_modules/font-awesome/fonts', {
     srcDir: '/',
     include: ['*.*'],
     destDir: '/assets/fonts',
