@@ -23,7 +23,7 @@ moduleFor('service:admin-service', 'Unit | Service | admin service', {
   beforeEach() {
     server = sinon.createFakeServer({ respondImmediately: true });
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notification-messages-service', NotificationsService);
     this.register('service:requestService', Ember.Service);
     this.inject.service('requestService');
   },

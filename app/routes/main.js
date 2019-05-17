@@ -25,6 +25,7 @@ export default Ember.Route.extend(
   SupportsFeedbackSlideout,
   {
     authService: Ember.inject.service(),
+    notifications: Ember.inject.service('notification-messages-service'),
     sharingService: Ember.inject.service(),
     stateService: Ember.inject.service(),
 

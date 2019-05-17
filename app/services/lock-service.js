@@ -11,7 +11,7 @@ const { computed, run, RSVP, typeOf } = Ember;
 
 export default Ember.Service.extend(Ember.Evented, {
   authService: Ember.inject.service(),
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   router: Ember.inject.service(),
   storageService: Ember.inject.service(),
   validateAuthService: Ember.inject.service(),

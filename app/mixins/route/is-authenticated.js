@@ -3,6 +3,7 @@ import Loading from 'textup-frontend/mixins/loading-slider';
 
 export default Ember.Mixin.create(Loading, {
   authService: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
 
   beforeModel(transition) {
     this._super(...arguments);

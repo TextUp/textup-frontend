@@ -6,9 +6,9 @@ import { format } from 'textup-frontend/utils/phone-number';
 const { RSVP } = Ember;
 
 export default Ember.Service.extend({
-  requestService: Ember.inject.service(),
   dataService: Ember.inject.service(),
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
+  requestService: Ember.inject.service(),
 
   startVerify(num) {
     return this.get('requestService')

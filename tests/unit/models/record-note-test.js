@@ -37,7 +37,7 @@ moduleForModel('record-note', 'Unit | Model | record note', {
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notification-messages-service', NotificationsService);
 
     server = sinon.createFakeServer({ respondImmediately: true });
   },

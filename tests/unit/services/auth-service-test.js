@@ -14,8 +14,8 @@ const { run } = Ember;
 moduleFor('service:auth-service', 'Unit | Service | auth service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:notifications', Ember.Service);
-    this.inject.service('notifications');
+    this.register('service:notification-messages-service', Ember.Service);
+    this.inject.service('notification-messages-service', { as: 'notifications' });
     this.register('service:requestService', Ember.Service);
     this.inject.service('requestService');
     this.register('service:router', Ember.Service);

@@ -4,6 +4,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   authService: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   requestService: Ember.inject.service(),
 
   setupController(controller) {

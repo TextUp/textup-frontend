@@ -5,8 +5,8 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:map-service', 'Unit | Service | map service', {
   beforeEach() {
-    this.register('service:notifications', Ember.Service);
-    this.inject.service('notifications');
+    this.register('service:notification-messages-service', Ember.Service);
+    this.inject.service('notification-messages-service', { as: 'notifications' });
   },
 });
 

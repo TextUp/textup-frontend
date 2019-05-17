@@ -13,7 +13,7 @@ moduleFor('adapter:application', 'Unit | Adapter | application', {
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notification-messages-service', NotificationsService);
     this.inject.service('authService');
     this.inject.service('stateService');
   },

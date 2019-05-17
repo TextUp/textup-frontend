@@ -6,6 +6,7 @@ const { run } = Ember;
 
 export default Ember.Mixin.create({
   callSlideoutService: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   tutorialService: Ember.inject.service(),
 
   setupController(controller) {
@@ -66,7 +67,7 @@ export default Ember.Mixin.create({
     };
   },
   _afterStartCall(contact) {
-    this.notifications.success(
+    this.get('notifications').success(
       `Calling your personal phone number to connect you to ${contact.get('name')}.`
     );
   },

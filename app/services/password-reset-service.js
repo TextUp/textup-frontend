@@ -10,7 +10,7 @@ export const GET_TOKEN_SUCCESS_MSG =
 export const RESET_PASSWORD_SUCCESS_MSG = 'Successfully reset your password!';
 
 export default Ember.Service.extend({
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   requestService: Ember.inject.service(),
 
   // Methods

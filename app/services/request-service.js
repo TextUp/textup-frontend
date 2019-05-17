@@ -11,7 +11,7 @@ export const NOT_LOGGED_IN_MSG = 'Please log in first.';
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
 
   authRequest(options = {}) {
     return new RSVP.Promise((resolve, reject) => {

@@ -7,9 +7,18 @@ const { isPresent } = Ember;
 export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
   authService: Ember.inject.service(),
   lockService: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   requestService: Ember.inject.service(),
   splashScreenService: Ember.inject.service(),
   stateService: Ember.inject.service(),
+
+  init() {
+    // For some reason, cannot set these defaults in an initializer so we need to set the default
+    // notification settings here in this `init` hook
+    const service = this.get('notifications');
+    service.setDefaultClearDuration(5000);
+    service.setDefaultAutoClear(true);
+  },
 
   beforeModel() {
     this._super(...arguments);

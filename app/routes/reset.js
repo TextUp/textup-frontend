@@ -1,12 +1,13 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  notifications: Ember.inject.service('notification-messages-service'),
   passwordResetService: Ember.inject.service(),
 
   redirect(model, transition) {
     const token = Ember.get(transition, 'queryParams.token');
     if (!token) {
-      this.notifications.error('No authorization token specified.');
+      this.get('notifications').error('No authorization token specified.');
       this.transitionTo('login');
     }
   },

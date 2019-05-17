@@ -11,8 +11,8 @@ moduleFor('service:request-service', 'Unit | Service | request service', {
   beforeEach() {
     this.register('service:authService', Ember.Service);
     this.inject.service('authService');
-    this.register('service:notifications', Ember.Service);
-    this.inject.service('notifications');
+    this.register('service:notification-messages-service', Ember.Service);
+    this.inject.service('notification-messages-service', { as: 'notifications' });
     this.register('service:router', Ember.Service);
     this.inject.service('router');
   },

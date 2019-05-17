@@ -11,7 +11,7 @@ moduleFor('mixin:route/supports-export-slideout', 'Unit | Mixin | route/supports
   beforeEach() {
     startCompleteTask = sinon.spy();
     this.register('service:tutorial-service', Ember.Service.extend({ startCompleteTask }));
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notification-messages-service', NotificationsService);
     this.register(
       'route:supports-export-slideout',
       Ember.Route.extend(RouteSupportsExportSlideoutMixin)

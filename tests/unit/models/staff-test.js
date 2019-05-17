@@ -27,7 +27,7 @@ moduleForModel('staff', 'Unit | Model | staff', {
   ],
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
-    this.register('service:notifications', NotificationsService);
+    this.register('service:notification-messages-service', NotificationsService);
     this.inject.service('store');
   },
 });

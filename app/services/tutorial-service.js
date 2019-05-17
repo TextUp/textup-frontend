@@ -11,7 +11,7 @@ export const TASK_STEP_NUMBER_KEY = 'stepNumber';
 
 export default Ember.Service.extend({
   authService: Ember.inject.service(),
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   storageService: Ember.inject.service(),
 
   // Properties

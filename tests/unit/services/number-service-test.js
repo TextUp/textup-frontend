@@ -17,10 +17,10 @@ moduleFor('service:number-service', 'Unit | Service | number service', {
   beforeEach() {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register(
-      'service:notifications',
+      'service:notification-messages-service',
       Ember.Service.extend({ info: sinon.spy(), success: sinon.spy() })
     );
-    this.inject.service('notifications');
+    this.inject.service('notification-messages-service', { as: 'notifications' });
 
     server = sinon.createFakeServer({ respondImmediately: true });
   },

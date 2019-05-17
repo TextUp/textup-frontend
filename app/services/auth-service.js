@@ -11,7 +11,7 @@ const { computed, isPresent, RSVP, typeOf } = Ember;
 export const LOG_IN_FAIL_MSG = 'Incorrect or blank username or password';
 
 export default Ember.Service.extend(Ember.Evented, {
-  notifications: Ember.inject.service(),
+  notifications: Ember.inject.service('notification-messages-service'),
   requestService: Ember.inject.service(),
   router: Ember.inject.service(),
   storageService: Ember.inject.service(),
