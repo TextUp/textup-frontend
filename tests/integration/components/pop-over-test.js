@@ -1,11 +1,12 @@
+import $ from 'jquery';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { run, typeOf } = Ember;
 let $testingContainer, originalPadding, originalZoom;
 
 moduleForComponent('pop-over', 'Integration | Component | pop over', {
@@ -14,7 +15,7 @@ moduleForComponent('pop-over', 'Integration | Component | pop over', {
     // pad the testing container on the top and left so the component has space on all sides
     // reset zoom because for some reason `ember-testing` has zoom:50% applied on it which
     // messes with our getBoundingClientRect values
-    $testingContainer = Ember.$('#ember-testing');
+    $testingContainer = $('#ember-testing');
     originalPadding = $testingContainer.css('padding');
     originalZoom = $testingContainer.css('padding');
 
@@ -59,12 +60,12 @@ test('opening', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.notOk($('.pop-over__body--open').length);
   assert.ok(this.$('button').length);
   assert.ok(onOpen.notCalled);
   assert.ok(onReposition.notCalled);
   assert.ok(
-    Ember.$('#ember-testing')
+    $('#ember-testing')
       .text()
       .indexOf(bodyContent) > -1,
     'body content is shown but hidden'
@@ -74,16 +75,16 @@ test('opening', function(assert) {
     .first()
     .triggerHandler('click');
   wait().then(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length);
+    assert.ok($('.pop-over__body--open').length);
     assert.ok(onOpen.calledOnce);
     assert.ok(onReposition.notCalled, 'reposition only called on repositioning after opening');
     assert.ok(
-      Ember.$('#ember-testing')
+      $('#ember-testing')
         .text()
         .indexOf(bodyContent) > -1
     );
     assert.ok(
-      Ember.$('.pop-over__body__contents').is(document.activeElement),
+      $('.pop-over__body__contents').is(document.activeElement),
       'focus on body contents after opening'
     );
 
@@ -104,7 +105,7 @@ test('registering', function(assert) {
   );
 
   assert.ok(this.$('.pop-over').length);
-  assert.notOk(Ember.$('.pop-over__body--opening').length);
+  assert.notOk($('.pop-over__body--opening').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onOpen.notCalled);
   assert.ok(onClose.notCalled);
@@ -123,7 +124,7 @@ test('registering', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
@@ -135,7 +136,7 @@ test('registering', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
@@ -147,7 +148,7 @@ test('registering', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
       assert.notOk(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledOnce);
@@ -159,7 +160,7 @@ test('registering', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledTwice);
@@ -171,7 +172,7 @@ test('registering', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
       assert.notOk(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
       assert.ok(onOpen.calledTwice);
@@ -197,18 +198,18 @@ test('appropriate floating coordinations based on specified position', function(
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.ok(Ember.$('.pop-over__body__floating-container').length);
+  assert.ok($('.pop-over__body__floating-container').length);
   assert.ok(this.$('.pop-over').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onReposition.notCalled);
 
   let elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
   const { top: spaceOnTop, left: spaceOnLeft, width, height } = elementCoords,
-    viewportHeight = Ember.$(window).height(),
-    viewportWidth = Ember.$(window).width(),
+    viewportHeight = $(window).height(),
+    viewportWidth = $(window).width(),
     spaceOnRight = viewportWidth - spaceOnLeft - width,
     spaceOnBottom = viewportHeight - spaceOnTop - height,
-    $floatingContainer = Ember.$('.pop-over__body__floating-container');
+    $floatingContainer = $('.pop-over__body__floating-container');
 
   // invalid position specified -- pick side with the most space
   const publicAPI = doRegister.firstCall.args[0];
@@ -224,18 +225,18 @@ test('appropriate floating coordinations based on specified position', function(
 
       const floatingTop = $floatingContainer.css('top');
       if (spaceOnTop > spaceOnBottom) {
-        assert.ok(Ember.$('.pop-over__body--position-top').length, 'position on top');
+        assert.ok($('.pop-over__body--position-top').length, 'position on top');
         assert.ok(parseFloat(floatingTop) < elementCoords.top);
       } else {
-        assert.ok(Ember.$('.pop-over__body--position-bottom').length, 'position on bottom');
+        assert.ok($('.pop-over__body--position-bottom').length, 'position on bottom');
         assert.ok(parseFloat(floatingTop) > elementCoords.top);
       }
       const floatingLeft = $floatingContainer.css('left');
       if (spaceOnLeft > spaceOnRight) {
-        assert.ok(Ember.$('.pop-over__body--align-right').length, 'align to right edge');
+        assert.ok($('.pop-over__body--align-right').length, 'align to right edge');
         assert.ok(parseFloat(floatingLeft) > elementCoords.left);
       } else {
-        assert.ok(Ember.$('.pop-over__body--align-left').length, 'align to left edge');
+        assert.ok($('.pop-over__body--align-left').length, 'align to left edge');
         assert.ok(parseFloat(floatingLeft) < elementCoords.right);
       }
 
@@ -249,8 +250,8 @@ test('appropriate floating coordinations based on specified position', function(
 
       const floatingTop = $floatingContainer.css('top');
 
-      assert.ok(Ember.$('.pop-over__body--position-top').length);
-      assert.notOk(Ember.$('.pop-over__body--position-bottom').length);
+      assert.ok($('.pop-over__body--position-top').length);
+      assert.notOk($('.pop-over__body--position-bottom').length);
       assert.ok(parseFloat(floatingTop) < elementCoords.top);
 
       elementCoords = this.$('.pop-over')[0].getBoundingClientRect();
@@ -263,8 +264,8 @@ test('appropriate floating coordinations based on specified position', function(
 
       const floatingTop = $floatingContainer.css('top');
 
-      assert.notOk(Ember.$('.pop-over__body--position-top').length);
-      assert.ok(Ember.$('.pop-over__body--position-bottom').length);
+      assert.notOk($('.pop-over__body--position-top').length);
+      assert.ok($('.pop-over__body--position-bottom').length);
       assert.ok(parseFloat(floatingTop) > elementCoords.top);
 
       done();
@@ -286,8 +287,8 @@ test('truncate body if overflow', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.ok(Ember.$('.pop-over__body__floating-container').length);
-  assert.ok(Ember.$('.pop-over__body__dimension-container').length);
+  assert.ok($('.pop-over__body__floating-container').length);
+  assert.ok($('.pop-over__body__dimension-container').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onReposition.notCalled);
 
@@ -295,12 +296,12 @@ test('truncate body if overflow', function(assert) {
   publicAPI.actions.open().then(() => {
     assert.equal(publicAPI.isOpen, true);
     assert.ok(
-      Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+      $('.pop-over__body--opening').length || $('.pop-over__body--open').length
     );
     assert.ok(doRegister.calledOnce);
     assert.ok(onReposition.notCalled);
 
-    const $dimensionContainer = Ember.$('.pop-over__body__dimension-container'),
+    const $dimensionContainer = $('.pop-over__body__dimension-container'),
       styleAttr = $dimensionContainer.attr('style');
     assert.ok(styleAttr.indexOf('max-height') > -1, 'has vertical overflow');
     assert.ok(styleAttr.indexOf('max-width') > -1, 'has horizontal overflow');
@@ -323,11 +324,11 @@ test('appropriate positioning on repeating openings', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.ok(Ember.$('.pop-over__body__floating-container').length);
+  assert.ok($('.pop-over__body__floating-container').length);
   assert.ok(doRegister.calledOnce);
 
   const triggerElement = this.$('.pop-over')[0],
-    $floatingContainer = Ember.$('.pop-over__body__floating-container'),
+    $floatingContainer = $('.pop-over__body__floating-container'),
     publicAPI = doRegister.firstCall.args[0];
   let bottom = triggerElement.getBoundingClientRect().bottom;
   publicAPI.actions
@@ -335,7 +336,7 @@ test('appropriate positioning on repeating openings', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
 
@@ -347,7 +348,7 @@ test('appropriate positioning on repeating openings', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, false);
       assert.notOk(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
 
@@ -357,7 +358,7 @@ test('appropriate positioning on repeating openings', function(assert) {
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length
       );
       assert.ok(doRegister.calledOnce);
 
@@ -392,34 +393,34 @@ test('reposition on resize, orientation change, and mutation of child nodes', fu
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
       assert.ok(
-        Ember.$('.pop-over__body--opening').length || Ember.$('.pop-over__body--open').length,
+        $('.pop-over__body--opening').length || $('.pop-over__body--open').length,
         'wrapping up opening so not completely done yet'
       );
       assert.equal(onReposition.callCount, 0);
 
-      Ember.$(window).trigger('resize');
+      $(window).trigger('resize');
       return wait();
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(onReposition.callCount, 1);
 
-      Ember.$(window).trigger('orientationchange');
+      $(window).trigger('orientationchange');
       return wait();
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(onReposition.callCount, 2);
 
-      assert.ok(Ember.$('.pop-over__body__contents').length);
-      Ember.$('.pop-over__body__contents').append('<p>Hi</p>');
+      assert.ok($('.pop-over__body__contents').length);
+      $('.pop-over__body__contents').append('<p>Hi</p>');
       return wait();
     })
     .then(() => {
       assert.equal(publicAPI.isOpen, true);
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(onReposition.callCount, 3);
 
       done();
@@ -445,7 +446,7 @@ test('closing on via handler in trigger', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.notOk($('.pop-over__body--open').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onOpen.notCalled);
   assert.ok(onClose.notCalled);
@@ -459,7 +460,7 @@ test('closing on via handler in trigger', function(assert) {
     .triggerHandler('click');
   wait()
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, true);
 
       assert.ok(doRegister.calledOnce);
@@ -473,7 +474,7 @@ test('closing on via handler in trigger', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length);
+      assert.notOk($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, false);
 
       assert.ok(doRegister.calledOnce);
@@ -508,7 +509,7 @@ test('closing via user interaction', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.notOk($('.pop-over__body--open').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onOpen.notCalled);
   assert.ok(onClose.notCalled);
@@ -522,7 +523,7 @@ test('closing via user interaction', function(assert) {
     .triggerHandler('click');
   wait()
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, true);
 
       assert.ok(doRegister.calledOnce);
@@ -530,25 +531,25 @@ test('closing via user interaction', function(assert) {
       assert.ok(onClose.notCalled);
       assert.ok(onReposition.notCalled);
 
-      assert.ok(Ember.$('.pop-over__body__contents').length);
-      Ember.$('.pop-over__body__contents')
+      assert.ok($('.pop-over__body__contents').length);
+      $('.pop-over__body__contents')
         .children()
         .first()
         .trigger('click');
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, true, 'click inside pop over body does not close');
 
-      assert.ok(Ember.$('.pop-over__body__overlay').length);
-      Ember.$('.pop-over__body__overlay')
+      assert.ok($('.pop-over__body__overlay').length);
+      $('.pop-over__body__overlay')
         .first()
         .triggerHandler('click');
       return wait();
     })
     .then(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length);
+      assert.notOk($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, false);
 
       assert.ok(doRegister.calledOnce);
@@ -562,7 +563,7 @@ test('closing via user interaction', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length);
+      assert.ok($('.pop-over__body--open').length);
       assert.equal(publicAPI.isOpen, true);
 
       assert.ok(doRegister.calledOnce);
@@ -573,11 +574,11 @@ test('closing via user interaction', function(assert) {
       // only continue with testing the touch handler if the browser supports these touch events
       // see https://stackoverflow.com/a/2915912
       if ('ontouchend' in document.documentElement) {
-        Ember.$('.pop-over__body__overlay')
+        $('.pop-over__body__overlay')
           .first()
           .triggerHandler('touchend');
         wait().then(() => {
-          assert.notOk(Ember.$('.pop-over__body--open').length);
+          assert.notOk($('.pop-over__body--open').length);
           assert.equal(publicAPI.isOpen, false);
 
           assert.ok(doRegister.calledOnce);
@@ -615,7 +616,7 @@ test('close when clicking on body', function(assert) {
   `);
 
   assert.ok(this.$('.pop-over').length);
-  assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.notOk($('.pop-over__body--open').length);
   assert.ok(doRegister.calledOnce);
   assert.ok(onOpen.notCalled);
   assert.ok(onClose.notCalled);
@@ -628,7 +629,7 @@ test('close when clicking on body', function(assert) {
     .first()
     .triggerHandler('click');
   wait().then(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length);
+    assert.ok($('.pop-over__body--open').length);
     assert.equal(publicAPI.isOpen, true);
 
     assert.ok(doRegister.calledOnce);
@@ -636,12 +637,12 @@ test('close when clicking on body', function(assert) {
     assert.ok(onClose.notCalled);
     assert.ok(onReposition.notCalled);
 
-    assert.ok(Ember.$('.pop-over__body__contents').length);
-    Ember.$('.pop-over__body__contents')
+    assert.ok($('.pop-over__body__contents').length);
+    $('.pop-over__body__contents')
       .first()
       .triggerHandler('click');
     run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'click on body DOES close by default');
+      assert.notOk($('.pop-over__body--open').length, 'click on body DOES close by default');
       assert.equal(publicAPI.isOpen, false);
 
       assert.ok(doRegister.calledOnce);

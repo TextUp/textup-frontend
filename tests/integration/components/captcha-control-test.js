@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -29,7 +29,7 @@ test('callbacks', function(assert) {
   const onSuccess = sinon.spy(),
     onFailure = sinon.spy(),
     onExpiration = sinon.spy(),
-    captchaService = Ember.getOwner(this).lookup('service:captcha-service'),
+    captchaService = getOwner(this).lookup('service:captcha-service'),
     isValid = sinon.stub(captchaService, 'isValid'),
     done = assert.async();
   this.setProperties({ onSuccess, onFailure, onExpiration });

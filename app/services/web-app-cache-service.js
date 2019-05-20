@@ -1,5 +1,7 @@
+import $ from 'jquery';
+import Service, { inject as service } from '@ember/service';
+import { debug } from '@ember/debug';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import PlatformUtils from 'textup-frontend/utils/platform';
 
 // For initial outline of code, see https://github.com/racido/broccoli-manifest
@@ -13,7 +15,7 @@ export function tryTriggerAppUpdate() {
       window.applicationCache.update();
     }
   } catch (e) {
-    Ember.debug('_tryTriggerAppUpdate', e);
+    debug('_tryTriggerAppUpdate', e);
   }
 }
 
@@ -27,15 +29,15 @@ export function swapCacheAndReload() {
   }
 }
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  lockService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  lockService: service(),
 
   willDestroy() {
     this._super(...arguments);
     if (this.get('_hasBoundEvents')) {
       window.applicationCache.removeEventListener('updateready', swapCacheAndReload);
-      Ember.$(window).off('load', tryTriggerAppUpdate);
+      $(window).off('load', tryTriggerAppUpdate);
       this.get('authService')
         .off(config.events.auth.success, this)
         .off(config.events.auth.clear, this);
@@ -52,7 +54,7 @@ export default Ember.Service.extend({
       // handles the outcome of the update checking
       window.applicationCache.addEventListener('updateready', swapCacheAndReload, false);
       // checks for update after the page has finished loading for the first time
-      Ember.$(window).on('load', tryTriggerAppUpdate);
+      $(window).on('load', tryTriggerAppUpdate);
       // checks for update at key points of the user flow so that the user can receive timely
       // updates even if the page is not often reloaded (e.g., iOS PWAs)
       this.get('authService')

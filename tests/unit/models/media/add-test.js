@@ -1,9 +1,8 @@
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForModel('media/add', 'Unit | Model | media/add', {
   needs: ['model:media-element', 'model:media-element-version'],

@@ -1,8 +1,11 @@
-import Ember from 'ember';
+import { tryInvoke } from '@ember/utils';
+import { htmlSafe } from '@ember/template';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import defaultIfAbsent from '../../utils/default-if-absent';
 import tc from 'tinycolor2';
 
-export default Ember.Component.extend({
+export default Component.extend({
   color: defaultIfAbsent('#fff'),
   contrast: defaultIfAbsent(40),
   isSelected: defaultIfAbsent(false),
@@ -15,18 +18,18 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  complement: Ember.computed('color', function() {
+  complement: computed('color', function() {
     const tColor = tc(this.get('color')),
       ct = this.get('contrast'),
       complement = tColor.isLight() ? tColor.darken(ct) : tColor.lighten(ct);
     return complement.toString();
   }),
-  style: Ember.computed('color', 'complement', function() {
+  style: computed('color', 'complement', function() {
     const color = this.get('color'),
       complement = this.get('complement');
-    return Ember.String.htmlSafe(`background-color: ${color}; color:${complement}`);
+    return htmlSafe(`background-color: ${color}; color:${complement}`);
   }),
-  publicAPI: Ember.computed('isSelected', 'color', 'complement', function() {
+  publicAPI: computed('isSelected', 'color', 'complement', function() {
     return {
       isSelected: this.get('isSelected'),
       color: this.get('color'),
@@ -43,7 +46,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
+    tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
 
   // Actions
@@ -52,7 +55,7 @@ export default Ember.Component.extend({
   select(skipNotify = false) {
     this.set('isSelected', true);
     if (!skipNotify) {
-      Ember.tryInvoke(this, 'onSelect');
+      tryInvoke(this, 'onSelect');
     }
   },
   deselect() {

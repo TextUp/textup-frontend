@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('record-cluster/item', 'Unit | Component | record cluster/item', {
   unit: true,

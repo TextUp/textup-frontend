@@ -1,8 +1,6 @@
+import { dasherize } from '@ember/string';
 import ApplicationAdapter from 'textup-frontend/adapters/application';
-import Ember from 'ember';
 import { pluralize } from 'ember-inflector';
-
-const { dasherize } = Ember.String;
 
 export default ApplicationAdapter.extend({
   pathForType(modelName) {

@@ -1,11 +1,12 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import { mockValidMediaImage, mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
+import {
+  mockValidMediaImage,
+  mockValidMediaAudio
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('future-message', 'Integration | Component | future message', {
   integration: true,

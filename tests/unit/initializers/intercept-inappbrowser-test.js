@@ -1,5 +1,5 @@
+import $ from 'jquery';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import InterceptInappbrowserInitializer from 'textup-frontend/initializers/intercept-inappbrowser';
 import sinon from 'sinon';
@@ -19,7 +19,7 @@ test('overrides window.open', function(assert) {
   window.cordova = { InAppBrowser: { open } };
 
   InterceptInappbrowserInitializer.initialize();
-  Ember.$(document).trigger(Ember.$.Event('deviceready'));
+  $(document).trigger($.Event('deviceready'));
 
   wait().then(() => {
     assert.deepEqual(window.open, open);
@@ -27,7 +27,7 @@ test('overrides window.open', function(assert) {
     window.open = originalOpen;
     window.cordova = originalCordova;
     hasCordova.restore();
-    Ember.$(document).off();
+    $(document).off();
     done();
   });
 });
@@ -44,7 +44,7 @@ test('intercepts clicks', function(assert) {
   InterceptInappbrowserInitializer.initialize();
   this.setProperties({ src });
   this.render(hbs`<a href={{src}} target="_blank" id="test-link"> Testing link </a>}`);
-  Ember.$(document).trigger(Ember.$.Event('deviceready'));
+  $(document).trigger($.Event('deviceready'));
   wait()
     .then(() => {
       this.$('#test-link').click();
@@ -57,7 +57,7 @@ test('intercepts clicks', function(assert) {
       window.open = originalOpen;
       window.cordova = originalCordova;
       hasCordova.restore();
-      Ember.$(document).off();
+      $(document).off();
       done();
     });
 });

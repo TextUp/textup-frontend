@@ -1,14 +1,17 @@
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import MediaAddChange from 'textup-frontend/models/media/add';
 import MediaElement from 'textup-frontend/models/media-element';
 import MediaRemoveChange from 'textup-frontend/models/media/remove';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import sinon from 'sinon';
-import { mergeExistingAndChanges, removeElementsById } from 'textup-frontend/models/media';
+import {
+  mergeExistingAndChanges,
+  removeElementsById
+} from 'textup-frontend/models/media';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run, RSVP } = Ember;
 let ensureDimensionsStub;
 
 moduleForModel('media', 'Unit | Model | media', {

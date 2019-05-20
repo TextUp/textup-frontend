@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
 import moment from 'moment';
-
-const { typeOf } = Ember;
 
 export function formatSecondsAsTimeElapsed(numSeconds) {
   const seconds = parseInt(numSeconds);

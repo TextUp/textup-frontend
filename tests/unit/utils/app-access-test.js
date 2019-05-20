@@ -1,6 +1,6 @@
+import EmberObject from '@ember/object';
 import AppAccessUtils from 'textup-frontend/utils/app-access';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { module, test } from 'qunit';
@@ -9,9 +9,9 @@ module('Unit | Utility | app access');
 
 test('trying to find phone owner from url identifier', function(assert) {
   const urlIdent = Math.random(),
-    val1 = Ember.Object.create({ [Constants.PROP_NAME.URL_IDENT]: urlIdent }),
-    authUserWithActivePhones = Ember.Object.create({ allActivePhoneOwners: [null, val1] }),
-    authUserNoActivePhones = Ember.Object.create({
+    val1 = EmberObject.create({ [Constants.PROP_NAME.URL_IDENT]: urlIdent }),
+    authUserWithActivePhones = EmberObject.create({ allActivePhoneOwners: [null, val1] }),
+    authUserNoActivePhones = EmberObject.create({
       [Constants.PROP_NAME.URL_IDENT]: urlIdent,
       allActivePhoneOwners: [],
     });
@@ -57,9 +57,9 @@ test('determining if authUser is an admin', function(assert) {
 test('determining the appropriate location in the app based on available phone owners', function(assert) {
   const transitionTo = sinon.spy(),
     phoneOwner1 = { name: Math.random(), phone: { content: { isActive: true } } };
-  const mainRoute = Ember.Object.create({ transitionTo, routeName: 'main' }),
-    adminIndexRoute = Ember.Object.create({ transitionTo, routeName: 'admin.index' }),
-    noneIndexRoute = Ember.Object.create({ transitionTo, routeName: 'none.index' });
+  const mainRoute = EmberObject.create({ transitionTo, routeName: 'main' }),
+    adminIndexRoute = EmberObject.create({ transitionTo, routeName: 'admin.index' }),
+    noneIndexRoute = EmberObject.create({ transitionTo, routeName: 'none.index' });
   const noneUser = mockModel(1, Constants.MODEL.STAFF, { allActivePhoneOwners: [] }),
     staffUser = mockModel(2, Constants.MODEL.STAFF, { allActivePhoneOwners: [phoneOwner1] }),
     adminOnlyUser = mockModel(3, Constants.MODEL.STAFF, {

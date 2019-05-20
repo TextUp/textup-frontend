@@ -1,11 +1,13 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { mockValidMediaImage, mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
+import {
+  mockValidMediaImage,
+  mockValidMediaAudio
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf, run } = Ember;
 
 moduleForComponent(
   'record-actions-control/media-drawer',

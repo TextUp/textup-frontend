@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import sinon from 'sinon';
@@ -38,33 +38,33 @@ test('pressing buttons work and renders correctly - first step', function(assert
       onFinish=onFinish}}
   `);
   assert.strictEqual(
-    Ember.$('.tour-step__header__text')
+    $('.tour-step__header__text')
       .text()
       .includes(title),
     true,
     'title is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__content')
+    $('.tour-step__content')
       .text()
       .includes(text),
     true,
     'text is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__button--next')
+    $('.tour-step__button--next')
       .text()
       .includes('Next'),
     true,
     'div contains next button'
   );
-  Ember.$('.tour-step__button.tour-step__button--back')
+  $('.tour-step__button.tour-step__button--back')
     .first()
     .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.notCalled, 'back is called');
-      Ember.$('.tour-step__button.tour-step__button--next')
+      $('.tour-step__button.tour-step__button--next')
         .first()
         .triggerHandler('click');
       return wait();
@@ -101,33 +101,33 @@ test('pressing buttons work and renders correctly - middle step', function(asser
       onFinish=onFinish}}
   `);
   assert.strictEqual(
-    Ember.$('.tour-step__header__text')
+    $('.tour-step__header__text')
       .text()
       .includes(title),
     true,
     'title is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__content')
+    $('.tour-step__content')
       .text()
       .includes(text),
     true,
     'text is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__button--next')
+    $('.tour-step__button--next')
       .text()
       .includes('Next'),
     true,
     'div contains next button'
   );
-  Ember.$('.tour-step__button.tour-step__button--back')
+  $('.tour-step__button.tour-step__button--back')
     .first()
     .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.calledOnce, 'back is called');
-      Ember.$('.tour-step__button.tour-step__button--next')
+      $('.tour-step__button.tour-step__button--next')
         .first()
         .triggerHandler('click');
       return wait();
@@ -165,33 +165,33 @@ test('pressing buttons work and renders correctly - last step', function(assert)
       onFinish=onFinish}}
   `);
   assert.strictEqual(
-    Ember.$('.tour-step__header__text')
+    $('.tour-step__header__text')
       .text()
       .includes(title),
     true,
     'title is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__content')
+    $('.tour-step__content')
       .text()
       .includes(text),
     true,
     'text is in the div'
   );
   assert.strictEqual(
-    Ember.$('.tour-step__button--next')
+    $('.tour-step__button--next')
       .text()
       .includes('Finish'),
     true,
     'div contains finish button'
   );
-  Ember.$('.tour-step__button.tour-step__button--back')
+  $('.tour-step__button.tour-step__button--back')
     .first()
     .triggerHandler('click');
   wait()
     .then(() => {
       assert.ok(back.calledOnce, 'back is called');
-      Ember.$('.tour-step__button.tour-step__button--next')
+      $('.tour-step__button.tour-step__button--next')
         .first()
         .triggerHandler('click');
       return wait();
@@ -235,17 +235,17 @@ test('on mobile, click then scroll-to element to highlight then calculating over
 
   setTimeout(() => {
     assert.ok(onClick.notCalled);
-    assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 1, 'no overlay cutout');
+    assert.equal($('.overlay--svg.display-s mask rect').length, 1, 'no overlay cutout');
 
     this.set('elementToHighlightMobile', '#' + highlightElementId);
     setTimeout(() => {
       assert.ok(onClick.notCalled);
-      assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
+      assert.equal($('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
 
       this.set('elementToOpenMobile', '#' + clickElementId);
       setTimeout(() => {
         assert.ok(onClick.calledOnce, 'click is called');
-        assert.equal(Ember.$('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
+        assert.equal($('.overlay--svg.display-s mask rect').length, 2, 'has overlay cutout');
 
         isMobile.restore();
         done();

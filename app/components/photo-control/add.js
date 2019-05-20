@@ -1,10 +1,13 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { extractImagesFromEvent, eventHasFiles } from 'textup-frontend/utils/photo';
+import {
+  extractImagesFromEvent,
+  eventHasFiles
+} from 'textup-frontend/utils/photo';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     onAdd: PropTypes.func.isRequired,
     labelClass: PropTypes.string

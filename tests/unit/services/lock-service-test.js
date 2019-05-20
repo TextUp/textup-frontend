@@ -1,6 +1,8 @@
+import { set } from '@ember/object';
+import Route from '@ember/routing/route';
+import Service from '@ember/service';
 import AppUtils from 'textup-frontend/utils/app';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
@@ -10,15 +12,15 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('service:lock-service', 'Unit | Service | lock service', {
   needs: ['service:analytics', 'service:loadingSlider'],
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
-    this.register('service:router', Ember.Service);
+    this.register('service:router', Service);
     this.inject.service('router');
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
     this.inject.service('storageService');
-    this.register('service:validateAuthService', Ember.Service);
+    this.register('service:validateAuthService', Service);
     this.inject.service('validateAuthService');
   },
 });
@@ -158,8 +160,8 @@ test('determining if should lock given route name', function(assert) {
     publicRouteName = 'lock-service-test-public-route',
     nonPublicRouteName = 'lock-service-test-not-public-route';
 
-  this.register(`route:${publicRouteName}`, Ember.Route.extend(IsPublicRouteMixin));
-  this.register(`route:${nonPublicRouteName}`, Ember.Route);
+  this.register(`route:${publicRouteName}`, Route.extend(IsPublicRouteMixin));
+  this.register(`route:${nonPublicRouteName}`, Route);
 
   assert.equal(service._shouldLockForRouteName(null), true);
   assert.equal(service._shouldLockForRouteName(['not a string']), true);
@@ -304,7 +306,7 @@ test('syncing lock status with transition', function(assert) {
   assert.ok(lockContainerObj.actions.unlock.calledOnce);
   assert.ok(lockContainerObj.actions.lock.calledOnce);
 
-  Ember.set(lockContainerObj, 'isLocked', false);
+  set(lockContainerObj, 'isLocked', false);
   _shouldLockForRouteName.withArgs(currentRouteName).returns(true);
   _shouldLockForRouteName.withArgs(targetName).returns(true);
   service.syncLockStatusWithTransition(transitionObj);
@@ -313,7 +315,7 @@ test('syncing lock status with transition', function(assert) {
   assert.ok(lockContainerObj.actions.unlock.calledOnce);
   assert.ok(lockContainerObj.actions.lock.calledOnce);
 
-  Ember.set(lockContainerObj, 'isLocked', true);
+  set(lockContainerObj, 'isLocked', true);
   _shouldLockForRouteName.withArgs(currentRouteName).returns(true);
   _shouldLockForRouteName.withArgs(targetName).returns(true);
   service.syncLockStatusWithTransition(transitionObj);

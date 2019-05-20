@@ -1,14 +1,15 @@
+import Service, { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
-const { isPresent, run, RSVP } = Ember;
-
-export default Ember.Service.extend({
-  contactService: Ember.inject.service(),
-  recordItemService: Ember.inject.service(),
-  requestService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  contactService: service(),
+  recordItemService: service(),
+  requestService: service(),
+  store: service(),
 
   validateAndCheckForName(number, { ctx }) {
     run.debounce(this, this._validateAndCheckForName, number, ctx, 250);

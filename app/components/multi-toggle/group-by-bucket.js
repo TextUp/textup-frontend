@@ -1,7 +1,10 @@
-import Ember from 'ember';
+import { scheduleOnce } from '@ember/runloop';
+import { isArray } from '@ember/array';
+import { computed, get, set } from '@ember/object';
+import Component from '@ember/component';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-export default Ember.Component.extend({
+export default Component.extend({
   anyChanges: false,
 
   itemIdentityProperty: defaultIfAbsent('id'),
@@ -61,14 +64,14 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  itemList: Ember.computed('items', function() {
+  itemList: computed('items', function() {
     const items = this.get('items');
-    return Ember.isArray(items) ? items : [items];
+    return isArray(items) ? items : [items];
   }),
-  hasManyItems: Ember.computed('itemList', function() {
+  hasManyItems: computed('itemList', function() {
     return this.get('itemList.length') > 1;
   }),
-  firstItemBucketMemberships: Ember.computed('buckets', 'itemList', 'hasManyItems', function() {
+  firstItemBucketMemberships: computed('buckets', 'itemList', 'hasManyItems', function() {
     const memberships = {};
     if (this.get('hasManyItems')) {
       return memberships;
@@ -81,8 +84,8 @@ export default Ember.Component.extend({
       function(itemBucket) {
         // store value at item command property if specified,
         // otherwise, just store true
-        const value = itemCommandProp ? Ember.get(itemBucket, itemCommandProp) : true;
-        Ember.set(memberships, String(Ember.get(itemBucket, bucketIdProp)), value);
+        const value = itemCommandProp ? get(itemBucket, itemCommandProp) : true;
+        set(memberships, String(get(itemBucket, bucketIdProp)), value);
       }.bind(this)
     );
     return memberships;
@@ -92,7 +95,7 @@ export default Ember.Component.extend({
   // ------
 
   didInsertElement() {
-    Ember.run.scheduleOnce('afterRender', this, this._determineAnyChanges);
+    scheduleOnce('afterRender', this, this._determineAnyChanges);
   },
 
   // Actions
@@ -112,11 +115,11 @@ export default Ember.Component.extend({
 
   clearActions(bucket, determineChanges = true) {
     const prop = this.get('actionProperty'),
-      actions = Ember.get(bucket, prop);
-    if (Ember.isArray(actions)) {
+      actions = get(bucket, prop);
+    if (isArray(actions)) {
       actions.clear();
     } else {
-      Ember.set(bucket, prop, []);
+      set(bucket, prop, []);
     }
     if (determineChanges) {
       this._determineAnyChanges();
@@ -125,26 +128,26 @@ export default Ember.Component.extend({
   doActions(bucket, command) {
     this.clearActions(bucket, false);
     const prop = this.get('actionProperty'),
-      actions = Ember.get(bucket, prop);
+      actions = get(bucket, prop);
     this.get('itemList').forEach(item => {
       actions.pushObject(this._makeAction(bucket, item, command));
     });
-    Ember.set(bucket, prop, actions);
+    set(bucket, prop, actions);
     this.set('anyChanges', true);
   },
   _makeAction(bucket, item, command) {
     const itemIdProp = this.get('itemIdentityProperty'),
       bucketIdProp = this.get('bucketIdentityProperty'),
       action = {};
-    action[this.get('_actionBucketIdProp')] = Ember.get(bucket, bucketIdProp);
-    action[this.get('_actionItemIdProp')] = Ember.get(item, itemIdProp);
+    action[this.get('_actionBucketIdProp')] = get(bucket, bucketIdProp);
+    action[this.get('_actionItemIdProp')] = get(item, itemIdProp);
     action[this.get('_actionCommandProp')] = command;
     return action;
   },
   _determineAnyChanges() {
     const prop = this.get('actionProperty'),
       anyChanges = this.get('buckets').any(bucket => {
-        const actions = Ember.get(bucket, prop);
+        const actions = get(bucket, prop);
         return actions && actions.length > 0;
       });
     this.set('anyChanges', anyChanges);

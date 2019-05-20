@@ -1,20 +1,20 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import {
+  isPresent,
+  isNone,
+  isBlank,
+  tryInvoke
+} from '@ember/utils';
+import { computed } from '@ember/object';
+import { notEmpty } from '@ember/object/computed';
+import { next, scheduleOnce } from '@ember/runloop';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import {
   validate as validateNumber,
   clean as cleanNumber,
 } from 'textup-frontend/utils/phone-number';
 
-const {
-  isBlank,
-  isNone,
-  isPresent,
-  computed,
-  computed: { notEmpty },
-  run: { scheduleOnce, next },
-} = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   disabled: defaultIfAbsent(false),
   number: defaultIfAbsent(''),
   forceAllowChanges: defaultIfAbsent(false),
@@ -122,11 +122,11 @@ export default Ember.Component.extend({
   // of the read-only phone number.
   handleFocusEnterForInput() {
     const number = this.get('_number');
-    Ember.tryInvoke(this, 'onFocusEnter', [number, !this.get('_hasError')]);
+    tryInvoke(this, 'onFocusEnter', [number, !this.get('_hasError')]);
   },
   handleFocusLeaveForInput() {
     const number = this.get('_number');
-    Ember.tryInvoke(this, 'onFocusLeave', [number, !this.get('_hasError')]);
+    tryInvoke(this, 'onFocusLeave', [number, !this.get('_hasError')]);
   },
   handlePasteForInput(event) {
     // need to schedule next because when the paste event fires on iOS safari,
@@ -198,7 +198,7 @@ export default Ember.Component.extend({
       return;
     }
     this.set('_isEditingInput', false);
-    Ember.tryInvoke(this, 'onClick', [number, true]);
+    tryInvoke(this, 'onClick', [number, true]);
     // move onto validate if present
     if (isPresent(onValidate)) {
       this.set('_isValidating', true);

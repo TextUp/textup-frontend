@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { tryInvoke } from '@ember/utils';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import moment from 'moment';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     data: PropTypes.arrayOf(PropTypes.string), // Format: ["0230", "2301"]
     onChange: PropTypes.func,
@@ -34,13 +34,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     // if new start is later than a DEFINED end time, set the end time
     // to be the same as the start time so we don't have an invalid range
     if (endDate && newStart > endDate) {
-      Ember.tryInvoke(this, 'onChange', [[newStartString, newStartString]]);
+      tryInvoke(this, 'onChange', [[newStartString, newStartString]]);
     } else {
-      Ember.tryInvoke(this, 'onChange', [[newStartString, this.get('data').objectAt(1)]]);
+      tryInvoke(this, 'onChange', [[newStartString, this.get('data').objectAt(1)]]);
     }
   },
   _handleEndChange(newEnd) {
-    Ember.tryInvoke(this, 'onChange', [
+    tryInvoke(this, 'onChange', [
       [this.get('data').objectAt(0), this._convertDateToTimeString(newEnd)]
     ]);
   },

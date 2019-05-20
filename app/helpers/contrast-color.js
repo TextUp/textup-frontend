@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import tc from 'tinycolor2';
 
 export function contrastColor([color]) {
@@ -9,4 +9,4 @@ export function contrastColor([color]) {
   }
 }
 
-export default Ember.Helper.helper(contrastColor);
+export default buildHelper(contrastColor);

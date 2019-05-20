@@ -1,9 +1,9 @@
+import { helper as buildHelper } from '@ember/component/helper';
 import PropertyUtils from 'textup-frontend/utils/property';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
 export function getConstantVal([valString = '']) {
   return PropertyUtils.mustGet(Constants, valString + '', `No constant found at '${valString}'`);
 }
 
-export default Ember.Helper.helper(getConstantVal);
+export default buildHelper(getConstantVal);

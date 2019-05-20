@@ -1,26 +1,28 @@
+import { notEmpty } from '@ember/object/computed';
+import { tryInvoke } from '@ember/utils';
+import { getWithDefault, computed } from '@ember/object';
+import { assign } from '@ember/polyfills';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, tryInvoke, getWithDefault, assign } = Ember,
-  Validations = buildValidations(
-    assign(
-      {
-        name: { description: 'Name', validators: [validator('presence', true)] },
-        hexColor: { description: 'Color', validators: [validator('presence', true)] },
-        location: {
-          description: 'Location',
-          validators: [validator('presence', true), validator('belongs-to')],
-        },
+const Validations = buildValidations(
+  assign(
+    {
+      name: { description: 'Name', validators: [validator('presence', true)] },
+      hexColor: { description: 'Color', validators: [validator('presence', true)] },
+      location: {
+        description: 'Location',
+        validators: [validator('presence', true), validator('belongs-to')],
       },
-      OwnsPhoneValidations
-    )
-  );
+    },
+    OwnsPhoneValidations
+  )
+);
 
 export default DS.Model.extend(
   Dirtiable,
@@ -64,7 +66,7 @@ export default DS.Model.extend(
     location: DS.belongsTo('location'),
 
     actions: computed(() => []),
-    hasActions: computed.notEmpty('actions'),
+    hasActions: notEmpty('actions'),
 
     transferFilter: computed('name', 'location.content.address', function() {
       const name = this.get('name'),

@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('location-preview', 'Unit | Component | location preview', {
   unit: true,

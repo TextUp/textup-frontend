@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     doUpdateVal: PropTypes.func.isRequired,
     doValidate: PropTypes.func,
@@ -33,7 +35,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _hasDoValidate: computed.notEmpty('doValidate'),
+  _hasDoValidate: notEmpty('doValidate'),
   _numberControlClass: computed('elementId', function() {
     return `lock-pad__control--${this.elementId}`;
   }),

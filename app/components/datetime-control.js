@@ -1,16 +1,14 @@
+import { scheduleOnce, next } from '@ember/runloop';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { and } from '@ember/object/computed';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import Ember from 'ember';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const {
-  computed,
-  isPresent,
-  computed: { and },
-} = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
+export default Component.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     datePlaceholder: PropTypes.string,
     timePlaceholder: PropTypes.string,
@@ -111,7 +109,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
 
   didInsertElement() {
     this._super(...arguments);
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       this._setValue(this.get('value'));
       // must be called AFTER _value is set. Use this helper method to set time options
       // instead of directly setting time options because directly setting will trigger
@@ -139,7 +137,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
         // Therefore, we will set the updated value after the rendering
         // process has finished
         if (moment(newVal).isSame(this.get('_value')) === false) {
-          Ember.run.scheduleOnce('afterRender', this, this._setValue, newVal);
+          scheduleOnce('afterRender', this, this._setValue, newVal);
         }
       } else {
         // first set the interval copy of the value immediately
@@ -150,11 +148,11 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
         // synchronously allows Ember to appropriate space out value
         // modifications so that the same value isn't modified twice
         // in a render, triggering a multiple modification deprecation
-        Ember.run.scheduleOnce('afterRender', this, function() {
+        scheduleOnce('afterRender', this, function() {
           if (!this.isDestroying && !this.isDestroyed) {
-            Ember.tryInvoke(this, 'onSelect', [newVal]);
+            tryInvoke(this, 'onSelect', [newVal]);
             this._tryUpdateTimeOptions(() =>
-              Ember.tryInvoke(this, 'onSelect', [this.get('_value')])
+              tryInvoke(this, 'onSelect', [this.get('_value')])
             );
           }
         });
@@ -231,7 +229,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
     // after rendering is done, stop short circuiting select hook
     // also, pass the possibly new value that falls within the new
     // boundaries up to the application
-    Ember.run.next(() => {
+    next(() => {
       if (!this.isDestroying && !this.isDestroyed) {
         this.set('_isRerenderingControls', false);
         callIfPresent(this, then);

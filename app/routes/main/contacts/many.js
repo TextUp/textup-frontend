@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import ManagesContactAttributes from 'textup-frontend/mixins/route/manages-contact-attributes';
 import ManagesTagMembership from 'textup-frontend/mixins/route/manages-tag-membership';
 
-export default Ember.Route.extend(ManagesContactAttributes, ManagesTagMembership, {
+export default Route.extend(ManagesContactAttributes, ManagesTagMembership, {
   templateName: 'main/contacts/many',
   controllerName: 'main/contacts/many',
   backRouteName: 'main.contacts',

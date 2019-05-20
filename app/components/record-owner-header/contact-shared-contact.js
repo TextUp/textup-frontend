@@ -1,10 +1,10 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import Contact from 'textup-frontend/models/contact';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     contact: PropTypes.instanceOf(Contact).isRequired,
     backRouteName: PropTypes.string.isRequired,

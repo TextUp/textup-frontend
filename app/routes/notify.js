@@ -1,8 +1,9 @@
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Route.extend({
-  requestService: Ember.inject.service(),
+export default Route.extend({
+  requestService: service(),
 
   queryParams: {
     token: { refreshModel: true },

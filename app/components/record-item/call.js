@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordCall from 'textup-frontend/models/record-call';
 
-const { tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     call: PropTypes.instanceOf(RecordCall).isRequired,
     onEndOngoing: PropTypes.func,

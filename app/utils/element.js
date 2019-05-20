@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import $ from 'jquery';
 
 export function isOrContainsElement(el, elToFind) {
-  return !el || !elToFind ? false : el === elToFind || Ember.$.contains(el, elToFind);
+  return !el || !elToFind ? false : el === elToFind || $.contains(el, elToFind);
 }
 
 export function buildElement(tagName, ...classNames) {
@@ -16,7 +16,7 @@ export function wrapElement(newContainer, childEl) {
   }
   // perform this two-step process instead of directly calling wrap because
   // wrap may clone the container, so we lose the reference to it.
-  const $child = Ember.$(childEl);
+  const $child = $(childEl);
   // insert or move container to next to child
   $child.before(newContainer);
   // move child inside of container
@@ -27,19 +27,19 @@ export function unwrapElement(childEl) {
   if (!childEl) {
     return;
   }
-  Ember.$(childEl).unwrap();
+  $(childEl).unwrap();
 }
 
 export function insertElementsWithin(containerEl, ...elementsToAppend) {
   if (!containerEl) {
     return;
   }
-  Ember.$(containerEl).append(elementsToAppend);
+  $(containerEl).append(elementsToAppend);
 }
 
 export function removeElement(elToRemove) {
   if (!elToRemove) {
     return;
   }
-  Ember.$(elToRemove).remove();
+  $(elToRemove).remove();
 }

@@ -1,15 +1,16 @@
+import $ from 'jquery';
+import Service from '@ember/service';
 import * as PasswordResetService from 'textup-frontend/services/password-reset-service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:password-reset-service', 'Unit | Service | password reset service', {
   beforeEach() {
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
   },
 });
@@ -18,7 +19,7 @@ test('getting password reset token', function(assert) {
   const service = this.subject(),
     done = assert.async(),
     username = Math.random(),
-    ajax = sinon.stub(Ember.$, 'ajax').resolves();
+    ajax = sinon.stub($, 'ajax').resolves();
 
   this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });
   this.notifications.setProperties({ success: sinon.spy() });
@@ -51,7 +52,7 @@ test('resetting password with token', function(assert) {
     done = assert.async(),
     token = Math.random(),
     password = Math.random(),
-    ajax = sinon.stub(Ember.$, 'ajax').resolves();
+    ajax = sinon.stub($, 'ajax').resolves();
 
   this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });
   this.notifications.setProperties({ success: sinon.spy() });

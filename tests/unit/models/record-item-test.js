@@ -1,10 +1,8 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { mockModel } from '../../helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('record-item', 'Unit | Model | record item', {
   needs: ['model:contact', 'model:tag', 'model:media'],

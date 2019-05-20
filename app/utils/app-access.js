@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import { typeOf, isPresent } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
-
-const { isPresent, typeOf } = Ember;
 
 export function tryFindPhoneOwnerOrSelfFromUrl(authUser, urlIdent) {
   if (typeOf(authUser) === 'instance' && isPresent(urlIdent)) {

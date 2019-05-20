@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import OwnsPhoneSerializer from 'textup-frontend/mixins/serializer/owns-phone';
 import TeamSerializer from 'textup-frontend/serializers/team';
 import { moduleForModel, test } from 'ember-qunit';
@@ -27,7 +27,7 @@ test('serializer owns phone', function(assert) {
 });
 
 test('serialized form', function(assert) {
-  const adminService = Ember.getOwner(this).lookup('service:admin-service'),
+  const adminService = getOwner(this).lookup('service:admin-service'),
     sId = Math.random(),
     obj = this.subject();
   adminService.setEditingStaff(sId);

@@ -1,15 +1,9 @@
+import { run } from '@ember/runloop';
 import * as Pusher from 'pusher-js';
 import * as WebsocketService from 'textup-frontend/services/websocket-service';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-
-// [NOTE] original ES6 class-based source: https://github.com/pusher/pusher-js/blob/v3.1.0/src/core/pusher.ts
-// [NOTE] what is actually used after transpilation to use more-broadly implemented JS constructs
-//    see: https://github.com/pusher/pusher-js/blob/v3.1.0/dist/web/pusher.js
-
-const { run } = Ember;
 
 moduleFor('service:websocket-service', 'Unit | Service | websocket service');
 

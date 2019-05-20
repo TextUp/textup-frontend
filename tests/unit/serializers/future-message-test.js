@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('future-message', 'Unit | Serializer | future message', {
   needs: [

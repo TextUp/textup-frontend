@@ -1,10 +1,8 @@
+import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-
-const { RSVP } = Ember;
 
 moduleFor('service:captcha-service', 'Unit | Service | captcha service');
 

@@ -1,11 +1,17 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import { debug } from '@ember/debug';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
+import { tryInvoke, typeOf } from '@ember/utils';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run, RSVP, typeOf, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
-  storageService: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, {
+  storageService: service(),
 
   propTypes: {
     url: PropTypes.string.isRequired,
@@ -28,7 +34,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _shouldShow: false,
   _isLoading: false,
 
-  _lastViewedKey: computed.alias('url'),
+  _lastViewedKey: alias('url'),
   _lastViewed: computed('url', function() {
     return moment(this.get('storageService').getItem(this.get('_lastViewedKey')));
   }),
@@ -71,7 +77,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     return new RSVP.Promise((resolve, reject) => {
       this.incrementProperty('_requestId');
       const thisReqId = this.get('_requestId');
-      Ember.$.get(this.get('url')).then(
+      $.get(this.get('url')).then(
         this._onLoadSuccess.bind(this, thisReqId, resolve),
         this._onLoadFailure.bind(this, thisReqId, reject)
       );
@@ -100,7 +106,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     if (this.isDestroying || this.isDestroyed || thisReqId !== this.get('_requestId')) {
       return;
     }
-    Ember.debug('message-modal: could not retrieve message', errorThrown);
+    debug('message-modal: could not retrieve message', errorThrown);
     reject();
   },
 });

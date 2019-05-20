@@ -1,9 +1,8 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelOwnsFutureMessagesMixin from 'textup-frontend/mixins/model/owns-future-messages';
 import { moduleFor, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 // testing DS.attr in mixins from https://stackoverflow.com/a/39860250
 moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-messages', {
@@ -27,7 +26,7 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
     // usual way and return it. Since createRecord is async, we need
     // an Ember.run.
     return run(() => {
-      const store = Ember.getOwner(this).lookup('service:store');
+      const store = getOwner(this).lookup('service:store');
       return store.createRecord('owns-future-messages-mixin-model');
     });
   },
@@ -35,7 +34,7 @@ moduleFor('mixin:model/owns-future-messages', 'Unit | Mixin | model/owns-future-
 
 test('adding future messages', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       obj = this.subject(),
       fMsgs = Array(8)
         .fill()
@@ -65,7 +64,7 @@ test('adding future messages', function(assert) {
 
 test('calculating next fire date', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       obj = this.subject(),
       date1 = new Date(Date.now() + 1000),
       date2 = new Date(Date.now() - 100),

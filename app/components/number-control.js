@@ -1,13 +1,11 @@
-import Ember from 'ember';
+import { tryInvoke } from '@ember/utils';
+import Component from '@ember/component';
+import $ from 'jquery';
+import { computed } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-const {
-  $,
-  computed,
-  run: { scheduleOnce },
-} = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   val: defaultIfAbsent(''),
   numDigits: defaultIfAbsent(false), // if specified, should be a positive integer
   disabled: defaultIfAbsent(false),
@@ -115,25 +113,25 @@ export default Ember.Component.extend({
     const numDigits = this.get('numDigits'),
       val = this.get('val');
     if (!numDigits || (numDigits && val.length < numDigits)) {
-      Ember.tryInvoke(this, 'doChange', [val + char]);
+      tryInvoke(this, 'doChange', [val + char]);
     }
   },
   removeLastFromVal() {
     if (this.get('disabled')) {
       return;
     }
-    Ember.tryInvoke(this, 'doChange', [this.get('val').slice(0, -1)]);
+    tryInvoke(this, 'doChange', [this.get('val').slice(0, -1)]);
   },
   handleOnFull() {
     if (this.get('disabled')) {
       return;
     }
-    Ember.tryInvoke(this, 'onFull', [this.get('val')]);
+    tryInvoke(this, 'onFull', [this.get('val')]);
   },
   handleOnSubmit() {
     if (this.get('disabled')) {
       return;
     }
-    Ember.tryInvoke(this, 'onSubmit', [this.get('val')]);
+    tryInvoke(this, 'onSubmit', [this.get('val')]);
   },
 });

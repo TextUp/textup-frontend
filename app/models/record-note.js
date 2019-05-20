@@ -1,31 +1,32 @@
+import { notEmpty, sort, readOnly } from '@ember/object/computed';
+import { getWithDefault, get, computed } from '@ember/object';
+import { tryInvoke, typeOf } from '@ember/utils';
 import DS from 'ember-data';
-import Ember from 'ember';
 import RecordItem from './record-item';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, typeOf, get, getWithDefault, tryInvoke } = Ember,
-  Validations = buildValidations({
-    numRecipients: validator('inclusion', {
-      disabled: computed('model.isNew', function() {
-        return !this.get('model.isNew');
-      }),
-      dependentKeys: ['model.isNew'],
-      in: [1],
-      message: 'should have exactly one recipient',
+const Validations = buildValidations({
+  numRecipients: validator('inclusion', {
+    disabled: computed('model.isNew', function() {
+      return !this.get('model.isNew');
     }),
-    'recipients.length': validator('has-any', {
-      disabled: computed('model.isNew', function() {
-        return !this.get('model.isNew');
-      }),
-      also: ['newNumberRecipients.length'],
-      dependentKeys: ['model.isNew', 'model.numRecipients'],
-      description: 'a contact, a shared contact, or a tag',
+    dependentKeys: ['model.isNew'],
+    in: [1],
+    message: 'should have exactly one recipient',
+  }),
+  'recipients.length': validator('has-any', {
+    disabled: computed('model.isNew', function() {
+      return !this.get('model.isNew');
     }),
-    noteContents: validator('has-any', {
-      also: ['media.hasElements', 'location.content'],
-      description: 'contents, images, or a location',
-    }),
-  });
+    also: ['newNumberRecipients.length'],
+    dependentKeys: ['model.isNew', 'model.numRecipients'],
+    description: 'a contact, a shared contact, or a tag',
+  }),
+  noteContents: validator('has-any', {
+    also: ['media.hasElements', 'location.content'],
+    description: 'contents, images, or a location',
+  }),
+});
 
 export default RecordItem.extend(Validations, {
   // Overrides
@@ -48,10 +49,10 @@ export default RecordItem.extend(Validations, {
 
   location: DS.belongsTo('location'), // hasOne
 
-  hasRevisions: computed.notEmpty('_revisions'),
-  revisions: computed.sort('_revisions', '_revisionsSorting'),
+  hasRevisions: notEmpty('_revisions'),
+  revisions: sort('_revisions', '_revisionsSorting'),
 
-  addAfterDate: computed.readOnly('_addAfterDate'),
+  addAfterDate: readOnly('_addAfterDate'),
 
   // Private properties
   // ------------------

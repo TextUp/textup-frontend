@@ -1,19 +1,18 @@
+import Service from '@ember/service';
+import { run } from '@ember/runloop';
 import * as SocketDataService from 'textup-frontend/services/socket-data-service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember;
-
 moduleFor('service:socket-data-service', 'Unit | Service | socket data service', {
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
-    this.register('service:websocketService', Ember.Service);
+    this.register('service:websocketService', Service);
     this.inject.service('websocketService');
   },
 });

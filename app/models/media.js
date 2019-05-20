@@ -1,11 +1,11 @@
+import { readOnly } from '@ember/object/computed';
+import { get, computed } from '@ember/object';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import MF from 'ember-data-model-fragments';
 import { ensureImageDimensions } from 'textup-frontend/utils/photo';
-
-const { computed, get, typeOf } = Ember;
 
 export default DS.Model.extend(Dirtiable, {
   // Properties
@@ -14,11 +14,11 @@ export default DS.Model.extend(Dirtiable, {
   images: MF.fragmentArray('media-element'),
   audio: MF.fragmentArray('media-element'),
 
-  displayedImages: computed.readOnly('_displayedImagesWithDimensions'),
-  displayedAudio: computed.readOnly('_displayedAudio'),
-  pendingChanges: computed.readOnly('_pendingChanges'),
+  displayedImages: readOnly('_displayedImagesWithDimensions'),
+  displayedAudio: readOnly('_displayedAudio'),
+  pendingChanges: readOnly('_pendingChanges'),
 
-  hasElements: computed.readOnly('_hasElements'),
+  hasElements: readOnly('_hasElements'),
   // list of string error messages in the event that some of the images we are trying
   // to upload failed because of a specified error
   uploadErrors: MF.array('string'),

@@ -1,13 +1,13 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-import { mockValidMediaImage, VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
+import {
+  mockValidMediaImage,
+  VALID_IMAGE_DATA_URL
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-// [FUTURE] investigate testing window resizing recalculation
-
-const { run } = Ember;
 
 moduleForComponent('responsive-image', 'Integration | Component | responsive image', {
   integration: true,
@@ -29,7 +29,7 @@ test('inputs', function(assert) {
   assert.ok(this.$('img.responsive-image').length, 'renders successfully');
   assert.equal(this.$('img.responsive-image').attr('alt'), alt, 'renders provided alt text');
 
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     versions = mockValidMediaImage(store).get('versions.content');
 
   this.set('versions', versions);

@@ -1,11 +1,13 @@
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Route.extend({
-  authService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
-  requestService: Ember.inject.service(),
+export default Route.extend({
+  authService: service(),
+  notifications: service('notification-messages-service'),
+  requestService: service(),
 
   setupController(controller) {
     const signupController = this.controllerFor('signup'),
@@ -38,7 +40,7 @@ export default Ember.Route.extend({
         : { id: org.get('id') };
       return this.get('requestService')
         .handleIfError(
-          Ember.$.ajax({
+          $.ajax({
             type: Constants.REQUEST_METHOD.POST,
             url: `${config.host}/v1/public/staff`,
             contentType: Constants.MIME_TYPE.JSON,

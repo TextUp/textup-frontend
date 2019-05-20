@@ -1,12 +1,12 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { tryInvoke } from '@ember/utils';
 import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { tryInvoke } = Ember;
-
-export default Ember.Mixin.create({
-  tagService: Ember.inject.service(),
-  tutorialService: Ember.inject.service(),
+export default Mixin.create({
+  tagService: service(),
+  tutorialService: service(),
 
   setupController(controller) {
     this._super(...arguments);

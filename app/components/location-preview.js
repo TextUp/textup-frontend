@@ -1,12 +1,13 @@
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { typeOf, tryInvoke } from '@ember/utils';
+import { getWithDefault, computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import Location from 'textup-frontend/models/location';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { buildPreviewUrl } from 'textup-frontend/utils/location';
 
-const { computed, tryInvoke, run, typeOf, getWithDefault } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     location: PropTypes.instanceOf(Location).isRequired,
     onSuccess: PropTypes.func,

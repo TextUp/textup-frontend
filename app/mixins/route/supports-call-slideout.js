@@ -1,13 +1,13 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { run } from '@ember/runloop';
 import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { run } = Ember;
-
-export default Ember.Mixin.create({
-  callSlideoutService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
-  tutorialService: Ember.inject.service(),
+export default Mixin.create({
+  callSlideoutService: service(),
+  notifications: service('notification-messages-service'),
+  tutorialService: service(),
 
   setupController(controller) {
     this._super(...arguments);

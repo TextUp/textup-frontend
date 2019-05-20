@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
+import { getWithDefault } from '@ember/object';
 
-const { RSVP, getWithDefault } = Ember,
-  UNDEFINED_OBJ = function() {};
+const UNDEFINED_OBJ = function() {};
 
 export function mustGet(obj, propName, errorString) {
   const retVal = getWithDefault(obj, propName, UNDEFINED_OBJ);

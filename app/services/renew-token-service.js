@@ -1,9 +1,9 @@
+import $ from 'jquery';
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
-
-const { RSVP } = Ember;
 
 export const KEY_ALREADY_OVERRIDDEN = '_alreadyOverriden';
 export const KEY_ALREADY_RENEWED = '_alreadyTriedToRenew';
@@ -13,20 +13,20 @@ export const KEY_ERROR_FN = 'error';
 export const KEY_ORIGINAL_ERROR_FN = '_error';
 export const KEY_STATUS = 'status';
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
 
   // Methods
   // -------
 
   startWatchingAjaxRequests() {
-    Ember.$.ajaxPrefilter(this._tryRenewTokenOnError.bind(this));
+    $.ajaxPrefilter(this._tryRenewTokenOnError.bind(this));
   },
 
   // This should happen transparently so don't wrap this in `requestService`'s  error handler
   tryRenewToken() {
     return new RSVP.Promise((resolve, reject) => {
-      Ember.$.ajax({
+      $.ajax({
         // do not want to retry this attempt if this fails or else we'd be in an infinite loop
         [KEY_ALREADY_OVERRIDDEN]: true,
         type: Constants.REQUEST_METHOD.POST,
@@ -55,7 +55,7 @@ export default Ember.Service.extend({
       return;
     }
     // create our own deferred object to handle done/fail callbacks
-    const deferred = Ember.$.Deferred();
+    const deferred = $.Deferred();
     // if the request works, return normally
     xhr.done(deferred.resolve);
     // mark as overridden so we don't try to override again
@@ -71,7 +71,7 @@ export default Ember.Service.extend({
     if (originalOptions[KEY_ERROR_FN]) {
       originalOptions[KEY_ORIGINAL_ERROR_FN] = originalOptions[KEY_ERROR_FN];
     }
-    options[KEY_ERROR_FN] = Ember.$.noop();
+    options[KEY_ERROR_FN] = $.noop();
     xhr.fail(this._newError.bind(this, deferred, originalOptions));
     // return the xhr wrapped in this new deferred object to prevent the original callbacks
     // from immediately firing
@@ -92,7 +92,7 @@ export default Ember.Service.extend({
       originalOptions[KEY_ALREADY_RENEWED] = true;
       this.tryRenewToken().then(
         // if renewing token is successful, then we resolve or reject based on the second attempt
-        () => Ember.$.ajax(originalOptions).then(deferred.resolve, deferred.reject),
+        () => $.ajax(originalOptions).then(deferred.resolve, deferred.reject),
         // if renewing token fails, then we go ahead and reject with original error
         () => this._rejectWithOriginal(deferred, originalOptions, xhr, otherArgs)
       );

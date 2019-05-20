@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-export default Ember.Mixin.create(Loading, {
-  authService: Ember.inject.service(),
+export default Mixin.create(Loading, {
+  authService: service(),
 
   beforeModel() {
     this._super(...arguments);

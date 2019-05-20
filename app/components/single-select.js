@@ -1,6 +1,9 @@
-import Ember from 'ember';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { isArray } from '@ember/array';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   inputComponent: 'single-select/input',
   selected: null,
   onInsert: null,
@@ -8,9 +11,9 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  selectedArray: Ember.computed('selected', function() {
+  selectedArray: computed('selected', function() {
     const selected = this.get('selected');
-    return Ember.isArray(selected) ? selected : Ember.isPresent(selected) ? [selected] : [];
+    return isArray(selected) ? selected : isPresent(selected) ? [selected] : [];
   }),
 
   // Actions
@@ -18,7 +21,7 @@ export default Ember.Component.extend({
 
   actions: {
     select(index, number, event) {
-      return Ember.tryInvoke(this, 'onInsert', [number, event]);
+      return tryInvoke(this, 'onInsert', [number, event]);
     },
   },
 });

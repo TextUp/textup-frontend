@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
@@ -10,7 +10,7 @@ test('determining if transition', function(assert) {
   assert.equal(TypeUtils.isTransition(), false);
   assert.equal(TypeUtils.isTransition('hi'), false);
   assert.equal(
-    TypeUtils.isTransition(Ember.Object.create({ abort: () => null, targetName: 'hi' })),
+    TypeUtils.isTransition(EmberObject.create({ abort: () => null, targetName: 'hi' })),
     false,
     'must be an plain Javascript object'
   );
@@ -28,7 +28,7 @@ test('determining if model at all', function(assert) {
   assert.equal(TypeUtils.isAnyModel('hi'), false);
   assert.equal(TypeUtils.isAnyModel([]), false);
   assert.equal(TypeUtils.isAnyModel({}), false);
-  assert.equal(TypeUtils.isAnyModel(Ember.Object.create()), false);
+  assert.equal(TypeUtils.isAnyModel(EmberObject.create()), false);
 
   assert.equal(TypeUtils.isAnyModel(modelObj), true);
 });

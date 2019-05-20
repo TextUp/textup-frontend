@@ -1,11 +1,10 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { phoneNumber } from 'textup-frontend/helpers/phone-number';
-
-const { run } = Ember;
 
 moduleForComponent('record-item/metadata', 'Integration | Component | record item/metadata', {
   integration: true,
@@ -29,7 +28,7 @@ test('inputs', function(assert) {
 
 test('rendering', function(assert) {
   run(() => {
-    const config = Ember.getOwner(this).resolveRegistration('config:environment'),
+    const config = getOwner(this).resolveRegistration('config:environment'),
       done = assert.async();
 
     this.setProperties({ whenCreated: null, authorName: null });

@@ -1,21 +1,26 @@
+import $ from 'jquery';
+import { debug } from '@ember/debug';
+import Evented from '@ember/object/evented';
+import Service, { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import RSVP from 'rsvp';
+import { typeOf, isPresent } from '@ember/utils';
+import { run } from '@ember/runloop';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, isPresent, RSVP, typeOf, run } = Ember;
-
 export const LOG_IN_FAIL_MSG = 'Incorrect or blank username or password';
 
-export default Ember.Service.extend(Ember.Evented, {
-  notifications: Ember.inject.service('notification-messages-service'),
-  requestService: Ember.inject.service(),
-  router: Ember.inject.service(),
-  storageService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend(Evented, {
+  notifications: service('notification-messages-service'),
+  requestService: service(),
+  router: service(),
+  storageService: service(),
+  store: service(),
 
   willDestroy() {
     this._super(...arguments);
@@ -48,7 +53,7 @@ export default Ember.Service.extend(Ember.Evented, {
       this.get('storageService')
         .sync()
         .then(this._setUpFromStorage.bind(this))
-        .catch(e => Ember.debug('authService.trySetUpFromStorage ' + e))
+        .catch(e => debug('authService.trySetUpFromStorage ' + e))
         .finally(resolve)
     );
   },
@@ -64,7 +69,7 @@ export default Ember.Service.extend(Ember.Evented, {
       }
       this.get('requestService')
         .handleIfError(
-          Ember.$.ajax({
+          $.ajax({
             type: Constants.REQUEST_METHOD.POST,
             url: `${config.host}/login?timezone=${LocaleUtils.getTimezone()}`,
             contentType: Constants.MIME_TYPE.JSON,

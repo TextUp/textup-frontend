@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForModel('record-note-revision', 'Unit | Serializer | record note revision', {
   needs: [

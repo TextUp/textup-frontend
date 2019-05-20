@@ -1,10 +1,10 @@
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
-const { typeOf } = Ember;
 let server;
 
 moduleFor('service:admin-service', 'Unit | Service | admin service', {
@@ -24,7 +24,7 @@ moduleFor('service:admin-service', 'Unit | Service | admin service', {
     server = sinon.createFakeServer({ respondImmediately: true });
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register('service:notification-messages-service', NotificationsService);
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
   },
   afterEach() {

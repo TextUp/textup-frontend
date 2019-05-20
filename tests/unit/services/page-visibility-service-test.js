@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import * as PageVisibilityService from 'textup-frontend/services/page-visibility-service';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
@@ -24,7 +24,7 @@ test('when the page visibility API is available', function(assert) {
   assert.ok(onHidden.notCalled);
 
   visibilityState.get(() => 'hidden');
-  Ember.$(document).triggerHandler('visibilitychange');
+  $(document).triggerHandler('visibilitychange');
   wait()
     .then(() => {
       assert.notOk(service.get('isVisible'));
@@ -32,7 +32,7 @@ test('when the page visibility API is available', function(assert) {
       assert.ok(onHidden.calledOnce);
 
       visibilityState.get(() => PageVisibilityService.STATE_VISIBLE);
-      Ember.$(document).triggerHandler('visibilitychange');
+      $(document).triggerHandler('visibilitychange');
       return wait();
     })
     .then(() => {
@@ -64,14 +64,14 @@ test('when the page visibility API is NOT available', function(assert) {
   assert.ok(onVisible.notCalled);
   assert.ok(onHidden.notCalled);
 
-  Ember.$(window).triggerHandler('blur');
+  $(window).triggerHandler('blur');
   wait()
     .then(() => {
       assert.notOk(service.get('isVisible'));
       assert.ok(onVisible.notCalled);
       assert.ok(onHidden.calledOnce);
 
-      Ember.$(window).triggerHandler('focus');
+      $(window).triggerHandler('focus');
       return wait();
     })
     .then(() => {

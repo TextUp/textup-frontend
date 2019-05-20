@@ -1,18 +1,17 @@
-import Ember from 'ember';
+import { addObserver, removeObserver } from '@ember/object/observers';
+import { getOwner } from '@ember/application';
+import Helper from '@ember/component/helper';
+import { typeOf, isPresent } from '@ember/utils';
+import { computed, get } from '@ember/object';
 
-// [NOTE] this helper is not compatible with the `v-get` helper. The `v-get` helper expects a
-// stream and this helper does not return a stream
-
-const { isPresent, typeOf, get, computed } = Ember;
-
-export default Ember.Helper.extend({
+export default Helper.extend({
   willDestroy() {
     this._super(...arguments);
     this._tryStopObserving();
   },
 
   compute([serviceName, passedInPropName]) {
-    const service = this.get('_service') || Ember.getOwner(this).lookup(`service:${serviceName}`),
+    const service = this.get('_service') || getOwner(this).lookup(`service:${serviceName}`),
       propName = this.get('_propName') || passedInPropName;
     if (!this.get('_isSetUp')) {
       this._setUp(service, serviceName, propName);
@@ -41,14 +40,14 @@ export default Ember.Helper.extend({
     }
     this.setProperties({ _service: service, _propName: propName });
     if (service && propName) {
-      Ember.addObserver(service, propName + '.[]', this, this.recompute); // in case is an array
+      addObserver(service, propName + '.[]', this, this.recompute); // in case is an array
     }
   },
   _tryStopObserving() {
     const service = this.get('_service'),
       propName = this.get('_propName');
     if (service && propName) {
-      Ember.removeObserver(service, propName + '.[]', this, this.recompute);
+      removeObserver(service, propName + '.[]', this, this.recompute);
     }
   },
 });

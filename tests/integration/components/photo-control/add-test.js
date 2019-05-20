@@ -1,11 +1,10 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import { run, later } from '@ember/runloop';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('photo-control/add', 'Integration | Component | photo control/add', {
   integration: true,
@@ -54,7 +53,7 @@ test('short circuiting file upload when do not have any files', function(assert)
       extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
       onAddSpy = sinon.spy(),
       done = assert.async();
-    extractStub.callsFake(() => new Ember.RSVP.Promise((resolve, reject) => reject()));
+    extractStub.callsFake(() => new Promise((resolve, reject) => reject()));
 
     this.set('onAddSpy', onAddSpy);
     this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
@@ -98,7 +97,7 @@ test('handling file upload', function(assert) {
     this.render(hbs`{{photo-control/add onAdd=onAddSpy}}`);
     assert.ok(this.$('.photo-control__add input').length);
 
-    extractStub.callsFake(() => new Ember.RSVP.Promise(resolve => resolve(randValue1)));
+    extractStub.callsFake(() => new Promise(resolve => resolve(randValue1)));
     this.$('.photo-control__add input').change();
     wait()
       .then(() => {
@@ -116,7 +115,7 @@ test('handling file upload', function(assert) {
         );
         assert.notOk(this.$('.photo-control__add input')[0].value, 'input value is cleared');
 
-        extractStub.callsFake(() => new Ember.RSVP.Promise((resolve, reject) => reject()));
+        extractStub.callsFake(() => new Promise((resolve, reject) => reject()));
         this.$('.photo-control__add input').change();
         return wait();
       })
@@ -152,7 +151,7 @@ test('handling async change events in rapid succession', function(assert) {
 
   run(() => {
     extractStub.callsFake(
-      () => new Ember.RSVP.Promise(resolve => Ember.run.later(this, resolve, randValue1, 500))
+      () => new Promise(resolve => later(this, resolve, randValue1, 500))
     );
     Array(5)
       .fill()

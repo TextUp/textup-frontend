@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
 import DS from 'ember-data';
-
-const { $, typeOf } = Ember;
 
 export default DS.Transform.extend({
   deserialize(serialized) {

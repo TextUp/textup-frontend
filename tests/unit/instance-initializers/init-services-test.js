@@ -1,18 +1,19 @@
+import Application from '@ember/application';
+import { run } from '@ember/runloop';
 import destroyApp from 'textup-frontend/tests/helpers/destroy-app';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { initialize } from 'textup-frontend/instance-initializers/init-services';
 import { module, test } from 'qunit';
 
 module('Unit | Instance Initializer | init services', {
   beforeEach() {
-    Ember.run(() => {
-      this.application = Ember.Application.create();
+    run(() => {
+      this.application = Application.create();
       this.appInstance = this.application.buildInstance();
     });
   },
   afterEach() {
-    Ember.run(this.appInstance, 'destroy');
+    run(this.appInstance, 'destroy');
     destroyApp(this.application);
   },
 });

@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
+import RSVP from 'rsvp';
+import { isArray } from '@ember/array';
+import { typeOf, isNone, isPresent } from '@ember/utils';
 import PhotoCompressionUtils from 'textup-frontend/utils/photo/compression';
-
-// do NOT import MediaElement or else you have a circular series of imports
-// when MediaElement imports from Media
-
-const { get, RSVP, isPresent, isArray, isNone, typeOf } = Ember;
 
 // Uploading image
 // ---------------

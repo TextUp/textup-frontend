@@ -1,6 +1,6 @@
+import Service from '@ember/service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -18,7 +18,7 @@ moduleFor('service:number-service', 'Unit | Service | number service', {
     // see https://github.com/stonecircle/ember-cli-notifications/issues/169
     this.register(
       'service:notification-messages-service',
-      Ember.Service.extend({ info: sinon.spy(), success: sinon.spy() })
+      Service.extend({ info: sinon.spy(), success: sinon.spy() })
     );
     this.inject.service('notification-messages-service', { as: 'notifications' });
 

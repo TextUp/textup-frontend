@@ -1,18 +1,18 @@
+import { notEmpty, equal } from '@ember/object/computed';
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 
-const { computed } = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   [Constants.PROP_NAME.SHARING_PERMISSION]: DS.attr('string'),
-  isShared: computed.notEmpty(Constants.PROP_NAME.SHARING_PERMISSION),
+  isShared: notEmpty(Constants.PROP_NAME.SHARING_PERMISSION),
 
-  isDelegatePermission: computed.equal(
+  isDelegatePermission: equal(
     Constants.PROP_NAME.SHARING_PERMISSION,
     Constants.SHARING_PERMISSION.DELEGATE
   ),
-  isViewPermission: computed.equal(
+  isViewPermission: equal(
     Constants.PROP_NAME.SHARING_PERMISSION,
     Constants.SHARING_PERMISSION.VIEW
   ),

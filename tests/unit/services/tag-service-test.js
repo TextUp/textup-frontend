@@ -1,20 +1,20 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-
-const { RSVP } = Ember;
 
 moduleFor('service:tag-service', 'Unit | Service | tag service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:dataService', Ember.Service);
+    this.register('service:dataService', Service);
     this.inject.service('dataService');
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
-    this.register('service:stateService', Ember.Service);
+    this.register('service:stateService', Service);
     this.inject.service('stateService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
   },
 });
@@ -36,9 +36,9 @@ test('persisting new tag', function(assert) {
   const service = this.subject(),
     done = assert.async(),
     tags = [],
-    phoneObj = Ember.Object.create({ tags: new RSVP.Promise(resolves => resolves(tags)) }),
-    modelObj = Ember.Object.create({ phone: new RSVP.Promise(resolves => resolves(phoneObj)) }),
-    tagObj = Ember.Object.create();
+    phoneObj = EmberObject.create({ tags: new RSVP.Promise(resolves => resolves(tags)) }),
+    modelObj = EmberObject.create({ phone: new RSVP.Promise(resolves => resolves(phoneObj)) }),
+    tagObj = EmberObject.create();
 
   this.dataService.setProperties({ persist: sinon.stub().resolves() });
 
@@ -56,8 +56,8 @@ test('persisting new tag', function(assert) {
 test('updating tag membership', function(assert) {
   const service = this.subject(),
     done = assert.async(),
-    contactObj = Ember.Object.create({ reload: sinon.stub().resolves() }),
-    tagObj = Ember.Object.create();
+    contactObj = EmberObject.create({ reload: sinon.stub().resolves() }),
+    tagObj = EmberObject.create();
 
   this.dataService.setProperties({ persist: sinon.stub().resolves() });
   this.requestService.setProperties({ handleIfError: sinon.stub().returnsArg(0) });

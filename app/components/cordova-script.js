@@ -1,14 +1,15 @@
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'script',
 
   attributeBindings: ['source:src', 'type'],
 
   type: 'text/javascript',
 
-  source: Ember.computed(function() {
+  source: computed(function() {
     return config.hasCordova ? 'cordova.js' : '';
   }),
 });

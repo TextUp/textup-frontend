@@ -1,9 +1,7 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('notification-detail', 'Unit | Model | notification detail', {
   needs: ['model:record-item'],

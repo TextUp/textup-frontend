@@ -1,9 +1,8 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run } = Ember;
 let server;
 
 moduleForModel('notification-detail', 'Unit | Serializer | notification detail', {

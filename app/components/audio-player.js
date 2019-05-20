@@ -1,11 +1,10 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { humanizeMediaError } from 'textup-frontend/utils/audio';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     audio: PropTypes.oneOfType([PropTypes.null, PropTypes.instanceOf(MediaElement)]),
     disabled: PropTypes.bool,

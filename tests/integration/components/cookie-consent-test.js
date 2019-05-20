@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import sinon from 'sinon';
@@ -17,12 +17,12 @@ test('rendering', function(assert) {
 
   wait()
     .then(() => {
-      assert.ok(Ember.$('.cc-theme-cookie-consent').length, 'did render');
+      assert.ok($('.cc-theme-cookie-consent').length, 'did render');
       assert.notOk(
         this.$('.cc-theme-cookie-consent').length,
         'rendered at the top level, not within the confines of the component'
       );
-      assert.ok(Ember.$('.cc-theme-cookie-consent a').attr('href'), 'has default link');
+      assert.ok($('.cc-theme-cookie-consent a').attr('href'), 'has default link');
       assert.ok(countryCodeStub.calledOnce);
 
       this.setProperties({
@@ -33,13 +33,13 @@ test('rendering', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.cc-theme-testing').length, 'did render');
+      assert.ok($('.cc-theme-testing').length, 'did render');
       assert.notOk(
         this.$('.cc-theme-testing').length,
         'rendered at the top level, not within the confines of the component'
       );
       assert.equal(
-        Ember.$('.cc-theme-testing a').attr('href'),
+        $('.cc-theme-testing a').attr('href'),
         this.get('learnMoreLink'),
         'appropriate link is rendered'
       );

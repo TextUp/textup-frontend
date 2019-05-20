@@ -1,14 +1,14 @@
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke, isPresent, isBlank } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import SupportsValidation from 'textup-frontend/mixins/component/supports-validation';
 
-// TODO test
-
-const { computed, isBlank, isPresent, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, SupportsValidation, {
+export default Component.extend(PropTypesMixin, SupportsValidation, {
   propTypes: {
     numbers: PropTypes.oneOfType([
       PropTypes.array,
@@ -35,7 +35,7 @@ export default Ember.Component.extend(PropTypesMixin, SupportsValidation, {
     );
   }),
   _newNumberString: '',
-  _hasNumbers: computed.notEmpty('numbers'),
+  _hasNumbers: notEmpty('numbers'),
   // for `SupportsValidation` mixin
   $validateFields: 'input',
   $errorNeighbor: computed(function() {

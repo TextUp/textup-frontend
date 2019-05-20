@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 import Notification from 'textup-frontend/models/notification';
 import PropTypeMixin, { PropTypes } from 'ember-prop-types';
 
-const { tryInvoke, computed } = Ember;
-
-export default Ember.Component.extend(PropTypeMixin, {
+export default Component.extend(PropTypeMixin, {
   propTypes: {
     notification: PropTypes.instanceOf(Notification),
     onOpen: PropTypes.func,
@@ -15,7 +15,7 @@ export default Ember.Component.extend(PropTypeMixin, {
   // Internal properties
   // -------------------
 
-  _hasOnOpen: computed.notEmpty('onOpen'),
+  _hasOnOpen: notEmpty('onOpen'),
 
   // Internal handlers
   // -----------------

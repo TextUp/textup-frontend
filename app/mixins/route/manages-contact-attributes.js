@@ -1,12 +1,13 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { isArray } from '@ember/array';
+import { run } from '@ember/runloop';
 import AppUtils from 'textup-frontend/utils/app';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { isArray, run } = Ember;
-
-export default Ember.Mixin.create({
-  dataService: Ember.inject.service(),
+export default Mixin.create({
+  dataService: service(),
 
   setupController(controller) {
     this._super(...arguments);

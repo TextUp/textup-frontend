@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import ComponentHasEventsMixin from 'textup-frontend/mixins/component/has-events';
 import { module, test } from 'qunit';
 
-const ComponentHasEventsObject = Ember.Object.extend(ComponentHasEventsMixin);
+const ComponentHasEventsObject = EmberObject.extend(ComponentHasEventsMixin);
 
 module('Unit | Mixin | component/has events');
 

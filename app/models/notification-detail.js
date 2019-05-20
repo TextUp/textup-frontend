@@ -1,11 +1,9 @@
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { urlIdent } from 'textup-frontend/utils/property';
-
-const { computed } = Ember;
 
 export default DS.Model.extend(Dirtiable, OwnsRecordItems, {
   name: DS.attr('string'),

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('captcha-control', 'Unit | Component | captcha control', {
   unit: true,
   beforeEach() {
-    this.register('service:captchaService', Ember.Service);
+    this.register('service:captchaService', Service);
   },
 });
 

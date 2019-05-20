@@ -1,12 +1,13 @@
+import { alias, readOnly, uniqBy, sort } from '@ember/object/computed';
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
+import { typeOf } from '@ember/utils';
 import DS from 'ember-data';
-import Ember from 'ember';
 import RecordItemModel from 'textup-frontend/models/record-item';
 import { pluralize } from 'textup-frontend/utils/text';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { computed, typeOf } = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   // Properties
   // ----------
 
@@ -14,19 +15,19 @@ export default Ember.Mixin.create({
   language: DS.attr('string'),
 
   totalNumRecordItems: null,
-  numRecordItems: computed.alias('_sortedRecordItems.length'),
-  recordItems: computed.readOnly('_sortedRecordItems'),
-  numRecordClusters: computed.alias('_recordClusters.length'),
-  recordClusters: computed.readOnly('_recordClusters'),
+  numRecordItems: alias('_sortedRecordItems.length'),
+  recordItems: readOnly('_sortedRecordItems'),
+  numRecordClusters: alias('_recordClusters.length'),
+  recordClusters: readOnly('_recordClusters'),
 
   // Private properties
   // ------------------
 
   // polymorphic needs `inverse: '_recordItems'` in `models/record-item`
   _recordItems: DS.hasMany('record-item', { polymorphic: true }),
-  _uniqueRecordItems: computed.uniqBy('_recordItems', 'id'),
+  _uniqueRecordItems: uniqBy('_recordItems', 'id'),
   _recordsSorting: ['whenCreated:asc'],
-  _sortedRecordItems: computed.sort('_uniqueRecordItems', '_recordsSorting'),
+  _sortedRecordItems: sort('_uniqueRecordItems', '_recordsSorting'),
 
   _recordClustersList: computed(() => []),
   _recordClusters: computed('_sortedRecordItems.@each.hasBeenDeleted', function() {

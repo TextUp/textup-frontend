@@ -1,7 +1,7 @@
+import Component from '@ember/component';
 import defaultIfAbsent from '../../utils/default-if-absent';
-import Ember from 'ember';
 
-export default Ember.Component.extend({
+export default Component.extend({
   value: defaultIfAbsent(true),
 
   falseString: defaultIfAbsent('No'),

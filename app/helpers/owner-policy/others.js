@@ -1,8 +1,7 @@
+import { helper as buildHelper } from '@ember/component/helper';
+import { get } from '@ember/object';
 import ArrayUtils from 'textup-frontend/utils/array';
 import TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 export function ownerPolicyOthers([phone, staff]) {
   return TypeUtils.isPhone(phone) && TypeUtils.isStaff(staff)
@@ -12,4 +11,4 @@ export function ownerPolicyOthers([phone, staff]) {
     : [];
 }
 
-export default Ember.Helper.helper(ownerPolicyOthers);
+export default buildHelper(ownerPolicyOthers);

@@ -1,12 +1,13 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Mixin.create({
-  dataService: Ember.inject.service(),
-  mapService: Ember.inject.service(),
-  mediaService: Ember.inject.service(),
-  recordItemService: Ember.inject.service(),
+export default Mixin.create({
+  dataService: service(),
+  mapService: service(),
+  mediaService: service(),
+  recordItemService: service(),
 
   setupController(controller) {
     this._super(...arguments);

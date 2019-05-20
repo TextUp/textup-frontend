@@ -1,9 +1,8 @@
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 
-import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { typeOf, run } = Ember;
 
 moduleForModel('record-note', 'Unit | Serializer | record note', {
   needs: [

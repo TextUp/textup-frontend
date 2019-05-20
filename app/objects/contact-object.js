@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import EmberObject, { computed } from '@ember/object';
 
-const { computed } = Ember;
-
-export const ContactObject = Ember.Object.extend({
+export const ContactObject = EmberObject.extend({
   name: '',
   numbers: computed(() => []),
-  count: computed.alias('numbers.length'),
+  count: alias('numbers.length'),
 });

@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isArray } from '@ember/array';
+import { typeOf, isEmpty } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordItem from 'textup-frontend/models/record-item';
 import { pluralize } from 'textup-frontend/utils/text';
 
-const { computed, isArray, isEmpty, typeOf } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     item: PropTypes.instanceOf(RecordItem).isRequired,
     disabled: PropTypes.bool

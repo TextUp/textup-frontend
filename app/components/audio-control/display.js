@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { formatSecondsAsTimeElapsed } from 'textup-frontend/utils/time';
 import { getWidthProportionFromLeft } from 'textup-frontend/utils/bounds';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     message: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     currentNumSeconds: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
@@ -57,7 +58,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     } else {
       widthVal = Math.max(currentNumSeconds, 0) / maxNumSeconds * 100;
     }
-    return Ember.String.htmlSafe(`width: ${widthVal}%;`);
+    return htmlSafe(`width: ${widthVal}%;`);
   }),
 
   // Internal handlers

@@ -1,8 +1,6 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('notification', 'Unit | Model | notification', {
   needs: ['model:notification-detail'],

@@ -1,9 +1,7 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('organization', 'Unit | Model | organization', {
   needs: [

@@ -1,8 +1,8 @@
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import TypeUtils from 'textup-frontend/utils/type';
 
-export default Ember.Service.extend({
+export default Service.extend({
   replaceRange(scheduleObj, dayOfWeek, newRanges) {
     if (!TypeUtils.isSchedule(scheduleObj) || !Constants.DAYS_OF_WEEK.includes(dayOfWeek)) {
       return;

@@ -1,17 +1,18 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:user-setup-service', 'Unit | Service | user setup service', {
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:dataService', Ember.Service);
+    this.register('service:dataService', Service);
     this.inject.service('dataService');
-    this.register('service:numberService', Ember.Service);
+    this.register('service:numberService', Service);
     this.inject.service('numberService');
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
     this.inject.service('storageService');
   },
 });
@@ -94,7 +95,7 @@ test('finishing verify personal number', function(assert) {
     done = assert.async(),
     personalNumber = Math.random(),
     verificationCode = Math.random(),
-    authUser = Ember.Object.create(),
+    authUser = EmberObject.create(),
     key = Math.random(),
     setupInProgressPhoneNumberKey = sinon
       .stub(StorageUtils, 'setupInProgressPhoneNumberKey')

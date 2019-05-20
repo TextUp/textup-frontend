@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf } = Ember;
 
 moduleForComponent('tour-components/overlay', 'Integration | Component | tour components/overlay', {
   integration: true,
@@ -27,7 +26,7 @@ test('adding custom classes', function(assert) {
 
   this.render(hbs`{{tour-components/overlay svgClasses=svgClasses}}`);
 
-  assert.ok(Ember.$('svg.' + svgClasses).length, 'did render custom classes on svg element');
+  assert.ok($('svg.' + svgClasses).length, 'did render custom classes on svg element');
 });
 
 test('showing overlay or not', function(assert) {
@@ -36,11 +35,11 @@ test('showing overlay or not', function(assert) {
   this.setProperties({ showOverlay: true });
   this.render(hbs`{{tour-components/overlay showOverlay=showOverlay}}`);
 
-  assert.ok(Ember.$('.overlay--svg').length, 'overlay is shown');
+  assert.ok($('.overlay--svg').length, 'overlay is shown');
 
   this.setProperties({ showOverlay: false });
   wait().then(() => {
-    assert.notOk(Ember.$('.overlay--svg').length, 'overlay is NOT shown');
+    assert.notOk($('.overlay--svg').length, 'overlay is NOT shown');
 
     done();
   });
@@ -58,20 +57,20 @@ test('adding/removing overlay cutout', function(assert) {
     {{tour-components/overlay doRegister=doRegister elementToHighlight=selectorToHighlight}}
   `);
 
-  assert.ok(Ember.$('svg').length, 'did render');
-  assert.equal(Ember.$('svg defs mask rect').length, 1, 'only overlay, no cutout');
+  assert.ok($('svg').length, 'did render');
+  assert.equal($('svg defs mask rect').length, 1, 'only overlay, no cutout');
   assert.ok(doRegister.calledOnce);
 
   doRegister.firstCall.args[0].actions.calculateCutout();
   wait()
     .then(() => {
-      assert.equal(Ember.$('svg defs mask rect').length, 2, 'has overlay + cutout');
+      assert.equal($('svg defs mask rect').length, 2, 'has overlay + cutout');
 
       doRegister.firstCall.args[0].actions.removeCutout();
       return wait();
     })
     .then(() => {
-      assert.equal(Ember.$('svg defs mask rect').length, 1, 'only overlay, no cutout');
+      assert.equal($('svg defs mask rect').length, 1, 'only overlay, no cutout');
 
       done();
     });

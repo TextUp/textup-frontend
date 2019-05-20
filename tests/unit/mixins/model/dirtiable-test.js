@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import ModelDirtiableMixin from 'textup-frontend/mixins/model/dirtiable';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | model/dirtiable');
 
 test('it works', function(assert) {
-  const ModelDirtiableObject = Ember.Object.extend(ModelDirtiableMixin),
+  const ModelDirtiableObject = EmberObject.extend(ModelDirtiableMixin),
     obj = ModelDirtiableObject.create();
 
   assert.equal(obj.get('isDirty'), false);

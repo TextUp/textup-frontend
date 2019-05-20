@@ -1,13 +1,12 @@
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { RSVP } = Ember;
-
-export default Ember.Service.extend({
-  requestService: Ember.inject.service(),
+export default Service.extend({
+  requestService: service(),
 
   // Methods
   // -------

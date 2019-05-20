@@ -1,11 +1,13 @@
-import Ember from 'ember';
+import { empty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { isRecordingSupported } from 'textup-frontend/utils/audio';
 
-const { computed, tryInvoke, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     audio: PropTypes.oneOfType([
       PropTypes.null,
@@ -53,7 +55,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _showRemove: computed('readOnly', 'onRemove', function() {
     return !this.get('readOnly') && this.get('onRemove');
   }),
-  _noAudio: computed.empty('audio'),
+  _noAudio: empty('audio'),
   _openIfNoAudio: computed('_noAudio', 'showAddIfNone', function() {
     return this.get('_noAudio') && this.get('showAddIfNone');
   }),

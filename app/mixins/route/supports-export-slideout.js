@@ -1,14 +1,15 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { isArray } from '@ember/array';
+import RSVP from 'rsvp';
 import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import moment from 'moment';
 
-const { isArray, RSVP } = Ember;
-
-export default Ember.Mixin.create({
-  composeSlideoutService: Ember.inject.service(),
-  recordItemService: Ember.inject.service(),
-  tutorialService: Ember.inject.service(),
+export default Mixin.create({
+  composeSlideoutService: service(),
+  recordItemService: service(),
+  tutorialService: service(),
 
   setupController(controller) {
     this._super(...arguments);

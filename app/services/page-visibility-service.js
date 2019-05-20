@@ -1,18 +1,18 @@
+import { guidFor } from '@ember/object/internals';
+import $ from 'jquery';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
+import { computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
-
-// see https://github.com/wordset/visible for inspiration
-
-const { computed } = Ember;
 
 export const STATE_VISIBLE = 'visible';
 export const STATE_PROP_NAME = 'visibilityState';
 
-export default Ember.Service.extend(Ember.Evented, {
+export default Service.extend(Evented, {
   willDestroy() {
     this._super(...arguments);
-    Ember.$(window).off(this._wrapEvent());
-    Ember.$(document).off(this._wrapEvent());
+    $(window).off(this._wrapEvent());
+    $(document).off(this._wrapEvent());
   },
 
   // Properties
@@ -25,12 +25,12 @@ export default Ember.Service.extend(Ember.Evented, {
 
   startWatchingVisibilityChanges() {
     if (this._noPageVisibility()) {
-      Ember.$(window)
+      $(window)
         .on(this._wrapEvent('blur'), this._markHidden.bind(this))
         .on(this._wrapEvent('focus'), this._markVisible.bind(this));
       this._markVisible();
     } else {
-      Ember.$(document).on(this._wrapEvent('visibilitychange'), this._checkVisibility.bind(this));
+      $(document).on(this._wrapEvent('visibilitychange'), this._checkVisibility.bind(this));
       this._checkVisibility();
     }
   },
@@ -39,7 +39,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // --------
 
   _guid: computed(function() {
-    return Ember.guidFor(this);
+    return guidFor(this);
   }),
 
   _noPageVisibility() {

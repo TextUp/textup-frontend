@@ -1,6 +1,6 @@
+import { helper as buildHelper } from '@ember/component/helper';
 import ArrayUtils from 'textup-frontend/utils/array';
 import TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
 
 export function ownerPolicySelf([phone, staff]) {
   return (
@@ -10,4 +10,4 @@ export function ownerPolicySelf([phone, staff]) {
   );
 }
 
-export default Ember.Helper.helper(ownerPolicySelf);
+export default buildHelper(ownerPolicySelf);

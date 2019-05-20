@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import sinon from 'sinon';
@@ -11,7 +12,7 @@ moduleForComponent('message-modal', 'Integration | Component | message modal', {
   integration: true,
   beforeEach() {
     server = sinon.createFakeServer({ respondImmediately: true });
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
     this.inject.service('storageService');
   },
   afterEach() {
@@ -27,11 +28,11 @@ test('inputs', function(assert) {
     },
   });
 
-  assert.notOk(Ember.$('.ember-view').length, 'did NOT render');
+  assert.notOk($('.ember-view').length, 'did NOT render');
 
   this.render(hbs`{{message-modal url=url onClose=onClose}}`);
 
-  assert.ok(Ember.$('.ember-view').length, 'did render');
+  assert.ok($('.ember-view').length, 'did render');
 });
 
 test('manually controlling hide/show + rerendering on url change', function(assert) {
@@ -44,17 +45,17 @@ test('manually controlling hide/show + rerendering on url change', function(asse
 
   this.render(hbs`{{message-modal url=url display=display onClose=onClose}}`);
 
-  assert.notOk(Ember.$('.textup-modal').length, 'do not show because flag is false');
+  assert.notOk($('.textup-modal').length, 'do not show because flag is false');
   assert.ok(onClose.notCalled);
 
   this.set('display', true);
   wait()
     .then(() => {
-      assert.ok(Ember.$('.textup-modal').length, 'do show because flag is now true');
+      assert.ok($('.textup-modal').length, 'do show because flag is now true');
       assert.ok(onClose.notCalled);
 
-      assert.ok(Ember.$('.textup-modal button').length, 'has close button');
-      Ember.$('.textup-modal button')
+      assert.ok($('.textup-modal button').length, 'has close button');
+      $('.textup-modal button')
         .first()
         .triggerHandler('click');
       return wait();
@@ -66,23 +67,23 @@ test('manually controlling hide/show + rerendering on url change', function(asse
       return wait();
     })
     .then(() => {
-      assert.notOk(Ember.$('.textup-modal').length, 'do not show because flag is false');
+      assert.notOk($('.textup-modal').length, 'do not show because flag is false');
 
       this.set('display', true);
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.textup-modal').length, 'do show because flag is now true');
+      assert.ok($('.textup-modal').length, 'do show because flag is now true');
 
       this.set('url', url2);
       assert.ok(
-        Ember.$('.textup-modal .textup-modal__body__message').length,
+        $('.textup-modal .textup-modal__body__message').length,
         'is displaying loading message'
       );
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.textup-modal').length);
+      assert.ok($('.textup-modal').length);
 
       done();
     });
@@ -114,7 +115,7 @@ test('controlling display via oldest threshold', function(assert) {
         this.storageService.setItem.calledWith(url),
         'update last viewed if we show the modal'
       );
-      assert.ok(Ember.$('.textup-modal').length, 'modal is displayed');
+      assert.ok($('.textup-modal').length, 'modal is displayed');
 
       this.storageService.getItem.resetHistory();
       this.storageService.setItem.resetHistory();
@@ -130,7 +131,7 @@ test('controlling display via oldest threshold', function(assert) {
         'do not update last viewed because we do not show the modal'
       );
       assert.notOk(
-        Ember.$('.textup-modal').length,
+        $('.textup-modal').length,
         'modal is not displayed because last viewed timestamp is newer than last modified'
       );
 

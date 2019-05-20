@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { isDownloadingSupported } from 'textup-frontend/utils/file';
 
 export function canDownload() {
   return isDownloadingSupported();
 }
 
-export default Ember.Helper.helper(canDownload);
+export default buildHelper(canDownload);

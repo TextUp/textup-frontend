@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import { get } from '@ember/object';
 import DS from 'ember-data';
-
-const { typeOf, get } = Ember;
 
 function ensureIsArray(obj) {
   return typeOf(obj) === 'array' ? obj : [];

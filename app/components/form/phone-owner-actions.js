@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 // [FUTURE] this component exists to begin to break apart the overreliance on partials
@@ -6,9 +7,9 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 // access the numberService. In the future, we'll further componetize this interface
 // and this component may no longer be necessary.
 
-export default Ember.Component.extend(PropTypesMixin, {
-  stateService: Ember.inject.service(),
-  numberService: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, {
+  stateService: service(),
+  numberService: service(),
 
   propTypes: {
     owner: PropTypes.EmberObject,

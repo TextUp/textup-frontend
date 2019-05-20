@@ -1,5 +1,6 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -8,13 +9,13 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('service:call-slideout-service', 'Unit | Service | call slideout service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:contactService', Ember.Service);
+    this.register('service:contactService', Service);
     this.inject.service('contactService');
-    this.register('service:recordItemService', Ember.Service);
+    this.register('service:recordItemService', Service);
     this.inject.service('recordItemService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
   },
 });
@@ -22,12 +23,12 @@ moduleFor('service:call-slideout-service', 'Unit | Service | call slideout servi
 test('validating and check for name of an existing contact is debounced', function(assert) {
   const service = this.subject(),
     done = assert.async(),
-    ctx = Ember.Object.create(),
+    ctx = EmberObject.create(),
     invalidNum = 'invalid',
     validNum = '626 129 1029',
-    result1 = Ember.Object.create({ isViewPermission: true }),
-    result2 = Ember.Object.create({ isViewPermission: false }),
-    resultObj = Ember.Object.create({ toArray: sinon.stub().returns([result1, result2, result2]) });
+    result1 = EmberObject.create({ isViewPermission: true }),
+    result2 = EmberObject.create({ isViewPermission: false }),
+    resultObj = EmberObject.create({ toArray: sinon.stub().returns([result1, result2, result2]) });
 
   this.contactService.setProperties({ searchContactsByNumber: sinon.stub().resolves(resultObj) });
 
@@ -65,8 +66,8 @@ test('making call', function(assert) {
   const service = this.subject(),
     done = assert.async(),
     number = Math.random(),
-    contactObj1 = Ember.Object.create(),
-    contactObj2 = Ember.Object.create();
+    contactObj1 = EmberObject.create(),
+    contactObj2 = EmberObject.create();
 
   this.store.setProperties({ createRecord: sinon.stub().returns(contactObj2) });
   this.contactService.setProperties({

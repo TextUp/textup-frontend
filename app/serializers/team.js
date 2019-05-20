@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { typeOf } from '@ember/utils';
 import DS from 'ember-data';
 import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 
-const { assign, typeOf } = Ember;
-
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
-  adminService: Ember.inject.service(),
+  adminService: service(),
 
   attrs: {
     numMembers: { serialize: false },

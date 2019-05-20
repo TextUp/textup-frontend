@@ -1,8 +1,8 @@
+import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
-import Ember from 'ember';
 
-export default Ember.Component.extend({
+export default Component.extend({
   singleOptions: defaultIfAbsent([
     {
       display: 'Not Shared',

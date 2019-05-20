@@ -1,17 +1,17 @@
+import $ from 'jquery';
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
-
-const { RSVP } = Ember;
 
 export const GET_TOKEN_SUCCESS_MSG =
   'All good! The password reset should be in your inbox in a few minutes.';
 export const RESET_PASSWORD_SUCCESS_MSG = 'Successfully reset your password!';
 
-export default Ember.Service.extend({
-  notifications: Ember.inject.service('notification-messages-service'),
-  requestService: Ember.inject.service(),
+export default Service.extend({
+  notifications: service('notification-messages-service'),
+  requestService: service(),
 
   // Methods
   // -------
@@ -23,7 +23,7 @@ export default Ember.Service.extend({
       }
       this.get('requestService')
         .handleIfError(
-          Ember.$.ajax({
+          $.ajax({
             type: Constants.REQUEST_METHOD.POST,
             url: `${config.host}/v1/public/reset`,
             contentType: Constants.MIME_TYPE.JSON,
@@ -40,7 +40,7 @@ export default Ember.Service.extend({
       }
       this.get('requestService')
         .handleIfError(
-          Ember.$.ajax({
+          $.ajax({
             type: Constants.REQUEST_METHOD.PUT,
             url: `${config.host}/v1/public/reset/${token}`,
             contentType: Constants.MIME_TYPE.JSON,

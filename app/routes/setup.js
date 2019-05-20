@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { isPresent } from '@ember/utils';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 
-const { isPresent } = Ember;
-
-export default Ember.Route.extend(IsAuthenticated, {
-  authService: Ember.inject.service(),
-  userSetupService: Ember.inject.service(),
+export default Route.extend(IsAuthenticated, {
+  authService: service(),
+  userSetupService: service(),
 
   redirect() {
     this._super(...arguments);

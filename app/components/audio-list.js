@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { filterBy } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import MediaElement from 'textup-frontend/models/media-element';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     audio: PropTypes.oneOfType([
       PropTypes.null,
@@ -22,7 +22,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _audio: computed.filterBy('audio', 'isAudio', true),
+  _audio: filterBy('audio', 'isAudio', true),
   _sortedAudio: computed('_audio.[]', 'sortPropName', 'sortLowToHigh', function() {
     const audio = this.get('_audio');
     if (audio) {

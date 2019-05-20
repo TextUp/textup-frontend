@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     name: PropTypes.string,
     noItemsMessage: PropTypes.string,
@@ -20,7 +20,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _hasOnOpen: computed.notEmpty('onOpen'),
+  _hasOnOpen: notEmpty('onOpen'),
 
   // Internal handlers
   // -----------------

@@ -1,15 +1,12 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Mixin from '@ember/object/mixin';
+import { isPresent } from '@ember/utils';
+import { computed } from '@ember/object';
+import { match, and, notEmpty } from '@ember/object/computed';
+import { next, debounce, scheduleOnce, run } from '@ember/runloop';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-const {
-  isPresent,
-  computed,
-  computed: { notEmpty, and, match },
-  run,
-  run: { scheduleOnce, debounce, next },
-} = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   validateObj: null,
   validateField: null,
   validate: 'none', // top | bottom
@@ -165,6 +162,6 @@ export default Ember.Mixin.create({
   },
   _build$Errors() {
     const validateErrorClass = this.get('validateErrorClass');
-    return Ember.$(`<p class="${validateErrorClass}"></p>`);
+    return $(`<p class="${validateErrorClass}"></p>`);
   },
 });

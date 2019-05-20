@@ -1,13 +1,12 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import StorageUtils from 'textup-frontend/utils/storage';
 
-const { RSVP } = Ember;
-
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
-  numberService: Ember.inject.service(),
-  storageService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  dataService: service(),
+  numberService: service(),
+  storageService: service(),
 
   // Properties
   // ----------

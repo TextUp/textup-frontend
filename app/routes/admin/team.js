@@ -1,8 +1,9 @@
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Route.extend({
-  stateService: Ember.inject.service(),
+export default Route.extend({
+  stateService: service(),
 
   controllerName: 'admin/people',
   templateName: 'admin/people',

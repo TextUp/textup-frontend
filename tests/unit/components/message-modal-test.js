@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
 moduleForComponent('message-modal', 'Unit | Component | message modal', {
   unit: true,
   beforeEach() {
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
   },
 });
 

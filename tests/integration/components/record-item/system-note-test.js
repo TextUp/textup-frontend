@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-
-const { run } = Ember;
 
 moduleForComponent('record-item/system-note', 'Integration | Component | record item/system note', {
   integration: true,
@@ -10,7 +9,7 @@ moduleForComponent('record-item/system-note', 'Integration | Component | record 
 
 test('inputs', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       item = store.createRecord('record-item'),
       note = store.createRecord('record-note');
 

@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('record-item/note', 'Unit | Component | record item/note', {
   unit: true,

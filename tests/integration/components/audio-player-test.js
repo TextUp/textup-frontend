@@ -1,18 +1,17 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { VALID_MP3_URL_1, VALID_MP3_URL_2 } from 'textup-frontend/tests/helpers/utilities';
 
-const { run } = Ember;
-
 let el1, el2;
 
 moduleForComponent('audio-player', 'Integration | Component | audio player', {
   integration: true,
   beforeEach() {
-    const store = Ember.getOwner(this).lookup('service:store');
+    const store = getOwner(this).lookup('service:store');
     el1 = store.createFragment('mediaElement');
     el2 = store.createFragment('mediaElement');
     el1.addVersion('audio/mpeg', VALID_MP3_URL_1);

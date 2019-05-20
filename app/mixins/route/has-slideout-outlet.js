@@ -1,10 +1,10 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { run } = Ember;
-
-export default Ember.Mixin.create({
-  slideoutService: Ember.inject.service(),
+export default Mixin.create({
+  slideoutService: service(),
   slideoutOutlet: Constants.SLIDEOUT.OUTLET.DEFAULT,
 
   init() {

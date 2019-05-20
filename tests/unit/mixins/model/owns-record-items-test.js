@@ -1,10 +1,10 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
+import { isPresent } from '@ember/utils';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelOwnsRecordItemsMixin from 'textup-frontend/mixins/model/owns-record-items';
 import { moduleFor, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
-
-const { run, isPresent } = Ember;
 
 // testing DS.attr in mixins from https://stackoverflow.com/a/39860250
 moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-items', {
@@ -35,7 +35,7 @@ moduleFor('mixin:model/owns-record-items', 'Unit | Mixin | model/owns-record-ite
     // usual way and return it. Since createRecord is async, we need
     // an Ember.run.
     return run(() => {
-      const store = Ember.getOwner(this).lookup('service:store');
+      const store = getOwner(this).lookup('service:store');
       return store.createRecord('owns-record-items-mixin-model');
     });
   },

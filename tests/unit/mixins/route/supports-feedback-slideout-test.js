@@ -1,5 +1,8 @@
+import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
+import Route from '@ember/routing/route';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import RouteSupportsFeedbackSlideoutMixin from 'textup-frontend/mixins/route/supports-feedback-slideout';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
@@ -12,16 +15,16 @@ moduleFor(
   {
     needs: ['service:analytics'],
     beforeEach() {
-      this.register('service:tutorialService', Ember.Service);
+      this.register('service:tutorialService', Service);
       this.inject.service('tutorialService');
-      this.register(customRouteName, Ember.Route.extend(RouteSupportsFeedbackSlideoutMixin));
+      this.register(customRouteName, Route.extend(RouteSupportsFeedbackSlideoutMixin));
     },
   }
 );
 
 test('setting up controller', function(assert) {
-  const route = Ember.getOwner(this).lookup(customRouteName),
-    controllerObj = Ember.Object.create();
+  const route = getOwner(this).lookup(customRouteName),
+    controllerObj = EmberObject.create();
 
   route.setupController(controllerObj);
 
@@ -29,10 +32,10 @@ test('setting up controller', function(assert) {
 });
 
 test('opening slideout', function(assert) {
-  const route = Ember.getOwner(this).lookup(customRouteName),
+  const route = getOwner(this).lookup(customRouteName),
     feedbackMessage = Math.random(),
     routeName = Math.random() + '',
-    controller = Ember.Object.create({ feedbackMessage });
+    controller = EmberObject.create({ feedbackMessage });
 
   route.setProperties({ routeName, controller, send: sinon.spy() });
 
@@ -50,9 +53,9 @@ test('opening slideout', function(assert) {
 });
 
 test('closing slideout', function(assert) {
-  const route = Ember.getOwner(this).lookup(customRouteName),
+  const route = getOwner(this).lookup(customRouteName),
     feedbackMessage = Math.random(),
-    controller = Ember.Object.create({ feedbackMessage });
+    controller = EmberObject.create({ feedbackMessage });
 
   route.setProperties({ controller, send: sinon.spy() });
 
@@ -67,7 +70,7 @@ test('closing slideout', function(assert) {
 });
 
 test('restarting tour', function(assert) {
-  const route = Ember.getOwner(this).lookup(customRouteName);
+  const route = getOwner(this).lookup(customRouteName);
 
   route.setProperties({ send: sinon.spy() });
   this.tutorialService.setProperties({ resetTasks: sinon.spy() });

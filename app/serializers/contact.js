@@ -1,6 +1,7 @@
+import { isPresent } from '@ember/utils';
+import { get } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 import OwnsFutureMessages from 'textup-frontend/mixins/serializer/owns-future-messages';
 import OwnsRecordItems from 'textup-frontend/mixins/serializer/owns-record-items';
 import Shareable from 'textup-frontend/mixins/serializer/shareable';
@@ -24,12 +25,12 @@ export default DS.RESTSerializer.extend(
     serialize(snapshot) {
       const json = this._super(...arguments),
         changed = snapshot.changedAttributes(),
-        numChange = Ember.get(changed, 'numbers'),
+        numChange = get(changed, 'numbers'),
         actions = snapshot.record.get('actions');
       if (numChange) {
         json.doNumberActions = this._buildNumberActions(numChange[0] || [], numChange[1]);
       }
-      if (Ember.isPresent(actions)) {
+      if (isPresent(actions)) {
         json.doShareActions = actions.map(this._convertToShareAction);
         actions.clear();
       }
@@ -60,7 +61,7 @@ export default DS.RESTSerializer.extend(
       const doNumberActions = [];
       // merge numbers
       newNumbers.forEach((numObj, index) => {
-        const number = Ember.get(numObj, 'number'),
+        const number = get(numObj, 'number'),
           foundNum = originalNumbers.findBy('number', number);
         if (foundNum) {
           const oldIndex = originalNumbers.indexOf(foundNum);
@@ -74,7 +75,7 @@ export default DS.RESTSerializer.extend(
       });
       // delete numbers
       originalNumbers.forEach(numObj => {
-        const number = Ember.get(numObj, 'number'),
+        const number = get(numObj, 'number'),
           stillExists = newNumbers.findBy('number', number);
         if (!stillExists) {
           doNumberActions.pushObject(this._deleteNumber(number));

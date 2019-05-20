@@ -1,6 +1,7 @@
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import AppAccessUtils from 'textup-frontend/utils/app-access';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import ManagesNewContacts from 'textup-frontend/mixins/route/manages-new-contacts';
@@ -12,7 +13,7 @@ import SupportsComposeSlideout from 'textup-frontend/mixins/route/supports-compo
 import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
 
-export default Ember.Route.extend(
+export default Route.extend(
   HasSlideoutOutlet,
   IsAuthenticated,
   ManagesNewContacts,
@@ -24,10 +25,10 @@ export default Ember.Route.extend(
   SupportsExportSlideout,
   SupportsFeedbackSlideout,
   {
-    authService: Ember.inject.service(),
-    notifications: Ember.inject.service('notification-messages-service'),
-    sharingService: Ember.inject.service(),
-    stateService: Ember.inject.service(),
+    authService: service(),
+    notifications: service('notification-messages-service'),
+    sharingService: service(),
+    stateService: service(),
 
     slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 

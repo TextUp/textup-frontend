@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-export default Ember.Mixin.create(Loading, {
-  authService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
+export default Mixin.create(Loading, {
+  authService: service(),
+  notifications: service('notification-messages-service'),
 
   beforeModel(transition) {
     this._super(...arguments);

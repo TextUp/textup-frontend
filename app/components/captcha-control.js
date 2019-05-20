@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { tryInvoke, isPresent } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { isPresent, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
-  captchaService: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, {
+  captchaService: service(),
 
   propTypes: {
     onSuccess: PropTypes.func,

@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
-
-const { typeOf } = Ember;
 
 let encoderWorker;
 

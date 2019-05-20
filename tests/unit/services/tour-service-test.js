@@ -1,5 +1,5 @@
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
@@ -7,9 +7,9 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:tour-service', 'Unit | Service | tour service', {
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
     this.inject.service('storageService');
   },
 });

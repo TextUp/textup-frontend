@@ -1,9 +1,9 @@
+import EmberObject from '@ember/object';
+import { typeOf, isPresent } from '@ember/utils';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import SerializerHasMediaMixin from 'textup-frontend/mixins/serializer/has-media';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { isPresent, typeOf, run } = Ember;
 
 moduleForModel('media', 'Unit | Mixin | serializer/has media', {
   needs: [
@@ -15,7 +15,7 @@ moduleForModel('media', 'Unit | Mixin | serializer/has media', {
 });
 
 test('attributes', function(assert) {
-  const SerializerHasMediaObject = Ember.Object.extend(SerializerHasMediaMixin),
+  const SerializerHasMediaObject = EmberObject.extend(SerializerHasMediaMixin),
     serializer = SerializerHasMediaObject.create();
 
   assert.equal(serializer.attrs.media.deserialize, 'records');
@@ -24,10 +24,10 @@ test('attributes', function(assert) {
 
 test('serializing with media actions', function(assert) {
   run(() => {
-    const SerializerHasMediaObject = Ember.Object.extend(SerializerHasMediaMixin),
+    const SerializerHasMediaObject = EmberObject.extend(SerializerHasMediaMixin),
       serializer = SerializerHasMediaObject.create(),
       media = this.subject(),
-      obj = { record: Ember.Object.create({ media }) };
+      obj = { record: EmberObject.create({ media }) };
 
     let serialized = serializer.serialize(obj);
 

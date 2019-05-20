@@ -1,6 +1,7 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
 import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
-import Ember from 'ember';
 import sinon from 'sinon';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
@@ -9,11 +10,11 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('service:contact-service', 'Unit | Service | contact service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:dataService', Ember.Service);
+    this.register('service:dataService', Service);
     this.inject.service('dataService');
-    this.register('service:stateService', Ember.Service);
+    this.register('service:stateService', Service);
     this.inject.service('stateService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
   },
 });
@@ -48,8 +49,8 @@ test('finding duplicate contacts that have the same number', function(assert) {
     done = assert.async(),
     val1 = Math.random(),
     addedNum = Math.random(),
-    resultObj = Ember.Object.create({ toArray: sinon.stub().returns([val1]) }),
-    contactObj = Ember.Object.create({ addDuplicatesForNumber: sinon.spy() });
+    resultObj = EmberObject.create({ toArray: sinon.stub().returns([val1]) }),
+    contactObj = EmberObject.create({ addDuplicatesForNumber: sinon.spy() });
 
   service.setProperties({ searchContactsByNumber: sinon.stub().resolves(resultObj) });
 
@@ -75,7 +76,7 @@ test('finding duplicate contacts that have the same number', function(assert) {
 test('removing contact duplicates given a specific number', function(assert) {
   const service = this.subject(),
     removedNum = Math.random(),
-    contactObj = Ember.Object.create({ removeDuplicatesForNumber: sinon.spy() });
+    contactObj = EmberObject.create({ removeDuplicatesForNumber: sinon.spy() });
 
   service.removeNumberDuplicate(contactObj, null);
   assert.ok(contactObj.removeDuplicatesForNumber.notCalled);
@@ -91,7 +92,7 @@ test('removing contact duplicates given a specific number', function(assert) {
 test('persisting a new contact and trying to add that contact to the current phone', function(assert) {
   const service = this.subject(),
     done = assert.async(),
-    contactObj = Ember.Object.create(),
+    contactObj = EmberObject.create(),
     phone = TestUtils.mockModel(1, Constants.MODEL.PHONE, { addContacts: sinon.spy() });
 
   this.stateService.setProperties({ viewingContacts: true, owner: { phone: { content: phone } } });

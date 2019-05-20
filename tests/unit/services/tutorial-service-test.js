@@ -1,13 +1,16 @@
+import { getOwner } from '@ember/application';
+import Route from '@ember/routing/route';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
 
-const { typeOf } = Ember;
 let authId;
 
 moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
@@ -16,20 +19,20 @@ moduleFor('service:tutorial-service', 'Unit | Service | tutorial service', {
     authId = Math.random();
     this.register(
       'service:authService',
-      Ember.Service.extend(Ember.Evented, {
+      Service.extend(Evented, {
         authUser: TestUtils.mockModel(authId, Constants.MODEL.STAFF, { username: 'someUsername' }),
       })
     );
     this.inject.service('authService');
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
     this.register(
       'service:storageService',
-      Ember.Service.extend({ getItem: sinon.stub(), setItem: sinon.spy() })
+      Service.extend({ getItem: sinon.stub(), setItem: sinon.spy() })
     );
     this.inject.service('storageService');
 
-    this.register('route:main', Ember.Route);
+    this.register('route:main', Route);
   },
 });
 
@@ -194,7 +197,7 @@ test('closeTaskManager', function(assert) {
     info = sinon.spy(),
     clearAll = sinon.spy(),
     done = assert.async(),
-    mainRoute = Ember.getOwner(this).lookup('route:main'),
+    mainRoute = getOwner(this).lookup('route:main'),
     send = sinon.stub(mainRoute, 'send');
 
   this.notifications.setProperties({ info, clearAll });

@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import FutureMessage from 'textup-frontend/models/future-message';
 
-const { tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     futureMessage: PropTypes.instanceOf(FutureMessage).isRequired,
     personalNumber: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),

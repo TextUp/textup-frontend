@@ -1,27 +1,29 @@
-import Ember from 'ember';
+import { alias, filterBy, empty } from '@ember/object/computed';
+import { next } from '@ember/runloop';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-const { computed } = Ember;
+export default Controller.extend({
+  stateService: service(),
 
-export default Ember.Controller.extend({
-  stateService: Ember.inject.service(),
-
-  phone: computed.alias('stateService.owner.phone.content'),
+  phone: alias('stateService.owner.phone.content'),
 
   // routes that want to use this controller but do not reuse the
   // contacts controller can override these properties
-  selected: computed.filterBy('phone.contacts', 'isSelected', true),
-  allContacts: computed.alias('phone.contacts'),
+  selected: filterBy('phone.contacts', 'isSelected', true),
+  allContacts: alias('phone.contacts'),
 
   // can message when no shared with me select OR all
   // of the shared with me selected are DELEGATE permission
-  selectedCanMessage: Ember.computed('selected', function() {
+  selectedCanMessage: computed('selected', function() {
     return (
       this.get('noSharedWithMeSelected') ||
       this.get('sharedWithMeSelected').every(contact => contact.get('isDelegatePermission'))
     );
   }),
-  sharedWithMeSelected: computed.filterBy('selected', 'isShared', true),
-  noSharedWithMeSelected: computed.empty('sharedWithMeSelected'),
+  sharedWithMeSelected: filterBy('selected', 'isShared', true),
+  noSharedWithMeSelected: empty('sharedWithMeSelected'),
 
   actions: {
     selectAll() {
@@ -40,7 +42,7 @@ export default Ember.Controller.extend({
     },
     deselect(contact) {
       contact.set('isSelected', false);
-      Ember.run.next(this, function() {
+      next(this, function() {
         if (this.get('selected.length') === 0) {
           this.send('exitMany');
         }

@@ -1,19 +1,20 @@
+import { filterBy, alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
-import Ember from 'ember';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(DisplaysImages, {
+export default Component.extend(DisplaysImages, {
   classNames: ['image-stack'],
   classNameBindings: ['_hasMultiple:image-stack--multiple'],
 
   // Internal properties
   // -------------------
 
-  _images: computed.filterBy('images', 'isImage', true),
-  _coverImage: computed.alias('_images.firstObject'),
-  _numImages: computed.alias('_images.length'),
+  _images: filterBy('images', 'isImage', true),
+  _coverImage: alias('_images.firstObject'),
+  _numImages: alias('_images.length'),
   _hasMultiple: computed('_images.[]', function() {
     return this.get('_images.length') > 1;
   }),

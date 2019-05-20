@@ -1,5 +1,6 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
@@ -7,16 +8,16 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('service:data-service', 'Unit | Service | data service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:loadingSlider', Ember.Service);
+    this.register('service:loadingSlider', Service);
     this.inject.service('loadingSlider');
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
   },
 });
 
 test('marking models for delete', function(assert) {
   const service = this.subject(),
-    notModelObj = Ember.Object.create({
+    notModelObj = EmberObject.create({
       isNew: true,
       rollbackAttributes: sinon.spy(),
       deleteRecord: sinon.spy(),

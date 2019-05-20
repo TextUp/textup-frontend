@@ -1,10 +1,8 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelHasReadableIdentifierMixin from 'textup-frontend/mixins/model/has-readable-identifier';
 import { moduleFor, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleFor('mixin:model/has-readable-identifier', 'Unit | Mixin | model/has readable identifier', {
   beforeEach() {

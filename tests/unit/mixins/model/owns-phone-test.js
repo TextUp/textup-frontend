@@ -1,14 +1,16 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
-import ModelOwnsPhoneMixin, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
+import ModelOwnsPhoneMixin, {
+  OwnsPhoneValidations
+} from 'textup-frontend/mixins/model/owns-phone';
 import sinon from 'sinon';
 import { buildValidations } from 'ember-cp-validations';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember,
-  TEST_CLASS_NAME = 'owns-phone-mixin-model';
+const TEST_CLASS_NAME = 'owns-phone-mixin-model';
 
 moduleFor('mixin:model/owns-phone', 'Unit | Mixin | model/owns phone', {
   needs: ['model:phone', 'validator:belongs-to', 'validator:inclusion', 'validator:presence'],
@@ -21,7 +23,7 @@ moduleFor('mixin:model/owns-phone', 'Unit | Mixin | model/owns phone', {
   },
   subject() {
     return run(() => {
-      const store = Ember.getOwner(this).lookup('service:store');
+      const store = getOwner(this).lookup('service:store');
       return store.createRecord(TEST_CLASS_NAME);
     });
   },

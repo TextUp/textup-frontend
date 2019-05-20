@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
 // From http://stackoverflow.com/questions/20836402/
 //    do-not-type-newline-when-enter-pressed-in-textarea-in-emberjs
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   submitOnNewline: defaultIfAbsent(false),
   action: defaultIfAbsent(null), // triggered by browser
 

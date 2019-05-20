@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import RSVP, { Promise } from 'rsvp';
+import { typeOf } from '@ember/utils';
 
-const { RSVP, typeOf } = Ember;
-
-export default Ember.Service.extend({
-  dataService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  dataService: service(),
+  store: service(),
 
   onAddAudio(phone, mimeType, data) {
     return new RSVP.Promise((resolve, reject) => {
@@ -24,7 +24,7 @@ export default Ember.Service.extend({
     });
   },
   onRequestVoicemailGreetingCall(phoneOwner, numToCall) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (typeOf(phoneOwner) !== 'instance' || !numToCall) {
         return reject('Must provide all required information to request voicemail greeting call');
       }

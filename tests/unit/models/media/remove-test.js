@@ -1,8 +1,7 @@
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForModel('media/remove', 'Unit | Model | media/remove');
 

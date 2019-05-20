@@ -1,6 +1,6 @@
-import Ember from 'ember';
-
-const { get } = Ember;
+import { isArray } from '@ember/array';
+import { isPresent } from '@ember/utils';
+import { get } from '@ember/object';
 
 export function distance(coord1, coord2) {
   const xDist = getX(coord1) - getX(coord2),
@@ -9,9 +9,9 @@ export function distance(coord1, coord2) {
 }
 
 function getX(coord) {
-  return Ember.isPresent(coord) ? (Ember.isArray(coord) ? coord[0] : get(coord, 'x')) : NaN;
+  return isPresent(coord) ? (isArray(coord) ? coord[0] : get(coord, 'x')) : NaN;
 }
 
 function getY(coord) {
-  return Ember.isPresent(coord) ? (Ember.isArray(coord) ? coord[1] : get(coord, 'y')) : NaN;
+  return isPresent(coord) ? (isArray(coord) ? coord[1] : get(coord, 'y')) : NaN;
 }

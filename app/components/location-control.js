@@ -1,10 +1,13 @@
+import $ from 'jquery';
+import Component from '@ember/component';
 import config from 'textup-frontend/config/environment';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { computed, set } from '@ember/object';
+import { isPresent, tryInvoke, typeOf } from '@ember/utils';
+import { run, scheduleOnce, later, next } from '@ember/runloop';
 
-const { computed, run } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   location: null, // must be object with keys 'lat' and 'lng'
   description: null, // human readable description of location
   searchPlaceholder: defaultIfAbsent('Search for location...'),
@@ -42,10 +45,10 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  $map: Ember.computed(function() {
+  $map: computed(function() {
     return this.$('.location-map');
   }),
-  mapId: Ember.computed(function() {
+  mapId: computed(function() {
     return `${this.elementId}--map`;
   }),
 
@@ -79,7 +82,7 @@ export default Ember.Component.extend({
       .on(
         'resize',
         function() {
-          Ember.run.scheduleOnce('afterRender', this, function() {
+          scheduleOnce('afterRender', this, function() {
             map.invalidateSize(true);
           });
         }.bind(this)
@@ -111,7 +114,7 @@ export default Ember.Component.extend({
     // so that the page is not accidentally refreshed
     event.stopPropagation();
     event.preventDefault();
-    const query = Ember.$(event.target)
+    const query = $(event.target)
       .find('input')
       .val();
     if (!query) {
@@ -143,13 +146,13 @@ export default Ember.Component.extend({
   },
   processResultsAndSelectFirst(error, data) {
     this.processResults(error, data);
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       this.selectResult(this.get('_results.firstObject'));
     });
   },
   processResults(error, data) {
-    if (Ember.isPresent(error)) {
-      Ember.tryInvoke(this, 'onError', [error]);
+    if (isPresent(error)) {
+      tryInvoke(this, 'onError', [error]);
       return;
     }
     const map = this.get('_map'),
@@ -157,8 +160,8 @@ export default Ember.Component.extend({
     // clear current results
     map.closePopup();
     this.clearResults();
-    const features = Ember.A(data.features || data.results.features).filter(function(feature) {
-      return Ember.isPresent(feature.properties.address || feature.place_name);
+    const features = A(data.features || data.results.features).filter(function(feature) {
+      return isPresent(feature.properties.address || feature.place_name);
     });
     featureLayer.setGeoJSON({ type: 'FeatureCollection', features });
     this.set('_results', featureLayer.getLayers());
@@ -167,46 +170,46 @@ export default Ember.Component.extend({
       map.fitBounds(data.lbounds);
     } else if (data.latlng) {
       map.setView(data.latlng, this.get('selectZoomLevel'));
-    } else if (Ember.isPresent(features)) {
+    } else if (isPresent(features)) {
       map.fitBounds(featureLayer.getBounds());
     }
     // bind select event handlers
     featureLayer.eachLayer(layer => layer.on('click', this.selectResult.bind(this, layer)));
   },
   selectResult(layer) {
-    if (!Ember.isPresent(layer)) {
+    if (!isPresent(layer)) {
       return;
     }
     var results = this.get('_results'),
       latLng = layer.getLatLng();
     // update which result layer is active
-    results.forEach(layer => Ember.set(layer, 'status', ''));
+    results.forEach(layer => set(layer, 'status', ''));
     this.set('_location', latLng);
-    Ember.set(layer, 'status', this.get('activeClass'));
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    set(layer, 'status', this.get('activeClass'));
+    scheduleOnce('afterRender', this, function() {
       const geoJson = layer.feature,
         desc = geoJson.properties.address || geoJson.place_name,
-        result = Ember.tryInvoke(this, 'onSelect', [latLng, desc, geoJson]),
+        result = tryInvoke(this, 'onSelect', [latLng, desc, geoJson]),
         after = this.refreshPopup.bind(this);
       if (result && result.then) {
         // is promise
         result.then(after);
       } else {
-        Ember.run.later(this, after, this.get('timeout'));
+        later(this, after, this.get('timeout'));
       }
     });
   },
   deselectResult() {
     var results = this.get('_results');
     // update which result layer is active
-    results.forEach(layer => Ember.set(layer, 'status', ''));
-    const result = Ember.tryInvoke(this, 'onDeselect'),
+    results.forEach(layer => set(layer, 'status', ''));
+    const result = tryInvoke(this, 'onDeselect'),
       after = this.refreshPopup.bind(this);
     if (result && result.then) {
       // is promise
       result.then(after);
     } else {
-      Ember.run.later(this, after, this.get('timeout'));
+      later(this, after, this.get('timeout'));
     }
   },
 
@@ -215,7 +218,7 @@ export default Ember.Component.extend({
 
   refreshPopup() {
     // run next to give bindings time to synchronize
-    Ember.run.next(this, this._doRefresh);
+    next(this, this._doRefresh);
   },
   _doRefresh() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
@@ -242,7 +245,7 @@ export default Ember.Component.extend({
   },
   _buildPopupString(description) {
     return `
-      <h5>You\'ve selected this location!</h5>
+      <h5>You've selected this location!</h5>
       <p>${description}</p>
       <button>This isn't me</button>
     `;
@@ -263,6 +266,6 @@ export default Ember.Component.extend({
 
   _hasLatLng() {
     const latLng = this.get('location');
-    return Ember.typeOf(latLng) === 'object' && latLng.lat && latLng.lng;
+    return typeOf(latLng) === 'object' && latLng.lat && latLng.lng;
   },
 });

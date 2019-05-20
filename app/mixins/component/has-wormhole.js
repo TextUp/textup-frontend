@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
+import { isNone } from '@ember/utils';
+import { assign } from '@ember/polyfills';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isNone, assign } = Ember;
-
-export default Ember.Mixin.create(PropTypesMixin, HasAppRoot, {
+export default Mixin.create(PropTypesMixin, HasAppRoot, {
   propTypes: { wormholeClass: PropTypes.string },
   getDefaultProps() {
     return assign({ wormholeClass: '' }, this._super(...arguments));
@@ -35,7 +37,7 @@ export default Ember.Mixin.create(PropTypesMixin, HasAppRoot, {
   _$wormhole: computed('id', 'wormholeClass', function() {
     const id = this.get('_wormholeId'),
       wormholeClass = this.get('wormholeClass');
-    return Ember.$(`<div id='${id}' class='${wormholeClass}'></div>`);
+    return $(`<div id='${id}' class='${wormholeClass}'></div>`);
   }),
 
   // Internal handlers
@@ -46,7 +48,7 @@ export default Ember.Mixin.create(PropTypesMixin, HasAppRoot, {
     if (isNone(el)) {
       return;
     }
-    Ember.$(el)
+    $(el)
       .detach()
       .appendTo(this.get('_$wormhole'));
   },

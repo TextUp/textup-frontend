@@ -1,7 +1,6 @@
+import { typeOf } from '@ember/utils';
+import { isArray } from '@ember/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import Ember from 'ember';
-
-const { typeOf, isArray } = Ember;
 
 export function normalizeIndex(numItems, index) {
   if (typeOf(index) !== 'number' || typeOf(numItems) !== 'number') {

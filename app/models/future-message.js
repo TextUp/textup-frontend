@@ -1,57 +1,57 @@
+import { tryInvoke } from '@ember/utils';
+import { getWithDefault, computed } from '@ember/object';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import moment from 'moment';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, tryInvoke, getWithDefault } = Ember,
-  Validations = buildValidations({
-    type: validator('inclusion', {
-      in: Object.values(Constants.FUTURE_MESSAGE.TYPE),
+const Validations = buildValidations({
+  type: validator('inclusion', {
+    in: Object.values(Constants.FUTURE_MESSAGE.TYPE),
+  }),
+  message: {
+    description: 'Message',
+    validators: [
+      validator('length', { max: 320 }),
+      validator('has-any', {
+        also: ['media.hasElements'],
+        description: 'message body, images, or audio recordings',
+      }),
+    ],
+  },
+  intervalSize: {
+    disabled: computed('model.isRepeating', function() {
+      return !this.get('model.isRepeating');
     }),
-    message: {
-      description: 'Message',
-      validators: [
-        validator('length', { max: 320 }),
-        validator('has-any', {
-          also: ['media.hasElements'],
-          description: 'message body, images, or audio recordings',
-        }),
-      ],
-    },
-    intervalSize: {
-      disabled: computed('model.isRepeating', function() {
-        return !this.get('model.isRepeating');
+    dependentKeys: ['model.isRepeating'],
+    description: 'Repeat interval size in days',
+    validators: [validator('number', { allowString: true, gt: 0 })],
+  },
+  repeatInterval: {
+    disabled: computed('model.isRepeating', function() {
+      return !this.get('model.isRepeating');
+    }),
+    dependentKeys: ['model.isRepeating'],
+    description: 'Repeat interval',
+    validators: [validator('number', { allowString: true, gt: 0 })],
+  },
+  repeatCount: {
+    disabled: computed('model.isRepeating', function() {
+      return !this.get('model.isRepeating');
+    }),
+    dependentKeys: ['model.isRepeating'],
+    description: 'Number of times to repeat',
+    validators: [
+      validator('number', { allowBlank: true, allowString: true, gt: 0 }),
+      validator('has-any', {
+        also: ['endDate'],
+        description: 'number of times or end date to stop after',
       }),
-      dependentKeys: ['model.isRepeating'],
-      description: 'Repeat interval size in days',
-      validators: [validator('number', { allowString: true, gt: 0 })],
-    },
-    repeatInterval: {
-      disabled: computed('model.isRepeating', function() {
-        return !this.get('model.isRepeating');
-      }),
-      dependentKeys: ['model.isRepeating'],
-      description: 'Repeat interval',
-      validators: [validator('number', { allowString: true, gt: 0 })],
-    },
-    repeatCount: {
-      disabled: computed('model.isRepeating', function() {
-        return !this.get('model.isRepeating');
-      }),
-      dependentKeys: ['model.isRepeating'],
-      description: 'Number of times to repeat',
-      validators: [
-        validator('number', { allowBlank: true, allowString: true, gt: 0 }),
-        validator('has-any', {
-          also: ['endDate'],
-          description: 'number of times or end date to stop after',
-        }),
-      ],
-    },
-  });
+    ],
+  },
+});
 
 export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides

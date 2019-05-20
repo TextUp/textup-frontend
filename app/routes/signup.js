@@ -1,11 +1,12 @@
+import $ from 'jquery';
+import Route from '@ember/routing/route';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
 
-export default Ember.Route.extend(IsPublic, {
+export default Route.extend(IsPublic, {
   model() {
-    return Ember.$.ajax({
+    return $.ajax({
       type: Constants.REQUEST_METHOD.GET,
       url: `${config.host}/v1/public/organizations?status[]=approved`,
     }).then(({ organizations = [] }) => {

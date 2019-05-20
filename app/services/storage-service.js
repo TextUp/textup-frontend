@@ -1,19 +1,22 @@
+import { debug } from '@ember/debug';
+import { guidFor } from '@ember/object/internals';
+import $ from 'jquery';
+import Evented from '@ember/object/evented';
+import Service from '@ember/service';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
+import { typeOf, isPresent } from '@ember/utils';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
-
-// Provides a consistent interface for storage + syncing between tabs
-// See http://blog.guya.net/2015/06/12/sharing-sessionstorage-between-tabs-for-secure-multi-tab-authentication/
-
-const { computed, isPresent, run, RSVP, typeOf } = Ember;
 
 export const KEY_REQUEST_SEND_STORAGE_FOR_THIS_TAB = 'textup-request-storage-data-to-be-sent';
 export const KEY_RECEIVE_REQUESTED_STORAGE_FROM_OTHER_TAB = 'textup-receive-requested-storage-data';
 export const STORAGE_EVENT_SYNC_TIMEOUT_IN_MS = 750;
 
-export default Ember.Service.extend(Ember.Evented, {
+export default Service.extend(Evented, {
   willDestroy() {
     this._super(...arguments);
-    Ember.$(window).off(this.get('_storageSyncEvent'));
+    $(window).off(this.get('_storageSyncEvent'));
   },
 
   // Properties
@@ -25,7 +28,7 @@ export default Ember.Service.extend(Ember.Evented, {
   // -------
 
   startWatchingStorageUpdates() {
-    Ember.$(window).on(this.get('_storageSyncEvent'), this._onStorageSync.bind(this));
+    $(window).on(this.get('_storageSyncEvent'), this._onStorageSync.bind(this));
   },
 
   // Trigger a sync and return a promise to allow blocking until sync is complete. This Promise
@@ -83,14 +86,14 @@ export default Ember.Service.extend(Ember.Evented, {
   // --------
 
   _storageSyncEvent: computed(function() {
-    return `storage.${Ember.guidFor(this)}`;
+    return `storage.${guidFor(this)}`;
   }),
 
   _safeSet(storageObj, key, value) {
     try {
       storageObj.setItem(key, value);
     } catch (e) {
-      Ember.debug('storageService.trySet: web storage not available: ' + e);
+      debug('storageService.trySet: web storage not available: ' + e);
     }
   },
   _onStorageSync({ originalEvent }) {
@@ -115,7 +118,7 @@ export default Ember.Service.extend(Ember.Evented, {
         this.trigger(config.events.storage.updated);
       }
     } catch (e) {
-      Ember.debug('storageService._receiveStorageFromOtherTab: ' + e);
+      debug('storageService._receiveStorageFromOtherTab: ' + e);
     }
   },
 });

@@ -1,11 +1,13 @@
+import { sort } from '@ember/object/computed';
+import Component from '@ember/component';
+import { isNone, tryInvoke } from '@ember/utils';
+import { run, scheduleOnce, debounce } from '@ember/runloop';
+import { get, computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import MediaElementVersion from 'textup-frontend/models/media-element-version';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke, isNone, run, get } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     versions: PropTypes.arrayOf(
       PropTypes.oneOfType([
@@ -42,7 +44,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     this.get('_$img')
       .on(this.get('_loadEventName'), ev => this._onLoadSuccess(ev))
       .on(this.get('_errorEventName'), ev => this._onLoadFailure(ev));
-    Ember.run.scheduleOnce('afterRender', this, this._updateSize);
+    scheduleOnce('afterRender', this, this._updateSize);
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -56,7 +58,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _sortVersionsBy: ['width'],
-  _sortedVersions: computed.sort('versions', '_sortVersionsBy'),
+  _sortedVersions: sort('versions', '_sortVersionsBy'),
   _sourceSet: computed('_sizes', '_sortedVersions.@each.{source,width}', function() {
     if (isNone(this.get('_sizes'))) {
       return;
@@ -126,7 +128,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onFailure', [event]);
   },
   _onWindowResize() {
-    Ember.run.debounce(this, this._updateSize, 250);
+    debounce(this, this._updateSize, 250);
   },
   _updateSize() {
     if (this.isDestroying || this.isDestroyed) {

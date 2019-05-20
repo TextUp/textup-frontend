@@ -1,10 +1,9 @@
+import ComputedProperty from '@ember/object/computed';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import ScheduleUtils from 'textup-frontend/utils/schedule';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('schedule', 'Unit | Model | schedule', {
   needs: ['transform:interval-string'],
@@ -25,7 +24,7 @@ test('defining interval properties for each day of week', function(assert) {
     intervalsToString = sinon.stub(ScheduleUtils, 'intervalsToString').returns(val2);
 
   Constants.DAYS_OF_WEEK.forEach(dayOfWeek => {
-    assert.ok(model[dayOfWeek] instanceof Ember.ComputedProperty);
+    assert.ok(model[dayOfWeek] instanceof ComputedProperty);
   });
 
   assert.ok(stringToIntervals.notCalled);

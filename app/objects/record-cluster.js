@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import EmberObject, { computed } from '@ember/object';
 
-const { computed } = Ember;
-
-export const RecordCluster = Ember.Object.extend({
+export const RecordCluster = EmberObject.extend({
   label: '',
   alwaysCluster: false,
-  numItems: computed.alias('items.length'),
+  numItems: alias('items.length'),
   items: computed(() => [])
 });

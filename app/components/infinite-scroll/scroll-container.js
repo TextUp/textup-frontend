@@ -1,11 +1,14 @@
+import { equal } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke, run, RSVP } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, HasEvents, {
+export default Component.extend(PropTypesMixin, HasEvents, {
   propTypes: {
     direction: PropTypes.oneOf(Object.values(Constants.INFINITE_SCROLL.DIRECTION)),
     doRegister: PropTypes.func,
@@ -56,8 +59,8 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
     };
   }),
   _userOffsetFromInitial: null,
-  _isDown: computed.equal('direction', Constants.INFINITE_SCROLL.DIRECTION.DOWN),
-  _isUp: computed.equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
+  _isDown: equal('direction', Constants.INFINITE_SCROLL.DIRECTION.DOWN),
+  _isUp: equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
   _$content: computed(function() {
     return this.$('.infinite-scroll__scroll-container__content');
   }),

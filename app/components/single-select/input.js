@@ -1,7 +1,12 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { scheduleOnce, next } from '@ember/runloop';
+import { tryInvoke, isEmpty, isBlank } from '@ember/utils';
+import { computed } from '@ember/object';
+import { alias, notEmpty, or } from '@ember/object/computed';
+import Component from '@ember/component';
 import defaultIfAbsent from '../../utils/default-if-absent';
 
-export default Ember.Component.extend({
+export default Component.extend({
   displayProperty: null,
   placeholder: defaultIfAbsent(''),
   itemClass: defaultIfAbsent(''),
@@ -20,15 +25,15 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  selected: Ember.computed.alias('data.firstObject'),
-  hasSelected: Ember.computed.notEmpty('selected'),
-  inputObj: Ember.computed(function() {
+  selected: alias('data.firstObject'),
+  hasSelected: notEmpty('selected'),
+  inputObj: computed(function() {
     return this.$().find('.single-select-input-edit .form-control');
   }),
-  displayObj: Ember.computed(function() {
+  displayObj: computed(function() {
     return this.$().children('.single-select-input-display');
   }),
-  publicAPI: Ember.computed(function() {
+  publicAPI: computed(function() {
     return {
       currentVal: '',
       isCreating: false,
@@ -43,15 +48,15 @@ export default Ember.Component.extend({
       },
     };
   }),
-  isInputting: Ember.computed.or('publicAPI.isCreating', 'publicAPI.isEditing'),
-  canClear: Ember.computed.notEmpty('publicAPI.currentVal'),
+  isInputting: or('publicAPI.isCreating', 'publicAPI.isEditing'),
+  canClear: notEmpty('publicAPI.currentVal'),
 
   // Events
   // ------
 
   init() {
     this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
+    tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   willDestroyElement() {
     this.cleanupAutocloseHandler();
@@ -77,17 +82,17 @@ export default Ember.Component.extend({
     },
     handleInput(event) {
       const val = event.target.value,
-        isEmpty = Ember.isEmpty(val),
-        isBlank = Ember.isBlank(val);
+        emptyResult = isEmpty(val),
+        blankResult = isBlank(val);
       this.set('publicAPI.currentVal', val);
-      Ember.tryInvoke(this, 'onInput', [val, event]);
-      if (event.which === 27 && !isEmpty) {
+      tryInvoke(this, 'onInput', [val, event]);
+      if (event.which === 27 && !emptyResult) {
         // escape
         this.removeAndClearInput();
-      } else if (event.which === 13 && !isEmpty) {
+      } else if (event.which === 13 && !emptyResult) {
         // enter
         this.insertOrUpdate(event);
-      } else if (event.which === 8 && (isEmpty || isBlank)) {
+      } else if (event.which === 8 && (emptyResult || blankResult)) {
         // backspace
         this.removeAndClearInput();
       }
@@ -105,8 +110,8 @@ export default Ember.Component.extend({
       $input = this.get('inputObj'),
       val = $input.val();
     $el.addClass('editing');
-    Ember.tryInvoke(this, 'onInputStart', [val, event]);
-    Ember.run.scheduleOnce('afterRender', this, this.ensureFocus);
+    tryInvoke(this, 'onInputStart', [val, event]);
+    scheduleOnce('afterRender', this, this.ensureFocus);
 
     this.setProperties({
       'publicAPI.currentVal': val,
@@ -128,10 +133,10 @@ export default Ember.Component.extend({
     }
 
     if (this.get('autoCloseEdit')) {
-      Ember.$(document).on(
+      $(document).on(
         `click.${this.elementId}`,
         function(event) {
-          if (!Ember.$(event.target).closest(this.$()).length) {
+          if (!$(event.target).closest(this.$()).length) {
             this.stopInput();
             this.cleanupAutocloseHandler();
           }
@@ -146,9 +151,9 @@ export default Ember.Component.extend({
     const val = this.get('inputObj').val();
     let result;
     if (this.get('hasSelected')) {
-      result = Ember.tryInvoke(this, 'onUpdate', [this.get('selected'), val, event]);
+      result = tryInvoke(this, 'onUpdate', [this.get('selected'), val, event]);
     } else {
-      result = Ember.tryInvoke(this, 'onInsert', [val, event]);
+      result = tryInvoke(this, 'onInsert', [val, event]);
     }
     if (result && result.then) {
       result.then(() => {
@@ -162,13 +167,13 @@ export default Ember.Component.extend({
   },
   removeAndClearInput() {
     // run next to allow click out to close handler to run first
-    Ember.run.next(this, function() {
+    next(this, function() {
       this.get('inputObj').val('');
       this.set('publicAPI.currentVal', '');
       if (this.get('hasSelected')) {
-        Ember.tryInvoke(this, 'onRemove', [this.get('selected')]);
+        tryInvoke(this, 'onRemove', [this.get('selected')]);
       }
-      Ember.run.scheduleOnce('afterRender', this, this.ensureFocus);
+      scheduleOnce('afterRender', this, this.ensureFocus);
       this.setProperties({
         'publicAPI.isCreating': true,
         'publicAPI.isEditing': false,
@@ -193,7 +198,7 @@ export default Ember.Component.extend({
       _shouldRestoreOriginal: false,
       _originalVal: '',
     });
-    Ember.run.scheduleOnce('afterRender', this, this.ensureFocus);
+    scheduleOnce('afterRender', this, this.ensureFocus);
   },
 
   // Focus
@@ -211,6 +216,6 @@ export default Ember.Component.extend({
   // -------
 
   cleanupAutocloseHandler() {
-    Ember.$(document).off(`.${this.elementId}`);
+    $(document).off(`.${this.elementId}`);
   },
 });

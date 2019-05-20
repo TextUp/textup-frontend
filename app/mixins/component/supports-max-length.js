@@ -1,5 +1,10 @@
+import $ from 'jquery';
+import Mixin from '@ember/object/mixin';
+import { assign } from '@ember/polyfills';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import {
@@ -11,15 +16,9 @@ import {
   removeElement,
 } from 'textup-frontend/utils/element';
 
-const { assign, computed, run, typeOf } = Ember,
-  DEFAULT_PERCENT_THRESHOLD = 90,
-  NAMESPACE = 'supports-max-length',
-  CONTAINER_CLASS = 'max-length',
-  INDICATOR_CLASS = 'max-length__indicator',
-  INDICATOR_OPEN_CLASS = 'max-length__indicator--visible',
-  INDICATOR_POSITION_CLASS_ROOT = 'max-length__indicator--position';
+const DEFAULT_PERCENT_THRESHOLD = 90, NAMESPACE = 'supports-max-length', CONTAINER_CLASS = 'max-length', INDICATOR_CLASS = 'max-length__indicator', INDICATOR_OPEN_CLASS = 'max-length__indicator--visible', INDICATOR_POSITION_CLASS_ROOT = 'max-length__indicator--position';
 
-export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
+export default Mixin.create(PropTypesMixin, HasEvents, {
   propTypes: {
     maxLength: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     maxLengthPosition: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
@@ -164,7 +163,7 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
       return;
     }
     if (this._buildCurrentValueLength() >= this.get('_maxLengthThresholdValue')) {
-      Ember.$(indicatorEl).addClass(INDICATOR_OPEN_CLASS);
+      $(indicatorEl).addClass(INDICATOR_OPEN_CLASS);
     } else {
       // if we should not be showing the indicator, then ensure that it is hidden
       this._hideMaxLengthIndicator(indicatorEl);
@@ -174,14 +173,14 @@ export default Ember.Mixin.create(PropTypesMixin, HasEvents, {
     if (!indicatorEl || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    Ember.$(indicatorEl).removeClass(INDICATOR_OPEN_CLASS);
+    $(indicatorEl).removeClass(INDICATOR_OPEN_CLASS);
   },
 
   _tryUpdateMaxLengthIndicatorPosition(indicatorEl) {
     if (!indicatorEl) {
       return;
     }
-    Ember.$(indicatorEl)
+    $(indicatorEl)
       .removeClass(Object.values(this.get('_maxLengthPositionToClassName')).join(' '))
       .addClass(this.get('_maxLengthPositionClass'));
   },

@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     src: PropTypes.string.isRequired,
     nativeAppSrc: PropTypes.string.isRequired,

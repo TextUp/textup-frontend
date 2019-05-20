@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import TourData from 'textup-frontend/data/tour-data';
 
-const { computed, tryInvoke, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     doRegister: PropTypes.func,
     onTourFinish: PropTypes.func,

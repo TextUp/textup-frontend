@@ -1,23 +1,23 @@
+import $ from 'jquery';
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
 import * as RenewTokenService from 'textup-frontend/services/renew-token-service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
 
-const { typeOf } = Ember;
-
 moduleFor('service:renew-token-service', 'Unit | Service | renew token service', {
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
   },
 });
 
 test('starting to watch ajax requests', function(assert) {
   const service = this.subject(),
-    ajaxPrefilter = sinon.stub(Ember.$, 'ajaxPrefilter').callsArg(0),
+    ajaxPrefilter = sinon.stub($, 'ajaxPrefilter').callsArg(0),
     _tryRenewTokenOnError = sinon.stub(service, '_tryRenewTokenOnError');
 
   service.startWatchingAjaxRequests();
@@ -51,7 +51,7 @@ test('making request to try renew token', function(assert) {
     done = assert.async(),
     responseObj = Math.random(),
     refreshToken = Math.random(),
-    ajax = sinon.stub(Ember.$, 'ajax');
+    ajax = sinon.stub($, 'ajax');
 
   this.authService.setProperties({
     refreshToken,
@@ -110,7 +110,7 @@ test('overridden error handler', function(assert) {
   const service = this.subject(),
     done = assert.async(),
     ajaxPromiseObj = { then: sinon.spy() },
-    ajax = sinon.stub(Ember.$, 'ajax').returns(ajaxPromiseObj),
+    ajax = sinon.stub($, 'ajax').returns(ajaxPromiseObj),
     tryRenewToken = sinon.stub(service, 'tryRenewToken'),
     _rejectWithOriginal = sinon.stub(service, '_rejectWithOriginal'),
     deferredObj = { resolve: sinon.spy(), reject: sinon.spy() },
@@ -176,7 +176,7 @@ test('overriding handlers to try to renew token on error', function(assert) {
     refreshToken = Math.random(),
     retVal = Math.random(),
     deferredObj = { resolve: sinon.spy(), promise: sinon.stub().returns(retVal) },
-    Deferred = sinon.stub(Ember.$, 'Deferred').returns(deferredObj),
+    Deferred = sinon.stub($, 'Deferred').returns(deferredObj),
     xhr = { done: sinon.spy(), fail: sinon.spy() },
     originalBeforeSend = sinon.spy(),
     options = {},
@@ -224,7 +224,7 @@ test('overriding handlers to try to renew token on error', function(assert) {
     originalOptions2[RenewTokenService.KEY_ERROR_FN],
     'save error function under a different key just in case'
   );
-  assert.deepEqual(options[RenewTokenService.KEY_ERROR_FN], Ember.$.noop());
+  assert.deepEqual(options[RenewTokenService.KEY_ERROR_FN], $.noop());
   assert.ok(xhr.fail.calledOnce);
   assert.ok(deferredObj.promise.calledWith(xhr));
 

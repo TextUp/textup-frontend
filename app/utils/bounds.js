@@ -1,6 +1,5 @@
-import Ember from 'ember';
-
-const { $, typeOf } = Ember;
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
 
 export function getWidthProportionFromLeft(eventX, eventY, boxX, boxY, boxWidth, boxHeight) {
   // return on invalid args

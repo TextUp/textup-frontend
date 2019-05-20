@@ -1,7 +1,6 @@
 {
   "name": "textup-frontend",
   "dependencies": {
-    "colpick": "2.0.2",
     "mapbox.js": "~2.4.0",
     "pickadate": "~3.5.6"
   }

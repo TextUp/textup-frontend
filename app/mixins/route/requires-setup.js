@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { isPresent } from '@ember/utils';
 
-const { isPresent } = Ember;
-
-export default Ember.Mixin.create({
-  authService: Ember.inject.service(),
-  userSetupService: Ember.inject.service(),
+export default Mixin.create({
+  authService: service(),
+  userSetupService: service(),
 
   // This needs to run AFTER the `beforeModel` and `afterModel` hooks decide what the appropriate
   // location for the current user is.

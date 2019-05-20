@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('location', 'Unit | Model | location', {
@@ -20,7 +20,7 @@ test('validation for empty model', function(assert) {
 
 test('validation for model with invalid values', function(assert) {
   const m1 = this.subject();
-  Ember.run(function() {
+  run(function() {
     m1.setProperties({
       address: 'i am a valid address',
       lat: -91,
@@ -40,7 +40,7 @@ test('validation for model with invalid values', function(assert) {
 
 test('validation for model filled with all valid values', function(assert) {
   const m1 = this.subject();
-  Ember.run(function() {
+  run(function() {
     m1.setProperties({
       address: 'i am a valid address',
       lat: 10,
@@ -68,7 +68,7 @@ test('setting and retrieving latlng', function(assert) {
       lat: 888,
       lng: 888,
     };
-  Ember.run(function() {
+  run(function() {
     m1.set('latLng', null);
     assert.equal(m1.get('lat'), null);
     assert.equal(m1.get('lng'), null);

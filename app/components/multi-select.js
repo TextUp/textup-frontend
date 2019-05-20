@@ -1,7 +1,25 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { Promise } from 'rsvp';
+import {
+  next,
+  cancel,
+  scheduleOnce,
+  debounce,
+  throttle
+} from '@ember/runloop';
+import { merge } from '@ember/polyfills';
+import { computed, get, set } from '@ember/object';
+import { notEmpty, alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import {
+  isPresent as here,
+  isEmpty,
+  tryInvoke,
+  isBlank
+} from '@ember/utils';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-export default Ember.Component.extend({
+export default Component.extend({
   displayProperty: null,
   identityProperty: null,
   filterProperty: null,
@@ -36,15 +54,15 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  anyRemainingResults: Ember.computed.notEmpty('_remainingResults'),
-  checkIdentity: Ember.computed.notEmpty('identityProperty'),
-  dataIds: Ember.computed('identityProperty', 'data.[]', function() {
+  anyRemainingResults: notEmpty('_remainingResults'),
+  checkIdentity: notEmpty('identityProperty'),
+  dataIds: computed('identityProperty', 'data.[]', function() {
     return this.buildIds(this.get('data'));
   }),
-  selectedIds: Ember.computed('identityProperty', 'selected.[]', function() {
+  selectedIds: computed('identityProperty', 'selected.[]', function() {
     return this.buildIds(this.get('selected'));
   }),
-  publicAPI: Ember.computed(function() {
+  publicAPI: computed(function() {
     const dropdown = this.get('_dropdown'),
       input = this.get('_input');
     if (dropdown && input) {
@@ -60,20 +78,20 @@ export default Ember.Component.extend({
         isCreating: input.isCreating,
         isEditing: input.isEditing,
         currentlyEditing: input.currentlyEditing,
-        actions: Ember.merge(Ember.merge(myActions, dropdown.actions), input.actions),
+        actions: merge(merge(myActions, dropdown.actions), input.actions),
       };
     } else {
       return {};
     }
   }),
-  _lastSearchTerm: Ember.computed.alias('_input.currentVal'),
-  _remainingResults: Ember.computed('_results.[]', 'selectedIds', function() {
+  _lastSearchTerm: alias('_input.currentVal'),
+  _remainingResults: computed('_results.[]', 'selectedIds', function() {
     const results = this.get('_results');
     if (results && this.get('checkIdentity')) {
       const selectedIds = this.get('selectedIds'),
         prop = this.get('identityProperty');
       return results.filter(item => {
-        return !Ember.get(selectedIds, Ember.get(item, prop));
+        return !get(selectedIds, get(item, prop));
       });
     } else {
       return results;
@@ -92,7 +110,7 @@ export default Ember.Component.extend({
       creating = this.get('_input.isCreating'),
       editing = this.get('_input.isEditing');
     // 13 is enter
-    if (anyRemaining && event.which === 13 && Ember.isEmpty(val) && (creating || editing)) {
+    if (anyRemaining && event.which === 13 && isEmpty(val) && (creating || editing)) {
       this.get('_input.actions.insert')(event);
     }
   },
@@ -116,7 +134,7 @@ export default Ember.Component.extend({
     selectItem(item, index, event) {
       // run next in order to allow clickOnClose handler in
       // hide away to run first
-      Ember.run.next(this, function() {
+      next(this, function() {
         this.highlightNode(this.getDataAt(index).node);
         if (this.get('_input.isEditing')) {
           this.get('_input.actions.update')(event);
@@ -131,19 +149,19 @@ export default Ember.Component.extend({
     // --------------
 
     inputStart(val) {
-      Ember.run.cancel(this.get('_updateResultsTimer'));
+      cancel(this.get('_updateResultsTimer'));
       this.updateResults(val, true);
       if (this.get('_dropdown.isOpen') && this.get('_input.isCreating')) {
         this.get('_input.actions.stopEditing')();
       } else {
-        Ember.run.scheduleOnce('afterRender', this, function() {
+        scheduleOnce('afterRender', this, function() {
           this.get('_dropdown.actions.open')();
         });
       }
     },
     inputChange(val) {
       const delay = this.get('delayThreshold'),
-        timer = Ember.run.debounce(this, this.updateResults, val, delay);
+        timer = debounce(this, this.updateResults, val, delay);
       this.set('_updateResultsTimer', timer);
     },
     afterDropdownOpen() {
@@ -167,8 +185,8 @@ export default Ember.Component.extend({
       return this.insertOrUpdate(false, val, this.get('selected.length'), event);
     },
     remove(item) {
-      Ember.tryInvoke(this, 'onRemove', [item]);
-      Ember.run.next(this, this.setupResults);
+      tryInvoke(this, 'onRemove', [item]);
+      next(this, this.setupResults);
     },
   },
 
@@ -176,12 +194,12 @@ export default Ember.Component.extend({
   // ----------------
 
   insertOrUpdate(skipFocus, val, index, event) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let promise;
       const $highlight = this.get('_currentHighlight'),
         hasHighlight = $highlight && $highlight.length,
         object = hasHighlight ? this.getDataAt($highlight.attr('data-index')).object : null;
-      Ember.run.next(this, this.setupResults, skipFocus);
+      next(this, this.setupResults, skipFocus);
       if (this.get('anyRemainingResults') && object) {
         promise = this._doInsert(index, event, object);
       } else if (this.get('allowCreate')) {
@@ -202,17 +220,17 @@ export default Ember.Component.extend({
     });
   },
   _doCreateAndInsert(val, index, event) {
-    const created = Ember.tryInvoke(this, 'doCreate', [val, event]);
+    const created = tryInvoke(this, 'doCreate', [val, event]);
     if (created) {
       return this._doInsert(index, event, created);
     }
   },
   _doInsert(index, event, toBeInserted) {
-    return Ember.tryInvoke(this, 'onInsert', [index, toBeInserted, event]);
+    return tryInvoke(this, 'onInsert', [index, toBeInserted, event]);
   },
   getDataAt(index) {
     return {
-      object: Ember.get(this.get('_remainingResults'), String(index)),
+      object: get(this.get('_remainingResults'), String(index)),
       node: this.$()
         .find('.multi-select-item')
         .eq(index),
@@ -269,7 +287,7 @@ export default Ember.Component.extend({
   },
   _highlightNeighbor(moveUp) {
     // in case the highlight is not present for some reason
-    Ember.run.throttle(this, this.maintainOrHighlightFirst, 1000);
+    throttle(this, this.maintainOrHighlightFirst, 1000);
     const $current = this.get('_currentHighlight');
     if ($current && $current.length) {
       const selector = '.multi-select-item',
@@ -311,9 +329,9 @@ export default Ember.Component.extend({
 
   updateResults(val, isOpening) {
     if (!isOpening) {
-      Ember.run.scheduleOnce('afterRender', this, this.maintainOrHighlightFirst);
+      scheduleOnce('afterRender', this, this.maintainOrHighlightFirst);
     }
-    if (Ember.isBlank(val)) {
+    if (isBlank(val)) {
       this._handleBlankInput();
     } else {
       this.setProperties({
@@ -349,7 +367,7 @@ export default Ember.Component.extend({
     }
   },
   _doAsyncResults(val) {
-    const searchResult = Ember.tryInvoke(this, 'doSearch', [val]);
+    const searchResult = tryInvoke(this, 'doSearch', [val]);
     if (!searchResult || !searchResult.then) {
       return;
     }
@@ -369,7 +387,7 @@ export default Ember.Component.extend({
         });
         this._listMergeInto(this.get('_results'), newResults);
         this._objectMergeInto(this.get('_resultIds'), newIds);
-        Ember.run.scheduleOnce('afterRender', this, this.maintainOrHighlightFirst);
+        scheduleOnce('afterRender', this, this.maintainOrHighlightFirst);
       } else {
         this.set('isSearching', false);
       }
@@ -387,8 +405,8 @@ export default Ember.Component.extend({
     const ids = {};
     if (this.get('checkIdentity')) {
       data.mapBy(this.get('identityProperty')).forEach(matchId => {
-        if (matchId && !Ember.get(existingIds, matchId)) {
-          Ember.set(ids, matchId, true);
+        if (matchId && !get(existingIds, matchId)) {
+          set(ids, matchId, true);
         }
       });
     }
@@ -400,23 +418,22 @@ export default Ember.Component.extend({
     if (this.get('checkIdentity')) {
       const prop = this.get('identityProperty');
       return array.filter(item => {
-        return doFilter(searchString, item) && !Ember.get(resultIds, Ember.get(item, prop));
+        return doFilter(searchString, item) && !get(resultIds, get(item, prop));
       });
     } else {
       return array.filter(doFilter.bind(this, searchString));
     }
   },
   _defaultFilter(searchString, item) {
-    const here = Ember.isPresent,
-      fProp = this.get('filterProperty'),
-      dProp = this.get('displayProperty'),
-      iProp = this.get('identityProperty'),
-      prop = here(fProp) ? fProp : here(iProp) ? iProp : dProp,
-      // escape js regex special characters from https://stackoverflow.com/a/9310752,
-      // instead of escaping special characters, replace with whitespace, effectively discarding
-      cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
+    const fProp = this.get('filterProperty'),
+          dProp = this.get('displayProperty'),
+          iProp = this.get('identityProperty'),
+          prop = here(fProp) ? fProp : here(iProp) ? iProp : dProp,
+          // escape js regex special characters from https://stackoverflow.com/a/9310752,
+          // instead of escaping special characters, replace with whitespace, effectively discarding
+          cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
     let matchExp;
-    let matchString = (item && prop ? Ember.get(item, prop) : item).toString();
+    let matchString = (item && prop ? get(item, prop) : item).toString();
     // also clean the string to match in the same way
     if (matchString) {
       matchString = matchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
@@ -437,6 +454,6 @@ export default Ember.Component.extend({
     target.pushObjects(toBeMerged);
   },
   _objectMergeInto(target, toBeMerged) {
-    Ember.$.extend(target, toBeMerged);
+    $.extend(target, toBeMerged);
   },
 });

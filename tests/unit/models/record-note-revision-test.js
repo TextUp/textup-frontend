@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('record-note-revision', 'Unit | Model | record note revision', {
   needs: ['model:location', 'model:media', 'validator:number', 'validator:presence']

@@ -1,5 +1,6 @@
+import { getOwner } from '@ember/application';
+import Component from '@ember/component';
 import ComponentDisplaysImagesMixin from 'textup-frontend/mixins/component/displays-images';
-import Ember from 'ember';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -10,14 +11,14 @@ moduleFor('mixin:component/displays-images', 'Unit | Mixin | component/displays 
   beforeEach() {
     this.register(
       `component:${componentName}`,
-      Ember.Component.extend(ComponentDisplaysImagesMixin)
+      Component.extend(ComponentDisplaysImagesMixin)
     );
     this.inject.service('store');
   },
 });
 
 test('validating input props', function(assert) {
-  const ComponentDisplaysImagesFactory = Ember.getOwner(this).factoryFor(
+  const ComponentDisplaysImagesFactory = getOwner(this).factoryFor(
     `component:${componentName}`
   );
 

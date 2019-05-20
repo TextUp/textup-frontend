@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
 import MutationObserver from 'mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     showText: PropTypes.string,
     hideText: PropTypes.string,
@@ -35,7 +36,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     const isOpen = this.get('_isOpen'),
       contentsHeight = this.get('_contentsHeight');
     return isOpen && contentsHeight
-      ? new Ember.String.htmlSafe(`max-height: ${contentsHeight}px;`)
+      ? new htmlSafe(`max-height: ${contentsHeight}px;`)
       : null;
   }),
 

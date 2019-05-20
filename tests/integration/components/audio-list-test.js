@@ -1,10 +1,11 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import { mockValidMediaAudio, mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
+import {
+  mockValidMediaAudio,
+  mockValidMediaImage
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('audio-list', 'Integration | Component | audio list', {
   integration: true,

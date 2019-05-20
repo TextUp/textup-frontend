@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf } = Ember;
 
 moduleForComponent('hide-show', 'Integration | Component | hide show', {
   integration: true,
@@ -320,9 +319,9 @@ test('clicking out to close + ignored selectors', function(assert) {
       .indexOf(bodyText) > -1,
     'body text is shown'
   );
-  assert.ok(Ember.$(ignoreCloseSelector).length);
+  assert.ok($(ignoreCloseSelector).length);
 
-  Ember.$(ignoreCloseSelector)
+  $(ignoreCloseSelector)
     .children()
     .first()
     .click();
@@ -334,9 +333,9 @@ test('clicking out to close + ignored selectors', function(assert) {
           .indexOf(bodyText) > -1,
         'still open'
       );
-      assert.ok(Ember.$('.close-if-clicked').length);
+      assert.ok($('.close-if-clicked').length);
 
-      Ember.$('.close-if-clicked')
+      $('.close-if-clicked')
         .children()
         .first()
         .click();
@@ -387,8 +386,8 @@ test('closing when focusing out of this element', function(assert) {
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.notCalled);
 
-      assert.ok(Ember.$('.external-element').length);
-      Ember.$('.external-element').focus();
+      assert.ok($('.external-element').length);
+      $('.external-element').focus();
       return wait();
     })
     .then(() => {
@@ -404,7 +403,7 @@ test('closing due to touch event', function(assert) {
     onOpen = sinon.spy(),
     onClose = sinon.spy(),
     touchIdent = Math.random(),
-    $touchTarget = Ember.$('#ember-testing');
+    $touchTarget = $('#ember-testing');
 
   this.setProperties({ onOpen, onClose });
   this.render(hbs`
@@ -424,12 +423,12 @@ test('closing due to touch event', function(assert) {
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.notCalled);
 
-      $touchTarget.trigger(Ember.$.Event('touchstart', buildTouchEvent(touchIdent, 0, 0)));
+      $touchTarget.trigger($.Event('touchstart', buildTouchEvent(touchIdent, 0, 0)));
 
       return wait();
     })
     .then(() => {
-      $touchTarget.trigger(Ember.$.Event('touchend', buildTouchEvent(touchIdent, 80, 0)));
+      $touchTarget.trigger($.Event('touchend', buildTouchEvent(touchIdent, 80, 0)));
 
       return wait();
     })
@@ -437,12 +436,12 @@ test('closing due to touch event', function(assert) {
       assert.ok(onOpen.calledOnce);
       assert.ok(onClose.notCalled, 'touch distance too far, only close on tap not drag');
 
-      $touchTarget.trigger(Ember.$.Event('touchstart', buildTouchEvent(touchIdent, 0, 0)));
+      $touchTarget.trigger($.Event('touchstart', buildTouchEvent(touchIdent, 0, 0)));
 
       return wait();
     })
     .then(() => {
-      $touchTarget.trigger(Ember.$.Event('touchend', buildTouchEvent(touchIdent, 3, 0)));
+      $touchTarget.trigger($.Event('touchend', buildTouchEvent(touchIdent, 3, 0)));
 
       return wait();
     })

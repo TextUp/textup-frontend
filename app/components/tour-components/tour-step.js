@@ -1,14 +1,16 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run, tryInvoke } = Ember;
-
 export const BODY_DRAWER_CLASS = 'tour-step__root';
 
-export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
+export default Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
   propTypes: {
     title: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
@@ -67,7 +69,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
   },
   _clickAndScrollToAndCalculateCutout(clickSelector, highlightSelector, overlay) {
     this._tryRemoveCutout(overlay);
-    const $click = Ember.$(clickSelector);
+    const $click = $(clickSelector);
     if ($click.length) {
       $click.click();
       run.later(this, this._scrollToAndCalculateCutout, highlightSelector, overlay, 500);
@@ -76,7 +78,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
     }
   },
   _scrollToAndCalculateCutout(highlightSelector, overlay) {
-    const scrollToEl = Ember.$(highlightSelector)[0];
+    const scrollToEl = $(highlightSelector)[0];
     if (scrollToEl) {
       scrollToEl.scrollIntoView({ behavior: 'smooth' });
       // Need to hardcode a delay because `scrollIntoView` does not take a completion callback

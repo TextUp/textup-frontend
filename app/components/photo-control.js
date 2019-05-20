@@ -1,11 +1,10 @@
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
-import Ember from 'ember';
 import { PropTypes } from 'ember-prop-types';
 
-const { tryInvoke } = Ember;
-
-export default Ember.Component.extend(DisplaysImages, {
+export default Component.extend(DisplaysImages, {
   propTypes: {
     onAdd: PropTypes.func,
     onRemove: PropTypes.func,

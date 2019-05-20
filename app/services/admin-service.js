@@ -1,16 +1,16 @@
+import { readOnly } from '@ember/object/computed';
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { computed, RSVP } = Ember;
-
-export default Ember.Service.extend({
-  requestService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  requestService: service(),
+  store: service(),
 
   // Properties
   // ----------
 
-  editingStaffId: computed.readOnly('_editingStaffId'),
+  editingStaffId: readOnly('_editingStaffId'),
 
   // Methods
   // -------

@@ -1,7 +1,9 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { scheduleOnce } from '@ember/runloop';
+import TextField from '@ember/component/text-field';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-Ember.TextField.reopen({
+TextField.reopen({
   allowShowPassword: defaultIfAbsent(false),
 
   showPasswordToggleClass: 'show-password-toggle',
@@ -19,7 +21,7 @@ Ember.TextField.reopen({
   didInsertElement() {
     this._super(...arguments);
 
-    Ember.run.scheduleOnce('afterRender', this, function() {
+    scheduleOnce('afterRender', this, function() {
       const $this = this.$(),
         allowShow = this.get('allowShowPassword');
       if ($this.attr('type') === 'password' && allowShow) {
@@ -59,12 +61,12 @@ Ember.TextField.reopen({
   _build$Toggle() {
     const toggleClass = this.get('showPasswordToggleClass'),
       bodyClass = this.get('showPasswordToggleBodyClass');
-    return Ember.$(`<div class='${toggleClass}'>
+    return $(`<div class='${toggleClass}'>
             <span class='${bodyClass}'></span></div>`);
   },
   _build$Container() {
     const containerClass = this.get('showPasswordContainerClass');
-    return Ember.$(`<div class='${containerClass} show-password-container'></div>`);
+    return $(`<div class='${containerClass} show-password-container'></div>`);
   },
 
   // Visibility methods

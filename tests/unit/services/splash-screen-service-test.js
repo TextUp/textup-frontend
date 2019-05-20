@@ -1,5 +1,5 @@
+import $ from 'jquery';
 import * as SplashScreenService from 'textup-frontend/services/splash-screen-service';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent, test } from 'ember-qunit';
 
@@ -26,13 +26,13 @@ test('try removing splash screen element from DOM', function(assert) {
 
   this.setProperties({ splashId: SplashScreenService.SPLASH_SCREEN_ID });
   this.render(hbs`<div id={{splashId}}></div>`);
-  assert.ok(Ember.$('#' + SplashScreenService.SPLASH_SCREEN_ID).length, 'has splash screen');
+  assert.ok($('#' + SplashScreenService.SPLASH_SCREEN_ID).length, 'has splash screen');
 
   this.splashScreenService.tryRemove();
   setTimeout(() => {
     assert.equal(this.splashScreenService.get('hasSplashScreen'), false);
     assert.notOk(
-      Ember.$('#' + SplashScreenService.SPLASH_SCREEN_ID).length,
+      $('#' + SplashScreenService.SPLASH_SCREEN_ID).length,
       'splash screen removed'
     );
 

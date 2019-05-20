@@ -1,7 +1,9 @@
+import $ from 'jquery';
+import Service from '@ember/service';
+import { run } from '@ember/runloop';
 import * as AuthService from 'textup-frontend/services/auth-service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
@@ -9,20 +11,18 @@ import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember;
-
 moduleFor('service:auth-service', 'Unit | Service | auth service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
-    this.register('service:router', Ember.Service);
+    this.register('service:router', Service);
     this.inject.service('router');
-    this.register('service:storageService', Ember.Service.extend({ off: sinon.spy() }));
+    this.register('service:storageService', Service.extend({ off: sinon.spy() }));
     this.inject.service('storageService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
   },
 });
@@ -364,7 +364,7 @@ test('logging in failure', function(assert) {
 test('logging in overall', function(assert) {
   const service = this.subject(),
     done = assert.async(),
-    ajax = sinon.stub(Ember.$, 'ajax'),
+    ajax = sinon.stub($, 'ajax'),
     storeAuthResponseSuccess = sinon.stub(service, 'storeAuthResponseSuccess'),
     _logInFail = sinon.stub(service, '_logInFail'),
     username = Math.random(),

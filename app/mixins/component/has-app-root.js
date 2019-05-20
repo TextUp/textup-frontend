@@ -1,12 +1,16 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
+import { getOwner } from '@ember/application';
 
-const { computed } = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   _root: computed(function() {
-    const rootSelector = Ember.testing
-      ? '#ember-testing'
-      : Ember.getOwner(this).lookup('application:main').rootElement;
-    return Ember.$(rootSelector);
+    return $(getOwner(this).lookup('application:main').rootElement);
+
+    // TODO
+    // const rootSelector = Ember.testing
+    //   ? '#ember-testing'
+    //   : getOwner(this).lookup('application:main').rootElement;
+    // return $(rootSelector);
   }),
 });

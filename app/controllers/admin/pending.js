@@ -1,19 +1,21 @@
+import { alias } from '@ember/object/computed';
+import { copy } from '@ember/object/internals';
+import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Controller, { inject as controller } from '@ember/controller';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { computed } = Ember;
+export default Controller.extend({
+  adminService: service(),
+  dataService: service(),
+  numberService: service(),
+  requestService: service(),
+  stateService: service(),
 
-export default Ember.Controller.extend({
-  adminService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
-  numberService: Ember.inject.service(),
-  requestService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
+  adminController: controller('admin'),
 
-  adminController: Ember.inject.controller('admin'),
-
-  pendingStaff: computed.alias('adminController.pending'),
-  numPending: computed.alias('adminController.numPending'),
+  pendingStaff: alias('adminController.pending'),
+  numPending: alias('adminController.numPending'),
 
   actions: {
     approve(staff) {
@@ -29,7 +31,7 @@ export default Ember.Controller.extend({
       this._handlePending(staff);
     },
     loadMore() {
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const pendingStaff = this.get('pendingStaff');
         this.get('requestService')
           .handleIfError(
@@ -53,7 +55,7 @@ export default Ember.Controller.extend({
       .then(() => {
         staff.set('pendingAction', null);
         const pending = this.get('pendingStaff').removeObject(staff);
-        this.set('pendingStaff', Ember.copy(pending));
+        this.set('pendingStaff', copy(pending));
       });
   },
 });

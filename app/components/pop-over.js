@@ -1,15 +1,19 @@
+import $ from 'jquery';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import RSVP from 'rsvp';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import BoundUtils from 'textup-frontend/utils/bounds';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MutationObserver from 'mutation-observer';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, RSVP, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
+export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   propTypes: {
     doRegister: PropTypes.func,
     onOpen: PropTypes.func,
@@ -73,14 +77,14 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   _safeBodyFloatStyles: computed('_bodyFloatStyles', function() {
     const stylesArray = this.get('_bodyFloatStyles');
     if (stylesArray) {
-      return Ember.String.htmlSafe(stylesArray.join(';'));
+      return htmlSafe(stylesArray.join(';'));
     }
   }),
   _bodyDimesionStyles: null,
   _safeBodyDimensionStyles: computed('_bodyDimesionStyles', function() {
     const stylesArray = this.get('_bodyDimesionStyles');
     if (stylesArray) {
-      return Ember.String.htmlSafe(stylesArray.join(';'));
+      return htmlSafe(stylesArray.join(';'));
     }
   }),
   _mutationObserver: null,
@@ -213,7 +217,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
   },
 
   _attachListeners() {
-    Ember.$(window)
+    $(window)
       .on(this._event('resize'), this._repositionOnChange.bind(this))
       .on(this._event('orientationchange'), this._repositionOnChange.bind(this));
     const bodyContents = this.get('_bodyContents')[0],
@@ -222,7 +226,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     this.set('_mutationObserver', observer);
   },
   _removeListeners() {
-    Ember.$(window).off(this._event());
+    $(window).off(this._event());
     const observer = this.get('_mutationObserver');
     if (observer) {
       observer.disconnect();

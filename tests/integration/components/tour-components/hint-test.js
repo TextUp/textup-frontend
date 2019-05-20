@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import HintUtils from 'textup-frontend/utils/hint-info';
 import sinon from 'sinon';
@@ -7,7 +7,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 moduleForComponent('tour-components/hint', 'Integration | Component | tour components/hint', {
   integration: true,
   beforeEach() {
-    this.register('service:tutorialService', Ember.Service);
+    this.register('service:tutorialService', Service);
     this.inject.service('tutorialService');
   },
 });

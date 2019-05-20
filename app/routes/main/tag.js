@@ -1,17 +1,16 @@
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import MainContactsRoute from 'textup-frontend/routes/main/contacts';
 
-const { computed } = Ember;
-
 export default MainContactsRoute.extend({
-  stateService: Ember.inject.service(),
+  stateService: service(),
 
   queryParams: null,
   controllerName: 'main/contacts',
   templateName: 'main/contacts',
 
-  phone: computed.alias('stateService.owner.phone.content'),
+  phone: alias('stateService.owner.phone.content'),
 
   serialize(model) {
     return { tag_identifier: model.get(Constants.PROP_NAME.URL_IDENT) };

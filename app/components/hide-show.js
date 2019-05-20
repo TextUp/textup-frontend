@@ -1,15 +1,19 @@
+import $ from 'jquery';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { distance } from 'textup-frontend/utils/coordinate';
 import { isOrContainsElement } from 'textup-frontend/utils/element';
 
-const { computed, tryInvoke, run, RSVP } = Ember,
-  TOUCH_TAP_MAX_DISTANCE_IN_PX = 20;
+const TOUCH_TAP_MAX_DISTANCE_IN_PX = 20;
 
-export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
+export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   propTypes: {
     doRegister: PropTypes.func,
     onOpen: PropTypes.func,
@@ -64,7 +68,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       },
     };
   }),
-  _touchCoordinates: Ember.computed(() => {
+  _touchCoordinates: computed(() => {
     return {};
   }),
 
@@ -122,7 +126,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     const $el = this.$();
     // only trigger close when the related target IS NOT within this component. This condition is
     // fulfilled when the focus is actually leaving this element altogether
-    if (!Ember.$.contains($el[0], relatedTarget)) {
+    if (!$.contains($el[0], relatedTarget)) {
       this._close();
     }
   },
@@ -135,7 +139,7 @@ export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       return;
     }
     const $root = this.get('_root'),
-      $target = Ember.$(target),
+      $target = $(target),
       thisEl = this.element;
     // don't close if clicked inside body
     if (isOrContainsElement(thisEl, target)) {

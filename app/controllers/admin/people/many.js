@@ -1,17 +1,19 @@
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Controller, { inject as controller } from '@ember/controller';
+import { filterBy } from '@ember/object/computed';
 
-const { filterBy } = Ember.computed;
+export default Controller.extend({
+  authService: service(),
+  stateService: service(),
 
-export default Ember.Controller.extend({
-  authService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-
-  peopleController: Ember.inject.controller('admin.people'),
+  peopleController: controller('admin.people'),
 
   selected: filterBy('peopleController.people', 'isSelected', true),
   selectedAdmins: filterBy('selected', 'isAdmin', true),
 
-  selectedMe: Ember.computed('selected.[]', function() {
+  selectedMe: computed('selected.[]', function() {
     const myUsername = this.get('authService.authUser.username');
     return this.get('selected').any(person => {
       return person.get('username') === myUsername;
@@ -35,7 +37,7 @@ export default Ember.Controller.extend({
     },
     deselect(person) {
       person.set('isSelected', false);
-      Ember.run.next(this, function() {
+      next(this, function() {
         if (this.get('selected.length') === 0) {
           this._exitMany();
         }

@@ -1,10 +1,9 @@
+import $ from 'jquery';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('schedule-control', 'Integration | Component | schedule control', {
   integration: true,
@@ -130,7 +129,7 @@ test('adding a range', function(assert) {
     // select start times
     const startInput = this.$('.ember-view input').first();
     startInput.click();
-    Ember.$(`#${startInput.attr('aria-owns')} [data-pick="30"]`).click();
+    $(`#${startInput.attr('aria-owns')} [data-pick="30"]`).click();
 
     // delay to allow the datetime-control to finish re-rendering
     const done = assert.async();
@@ -138,7 +137,7 @@ test('adding a range', function(assert) {
       // set end time
       const endInput = this.$('.ember-view input').eq(1);
       endInput.click();
-      Ember.$(`#${endInput.attr('aria-owns')} [data-pick="330"]`).click();
+      $(`#${endInput.attr('aria-owns')} [data-pick="330"]`).click();
 
       // press add button after asserting that it is no longer disabled
       assert.ok(
@@ -206,7 +205,7 @@ test('updating an existing range', function(assert) {
       expectedDayOfWeek = 'thursday';
       expectedNewStart = '0715';
       expectedNewEnd = '0715';
-      Ember.$(`#${$startInput.attr('aria-owns')} [data-pick="435"]`).click();
+      $(`#${$startInput.attr('aria-owns')} [data-pick="435"]`).click();
 
       // delay to allow date-time control to re-render
       setTimeout(() => {
@@ -228,7 +227,7 @@ test('updating an existing range', function(assert) {
           expectedDayOfWeek = 'thursday';
           expectedNewStart = '0130'; // original time because we DIDN'T ACTUALLY UPDATE our values
           expectedNewEnd = '1730'; // just-selected 5:30p
-          Ember.$(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
+          $(`#${$endInput.attr('aria-owns')} [data-pick="1050"]`).click();
           done();
         }, 500);
       }, 500);

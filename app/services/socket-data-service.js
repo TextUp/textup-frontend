@@ -1,10 +1,7 @@
+import Service, { inject as service } from '@ember/service';
+import { isArray } from '@ember/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
-
-// [NOTE] We start watching for auth changes in an instance initializer
-
-const { isArray } = Ember;
 
 export const EVENT_CONTACTS = 'contacts';
 export const EVENT_FUTURE_MESSAGES = 'futureMessages';
@@ -12,10 +9,10 @@ export const EVENT_RECORD_ITEMS = 'recordItems';
 export const EVENT_PHONES = 'phones';
 export const STORE_REQUEST_TYPE = 'query';
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  store: Ember.inject.service(),
-  websocketService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  store: service(),
+  websocketService: service(),
 
   willDestroy() {
     this._super(...arguments);

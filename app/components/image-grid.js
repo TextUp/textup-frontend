@@ -1,10 +1,11 @@
+import { filterBy, alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import DisplaysImages from 'textup-frontend/mixins/component/displays-images';
 
-const { computed, get, tryInvoke } = Ember;
-
-export default Ember.Component.extend(DisplaysImages, {
+export default Component.extend(DisplaysImages, {
   classNames: ['image-grid'],
   classNameBindings: ['_hasImages::image-grid--none'],
 
@@ -19,12 +20,12 @@ export default Ember.Component.extend(DisplaysImages, {
   _loadResults: computed(() => {
     return {};
   }),
-  _images: computed.filterBy('images', 'isImage', true),
+  _images: filterBy('images', 'isImage', true),
   _numImagesLoaded: 0,
   _shouldReturnResults: computed('_images.[]', '_numImagesLoaded', function() {
     return this.get('_images.length') === this.get('_numImagesLoaded');
   }),
-  _hasImages: computed.alias('_images.length'),
+  _hasImages: alias('_images.length'),
 
   // Internal handlers
   // -----------------

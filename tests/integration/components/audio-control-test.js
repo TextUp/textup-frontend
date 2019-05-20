@@ -1,12 +1,11 @@
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import AudioUtils from 'textup-frontend/utils/audio';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForComponent('audio-control', 'Integration | Component | audio control', {
   integration: true,

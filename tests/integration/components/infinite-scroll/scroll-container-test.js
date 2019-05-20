@@ -1,11 +1,9 @@
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf } = Ember;
 
 moduleForComponent(
   'infinite-scroll/scroll-container',

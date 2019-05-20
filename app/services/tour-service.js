@@ -1,16 +1,16 @@
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+import Service, { inject as service } from '@ember/service';
+import { run } from '@ember/runloop';
 import StorageUtils from 'textup-frontend/utils/storage';
 
-const { computed, run } = Ember;
-
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  storageService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  storageService: service(),
 
   // Properties
   // ----------
 
-  isTourOngoing: computed.readOnly('_tourManager.isOngoing'),
+  isTourOngoing: readOnly('_tourManager.isOngoing'),
 
   // Methods
   // -------

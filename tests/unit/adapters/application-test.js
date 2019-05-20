@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -56,7 +56,7 @@ test('adding team id as query param to url', function(assert) {
 
   assert.equal(obj._tryAddTeamId(null), null);
 
-  this.stateService.setProperties({ ownerAsTeam: Ember.Object.create({ id: null }) });
+  this.stateService.setProperties({ ownerAsTeam: EmberObject.create({ id: null }) });
 
   assert.equal(obj._tryAddTeamId(url), url);
 

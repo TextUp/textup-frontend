@@ -1,6 +1,9 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import FileUtils from 'textup-frontend/utils/file';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import Location from 'textup-frontend/models/location';
@@ -12,8 +15,6 @@ import sinon from 'sinon';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
-
-const { typeOf, run } = Ember;
 
 moduleFor('service:record-item-service', 'Unit | Service | record item service', {
   needs: [
@@ -39,15 +40,15 @@ moduleFor('service:record-item-service', 'Unit | Service | record item service',
   beforeEach() {
     AliasModelNameInitializer.aliasModelName();
 
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:dataService', Ember.Service);
+    this.register('service:dataService', Service);
     this.inject.service('dataService');
-    this.register('service:renewTokenService', Ember.Service);
+    this.register('service:renewTokenService', Service);
     this.inject.service('renewTokenService');
-    this.register('service:stateService', Ember.Service);
+    this.register('service:stateService', Service);
     this.inject.service('stateService');
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
 
     this.inject.service('store');
@@ -157,7 +158,7 @@ test('adding location to note', function(assert) {
   run(() => {
     const service = this.subject(),
       lBaseline = this.store.peekAll('location').get('length'),
-      mockNote = Ember.Object.create();
+      mockNote = EmberObject.create();
 
     service.addLocationToNote(mockNote);
 
@@ -170,7 +171,7 @@ test('removing location from note', function(assert) {
   run(() => {
     const service = this.subject(),
       rollbackSpy = sinon.spy(),
-      mockNote = Ember.Object.create({
+      mockNote = EmberObject.create({
         location: { content: { rollbackAttributes: rollbackSpy } },
       });
 

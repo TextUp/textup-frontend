@@ -1,11 +1,13 @@
+import { computed, defineProperty } from '@ember/object';
+import { on } from '@ember/object/evented';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import MF from 'ember-data-model-fragments';
-import { stringToIntervals, intervalsToString } from 'textup-frontend/utils/schedule';
-
-const { defineProperty, computed, on } = Ember;
+import {
+  stringToIntervals,
+  intervalsToString
+} from 'textup-frontend/utils/schedule';
 
 export default MF.Fragment.extend(Dirtiable, {
   // this is a read-only value that represents the integrated value

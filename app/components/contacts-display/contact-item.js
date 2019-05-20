@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { ContactObject } from 'textup-frontend/objects/contact-object';
 
-const { tryInvoke, computed, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     doRegister: PropTypes.func,
     data: PropTypes.instanceOf(ContactObject),

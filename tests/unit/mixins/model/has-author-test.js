@@ -1,5 +1,6 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelHasAuthorMixin from 'textup-frontend/mixins/model/has-author';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -13,8 +14,8 @@ moduleFor('mixin:model/has-author', 'Unit | Mixin | model/has-author', {
     // Once our model is registered, we create it via the store in the
     // usual way and return it. Since createRecord is async, we need
     // an Ember.run.
-    return Ember.run(() => {
-      const store = Ember.getOwner(this).lookup('service:store');
+    return run(() => {
+      const store = getOwner(this).lookup('service:store');
       return store.createRecord('has-author-mixin-model');
     });
   }
@@ -31,7 +32,7 @@ test('properties are present', function(assert) {
   assert.equal(obj1.get('authorId'), null);
   assert.equal(obj1.get('authorType'), null);
 
-  Ember.run(() => {
+  run(() => {
     obj1.setProperties(data);
     assert.equal(obj1.get('authorName'), data.authorName);
     assert.equal(obj1.get('authorId'), data.authorId);

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import SerializerOwnsRecordItemsMixin from 'textup-frontend/mixins/serializer/owns-record-items';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | serializer/owns record items');
 
 test('it works', function(assert) {
-  const SerializerOwnsRecordItemsObject = Ember.Object.extend(SerializerOwnsRecordItemsMixin);
+  const SerializerOwnsRecordItemsObject = EmberObject.extend(SerializerOwnsRecordItemsMixin);
   const obj = SerializerOwnsRecordItemsObject.create();
 
   assert.equal(

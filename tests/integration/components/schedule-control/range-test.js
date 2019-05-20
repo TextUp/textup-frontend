@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import config from '../../../../config/environment';
@@ -196,6 +196,6 @@ function selectTime(component, assert, timeIndex, choiceSelector) {
       .$('input')
       .eq(timeIndex)
       .attr('aria-owns');
-    Ember.$(`${config.APP.rootElement} #${ownsId} ${choiceSelector}`).click();
+    $(`${config.APP.rootElement} #${ownsId} ${choiceSelector}`).click();
   }, 500);
 }

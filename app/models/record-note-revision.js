@@ -1,9 +1,7 @@
+import { computed } from '@ember/object';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
-
-const { computed } = Ember;
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
   // Overrides

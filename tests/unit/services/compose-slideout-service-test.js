@@ -1,5 +1,6 @@
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
@@ -7,7 +8,7 @@ import { moduleFor, test } from 'ember-qunit';
 moduleFor('service:compose-slideout-service', 'Unit | Service | compose slideout service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
   },
 });
@@ -31,7 +32,7 @@ test('searching for recipients', function(assert) {
     done = assert.async(),
     searchVal = Math.random(),
     val1 = Math.random(),
-    resultObj = Ember.Object.create({ toArray: sinon.stub().returns([val1]) });
+    resultObj = EmberObject.create({ toArray: sinon.stub().returns([val1]) });
 
   this.store.setProperties({ query: sinon.stub().resolves(resultObj) });
 

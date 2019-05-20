@@ -1,13 +1,15 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Evented from '@ember/object/evented';
+import EmberObject, { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import { getAudioStream } from 'textup-frontend/utils/audio';
 
 // Borrows heavily from: https://github.com/kaliatech/web-audio-recording-tests/blob/master/src/shared/RecorderService.js
 
-const { computed, run, tryInvoke } = Ember,
-  SCRIPT_PROCESSOR_BUFFER_SIZE = 2048,
-  NUM_CHANNELS = 1;
+const SCRIPT_PROCESSOR_BUFFER_SIZE = 2048, NUM_CHANNELS = 1;
 
-export default Ember.Object.extend(Ember.Evented, {
+export default EmberObject.extend(Evented, {
   willDestroy() {
     this._super(...arguments);
     this._cleanup(); // ensure proper cleanup
@@ -65,7 +67,7 @@ export default Ember.Object.extend(Ember.Evented, {
   _isRecording: computed('_mediaRecorder', '_scriptProcessor', function() {
     return this.get('_mediaRecorder') || this.get('_scriptProcessor');
   }),
-  _supportsMediaRecorder: computed.notEmpty('window.MediaRecorder'),
+  _supportsMediaRecorder: notEmpty('window.MediaRecorder'),
 
   // Internal methods
   // ----------------

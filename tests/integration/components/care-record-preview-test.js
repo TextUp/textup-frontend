@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
-
-const { run } = Ember;
 
 moduleForComponent('care-record-preview', 'Integration | Component | care record preview', {
   integration: true,

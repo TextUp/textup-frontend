@@ -1,13 +1,13 @@
+import Service, { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import RSVP from 'rsvp';
 import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, RSVP } = Ember;
-
-export default Ember.Service.extend({
-  requestService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  requestService: service(),
+  store: service(),
 
   // Properties
   // ----------

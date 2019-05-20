@@ -1,10 +1,12 @@
+import { getOwner } from '@ember/application';
+import Route from '@ember/routing/route';
+import Service from '@ember/service';
+import RSVP from 'rsvp';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import RouteSupportsAvailabilitySlideoutMixin from 'textup-frontend/mixins/route/supports-availability-slideout';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-
-const { RSVP, typeOf } = Ember;
 
 let startCompleteTask;
 
@@ -20,17 +22,17 @@ moduleFor(
     ],
     beforeEach() {
       startCompleteTask = sinon.spy();
-      this.register('service:tutorial-service', Ember.Service.extend({ startCompleteTask }));
+      this.register('service:tutorial-service', Service.extend({ startCompleteTask }));
       this.register(
         'route:supports-availability-slideout',
-        Ember.Route.extend(RouteSupportsAvailabilitySlideoutMixin)
+        Route.extend(RouteSupportsAvailabilitySlideoutMixin)
       );
     },
   }
 );
 
 test('starting slideout', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout');
+  const route = getOwner(this).lookup('route:supports-availability-slideout');
   route.setProperties({ routeName: Math.random(), send: sinon.spy() });
 
   route.actions.startAvailabilitySlideout.call(route);
@@ -43,7 +45,7 @@ test('starting slideout', function(assert) {
 });
 
 test('cancelling slideout', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout');
+  const route = getOwner(this).lookup('route:supports-availability-slideout');
   route.setProperties({
     currentModel: { rollbackAttributes: sinon.spy() },
     authService: { authUser: { rollbackAttributes: sinon.spy() } },
@@ -60,7 +62,7 @@ test('cancelling slideout', function(assert) {
 
 test('finishing slideout', function(assert) {
   const done = assert.async(),
-    route = Ember.getOwner(this).lookup('route:supports-availability-slideout');
+    route = getOwner(this).lookup('route:supports-availability-slideout');
   route.setProperties({
     dataService: { persist: sinon.stub().returns(new RSVP.Promise(resolve => resolve())) },
     currentModel: sinon.spy(),
@@ -86,7 +88,7 @@ test('finishing slideout', function(assert) {
 });
 
 test('delegating finishing recording greeting', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
+  const route = getOwner(this).lookup('route:supports-availability-slideout'),
     phoneSpy = sinon.spy(),
     input2 = Math.random(),
     input3 = Math.random();
@@ -102,7 +104,7 @@ test('delegating finishing recording greeting', function(assert) {
 });
 
 test('delegating requesting voicemail greeting call', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-availability-slideout'),
+  const route = getOwner(this).lookup('route:supports-availability-slideout'),
     currentModelSpy = sinon.spy(),
     input2 = Math.random();
   route.setProperties({

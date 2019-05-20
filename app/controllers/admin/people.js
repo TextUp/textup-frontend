@@ -1,19 +1,23 @@
+import { alias } from '@ember/object/computed';
+import { Promise } from 'rsvp';
+import { on } from '@ember/object/evented';
+import { inject as service } from '@ember/service';
+import Controller, { inject as controller } from '@ember/controller';
+import { computed, observer } from '@ember/object';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { computed, run } = Ember;
+export default Controller.extend({
+  requestService: service(),
+  stateService: service(),
 
-export default Ember.Controller.extend({
-  requestService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-
-  adminController: Ember.inject.controller('admin'),
+  adminController: controller('admin'),
 
   queryParams: ['filter'],
-  filter: computed.alias('adminController.filter'),
+  filter: alias('adminController.filter'),
 
   _peopleList: null,
-  people: computed.alias('adminController.people'),
+  people: alias('adminController.people'),
   numPeople: null,
   team: null,
 
@@ -27,9 +31,9 @@ export default Ember.Controller.extend({
   // Observers
   // ---------
 
-  filterPeopleByStatus: Ember.on(
+  filterPeopleByStatus: on(
     'init',
-    Ember.observer('people.[]', function() {
+    observer('people.[]', function() {
       const people = this.get('people');
       if (!people) {
         return;
@@ -60,7 +64,7 @@ export default Ember.Controller.extend({
   },
 
   _loadMore(offset = 0) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const org = this.get('stateService.ownerAsOrg'),
         team = this.get('team');
       this.get('requestService')

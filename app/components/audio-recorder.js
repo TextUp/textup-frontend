@@ -1,12 +1,16 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import AudioRecording from 'textup-frontend/objects/audio-recording';
-import { isRecordingSupported, blobToBase64String } from 'textup-frontend/utils/audio';
+import {
+  isRecordingSupported,
+  blobToBase64String
+} from 'textup-frontend/utils/audio';
 
-const { computed, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     onError: PropTypes.func,
     onFinish: PropTypes.func,

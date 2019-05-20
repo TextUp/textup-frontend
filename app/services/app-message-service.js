@@ -1,9 +1,8 @@
+import Service from '@ember/service';
+import { get, computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 
-const { computed, get } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   // Properties
   // ----------
 

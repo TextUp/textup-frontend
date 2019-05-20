@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
-  stateService: Ember.inject.service(),
+export default Route.extend({
+  stateService: service(),
 
   queryParams: { filter: { refreshModel: true } },
 

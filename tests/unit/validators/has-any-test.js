@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import { set } from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 import HasAnyValidator from 'textup-frontend/validators/has-any';
-
-const { typeOf, set } = Ember;
 
 moduleFor('validator:has-any', 'Unit | Validator | has-any', {
   needs: ['validator:messages'],

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -34,11 +34,11 @@ test('calls the method on complete', function(assert) {
   `);
   assert.ok(doRegister.calledOnce);
 
-  Ember.$('.task-step__button--skip')
+  $('.task-step__button--skip')
     .first()
     .click();
   assert.ok(onFinishCompleteTask.calledWith('addContact'));
-  Ember.$('.task-manager__title__button:eq(1)')
+  $('.task-manager__title__button:eq(1)')
     .first()
     .click();
   assert.ok(onClose.calledOnce);

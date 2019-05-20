@@ -1,5 +1,6 @@
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import wait from 'ember-test-helpers/wait';
@@ -9,8 +10,6 @@ import {
   mockValidMediaImage,
   mockValidMediaAudio,
 } from 'textup-frontend/tests/helpers/utilities';
-
-const { typeOf } = Ember;
 
 moduleForComponent('image-stack', 'Integration | Component | image stack', {
   integration: true,
@@ -146,15 +145,15 @@ test('opening gallery when selecting item on top of stack', function(assert) {
 
   assert.ok(this.$('.image-stack').length, 'component did render');
   assert.equal(this.$(`.${itemClass}`).length, 1, 'nested item did render');
-  assert.equal(Ember.$('.pswp').length, 1, 'gallery did render');
-  assert.notOk(Ember.$('.pswp--open').length, 'gallery is not open');
+  assert.equal($('.pswp').length, 1, 'gallery did render');
+  assert.notOk($('.pswp--open').length, 'gallery is not open');
 
   this.$(`.${itemClass}`)
     .first()
     .triggerHandler('click');
 
   wait().then(() => {
-    assert.equal(Ember.$('.pswp--open').length, 1, 'gallery is open');
+    assert.equal($('.pswp--open').length, 1, 'gallery is open');
 
     done();
   });

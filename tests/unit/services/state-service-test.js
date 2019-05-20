@@ -1,20 +1,19 @@
+import Service from '@ember/service';
+import { run } from '@ember/runloop';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import wait from 'ember-test-helpers/wait';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember;
-
 moduleFor('service:state-service', 'Unit | Service | state service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:router', Ember.Service);
+    this.register('service:router', Service);
     this.inject.service('router');
-    this.register('service:storageService', Ember.Service);
+    this.register('service:storageService', Service);
     this.inject.service('storageService');
   },
 });

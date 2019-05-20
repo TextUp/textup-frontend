@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { get } from '@ember/object';
+import { typeOf, tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { get, tryInvoke, typeOf } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     onAction: PropTypes.func.isRequired,
     error: PropTypes.bool,

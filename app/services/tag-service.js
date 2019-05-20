@@ -1,13 +1,13 @@
+import Service, { inject as service } from '@ember/service';
+import RSVP, { all } from 'rsvp';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { RSVP, run } = Ember;
-
-export default Ember.Service.extend({
-  dataService: Ember.inject.service(),
-  requestService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  dataService: service(),
+  requestService: service(),
+  stateService: service(),
+  store: service(),
 
   createNew() {
     return this.get('store').createRecord(Constants.MODEL.TAG, {
@@ -35,7 +35,7 @@ export default Ember.Service.extend({
     return new RSVP.Promise((resolve, reject) => {
       run.later(() => {
         this.get('requestService')
-          .handleIfError(Ember.RSVP.all(contacts.map(contact => contact.reload())))
+          .handleIfError(all(contacts.map(contact => contact.reload())))
           .then(resolve, reject);
       }, 1000);
     });

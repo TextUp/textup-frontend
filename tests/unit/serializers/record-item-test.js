@@ -1,11 +1,11 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
+import { typeOf, isPresent } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 import { tryNormalizePolymorphicType } from 'textup-frontend/serializers/record-item';
-
-const { run, isPresent, typeOf } = Ember;
 
 moduleForModel('record-item', 'Unit | Serializer | record item', {
   needs: [
@@ -46,7 +46,7 @@ test('serializing with media actions', function(assert) {
 
     let serialized = obj.serialize();
 
-    assert.notOk(Ember.isPresent(serialized.doMediaActions), 'no media actions');
+    assert.notOk(isPresent(serialized.doMediaActions), 'no media actions');
 
     media.addImage('mimeType', 'data', 88, 99);
     media.removeElement('id to remove');
@@ -58,7 +58,7 @@ test('serializing with media actions', function(assert) {
 });
 
 test('getting model name from payload', function(assert) {
-  const serializer = Ember.getOwner(this).lookup('serializer:record-item');
+  const serializer = getOwner(this).lookup('serializer:record-item');
 
   assert.equal(serializer.modelNameFromPayloadKey('records'), 'record-item');
   assert.equal(serializer.modelNameFromPayloadKey('record'), 'record-item');

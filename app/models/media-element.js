@@ -1,10 +1,10 @@
+import { readOnly } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { isPresent } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import MF from 'ember-data-model-fragments';
-
-const { computed, isPresent } = Ember;
 
 export default MF.Fragment.extend(Dirtiable, {
   // Properties
@@ -12,7 +12,7 @@ export default MF.Fragment.extend(Dirtiable, {
 
   [Constants.PROP_NAME.MEDIA_ID]: DS.attr('string'),
   whenCreated: DS.attr('date', { defaultValue: () => new Date() }),
-  versions: computed.readOnly('_versions'),
+  versions: readOnly('_versions'),
 
   isImage: computed('_versions.[]', function() {
     return this.get('_versions').any(vers => vers.get('type').includes('image'));

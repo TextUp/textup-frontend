@@ -1,13 +1,13 @@
+import $ from 'jquery';
+import Service from '@ember/service';
+import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { RSVP } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   isValid(captchaKey) {
     return new RSVP.Promise((resolve, reject) => {
-      Ember.$.ajax({
+      $.ajax({
         type: Constants.REQUEST_METHOD.POST,
         url: config.captcha.endpoint,
         contentType: Constants.MIME_TYPE.JSON,

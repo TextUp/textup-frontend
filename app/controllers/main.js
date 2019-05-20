@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-const { computed } = Ember;
-
-export default Ember.Controller.extend({
-  stateService: Ember.inject.service(),
+export default Controller.extend({
+  stateService: service(),
 
   // displaying active menu items
-  filter: computed.alias('stateService.owner.phone.content.contactsFilter'),
+  filter: alias('stateService.owner.phone.content.contactsFilter'),
 });

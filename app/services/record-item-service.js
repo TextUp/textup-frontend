@@ -1,23 +1,26 @@
+import $ from 'jquery';
+import Service, { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { isArray } from '@ember/array';
+import { get } from '@ember/object';
+import RSVP from 'rsvp';
 import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import FileUtils from 'textup-frontend/utils/file';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import moment from 'moment';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { assign, isArray, get, RSVP } = Ember;
-
 export const FALLBACK_FILE_NAME = 'textup-export.pdf';
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
-  renewTokenService: Ember.inject.service(),
-  requestService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  dataService: service(),
+  renewTokenService: service(),
+  requestService: service(),
+  stateService: service(),
+  store: service(),
 
   loadRecordItems(model, { refresh } = { refresh: false }) {
     return new RSVP.Promise((resolve, reject) => {
@@ -56,7 +59,7 @@ export default Ember.Service.extend({
       // For browser support: https://caniuse.com/#feat=xhr2
       // [NOTE] not using jQuery means that we will need to manually add in renew token logic
       var xhr = new XMLHttpRequest();
-      xhr.open(Constants.REQUEST_METHOD.GET, `${config.host}/v1/records?${Ember.$.param(query)}`);
+      xhr.open(Constants.REQUEST_METHOD.GET, `${config.host}/v1/records?${$.param(query)}`);
       xhr.responseType = 'arraybuffer';
       xhr.setRequestHeader(Constants.REQUEST_HEADER.CONTENT_TYPE, Constants.MIME_TYPE.PDF);
       xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));

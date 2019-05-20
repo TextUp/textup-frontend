@@ -1,6 +1,7 @@
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   setupController(controller) {
     this._super(...arguments);
     const signupController = this.controllerFor('signup');
@@ -13,7 +14,7 @@ export default Ember.Route.extend({
       controller.set('org', newOrg);
       // set next so that setting select is not overwritten
       // by the setup process, which sets selected to null
-      Ember.run.next(this, function() {
+      next(this, function() {
         signupController.set('selected', newOrg);
       });
     }

@@ -1,10 +1,9 @@
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForModel('future-message', 'Unit | Model | future message', {
   needs: [

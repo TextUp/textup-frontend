@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -160,7 +160,7 @@ test('triggering send from action button', function(assert) {
 test('send handler returns outcome', function(assert) {
   const onSend = sinon.stub(),
     randVal = Math.random(),
-    obj = Ember.getOwner(this)
+    obj = getOwner(this)
       .factoryFor('component:record-actions-control/compose-text')
       .create({ onSend });
   onSend.callsFake(() => randVal);

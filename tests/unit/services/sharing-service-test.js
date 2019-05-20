@@ -1,14 +1,14 @@
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:sharing-service', 'Unit | Service | sharing service', {
   beforeEach() {
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
-    this.register('service:store', Ember.Service);
+    this.register('service:store', Service);
     this.inject.service('store');
   },
 });

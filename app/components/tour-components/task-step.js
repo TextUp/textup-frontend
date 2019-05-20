@@ -1,18 +1,20 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import $ from 'jquery';
+import { tryInvoke } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
-import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-
-const { computed, run, $, tryInvoke } = Ember;
 
 export const PULSING_CLASS = 'task-element__should-animate-pulse';
 export const TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS = 2000;
 export const SHOW_ME_START_DELAY_IN_MS = 200;
 export const SHOW_ME_BETWEEN_STEPS_DELAY_IN_MS = 1500;
 
-export default Ember.Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
+export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
   propTypes: {
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,

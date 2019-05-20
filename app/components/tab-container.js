@@ -1,10 +1,11 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { isPresent, tryInvoke } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run, tryInvoke, isPresent } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     startIndex: PropTypes.number,
     doRegister: PropTypes.func,

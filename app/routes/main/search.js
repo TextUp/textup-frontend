@@ -1,16 +1,20 @@
+import { match } from '@ember/object/computed';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { isPresent, isBlank } from '@ember/utils';
+import { run } from '@ember/runloop';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import Ember from 'ember';
 
-const { isBlank, isPresent, computed, run } = Ember;
-
-export default Ember.Route.extend({
-  requestService: Ember.inject.service(),
-  storageService: Ember.inject.service(),
+export default Route.extend({
+  requestService: service(),
+  storageService: service(),
 
   queryParams: { searchQuery: { refreshModel: true } },
 
   _prevUrl: null,
-  _prevUrlIsSearch: computed.match('_prevUrl', /main\/.*\/search/),
+  _prevUrlIsSearch: match('_prevUrl', /main\/.*\/search/),
 
   activate() {
     this.set('_prevUrl', this.get('storageService').getItem('currentUrl'));
@@ -23,7 +27,7 @@ export default Ember.Route.extend({
     didTransition() {
       this._super(...arguments);
       if (this.controller.get('searchQueryIsEmpty')) {
-        run.scheduleOnce('afterRender', () => Ember.$('.search-input').focus());
+        run.scheduleOnce('afterRender', () => $('.search-input').focus());
       }
       this._setupSearch();
       return true;
@@ -76,7 +80,7 @@ export default Ember.Route.extend({
   },
 
   _doSearch() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const search = this.controller.get('searchQuery'),
         offset = this.controller.get('searchResults.length');
       if (isBlank(search)) {

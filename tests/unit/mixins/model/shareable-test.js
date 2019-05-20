@@ -1,10 +1,8 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelShareableMixin from 'textup-frontend/mixins/model/shareable';
 import { moduleFor, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleFor('mixin:model/shareable', 'Unit | Mixin | model/shareable', {
   beforeEach() {

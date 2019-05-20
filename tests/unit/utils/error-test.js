@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import ErrorUtils from 'textup-frontend/utils/error';
 import { module, test } from 'qunit';
 
@@ -90,7 +90,7 @@ test('checking status of response', function(assert) {
 
 test('extracting error mssages from response', function(assert) {
   const val1 = 'hi',
-    val2 = Ember.Object.create();
+    val2 = EmberObject.create();
 
   assert.deepEqual(ErrorUtils.tryExtractResponseMessages(), []);
   assert.deepEqual(

@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { RSVP } = Ember;
 
 moduleForComponent('action-button', 'Integration | Component | action button', {
   integration: true,

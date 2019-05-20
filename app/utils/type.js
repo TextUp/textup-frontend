@@ -1,7 +1,6 @@
+import { isPresent, typeOf } from '@ember/utils';
+import { get } from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
-
-const { typeOf, isPresent, get } = Ember;
 
 // Can't get access to the Transition class declaration so cannot use `detect`
 export function isTransition(obj) {

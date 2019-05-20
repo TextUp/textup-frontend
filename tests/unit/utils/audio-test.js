@@ -1,9 +1,7 @@
+import { typeOf } from '@ember/utils';
 import AudioUtils from 'textup-frontend/utils/audio';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
-
-const { typeOf } = Ember;
 
 module('Unit | Utility | audio');
 

@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Mixin from '@ember/object/mixin';
 
-export default Ember.Mixin.create({
-  isDirty: Ember.computed('hasDirtyAttributes', 'hasManualChanges', function() {
+export default Mixin.create({
+  isDirty: computed('hasDirtyAttributes', 'hasManualChanges', function() {
     return !!this.get('hasDirtyAttributes') || !!this.get('hasManualChanges');
   })
 });

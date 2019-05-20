@@ -1,11 +1,10 @@
-import Ember from 'ember';
+import { inject as controller } from '@ember/controller';
+import { alias, filterBy } from '@ember/object/computed';
 import MainContactsManyController from 'textup-frontend/controllers/main/contacts/many';
-
-const { filterBy, alias } = Ember.computed;
 
 export default MainContactsManyController.extend({
   isSearch: true,
-  searchController: Ember.inject.controller('main.search'),
+  searchController: controller('main.search'),
 
   selected: filterBy('searchController.searchResults', 'isSelected', true),
   allContacts: alias('searchController.searchResults')

@@ -1,18 +1,19 @@
+import $ from 'jquery';
+import Component from '@ember/component';
+import { getOwner } from '@ember/application';
+import { tryInvoke, typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { typeOf, tryInvoke } = Ember;
-
 moduleForComponent('slideout-pane', 'Integration | Component | slideout pane', {
   integration: true,
   beforeEach() {
-    Ember.getOwner(this).register(
+    getOwner(this).register(
       'component:slideout-pane-test',
-      Ember.Component.extend({
+      Component.extend({
         init() {
           this._super(...arguments);
           tryInvoke(this, 'doRegister', [this]);
@@ -340,7 +341,7 @@ test('forcing slideout to remain open even when trying to close', function(asser
   const publicAPI = doRegister.firstCall.args[0];
   assert.equal(publicAPI.isOpen, true, 'is open');
 
-  Ember.$('.test-external-item').click();
+  $('.test-external-item').click();
   wait()
     .then(() => {
       assert.ok(this.$('.slideout-pane--open').length, 'is open');
@@ -353,7 +354,7 @@ test('forcing slideout to remain open even when trying to close', function(asser
     .then(() => {
       assert.notOk(this.$('.slideout-pane--keep-open').length, 'no longer force keep open');
 
-      Ember.$('.test-external-item').click();
+      $('.test-external-item').click();
       return wait();
     })
     .then(() => {

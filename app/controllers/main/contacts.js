@@ -1,21 +1,23 @@
+import { alias } from '@ember/object/computed';
+import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import TextUtils from 'textup-frontend/utils/text';
 import TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
 
-const { computed } = Ember;
-
-export default Ember.Controller.extend({
-  requestService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-  tutorialService: Ember.inject.service(),
+export default Controller.extend({
+  requestService: service(),
+  stateService: service(),
+  tutorialService: service(),
 
   queryParams: ['filter'],
   filter: null,
   tag: null,
   contactsList: null,
 
-  phone: computed.alias('stateService.owner.phone.content'),
+  phone: alias('stateService.owner.phone.content'),
   filterName: computed('phone.contactsFilter', function() {
     return TextUtils.capitalize(this.get('phone.contactsFilter') || Constants.CONTACT.FILTER.ALL);
   }),
@@ -43,7 +45,7 @@ export default Ember.Controller.extend({
   },
 
   doLoadMoreContacts() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const tag = this.get('tag'),
         phone = this.get('phone');
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner

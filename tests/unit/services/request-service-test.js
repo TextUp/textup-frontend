@@ -1,19 +1,20 @@
+import $ from 'jquery';
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import ErrorUtils from 'textup-frontend/utils/error';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
-const { typeOf, RSVP } = Ember;
-
 moduleFor('service:request-service', 'Unit | Service | request service', {
   needs: ['service:analytics'],
   beforeEach() {
-    this.register('service:authService', Ember.Service);
+    this.register('service:authService', Service);
     this.inject.service('authService');
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
-    this.register('service:router', Ember.Service);
+    this.register('service:router', Service);
     this.inject.service('router');
   },
 });
@@ -22,7 +23,7 @@ test('making an authenticated request', function(assert) {
   const service = this.subject(),
     done = assert.async(),
     authHeader = Math.random(),
-    ajax = sinon.stub(Ember.$, 'ajax').resolves(),
+    ajax = sinon.stub($, 'ajax').resolves(),
     setRequestHeader = sinon.spy(),
     key = Math.random(),
     val = Math.random();

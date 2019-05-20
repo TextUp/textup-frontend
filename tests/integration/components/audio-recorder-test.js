@@ -1,12 +1,11 @@
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import AudioUtils from 'textup-frontend/utils/audio';
 import AudioRecording from 'textup-frontend/objects/audio-recording';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf, run } = Ember;
 
 moduleForComponent('audio-recorder', 'Integration | Component | audio recorder', {
   integration: true,

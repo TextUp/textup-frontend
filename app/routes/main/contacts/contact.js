@@ -1,5 +1,7 @@
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import ManagesCareRecord from 'textup-frontend/mixins/route/manages-care-record';
 import ManagesContactAttributes from 'textup-frontend/mixins/route/manages-contact-attributes';
 import ManagesExistingContact from 'textup-frontend/mixins/route/manages-existing-contact';
@@ -9,9 +11,7 @@ import ManagesRecordNotes from 'textup-frontend/mixins/route/manages-record-note
 import ManagesTagMembership from 'textup-frontend/mixins/route/manages-tag-membership';
 import SupportsExportSlideout from 'textup-frontend/mixins/route/supports-export-slideout';
 
-const { computed } = Ember;
-
-export default Ember.Route.extend(
+export default Route.extend(
   ManagesCareRecord,
   ManagesContactAttributes,
   ManagesExistingContact,
@@ -21,7 +21,7 @@ export default Ember.Route.extend(
   ManagesTagMembership,
   SupportsExportSlideout,
   {
-    authService: Ember.inject.service(),
+    authService: service(),
 
     templateName: 'main/contacts/contact',
     backRouteName: 'main.contacts',

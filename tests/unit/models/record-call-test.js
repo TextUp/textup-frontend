@@ -1,9 +1,7 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('record-call', 'Unit | Model | record call', {
   needs: ['model:contact', 'model:tag', 'model:media', 'validator:inclusion', 'validator:has-any'],

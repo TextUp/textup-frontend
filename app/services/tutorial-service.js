@@ -1,18 +1,19 @@
+import { getOwner } from '@ember/application';
+import Service, { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { set, computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TaskData from 'textup-frontend/data/task-data';
-
-const { assign, computed, set } = Ember;
 
 export const TASK_ID_KEY = 'id';
 export const TASK_STATUS_KEY = 'status';
 export const TASK_STEP_NUMBER_KEY = 'stepNumber';
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
-  storageService: Ember.inject.service(),
+export default Service.extend({
+  authService: service(),
+  notifications: service('notification-messages-service'),
+  storageService: service(),
 
   // Properties
   // ----------
@@ -111,7 +112,7 @@ export default Ember.Service.extend({
   },
 
   _openSupportSlideout() {
-    Ember.getOwner(this)
+    getOwner(this)
       .lookup('route:main')
       .send('startFeedbackSlideout');
     this.get('notifications').clearAll();

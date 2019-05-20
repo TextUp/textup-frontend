@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
+import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 
-const { computed, tryInvoke, run } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
+export default Component.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
     doRegister: PropTypes.func,
     elementToHighlight: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
@@ -53,7 +55,7 @@ export default Ember.Component.extend(PropTypesMixin, HasWormhole, {
       return;
     }
     run.join(() => {
-      const elementToHighlight = Ember.$(this.get('elementToHighlight'))[0];
+      const elementToHighlight = $(this.get('elementToHighlight'))[0];
       if (elementToHighlight) {
         this.set('_elementDimensions', elementToHighlight.getBoundingClientRect());
       }

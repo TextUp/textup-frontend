@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import TypeUtils from 'textup-frontend/utils/type';
 
 export function controllerNameForRoute(route) {
-  return Ember.Route.detectInstance(route)
+  return Route.detectInstance(route)
     ? route.get('controllerName') || route.get('routeName')
     : '';
 }

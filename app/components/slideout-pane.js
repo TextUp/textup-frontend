@@ -1,13 +1,15 @@
+import Component from '@ember/component';
+import $ from 'jquery';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke, isNone } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { $, isNone, computed, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
+export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   propTypes: {
     onClose: PropTypes.func.isRequired,
     doRegister: PropTypes.func,

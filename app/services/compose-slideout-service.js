@@ -1,11 +1,11 @@
+import Service, { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 
-const { isBlank, RSVP } = Ember;
-
-export default Ember.Service.extend({
-  store: Ember.inject.service(),
+export default Service.extend({
+  store: service(),
 
   doSearch(search) {
     return new RSVP.Promise((resolve, reject) => {

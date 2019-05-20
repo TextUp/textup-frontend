@@ -1,10 +1,10 @@
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     text: PropTypes.string.isRequired,
     color: PropTypes.string,
@@ -21,6 +21,6 @@ export default Ember.Component.extend(PropTypesMixin, {
   // -------------------
 
   _style: computed('color', function() {
-    return Ember.String.htmlSafe(`border-color: ${this.get('color')};`);
+    return htmlSafe(`border-color: ${this.get('color')};`);
   }),
 });

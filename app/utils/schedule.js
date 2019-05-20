@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
 
 // Formats relate to each other as follows:
 // Api Format (array of strings)
@@ -11,7 +11,7 @@ const betweenIntervalsDelimiter = ';',
   insideIntervalDelimiter = ':';
 
 function apiFormatToString(apiFormat) {
-  if (!Ember.isArray(apiFormat)) {
+  if (!isArray(apiFormat)) {
     return apiFormat;
   }
   return apiFormat.join(betweenIntervalsDelimiter);
@@ -27,7 +27,7 @@ function stringToIntervals(string) {
 }
 
 function intervalsToString(intervals) {
-  if (!Ember.isArray(intervals)) {
+  if (!isArray(intervals)) {
     return intervals;
   }
   return apiFormatToString(intervals.map(intervalToApiInterval));
@@ -46,7 +46,7 @@ function apiIntervalToInterval(apiInterval) {
 
 function intervalToApiInterval(interval) {
   // interval is an array
-  return Ember.isArray(interval)
+  return isArray(interval)
     ? `${interval[0]}${insideIntervalDelimiter}${interval[1]}`
     : interval;
 }

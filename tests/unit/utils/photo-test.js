@@ -1,12 +1,14 @@
+import { getOwner } from '@ember/application';
+import RSVP from 'rsvp';
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PhotoUtils from 'textup-frontend/utils/photo';
 import PhotoCompressionUtils from 'textup-frontend/utils/photo/compression';
 import sinon from 'sinon';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
-const { RSVP, typeOf, run } = Ember;
 let compressionStub, dataUrlStub, loadImageStub;
 let compressionReturnVal, dataUrlReturnVal, loadImageReturnVal;
 
@@ -134,7 +136,7 @@ test('ensuring image dimensions a variety of inputs', function(assert) {
 });
 
 test('ensuring image dimensions for all with dimensions', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     done = assert.async();
 
   PhotoUtils.ensureImageDimensions([mockValidMediaImage(store), mockValidMediaImage(store)]).then(
@@ -149,7 +151,7 @@ test('ensuring image dimensions for all with dimensions', function(assert) {
 
 test('ensuring image dimensions for some without dimensions', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       done = assert.async(),
       withDimensions = [mockValidMediaImage(store), mockValidMediaImage(store)],
       numVersionsPerNoDimension = 3,
@@ -201,7 +203,7 @@ test('if should rebuild responsive gallery', function(assert) {
 
 test('selecting appropriate image version for display in gallery', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       fn = PhotoUtils.formatResponsiveMediaImageForGallery,
       el = store.createFragment('media-element', { [Constants.PROP_NAME.MEDIA_ID]: 'id' });
 

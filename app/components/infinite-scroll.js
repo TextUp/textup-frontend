@@ -1,12 +1,15 @@
+import { equal } from '@ember/object/computed';
+import Component from '@ember/component';
+import { typeOf, tryInvoke, isPresent } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { on } from '@ember/object/evented';
+import { observer, computed } from '@ember/object';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isPresent, tryInvoke, typeOf, run, on, observer } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     contentClass: PropTypes.string,
     data: PropTypes.oneOfType([PropTypes.null, PropTypes.array]),
@@ -58,7 +61,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   _scrollContainer: null,
   _pullToRefresh: null,
-  _isUp: computed.equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
+  _isUp: equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
   _publicAPI: computed(function() {
     return {
       isLoading: false,

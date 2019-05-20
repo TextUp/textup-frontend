@@ -1,7 +1,6 @@
+import { isArray } from '@ember/array';
+import { typeOf, isPresent } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
-import Ember from 'ember';
-
-const { isArray, isPresent, typeOf } = Ember;
 
 export const ERRORS_PROP_NAME = 'errors';
 export const STATUS_PROP_NAME = 'statusCode';

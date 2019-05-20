@@ -1,7 +1,12 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { next, scheduleOnce } from '@ember/runloop';
+import { htmlSafe } from '@ember/template';
+import { isPresent } from '@ember/utils';
+import { computed, get } from '@ember/object';
+import Component from '@ember/component';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tabindex: defaultIfAbsent(0),
   selectIndex: null,
   disabled: defaultIfAbsent(false),
@@ -20,22 +25,22 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  tabIndex: Ember.computed('tabindex', 'disabled', function() {
+  tabIndex: computed('tabindex', 'disabled', function() {
     return this.get('disabled') ? '' : this.get('tabindex');
   }),
-  style: Ember.computed('_selectedIndex', function() {
+  style: computed('_selectedIndex', function() {
     let style = '';
     const index = this.get('_selectedIndex');
-    if (Ember.isPresent(index)) {
+    if (isPresent(index)) {
       const selected = this.get('_items').objectAt(index);
       style = `color: ${selected.complement};`;
     }
-    return Ember.String.htmlSafe(style);
+    return htmlSafe(style);
   }),
-  $itemContainer: Ember.computed(function() {
+  $itemContainer: computed(function() {
     return this.$().children('.multi-toggle-items');
   }),
-  publicAPI: Ember.computed(function() {
+  publicAPI: computed(function() {
     return {
       currentIndex: null, // set during initialization
       actions: {
@@ -50,7 +55,7 @@ export default Ember.Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
-    Ember.run.next(this, this._setup.bind(this));
+    next(this, this._setup.bind(this));
   },
   // run initial set-up here because this is called after the DOM is complete and so we
   // do not need to rely on unreliable timer functions to appropriately sequence our calls
@@ -58,7 +63,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
     if (!this.get('$indicators')) {
       //need to schedule after render to next render to allow items to register
-      Ember.run.scheduleOnce('afterRender', this, function() {
+      scheduleOnce('afterRender', this, function() {
         const $indicators = this.build$Indicators(this.get('_items'));
         this.$('.multi-toggle-indicators').append($indicators);
         this.set('$indicators', $indicators);
@@ -95,7 +100,7 @@ export default Ember.Component.extend({
   // --------
 
   click(event) {
-    const $t = Ember.$(event.target);
+    const $t = $(event.target);
     if ($t.hasClass('left-toggle') || $t.closest('.left-toggle').length) {
       this.moveLeft();
     } else if ($t.hasClass('right-toggle') || $t.closest('.right-toggle').length) {
@@ -117,7 +122,7 @@ export default Ember.Component.extend({
 
   actions: {
     registerItem(item) {
-      Ember.run.scheduleOnce('afterRender', this, function() {
+      scheduleOnce('afterRender', this, function() {
         this.get('_items').pushObject(item);
       });
     },
@@ -133,8 +138,8 @@ export default Ember.Component.extend({
   },
   _buildIndicator(numItems, item) {
     const indClass = this.get('indicatorClass'),
-      color = Ember.get(item, 'complement');
-    return Ember.$(`<div class='${indClass}'
+      color = get(item, 'complement');
+    return $(`<div class='${indClass}'
       style='background-color:${color};
         width:${100 / numItems}%;'></div>`);
   },
@@ -162,7 +167,7 @@ export default Ember.Component.extend({
     const items = this.get('_items'),
       normalized = this._normalizeIndex(index),
       prevIndex = this.get('_selectedIndex'),
-      prev = Ember.isPresent(prevIndex) ? items.objectAt(prevIndex) : null,
+      prev = isPresent(prevIndex) ? items.objectAt(prevIndex) : null,
       next = items.objectAt(normalized),
       $indicators = this.get('$indicators');
     // update selection

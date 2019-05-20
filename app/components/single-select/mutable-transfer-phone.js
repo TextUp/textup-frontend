@@ -1,14 +1,16 @@
+import { Promise } from 'rsvp';
+import ArrayProxy from '@ember/array/proxy';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { computed, get } from '@ember/object';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import Organization from 'textup-frontend/models/organization';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { get, computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
-  requestService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, {
+  requestService: service(),
+  store: service(),
 
   propTypes: {
     data: PropTypes.EmberObject,
@@ -17,7 +19,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     selected: PropTypes.oneOfType([PropTypes.null, PropTypes.object]),
   },
   getDefaultProps() {
-    return { data: Ember.ArrayProxy.create() };
+    return { data: ArrayProxy.create() };
   },
 
   _dataExcludingSelf: computed('data.[]', 'phoneOwner', function() {
@@ -26,7 +28,7 @@ export default Ember.Component.extend(PropTypesMixin, {
 
   actions: {
     select(transferTarget) {
-      return new Ember.RSVP.Promise(resolve => {
+      return new Promise(resolve => {
         this.set('selected', transferTarget);
         resolve();
       });
@@ -35,7 +37,7 @@ export default Ember.Component.extend(PropTypesMixin, {
       this.set('selected', null);
     },
     search(val) {
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const orgId = this.get('org.id');
         this.get('requestService')
           .authRequest({

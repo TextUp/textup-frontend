@@ -1,5 +1,5 @@
+import { computed } from '@ember/object';
 import DS from 'ember-data';
-import Ember from 'ember';
 import Constants from 'textup-frontend/constants';
 
 // TODO test
@@ -8,7 +8,7 @@ import Constants from 'textup-frontend/constants';
 
 export function aliasModelName() {
   DS.Model.reopen({
-    [Constants.PROP_NAME.MODEL_NAME]: Ember.computed(function() {
+    [Constants.PROP_NAME.MODEL_NAME]: computed(function() {
       return this.get('constructor.modelName');
     }),
   });

@@ -1,13 +1,14 @@
+import Service from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { isPresent } from '@ember/utils';
+import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import Pusher from 'pusher-js';
-
-const { assign, isPresent, RSVP } = Ember;
 
 export const PUSHER_EVENT_FAIL = 'pusher:subscription_error';
 export const PUSHER_EVENT_SUCCESS = 'pusher:subscription_succeeded';
 
-export default Ember.Service.extend({
+export default Service.extend({
   willDestroy() {
     this._super(...arguments);
     this.disconnect();

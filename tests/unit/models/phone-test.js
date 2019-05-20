@@ -1,10 +1,8 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import moment from 'moment';
 import sinon from 'sinon';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('phone', 'Unit | Model | phone', {
   needs: [

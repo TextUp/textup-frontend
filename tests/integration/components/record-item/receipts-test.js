@@ -1,16 +1,17 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { phoneNumber } from 'textup-frontend/helpers/phone-number';
 
-const { run } = Ember;
 let store;
 
 moduleForComponent('record-item/receipts', 'Integration | Component | record item/receipts', {
   integration: true,
   beforeEach() {
-    store = Ember.getOwner(this).lookup('service:store');
+    store = getOwner(this).lookup('service:store');
   },
 });
 
@@ -231,7 +232,7 @@ test('viewing receipt details', function(assert) {
           'clicking on body does not close receipts'
         );
 
-        Ember.$().click();
+        $().click();
         return wait();
       })
       .then(() => {

@@ -1,6 +1,6 @@
+import { computed } from '@ember/object';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -17,7 +17,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // Computed properties
   // -------------------
 
-  latLng: Ember.computed('lat', 'lng', {
+  latLng: computed('lat', 'lng', {
     get() {
       return { lat: this.get('lat'), lng: this.get('lng') };
     },

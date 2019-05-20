@@ -1,8 +1,8 @@
+import { helper as buildHelper } from '@ember/component/helper';
 import TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
 
 export function typeIsNote([obj]) {
   return TypeUtils.isNote(obj);
 }
 
-export default Ember.Helper.helper(typeIsNote);
+export default buildHelper(typeIsNote);

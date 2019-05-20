@@ -1,16 +1,19 @@
+import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { typeOf } from '@ember/utils';
+import { copy } from '@ember/object/internals';
+import { get } from '@ember/object';
 import AppUtils from 'textup-frontend/utils/app';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { typeOf, copy, get } = Ember;
-
-export default Ember.Mixin.create({
-  composeSlideoutService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
-  recordItemService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-  tutorialService: Ember.inject.service(),
+export default Mixin.create({
+  composeSlideoutService: service(),
+  dataService: service(),
+  recordItemService: service(),
+  stateService: service(),
+  tutorialService: service(),
 
   setupController(controller) {
     this._super(...arguments);
@@ -67,7 +70,7 @@ export default Ember.Mixin.create({
       return this.get('composeSlideoutService').createRecipient(...arguments);
     },
     composeInsertRecipient(index, recipient) {
-      return new Ember.RSVP.Promise(resolve => {
+      return new Promise(resolve => {
         this.get('controller.composeRecipients').replace(index, 1, [recipient]);
         this._checkComposeHasRecipients();
         resolve();

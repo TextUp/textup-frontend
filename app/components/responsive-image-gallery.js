@@ -1,7 +1,10 @@
 /* global PhotoSwipe */
 /* global PhotoSwipeUI_Default */
 
-import Ember from 'ember';
+import { assign, merge } from '@ember/polyfills';
+
+import { computed } from '@ember/object';
+import { tryInvoke, isPresent } from '@ember/utils';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MediaElement from 'textup-frontend/models/media-element';
 import PhotoSwipeComponent from 'ember-photoswipe/components/photo-swipe';
@@ -11,8 +14,6 @@ import {
   shouldRebuildResponsiveGallery,
   formatResponsiveMediaImageForGallery,
 } from 'textup-frontend/utils/photo';
-
-const { computed, isPresent, tryInvoke } = Ember;
 
 export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
   propTypes: {
@@ -50,7 +51,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     }
     const pswpElement = this.get('_elementToWormhole'),
       options = this.get('options'),
-      assignedOptions = Ember.assign({}, options, actionOptions),
+      assignedOptions = assign({}, options, actionOptions),
       pswp = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, images, assignedOptions);
     this.set('pswp', pswp);
     this._resetResizeProps();
@@ -133,7 +134,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
       mediaImage = this.get('images').objectAt(index),
       result = formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity, mediaImage);
     if (result) {
-      Ember.merge(item, result);
+      merge(item, result);
     }
   },
 });

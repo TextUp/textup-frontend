@@ -1,6 +1,6 @@
+import { helper as buildHelper } from '@ember/component/helper';
 import PropertyUtils from 'textup-frontend/utils/property';
 import configObj from 'textup-frontend/config/environment';
-import Ember from 'ember';
 
 export function getConfigVal([valString = '']) {
   return PropertyUtils.mustGet(
@@ -10,4 +10,4 @@ export function getConfigVal([valString = '']) {
   );
 }
 
-export default Ember.Helper.helper(getConfigVal);
+export default buildHelper(getConfigVal);

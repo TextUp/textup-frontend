@@ -1,19 +1,21 @@
+import $ from 'jquery';
+import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Controller, { inject as controller } from '@ember/controller';
+import { alias } from '@ember/object/computed';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { alias } = Ember.computed;
-
-export default Ember.Controller.extend({
-  requestService: Ember.inject.service(),
-  signupController: Ember.inject.controller('signup'),
+export default Controller.extend({
+  requestService: service(),
+  signupController: controller('signup'),
 
   selected: alias('signupController.selected'),
   orgs: alias('signupController.model'),
 
   actions: {
     select(org) {
-      return new Ember.RSVP.Promise(resolve => {
+      return new Promise(resolve => {
         this.set('selected', org);
         resolve();
       });
@@ -22,10 +24,10 @@ export default Ember.Controller.extend({
       this.set('selected', null);
     },
     search(val) {
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         this.get('requestService')
           .handleIfError(
-            Ember.$.ajax({
+            $.ajax({
               type: Constants.REQUEST_METHOD.GET,
               url: `${config.host}/v1/public/organizations?search=${val}`,
             })

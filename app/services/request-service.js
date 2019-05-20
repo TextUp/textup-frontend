@@ -1,22 +1,23 @@
+import $ from 'jquery';
+import Service, { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import ErrorUtils from 'textup-frontend/utils/error';
 import PropertyUtils from 'textup-frontend/utils/property';
-
-const { assign, RSVP } = Ember;
 
 export const CONNECTION_ERROR_MSG =
   "Sorry, we're having trouble connecting to the server. This problem is usually the result of a broken Internet connection. You can try refreshing this page.";
 export const NOT_LOGGED_IN_MSG = 'Please log in first.';
 
-export default Ember.Service.extend({
-  authService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
+export default Service.extend({
+  authService: service(),
+  notifications: service('notification-messages-service'),
 
   authRequest(options = {}) {
     return new RSVP.Promise((resolve, reject) => {
       this.handleIfError(
-        Ember.$.ajax(
+        $.ajax(
           assign(
             {
               contentType: Constants.MIME_TYPE.JSON,

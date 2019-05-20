@@ -1,11 +1,12 @@
+import Component from '@ember/component';
+import { isArray } from '@ember/array';
+import { tryInvoke } from '@ember/utils';
+import { getWithDefault, computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import Contact from 'textup-frontend/models/contact';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, isArray, tryInvoke, getWithDefault } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     contacts: PropTypes.oneOfType([
       PropTypes.instanceOf(Contact),

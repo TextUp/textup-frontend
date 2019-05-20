@@ -1,10 +1,12 @@
+import Service, { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+import { isArray } from '@ember/array';
+import { typeOf, isNone } from '@ember/utils';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { get, isArray, isNone, typeOf, RSVP } = Ember;
-
-export default Ember.Service.extend({
-  store: Ember.inject.service(),
+export default Service.extend({
+  store: service(),
 
   addImage(mediaOwner, newImages) {
     if (typeOf(mediaOwner) !== 'instance' || !isArray(newImages)) {

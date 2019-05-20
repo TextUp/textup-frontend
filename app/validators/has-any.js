@@ -1,8 +1,7 @@
+import { get } from '@ember/object';
+import { typeOf } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import BaseValidator from 'ember-cp-validations/validators/base';
-import Ember from 'ember';
-
-const { get, typeOf } = Ember;
 
 const HasAny = BaseValidator.extend({
   validate(value, options, model) {

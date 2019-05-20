@@ -1,10 +1,10 @@
+import { alias, readOnly } from '@ember/object/computed';
+import { getWithDefault, get, computed } from '@ember/object';
+import { tryInvoke, typeOf } from '@ember/utils';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
-
-const { computed, get, getWithDefault, typeOf, tryInvoke } = Ember;
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
   // Overrides
@@ -20,7 +20,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
     this._super(...arguments);
     this.rollbackAttributes();
   },
-  hasManualChanges: computed.alias('media.isDirty'),
+  hasManualChanges: alias('media.isDirty'),
 
   // Properties
   // ----------
@@ -38,8 +38,8 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   contacts: DS.hasMany('contact', { inverse: '_recordItems' }), // see owns-record-items model mixin
   tags: DS.hasMany('tag', { inverse: '_recordItems' }), // see owns-record-items model mixin
 
-  recipients: computed.readOnly('_recipients'),
-  newNumberRecipients: computed.readOnly('_newNumberRecipients'),
+  recipients: readOnly('_recipients'),
+  newNumberRecipients: readOnly('_newNumberRecipients'),
   numRecipients: computed('_recipients.[]', '_newNumberRecipients.[]', function() {
     return (
       getWithDefault(this, '_recipients.length', 0) +

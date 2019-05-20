@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember,
-  TYPE_TEXT = 'TEXT',
-  TYPE_CALL = 'CALL',
-  TYPE_NOTE = 'NOTE';
+const TYPE_TEXT = 'TEXT', TYPE_CALL = 'CALL', TYPE_NOTE = 'NOTE';
 let server;
 
 moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
@@ -51,7 +50,7 @@ test('building url', function(assert) {
   const obj = this.subject(),
     tId = `${Math.random()}`;
 
-  obj.set('stateService', { ownerAsTeam: Ember.Object.create({ id: tId }) });
+  obj.set('stateService', { ownerAsTeam: EmberObject.create({ id: tId }) });
 
   assert.equal(
     obj.buildURL('record-item', 8, null, 'valid type'),
@@ -66,7 +65,7 @@ test('building url', function(assert) {
 });
 
 test('getting polymorphic list of items', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     itemBaseline = getStoreCountFor(store, 'record-item'),
     textBaseline = getStoreCountFor(store, 'record-text'),
     callBaseline = getStoreCountFor(store, 'record-call'),
@@ -102,7 +101,7 @@ test('getting polymorphic list of items', function(assert) {
 
 test('getting polymorphic individual items', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       itemBaseline = getStoreCountFor(store, 'record-item'),
       textBaseline = getStoreCountFor(store, 'record-text'),
       callBaseline = getStoreCountFor(store, 'record-call'),

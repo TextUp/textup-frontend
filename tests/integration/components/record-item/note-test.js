@@ -1,5 +1,7 @@
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
+import { run, later } from '@ember/runloop';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import LocationUtils from 'textup-frontend/utils/location';
 import moment from 'moment';
@@ -8,15 +10,13 @@ import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { VALID_IMAGE_DATA_URL } from 'textup-frontend/tests/helpers/utilities';
 
-const { run } = Ember;
-
 moduleForComponent('record-item/note', 'Integration | Component | record item/note', {
   integration: true,
 });
 
 test('mandatory inputs', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rItem = store.createRecord('record-item'),
       rNote = store.createRecord('record-note');
     this.setProperties({ rItem, rNote });
@@ -31,7 +31,7 @@ test('mandatory inputs', function(assert) {
 
 test('optional inputs', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note');
     this.setProperties({ rNote, onEdit: '', onRestore: '', onViewHistory: '' });
 
@@ -53,7 +53,7 @@ test('optional inputs', function(assert) {
 
 test('timestamp displayed is `whenChanged` not `whenCreated`', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       whenChanged = new Date(),
       rNote = store.createRecord('record-note', { whenCreated: null, whenChanged });
 
@@ -73,7 +73,7 @@ test('timestamp displayed is `whenChanged` not `whenCreated`', function(assert) 
 
 test('displaying empty note', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note'),
       done = assert.async();
 
@@ -88,7 +88,7 @@ test('displaying empty note', function(assert) {
     assert.notOk(this.$('.audio-wrapper__player-item').length, 'no images');
     assert.notOk(this.$('.location-preview').length, 'no location');
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+    assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
     const text = this.$()
       .text()
@@ -99,10 +99,10 @@ test('displaying empty note', function(assert) {
       .first()
       .triggerHandler('click');
 
-    Ember.run.later(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    later(() => {
+      assert.ok($('.pop-over__body--open').length, 'dropdown is open');
 
-      const dropdownText = Ember.$('.pop-over__body--open').text();
+      const dropdownText = $('.pop-over__body--open').text();
       assert.ok(dropdownText.includes('Edit'), 'can edit');
       assert.notOk(dropdownText.includes('Restore'), 'no restore');
       assert.notOk(dropdownText.includes('history'), 'no revisions');
@@ -114,7 +114,7 @@ test('displaying empty note', function(assert) {
 
 test('display note with note contents, media, and location', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         noteContents: `${Math.random()}`,
         location: store.createRecord('location', { latLng: { lat: 0, lng: 0 } }),
@@ -144,7 +144,7 @@ test('display note with note contents, media, and location', function(assert) {
       'do not show location it being edited to avoid too many request while editing'
     );
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+    assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
     const text = this.$()
       .text()
@@ -158,7 +158,7 @@ test('display note with note contents, media, and location', function(assert) {
 
 test('displaying note with revisions + actions', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         _revisions: [store.createRecord('record-note-revision')],
       }),
@@ -172,7 +172,7 @@ test('displaying note with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+    assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
     this.$('.record-item__control button')
       .first()
@@ -180,17 +180,17 @@ test('displaying note with revisions + actions', function(assert) {
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-        assert.ok(Ember.$('.pop-over__body--open li').length === 2, 'dropdown body has two items');
+        assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok($('.pop-over__body--open li').length === 2, 'dropdown body has two items');
         assert.ok(onEdit.notCalled);
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.pop-over__body--open').text();
+        const dropdownText = $('.pop-over__body--open').text();
         assert.ok(dropdownText.includes('Edit'), 'can edit');
         assert.notOk(dropdownText.includes('Restore'), 'no restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.pop-over__body--open li')
+        $('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click edit
         return wait();
@@ -199,7 +199,7 @@ test('displaying note with revisions + actions', function(assert) {
         assert.ok(onEdit.calledOnce);
         assert.ok(onViewHistory.notCalled);
 
-        Ember.$('.pop-over__body--open li')
+        $('.pop-over__body--open li')
           .eq(1)
           .triggerHandler('click'); // click view history
         return wait();
@@ -215,7 +215,7 @@ test('displaying note with revisions + actions', function(assert) {
 
 test('displaying deleted note with revisions + actions', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         hasBeenDeleted: true,
         _revisions: [store.createRecord('record-note-revision')],
@@ -232,7 +232,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+    assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
     this.$('.record-item__control button')
       .first()
@@ -240,17 +240,17 @@ test('displaying deleted note with revisions + actions', function(assert) {
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-        assert.ok(Ember.$('.pop-over__body--open li').length === 2, 'dropdown body has two items');
+        assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok($('.pop-over__body--open li').length === 2, 'dropdown body has two items');
         assert.ok(onRestore.notCalled);
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.pop-over__body--open').text();
+        const dropdownText = $('.pop-over__body--open').text();
         assert.notOk(dropdownText.includes('Edit'), 'no edit');
         assert.ok(dropdownText.includes('Restore'), 'can restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.pop-over__body--open li')
+        $('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click restore
         return wait();
@@ -259,7 +259,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
         assert.ok(onRestore.calledOnce);
         assert.ok(onViewHistory.notCalled);
 
-        Ember.$('.pop-over__body--open li')
+        $('.pop-over__body--open li')
           .eq(1)
           .triggerHandler('click'); // click view history
         return wait();
@@ -275,7 +275,7 @@ test('displaying deleted note with revisions + actions', function(assert) {
 
 test('readonly mode with revisions + actions', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note', {
         _revisions: [store.createRecord('record-note-revision')],
       }),
@@ -288,7 +288,7 @@ test('readonly mode with revisions + actions', function(assert) {
     assert.ok(this.$('.record-item').length);
     assert.ok(this.$('.record-item--note').length);
     assert.ok(this.$('.record-item__control').length, 'has dropdown with note controls');
-    assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+    assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
     this.$('.record-item__control button')
       .first()
@@ -296,16 +296,16 @@ test('readonly mode with revisions + actions', function(assert) {
 
     wait()
       .then(() => {
-        assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-        assert.ok(Ember.$('.pop-over__body--open li').length === 1, 'dropdown body has one items');
+        assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+        assert.ok($('.pop-over__body--open li').length === 1, 'dropdown body has one items');
         assert.ok(onViewHistory.notCalled);
 
-        const dropdownText = Ember.$('.pop-over__body--open').text();
+        const dropdownText = $('.pop-over__body--open').text();
         assert.notOk(dropdownText.includes('Edit'), 'no edit');
         assert.notOk(dropdownText.includes('Restore'), 'no restore');
         assert.ok(dropdownText.includes('history'), 'can view revisions');
 
-        Ember.$('.pop-over__body--open li')
+        $('.pop-over__body--open li')
           .first()
           .triggerHandler('click'); // click restore
         return wait();
@@ -320,7 +320,7 @@ test('readonly mode with revisions + actions', function(assert) {
 
 test('readonly mode without revisions', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       rNote = store.createRecord('record-note');
 
     this.setProperties({ rNote });

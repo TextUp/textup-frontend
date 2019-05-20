@@ -1,7 +1,11 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { scheduleOnce, cancel } from '@ember/runloop';
+import { tryInvoke, isPresent } from '@ember/utils';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 
-export default Ember.Component.extend({
+export default Component.extend({
   closeOnBodyClick: defaultIfAbsent(true),
   closeOnContentsClick: defaultIfAbsent(false),
   allowCloseContentsSelector: defaultIfAbsent(''),
@@ -16,13 +20,13 @@ export default Ember.Component.extend({
   // Computed properties
   // -------------------
 
-  $body: Ember.computed(function() {
+  $body: computed(function() {
     return this.$().find(`.${this.get('_bodyClass')}`);
   }),
-  $contents: Ember.computed(function() {
+  $contents: computed(function() {
     return this.$().find(`.${this.get('_contentsClass')}`);
   }),
-  publicAPI: Ember.computed(function() {
+  publicAPI: computed(function() {
     return {
       isOpen: false,
       actions: {
@@ -38,7 +42,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
+    tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
 
   // Private methods
@@ -58,14 +62,14 @@ export default Ember.Component.extend({
     this.$().addClass('drawer-opened');
     if (this.get('closeOnBodyClick')) {
       this.$().addClass('auto-close');
-      this.addBodyListenersTimer = Ember.run.scheduleOnce(
+      this.addBodyListenersTimer = scheduleOnce(
         'afterRender',
         this,
         this._addBodyListeners
       );
     }
     if (this.get('closeOnContentsClick')) {
-      this.addContentsListenersTimer = Ember.run.scheduleOnce(
+      this.addContentsListenersTimer = scheduleOnce(
         'afterRender',
         this,
         this._addContentsListeners
@@ -83,9 +87,9 @@ export default Ember.Component.extend({
     this.set('publicAPI.isOpen', false);
 
     this._removeListeners();
-    Ember.run.cancel(this.addBodyListenersTimer);
+    cancel(this.addBodyListenersTimer);
     this.addBodyListenersTimer = null;
-    Ember.run.cancel(this.addContentsListenersTimer);
+    cancel(this.addContentsListenersTimer);
     this.addContentsListenersTimer = null;
   },
 
@@ -111,13 +115,13 @@ export default Ember.Component.extend({
     );
   },
   _shouldIgnoreInContents(event) {
-    const $target = Ember.$(event.target),
+    const $target = $(event.target),
       ignore = this.get('ignoreCloseContentsSelector'),
       allowed = this.get('allowCloseContentsSelector');
     const shouldIgnore = $target.is(ignore) || $target.closest(ignore).length;
     // if we specify specific selectors to allow, we will then
     // see if the triggered target matches one of these
-    if (!shouldIgnore && Ember.isPresent(allowed)) {
+    if (!shouldIgnore && isPresent(allowed)) {
       return !($target.is(allowed) || $target.closest(allowed).length);
     } else {
       return shouldIgnore;

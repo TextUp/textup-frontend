@@ -1,14 +1,13 @@
+import Service, { inject as service } from '@ember/service';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
 import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
-import Ember from 'ember';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { RSVP } = Ember;
-
-export default Ember.Service.extend({
-  dataService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  dataService: service(),
+  stateService: service(),
+  store: service(),
 
   createNew() {
     return this.get('store').createRecord(Constants.MODEL.CONTACT, {

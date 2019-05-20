@@ -1,6 +1,8 @@
+import { typeOf } from '@ember/utils';
+import $ from 'jquery';
+import { later } from '@ember/runloop';
 import * as LockContainerComponent from 'textup-frontend/components/lock-container';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -90,7 +92,7 @@ test('lock on user logged in, lock on inactivity', function(assert) {
   assert.equal(this.$('.lock-pad').length, 0);
   this.pageVisibilityService.trigger(config.events.visibility.hidden);
 
-  Ember.run.later(() => {
+  later(() => {
     this.pageVisibilityService.trigger(config.events.visibility.visible);
     wait().then(() => {
       assert.ok(this.$('.lock-pad').length, 'locked when user on unactive');
@@ -126,7 +128,7 @@ test('no locking when no user logged in', function(assert) {
   assert.equal(this.$('.lock-pad').length, 0);
   this.pageVisibilityService.trigger(config.events.visibility.hidden);
 
-  Ember.run.later(() => {
+  later(() => {
     this.pageVisibilityService.trigger(config.events.visibility.visible);
     wait().then(() => {
       assert.equal(this.$('.lock-pad').length, 0, 'unlocked when no user on inactive');
@@ -159,7 +161,7 @@ test('fingerprint auth', function(assert) {
   assert.ok(isAvailable.notCalled, 'Not called at start');
   assert.ok(show.notCalled);
 
-  Ember.$(document).trigger(Ember.$.Event('deviceready'));
+  $(document).trigger($.Event('deviceready'));
 
   wait().then(() => {
     assert.ok(this.get('lockContainer').isLocked);
@@ -179,7 +181,7 @@ test('fingerprint auth', function(assert) {
       clientId: LockContainerComponent.CLIENT_MESSAGE,
       clientSecret: LockContainerComponent.CLIENT_PASSWORD,
     });
-    assert.equal(Ember.typeOf(show.firstCall.args[1]), 'function');
+    assert.equal(typeOf(show.firstCall.args[1]), 'function');
 
     window.Fingerprint = originalFingerprint;
     hasCordova.restore();

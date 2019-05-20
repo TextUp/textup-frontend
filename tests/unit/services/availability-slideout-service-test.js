@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import Media from 'textup-frontend/models/media';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-
-const { typeOf, run, RSVP } = Ember;
 
 moduleFor(
   'service:availability-slideout-service',
@@ -24,7 +26,7 @@ moduleFor(
     beforeEach() {
       this.register(
         'service:data-service',
-        Ember.Service.extend({
+        Service.extend({
           persist: sinon.stub().returns(new RSVP.Promise(resolve => resolve())),
         })
       );
@@ -74,9 +76,9 @@ test('adding processed audio to media', function(assert) {
 test('requesting to record voicemail greeting via phone call', function(assert) {
   const done = assert.async(),
     service = this.subject(),
-    phone = Ember.Object.create(),
-    phoneOwnerNoPhone = Ember.Object.create(),
-    phoneOwner = Ember.Object.create({ phone: { content: phone } }),
+    phone = EmberObject.create(),
+    phoneOwnerNoPhone = EmberObject.create(),
+    phoneOwner = EmberObject.create({ phone: { content: phone } }),
     numToCall = Math.random();
 
   service

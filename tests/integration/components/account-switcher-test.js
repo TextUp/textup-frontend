@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run, typeOf } = Ember;
 
 moduleForComponent('account-switcher', 'Integration | Component | account switcher', {
   integration: true,

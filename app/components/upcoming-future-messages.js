@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import { empty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     nextFutureFire: PropTypes.date,
     onClick: PropTypes.func
@@ -24,5 +25,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   _isInPast: computed('nextFutureFire', function() {
     return this.get('nextFutureFire') < Date.now();
   }),
-  _dateMissing: computed.empty('nextFutureFire')
+  _dateMissing: empty('nextFutureFire')
 });

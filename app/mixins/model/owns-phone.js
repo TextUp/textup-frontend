@@ -1,11 +1,13 @@
+import { alias, notEmpty } from '@ember/object/computed';
+import Mixin from '@ember/object/mixin';
+import { getWithDefault, computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import { validator } from 'ember-cp-validations';
 
-const { computed, getWithDefault, tryInvoke } = Ember;
 // Validations are ininheritable: https://github.com/offirgolan/ember-cp-validations/issues/111
 // [NOTE] don't mix into this mixin because of a bug where all classes that mix in this class
 // will have their own validations overridden with the last class that mixed in this mixin
@@ -23,7 +25,7 @@ export const OwnsPhoneValidations = {
   },
 };
 
-export default Ember.Mixin.create(Dirtiable, HasUrlIdentifier, {
+export default Mixin.create(Dirtiable, HasUrlIdentifier, {
   // Overrides
   // ---------
 
@@ -44,17 +46,17 @@ export default Ember.Mixin.create(Dirtiable, HasUrlIdentifier, {
       !!this._super(...arguments) || !!this.get('phone.isDirty') || !!this.get('hasPhoneAction')
     );
   }),
-  hasManualChanges: computed.alias('ownsPhoneHasManualChanges'),
+  hasManualChanges: alias('ownsPhoneHasManualChanges'),
 
   // Properties
   // ----------
 
   phone: DS.belongsTo('phone'), // hasOne
 
-  hasPhoneAction: computed.notEmpty('phoneAction'),
+  hasPhoneAction: notEmpty('phoneAction'),
   phoneAction: null,
 
-  hasPhoneActionData: computed.notEmpty('phoneActionData'), // not all actions have data!
+  hasPhoneActionData: notEmpty('phoneActionData'), // not all actions have data!
   phoneActionData: null,
 
   // Models that own a phone must implement `transferFilter`

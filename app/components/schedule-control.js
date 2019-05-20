@@ -1,11 +1,11 @@
+import { tryInvoke } from '@ember/utils';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import Schedule from 'textup-frontend/models/schedule';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     schedule: PropTypes.instanceOf(Schedule).isRequired,
     scheduleClass: PropTypes.string,
@@ -29,7 +29,7 @@ export default Ember.Component.extend(PropTypesMixin, {
     this.setProperties({ _newRangeTimes: [] });
   },
   _handleAdd(dayOfWeek, timeRange, then) {
-    Ember.tryInvoke(this, 'onChange', [
+    tryInvoke(this, 'onChange', [
       dayOfWeek,
       [...this._copyDayOfWeekRanges(dayOfWeek), timeRange],
     ]);
@@ -38,12 +38,12 @@ export default Ember.Component.extend(PropTypesMixin, {
   _handleUpdate(dayOfWeek, dataIndex, newRange) {
     const ranges = this._copyDayOfWeekRanges(dayOfWeek);
     ranges[dataIndex] = newRange;
-    Ember.tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
+    tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
   },
   _handleRemove(dayOfWeek, dataIndex) {
     const ranges = this._copyDayOfWeekRanges(dayOfWeek);
     ranges.removeAt(dataIndex, 1);
-    Ember.tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
+    tryInvoke(this, 'onChange', [dayOfWeek, ranges]);
   },
 
   // Helpers

@@ -1,9 +1,10 @@
-import Ember from 'ember';
-
-const { isPresent, typeOf, set, get } = Ember;
+import Helper from '@ember/component/helper';
+import { getOwner } from '@ember/application';
+import { typeOf, isPresent } from '@ember/utils';
+import { get, set } from '@ember/object';
 
 export function getServicePropertySetter([serviceName, propName], { value = '' }) {
-  const service = Ember.getOwner(this).lookup(`service:${serviceName}`);
+  const service = getOwner(this).lookup(`service:${serviceName}`);
   if (!isPresent(service)) {
     throw new Error(`Service with name '${serviceName}' could not be found`);
   }
@@ -19,4 +20,4 @@ export function getServicePropertySetter([serviceName, propName], { value = '' }
 }
 
 // need to make a helper object to allow injection
-export default Ember.Helper.extend({ compute: getServicePropertySetter });
+export default Helper.extend({ compute: getServicePropertySetter });

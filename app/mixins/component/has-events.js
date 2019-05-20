@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   _event(name = '', namespace = null) {
     const ns = namespace || this.elementId;
     return `${name}.${ns}`;

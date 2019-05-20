@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-export default Ember.Mixin.create(PropTypesMixin, {
+export default Mixin.create(PropTypesMixin, {
   propTypes: {
     images: PropTypes.oneOfType([
       PropTypes.null,

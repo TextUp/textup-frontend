@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { typeOf } = Ember;
+import { typeOf } from '@ember/utils';
 
 function clean(input) {
   if (typeOf(input) !== 'string') {

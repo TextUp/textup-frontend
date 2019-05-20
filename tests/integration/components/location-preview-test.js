@@ -1,13 +1,13 @@
+import { getOwner } from '@ember/application';
+import { run, later } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import LocationUtils from 'textup-frontend/utils/location';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { run, typeOf } = Ember,
-  VALID_URL = 'https://via.placeholder.com/5x5',
-  INVALID_URL = 'invalid image url';
+const VALID_URL = 'https://via.placeholder.com/5x5', INVALID_URL = 'invalid image url';
 let buildUrlStub;
 
 moduleForComponent('location-preview', 'Integration | Component | location preview', {
@@ -22,7 +22,7 @@ moduleForComponent('location-preview', 'Integration | Component | location previ
 
 test('valid inputs', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location');
     this.setProperties({
       location,
@@ -50,7 +50,7 @@ test('valid inputs', function(assert) {
 
 test('rendering empty location', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location');
 
     this.setProperties({ location });
@@ -64,7 +64,7 @@ test('rendering empty location', function(assert) {
 
 test('disabled address overlay when missing address', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location'),
       done = assert.async(),
       originalText = `${Math.random()}`;
@@ -103,7 +103,7 @@ test('disabled address overlay when missing address', function(assert) {
 
 test('rendering valid location + clicking', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
         latLng: { lat: Math.random(), lng: Math.random() },
@@ -121,7 +121,7 @@ test('rendering valid location + clicking', function(assert) {
     assert.ok(this.$('.location-preview').length, 'did render');
 
     // wait doesn't always wait long enough
-    Ember.run.later(() => {
+    later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
       assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
       assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
@@ -158,7 +158,7 @@ test('rendering valid location + clicking', function(assert) {
 
 test('rendering invalid location + clicking', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
         latLng: { lat: Math.random(), lng: Math.random() },
@@ -177,7 +177,7 @@ test('rendering invalid location + clicking', function(assert) {
     assert.ok(this.$('.location-preview').length, 'did render');
 
     // wait doesn't wait long enough
-    Ember.run.later(() => {
+    later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
       assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
       assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
@@ -216,7 +216,7 @@ test('rendering invalid location + clicking', function(assert) {
 
 test('re-rendering on location changes', function(assert) {
   run(() => {
-    const store = Ember.getOwner(this).lookup('service:store'),
+    const store = getOwner(this).lookup('service:store'),
       location = store.createRecord('location', {
         address: Math.random(),
         latLng: { lat: Math.random(), lng: Math.random() },
@@ -235,7 +235,7 @@ test('re-rendering on location changes', function(assert) {
     assert.ok(this.$('.location-preview').length, 'did render');
 
     // wait doesn't wait long enough
-    Ember.run.later(() => {
+    later(() => {
       assert.ok(buildUrlStub.calledOnce, 'build url handler called');
       assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
       assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));
@@ -251,7 +251,7 @@ test('re-rendering on location changes', function(assert) {
       location.set('latLng', { lat: Math.random(), lng: Math.random() });
 
       // wait doesn't wait long enough
-      Ember.run.later(() => {
+      later(() => {
         assert.ok(buildUrlStub.calledTwice, 'build url handler called');
         assert.ok(buildUrlStub.args.every(argList => argList.length === 3));
         assert.ok(buildUrlStub.args.every(argList => typeOf(argList[2]) === 'number'));

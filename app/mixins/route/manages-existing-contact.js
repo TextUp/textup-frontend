@@ -1,10 +1,11 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Mixin.create({
-  contactService: Ember.inject.service(),
-  dataService: Ember.inject.service(),
+export default Mixin.create({
+  contactService: service(),
+  dataService: service(),
 
   actions: {
     startExistingContactSlideout() {

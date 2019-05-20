@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import { formatSecondsAsTimeElapsed } from 'textup-frontend/utils/time';
@@ -113,14 +113,14 @@ test('select handler within bounds', function(assert) {
     selectPosition = 0.5;
   // from https://qunitjs.com/cookbook/#testing-user-actions
   this.$('.audio-control__display').trigger(
-    Ember.$.Event('click', buildInBoundCoords($display, selectPosition))
+    $.Event('click', buildInBoundCoords($display, selectPosition))
   );
 
   assert.ok(onSelect.calledOnce);
   assert.equal(onSelect.firstCall.args[0], selectPosition);
 
   this.$('.audio-control__display').trigger(
-    Ember.$.Event('touchend', { touches: [buildInBoundCoords($display, selectPosition)] })
+    $.Event('touchend', { touches: [buildInBoundCoords($display, selectPosition)] })
   );
 
   assert.ok(onSelect.calledTwice);
@@ -137,13 +137,13 @@ test('select handler out of bounds', function(assert) {
   const $display = this.$('.audio-control__display');
   // from https://qunitjs.com/cookbook/#testing-user-actions
   this.$('.audio-control__display').trigger(
-    Ember.$.Event('click', buildOutOfBoundCoords($display))
+    $.Event('click', buildOutOfBoundCoords($display))
   );
 
   assert.ok(onSelect.notCalled);
 
   this.$('.audio-control__display').trigger(
-    Ember.$.Event('touchend', { touches: [buildOutOfBoundCoords($display)] })
+    $.Event('touchend', { touches: [buildOutOfBoundCoords($display)] })
   );
 
   assert.ok(onSelect.notCalled);

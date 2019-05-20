@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { format } from 'textup-frontend/utils/phone-number';
 
 export function phoneNumber(params /*, hash*/) {
   return format(params[0], false);
 }
 
-export default Ember.Helper.helper(phoneNumber);
+export default buildHelper(phoneNumber);

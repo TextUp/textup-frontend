@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { get, set } from '@ember/object';
 import GroupByBucket from 'textup-frontend/components/multi-toggle/group-by-bucket';
 
 export default GroupByBucket.extend({
@@ -9,17 +10,17 @@ export default GroupByBucket.extend({
       actionProperty = this.get('actionProperty'),
       bucketIdProp = this.get('bucketIdentityProperty'),
       actionBucketIdProp = this.get('_actionBucketIdProp'),
-      currentBucketIdString = String(Ember.get(bucket, bucketIdProp));
+      currentBucketIdString = String(get(bucket, bucketIdProp));
     items.forEach(function(item) {
-      const actions = Ember.get(item, actionProperty) || [],
+      const actions = get(item, actionProperty) || [],
         foundAction = actions.find(function(action) {
-          const actionBucketId = Ember.get(action, actionBucketIdProp);
+          const actionBucketId = get(action, actionBucketIdProp);
           return String(actionBucketId) === currentBucketIdString;
         });
-      if (Ember.isPresent(foundAction)) {
+      if (isPresent(foundAction)) {
         actions.removeObject(foundAction);
       }
-      Ember.set(item, actionProperty, actions);
+      set(item, actionProperty, actions);
     });
     if (determineChanges) {
       this._determineAnyChanges();
@@ -30,16 +31,16 @@ export default GroupByBucket.extend({
     const items = this.get('itemList'),
       actionProperty = this.get('actionProperty');
     items.forEach(item => {
-      const actions = Ember.get(item, actionProperty) || [];
+      const actions = get(item, actionProperty) || [];
       actions.pushObject(this._makeAction(bucket, item, command));
-      Ember.set(item, actionProperty, actions);
+      set(item, actionProperty, actions);
     });
     this.set('anyChanges', true);
   },
   _determineAnyChanges() {
     const prop = this.get('actionProperty'),
       anyChanges = this.get('itemList').any(item => {
-        const actions = Ember.get(item, prop);
+        const actions = get(item, prop);
         return actions && actions.length > 0;
       });
     this.set('anyChanges', anyChanges);

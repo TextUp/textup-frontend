@@ -1,5 +1,7 @@
+import { Promise } from 'rsvp';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import PhotoUtils from 'textup-frontend/utils/photo';
@@ -7,8 +9,6 @@ import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('photo-control', 'Integration | Component | photo control', {
   integration: true,
@@ -64,7 +64,7 @@ test('changing image display type', function(assert) {
 });
 
 test('displaying images', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store));
@@ -85,7 +85,7 @@ test('displaying images', function(assert) {
 });
 
 test('adding images', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store)),
@@ -95,7 +95,7 @@ test('adding images', function(assert) {
     extractStub = sinon.stub(PhotoUtils, 'extractImagesFromEvent'),
     randValue1 = Math.random();
   hasFilesStub.callsFake(() => true);
-  extractStub.callsFake(() => new Ember.RSVP.Promise(resolve => resolve(randValue1)));
+  extractStub.callsFake(() => new Promise(resolve => resolve(randValue1)));
 
   this.setProperties({ images, onAdd });
   this.render(hbs`{{photo-control images=images onAdd=onAdd}}`);
@@ -121,7 +121,7 @@ test('adding images', function(assert) {
 });
 
 test('removing images', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store)),
@@ -189,7 +189,7 @@ test('removing images', function(assert) {
 });
 
 test('readOnly mode', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     images = Array(3)
       .fill()
       .map(() => mockValidMediaImage(store));

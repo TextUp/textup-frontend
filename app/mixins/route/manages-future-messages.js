@@ -1,12 +1,13 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import AppUtils from 'textup-frontend/utils/app';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-export default Ember.Mixin.create({
-  dataService: Ember.inject.service(),
-  futureMessageService: Ember.inject.service(),
-  mediaService: Ember.inject.service(),
+export default Mixin.create({
+  dataService: service(),
+  futureMessageService: service(),
+  mediaService: service(),
 
   setupController(controller) {
     this._super(...arguments);

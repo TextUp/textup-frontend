@@ -1,7 +1,6 @@
-import 'webrtc-adapter'; // standardize getUserMedia API, where available
-import Ember from 'ember';
-
-const { RSVP, typeOf } = Ember;
+import RSVP from 'rsvp'; // standardize getUserMedia API, where available
+import { typeOf } from '@ember/utils';
+import 'webrtc-adapter';
 
 export function isRecordingSupported() {
   return (

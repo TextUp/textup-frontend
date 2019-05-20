@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -85,7 +85,7 @@ test('updating validation', function(assert) {
       assert.equal(doValidateStub.callCount, 2);
       assert.ok(this.$('.lock-pad--error').length);
 
-      doValidateStub.returns(new Ember.RSVP.Promise(promiseSpy));
+      doValidateStub.returns(new Promise(promiseSpy));
       this.set('val', `${Math.random()}`);
 
       return wait();

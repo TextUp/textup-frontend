@@ -1,17 +1,22 @@
+import { debug } from '@ember/debug';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { isPresent, tryInvoke } from '@ember/utils';
+import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-
-const { computed, tryInvoke, run, isPresent, RSVP } = Ember;
 
 // REQUIRED, showed to user within native fingerprint dialogue
 export const CLIENT_MESSAGE = 'Please verify your identity';
 export const CLIENT_PASSWORD = 'password';
 
-export default Ember.Component.extend(PropTypesMixin, HasEvents, {
-  pageVisibilityService: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, HasEvents, {
+  pageVisibilityService: service(),
 
   propTypes: {
     doRegister: PropTypes.func,
@@ -42,7 +47,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
 
   didInsertElement() {
     if (config.hasCordova) {
-      Ember.$(document).on(this._event('deviceready'), this._tryCordovaSetup.bind(this));
+      $(document).on(this._event('deviceready'), this._tryCordovaSetup.bind(this));
     } else {
       this.get('pageVisibilityService')
         .on(config.events.visibility.hidden, this, this._updateLastActive)
@@ -52,7 +57,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
   },
 
   willDestroyElement() {
-    Ember.$(document).off(this._event());
+    $(document).off(this._event());
     this.get('pageVisibilityService')
       .off(config.events.visibility.hidden, this, this._updateLastActive)
       .off(config.events.visibility.visible, this, this._checkInactiveTime);
@@ -84,7 +89,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
 
   _tryCordovaSetup() {
     run(() => {
-      Ember.$(document)
+      $(document)
         .on(this._event('pause'), this._updateLastActive.bind(this))
         .on(this._event('resume'), this._checkInactiveTime.bind(this));
       this.set('_isCordovaReady', true);
@@ -138,7 +143,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
       PropertyUtils.ensurePromise(tryInvoke(this, 'onCheckShouldLock'))
         .then(this._doLock.bind(this))
         .catch(() =>
-          Ember.debug('lock-container._checkInactiveTime: do not lock even if timed out')
+          debug('lock-container._checkInactiveTime: do not lock even if timed out')
         );
     }
   },
@@ -172,7 +177,7 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
         window.Fingerprint.show(
           { clientId: CLIENT_MESSAGE, clientSecret: CLIENT_PASSWORD },
           this._doSuccess.bind(this),
-          err => Ember.debug('lock-container: ' + err)
+          err => debug('lock-container: ' + err)
         );
       });
     }

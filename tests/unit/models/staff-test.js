@@ -1,11 +1,10 @@
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('staff', 'Unit | Model | staff', {
   needs: [
@@ -109,7 +108,7 @@ test('determining if is auth user', function(assert) {
 
   assert.equal(model.get('isAuthUser'), false);
 
-  model.set('authService', Ember.Object.create({ authUser: { id: thisId } }));
+  model.set('authService', EmberObject.create({ authUser: { id: thisId } }));
   model.set('id', thisId);
 
   assert.equal(model.get('isAuthUser'), true);

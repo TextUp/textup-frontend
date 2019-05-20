@@ -1,18 +1,21 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import LocationUtils from 'textup-frontend/utils/location';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { mockValidMediaImage, mockValidMediaAudio } from 'textup-frontend/tests/helpers/utilities';
+import {
+  mockValidMediaImage,
+  mockValidMediaAudio
+} from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { run } = Ember;
 let store;
 
 moduleForComponent('record-note-revision', 'Integration | Component | record note revision', {
   integration: true,
   beforeEach() {
-    store = Ember.getOwner(this).lookup('service:store');
+    store = getOwner(this).lookup('service:store');
   },
 });
 

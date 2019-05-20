@@ -1,17 +1,18 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { run } = Ember;
 let store;
 
 moduleForComponent('record-cluster', 'Integration | Component | record cluster', {
   integration: true,
   beforeEach() {
-    store = Ember.getOwner(this).lookup('service:store');
+    store = getOwner(this).lookup('service:store');
   },
 });
 
@@ -151,7 +152,7 @@ test('rendering block cluster of several + opening and closing', function(assert
         assert.ok(this.$('.record-cluster__body').length);
         assert.ok(this.$('.record-cluster__trigger').length);
 
-        Ember.$('#ember-testing')
+        $('#ember-testing')
           .first()
           .triggerHandler('click');
         return wait();

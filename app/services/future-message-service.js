@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
-const { run, tryInvoke } = Ember;
-
-export default Ember.Service.extend({
-  dataService: Ember.inject.service(),
-  store: Ember.inject.service(),
+export default Service.extend({
+  dataService: service(),
+  store: service(),
 
   createNew(owner) {
     const fMessage = this.get('store').createRecord('future-message', {

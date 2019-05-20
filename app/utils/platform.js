@@ -1,5 +1,5 @@
+import $ from 'jquery';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 
 export const PLATFORM_IOS = 'iOS';
 export const PLATFORM_ANDROID = 'Android';
@@ -23,7 +23,7 @@ export function isAndroid() {
 }
 
 export function isMobile() {
-  return Ember.$(window).innerWidth() < PLATFORM_MOBILE_MAX_WIDTH_IN_PX;
+  return $(window).innerWidth() < PLATFORM_MOBILE_MAX_WIDTH_IN_PX;
 }
 
 // enabled if (1) manifest generation is enabled, (2) not a native app, (3) appCache is available

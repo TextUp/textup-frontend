@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import * as MapService from 'textup-frontend/services/map-service';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:map-service', 'Unit | Service | map service', {
   beforeEach() {
-    this.register('service:notification-messages-service', Ember.Service);
+    this.register('service:notification-messages-service', Service);
     this.inject.service('notification-messages-service', { as: 'notifications' });
   },
 });

@@ -1,5 +1,5 @@
+import EmberObject from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -17,7 +17,7 @@ test('properties', function(assert) {
 
   assert.ok(this.$('.horizontal-items').length, 'did render');
 
-  this.setProperties({ obj: Ember.Object.create() });
+  this.setProperties({ obj: EmberObject.create() });
 
   this.render(hbs`{{multi-select/display-badge entity=obj}}`);
 

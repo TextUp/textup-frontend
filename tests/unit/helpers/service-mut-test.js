@@ -1,16 +1,15 @@
-import Ember from 'ember';
+import EmberApplication from '@ember/application';
 import ServiceMutHelper from 'textup-frontend/helpers/service-mut';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
-
-const { typeOf } = Ember;
+import { typeOf } from '@ember/utils';
 
 module('Unit | Helper | service mut');
 
 test('returning working setter function', function(assert) {
   const helper = ServiceMutHelper.create(),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     notStringPropname = Math.random(),
     stringPropName = 'random-string-key',
@@ -44,7 +43,7 @@ test('returning working setter function', function(assert) {
 test('setter function gets a particular property off of the new passed-in value', function(assert) {
   const helper = ServiceMutHelper.create(),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     stringPropName = 'random-string-key',
     notStringValue = Math.random(),

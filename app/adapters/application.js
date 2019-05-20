@@ -1,13 +1,12 @@
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
-
-const { computed } = Ember;
 
 export default DS.RESTAdapter.extend({
-  authService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
+  authService: service(),
+  stateService: service(),
 
   host: config.host,
   namespace: 'v1',

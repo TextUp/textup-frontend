@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { tryInvoke } from '@ember/utils';
 
-const { tryInvoke } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   onChange: null,
   onClick: null,
   onValidate: null,
@@ -12,7 +13,7 @@ export default Ember.Component.extend({
   // Injected services
   // -----------------
 
-  numberService: Ember.inject.service(),
+  numberService: service(),
 
   // Computed Properties
   // -------------------
@@ -32,7 +33,7 @@ export default Ember.Component.extend({
         .then(() => this.set('_newNumber', num));
     },
     completeVerify(validationCode, num) {
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         tryInvoke(this, 'onValidate', [num]);
         this.get('numberService')
           .finishVerify(num, validationCode)

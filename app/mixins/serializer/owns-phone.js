@@ -1,11 +1,11 @@
+import Mixin from '@ember/object/mixin';
+import { get } from '@ember/object';
+import { merge } from '@ember/polyfills';
 import TypeUtils from 'textup-frontend/utils/type';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 
-const { get, merge } = Ember;
-
-export default Ember.Mixin.create(DS.EmbeddedRecordsMixin, {
+export default Mixin.create(DS.EmbeddedRecordsMixin, {
   attrs: {
     phone: { deserialize: 'records', serialize: 'records' },
   },

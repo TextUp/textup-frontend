@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { empty } from '@ember/object/computed';
+import Component from '@ember/component';
 import OwnerPolicy from 'textup-frontend/models/owner-policy';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     policy: PropTypes.instanceOf(OwnerPolicy).isRequired,
     dayOfWeek: PropTypes.string,
@@ -13,5 +12,5 @@ export default Ember.Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _showAllDays: computed.empty('dayOfWeek'),
+  _showAllDays: empty('dayOfWeek'),
 });

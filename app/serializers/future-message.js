@@ -1,5 +1,5 @@
+import { dasherize } from '@ember/string';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasMedia from 'textup-frontend/mixins/serializer/has-media';
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
@@ -16,7 +16,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, HasMedia, {
   },
 
   payloadKeyFromModelName(modelName) {
-    return Ember.String.dasherize(modelName);
+    return dasherize(modelName);
   },
 
   serialize(snapshot) {

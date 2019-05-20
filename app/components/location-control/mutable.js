@@ -1,12 +1,13 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   location: null,
   description: null,
 
   actions: {
     onSelect(latLng, description) {
-      return new Ember.RSVP.Promise(
+      return new Promise(
         function(resolve) {
           const { lat, lng } = latLng;
           // deconstruct property or else we remove the computed property association
@@ -23,7 +24,7 @@ export default Ember.Component.extend({
       );
     },
     onDeselect() {
-      return new Ember.RSVP.Promise(
+      return new Promise(
         function(resolve) {
           this.setProperties({
             location: null,

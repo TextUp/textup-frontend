@@ -1,20 +1,24 @@
+import { readOnly } from '@ember/object/computed';
+import { getOwner } from '@ember/application';
+import Evented from '@ember/object/evented';
+import Service, { inject as service } from '@ember/service';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
+import { typeOf } from '@ember/utils';
 import AppUtils from 'textup-frontend/utils/app';
 import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, run, RSVP, typeOf } = Ember;
-
-export default Ember.Service.extend(Ember.Evented, {
-  authService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
-  router: Ember.inject.service(),
-  storageService: Ember.inject.service(),
-  validateAuthService: Ember.inject.service(),
+export default Service.extend(Evented, {
+  authService: service(),
+  notifications: service('notification-messages-service'),
+  router: service(),
+  storageService: service(),
+  validateAuthService: service(),
 
   // Properties
   // ----------
@@ -22,9 +26,9 @@ export default Ember.Service.extend(Ember.Evented, {
   shouldStartLocked: true,
   lockContainer: null,
   lockCode: null,
-  timeout: computed.readOnly('authService.authUser.org.content.timeout'),
-  authName: computed.readOnly('authService.authUser.name'),
-  isLocked: computed.readOnly('lockContainer.isLocked'),
+  timeout: readOnly('authService.authUser.org.content.timeout'),
+  authName: readOnly('authService.authUser.name'),
+  isLocked: readOnly('lockContainer.isLocked'),
 
   // Methods
   // -------
@@ -119,7 +123,7 @@ export default Ember.Service.extend(Ember.Evented, {
       if (shouldIgnoreLock) {
         return false;
       } else {
-        const lookedUpRoute = Ember.getOwner(this).lookup(`route:${routeName}`);
+        const lookedUpRoute = getOwner(this).lookup(`route:${routeName}`);
         return IsPublicRouteMixin.detect(lookedUpRoute) ? false : true;
       }
     }

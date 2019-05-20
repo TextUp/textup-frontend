@@ -1,26 +1,30 @@
+import { isArray } from '@ember/array';
+import { copy } from '@ember/object/internals';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { get } from '@ember/object';
+import RSVP, { all } from 'rsvp';
+import { run } from '@ember/runloop';
 import AppAccessUtils from 'textup-frontend/utils/app-access';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import humanId from 'human-id';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import SupportsFeedbackSlideout from 'textup-frontend/mixins/route/supports-feedback-slideout';
 
-const { get, RSVP, run } = Ember;
-
-export default Ember.Route.extend(
+export default Route.extend(
   HasSlideoutOutlet,
   IsAuthenticated,
   RequiresSetup,
   SupportsFeedbackSlideout,
   {
-    adminService: Ember.inject.service(),
-    authService: Ember.inject.service(),
-    dataService: Ember.inject.service(),
-    requestService: Ember.inject.service(),
-    stateService: Ember.inject.service(),
+    adminService: service(),
+    authService: service(),
+    dataService: service(),
+    requestService: service(),
+    stateService: service(),
 
     slideoutOutlet: Constants.SLIDEOUT.OUTLET.DETAIL,
 
@@ -91,23 +95,23 @@ export default Ember.Route.extend(
             const people = this.controller.get('people');
             if (people) {
               people.unshiftObject(staff);
-              this.controller.set('people', Ember.copy(people));
+              this.controller.set('people', copy(people));
             }
             callIfPresent(this, then);
           });
       },
       markStaff(data) {
-        const people = Ember.isArray(data) ? data : [data];
+        const people = isArray(data) ? data : [data];
         people.forEach(person => person.makeStaff());
         this._changeStaffStatus(people);
       },
       markAdmin(data) {
-        const people = Ember.isArray(data) ? data : [data];
+        const people = isArray(data) ? data : [data];
         people.forEach(person => person.makeAdmin());
         this._changeStaffStatus(people);
       },
       markBlocked(data) {
-        const people = Ember.isArray(data) ? data : [data];
+        const people = isArray(data) ? data : [data];
         people.forEach(person => person.block());
         this._changeStaffStatus(people);
       },
@@ -142,7 +146,7 @@ export default Ember.Route.extend(
           });
       },
       updateTeamMemberships(teams, person, then = undefined) {
-        const people = Ember.isArray(person) ? person : [person];
+        const people = isArray(person) ? person : [person];
         return new RSVP.Promise((resolve, reject) => {
           this.get('dataService')
             .persist(teams)
@@ -150,7 +154,7 @@ export default Ember.Route.extend(
               // allows for some time for the backend to save the new membership state
               run.later(() => {
                 this.get('requestService')
-                  .handleIfError(Ember.RSVP.all(people.map(person => person.reload())))
+                  .handleIfError(all(people.map(person => person.reload())))
                   .then(() => {
                     callIfPresent(this, then);
                     resolve();

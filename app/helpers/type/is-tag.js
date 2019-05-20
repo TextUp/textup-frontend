@@ -1,8 +1,8 @@
+import { helper as buildHelper } from '@ember/component/helper';
 import TypeUtils from 'textup-frontend/utils/type';
-import Ember from 'ember';
 
 export function typeIsTag([obj]) {
   return TypeUtils.isTag(obj);
 }
 
-export default Ember.Helper.helper(typeIsTag);
+export default buildHelper(typeIsTag);

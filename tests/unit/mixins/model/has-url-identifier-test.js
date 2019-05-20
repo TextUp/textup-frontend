@@ -1,12 +1,11 @@
+import { run } from '@ember/runloop';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
 import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
-import Ember from 'ember';
 import ModelHasUrlIdentifierMixin from 'textup-frontend/mixins/model/has-url-identifier';
 import { moduleFor, test } from 'ember-qunit';
 
-const { run } = Ember,
-  MODEL_NAME = 'has-url-identifier-model';
+const MODEL_NAME = 'has-url-identifier-model';
 
 moduleFor('mixin:model/has-url-identifier', 'Unit | Mixin | model/has url identifier', {
   beforeEach() {

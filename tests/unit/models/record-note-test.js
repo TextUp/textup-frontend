@@ -1,11 +1,11 @@
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import sinon from 'sinon';
 import { mockModel } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForModel, test } from 'ember-qunit';
 
-const { run, typeOf } = Ember;
 let server;
 
 moduleForModel('record-note', 'Unit | Model | record note', {

@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { format } from 'textup-frontend/utils/phone-number';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('notification-summary', 'Integration | Component | notification summary', {
   integration: true,

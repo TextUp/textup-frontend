@@ -1,12 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import { moduleFor, test } from 'ember-qunit';
-
-// Need to use an integration or acceptance test to evaluate if embedded objects are properly
-// deserialized because attempting to test this in a unit test results in errors due to
-// unidentified parts of the environment not being initialized
-
-const { run } = Ember;
 
 moduleFor('adapter:future-message', 'Unit | Adapter | future message', {
   needs: [

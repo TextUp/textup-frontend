@@ -1,12 +1,12 @@
+import Service from '@ember/service';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:validate-auth-service', 'Unit | Service | validate auth service', {
   beforeEach() {
-    this.register('service:requestService', Ember.Service);
+    this.register('service:requestService', Service);
     this.inject.service('requestService');
   },
 });

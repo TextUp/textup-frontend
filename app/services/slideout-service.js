@@ -1,12 +1,12 @@
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+import Service from '@ember/service';
+import { get, set } from '@ember/object';
 
-const { computed, set, get } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   // Properties
   // ----------
 
-  shouldShow: computed.readOnly('_outletNameToCurrentSlideoutName'),
+  shouldShow: readOnly('_outletNameToCurrentSlideoutName'),
 
   // Internal properties
   // -------------------

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import HintUtils from 'textup-frontend/utils/hint-info';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
-  tutorialService: Ember.inject.service(),
+export default Component.extend(PropTypesMixin, {
+  tutorialService: service(),
 
   propTypes: {
     hintId: PropTypes.string.isRequired,

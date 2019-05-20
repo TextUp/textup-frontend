@@ -1,38 +1,41 @@
+import { alias, notEmpty, equal } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
+import { computed } from '@ember/object';
+import { assign } from '@ember/polyfills';
 import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { isPresent, computed, assign } = Ember,
-  Validations = buildValidations(
-    assign(
-      {
-        name: { description: 'Name', validators: [validator('presence', true)] },
-        username: {
-          description: 'Username',
-          validators: [
-            validator('presence', true),
-            validator('format', {
-              regex: /^[-_=@.,;A-Za-z0-9]+$/,
-              message:
-                'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;',
-            }),
-          ],
-        },
-        lockCode: {
-          description: 'Lock Code',
-          validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
-        },
-        email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
+const Validations = buildValidations(
+  assign(
+    {
+      name: { description: 'Name', validators: [validator('presence', true)] },
+      username: {
+        description: 'Username',
+        validators: [
+          validator('presence', true),
+          validator('format', {
+            regex: /^[-_=@.,;A-Za-z0-9]+$/,
+            message:
+              'Usernames may not have spaces and can only include letters, numbers and the following symbols - _ = @ . , ;',
+          }),
+        ],
       },
-      OwnsPhoneValidations
-    )
-  );
+      lockCode: {
+        description: 'Lock Code',
+        validators: [validator('length', { is: 4, allowNone: true, allowBlank: true })],
+      },
+      email: { description: 'Email', validators: [validator('format', { type: 'email' })] },
+    },
+    OwnsPhoneValidations
+  )
+);
 
 export default DS.Model.extend(
   Dirtiable,
@@ -41,7 +44,7 @@ export default DS.Model.extend(
   OwnsPhone,
   Validations,
   {
-    authService: Ember.inject.service(),
+    authService: service(),
 
     // Overrides
     // ---------
@@ -54,7 +57,7 @@ export default DS.Model.extend(
       this._super(...arguments);
       this.rollbackAttributes();
     },
-    hasManualChanges: computed.alias('ownsPhoneHasManualChanges'),
+    hasManualChanges: alias('ownsPhoneHasManualChanges'),
 
     // Properties
     // ----------
@@ -73,7 +76,7 @@ export default DS.Model.extend(
     shouldAddToGeneralUpdatesList: DS.attr('boolean', { defaultValue: false }),
     isSelected: false,
 
-    [Constants.PROP_NAME.SHARING_IDENT]: computed.alias('phone.content.id'),
+    [Constants.PROP_NAME.SHARING_IDENT]: alias('phone.content.id'),
     transferFilter: computed('name', 'username', 'email', function() {
       const name = this.get('name'),
         username = this.get('username'),
@@ -86,16 +89,16 @@ export default DS.Model.extend(
     }),
 
     personalNumber: DS.attr('phone-number'),
-    hasPersonalNumber: computed.notEmpty('personalNumber'),
+    hasPersonalNumber: notEmpty('personalNumber'),
 
     status: DS.attr('string'),
-    isBlocked: computed.equal('status', Constants.STAFF.STATUS.BLOCKED),
-    isPending: computed.equal('status', Constants.STAFF.STATUS.PENDING),
-    isStaff: computed.equal('status', Constants.STAFF.STATUS.STAFF),
-    isAdmin: computed.equal('status', Constants.STAFF.STATUS.ADMIN),
+    isBlocked: equal('status', Constants.STAFF.STATUS.BLOCKED),
+    isPending: equal('status', Constants.STAFF.STATUS.PENDING),
+    isStaff: equal('status', Constants.STAFF.STATUS.STAFF),
+    isAdmin: equal('status', Constants.STAFF.STATUS.ADMIN),
 
     teams: DS.hasMany('team'),
-    hasTeams: computed.notEmpty('teams'),
+    hasTeams: notEmpty('teams'),
 
     allActivePhoneOwners: computed('phone.content.isActive', '_teamsWithPhones.[]', function() {
       const phoneOwners = this.get('phone.content.isActive') ? [this] : [];

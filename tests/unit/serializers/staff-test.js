@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import OwnsPhoneSerializer from 'textup-frontend/mixins/serializer/owns-phone';
 import StaffSerializer from 'textup-frontend/serializers/staff';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('staff', 'Unit | Serializer | staff', {
   needs: [

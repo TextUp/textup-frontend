@@ -1,15 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import $ from 'jquery';
+import { isBlank, isEmpty, tryInvoke } from '@ember/utils';
+import { computed } from '@ember/object';
+import { scheduleOnce, next } from '@ember/runloop';
 import defaultIfAbsent from '../../utils/default-if-absent';
 
-const {
-  $,
-  isEmpty,
-  isBlank,
-  computed,
-  run: { next, scheduleOnce },
-} = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   displayProperty: null,
   placeholder: defaultIfAbsent(''),
   itemClass: defaultIfAbsent(''),
@@ -70,7 +66,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    Ember.tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
+    tryInvoke(this, 'doRegister', [this.get('publicAPI')]);
   },
   didInsertElement() {
     this._super(...arguments);
@@ -209,7 +205,7 @@ export default Ember.Component.extend({
 
   insert(event) {
     const $input = this.get('inputObj'),
-      result = Ember.tryInvoke(this, 'onInsert', [$input.val(), event]);
+      result = tryInvoke(this, 'onInsert', [$input.val(), event]);
     if (result && result.then) {
       result.then(() => this.clearInput());
     }
@@ -228,7 +224,7 @@ export default Ember.Component.extend({
     if (isValEmpty || inputVal === this.get('_originalBeforeEdits')) {
       this._stopEditing($input, $node);
     } else {
-      const result = Ember.tryInvoke(this, 'onUpdate', [object, $input.val(), event]);
+      const result = tryInvoke(this, 'onUpdate', [object, $input.val(), event]);
       if (result && result.then) {
         result.then(() => {
           // on success, stop editing and don't revert
@@ -248,7 +244,7 @@ export default Ember.Component.extend({
       // run next to allow click out to close handler to run first
       next(this, function() {
         const $next = this._getNextItem($node);
-        Ember.tryInvoke(this, 'onRemove', [object]);
+        tryInvoke(this, 'onRemove', [object]);
         scheduleOnce('afterRender', this, function() {
           this.resetEditing();
           $next.focus();
@@ -260,11 +256,11 @@ export default Ember.Component.extend({
   },
   _inputStart(event) {
     this.set('_lastInputValue', event.target.value);
-    Ember.tryInvoke(this, 'onInputStart', [event.target.value, event]);
+    tryInvoke(this, 'onInputStart', [event.target.value, event]);
   },
   _inputChange(inputVal, event) {
     if (this.get('_lastInputValue') !== inputVal) {
-      Ember.tryInvoke(this, 'onInput', [inputVal, event]);
+      tryInvoke(this, 'onInput', [inputVal, event]);
     }
     this.set('_lastInputValue', inputVal);
   },

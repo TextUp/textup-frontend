@@ -1,16 +1,16 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { isPresent } from '@ember/utils';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import Loading from 'textup-frontend/mixins/loading-slider';
 
-const { isPresent } = Ember;
-
-export default Ember.Route.extend(HasSlideoutOutlet, Loading, {
-  authService: Ember.inject.service(),
-  lockService: Ember.inject.service(),
-  notifications: Ember.inject.service('notification-messages-service'),
-  requestService: Ember.inject.service(),
-  splashScreenService: Ember.inject.service(),
-  stateService: Ember.inject.service(),
+export default Route.extend(HasSlideoutOutlet, Loading, {
+  authService: service(),
+  lockService: service(),
+  notifications: service('notification-messages-service'),
+  requestService: service(),
+  splashScreenService: service(),
+  stateService: service(),
 
   init() {
     // For some reason, cannot set these defaults in an initializer so we need to set the default

@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import { empty } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-const { computed } = Ember;
-
-export default Ember.Controller.extend({
-  tutorialService: Ember.inject.service(),
+export default Controller.extend({
+  tutorialService: service(),
 
   queryParams: ['searchQuery'],
   searchQuery: null, // actual search query that is stored in browser history
 
-  searchQueryIsEmpty: computed.empty('searchQuery'),
+  searchQueryIsEmpty: empty('searchQuery'),
 
   _searchQuery: null, // local copy of search query associated with the input
 

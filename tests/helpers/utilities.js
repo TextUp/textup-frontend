@@ -1,8 +1,8 @@
+import EmberObject from '@ember/object';
+import { assign } from '@ember/polyfills';
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
-
-const { assign, run } = Ember;
 
 // `assert.throws` will not accept an arrow function as the second argument
 // see: https://github.com/nodejs/node/issues/3275
@@ -62,7 +62,7 @@ export function mockValidMediaAudio(store) {
 }
 
 export function mockModel(id, modelName, otherProps = {}) {
-  return Ember.Object.create(assign(otherProps, { id, constructor: { modelName }, modelName }));
+  return EmberObject.create(assign(otherProps, { id, constructor: { modelName }, modelName }));
 }
 
 export function mockRecordClusters(

@@ -1,30 +1,33 @@
+import { match, readOnly } from '@ember/object/computed';
+import { removeObserver, addObserver } from '@ember/object/observers';
+import Service, { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, run, typeOf } = Ember;
-
-export default Ember.Service.extend({
-  router: Ember.inject.service(),
-  storageService: Ember.inject.service(),
+export default Service.extend({
+  router: service(),
+  storageService: service(),
 
   willDestroy() {
     this._super(...arguments);
-    Ember.removeObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
+    removeObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
   },
 
   // Properties
   // ----------
 
-  viewingContacts: computed.match('router.currentRouteName', /main.contacts/),
-  viewingTag: computed.match('router.currentRouteName', /main.tag/),
-  viewingSearch: computed.match('router.currentRouteName', /main.search/),
-  viewingMany: computed.match('router.currentRouteName', /many/),
-  viewingPeople: computed.match('router.currentRouteName', /admin.people/),
-  viewingTeam: computed.match('router.currentRouteName', /admin.team/),
-  currentRouteName: computed.readOnly('router.currentRouteName'),
+  viewingContacts: match('router.currentRouteName', /main.contacts/),
+  viewingTag: match('router.currentRouteName', /main.tag/),
+  viewingSearch: match('router.currentRouteName', /main.search/),
+  viewingMany: match('router.currentRouteName', /many/),
+  viewingPeople: match('router.currentRouteName', /admin.people/),
+  viewingTeam: match('router.currentRouteName', /admin.team/),
+  currentRouteName: readOnly('router.currentRouteName'),
 
   // the current phone owner -- may be the logged-in user or a team that the user is on
   owner: null,
@@ -46,7 +49,7 @@ export default Ember.Service.extend({
 
   startTrackingAndGetUrlToRestoreIfNeeded(targetRouteName) {
     // start tracking
-    Ember.addObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
+    addObserver(this.get('router'), 'currentURL', this, this._scheduleUpdateTrackedUrl);
     // determing if stored url should be restored
     const storedUrl = this.get('storageService').getItem(StorageUtils.currentUrlKey());
     if (storedUrl && typeOf(targetRouteName) === 'string') {

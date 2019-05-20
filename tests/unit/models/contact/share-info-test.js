@@ -1,9 +1,7 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import Shareable from 'textup-frontend/mixins/model/shareable';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('contact/share-info', 'Unit | Model | contact/share info', {
   needs: [],

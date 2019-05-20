@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
+import { isPresent, typeOf } from '@ember/utils';
 import hbs from 'htmlbars-inline-precompile';
 import MediaElement from 'textup-frontend/models/media-element';
 import PhotoUtils from 'textup-frontend/utils/photo';
@@ -6,8 +9,6 @@ import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf, isPresent } = Ember;
 
 moduleForComponent(
   'responsive-image-gallery',
@@ -18,18 +19,18 @@ moduleForComponent(
 );
 
 test('inputs + rendering block form', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     testClass = 'responsive-image-gallery-block-form',
     images = [mockValidMediaImage(store), mockValidMediaImage(store)];
 
   this.render(hbs`{{responsive-image-gallery}}`);
-  assert.ok(Ember.$('.pswp').length, 'has rendered, images being null is acceptable');
+  assert.ok($('.pswp').length, 'has rendered, images being null is acceptable');
   assert.notOk(this.$('.pswp').length, 'not child of component because hoisted to top level');
 
   this.set('images', []);
   this.render(hbs`{{responsive-image-gallery images=images}}`);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered, empty images are acceptable');
+  assert.ok($('.pswp').length, 'has rendered, empty images are acceptable');
   assert.notOk(this.$('.pswp').length, 'not child of component because hoisted to top level');
 
   this.setProperties({ images, testClass });
@@ -41,13 +42,13 @@ test('inputs + rendering block form', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered');
+  assert.ok($('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 });
 
 test('overridden options', function(assert) {
   // see https://discuss.emberjs.com/t/ember-component-creation-error-in-2-10/12087/7
-  const component = Ember.getOwner(this)
+  const component = getOwner(this)
     .factoryFor('component:responsive-image-gallery')
     .create({ images: [] });
 
@@ -61,7 +62,7 @@ test('overridden options', function(assert) {
 });
 
 test('requires some images to open gallery', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     testClass = 'responsive-image-gallery-test',
     images = [],
     done = assert.async();
@@ -75,8 +76,8 @@ test('requires some images to open gallery', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered');
-  assert.notOk(Ember.$('.pswp--open').length, 'is closed');
+  assert.ok($('.pswp').length, 'has rendered');
+  assert.notOk($('.pswp--open').length, 'is closed');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -85,7 +86,7 @@ test('requires some images to open gallery', function(assert) {
 
   wait()
     .then(() => {
-      assert.notOk(Ember.$('.pswp--open').length, 'still closed because no images');
+      assert.notOk($('.pswp--open').length, 'still closed because no images');
 
       this.set('images', [mockValidMediaImage(store)]);
 
@@ -96,14 +97,14 @@ test('requires some images to open gallery', function(assert) {
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.pswp--open').length, 'opened because now has images');
+      assert.ok($('.pswp--open').length, 'opened because now has images');
 
       done();
     });
 });
 
 test('getting thumbnail bounds function for zooming effect', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     testClass = 'responsive-image-gallery-block-form',
     images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
@@ -120,7 +121,7 @@ test('getting thumbnail bounds function for zooming effect', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered');
+  assert.ok($('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -155,7 +156,7 @@ test('getting thumbnail bounds function for zooming effect', function(assert) {
 });
 
 test('selecting appropriate versions based on viewport width', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     testClass = 'responsive-image-gallery-block-form',
     images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
@@ -171,7 +172,7 @@ test('selecting appropriate versions based on viewport width', function(assert) 
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered');
+  assert.ok($('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)
@@ -179,7 +180,7 @@ test('selecting appropriate versions based on viewport width', function(assert) 
     .triggerHandler('click');
 
   // wait doesn't want long enough
-  Ember.run.later(() => {
+  later(() => {
     assert.ok(gettingDataStub.called, 'getting data is called on opening');
     gettingDataStub.args.forEach(argList => {
       assert.ok(argList.every(arg => isPresent(arg)), 'all passed-in args are defined');
@@ -193,7 +194,7 @@ test('selecting appropriate versions based on viewport width', function(assert) 
 });
 
 test('deciding responsive reload on resize', function(assert) {
-  const store = Ember.getOwner(this).lookup('service:store'),
+  const store = getOwner(this).lookup('service:store'),
     testClass = 'responsive-image-gallery-block-form',
     images = [mockValidMediaImage(store), mockValidMediaImage(store)],
     done = assert.async(),
@@ -210,7 +211,7 @@ test('deciding responsive reload on resize', function(assert) {
     {{/responsive-image-gallery}}
   `);
 
-  assert.ok(Ember.$('.pswp').length, 'has rendered');
+  assert.ok($('.pswp').length, 'has rendered');
   assert.equal(this.$(`.${testClass}`).length, images.length);
 
   this.$(`.${testClass}`)

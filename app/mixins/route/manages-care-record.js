@@ -1,13 +1,14 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
+import { tryInvoke } from '@ember/utils';
+import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 
-const { tryInvoke, RSVP } = Ember;
-
-export default Ember.Mixin.create({
-  dataService: Ember.inject.service(),
-  mediaService: Ember.inject.service(),
-  recordItemService: Ember.inject.service(),
-  tutorialService: Ember.inject.service(),
+export default Mixin.create({
+  dataService: service(),
+  mediaService: service(),
+  recordItemService: service(),
+  tutorialService: service(),
 
   // For routes with dynamic segments, each time the model hook is called, the `setupController`
   // hook will also be called. We DO NOT want to set `careRecordRef` and `careRecordText` to null

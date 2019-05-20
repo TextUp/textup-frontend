@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { isRecordingSupported } from 'textup-frontend/utils/audio';
 
 export function canRecordAudio() {
   return isRecordingSupported();
 }
 
-export default Ember.Helper.helper(canRecordAudio);
+export default buildHelper(canRecordAudio);

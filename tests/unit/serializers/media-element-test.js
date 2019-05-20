@@ -1,8 +1,6 @@
+import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForModel('media-element', 'Unit | Serializer | media element', {
   needs: ['serializer:media-element', 'model:media-element-version', 'transform:fragment-array'],

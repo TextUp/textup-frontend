@@ -1,24 +1,25 @@
+import { readOnly, uniqBy, sort } from '@ember/object/computed';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { get, getWithDefault, computed } from '@ember/object';
 import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import MF from 'ember-data-model-fragments';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, getWithDefault, tryInvoke, isPresent, get } = Ember,
-  Validations = buildValidations({
-    awayMessage: {
-      description: 'Away Message',
-      validators: [
-        validator('length', {
-          allowBlank: false,
-          min: 1,
-          max: computed.readOnly('model.awayMessageMaxLength'),
-        }),
-      ],
-    },
-  });
+const Validations = buildValidations({
+  awayMessage: {
+    description: 'Away Message',
+    validators: [
+      validator('length', {
+        allowBlank: false,
+        min: 1,
+        max: readOnly('model.awayMessageMaxLength'),
+      }),
+    ],
+  },
+});
 
 export default DS.Model.extend(Dirtiable, Validations, {
   // Overrides
@@ -56,9 +57,9 @@ export default DS.Model.extend(Dirtiable, Validations, {
   policies: MF.fragmentArray('owner-policy'),
 
   totalNumContacts: null,
-  contacts: computed.readOnly('_sortedContacts'),
+  contacts: readOnly('_sortedContacts'),
   contactsFilter: null,
-  contactStatuses: computed.readOnly('_contactStatuses'),
+  contactStatuses: readOnly('_contactStatuses'),
 
   // Private properties
   // ------------------
@@ -83,9 +84,9 @@ export default DS.Model.extend(Dirtiable, Validations, {
     const statuses = this.get('_contactStatuses');
     return this.get('_contacts').filter(contact => statuses.includes(get(contact, 'status')));
   }),
-  _uniqueContacts: computed.uniqBy('_filteredContacts', 'id'),
+  _uniqueContacts: uniqBy('_filteredContacts', 'id'),
   _contactSortOptions: ['intStatus:asc', 'lastRecordActivity:desc'],
-  _sortedContacts: computed.sort('_uniqueContacts', '_contactSortOptions'),
+  _sortedContacts: sort('_uniqueContacts', '_contactSortOptions'),
 
   // Methods
   // -------

@@ -1,13 +1,14 @@
+import $ from 'jquery';
+import { getOwner } from '@ember/application';
+import { typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { mockRecordClusters } from 'textup-frontend/tests/helpers/utilities';
 import { moduleForComponent, test } from 'ember-qunit';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
-
-const { typeOf, run } = Ember;
 
 moduleForComponent('care-record', 'Integration | Component | care record', {
   integration: true,
@@ -109,7 +110,7 @@ test('doRegister a reference to the public API', function(assert) {
 test('text handler returns outcome', function(assert) {
   const done = assert.async(),
     onText = sinon.spy(),
-    obj = Ember.getOwner(this)
+    obj = getOwner(this)
       .factoryFor('component:care-record')
       .create({ onText });
 
@@ -173,7 +174,7 @@ test('starting call', function(assert) {
     recordClusters.length,
     'all single-item clusters rendered'
   );
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   // open the dropdown
   this.$('.record-actions-control__action-container button')
@@ -184,15 +185,15 @@ test('starting call', function(assert) {
     assert.ok(originalScrollPosition > 0, 'scroll is all the way at bottom');
     this.$('.infinite-scroll__scroll-container').scrollTop(0); // scroll record to top
 
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
-      Ember.$('.pop-over__body--open .dropdown-item').length,
+      $('.pop-over__body--open .dropdown-item').length,
       4,
       'all four actions available'
     );
     assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(1)
       .triggerHandler('click');
     run.later(() => {
@@ -274,7 +275,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
   `);
 
   assert.ok(this.$('.care-record').length, 'did render');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
   assert.equal(
     this.$('.record-cluster__item').length,
     recordClusters.length,
@@ -286,16 +287,16 @@ test('adding note in the past + cannot modify existing', function(assert) {
     .first()
     .triggerHandler('click');
   run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
-      Ember.$('.pop-over__body--open .dropdown-item').length,
+      $('.pop-over__body--open .dropdown-item').length,
       3,
       'three of four options because no phone number provided'
     );
     assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
     assert.notOk(this.$('.care-record__add-note__button').length, 'no add buttons shown');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(1) // with three items, the second one is to add note in the past
       .triggerHandler('click');
     run.later(() => {
@@ -305,7 +306,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
         'add buttons displayed, one for each single-item cluster'
       );
       assert.equal(
-        Ember.$('.record-item--note button').length,
+        $('.record-item--note button').length,
         recordClusters.length,
         'each rendered note has a dropdown menu'
       );
@@ -317,7 +318,7 @@ test('adding note in the past + cannot modify existing', function(assert) {
       this.set('canModifyExistingInRecord', false);
 
       assert.notOk(
-        Ember.$('.record-item--note button').length,
+        $('.record-item--note button').length,
         'if cannot modify existing in record + no revisions, note dropdown menus are hidden'
       );
 
@@ -345,16 +346,16 @@ test('adding note in the past', function(assert) {
     .first()
     .triggerHandler('click');
   run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
     assert.equal(
-      Ember.$('.pop-over__body--open .dropdown-item').length,
+      $('.pop-over__body--open .dropdown-item').length,
       3,
       'three of four options because no phone number provided'
     );
     assert.notOk(this.$('.record-actions-control__overlay--open').length, 'no overlays open');
     assert.notOk(this.$('.care-record__add-note__button').length, 'no add buttons shown');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(1) // with three items, the second one is to add note in the past
       .triggerHandler('click');
     run.later(() => {
@@ -364,7 +365,7 @@ test('adding note in the past', function(assert) {
         'add buttons displayed, one for each single-item cluster'
       );
       assert.equal(
-        Ember.$('.record-item--note button').length,
+        $('.record-item--note button').length,
         recordClusters.length,
         'each rendered note has a dropdown menu'
       );

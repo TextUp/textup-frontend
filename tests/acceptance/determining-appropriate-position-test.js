@@ -1,11 +1,10 @@
+import { run } from '@ember/runloop';
 import AuthService from 'textup-frontend/services/auth-service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import moduleForAcceptance from 'textup-frontend/tests/helpers/module-for-acceptance';
 import sinon from 'sinon';
 import { test } from 'qunit';
 
-const { run } = Ember;
 let store, server, mockAuthService;
 
 moduleForAcceptance('Acceptance | determining appropriate position', {

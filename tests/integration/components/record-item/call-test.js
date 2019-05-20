@@ -1,17 +1,20 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-import { VALID_IMAGE_DATA_URL, VALID_MP3_URL_1 } from 'textup-frontend/tests/helpers/utilities';
+import {
+  VALID_IMAGE_DATA_URL,
+  VALID_MP3_URL_1
+} from 'textup-frontend/tests/helpers/utilities';
 
-const { run } = Ember;
 let store;
 
 moduleForComponent('record-item/call', 'Integration | Component | record item/call', {
   integration: true,
   beforeEach() {
-    store = Ember.getOwner(this).lookup('service:store');
+    store = getOwner(this).lookup('service:store');
   },
 });
 

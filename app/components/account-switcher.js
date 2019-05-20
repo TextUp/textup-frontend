@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import Staff from 'textup-frontend/models/staff';
 
@@ -6,7 +6,7 @@ import Staff from 'textup-frontend/models/staff';
 // so we are unable to set the `authUser` property on `authService` and must allow for the `user`
 // prop-type for this component to sometimes be null
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     onLogOut: PropTypes.func.isRequired,
     user: PropTypes.oneOfType([PropTypes.null, PropTypes.instanceOf(Staff)]),

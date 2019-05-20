@@ -1,12 +1,13 @@
+import $ from 'jquery';
+import { typeOf } from '@ember/utils';
+import RSVP from 'rsvp';
+import { run } from '@ember/runloop';
 import * as PullToRefreshComponent from 'textup-frontend/components/infinite-scroll/pull-to-refresh';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { typeOf, RSVP, run } = Ember;
 
 moduleForComponent('infinite-scroll', 'Integration | Component | infinite scroll', {
   integration: true,
@@ -526,11 +527,11 @@ test('refreshing + scroll container is disabled when refreshing', function(asser
       })
   );
   const $refreshContent = this.$('.infinite-scroll__pull-to-refresh__content');
-  $refreshContent.trigger(Ember.$.Event('mousedown', { pageY: 0 }));
+  $refreshContent.trigger($.Event('mousedown', { pageY: 0 }));
   $refreshContent.trigger(
-    Ember.$.Event('mousemove', { pageY: PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX })
+    $.Event('mousemove', { pageY: PullToRefreshComponent.MAX_PULL_LENGTH_IN_PX })
   );
-  $refreshContent.trigger(Ember.$.Event('mouseup'));
+  $refreshContent.trigger($.Event('mouseup'));
   wait()
     .then(() => {
       assert.ok(this.$('.infinite-scroll__pull-to-refresh--refreshing').length, 'is refreshing');

@@ -1,17 +1,18 @@
+import { notEmpty, alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
-import Ember from 'ember';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsFutureMessages from 'textup-frontend/mixins/model/owns-future-messages';
 import OwnsRecordItems from 'textup-frontend/mixins/model/owns-record-items';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, typeOf } = Ember,
-  Validations = buildValidations({
-    name: { description: 'Name', validators: [validator('presence', true)] },
-  });
+const Validations = buildValidations({
+  name: { description: 'Name', validators: [validator('presence', true)] },
+});
 
 export default DS.Model.extend(
   Dirtiable,
@@ -36,13 +37,13 @@ export default DS.Model.extend(
       this._super(...arguments);
       this.rollbackAttributes();
     },
-    hasManualChanges: computed.notEmpty('actions'),
+    hasManualChanges: notEmpty('actions'),
 
     // Properties
     // ----------
 
     name: DS.attr('string'),
-    [Constants.PROP_NAME.FILTER_VAL]: computed.alias('name'),
+    [Constants.PROP_NAME.FILTER_VAL]: alias('name'),
 
     hexColor: DS.attr('string', { defaultValue: Constants.COLOR.BRAND }),
     phone: DS.belongsTo('phone'),

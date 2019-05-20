@@ -1,11 +1,12 @@
+import { isArray } from '@ember/array';
+import { getOwner } from '@ember/application';
+import $ from 'jquery';
+import { run, later } from '@ember/runloop';
 import AudioUtils from 'textup-frontend/utils/audio';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { run } = Ember;
 
 moduleForComponent('record-actions-control', 'Integration | Component | record actions control', {
   integration: true,
@@ -62,16 +63,16 @@ test('rendering for personal phone number and items in record', function(assert)
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   this.$('.record-actions-control__dropdown-trigger')
     .first()
     .triggerHandler('click');
   wait()
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-      assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 2, 'two dropdown items');
-      const text = Ember.$('.pop-over__body--open .dropdown-item')
+      assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+      assert.equal($('.pop-over__body--open .dropdown-item').length, 2, 'two dropdown items');
+      const text = $('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -83,13 +84,13 @@ test('rendering for personal phone number and items in record', function(assert)
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+      assert.ok($('.pop-over__body--open').length, 'dropdown is open');
       assert.equal(
-        Ember.$('.pop-over__body--open .dropdown-item').length,
+        $('.pop-over__body--open .dropdown-item').length,
         3,
         'three dropdown items'
       );
-      const text = Ember.$('.pop-over__body--open .dropdown-item')
+      const text = $('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -101,13 +102,13 @@ test('rendering for personal phone number and items in record', function(assert)
       return wait();
     })
     .then(() => {
-      assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
+      assert.ok($('.pop-over__body--open').length, 'dropdown is open');
       assert.equal(
-        Ember.$('.pop-over__body--open .dropdown-item').length,
+        $('.pop-over__body--open .dropdown-item').length,
         4,
         'four dropdown items'
       );
-      const text = Ember.$('.pop-over__body--open .dropdown-item')
+      const text = $('.pop-over__body--open .dropdown-item')
         .text()
         .toLowerCase();
       assert.ok(text.includes('schedule'), 'has schedule');
@@ -158,7 +159,7 @@ test('updating content follows DDAU', function(assert) {
 test('send text handler returns outcome', function(assert) {
   const onText = sinon.stub(),
     randVal = Math.random(),
-    obj = Ember.getOwner(this)
+    obj = getOwner(this)
       .factoryFor('component:record-actions-control')
       .create({ onText });
   onText.callsFake(() => randVal);
@@ -180,22 +181,22 @@ test('trigger schedule message action', function(assert) {
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   this.$('.record-actions-control__dropdown-trigger')
     .first()
     .triggerHandler('click');
   // wait doesn't wait long enough for event listeners to bound to body
-  Ember.run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
+  later(() => {
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal($('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .first()
       .click();
     // wait doesn't wait long enough
-    Ember.run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
+    later(() => {
+      assert.notOk($('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onScheduleMessage.calledOnce);
 
       done();
@@ -216,21 +217,21 @@ test('trigger make call action', function(assert) {
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   this.$('.record-actions-control__dropdown-trigger')
     .first()
     .triggerHandler('click');
 
-  Ember.run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
+  later(() => {
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal($('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(1)
       .click();
-    Ember.run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
+    later(() => {
+      assert.notOk($('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onCall.calledOnce);
 
       done();
@@ -251,20 +252,20 @@ test('trigger add note in past action', function(assert) {
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   this.$('.record-actions-control__dropdown-trigger')
     .first()
     .triggerHandler('click');
-  Ember.run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
+  later(() => {
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal($('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(2)
       .click();
-    Ember.run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
+    later(() => {
+      assert.notOk($('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onAddNoteInPast.calledOnce);
 
       done();
@@ -285,20 +286,20 @@ test('trigger add note now action', function(assert) {
 
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.record-actions-control__dropdown-trigger').length, 'has trigger');
-  assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown is closed');
+  assert.notOk($('.pop-over__body--open').length, 'dropdown is closed');
 
   this.$('.record-actions-control__dropdown-trigger')
     .first()
     .triggerHandler('click');
-  Ember.run.later(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length, 'dropdown is open');
-    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
+  later(() => {
+    assert.ok($('.pop-over__body--open').length, 'dropdown is open');
+    assert.equal($('.pop-over__body--open .dropdown-item').length, 4, 'four dropdown items');
 
-    Ember.$('.pop-over__body--open .dropdown-item')
+    $('.pop-over__body--open .dropdown-item')
       .eq(3)
       .click();
-    Ember.run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'dropdown closes on click');
+    later(() => {
+      assert.notOk($('.pop-over__body--open').length, 'dropdown closes on click');
       assert.ok(onAddNote.calledOnce);
 
       done();
@@ -327,7 +328,7 @@ test('sending text', function(assert) {
   wait().then(() => {
     assert.ok(onText.calledOnce);
     assert.ok(onText.firstCall.args[0] === contents, 'first arg is contents');
-    assert.ok(Ember.isArray(onText.firstCall.args[1]), 'second arg is images array');
+    assert.ok(isArray(onText.firstCall.args[1]), 'second arg is images array');
 
     done();
   });
@@ -344,27 +345,27 @@ test('test adding media when audio recording is supported', function(assert) {
   assert.ok(this.$('.record-actions-control').length, 'did render');
   assert.ok(this.$('.compose-text .pop-over').length, 'has media pop over in compose text');
   assert.ok(this.$('.compose-text .pop-over button').length);
-  assert.notOk(Ember.$('.pop-over__body--open').length);
+  assert.notOk($('.pop-over__body--open').length);
   assert.ok(onHeightChange.notCalled);
 
   this.$('.compose-text .pop-over button')
     .first()
     .triggerHandler('click');
   wait().then(() => {
-    assert.ok(Ember.$('.pop-over__body--open').length);
-    assert.ok(Ember.$('.pop-over__body--open .photo-control__add').length);
-    assert.equal(Ember.$('.pop-over__body--open .dropdown-item').length, 2);
-    assert.ok(Ember.$('.pop-over__body--open li.dropdown-item:not(.photo-control__add)').length);
+    assert.ok($('.pop-over__body--open').length);
+    assert.ok($('.pop-over__body--open .photo-control__add').length);
+    assert.equal($('.pop-over__body--open .dropdown-item').length, 2);
+    assert.ok($('.pop-over__body--open li.dropdown-item:not(.photo-control__add)').length);
     assert.notOk(
       this.$('.record-actions-control__media-drawer').length,
       'media drawer is not open'
     );
 
-    Ember.$('.pop-over__body--open li.dropdown-item:not(.photo-control__add)')
+    $('.pop-over__body--open li.dropdown-item:not(.photo-control__add)')
       .first()
       .click(); // actually trigger click so pop over body will close
     run.later(() => {
-      assert.notOk(Ember.$('.pop-over__body--open').length, 'pop over is closed on click');
+      assert.notOk($('.pop-over__body--open').length, 'pop over is closed on click');
       assert.ok(this.$('.record-actions-control__media-drawer').length, 'media drawer is open');
       assert.ok(this.$('.record-actions-control__media-drawer .audio-control--recording').length);
       assert.ok(onHeightChange.calledOnce);

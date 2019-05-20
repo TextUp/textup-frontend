@@ -1,13 +1,13 @@
-// import CookieConsent to load the library
+import Component from '@ember/component';
 import CookieConsent from 'cookieconsent'; // eslint-disable-line
-import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { run } from '@ember/runloop';
 
-const { run } = Ember;
+// [NOTE] need to import CookieConsent to load the library into the global namespace
 
-export default Ember.Component.extend(PropTypesMixin, HasAppRoot, {
+export default Component.extend(PropTypesMixin, HasAppRoot, {
   propTypes: {
     theme: PropTypes.string,
     learnMoreLink: PropTypes.string,

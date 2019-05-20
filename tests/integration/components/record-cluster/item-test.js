@@ -1,17 +1,17 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import * as AliasModelNameInitializer from 'textup-frontend/initializers/alias-model-name';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 
-const { run } = Ember;
 let store;
 
 moduleForComponent('record-cluster/item', 'Integration | Component | record cluster/item', {
   integration: true,
   beforeEach() {
     AliasModelNameInitializer.aliasModelName();
-    store = Ember.getOwner(this).lookup('service:store');
+    store = getOwner(this).lookup('service:store');
   },
   afterEach() {
     AliasModelNameInitializer.cleanUpModelNameAlias();

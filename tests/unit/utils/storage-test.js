@@ -1,10 +1,8 @@
+import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TestUtils from 'textup-frontend/tests/helpers/utilities';
 import { module, test } from 'qunit';
-
-const { typeOf } = Ember;
 
 module('Unit | Utility | storage');
 

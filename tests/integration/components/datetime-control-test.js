@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import { moduleForComponent, test } from 'ember-qunit';
@@ -49,7 +49,7 @@ test('rendering disabled', function(assert) {
   // after a slight delay.
   setTimeout(function() {
     $inputs.each(function() {
-      const $input = Ember.$(this);
+      const $input = $(this);
       // before click
       assert.equal($input.prop('disabled'), true, 'is disabled before click');
       assert.equal($input.attr('aria-expanded'), 'false', 'is not expanded before click');
@@ -101,7 +101,7 @@ test('rendering with various formats and placeholders', function(assert) {
   setTimeout(() => {
     assert.equal($dateInput.attr('aria-expanded'), 'true', 'aria is expanded after clicking');
     const ownsId = $dateInput.attr('aria-owns');
-    Ember.$(`#${ownsId} td > div`).click();
+    $(`#${ownsId} td > div`).click();
     assert.equal($dateInput.val(), dateFormat, 'date is expressed via provided custom format');
     assert.equal($timeInput.val(), timeFormat, 'time is expressed via provided custom format');
 
@@ -161,8 +161,8 @@ test('rendering different time intervals', function(assert) {
     assert.equal($timeInput.attr('aria-expanded'), 'true', 'picker is expanded after selecting');
     // and check offsets for all time option items
     let prevValue = null;
-    Ember.$(`#${$timeInput.attr('aria-owns')} li`).each(function() {
-      const itemValue = Ember.$(this).data('pick');
+    $(`#${$timeInput.attr('aria-owns')} li`).each(function() {
+      const itemValue = $(this).data('pick');
       // don't run assertion for first item (val is 0) and last item (value is undefined)
       if (itemValue) {
         assert.equal(itemValue - prevValue, timeInterval, 'time options have appropriate offset');
@@ -196,7 +196,7 @@ test('minimum and maximum boundaries', function(assert) {
     // need the div because the footer has a non-selected button
     // that has the same date valuea as the currently-selected
     // calendar date entry
-    Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]`).each(function() {
+    $(`#${$dateInput.attr('aria-owns')} div[data-pick]`).each(function() {
       const day = moment(parseInt(this.dataset.pick));
       if (day.isBefore(minDate) || day.isAfter(maxDate)) {
         assert.equal(
@@ -221,7 +221,7 @@ test('minimum and maximum boundaries', function(assert) {
       assert.equal($dateInput.attr('aria-expanded'), 'false', 'date input not expanded');
       // before a value is being selected
       assert.equal(
-        Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+        $(`#${$timeInput.attr('aria-owns')} [data-pick]`)
           .eq(0)
           .data('pick'),
         0,
@@ -231,14 +231,14 @@ test('minimum and maximum boundaries', function(assert) {
       // select minimum date from the date picker
       $dateInput.click();
       setTimeout(() => {
-        Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
+        $(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
           .first()
           .click();
 
         // with the min date selected, the time picker now shows minimum
         $timeInput.click();
         assert.ok(
-          Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+          $(`#${$timeInput.attr('aria-owns')} [data-pick]`)
             .eq(0)
             .data('pick') >
             min.hour() * 60,
@@ -248,14 +248,14 @@ test('minimum and maximum boundaries', function(assert) {
         // select maximum date from date picker
         $dateInput.click();
         setTimeout(() => {
-          Ember.$(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
+          $(`#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`)
             .last()
             .click();
 
           // with the max date selected, the time picker now shows maximum
           $timeInput.click();
           assert.ok(
-            Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`)
+            $(`#${$timeInput.attr('aria-owns')} [data-pick]`)
               .last()
               .data('pick') <
               (max.hour() + 1) * 60,
@@ -305,7 +305,7 @@ test('handling change', function(assert) {
 
   // select date
   $dateInput.click();
-  const $dateToSelect = Ember.$(
+  const $dateToSelect = $(
     `#${$dateInput.attr('aria-owns')} div[data-pick]:not([aria-disabled])`
   ).first();
   datePick = $dateToSelect.data('pick');
@@ -313,7 +313,7 @@ test('handling change', function(assert) {
 
   // select time
   $timeInput.click();
-  const $timeToSelect = Ember.$(`#${$timeInput.attr('aria-owns')} [data-pick]`).eq(4);
+  const $timeToSelect = $(`#${$timeInput.attr('aria-owns')} [data-pick]`).eq(4);
   timePick = $timeToSelect.data('pick');
   $timeToSelect.click();
 });

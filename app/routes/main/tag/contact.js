@@ -1,11 +1,10 @@
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import MainContactsContactRoute from 'textup-frontend/routes/main/contacts/contact';
 
-const { computed } = Ember;
-
 export default MainContactsContactRoute.extend({
-  authService: Ember.inject.service(),
+  authService: service(),
 
   backRouteName: 'main.tag',
   backRouteLinkParams: computed(

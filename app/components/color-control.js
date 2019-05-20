@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import tc from 'tinycolor2';
 
-const { computed } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   disabled: defaultIfAbsent(false),
   placeholder: defaultIfAbsent('Pick a color on the right'),
   color: defaultIfAbsent('#1ba5e0'),
@@ -19,7 +19,7 @@ export default Ember.Component.extend({
 
   _hexColor: computed('color', {
     get() {
-      return Ember.String.htmlSafe(tc(this.get('color')).toHexString());
+      return htmlSafe(tc(this.get('color')).toHexString());
     },
     set(key, value) {
       this.set('color', value);
@@ -30,11 +30,11 @@ export default Ember.Component.extend({
     const tColor = tc(this.get('color')),
       ct = this.get('contrast'),
       complement = tColor.isLight() ? tColor.darken(ct) : tColor.lighten(ct);
-    return Ember.String.htmlSafe(complement.toString());
+    return htmlSafe(complement.toString());
   }),
   _inputStyle: computed('_hexColor', '_complement', function() {
     const hexColor = this.get('_hexColor'),
       complement = this.get('_complement');
-    return Ember.String.htmlSafe(`background-color: ${hexColor}; color: ${complement};`);
+    return htmlSafe(`background-color: ${hexColor}; color: ${complement};`);
   }),
 });

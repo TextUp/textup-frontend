@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),

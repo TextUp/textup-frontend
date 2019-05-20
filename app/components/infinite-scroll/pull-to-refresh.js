@@ -1,13 +1,16 @@
+import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-
-const { computed, isNone, tryInvoke, typeOf, run } = Ember;
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
+import { htmlSafe } from '@ember/template';
+import { run } from '@ember/runloop';
+import { typeOf, tryInvoke, isNone } from '@ember/utils';
 
 export const MIN_REQUIRED_PULL_LENGTH_IN_PX = 100;
 export const MAX_PULL_LENGTH_IN_PX = 150;
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     direction: PropTypes.oneOf(Object.values(Constants.INFINITE_SCROLL.DIRECTION)),
     disabled: PropTypes.bool,
@@ -64,7 +67,7 @@ export default Ember.Component.extend(PropTypesMixin, {
   _publicAPI: computed(function() {
     return { isRefreshing: false };
   }),
-  _isUp: computed.equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
+  _isUp: equal('direction', Constants.INFINITE_SCROLL.DIRECTION.UP),
   _ignorePullEvent: computed('disabled', '_publicAPI.isRefreshing', function() {
     return this.get('disabled') || this.get('_publicAPI.isRefreshing');
   }),
@@ -100,11 +103,11 @@ export default Ember.Component.extend(PropTypesMixin, {
     '_isUp',
     function() {
       if (this.get('_publicAPI.isRefreshing') || !this.get('_isPullCorrectDirection')) {
-        return Ember.String.htmlSafe();
+        return htmlSafe();
       } else {
         const direction = this.get('_isUp') ? -1 : 1,
           length = Math.min(this.get('_pullLength'), MAX_PULL_LENGTH_IN_PX);
-        return Ember.String.htmlSafe(`transform: translateY(${direction * length}px);`);
+        return htmlSafe(`transform: translateY(${direction * length}px);`);
       }
     }
   ),

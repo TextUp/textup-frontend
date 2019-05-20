@@ -1,5 +1,8 @@
+import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
+import Route from '@ember/routing/route';
+import Service from '@ember/service';
 import Constants from 'textup-frontend/constants';
-import Ember from 'ember';
 import NotificationsService from 'ember-cli-notifications/services/notification-messages-service';
 import RouteSupportsExportSlideoutMixin from 'textup-frontend/mixins/route/supports-export-slideout';
 import sinon from 'sinon';
@@ -10,18 +13,18 @@ moduleFor('mixin:route/supports-export-slideout', 'Unit | Mixin | route/supports
   needs: ['service:analytics', 'service:compose-slideout-service', 'service:record-item-service'],
   beforeEach() {
     startCompleteTask = sinon.spy();
-    this.register('service:tutorial-service', Ember.Service.extend({ startCompleteTask }));
+    this.register('service:tutorial-service', Service.extend({ startCompleteTask }));
     this.register('service:notification-messages-service', NotificationsService);
     this.register(
       'route:supports-export-slideout',
-      Ember.Route.extend(RouteSupportsExportSlideoutMixin)
+      Route.extend(RouteSupportsExportSlideoutMixin)
     );
   },
 });
 
 test('initializing properties', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout'),
-    controllerObj = Ember.Object.create();
+  const route = getOwner(this).lookup('route:supports-export-slideout'),
+    controllerObj = EmberObject.create();
 
   route._initializeProperties(controllerObj, null);
 
@@ -37,8 +40,8 @@ test('initializing properties', function(assert) {
 });
 
 test('setting up controller', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout'),
-    controllerObj = Ember.Object.create(),
+  const route = getOwner(this).lookup('route:supports-export-slideout'),
+    controllerObj = EmberObject.create(),
     initializeStub = sinon.stub(route, '_initializeProperties');
 
   route.setupController(controllerObj);
@@ -50,7 +53,7 @@ test('setting up controller', function(assert) {
 });
 
 test('searching for record owners', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout');
+  const route = getOwner(this).lookup('route:supports-export-slideout');
   route.set('composeSlideoutService', { doSearch: sinon.spy() });
 
   route.actions.exportDoSearch.call(route);
@@ -60,7 +63,7 @@ test('searching for record owners', function(assert) {
 
 test('inserting record owner at specified index', function(assert) {
   const done = assert.async(),
-    route = Ember.getOwner(this).lookup('route:supports-export-slideout'),
+    route = getOwner(this).lookup('route:supports-export-slideout'),
     randVal = Math.random();
 
   route.set('controller', { exportRecordOwners: [1, 2, 3] });
@@ -72,7 +75,7 @@ test('inserting record owner at specified index', function(assert) {
 });
 
 test('remove record owner from list', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout'),
+  const route = getOwner(this).lookup('route:supports-export-slideout'),
     randVal = Math.random();
 
   route.set('controller', { exportRecordOwners: [1, randVal, 3] });
@@ -83,7 +86,7 @@ test('remove record owner from list', function(assert) {
 });
 
 test('cancelling slideout without performing any action', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout');
+  const route = getOwner(this).lookup('route:supports-export-slideout');
 
   route.set('send', sinon.spy());
 
@@ -94,7 +97,7 @@ test('cancelling slideout without performing any action', function(assert) {
 });
 
 test('opening slideout', function(assert) {
-  const route = Ember.getOwner(this).lookup('route:supports-export-slideout'),
+  const route = getOwner(this).lookup('route:supports-export-slideout'),
     recordOwner = Math.random();
 
   route.setProperties({
@@ -129,13 +132,13 @@ test('opening slideout', function(assert) {
 
 test('starting export and finishing slideout', function(assert) {
   const done = assert.async(),
-    route = Ember.getOwner(this).lookup('route:supports-export-slideout');
+    route = getOwner(this).lookup('route:supports-export-slideout');
 
   route.setProperties({
     recordItemService: {
       exportRecordItems: sinon.stub().resolves(),
     },
-    controller: Ember.Object.create({
+    controller: EmberObject.create({
       exportStartDate: Math.random(),
       exportEndDate: Math.random(),
       exportAsGrouped: Math.random(),

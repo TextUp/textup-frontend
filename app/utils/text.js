@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { isPresent, isBlank } from '@ember/utils';
 import Inflector from 'ember-inflector';
-
-const { isBlank, isPresent } = Ember;
 
 export function pluralize(word, count) {
   const infl = Inflector.inflector;

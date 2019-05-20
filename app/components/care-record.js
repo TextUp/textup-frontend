@@ -1,13 +1,15 @@
-import Ember from 'ember';
+import { notEmpty } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { format } from 'textup-frontend/utils/phone-number';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
-const { computed, run, tryInvoke } = Ember;
-
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     // Properties
     // ----------
@@ -93,8 +95,8 @@ export default Ember.Component.extend(PropTypesMixin, {
     };
   }),
 
-  _hasPersonalNumber: computed.notEmpty('personalNumber'),
-  _hasItemsInRecord: computed.notEmpty('recordClusters'),
+  _hasPersonalNumber: notEmpty('personalNumber'),
+  _hasItemsInRecord: notEmpty('recordClusters'),
 
   _hasStartedCall: false,
   _isAddingNoteInPast: false,

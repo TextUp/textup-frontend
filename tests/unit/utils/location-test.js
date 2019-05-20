@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import LocationUtils from 'textup-frontend/utils/location';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -7,7 +7,7 @@ moduleFor('util:location', 'Unit | Utility | location', {
 });
 
 test('building preview url', function(assert) {
-  const config = Ember.getOwner(this).resolveRegistration('config:environment'),
+  const config = getOwner(this).resolveRegistration('config:environment'),
     url = config.locationPreview.host,
     token = config.apiKeys.mapbox,
     lat = Math.random(),

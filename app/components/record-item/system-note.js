@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordNote from 'textup-frontend/models/record-note';
 
-export default Ember.Component.extend(PropTypesMixin, {
+export default Component.extend(PropTypesMixin, {
   propTypes: {
     note: PropTypes.instanceOf(RecordNote).isRequired
   },

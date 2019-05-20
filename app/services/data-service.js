@@ -1,12 +1,14 @@
+import { isEmpty } from '@ember/utils';
+import Service, { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+import RSVP from 'rsvp';
+import { isArray } from '@ember/array';
 import ArrayUtils from 'textup-frontend/utils/array';
-import Ember from 'ember';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { get, RSVP, isArray } = Ember;
-
-export default Ember.Service.extend({
-  loadingSlider: Ember.inject.service(),
-  requestService: Ember.inject.service(),
+export default Service.extend({
+  loadingSlider: service(),
+  requestService: service(),
 
   persist(data, ...thens) {
     return new RSVP.Promise((resolve, reject) => {
@@ -14,7 +16,7 @@ export default Ember.Service.extend({
         .filter(TypeUtils.isAnyModel)
         .filterBy('isDirty')
         .uniq(); // uniq so we don't send duplicate requests
-      if (Ember.isEmpty(changedModels)) {
+      if (isEmpty(changedModels)) {
         ArrayUtils.tryCallAll(thens);
         return resolve(data);
       }

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
@@ -96,16 +96,16 @@ test('calls doRegister', function(assert) {
   wait()
     .then(() => {
       assert.ok(
-        Ember.$('#step1')
+        $('#step1')
           .attr('class')
           .includes('task-element__should-animate-pulse')
       );
       assert.ok(
-        Ember.$('#step2')
+        $('#step2')
           .attr('class')
           .includes('task-element__should-animate-pulse')
       );
-      Ember.$('.task-step__button--skip')
+      $('.task-step__button--skip')
         .first()
         .click();
       assert.ok(completeTask.calledOnce, 'finishTask is called on skip');
@@ -114,12 +114,12 @@ test('calls doRegister', function(assert) {
     })
     .then(() => {
       assert.ok(
-        !Ember.$('#step1')
+        !$('#step1')
           .attr('class')
           .includes('task-element__should-animate-pulse')
       );
       assert.ok(
-        !Ember.$('#step2')
+        !$('#step2')
           .attr('class')
           .includes('task-element__should-animate-pulse')
       );
