@@ -1,9 +1,7 @@
-import { module } from 'qunit';
-import Ember from 'ember';
-import startApp from '../helpers/start-app';
 import destroyApp from '../helpers/destroy-app';
-
-const { RSVP } = Ember;
+import RSVP from 'rsvp';
+import startApp from '../helpers/start-app';
+import { module } from 'qunit';
 
 export default function(name, options = {}) {
   module(name, {

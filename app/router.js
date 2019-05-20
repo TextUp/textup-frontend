@@ -1,8 +1,8 @@
 import config from 'textup-frontend/config/environment';
-import Ember from 'ember';
+import EmberRouter from '@ember/routing/router';
 import Trackable from 'ember-cli-analytics/mixins/trackable';
 
-const Router = Ember.Router.extend(Trackable, {
+const Router = EmberRouter.extend(Trackable, {
   location: config.locationType,
   rootURL: config.rootURL,
 });

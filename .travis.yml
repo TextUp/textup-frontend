@@ -15,6 +15,11 @@ branches:
 
 cache: yarn
 
+env:
+  global:
+    # See https://git.io/vdao3 for details.
+    - JOBS=1
+
 before_install:
   - pip install --user awscli
   - npm config set spin false
