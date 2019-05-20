@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import MediaElement from 'textup-frontend/models/media-element';
-import MutationObserver from 'npm:mutation-observer';
+import MutationObserver from 'mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, tryInvoke, run } = Ember;

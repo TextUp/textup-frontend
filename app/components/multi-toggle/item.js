@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import defaultIfAbsent from '../../utils/default-if-absent';
-import tc from 'npm:tinycolor2';
+import tc from 'tinycolor2';
 
 export default Ember.Component.extend({
   color: defaultIfAbsent('#fff'),

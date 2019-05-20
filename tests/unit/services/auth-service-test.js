@@ -181,7 +181,8 @@ test('setting up from stored data', function(assert) {
 });
 
 test('logging out', function(assert) {
-  const service = this.subject(),
+  const done = assert.async(),
+    service = this.subject(),
     _clearAuthData = sinon.stub(service, '_clearAuthData');
 
   this.store.setProperties({ unloadAll: sinon.spy() });
@@ -190,10 +191,18 @@ test('logging out', function(assert) {
   service.logout();
   assert.ok(_clearAuthData.calledOnce);
   assert.ok(_clearAuthData.calledWith());
-  assert.ok(this.store.unloadAll.calledOnce);
+  assert.ok(this.store.unloadAll.notCalled);
   assert.ok(this.router.transitionTo.calledWith('index'));
 
-  _clearAuthData.restore();
+  wait().then(() => {
+    assert.ok(
+      this.store.unloadAll.calledOnce,
+      'wait until after models are no longer displayed after transition to unload all'
+    );
+
+    _clearAuthData.restore();
+    done();
+  });
 });
 
 test('when successfully set up from storage change event', function(assert) {

@@ -3,7 +3,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
-import MutationObserver from 'npm:mutation-observer';
+import MutationObserver from 'mutation-observer';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 

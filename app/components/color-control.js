@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
-import tc from 'npm:tinycolor2';
+import tc from 'tinycolor2';
 
 const { computed } = Ember;
 

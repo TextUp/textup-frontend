@@ -1,33 +1,32 @@
-import * as ImageCompression from 'npm:browser-image-compression'; // needs wildward to override default import
 import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PhotoUtils from 'textup-frontend/utils/photo';
+import PhotoCompressionUtils from 'textup-frontend/utils/photo/compression';
 import sinon from 'sinon';
 import { mockValidMediaImage } from 'textup-frontend/tests/helpers/utilities';
 import { moduleFor, test } from 'ember-qunit';
 
 const { RSVP, typeOf, run } = Ember;
-let overallStub, compressionStub, dataUrlStub, loadImageStub;
+let compressionStub, dataUrlStub, loadImageStub;
 let compressionReturnVal, dataUrlReturnVal, loadImageReturnVal;
 
 moduleFor('util:photo', 'Unit | Utility | photo', {
   needs: ['model:media-element', 'model:media-element-version'],
   beforeEach() {
-    compressionStub = sinon.stub();
-    dataUrlStub = sinon.stub();
-    loadImageStub = sinon.stub();
-    compressionStub.callsFake(() => compressionReturnVal);
-    dataUrlStub.callsFake(() => new RSVP.Promise(resolve => resolve(dataUrlReturnVal)));
-    loadImageStub.callsFake(() => new RSVP.Promise(resolve => resolve(loadImageReturnVal)));
-
-    overallStub = sinon.stub(ImageCompression, 'default').get(() => {
-      compressionStub.getDataUrlFromFile = dataUrlStub;
-      compressionStub.loadImage = loadImageStub;
-      return compressionStub;
-    });
+    compressionStub = sinon
+      .stub(PhotoCompressionUtils, 'startImageCompression')
+      .callsFake(() => compressionReturnVal);
+    dataUrlStub = sinon
+      .stub(PhotoCompressionUtils, 'getDataUrlFromFile')
+      .callsFake(() => new RSVP.Promise(resolve => resolve(dataUrlReturnVal)));
+    loadImageStub = sinon
+      .stub(PhotoCompressionUtils, 'loadImage')
+      .callsFake(() => new RSVP.Promise(resolve => resolve(loadImageReturnVal)));
   },
   afterEach() {
-    overallStub.restore();
+    compressionStub.restore();
+    dataUrlStub.restore();
+    loadImageStub.restore();
   },
 });
 

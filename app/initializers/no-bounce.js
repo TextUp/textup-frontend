@@ -1,4 +1,4 @@
-import iNoBounce from 'npm:inobounce'; // import to allow enable detection inside script to run
+import iNoBounce from 'inobounce'; // import to allow enable detection inside script to run
 
 // from https://www.bennadel.com/blog/1950-detecting-iphone-s-app-mode-
 //    full-screen-mode-for-web-applications.htm

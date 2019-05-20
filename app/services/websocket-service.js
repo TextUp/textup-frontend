@@ -1,6 +1,6 @@
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
-import Pusher from 'npm:pusher-js';
+import Pusher from 'pusher-js';
 
 const { assign, isPresent, RSVP } = Ember;
 

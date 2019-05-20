@@ -1,5 +1,5 @@
-import tz from 'npm:jstz';
-import countriesAndTimezones from 'npm:countries-and-timezones';
+import tz from 'jstz';
+import countriesAndTimezones from 'countries-and-timezones';
 
 // Can cache to only calculate once because we likely never will use the app and cross timezones
 const cachedTimezoneId = tz.determine().name();

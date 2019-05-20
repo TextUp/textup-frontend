@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import tc from 'npm:tinycolor2';
+import tc from 'tinycolor2';
 
 export function contrastColor([color]) {
   const helper = tc(color),

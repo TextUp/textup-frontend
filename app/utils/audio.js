@@ -1,4 +1,4 @@
-import 'npm:webrtc-adapter'; // standardize getUserMedia API, where available
+import 'webrtc-adapter'; // standardize getUserMedia API, where available
 import Ember from 'ember';
 
 const { RSVP, typeOf } = Ember;
@@ -24,8 +24,8 @@ export function getAudioStream() {
           noiseSuppression: true,
           echoCancellation: true,
           sampleSize: 8,
-          channelCount: 1
-        }
+          channelCount: 1,
+        },
       })
       .then(resolve)
       .catch(reject);

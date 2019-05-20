@@ -1,5 +1,5 @@
 // import CookieConsent to load the library
-import CookieConsent from 'npm:cookieconsent'; // eslint-disable-line
+import CookieConsent from 'cookieconsent'; // eslint-disable-line
 import Ember from 'ember';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import LocaleUtils from 'textup-frontend/utils/locale';

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import imageCompression from 'npm:browser-image-compression';
+import PhotoCompressionUtils from 'textup-frontend/utils/photo/compression';
 
 // do NOT import MediaElement or else you have a circular series of imports
 // when MediaElement imports from Media
@@ -27,7 +27,7 @@ export function extractImagesFromEvent(event) {
       reject();
     }
     files.forEach(file => {
-      promises.pushObject(imageCompression(file, 0.5));
+      promises.pushObject(PhotoCompressionUtils.startImageCompression(file, 0.5));
     });
     RSVP.Promise.all(promises)
       .then(compressedFiles => {
@@ -51,11 +51,10 @@ function _getFilesFromTarget(target) {
 function _formatCompressedImages(compressedFile) {
   return new RSVP.Promise((resolve, reject) => {
     const result = { mimeType: compressedFile.type };
-    imageCompression
-      .getDataUrlFromFile(compressedFile)
+    PhotoCompressionUtils.getDataUrlFromFile(compressedFile)
       .then(data => {
         result.data = data;
-        return imageCompression.loadImage(data);
+        return PhotoCompressionUtils.loadImage(data);
       })
       .then(img => {
         result.width = img.naturalWidth;
@@ -109,7 +108,7 @@ function _hasDimensions(obj) {
 }
 
 function _fetchVersionDimensions(version) {
-  return imageCompression.loadImage(version.get('source')).then(img => {
+  return PhotoCompressionUtils.loadImage(version.get('source')).then(img => {
     return { dimensions: { width: img.naturalWidth, height: img.naturalHeight }, version };
   });
 }

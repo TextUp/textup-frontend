@@ -1,5 +1,5 @@
 import FileUtils from 'textup-frontend/utils/file';
-import FileSaver from 'npm:file-saver';
+import FileSaver from 'file-saver';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 

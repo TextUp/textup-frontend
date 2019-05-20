@@ -1,4 +1,4 @@
-import FileSaver from 'npm:file-saver';
+import FileSaver from 'file-saver';
 
 // [UNTESTED] because of Illegal invocation when accessing prototype objects
 export function isDownloadingSupported() {

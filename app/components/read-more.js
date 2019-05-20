@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import MutationObserver from 'npm:mutation-observer';
+import MutationObserver from 'mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 const { computed, run } = Ember;

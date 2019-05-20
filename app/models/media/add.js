@@ -2,7 +2,7 @@ import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import Ember from 'ember';
-import md5 from 'npm:blueimp-md5';
+import md5 from 'blueimp-md5';
 import MF from 'ember-data-model-fragments';
 
 const { computed } = Ember;

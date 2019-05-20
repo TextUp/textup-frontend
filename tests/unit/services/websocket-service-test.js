@@ -1,4 +1,4 @@
-import * as Pusher from 'npm:pusher-js';
+import * as Pusher from 'pusher-js';
 import * as WebsocketService from 'textup-frontend/services/websocket-service';
 import config from 'textup-frontend/config/environment';
 import Ember from 'ember';
