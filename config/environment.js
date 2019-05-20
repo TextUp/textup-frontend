@@ -1,8 +1,10 @@
 /* eslint-env node */
+'use strict';
+
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'textup-frontend',
-    environment: environment,
+    environment,
     rootURL: '/',
     locationType: 'hash',
     EmberENV: {

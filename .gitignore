@@ -14,8 +14,8 @@
 /coverage/*
 /libpeerconnection.log
 npm-debug.log*
-testem.log
 yarn-error.log
+testem.log
 .DS_Store
 
 # cordova
@@ -24,3 +24,8 @@ yarn-error.log
 /cordova/plugins
 /cordova/node_modules
 /cordova/www
+
+# ember-try
+.node_modules.ember-try/
+bower.json.ember-try
+package.json.ember-try

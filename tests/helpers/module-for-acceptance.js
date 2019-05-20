@@ -14,10 +14,9 @@ export default function(name, options = {}) {
         return options.beforeEach.apply(this, arguments);
       }
     },
-
     afterEach() {
       let afterEach = options.afterEach && options.afterEach.apply(this, arguments);
-      return RSVP.Promise.resolve(afterEach).then(() => destroyApp(this.application));
+      return RSVP.resolve(afterEach).then(() => destroyApp(this.application));
     },
   });
 }
