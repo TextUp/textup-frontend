@@ -18,18 +18,16 @@ test('returning working setter function', function(assert) {
     serviceObj = {};
 
   lookup.returns(null);
-  assert.throws(
-    () => helper.compute([serviceName], {}),
-    err => err.toString().includes(serviceName)
-  );
+  assert.throws(() => helper.compute([serviceName], {}), function(err) {
+    return err.toString().includes(serviceName);
+  });
   assert.ok(lookup.calledOnce);
   assert.ok(lookup.firstCall.args[0].includes(serviceName));
 
   lookup.returns(serviceObj);
-  assert.throws(
-    () => helper.compute([serviceName, notStringPropname], {}),
-    err => err.toString().includes(notStringPropname)
-  );
+  assert.throws(() => helper.compute([serviceName, notStringPropname], {}), function(err) {
+    return err.toString().includes(notStringPropname);
+  });
   assert.ok(lookup.calledTwice);
   assert.ok(lookup.secondCall.args[0].includes(serviceName));
 
@@ -58,7 +56,9 @@ test('setter function gets a particular property off of the new passed-in value'
 
   assert.throws(
     () => helper.compute([serviceName, stringPropName], { value: notStringValue }),
-    err => err.toString().includes(notStringValue)
+    function(err) {
+      return err.toString().includes(notStringValue);
+    }
   );
 
   const retVal = helper.compute([serviceName, stringPropName], { value: newValPropName });

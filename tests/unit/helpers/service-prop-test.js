@@ -18,13 +18,14 @@ test('error states + success', function(assert) {
     serviceObj = Ember.Object.create({ [stringPropName]: val1 });
 
   lookup.returns(null);
-  assert.throws(() => helper.compute([serviceName]), err => err.toString().includes(serviceName));
+  assert.throws(() => helper.compute([serviceName]), function(err) {
+    return err.toString().includes(serviceName);
+  });
 
   lookup.returns(serviceObj);
-  assert.throws(
-    () => helper.compute([serviceName, notStringPropName]),
-    err => err.toString().includes(notStringPropName)
-  );
+  assert.throws(() => helper.compute([serviceName, notStringPropName]), function(err) {
+    return err.toString().includes(notStringPropName);
+  });
   assert.equal(helper.compute([serviceName, stringPropName]), val1);
 
   getOwner.restore();

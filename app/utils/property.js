@@ -15,7 +15,10 @@ export function urlIdent(modelName, id) {
   return `${modelName}-${id}`;
 }
 
-// from: https://stackoverflow.com/a/28248597
+// originally from: https://stackoverflow.com/a/28248597
+// Modified to not wrap native JS Promises because of testing failures
+// see: https://github.com/emberjs/ember.js/issues/15569
+// see: https://discuss.emberjs.com/t/why-use-rsvp-promise-instead-of-es6-promises/13568
 export function ensurePromise(promise) {
-  return new RSVP.Promise(resolve => resolve(promise));
+  return promise instanceof window.Promise ? promise : new RSVP.resolve(promise);
 }

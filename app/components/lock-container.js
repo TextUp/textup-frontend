@@ -102,6 +102,9 @@ export default Ember.Component.extend(PropTypesMixin, HasEvents, {
   },
   _onValidate() {
     return new RSVP.Promise((resolve, reject) => {
+      if (this.get('isDestroying') || this.get('isDestroyed')) {
+        reject();
+      }
       PropertyUtils.ensurePromise(tryInvoke(this, 'onValidate', [this.get('val')])).then(() => {
         this._doSuccess();
         resolve();

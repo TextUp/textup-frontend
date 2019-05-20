@@ -15,6 +15,8 @@ module.exports = {
       // see https://stackoverflow.com/a/28268629
       '--use-fake-ui-for-media-stream',
       '--use-fake-device-for-media-stream',
+      // see https://groups.google.com/a/chromium.org/d/msg/headless-dev/zxPyN5f8MAQ/PWC4GL0uBAAJ
+      '--autoplay-policy=no-user-gesture-required',
     ],
   },
 };

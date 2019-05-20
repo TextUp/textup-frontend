@@ -4,15 +4,18 @@ import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 const { assign, run } = Ember;
 
-export const ERROR_PROP_WRONG_TYPE = error => {
+// `assert.throws` will not accept an arrow function as the second argument
+// see: https://github.com/nodejs/node/issues/3275
+export const ERROR_PROP_WRONG_TYPE = function(error) {
   const errorMsg = error.toString().toLowerCase();
   return errorMsg.includes('expected') || errorMsg.includes('is not one of');
 };
-export const ERROR_PROP_MISSING = error =>
-  error
+export const ERROR_PROP_MISSING = function(error) {
+  return error
     .toString()
     .toLowerCase()
     .includes('required');
+};
 
 export const VALID_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKBAMAAAB/HNKOAAAAGFBMVEXMzMyWlpajo6O3t7fFxcWcnJyxsbG+vr50Rsl6AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAJklEQVQImWNgwADKDAwsAQyuDAzMAgyMbOYMAgyuLApAUhnMRgIANvcCBwsFJwYAAAAASUVORK5CYII=';
