@@ -117,7 +117,8 @@
                     </button >
                 </div>
                 {{#each model.teams as |team|}}
-                    {{#link-to "admin.team" team tagName="div"
+                    {{#link-to "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))
+                        tagName="div"
                         classNames="menu-item"}}
                         <span>{{team.name}}</span>
                         <span class="badge dark">{{team.numMembers}}</span>

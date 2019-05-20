@@ -20,7 +20,7 @@
                     </p>
                 </div>
                 {{#if (not team.isDeleted)}}
-                    {{#link-to "admin.team.edit"
+                    {{#link-to "admin.team.edit" (get team (constant "PROP_NAME.URL_IDENT"))
                         classNames="pull-right-to-edge full-height"
                         activeClass="bg-color bg-dark"}}
                         {{#tool-tip title="Edit Team"
@@ -81,14 +81,25 @@
         doRegister=(action (mut _peopleList))
         onLoad=(action "loadMore")
         onRefresh=(action "refresh") as |person|}}
-        {{#entity-display class="result-item"
-            entityIdentifier=person.name
-            linkTarget=(if team "admin.team.person" "admin.people.person")
-            linkParam=person.id
-            isSelected=person.isSelected
-            onSelect=(route-action "toggleSelected" person)}}
-            {{entity-display/staff entity=person}}
-        {{/entity-display}}
+        {{#if team}}
+            {{#entity-display class="result-item"
+                entityIdentifier=person.name
+                linkTarget="admin.team.person"
+                linkParam=(array (get team (constant "PROP_NAME.URL_IDENT")) person.id)
+                isSelected=person.isSelected
+                onSelect=(route-action "toggleSelected" person)}}
+                {{entity-display/staff entity=person}}
+            {{/entity-display}}
+        {{else}}
+            {{#entity-display class="result-item"
+                entityIdentifier=person.name
+                linkTarget="admin.people.person"
+                linkParam=(array person.id)
+                isSelected=person.isSelected
+                onSelect=(route-action "toggleSelected" person)}}
+                {{entity-display/staff entity=person}}
+            {{/entity-display}}
+        {{/if}}
     {{else}}
         {{#if team}}
             <div class="no-results">

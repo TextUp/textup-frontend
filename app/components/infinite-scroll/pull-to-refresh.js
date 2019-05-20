@@ -2,7 +2,7 @@ import Constants from 'textup-frontend/constants';
 import Ember from 'ember';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
-const { computed, tryInvoke, typeOf, run } = Ember;
+const { computed, isNone, tryInvoke, typeOf, run } = Ember;
 
 export const MIN_REQUIRED_PULL_LENGTH_IN_PX = 100;
 export const MAX_PULL_LENGTH_IN_PX = 150;
@@ -119,13 +119,13 @@ export default Ember.Component.extend(PropTypesMixin, {
     this.set('_pullStart', position);
   },
   _continuePull(position) {
-    if (this.get('_ignorePullEvent')) {
+    if (isNone(this.get('_pullStart')) || this.get('_ignorePullEvent')) {
       return;
     }
     this.set('_pullEnd', position);
   },
   _endPull() {
-    if (this.get('_ignorePullEvent')) {
+    if (isNone(this.get('_pullStart')) || this.get('_ignorePullEvent')) {
       return;
     }
     const shouldRefresh =

@@ -4,7 +4,12 @@
 	<div class="section-header">
 		{{record-owner-header/tag classNames="row full-height"
 			tag=model
-			backRouteName=backRouteName
+			backRouteName=(if model.isDeleted "main.contacts" "main.tag")
+			linkParams=(if model.isDeleted
+				(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT")))
+				(array
+					(get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+					(get model (constant "PROP_NAME.URL_IDENT"))))
             onEdit=(route-action "startExistingTagSlideout")
         	onExport=(route-action "startSingleExportSlideout" model)}}
 	</div>

@@ -26,7 +26,7 @@
                 {{#each model.teams as |team|}}
                     <li class="result-item">
                         <div class="row">
-                            {{#link-to "admin.team" team
+                            {{#link-to "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))
                                 tagName="div"
                                 classNames="control-text"
                                 tabindex="0"}}

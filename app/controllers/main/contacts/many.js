@@ -42,13 +42,13 @@ export default Ember.Controller.extend({
       contact.set('isSelected', false);
       Ember.run.next(this, function() {
         if (this.get('selected.length') === 0) {
-          this._exitMany();
+          this.send('exitMany');
         }
       });
     },
     leave() {
       this._deselectAll();
-      this._exitMany();
+      this.send('exitMany');
     },
   },
 
@@ -59,8 +59,5 @@ export default Ember.Controller.extend({
     this.get('selected').forEach(contact => {
       contact.set('isSelected', false);
     });
-  },
-  _exitMany() {
-    this.transitionToRoute(this.get('backRouteName'));
   },
 });

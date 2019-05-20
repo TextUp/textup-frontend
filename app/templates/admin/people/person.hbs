@@ -5,7 +5,9 @@
 		<div class="row full-height">
 			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
                 full-height row ">
-                {{#link-to (if team "admin.team" "admin.people")
+                {{#link-to params=(if team
+                        (array "admin.team" (get team (constant "PROP_NAME.URL_IDENT")))
+                        (array "admin.people"))
                 	classNames="pull-left"}}
 					<span class="pad-all">
 						<span class="icon-left-arrow"></span>
@@ -92,7 +94,9 @@
                         </span>
                     {{/if}}
                     <span class="clear-badge display-m display-l">
-                        {{#link-to (if team "admin.team" "admin.people")}}
+                        {{#link-to params=(if team
+                            (array "admin.team" (get team (constant "PROP_NAME.URL_IDENT")))
+                            (array "admin.people"))}}
 							<span class="pad-all">
 								<span class="icon-x"></span>
 							</span>

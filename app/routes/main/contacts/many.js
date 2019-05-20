@@ -7,11 +7,6 @@ export default Ember.Route.extend(ManagesContactAttributes, ManagesTagMembership
   controllerName: 'main/contacts/many',
   backRouteName: 'main.contacts',
 
-  setupController(controller) {
-    this._super(...arguments);
-    controller.set('backRouteName', this.get('backRouteName'));
-  },
-
   actions: {
     willTransition() {
       this._super(...arguments);
@@ -21,9 +16,12 @@ export default Ember.Route.extend(ManagesContactAttributes, ManagesTagMembership
     didTransition() {
       this._super(...arguments);
       if (this.controller.get('selected').length === 0) {
-        this.transitionTo(this.get('backRouteName'));
+        this.send('exitMany');
       }
       return true; // for closing slideouts
+    },
+    exitMany() {
+      this.transitionTo(this.get('backRouteName'));
     },
   },
 });

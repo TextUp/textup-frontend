@@ -5,6 +5,7 @@
         {{record-owner-header/contact-shared-contact classNames="row full-height"
             contact=model
             backRouteName=backRouteName
+            linkParams=backRouteLinkParams
             onEdit=(route-action "startExistingContactSlideout")
             onEditSharing=(route-action "startContactSharingSlideout" model)
             onEditTagMembership=(route-action "startTagMembershipSlideout" model)

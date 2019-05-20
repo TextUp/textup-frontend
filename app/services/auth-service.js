@@ -6,7 +6,7 @@ import LocaleUtils from 'textup-frontend/utils/locale';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
 
-const { computed, isPresent, RSVP, typeOf } = Ember;
+const { computed, isPresent, RSVP, typeOf, run } = Ember;
 
 export const LOG_IN_FAIL_MSG = 'Incorrect or blank username or password';
 
@@ -79,8 +79,10 @@ export default Ember.Service.extend(Ember.Evented, {
   },
   logout() {
     this._clearAuthData();
-    this.get('store').unloadAll();
     this.get('router').transitionTo('index');
+    // unload all after we finish the route transition and leave the logged-in route
+    // so that cleanup doesn't happen while all the models are still displayed on the page
+    run.next(() => this.get('store').unloadAll());
   },
 
   storeAuthResponseSuccess(responseObj, resolve = null) {

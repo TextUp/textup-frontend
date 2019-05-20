@@ -201,14 +201,18 @@
                         <span class="icon-add-contact" id="tour-openNewContactButton"></span>
                     {{/tool-tip}}
                 </div>
-                {{#link-to "main.search" tagName="div" classNames="menu-item"}}
+                {{#link-to "main.search" (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                    tagName="div"
+                    classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Search Contacts"
                         classNames="btn-expand"}}
                         <span class="icon-search"></span>
                     {{/tool-tip}}
                 {{/link-to}}
-                {{#link-to "main.contacts" tagName="div" classNames="menu-item"}}
+                {{#link-to "main.contacts" (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                    tagName="div"
+                    classNames="menu-item"}}
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Contacts"
                         classNames="btn-expand"}}
@@ -230,7 +234,9 @@
                 </div>
                 {{#if model.phone.isFulfilled}}
                     {{#each model.phone.content.tags as |tag|}}
-                        {{#link-to "main.tag" (get tag (constant "PROP_NAME.URL_IDENT"))
+                        {{#link-to "main.tag"
+                                (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                                (get tag (constant "PROP_NAME.URL_IDENT"))
                             tagName="div"
                             classNames="menu-item"}}
                             <span>

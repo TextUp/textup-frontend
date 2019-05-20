@@ -22,6 +22,8 @@
             </div>
             {{#if (not (or tag.isDeleted tag.hasDirtyAttributes))}}
                 {{#link-to "main.tag.details"
+                        (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                        (get tag (constant "PROP_NAME.URL_IDENT"))
                     classNames="pull-right-to-edge full-height"
                     activeClass="bg-color bg-dark"}}
                     {{#tool-tip title="View Tag Details"
@@ -45,7 +47,7 @@
                             </p>
                         </div>
                         <div class="pull-right-to-edge full-height">
-                            {{#link-to "main.search"
+                            {{#link-to "main.search" (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
                                 tagName="button"
                                 classNames="btn btn-plain btn-expand"}}
                                 <span class="icon-search"></span>
@@ -114,15 +116,30 @@
             doRegister=(action (mut contactsList))
             onRefresh=(action doRefreshContacts)
             onLoad=(action doLoadMoreContacts) as |contact|}}
-            {{#entity-display class="result-item"
-                entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
-                linkTarget=(if tag "main.tag.contact" "main.contacts.contact")
-                linkParam=contact.id
-                bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
-                isSelected=contact.isSelected
-                onSelect=(route-action "toggleSelected" contact)}}
-                {{entity-display/contact entity=contact}}
-            {{/entity-display}}
+            {{#if tag}}
+                {{#entity-display class="result-item"
+                    entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
+                    linkTarget="main.tag.contact"
+                    linkParams=(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                        (get tag (constant "PROP_NAME.URL_IDENT"))
+                        contact.id)
+                    bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
+                    isSelected=contact.isSelected
+                    onSelect=(route-action "toggleSelected" contact)}}
+                    {{entity-display/contact entity=contact}}
+                {{/entity-display}}
+            {{else}}
+                {{#entity-display class="result-item"
+                    entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
+                    linkTarget="main.contacts.contact"
+                    linkParams=(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                        contact.id)
+                    bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
+                    isSelected=contact.isSelected
+                    onSelect=(route-action "toggleSelected" contact)}}
+                    {{entity-display/contact entity=contact}}
+                {{/entity-display}}
+            {{/if}}
         {{else}}
             {{#if (and (eq filter (constant "CONTACT.FILTER.ALL")) (not tag))}}
                 <div class="no-results">

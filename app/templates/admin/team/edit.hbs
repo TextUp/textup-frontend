@@ -4,7 +4,9 @@
 	<div class="section-header">
 		<div class="pull-left horizontal-items s-2-row-3">
 			<div class="clear-badge display-xs display-s no-space">
-				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
+				{{#link-to params=(if team.isDeleted
+						(array "admin.people")
+						(array "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))))}}
 					<span class="pad-all">
 						<span class="icon-left-arrow"></span>
 					</span>
@@ -32,7 +34,9 @@
                 </button>
 			</span>
 			<span class="no-space clear-badge display-m display-l">
-				{{#link-to (if team.isDeleted "admin.people" "admin.team")}}
+				{{#link-to params=(if team.isDeleted
+						(array "admin.people")
+						(array "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))))}}
 					<span class="pad-all">
 						<span class="icon-x"></span>
 					</span>

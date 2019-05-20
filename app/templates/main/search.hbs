@@ -41,6 +41,8 @@
             {{#entity-display class="result-item"
                 entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
                 linkTarget="main.search.contact"
+                linkParams=(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                    contact.id)
                 linkParam=contact.id
                 bodyClass=(if contact.isUnread "unread")
                 isSelected=contact.isSelected

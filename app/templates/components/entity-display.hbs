@@ -3,15 +3,14 @@
         type="checkbox"
         checked={{if isSelected 'checked'}}
         class="entity-display__toggle__control"
-        onChange={{action 'onToggleSelect'}}>
+        onChange={{action _onToggleSelect}}>
     <label for={{concat this.elementId "--toggle"}}
         class="entity-display__toggle__label">
         <span class="sr-only">Select {{entityIdentifier}}</span>
         <i class="icon-checkmark center" aria-hidden="true"></i>
     </label>
 </div>
-{{#link-to linkTarget linkParam
-    class=(concat "entity-display__body " bodyClass)}}
+{{#link-to params=_linkParams class=(concat "entity-display__body " bodyClass)}}
     <div>
         {{yield}}
     </div>

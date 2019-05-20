@@ -24,7 +24,9 @@
                     {{#each model.phone.content.tags as |tag|}}
                         <li class="result-item">
                             <div class="row">
-                                {{#link-to "main.tag" (get tag (constant "PROP_NAME.URL_IDENT"))
+                                {{#link-to "main.tag"
+                                        (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                                        (get tag (constant "PROP_NAME.URL_IDENT"))
                                     tagName="div"
                                     classNames="control-text"
                                     tabindex="0"}}
