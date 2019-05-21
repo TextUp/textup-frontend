@@ -1,4 +1,5 @@
 import config from 'textup-frontend/config/environment';
+import Ember from 'ember';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
@@ -27,23 +28,22 @@ test('native platforms', function(assert) {
   window.device = oldDevice;
 });
 
-// // TODO how to mock this global?
-// test('determining if mobile', function(assert) {
-//   const jQueryObj = { innerWidth: sinon.stub() },
-//     jQuery = sinon.stub(Ember, '$').returns(jQueryObj);
+test('determining if mobile', function(assert) {
+  const jQueryObj = { innerWidth: sinon.stub() },
+    jQuery = sinon.stub(Ember, '$').returns(jQueryObj);
 
-//   jQueryObj.innerWidth.returns(PlatformUtils.PLATFORM_MOBILE_MAX_WIDTH_IN_PX - 8);
-//   assert.ok(PlatformUtils.isMobile());
-//   assert.ok(jQuery.calledOnce);
-//   assert.ok(jQuery.firstCall.calledWith(window));
+  jQueryObj.innerWidth.returns(PlatformUtils.PLATFORM_MOBILE_MAX_WIDTH_IN_PX - 8);
+  assert.ok(PlatformUtils.isMobile());
+  assert.ok(jQuery.calledOnce);
+  assert.ok(jQuery.firstCall.calledWith(window));
 
-//   jQueryObj.innerWidth.returns(PlatformUtils.PLATFORM_MOBILE_MAX_WIDTH_IN_PX + 8);
-//   assert.notOk(PlatformUtils.isMobile());
-//   assert.ok(jQuery.calledTwice);
-//   assert.ok(jQuery.secondCall.calledWith(window));
+  jQueryObj.innerWidth.returns(PlatformUtils.PLATFORM_MOBILE_MAX_WIDTH_IN_PX + 8);
+  assert.notOk(PlatformUtils.isMobile());
+  assert.ok(jQuery.calledTwice);
+  assert.ok(jQuery.secondCall.calledWith(window));
 
-//   jQuery.restore();
-// });
+  jQuery.restore();
+});
 
 test('determining if has appCache', function(assert) {
   const hasCordova = sinon.stub(config, 'hasCordova'),

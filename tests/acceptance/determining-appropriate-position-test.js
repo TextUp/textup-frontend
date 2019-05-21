@@ -5,13 +5,18 @@ import moduleForAcceptance from 'textup-frontend/tests/helpers/module-for-accept
 import sinon from 'sinon';
 import { test } from 'qunit';
 
-let store, server, mockAuthService;
+let store, server, mockAuthService, startTrackingAndGetUrlToRestoreIfNeeded;
 
 moduleForAcceptance('Acceptance | determining appropriate position', {
   beforeEach() {
     const container = this.application.__container__;
     store = container.lookup('service:store');
     server = sinon.createFakeServer({ respondImmediately: true });
+    // disable restoring from URL
+    startTrackingAndGetUrlToRestoreIfNeeded = sinon.stub(
+      container.lookup('service:stateService'),
+      'startTrackingAndGetUrlToRestoreIfNeeded'
+    );
     // For some reason, modifying the real authService, injecting the mock into all routes,
     // injecting the mock into the `application` route all break our testing set-up
     this.application.register('service:mockAuthService', AuthService);
@@ -23,6 +28,7 @@ moduleForAcceptance('Acceptance | determining appropriate position', {
     mockAuthService = container.lookup('service:mockAuthService');
   },
   afterEach() {
+    startTrackingAndGetUrlToRestoreIfNeeded.restore();
     server.restore();
   },
 });

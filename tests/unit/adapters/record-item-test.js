@@ -5,16 +5,20 @@ import NotificationsService from 'ember-cli-notifications/services/notification-
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
-const TYPE_TEXT = 'TEXT', TYPE_CALL = 'CALL', TYPE_NOTE = 'NOTE';
+const TYPE_TEXT = 'TEXT',
+  TYPE_CALL = 'CALL',
+  TYPE_NOTE = 'NOTE';
 let server;
 
 moduleFor('adapter:record-item', 'Unit | Adapter | record item', {
   needs: [
     'model:contact',
+    'model:location',
     'model:media',
     'model:record-call',
     'model:record-item',
     'model:record-note',
+    'model:record-note-revision',
     'model:record-text',
     'model:tag',
     'serializer:record-item',

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import * as StorageService from 'textup-frontend/services/storage-service';
-// import config from 'textup-frontend/config/environment'; // TODO
+import config from 'textup-frontend/config/environment';
+import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 
@@ -60,41 +61,40 @@ test('getting an item', function(assert) {
   getItemFromSession.restore();
 });
 
-// // TODO
-// test('setting an item', function(assert) {
-//   const service = this.subject(),
-//     setItemFromLocal = sinon.stub(window.localStorage, 'setItem'),
-//     setItemFromSession = sinon.stub(window.sessionStorage, 'setItem'),
-//     debug = sinon.stub(EmberDebug, 'debug'),
-//     key1 = Math.random(),
-//     val1 = Math.random(),
-//     key2 = Math.random(),
-//     val2 = Math.random();
+test('setting an item', function(assert) {
+  const service = this.subject(),
+    setItemFromLocal = sinon.stub(window.localStorage, 'setItem'),
+    setItemFromSession = sinon.stub(window.sessionStorage, 'setItem'),
+    debug = sinon.stub(Ember, 'debug'),
+    key1 = Math.random(),
+    val1 = Math.random(),
+    key2 = Math.random(),
+    val2 = Math.random();
 
-//   service.set('persistBetweenSessions', false);
+  service.set('persistBetweenSessions', false);
 
-//   service.setItem(key1, val1);
-//   assert.ok(setItemFromSession.calledOnce);
-//   assert.ok(setItemFromSession.calledWith(key1, val1));
-//   assert.ok(setItemFromLocal.notCalled);
+  service.setItem(key1, val1);
+  assert.ok(setItemFromSession.calledOnce);
+  assert.ok(setItemFromSession.calledWith(key1, val1));
+  assert.ok(setItemFromLocal.notCalled);
 
-//   service.set('persistBetweenSessions', true);
+  service.set('persistBetweenSessions', true);
 
-//   service.setItem(key2, val2);
-//   assert.ok(setItemFromSession.calledTwice);
-//   assert.ok(setItemFromSession.calledWith(key2, val2));
-//   assert.ok(setItemFromLocal.calledOnce);
-//   assert.ok(setItemFromLocal.calledWith(key2, val2));
+  service.setItem(key2, val2);
+  assert.ok(setItemFromSession.calledTwice);
+  assert.ok(setItemFromSession.calledWith(key2, val2));
+  assert.ok(setItemFromLocal.calledOnce);
+  assert.ok(setItemFromLocal.calledWith(key2, val2));
 
-//   setItemFromSession.throws();
-//   service.setItem(key2, val2); // exception gracefully caught
+  setItemFromSession.throws();
+  service.setItem(key2, val2); // exception gracefully caught
 
-//   assert.ok(debug.calledOnce, 'print the error using debug command if debugging');
+  assert.ok(debug.calledOnce, 'print the error using debug command if debugging');
 
-//   setItemFromLocal.restore();
-//   setItemFromSession.restore();
-//   debug.restore();
-// });
+  setItemFromLocal.restore();
+  setItemFromSession.restore();
+  debug.restore();
+});
 
 test('sending storage to other tabs', function(assert) {
   const service = this.subject(),
@@ -118,43 +118,42 @@ test('sending storage to other tabs', function(assert) {
   setItem.restore();
 });
 
-// // TODO
-// test('receiving data from another tab', function(assert) {
-//   const service = this.subject(),
-//     debug = sinon.stub(EmberDebug, 'debug'),
-//     clear = sinon.stub(window.sessionStorage, 'clear'),
-//     setItem = sinon.stub(window.sessionStorage, 'setItem'),
-//     key1 = Math.random() + '', // keys are stringified
-//     val1 = Math.random(),
-//     key2 = Math.random() + '', // keys are stringified
-//     val2 = Math.random(),
-//     onStorageUpdate = sinon.spy();
+test('receiving data from another tab', function(assert) {
+  const service = this.subject(),
+    debug = sinon.stub(Ember, 'debug'),
+    clear = sinon.stub(window.sessionStorage, 'clear'),
+    setItem = sinon.stub(window.sessionStorage, 'setItem'),
+    key1 = Math.random() + '', // keys are stringified
+    val1 = Math.random(),
+    key2 = Math.random() + '', // keys are stringified
+    val2 = Math.random(),
+    onStorageUpdate = sinon.spy();
 
-//   service.on(config.events.storage.updated, onStorageUpdate);
+  service.on(config.events.storage.updated, onStorageUpdate);
 
-//   service._receiveStorageFromOtherTab(undefined);
-//   assert.ok(debug.calledOnce, 'fails during parsing');
-//   assert.ok(clear.notCalled);
-//   assert.ok(setItem.notCalled);
-//   assert.ok(onStorageUpdate.notCalled);
+  service._receiveStorageFromOtherTab(undefined);
+  assert.ok(debug.calledOnce, 'fails during parsing');
+  assert.ok(clear.notCalled);
+  assert.ok(setItem.notCalled);
+  assert.ok(onStorageUpdate.notCalled);
 
-//   service._receiveStorageFromOtherTab(JSON.stringify([]));
-//   assert.ok(debug.calledOnce, 'DOES successfully parse');
-//   assert.ok(clear.notCalled, 'not an object');
-//   assert.ok(setItem.notCalled);
-//   assert.ok(onStorageUpdate.notCalled);
+  service._receiveStorageFromOtherTab(JSON.stringify([]));
+  assert.ok(debug.calledOnce, 'DOES successfully parse');
+  assert.ok(clear.notCalled, 'not an object');
+  assert.ok(setItem.notCalled);
+  assert.ok(onStorageUpdate.notCalled);
 
-//   service._receiveStorageFromOtherTab(JSON.stringify({ [key1]: val1, [key2]: val2 }));
-//   assert.ok(debug.calledOnce, 'DOES successfully parse');
-//   assert.ok(clear.calledOnce, 'IS an object');
-//   assert.ok(setItem.calledWith(key1, val1));
-//   assert.ok(setItem.calledWith(key2, val2));
-//   assert.ok(onStorageUpdate.calledOnce, 'storage update event triggered');
+  service._receiveStorageFromOtherTab(JSON.stringify({ [key1]: val1, [key2]: val2 }));
+  assert.ok(debug.calledOnce, 'DOES successfully parse');
+  assert.ok(clear.calledOnce, 'IS an object');
+  assert.ok(setItem.calledWith(key1, val1));
+  assert.ok(setItem.calledWith(key2, val2));
+  assert.ok(onStorageUpdate.calledOnce, 'storage update event triggered');
 
-//   debug.restore();
-//   clear.restore();
-//   setItem.restore();
-// });
+  debug.restore();
+  clear.restore();
+  setItem.restore();
+});
 
 test('handling the storage event', function(assert) {
   const service = this.subject(),

@@ -1,4 +1,4 @@
-import EmberApplication from '@ember/application';
+import Ember from 'ember';
 import sinon from 'sinon';
 import { getServiceAction } from 'textup-frontend/helpers/service-action';
 import { module, test } from 'qunit';
@@ -8,7 +8,7 @@ module('Unit | Helper | service action');
 
 test('helper', function(assert) {
   const lookup = sinon.stub(),
-    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup });
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup });
   const serviceName = Math.random(),
     functionName = 'realFunctionName',
     arg1 = Math.random(),

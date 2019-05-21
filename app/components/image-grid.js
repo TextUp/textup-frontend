@@ -38,6 +38,9 @@ export default Component.extend(DisplaysImages, {
   },
 
   _handleImageLoad(imageIndex, loadResult) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     this.incrementProperty('_numImagesLoaded');
     this.get('_loadResults')[this._getImageIdFromIndex(imageIndex)] = loadResult;
     if (this.get('_shouldReturnResults')) {

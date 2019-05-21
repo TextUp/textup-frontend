@@ -4,10 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
-import {
-  VALID_IMAGE_DATA_URL,
-  VALID_MP3_URL_1
-} from 'textup-frontend/tests/helpers/utilities';
+import { VALID_IMAGE_DATA_URL, VALID_MP3_URL_1 } from 'textup-frontend/tests/helpers/utilities';
 
 let store;
 
@@ -126,23 +123,27 @@ test('failed call', function(assert) {
 
 test('call with notes and media', function(assert) {
   run(() => {
-    const rCall = store.createRecord('record-call', {
-      noteContents: `${Math.random()}`,
-      media: store.createRecord('media'),
-    });
+    const done = assert.async(),
+      rCall = store.createRecord('record-call', {
+        noteContents: `${Math.random()}`,
+        media: store.createRecord('media'),
+      });
     rCall.get('media.content').addImage('image/png', VALID_IMAGE_DATA_URL, 77, 88);
     this.setProperties({ rCall });
 
     this.render(hbs`{{record-item/call call=rCall}}`);
 
-    assert.ok(this.$('.record-item').length);
-    assert.ok(this.$('.record-item--call').length);
-    assert.ok(this.$('.record-item__metadata').length, 'has metadata');
-    assert.ok(this.$('.image-stack').length, 'has images');
-    assert.notOk(this.$('.audio-control').length, 'no audio');
+    wait().then(() => {
+      assert.ok(this.$('.record-item').length);
+      assert.ok(this.$('.record-item--call').length);
+      assert.ok(this.$('.record-item__metadata').length, 'has metadata');
+      assert.ok(this.$('.image-stack').length, 'has images');
+      assert.notOk(this.$('.audio-control').length, 'no audio');
 
-    const text = this.$().text();
-    assert.ok(text.includes(rCall.get('noteContents')), 'note contents rendered');
+      const text = this.$().text();
+      assert.ok(text.includes(rCall.get('noteContents')), 'note contents rendered');
+      done();
+    });
   });
 });
 

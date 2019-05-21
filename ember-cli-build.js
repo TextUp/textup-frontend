@@ -21,25 +21,25 @@ module.exports = function(defaults) {
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.js');
   app.import(app.bowerDirectory + '/mapbox.js/mapbox.css');
 
-  const faTree = new Funnel(app.project.root + '/node_modules/font-awesome/fonts', {
-    srcDir: '/',
-    include: ['*.*'],
-    destDir: '/assets/fonts',
-  });
   const mapboxTree = new Funnel(app.bowerDirectory + '/mapbox.js/images', {
     srcDir: '/',
     include: ['*.*'],
     destDir: '/assets/images',
   });
-  // [FUTURE] upgrade to Ember 2.15 for native support using app.import to import files
-  // from node_modules directly
-  const cookieConsentTree = new Funnel(app.project.root + '/node_modules/cookieconsent/build', {
+  // [NOTE] we don't use `app.import` here directly because we want to import entire directories of
+  // multiple files. Also, we sometimes want to import these dependencies into separate files
+  // so that they are loaded on an as-needed basis rather than bundled in
+  const faTree = new Funnel(app.project.nodeModulesPath + '/font-awesome/fonts', {
+    srcDir: '/',
+    include: ['*.*'],
+    destDir: '/assets/fonts',
+  });
+  const cookieConsentTree = new Funnel(app.project.nodeModulesPath + '/cookieconsent/build', {
     srcDir: '/',
     include: ['*.css'],
     destDir: '/assets/css',
   });
-
-  const mp3EncoderTree = new Funnel(app.project.root + '/node_modules/lamejs', {
+  const mp3EncoderTree = new Funnel(app.project.nodeModulesPath + '/lamejs', {
     srcDir: '/',
     include: ['lame.min.js'],
     destDir: '/workers/encoders',

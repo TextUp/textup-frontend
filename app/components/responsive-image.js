@@ -120,10 +120,16 @@ export default Component.extend(PropTypesMixin, {
   // -----------------
 
   _onLoadSuccess(event) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     run(() => this.setProperties({ _isSuccess: true, _isLoading: false }));
     tryInvoke(this, 'onSuccess', [event]);
   },
   _onLoadFailure(event) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
+      return;
+    }
     run(() => this.setProperties({ _isSuccess: false, _isLoading: false }));
     tryInvoke(this, 'onFailure', [event]);
   },
@@ -131,7 +137,7 @@ export default Component.extend(PropTypesMixin, {
     debounce(this, this._updateSize, 250);
   },
   _updateSize() {
-    if (this.isDestroying || this.isDestroyed) {
+    if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     this.set('_sizes', this._calculateUpdatedSize());

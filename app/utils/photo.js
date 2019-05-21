@@ -25,7 +25,7 @@ export function extractImagesFromEvent(event) {
       reject();
     }
     files.forEach(file => {
-      promises.pushObject(PhotoCompressionUtils.startImageCompression(file, 0.5));
+      promises.pushObject(PhotoCompressionUtils.startImageCompression(file));
     });
     RSVP.Promise.all(promises)
       .then(compressedFiles => {

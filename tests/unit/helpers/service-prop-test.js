@@ -1,4 +1,4 @@
-import EmberApplication from '@ember/application';
+import Ember from 'ember';
 import EmberObject from '@ember/object';
 import ServicePropHelper from 'textup-frontend/helpers/service-prop';
 import sinon from 'sinon';
@@ -10,7 +10,7 @@ module('Unit | Helper | service prop');
 test('error states + success', function(assert) {
   const helper = ServicePropHelper.create(),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     notStringPropName = Math.random(),
     stringPropName = 'string-prop-name',
@@ -35,7 +35,7 @@ test('observes for value changes + cleaned-up on destroy', function(assert) {
   const helper = ServicePropHelper.create(),
     recompute = sinon.stub(helper, 'recompute'),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     propName = 'string-prop-name',
     val1 = Math.random(),
@@ -63,7 +63,7 @@ test('observing for value change also works for array properties', function(asse
   const helper = ServicePropHelper.create(),
     recompute = sinon.stub(helper, 'recompute'),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     propName = 'string-prop-name',
     val1 = Math.random(),
@@ -90,7 +90,7 @@ test('observing for value change also works for array properties', function(asse
 test('setup is only called at the beginning', function(assert) {
   const helper = ServicePropHelper.create(),
     lookup = sinon.stub(),
-    getOwner = sinon.stub(EmberApplication, 'getOwner').returns({ lookup }),
+    getOwner = sinon.stub(Ember, 'getOwner').returns({ lookup }),
     serviceName = Math.random(),
     propName = 'string-prop-name',
     val1 = Math.random(),
