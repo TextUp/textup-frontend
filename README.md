@@ -93,7 +93,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ## License
 
-Copyright 2018 TextUp
+Copyright 2019 TextUp
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
