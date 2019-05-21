@@ -13,7 +13,8 @@ branches:
     - master
     - dev
 
-cache: yarn
+cache:
+  yarn: true
 
 env:
   global:
@@ -27,7 +28,7 @@ before_install:
   - yarn global add bower@1.8.8
 
 install:
-  - yarn install
+  - yarn install --non-interactive
   - bower install
 
 before_script:

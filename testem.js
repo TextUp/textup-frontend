@@ -18,6 +18,8 @@ module.exports = {
       '--use-fake-device-for-media-stream',
       // see https://groups.google.com/a/chromium.org/d/msg/headless-dev/zxPyN5f8MAQ/PWC4GL0uBAAJ
       '--autoplay-policy=no-user-gesture-required',
-    ],
+      // --no-sandbox is needed when running Chrome inside a container
+      process.env.TRAVIS ? '--no-sandbox' : null,
+    ].filter(Boolean),
   },
 };

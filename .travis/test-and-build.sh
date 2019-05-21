@@ -4,5 +4,6 @@
 
 set -e
 
-npm test
-npm run build -- --environment=production
+yarn lint:js
+yarn test
+yarn build --environment=production
