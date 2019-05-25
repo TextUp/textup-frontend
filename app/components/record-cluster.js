@@ -3,9 +3,9 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     cluster: PropTypes.instanceOf(RecordCluster).isRequired,
     callOptions: PropTypes.object,
     noteOptions: PropTypes.object,
-  },
+  }),
 });

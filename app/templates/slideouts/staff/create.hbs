@@ -14,7 +14,8 @@
             (route-action "closeSlideout")))
     forceKeepOpen=newStaff.isSaving
     focusSelector=".start-focus" as |slideout|}}
-    <div class="form">
-        {{partial "partials/staff/create"}}
-    </div>
+    {{model-form/staff staff=newStaff
+        firstControlClass="start-focus"
+        canModifyPhone=true
+        onSearchAvailableNumbers=(service-action "numberService" "listAvailable")}}
 {{/slideout-pane}}

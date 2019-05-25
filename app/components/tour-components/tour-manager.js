@@ -1,19 +1,19 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import TourData from 'textup-frontend/data/tour-data';
+import { computed } from '@ember/object';
+import { scheduleOnce, join } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     onTourFinish: PropTypes.func,
-  },
+  }),
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   // Internal properties
@@ -53,9 +53,7 @@ export default Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onTourFinish');
   },
   _setTourOngoing(isOngoing) {
-    run.join(() =>
-      this.setProperties({ _tourOngoing: isOngoing, '_publicAPI.isOngoing': isOngoing })
-    );
+    join(() => this.setProperties({ _tourOngoing: isOngoing, '_publicAPI.isOngoing': isOngoing }));
   },
 
   _nextStep() {

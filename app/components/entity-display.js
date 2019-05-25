@@ -1,17 +1,17 @@
 import Component from '@ember/component';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { computed } from '@ember/object';
 import { tryInvoke } from '@ember/utils';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     entityIdentifier: PropTypes.string.isRequired,
     linkTarget: PropTypes.string.isRequired,
     linkParams: PropTypes.array,
     bodyClass: PropTypes.string,
     isSelected: PropTypes.bool,
     onSelect: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { linkParams: [], bodyClass: '', isSelected: false };
   },

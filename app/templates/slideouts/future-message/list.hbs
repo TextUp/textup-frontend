@@ -1,19 +1,19 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title" title="Scheduled Messages")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(route-action "finishViewScheduledMessagesSlideout") as |slideout|}}
+    onClose=(service-action "slideoutService" "closeSlideout")}}
     <ul class="result-list">
-        {{#each model.futureMessages as |existingFutureMessage|}}
+        {{#each futureMessageOwner.futureMessages as |futureMessage|}}
             {{#hide-show tagName="li" as |hideShow|}}
-                {{#future-message classNames="border-b" message=existingFutureMessage}}
-                    {{#if (and (or (type/is-tag model) model.allowEdits)
-                        (not existingFutureMessage.isDone))}}
+                {{#future-message classNames="border-b" message=futureMessage}}
+                    {{#if (and (service-prop "existingFutureMessageSlideoutService" "shouldAllowEdits")
+                        (not futureMessage.isDone))}}
                         <div class="border-l flex__item flex__item--no-shrink">
                             <button class="btn-span btn btn-plain full-height"
                                 type="button"
                                 onclick={{if hideShow.isOpen
-                                    (route-action "onFutureMessageCancelEditing"
-                                        existingFutureMessage
+                                    (service-action "existingFutureMessageSlideoutService" "cancelEditing"
+                                        futureMessage
                                         hideShow.actions.close)
                                     hideShow.actions.open}}>
                                 {{#if hideShow.isOpen}}
@@ -26,34 +26,32 @@
                     {{/if}}
                 {{/future-message}}
                 {{#if hideShow.isOpen}}
-                    {{form/dropdown-controls classNames="border-b"
-                        isMarkedForDelete=existingFutureMessage.isDeleted
-                        isDirty=existingFutureMessage.isDirty
-                        isValid=(v-get existingFutureMessage "isValid")
-                        onMarkForDelete=(route-action "onFutureMessageMarkForDelete"
-                            existingFutureMessage)
-                        onUndoDelete=(route-action "onFutureMessageUndoDelete"
-                            existingFutureMessage)
-                        onCancel=(route-action "onFutureMessageCancelEditing"
-                            existingFutureMessage
+                    {{dropdown-controls classNames="border-b"
+                        isMarkedForDelete=futureMessage.isDeleted
+                        isDirty=futureMessage.isDirty
+                        isValid=(v-get futureMessage "isValid")
+                        onMarkForDelete=(service-action "dataService" "markForDelete" futureMessage)
+                        onUndoDelete=(service-action "dataService" "revert" futureMessage)
+                        onCancel=(service-action "existingFutureMessageSlideoutService" "cancelEditing"
+                            futureMessage
                             hideShow.actions.close)
-                        onSave=(route-action "onFutureMessageSaveEditing"
-                            existingFutureMessage
+                        onSave=(service-action "existingFutureMessageSlideoutService" "saveAfterEditing"
+                            futureMessage
                             hideShow.actions.close)}}
-                    {{form/future-message classNames="pad-t pad-b-double border-b"
-                        futureMessage=existingFutureMessage
+                    {{model-form/future-message classNames="pad-t pad-b-double border-b"
+                        futureMessage=futureMessage
                         personalNumber=(service-prop "authService" "authUser.personalNumber")
-                        onAddImage=(route-action "onAddImage" existingFutureMessage)
-                        onAddAudio=(route-action "onAddAudio" existingFutureMessage)
-                        onRemoveMedia=(route-action "onRemoveMedia" existingFutureMessage)}}
+                        onAddImage=(service-action "mediaService" "addImage" futureMessage)
+                        onAddAudio=(service-action "mediaService" "addAudio" futureMessage)
+                        onRemoveMedia=(service-action "mediaService" "removeMedia" futureMessage)}}
                 {{/if}}
             {{/hide-show}}
         {{else}}
             <li class="no-results">
-                <p class='margin-b'>No scheduled messages yet.</p>
+                <p class="margin-b">No scheduled messages yet.</p>
                 <button type="button"
                     class="btn-link"
-                    onclick={{route-action "startNewScheduleMessageSlideout"}}>
+                    onclick={{service-action "newFutureMessageSlideoutService" "openSlideout" model}}>
                     Schedule a message.
                 </button>
             </li>

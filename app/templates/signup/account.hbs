@@ -108,7 +108,7 @@
                 (not staff.password)
                 (not (eq staff.password confirmPassword))
                 (not didAcceptPolicies))
-            action=(route-action "createStaff" staff)
+            action=(service-action "staffService" "persistNewAndLogIn" staff selected)
             default="Finish"
             pending="Almost..."
             reset=staff.captcha}}

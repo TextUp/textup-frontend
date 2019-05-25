@@ -1,15 +1,15 @@
-import { debug } from '@ember/debug';
 import $ from 'jquery';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { isPresent, tryInvoke } from '@ember/utils';
-import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
+import { debug } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { run, join, scheduleOnce } from '@ember/runloop';
 
 // REQUIRED, showed to user within native fingerprint dialogue
 export const CLIENT_MESSAGE = 'Please verify your identity';
@@ -18,7 +18,7 @@ export const CLIENT_PASSWORD = 'password';
 export default Component.extend(PropTypesMixin, HasEvents, {
   pageVisibilityService: service(),
 
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     onChange: PropTypes.func,
     onValidate: PropTypes.func,
@@ -30,7 +30,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
     username: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
     timeout: PropTypes.oneOfType([PropTypes.number, PropTypes.null]),
     disabled: PropTypes.bool,
-  },
+  }),
 
   getDefaultProps() {
     return { shouldStartLocked: true, timeout: 15000, disabled: !config.lock.lockOnHidden };
@@ -40,8 +40,8 @@ export default Component.extend(PropTypesMixin, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.join(() =>
-      run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
+    join(() =>
+      scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
     );
   },
 
@@ -52,7 +52,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
       this.get('pageVisibilityService')
         .on(config.events.visibility.hidden, this, this._updateLastActive)
         .on(config.events.visibility.visible, this, this._checkInactiveTime);
-      run.scheduleOnce('afterRender', this, this._tryLockOnInit);
+      scheduleOnce('afterRender', this, this._tryLockOnInit);
     }
   },
 
@@ -142,9 +142,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
       // Need to check because we may be on a page that should NOT lock on hidden
       PropertyUtils.ensurePromise(tryInvoke(this, 'onCheckShouldLock'))
         .then(this._doLock.bind(this))
-        .catch(() =>
-          debug('lock-container._checkInactiveTime: do not lock even if timed out')
-        );
+        .catch(() => debug('lock-container._checkInactiveTime: do not lock even if timed out'));
     }
   },
 
@@ -167,7 +165,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
     this._updateIsLocked(false);
   },
   _updateIsLocked(status) {
-    run.join(() => this.setProperties({ _isLocked: status, '_publicAPI.isLocked': status }));
+    join(() => this.setProperties({ _isLocked: status, '_publicAPI.isLocked': status }));
   },
   _doFingerprint() {
     if (window.Fingerprint) {

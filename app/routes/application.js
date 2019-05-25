@@ -13,6 +13,7 @@ export default Route.extend(HasSlideoutOutlet, Loading, {
   stateService: service(),
 
   init() {
+    this._super(...arguments);
     // For some reason, cannot set these defaults in an initializer so we need to set the default
     // notification settings here in this `init` hook
     const service = this.get('notifications');

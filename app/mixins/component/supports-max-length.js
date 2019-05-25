@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Mixin from '@ember/object/mixin';
 import { assign } from '@ember/polyfills';
 import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
@@ -16,7 +16,12 @@ import {
   removeElement,
 } from 'textup-frontend/utils/element';
 
-const DEFAULT_PERCENT_THRESHOLD = 90, NAMESPACE = 'supports-max-length', CONTAINER_CLASS = 'max-length', INDICATOR_CLASS = 'max-length__indicator', INDICATOR_OPEN_CLASS = 'max-length__indicator--visible', INDICATOR_POSITION_CLASS_ROOT = 'max-length__indicator--position';
+const DEFAULT_PERCENT_THRESHOLD = 90,
+  NAMESPACE = 'supports-max-length',
+  CONTAINER_CLASS = 'max-length',
+  INDICATOR_CLASS = 'max-length__indicator',
+  INDICATOR_OPEN_CLASS = 'max-length__indicator--visible',
+  INDICATOR_POSITION_CLASS_ROOT = 'max-length__indicator--position';
 
 export default Mixin.create(PropTypesMixin, HasEvents, {
   propTypes: {
@@ -44,21 +49,21 @@ export default Mixin.create(PropTypesMixin, HasEvents, {
   didInsertElement() {
     this._super(...arguments);
     // will throw error when component is rendered if this mandatory handler is not implemented
-    run.scheduleOnce('afterRender', this, this._buildCurrentValueLength);
+    scheduleOnce('afterRender', this, this._buildCurrentValueLength);
   },
   didReceiveAttrs() {
     this._super(...arguments);
     // check if we need to set up max length
     if (this.get('_hasMaxLength')) {
-      run.scheduleOnce('afterRender', this, this._setupMaxLength);
+      scheduleOnce('afterRender', this, this._setupMaxLength);
     } else {
-      run.scheduleOnce('afterRender', this, this._cleanupMaxLength);
+      scheduleOnce('afterRender', this, this._cleanupMaxLength);
     }
     // try to update indicator position if needed
     const position = this.get('maxLengthPosition');
     if (position !== this.get('_originalMaxLengthPosition')) {
       const indicatorEl = this.get('_maxLengthIndicator');
-      run.scheduleOnce('afterRender', this, this._tryUpdateMaxLengthIndicatorPosition, indicatorEl);
+      scheduleOnce('afterRender', this, this._tryUpdateMaxLengthIndicatorPosition, indicatorEl);
       this.set('_originalMaxLengthPosition', position);
     }
   },
@@ -185,7 +190,7 @@ export default Mixin.create(PropTypesMixin, HasEvents, {
       .addClass(this.get('_maxLengthPositionClass'));
   },
   _updateMaxLengthAfterRender(indicatorEl) {
-    run.scheduleOnce('afterRender', this, this._updateMaxLength, indicatorEl);
+    scheduleOnce('afterRender', this, this._updateMaxLength, indicatorEl);
   },
   _updateMaxLength(indicatorEl) {
     if (!indicatorEl || this.get('isDestroying') || this.get('isDestroyed')) {

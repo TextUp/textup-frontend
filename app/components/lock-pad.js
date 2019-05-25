@@ -1,19 +1,19 @@
-import { notEmpty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { notEmpty } from '@ember/object/computed';
+import { scheduleOnce, debounce, join } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     doUpdateVal: PropTypes.func.isRequired,
     doValidate: PropTypes.func,
     val: PropTypes.oneOfType([PropTypes.string, PropTypes.null]),
     totalPadDigits: PropTypes.number,
     focusOnInit: PropTypes.bool,
-  },
+  }),
   getDefaultProps() {
     return { totalPadDigits: 4, focusOnInit: false };
   },
@@ -24,12 +24,12 @@ export default Component.extend(PropTypesMixin, {
   didInsertElement() {
     this._super(...arguments);
     if (this.get('focusOnInit')) {
-      run.scheduleOnce('afterRender', this, this._focusOnControl);
+      scheduleOnce('afterRender', this, this._focusOnControl);
     }
   },
   didUpdateAttrs() {
     this._super(...arguments);
-    run.debounce(this, this._tryCheckValidate, 500);
+    debounce(this, this._tryCheckValidate, 500);
   },
 
   // Internal properties
@@ -61,8 +61,8 @@ export default Component.extend(PropTypesMixin, {
     ) {
       this.set('_isLoading', true);
       PropertyUtils.ensurePromise(tryInvoke(this, 'doValidate', [this.get('val')]))
-        .catch(() => run.join(() => this.set('_isError', true)))
-        .finally(() => run.join(() => this.set('_isLoading', false)));
+        .catch(() => join(() => this.set('_isError', true)))
+        .finally(() => join(() => this.set('_isLoading', false)));
     }
   },
   _doUpdateVal(newVal) {

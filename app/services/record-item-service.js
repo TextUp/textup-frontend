@@ -99,15 +99,25 @@ export default Service.extend({
     }
   },
 
+  restoreDeletedNote(rNote) {
+    if (TypeUtils.isNote(rNote)) {
+      rNote.set('hasBeenDeleted', false);
+      this.get('dataService').persist(rNote);
+    }
+  },
   addLocationToNote(rNote) {
-    rNote.set('location', this.get('store').createRecord('location'));
+    if (TypeUtils.isNote(rNote)) {
+      rNote.set('location', this.get('store').createRecord('location'));
+    }
   },
   removeLocationFromNote(rNote) {
-    const loc = rNote.get('location.content');
-    if (loc) {
-      loc.rollbackAttributes();
+    if (TypeUtils.isNote(rNote)) {
+      const loc = rNote.get('location.content');
+      if (loc) {
+        loc.rollbackAttributes();
+      }
+      rNote.set('location', null);
     }
-    rNote.set('location', null);
   },
 
   // Internal methods

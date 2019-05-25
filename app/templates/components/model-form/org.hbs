@@ -1,0 +1,55 @@
+<div class="form__group">
+    <label class="form__label" for="Your Name">Organization Name</label>
+    {{input value=org.name
+        type="text"
+        placeholder="Organization Name"
+        class="form__input"}}
+</div>
+<div class="form__group">
+    <div class="xs-row-2 control-text">
+        <label class="form__label" for="Lock Timeout">
+            Lock Timeout
+        </label>
+    </div>
+    {{#multi-toggle classNames="xs-row-2"
+        selectIndex=(if org.isTimeout15 0 (if org.isTimeout30 1 (if org.isTimeout60 2 3)))
+        wrapAround=true as |toggle doRegister|}}
+        {{#multi-toggle/item doRegister=doRegister
+            color=(constant "COLOR.LIGHT_BLUE")
+            onSelect=(action (mut org.timeoutInSeconds) 15)}}
+            15 seconds
+        {{/multi-toggle/item}}
+        {{#multi-toggle/item doRegister=doRegister
+            color=(constant "COLOR.MEDIUM_BLUE")
+            onSelect=(action (mut org.timeoutInSeconds) 30)}}
+            30 seconds
+        {{/multi-toggle/item}}
+        {{#multi-toggle/item doRegister=doRegister
+            color=(constant "COLOR.BRAND")
+            onSelect=(action (mut org.timeoutInSeconds) 60)}}
+            1 minute
+        {{/multi-toggle/item}}
+        {{#if (not (unbound org.isTimeoutStandard))}}
+            {{#multi-toggle/item doRegister=doRegister
+                color=(constant "COLOR.LIGHT_GRAY")
+                onSelect=(action _onRevertTimeout)}}
+                {{org.timeoutInSeconds}} seconds
+            {{/multi-toggle/item}}
+        {{/if}}
+    {{/multi-toggle}}
+</div>
+<div class="form__group">
+    <label class="form__label" for="away-message-suffix">
+        Add to all away messages
+    </label>
+    {{textarea rows="2"
+        placeholder="Do not add anything to the end of user away messages"
+        autoresize=true
+        class="form__input form__input--multiline"
+        maxLength=org.awayMessageSuffixMaxLength
+        validateObj=org
+        validateField="awayMessageSuffix"
+        validate="bottom"
+        value=org.awayMessageSuffix}}
+</div>
+{{model-form/location entity=org onLocationError=(action _onLocationError)}}

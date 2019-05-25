@@ -283,6 +283,9 @@
 // Checkbox/radio-button hack
 // --------------------------
 
+// [FUTURE] sometimes checked attribute doesn't update reliably so we use classes as a hack.
+// Replace all of this when we write accessible, component-based controls
+
 input[type='checkbox'],
 input[type='radio'] {
     position: relative;
@@ -291,7 +294,8 @@ input[type='radio'] {
     margin-left: 2px;
 
     &:before,
-    &:checked:after {
+    &.input--checked:after,
+    &:checked:not(.input--not-checked):after {
         content: '';
         position: absolute;
         top: 50%;
@@ -307,7 +311,8 @@ input[type='radio'] {
         background-color: $bg-light-color;
     }
 
-    &:checked:after {
+    &.input--checked:after,
+    &:checked:not(.input--not-checked):after {
         content: '';
         position: absolute;
         top: 50%;
@@ -320,7 +325,8 @@ input[type='radio'] {
 }
 input[type='radio'] {
     &:before,
-    &:checked:after {
+    &.input--checked:after,
+    &:checked:not(.input--not-checked):after {
         border-radius: 100%;
     }
 }

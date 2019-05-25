@@ -1,15 +1,15 @@
-import { notEmpty } from '@ember/object/computed';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke, isPresent, isBlank } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
+import Component from '@ember/component';
 import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import SupportsValidation from 'textup-frontend/mixins/component/supports-validation';
+import { computed } from '@ember/object';
+import { notEmpty } from '@ember/object/computed';
+import { scheduleOnce } from '@ember/runloop';
+import { tryInvoke, isPresent, isBlank } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, SupportsValidation, {
-  propTypes: {
+  propTypes: Object.freeze({
     numbers: PropTypes.oneOfType([
       PropTypes.array,
       PropTypes.arrayOf(PropTypes.instanceOf(ContactNumberObject)),
@@ -18,7 +18,7 @@ export default Component.extend(PropTypesMixin, SupportsValidation, {
     onChange: PropTypes.func,
     onAdded: PropTypes.func,
     onRemoved: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { numbers: [], readonly: false };
   },
@@ -52,7 +52,7 @@ export default Component.extend(PropTypesMixin, SupportsValidation, {
       // passed in copied array with new state
       tryInvoke(this, 'onChange', [newNumbers]);
       // notify after this data has had a chance to propagate back down
-      run.scheduleOnce('afterRender', () => {
+      scheduleOnce('afterRender', () => {
         tryInvoke(this, 'onAdded', [numToAdd]);
         this.doValidate();
         this.set('_newNumberString', '');
@@ -68,7 +68,7 @@ export default Component.extend(PropTypesMixin, SupportsValidation, {
     newNumbers.removeAt(index);
     tryInvoke(this, 'onChange', [newNumbers]);
     // notify after this data has had a chance to propagate back down
-    run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       tryInvoke(this, 'onRemoved', [numToRemove]);
       this.doValidate();
     });

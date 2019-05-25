@@ -1,23 +1,23 @@
-import { Promise } from 'rsvp';
 import ArrayProxy from '@ember/array/proxy';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Organization from 'textup-frontend/models/organization';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed, get } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Component.extend(PropTypesMixin, {
   requestService: service(),
   store: service(),
 
-  propTypes: {
+  propTypes: Object.freeze({
     data: PropTypes.EmberObject,
     phoneOwner: PropTypes.EmberObject,
     org: PropTypes.instanceOf(Organization),
     selected: PropTypes.oneOfType([PropTypes.null, PropTypes.object]),
-  },
+  }),
   getDefaultProps() {
     return { data: ArrayProxy.create() };
   },
@@ -28,7 +28,7 @@ export default Component.extend(PropTypesMixin, {
 
   actions: {
     select(transferTarget) {
-      return new Promise(resolve => {
+      return new RSVP.Promise(resolve => {
         this.set('selected', transferTarget);
         resolve();
       });
@@ -37,7 +37,7 @@ export default Component.extend(PropTypesMixin, {
       this.set('selected', null);
     },
     search(val) {
-      return new Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         const orgId = this.get('org.id');
         this.get('requestService')
           .authRequest({

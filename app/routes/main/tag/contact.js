@@ -1,12 +1,17 @@
-import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import MainContactsContactRoute from 'textup-frontend/routes/main/contacts/contact';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default MainContactsContactRoute.extend({
   authService: service(),
 
+  controllerName: 'main/contacts/contact',
+  templateName: 'main/contacts/contact',
+
+  // @Override
   backRouteName: 'main.tag',
+  // @Override
   backRouteLinkParams: computed(
     `authService.authUser.${Constants.PROP_NAME.URL_IDENT}`,
     function() {

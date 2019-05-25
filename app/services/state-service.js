@@ -1,13 +1,13 @@
-import { match, readOnly } from '@ember/object/computed';
-import { removeObserver, addObserver } from '@ember/object/observers';
-import Service, { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { typeOf } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
+import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
+import { match, readOnly } from '@ember/object/computed';
+import { removeObserver, addObserver } from '@ember/object/observers';
+import { next } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 
 export default Service.extend({
   router: service(),
@@ -21,6 +21,7 @@ export default Service.extend({
   // Properties
   // ----------
 
+  // TODO not all of these may be needed after refactor
   viewingContacts: match('router.currentRouteName', /main.contacts/),
   viewingTag: match('router.currentRouteName', /main.tag/),
   viewingSearch: match('router.currentRouteName', /main.search/),
@@ -65,7 +66,7 @@ export default Service.extend({
   // --------
 
   _scheduleUpdateTrackedUrl() {
-    run.next(this, this._updateTrackedUrl);
+    next(this, this._updateTrackedUrl);
   },
   _updateTrackedUrl() {
     this.get('storageService').setItem(StorageUtils.currentUrlKey(), this.get('router.currentURL'));

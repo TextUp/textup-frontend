@@ -8,8 +8,8 @@ export default Route.extend({
   model(params) {
     const id = params.id;
     if (id) {
-      const found = this.store.peekRecord('staff', id);
-      return found ? found : this.store.findRecord('staff', id);
+      const found = this.get('store').peekRecord('staff', id);
+      return found ? found : this.get('store').findRecord('staff', id);
     } else {
       this.transitionTo('admin.people');
     }

@@ -9,9 +9,9 @@ export default Route.extend({
           staff = signupController.get('staff');
         if (staff.get('isDeleted') === false) {
           staff.rollbackAttributes();
-          signupController.set('staff', this.store.createRecord('staff'));
+          signupController.set('staff', this.get('store').createRecord('staff'));
         }
       }
-    }
-  }
+    },
+  },
 });

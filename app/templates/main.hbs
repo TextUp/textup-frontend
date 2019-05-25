@@ -32,7 +32,7 @@
             {{/if}}
         </button>
     </span>
-    {{#liquid-if (get slideoutService.shouldShow (constant "SLIDEOUT.OUTLET.DETAIL"))
+    {{#liquid-if (get (service-prop "slideoutService" "shouldShow") (constant "SLIDEOUT.OUTLET.DETAIL"))
         class="animate-slide-from-right animated-overflow"}}
         {{outlet (constant "SLIDEOUT.OUTLET.DETAIL")}}
     {{/liquid-if}}
@@ -47,17 +47,19 @@
                     activeName=(service-prop "stateService" "owner.name")
                     activeNumber=(service-prop "stateService" "owner.phone.content.number")
                     toggleClass="xs-8-row-10"}}
-                    <button class="xs-2-row-10 textup-account-switcher__display"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    <button type="button"
+                        class="xs-2-row-10 textup-account-switcher__display"
+                        onclick={{service-action "accountSlideoutService" "openSlideout"}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
             </div>
             <div class="display-l">
                 <div class="menu-item menu-header"
+                    tabindex="0"
                     style="background-color:{{service-prop "stateService" "owner.hexColor"}};
                         color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
-                    onclick={{route-action "toggleSlideout" "slideouts/account" "main" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    onclick={{service-action "accountSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
                         classNames="btn-expand"}}
@@ -69,7 +71,7 @@
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
                         {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
-                        onclick={{route-action "startAvailabilitySlideout"}}>
+                        onclick={{service-action "notificationSlideoutService" "openSlideout"}}>
                         <div class="btn-expand">
                             <span id="tour-openAvailabilityButtonMobile">Notifications</span>
                         </div>
@@ -78,7 +80,7 @@
                 <div class="display-l">
                     <div class="menu-item menu-slideout
                         {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
-                        onclick={{route-action "startAvailabilitySlideout"}}>
+                        onclick={{service-action "notificationSlideoutService" "openSlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Notifications"
                             classNames="btn-expand"}}
@@ -99,7 +101,7 @@
             {{/if}}
             <div class="display-xs display-s display-m">
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startComposeSlideout"}}>
+                    onclick={{service-action "composeSlideoutService" "openSlideout"}}>
                     <div class="btn-expand">
                         <span id="tour-openMessageButtonMobile">Compose</span>
                     </div>
@@ -108,7 +110,7 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startComposeSlideout"}}>
+                    onclick={{service-action "composeSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Compose"
                         classNames="btn-expand"}}
@@ -118,7 +120,7 @@
             </div>
             <div class="display-xs display-s display-m">
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startCallSlideout"}}>
+                    onclick={{service-action "callSlideoutService" "openSlideout"}}>
                     <div class="btn-expand">
                         <span id="tour-openCallButtonMobile">Call</span>
                     </div>
@@ -126,7 +128,7 @@
             </div>
             <div class="display-l">
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startCallSlideout"}}>
+                    onclick={{service-action "callSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Call"
                         classNames="btn-expand"}}
@@ -137,7 +139,7 @@
             {{#if (can-download)}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout"
-                        onclick={{route-action "startMultipleExportSlideout"}}>
+                        onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout"}}>
                         <div class="btn-expand">
                             <span id="tour-openExportButtonMobile">Export</span>
                         </div>
@@ -145,7 +147,7 @@
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout"
-                        onclick={{route-action "startMultipleExportSlideout"}}>
+                        onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Export"
                             classNames="btn-expand"}}
@@ -162,39 +164,39 @@
                     Contacts
                     <button class="btn btn-plain v-center-right"
                         type="button"
-                        onclick={{route-action "startNewContactSlideout"}}>
+                        onclick={{service-action "newContactSlideoutService" "openSlideout"}}>
                         <span class="icon-thin-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
                 <div class="menu-item
                     {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.ALL"))) "active"}}"
-                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.ALL")}}>
+                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ALL")}}>
                     <span>All</span>
                 </div>
                 <div class="menu-item
                     {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.UNREAD"))) "active"}}"
-                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD")}}>
+                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD")}}>
                     <span>Unread</span>
                 </div>
                 <div class="menu-item
                     {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.ARCHIVED"))) "active"}}"
-                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED")}}>
+                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED")}}>
                     <span>Archived</span>
                 </div>
                 <div class="menu-item
                     {{if (and (service-prop "stateService" "viewingContacts")
                         (eq filter (constant "CONTACT.FILTER.BLOCKED"))) "active"}}"
-                    {{action "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED")}}>
+                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED")}}>
                     <span>Blocked</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startNewContactSlideout"}}>
+                    onclick={{service-action "newContactSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Add Contact"
                         classNames="btn-expand"}}
@@ -228,7 +230,7 @@
                     Tags
                     <button class="btn btn-plain v-center-right"
                         type="button"
-                        onclick={{route-action "startNewTagSlideout"}}>
+                        onclick={{service-action "newTagSlideoutService" "openNewTagSlideout"}}>
                         <span class="icon-thin-plus" id="tour-createNewTagButtonMobile"></span>
                     </button >
                 </div>
@@ -256,7 +258,7 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout" id="tour-openTagsListButton"
-                    onclick={{route-action "startTagListSlideout"}}>
+                    onclick={{service-action "newTagSlideoutService" "openTagListSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"
                         classNames="btn-expand"}}
@@ -269,13 +271,13 @@
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startFeedbackSlideout"}}>
+                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     <span>Support</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
-                    onclick={{route-action "startFeedbackSlideout"}}>
+                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}

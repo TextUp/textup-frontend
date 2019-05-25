@@ -1,16 +1,16 @@
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { tryInvoke, isPresent } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { inject as service } from '@ember/service';
+import { tryInvoke, isPresent } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   captchaService: service(),
 
-  propTypes: {
+  propTypes: Object.freeze({
     onSuccess: PropTypes.func,
     onFailure: PropTypes.func,
     onExpiration: PropTypes.func,
-  },
+  }),
   tagName: '',
 
   // Internal properties

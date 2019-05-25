@@ -1,17 +1,17 @@
 import $ from 'jquery';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce, later } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export const BODY_DRAWER_CLASS = 'tour-step__root';
 
 export default Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
-  propTypes: {
+  propTypes: Object.freeze({
     title: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     onNext: PropTypes.func.isRequired,
@@ -22,17 +22,17 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
     elementToHighlight: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     elementToOpenMobile: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     elementToHighlightMobile: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
-  },
+  }),
 
   classNames: 'tour-step',
 
   didReceiveAttrs() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this, this._setUpCutouts);
+    scheduleOnce('afterRender', this, this._setUpCutouts);
   },
   didInsertElement() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => this.get('_root').addClass(BODY_DRAWER_CLASS));
+    scheduleOnce('afterRender', () => this.get('_root').addClass(BODY_DRAWER_CLASS));
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -72,7 +72,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
     const $click = $(clickSelector);
     if ($click.length) {
       $click.click();
-      run.later(this, this._scrollToAndCalculateCutout, highlightSelector, overlay, 500);
+      later(this, this._scrollToAndCalculateCutout, highlightSelector, overlay, 500);
     } else {
       this._scrollToAndCalculateCutout(highlightSelector, overlay);
     }
@@ -84,7 +84,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasAppRoot, {
       // Need to hardcode a delay because `scrollIntoView` does not take a completion callback
       // or return a promise -- trying to find the scrollParent programmatically is too complicated
       // Making the delay 500ms results in the cutout not being scroll into view yet
-      run.later(this, this._tryCalculateCutout, overlay, 1000);
+      later(this, this._tryCalculateCutout, overlay, 1000);
     }
   },
   _tryRemoveCutout(overlay) {

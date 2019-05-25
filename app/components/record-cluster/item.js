@@ -1,18 +1,19 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import TypeUtils from 'textup-frontend/utils/type';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordItem from 'textup-frontend/models/record-item';
+import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     item: PropTypes.instanceOf(RecordItem).isRequired,
     callOptions: PropTypes.object,
     noteOptions: PropTypes.object,
-  },
+  }),
   getDefaultProps() {
     return { noteOptions: {} };
   },
+
   classNames: ['record-cluster__item'],
   classNameBindings: [
     '_isOutgoing:record-cluster__item--outgoing',

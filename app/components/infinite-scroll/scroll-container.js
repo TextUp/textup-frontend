@@ -1,21 +1,21 @@
-import { equal } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
 import Constants from 'textup-frontend/constants';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
+import { scheduleOnce, throttle, join } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, HasEvents, {
-  propTypes: {
+  propTypes: Object.freeze({
     direction: PropTypes.oneOf(Object.values(Constants.INFINITE_SCROLL.DIRECTION)),
     doRegister: PropTypes.func,
     onNearEnd: PropTypes.func,
     disabled: PropTypes.bool,
     contentClass: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return {
       direction: Constants.INFINITE_SCROLL.DIRECTION.DOWN,
@@ -28,7 +28,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didInsertElement() {
     this._super(...arguments);
@@ -36,7 +36,7 @@ export default Component.extend(PropTypesMixin, HasEvents, {
     // the scroll event doesn't bubble, see https://github.com/emberjs/ember.js/issues/9753
     this.$().on(this._event('scroll'), this._scheduleOnScroll.bind(this));
     // this must be scheduled or else we enter into a rendering engine invalidation infinite loop
-    run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       this._scheduleResetPosition().then(() => this._storeUserOffsetAndCheckNearEnd());
     });
   },
@@ -69,27 +69,27 @@ export default Component.extend(PropTypesMixin, HasEvents, {
   // -----------------
 
   _scheduleOnScroll() {
-    run.throttle(this, this._onScroll, ...arguments, 500, false);
+    throttle(this, this._onScroll, ...arguments, 500, false);
   },
   _onScroll() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.scheduleOnce('afterRender', this, this._storeUserOffsetAndCheckNearEnd);
+    scheduleOnce('afterRender', this, this._storeUserOffsetAndCheckNearEnd);
   },
 
   _scheduleResetPosition(shouldAnimate = false) {
     return new RSVP.Promise(resolve => {
-      run.join(() =>
-        run.scheduleOnce('afterRender', this, this._scrollToOffset, resolve, 0, shouldAnimate)
+      join(() =>
+        scheduleOnce('afterRender', this, this._scrollToOffset, resolve, 0, shouldAnimate)
       );
     });
   },
   _scheduleRestoreUserPosition(shouldAnimate = false) {
     return new RSVP.Promise(resolve => {
-      run.join(() => {
+      join(() => {
         const offset = this.get('_userOffsetFromInitial');
-        run.scheduleOnce('afterRender', this, this._scrollToOffset, resolve, offset, shouldAnimate);
+        scheduleOnce('afterRender', this, this._scrollToOffset, resolve, offset, shouldAnimate);
       });
     });
   },
@@ -109,10 +109,10 @@ export default Component.extend(PropTypesMixin, HasEvents, {
   },
 
   _scheduleCheckOffsetAndNearEnd() {
-    run.join(() => run.scheduleOnce('afterRender', this, this._storeUserOffsetAndCheckNearEnd));
+    join(() => scheduleOnce('afterRender', this, this._storeUserOffsetAndCheckNearEnd));
   },
   _storeUserOffsetAndCheckNearEnd() {
-    run.join(() => {
+    join(() => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {
         return;
       }

@@ -88,7 +88,7 @@ export default DS.Model.extend(
     }),
 
     phone: DS.belongsTo('phone'),
-    tags: DS.hasMany('tag'),
+    [Constants.PROP_NAME.TAGS]: DS.hasMany('tag'),
     hasTags: notEmpty('tags'),
 
     // if is owned contact

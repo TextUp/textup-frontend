@@ -1,17 +1,17 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import Tag from 'textup-frontend/models/tag';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     tag: PropTypes.instanceOf(Tag).isRequired,
     backRouteName: PropTypes.string.isRequired,
     linkParams: PropTypes.array,
     onEdit: PropTypes.func,
     onExport: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { linkParams: [] };
   },

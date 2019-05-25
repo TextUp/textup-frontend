@@ -1,14 +1,14 @@
-{{title (if searchQuery (concat "Search " searchQuery) "New Search") separator=" - "}}
+{{title (if searchResults (concat "Search (" searchResults.length " results)") "New Search") separator=" - "}}
 
 <div class="content">
 	<div class="section-header">
 		<div class="tag-title">
 			{{input type="text"
-				value=_searchQuery
+				value=searchQuery
 				classNames="form-control form-control--only-bottom search-input"
 				placeholder="Search here..."
-				enter=(route-action "triggerSearch" _searchQuery)
-				escape-press=(action (mut _searchQuery) null)}}
+				enter=(action "triggerSearch" searchQuery)
+				escape-press=(action (mut searchQuery) null)}}
 			<div class="margin-t-half">
 				{{#if searchResults}}
 					<span class="text-bold margin-r-half">
@@ -17,7 +17,7 @@
 					</span>
 				{{/if}}
 				<span>
-                    <button type="button" class="btn-link" onclick={{route-action "closeSearch"}}>
+                    <button type="button" class="btn-link" onclick={{action "closeSearch"}}>
                         Close search
                     </button>
 				</span>
@@ -25,8 +25,8 @@
 		</div>
 		<button class="v-center-right full-height btn btn-plain"
 			type="button"
-			disabled={{if (not _searchQuery) "disabled"}}
-			onclick={{route-action "triggerSearch" _searchQuery}}>
+			disabled={{if (not searchQuery) "disabled"}}
+			onclick={{action "triggerSearch" searchQuery}}>
 			<span class="icon-search"></span>
 		</button>
 	</div>
@@ -36,8 +36,8 @@
             data=searchResults
             numTotal=numTotalSearchResults
             doRegister=(action (mut searchList))
-            onRefresh=(route-action "refresh")
-            onLoad=(route-action "loadMore") as |contact|}}
+            onRefresh=(action "refresh")
+            onLoad=(action "loadMore") as |contact|}}
             {{#entity-display class="result-item"
                 entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
                 linkTarget="main.search.contact"
@@ -46,7 +46,7 @@
                 linkParam=contact.id
                 bodyClass=(if contact.isUnread "unread")
                 isSelected=contact.isSelected
-                onSelect=(route-action "toggleSelected" contact)}}
+                onSelect=(action "toggleSelected" contact)}}
                 {{entity-display/contact entity=contact}}
             {{/entity-display}}
         {{else}}

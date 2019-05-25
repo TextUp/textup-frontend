@@ -72,29 +72,29 @@
 		</div>
     {{else}}
     	<div class="section-body bg-color bg-lightest">
-		    <div class="form">
-		    	{{#with team as |newTeam|}}
-		    		{{partial "partials/team/create-edit"}}
-		    	{{/with}}
-		    </div>
-	    	{{#if (or team.hasDirtyAttributes team.hasManualChanges)}}
-	    		<div class="flex flex--justify-center flex--spacing-between">
-			        <div class="flex__item">
-			            <button class="btn" type="button"
-			                onclick={{service-action "dataService" "revert" team}}>
-			                Cancel
-			            </button>
-			        </div>
-			        <div class="flex__item">
-			            {{async-button classNames="btn btn-default"
-	                        disableWhen=(not (v-get team "isValid"))
-	                        action=(route-action "persistWithPhone" team)
-	                        default="Update"
-	                        pending="Updating..."}}
-			        </div>
-			    </div>
-	    	{{/if}}
-			{{form/location-model entity=team onLocationError=(service-action "mapService" "handleError")}}
+			{{#model-form/team team=team
+				canModifyPhone=true
+				onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
+				onLocationError=(service-action "mapService" "handleError")}}
+				{{#if team.isDirty}}
+		    		<div class="flex flex--justify-center flex--spacing-between">
+				        <div class="flex__item">
+				            <button class="btn"
+				            	type="button"
+				                onclick={{service-action "dataService" "revert" team}}>
+				                Cancel
+				            </button>
+				        </div>
+				        <div class="flex__item">
+				            {{async-button classNames="btn btn-default"
+		                        disableWhen=(not (v-get team "isValid"))
+		                        action=(route-action "persistWithPhone" team)
+		                        default="Update"
+		                        pending="Updating..."}}
+				        </div>
+				    </div>
+		    	{{/if}}
+			{{/model-form/team}}
 	    </div>
     {{/if}}
 </div>

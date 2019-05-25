@@ -1,32 +1,32 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat "Exporting " (get model (constant "PROP_NAME.READABLE_IDENT"))))
+        title=(concat "Exporting " (service-prop "exportSlideoutService" "recordOwnerName")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishExportSlideout")
-        disablePrimary=(or (not exportStartDate) (not exportEndDate))
+        onPrimary=(service-action "exportSlideoutService" "finishSlideout")
+        disablePrimary=(service-prop "exportSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(route-action "cancelExportSlideout") as |slideout|}}
+    onClose=(service-action "exportSlideoutService" "cancelSlideout") as |slideout|}}
     <div class="form">
         <div class="form__group">
             <label for="export-start-date" class="form__label">
                 Start date
             </label>
-            {{datetime-control value=exportStartDate
+            {{datetime-control value=(service-prop "exportSlideoutService" "startDate")
                 showTime=false
                 max=(now)
-                onSelect=(action (mut exportStartDate))}}
+                onSelect=(service-mut "exportSlideoutService" "startDate")}}
         </div>
         <div class="form__group">
             <label for="export-end-date" class="form__label">
                 End date
             </label>
-            {{datetime-control value=exportEndDate
+            {{datetime-control value=(service-prop "exportSlideoutService" "endDate")
                 showTime=false
                 max=(now)
-                onSelect=(action (mut exportEndDate))}}
+                onSelect=(service-mut "exportSlideoutService" "endDate")}}
         </div>
     </div>
 {{/slideout-pane}}

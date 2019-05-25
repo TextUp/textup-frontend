@@ -1,8 +1,3 @@
-import { alias, notEmpty, equal } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
-import { isPresent } from '@ember/utils';
-import { computed } from '@ember/object';
-import { assign } from '@ember/polyfills';
 import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
@@ -10,6 +5,11 @@ import DS from 'ember-data';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
+import { alias, notEmpty, equal } from '@ember/object/computed';
+import { assign } from '@ember/polyfills';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations(
@@ -113,21 +113,6 @@ export default DS.Model.extend(
       return ArrayUtils.ensureArrayAndAllDefined(raw)
         .map(stat => String(stat).toLowerCase())
         .includes(String(this.get('status')).toLowerCase());
-    },
-    makeStaff() {
-      if (!this.get('isAuthUser')) {
-        this.set('status', Constants.STAFF.STATUS.STAFF);
-      }
-    },
-    makeAdmin() {
-      if (!this.get('isAuthUser')) {
-        this.set('status', Constants.STAFF.STATUS.ADMIN);
-      }
-    },
-    block() {
-      if (!this.get('isAuthUser')) {
-        this.set('status', Constants.STAFF.STATUS.BLOCKED);
-      }
     },
 
     // Internal properties

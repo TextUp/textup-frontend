@@ -1,10 +1,7 @@
-import { inject as service } from '@ember/service';
-import Route from '@ember/routing/route';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
+import Route from '@ember/routing/route';
 
 export default Route.extend(IsPublic, {
-  authService: service(),
-
   deactivate() {
     this._super(...arguments);
     this.controller.setProperties({
@@ -12,12 +9,5 @@ export default Route.extend(IsPublic, {
       password: null,
       resetUsername: null,
     });
-  },
-  actions: {
-    login(un, pwd, doStore) {
-      return this.get('authService')
-        .login(un, pwd, doStore)
-        .then(staff => this.transitionTo('main', staff));
-    },
   },
 });

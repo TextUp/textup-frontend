@@ -1,16 +1,16 @@
 import Component from '@ember/component';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordNote from 'textup-frontend/models/record-note';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     note: PropTypes.instanceOf(RecordNote).isRequired,
     onEdit: PropTypes.func,
     onRestore: PropTypes.func,
     onViewHistory: PropTypes.func,
-    readOnly: PropTypes.bool
-  },
+    readOnly: PropTypes.bool,
+  }),
   getDefaultProps() {
     return { readOnly: false };
   },
@@ -27,5 +27,5 @@ export default Component.extend(PropTypesMixin, {
   },
   _onViewHistory() {
     tryInvoke(this, 'onViewHistory', [...arguments]);
-  }
+  },
 });

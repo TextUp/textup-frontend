@@ -1,21 +1,21 @@
-{{title 'Admin ' (service-prop "stateService" "owner.name") prepend=false separator=" - "}}
+{{title "Admin " (service-prop "stateService" "owner.name") prepend=false separator=" - "}}
 
-{{#sliding-drawer contentsId='menu'
+{{#sliding-drawer contentsId="menu"
     closeOnContentsClick=true
-    allowCloseContentsSelector='.menu-item'
-    ignoreCloseContentsSelector='.menu-slideout, .header-slideout, .menu-header'
-    bodyId='body'
+    allowCloseContentsSelector=".menu-item"
+    ignoreCloseContentsSelector=".menu-slideout, .header-slideout, .menu-header"
+    bodyId="body"
     as |drawer|}}
     <span class="display-xs display-s display-m menu-toggle">
         <button class="btn btn-plain full-height"
             onclick={{drawer.actions.toggle}}>
-            <span class='halo halo-sm bg-color bg-dark text-heading'>
+            <span class="halo halo-sm bg-color bg-dark text-heading">
                 <span class="fa fa-home"></span>
             </span>
         </button>
     </span>
-    {{#liquid-if (get slideoutService.shouldShow (constant "SLIDEOUT.OUTLET.DETAIL"))
-        class='animate-slide-from-right animated-overflow'}}
+    {{#liquid-if (get (service-prop "slideoutService" "shouldShow") (constant "SLIDEOUT.OUTLET.DETAIL"))
+        class="animate-slide-from-right animated-overflow"}}
         {{outlet (constant "SLIDEOUT.OUTLET.DETAIL")}}
     {{/liquid-if}}
     {{outlet}}
@@ -29,15 +29,17 @@
                     activeName=(service-prop "stateService" "owner.name")
                     activeNumber=(service-prop "stateService" "owner.phone.content.number")
                     toggleClass="xs-8-row-10"}}
-                    <button class="xs-2-row-10 textup-account-switcher__display"
-                        onclick={{route-action "toggleSlideout" "slideouts/account" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    <button type="button"
+                        class="xs-2-row-10 textup-account-switcher__display"
+                        onclick={{service-action "accountSlideoutService" "openSlideout"}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
             </div>
             <div class="display-l">
                 <div class="menu-item menu-header menu-header-light"
-                    {{action "toggleSlideout" "slideouts/account" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    tabindex="0"
+                    onclick={{service-action "accountSlideoutService" "openSlideout"}}>
                     {{#tool-tip classNames="btn-expand"
                         title=(concat "Admin (" (service-prop "stateService" "owner.name") ")")
                         side=(constant "TOOLTIP.SIDE.RIGHT")}}
@@ -142,13 +144,13 @@
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{route-action "startFeedbackSlideout"}}>
+                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     <span>Support</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
-                    onclick={{route-action "startFeedbackSlideout"}}>
+                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}

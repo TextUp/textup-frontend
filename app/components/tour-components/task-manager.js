@@ -1,11 +1,11 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     shouldShow: PropTypes.bool,
     doRegister: PropTypes.func,
     firstIncompleteTask: PropTypes.object,
@@ -13,14 +13,14 @@ export default Component.extend(PropTypesMixin, {
     onFinishCompleteTask: PropTypes.func,
     resetTasks: PropTypes.func,
     tasks: PropTypes.arrayOf(PropTypes.object),
-  },
+  }),
   getDefaultProps() {
     return { shouldShow: true };
   },
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   classNames: 'task-manager',

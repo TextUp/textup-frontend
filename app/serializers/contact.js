@@ -18,7 +18,7 @@ export default DS.RESTSerializer.extend(
       phone: { serialize: false },
       sharedByName: { serialize: false },
       sharedByPhoneId: { serialize: false },
-      tags: { deserialize: 'records', serialize: false },
+      [Constants.PROP_NAME.TAGS]: { deserialize: 'records', serialize: false },
       unreadInfo: { serialize: false },
       whenCreated: { serialize: false },
     },

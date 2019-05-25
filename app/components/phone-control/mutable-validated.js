@@ -1,6 +1,6 @@
-import { Promise } from 'rsvp';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
+import RSVP from 'rsvp';
+import { inject as service } from '@ember/service';
 import { tryInvoke } from '@ember/utils';
 
 export default Component.extend({
@@ -33,7 +33,7 @@ export default Component.extend({
         .then(() => this.set('_newNumber', num));
     },
     completeVerify(validationCode, num) {
-      return new Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         tryInvoke(this, 'onValidate', [num]);
         this.get('numberService')
           .finishVerify(num, validationCode)

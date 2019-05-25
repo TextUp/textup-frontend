@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     onClose: PropTypes.func.isRequired,
     showFooter: PropTypes.bool,
 
@@ -18,7 +18,7 @@ export default Component.extend(PropTypesMixin, {
 
     onMarkForDelete: PropTypes.func,
     showDelete: PropTypes.bool,
-  },
+  }),
   getDefaultProps() {
     return {
       showFooter: false,

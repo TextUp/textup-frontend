@@ -1,7 +1,7 @@
-import { inject as service } from '@ember/service';
-import Route from '@ember/routing/route';
-import { isPresent } from '@ember/utils';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
 
 export default Route.extend(IsAuthenticated, {
   authService: service(),
@@ -17,16 +17,5 @@ export default Route.extend(IsAuthenticated, {
   activate() {
     this._super(...arguments);
     this.get('userSetupService').tryRestorePreviousState();
-  },
-  actions: {
-    finishPersonalNumberSetup() {
-      this.get('userSetupService')
-        .finishPersonalNumberSetup()
-        .then(setupUser => this.transitionTo('main', setupUser));
-    },
-    skipSetup() {
-      this.get('userSetupService').skipSetup();
-      this.transitionTo('main', this.get('authService.authUser'));
-    },
   },
 });

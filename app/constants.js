@@ -32,6 +32,7 @@ export default {
     SHARING_IDENT: 'sharingIdentifier',
     SHARING_PERMISSION: 'permission',
     SHARING_PHONE_ID_BUCKETS: 'sharedWith',
+    TAGS: 'tags',
     URL_IDENT: 'urlIdentifier',
   },
   EXPORT: {
@@ -92,8 +93,8 @@ export default {
   },
   SLIDEOUT: {
     OUTLET: {
-      DEFAULT: 'slideout',
-      DETAIL: 'details-slideout',
+      DEFAULT: 'default-slideout',
+      DETAIL: 'detail-slideout',
     },
     DIRECTION: {
       LEFT: 'left',

@@ -1,11 +1,18 @@
-import { inject as controller } from '@ember/controller';
-import { alias, filterBy } from '@ember/object/computed';
 import MainContactsManyController from 'textup-frontend/controllers/main/contacts/many';
+import { inject as controller } from '@ember/controller';
+import { readOnly, filterBy } from '@ember/object/computed';
 
 export default MainContactsManyController.extend({
-  isSearch: true,
   searchController: controller('main.search'),
 
-  selected: filterBy('searchController.searchResults', 'isSelected', true),
-  allContacts: alias('searchController.searchResults')
+  // @Override
+  selectedContacts: filterBy('searchController.searchResults', 'isSelected', true),
+  // @Override
+  allContacts: readOnly('searchController.searchResults'),
+
+  // Internal
+  // --------
+
+  // @Override
+  _backRouteName: 'main.contacts',
 });

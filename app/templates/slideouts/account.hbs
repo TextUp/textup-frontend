@@ -6,117 +6,46 @@
         user=(service-prop "authService" "authUser")
         onLogOut=(service-action "authService" "logout"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(and (or (service-prop "stateService" "owner.isDirty") (service-prop "authService" "authUser.isDirty"))
-                (not usernameDropdown.isOpen)
-                (not passwordDropdown.isOpen)
-                (not codeDropdown.isOpen))
-        onPrimary=(service-action "dataService" "persist"
-            (if (eq accountSettingsTabs.currentIndex 1) (service-prop "authService" "authUser") (service-prop "stateService" "owner"))
-            (route-action "closeSlideout"))
-        disablePrimary=(or
-            (not (service-prop "stateService" "owner.validations.isValid"))
-            (not (service-prop "authService" "authUser.validations.isValid")))
+        showFooter=(service-prop "accountSlideoutService" "shouldShowFooter")
+        onPrimary=(service-action "accountSlideoutService" "finishSlideout")
+        disablePrimary=(service-prop "accountSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
-        onSecondary=(service-action "dataService" "revert" (service-prop "stateService" "owner")
-            (service-action "dataService" "revert" (service-prop "authService" "authUser"))))
-    onClose=(service-action "dataService" "revert" (service-prop "stateService" "owner")
-        (service-action "dataService" "revert" (service-prop "authService" "authUser"))
-        (route-action "closeSlideout"))
-    forceKeepOpen=(or (service-prop "stateService" "owner.isSaving") (service-prop "authService" "authUser.isSaving"))}}
-    {{#tab-container doRegister=(action (mut accountSettingsTabs))
-        onChange=(service-action "dataService" "revert" stateManger.owner
-            (service-action "dataService" "revert" (service-prop "authService" "authUser"))) as |tabContainer|}}
+        onSecondary=(service-action "accountSlideoutService" "revertAllChanges"))
+    onClose=(service-action "accountSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "accountSlideoutService" "shouldForceKeepOpen")}}
+    {{#tab-container onChange=(service-action "accountSlideoutService" "revertAllChanges") as |tabContainer|}}
         {{#with (service-prop "stateService" "ownerAsOrg") as |org|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=org.name}}
-                <div class="form">
-                    <div class="form__group">
-                        <label class="form__label" for="Your Name">Organization Name</label>
-                        {{input value=org.name
-                            type="text"
-                            placeholder="Organization Name"
-                            class="form__input"}}
-                    </div>
-                    <div class="form__group">
-                        <div class="xs-row-2 control-text">
-                            <label class="form__label" for="Lock Timeout">
-                                Lock Timeout
-                            </label>
-                        </div>
-                        {{#multi-toggle classNames="xs-row-2"
-                            selectIndex=(if org.isTimeout15 0
-                                (if org.isTimeout30 1
-                                    (if org.isTimeout60 2 3)))
-                            wrapAround=true as |toggle doRegister|}}
-                            {{#multi-toggle/item doRegister=doRegister
-                                color=(constant "COLOR.LIGHT_BLUE")
-                                onSelect=(action (mut org.timeoutInSeconds) 15)}}
-                                15 seconds
-                            {{/multi-toggle/item}}
-                            {{#multi-toggle/item doRegister=doRegister
-                                color=(constant "COLOR.MEDIUM_BLUE")
-                                onSelect=(action (mut org.timeoutInSeconds) 30)}}
-                                30 seconds
-                            {{/multi-toggle/item}}
-                            {{#multi-toggle/item doRegister=doRegister
-                                color=(constant "COLOR.BRAND")
-                                onSelect=(action (mut org.timeoutInSeconds) 60)}}
-                                1 minute
-                            {{/multi-toggle/item}}
-                            {{#if (not (unbound org.isTimeoutStandard))}}
-                                {{#multi-toggle/item doRegister=doRegister
-                                    color=(constant "COLOR.LIGHT_GRAY")
-                                    onSelect=(service-action "dataService" "revertProperty" org "timeout")}}
-                                    {{org.timeoutInSeconds}} seconds
-                                {{/multi-toggle/item}}
-                            {{/if}}
-                        {{/multi-toggle}}
-                    </div>
-                    <div class="form__group">
-                        <label class="form__label" for="away-message-suffix">
-                            Add to all away messages
-                        </label>
-                        {{textarea rows="2"
-                            placeholder="Do not add anything to the end of user away messages"
-                            autoresize=true
-                            class="form__input form__input--multiline"
-                            maxLength=org.awayMessageSuffixMaxLength
-                            validateObj=org
-                            validateField="awayMessageSuffix"
-                            validate="bottom"
-                            value=org.awayMessageSuffix}}
-                    </div>
-                    {{form/location-model entity=org
-                        onLocationError=(service-action "mapService" "handleError")}}
-                </div>
+                {{model-form/org org=org
+                    onRevertTimeout=(service-action "dataService" "revertProperty" org "timeout")
+                    onLocationError=(service-action "mapService" "handleError")}}
             {{/tab-container/item}}
         {{/with}}
         {{#with (service-prop "stateService" "ownerAsTeam") as |team|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
                 title=team.name}}
-                <div class="form">
-                    {{partial "partials/team/settings"}}
-                    {{form/location-model entity=team
-                        onLocationError=(service-action "mapService" "handleError")}}
-                </div>
+                {{model-form/team team=team
+                    onLocationError=(service-action "mapService" "handleError")}}
             {{/tab-container/item}}
         {{/with}}
         {{#tab-container/item doRegister=tabContainer.actions.register
             onDestroy=tabContainer.actions.unregister
             title="My Account"}}
-            <div class="form">
-                {{#with (service-prop "authService" "authUser") as |staff|}}
-                    {{partial "partials/staff/settings"}}
-                    {{partial "partials/staff/personal-number"}}
-                    <hr>
-                    {{partial "partials/staff/code-with-confirm"}}
-                    {{partial "partials/staff/username-with-confirm"}}
-                    {{partial "partials/staff/password-with-confirm"}}
-                {{/with}}
-            </div>
+            {{#with (service-prop "authService" "authUser") as |staff|}}
+                {{model-form/staff doRegister=(service-mut "accountSlideoutService" "staffForm")
+                    staff=staff
+                    onRevert=(service-action "dataService" "revert" staff)
+                    onSave=(service-action "dataService" "persist" staff)
+                    onUpdateLockCode=(service-action "staffService" "updateLockCode" staff)
+                    onUpdatePassword=(service-action "staffService" "updatePassword" staff)
+                    onUpdateUsername=(service-action "staffService" "updateUsername" staff)
+                    onValidateCredentials=(service-action "validateAuthService" "checkPassword"
+                        staff.username)}}
+            {{/with}}
         {{/tab-container/item}}
     {{/tab-container}}
 {{/slideout-pane}}

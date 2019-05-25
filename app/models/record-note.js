@@ -58,7 +58,7 @@ export default RecordItem.extend(Validations, {
   // ------------------
 
   _revisions: DS.hasMany('record-note-revision'),
-  _revisionsSorting: ['whenChanged:desc'],
+  _revisionsSorting: Object.freeze(['whenChanged:desc']),
   _addAfterDate: null,
 
   // Methods

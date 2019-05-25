@@ -1,17 +1,14 @@
+import AudioRecording from 'textup-frontend/objects/audio-recording';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import Constants from 'textup-frontend/constants';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import AudioRecording from 'textup-frontend/objects/audio-recording';
-import {
-  isRecordingSupported,
-  blobToBase64String
-} from 'textup-frontend/utils/audio';
+import { computed } from '@ember/object';
+import { isRecordingSupported, blobToBase64String } from 'textup-frontend/utils/audio';
+import { run, scheduleOnce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     onError: PropTypes.func,
     onFinish: PropTypes.func,
     disabled: PropTypes.bool,
@@ -21,7 +18,7 @@ export default Component.extend(PropTypesMixin, {
     startMessage: PropTypes.string,
     recordingMessage: PropTypes.string,
     processingMessage: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return {
       disabled: false,
@@ -42,7 +39,7 @@ export default Component.extend(PropTypesMixin, {
   didInsertElement() {
     this._super(...arguments);
     if (!isRecordingSupported()) {
-      run.scheduleOnce('afterRender', () => this.set('_isUnsupported', true));
+      scheduleOnce('afterRender', () => this.set('_isUnsupported', true));
     }
   },
 

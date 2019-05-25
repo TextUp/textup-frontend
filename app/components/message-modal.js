@@ -1,30 +1,30 @@
-import { alias } from '@ember/object/computed';
-import { debug } from '@ember/debug';
 import $ from 'jquery';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
-import { tryInvoke, typeOf } from '@ember/utils';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { debug } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import { scheduleOnce } from '@ember/runloop';
+import { tryInvoke, typeOf } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   storageService: service(),
 
-  propTypes: {
+  propTypes: Object.freeze({
     url: PropTypes.string.isRequired,
     display: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     onClose: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { display: false };
   },
 
   didReceiveAttrs() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this, this._tryInit);
+    scheduleOnce('afterRender', this, this._tryInit);
   },
 
   // Internal properties

@@ -1,14 +1,14 @@
-import { empty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { empty } from '@ember/object/computed';
 import { isRecordingSupported } from 'textup-frontend/utils/audio';
+import { next } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     audio: PropTypes.oneOfType([
       PropTypes.null,
       PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
@@ -20,7 +20,7 @@ export default Component.extend(PropTypesMixin, {
     showAddIfNone: PropTypes.bool,
     startAddMessage: PropTypes.string,
     cancelAddMessage: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return {
       audio: [],
@@ -36,7 +36,7 @@ export default Component.extend(PropTypesMixin, {
     this._super(...arguments);
     if (this.get('_openIfNoAudio')) {
       // the hide-show is not immediately registered to prevent any double-render errors
-      run.next(this, this._startAdding);
+      next(this, this._startAdding);
     }
   },
 

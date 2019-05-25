@@ -44,6 +44,7 @@ module.exports = function(environment) {
       oldestMessageInDays: 14,
     },
     links: {
+      featureVoting: 'https://textup.featureupvote.com/',
       privacyPolicy: 'https://staging-static.textup.org/privacy-policy/',
       supportHubEmbedded: 'https://www.textup.org/embedded-search',
       supportHubNativeApp: 'https://www.textup.org/native-app-support',
@@ -60,8 +61,8 @@ module.exports = function(environment) {
 
   if (environment === 'development') {
     // ENV.host = 'http://localhost:8080';
-    // ENV.host = 'https://dev.textup.org';
-    ENV.host = 'https://v2.textup.org'; // TODO
+    ENV.host = 'https://dev.textup.org';
+    // ENV.host = 'https://v2.textup.org';
 
     ENV.lock.lockOnHidden = false;
     ENV.manifest.enabled = false;

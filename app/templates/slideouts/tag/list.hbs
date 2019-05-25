@@ -1,47 +1,45 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(if model.phone.content.tags "Tags" "New Tag"))
+        title=(service-prop "newTagSlideoutService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=tagsListHideAway.isOpen
-        onPrimary=(route-action "finishCreateTagInTagList")
-        disablePrimary=(not (v-get newTag "isValid"))
+        showFooter=(service-prop "newTagSlideoutService" "tagsListHideAway.isOpen")
+        onPrimary=(service-action "newTagSlideoutService" "finishCreateInTagList")
+        disablePrimary=(service-prop "newTagSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        onSecondary=(route-action "cancelCreateTagInTagList")
-        hideSecondary=(not model.phone.content.tags))
-    onClose=(route-action "closeTagListSlideout")
-    forceKeepOpen=newTag.isSaving as |slideout|}}
-    {{#hide-show doRegister=(action (mut tagsListHideAway))
-        startOpen=(if model.phone.content.tags false true)
+        onSecondary=(service-action "newTagSlideoutService" "cancelCreateInTagList")
+        hideSecondary=(not (service-prop "newTagSlideoutService" "hasExistingTags")))
+    onClose=(service-action "newTagSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "newTagSlideoutService" "shouldForceKeepOpen") as |slideout|}}
+    {{#hide-show doRegister=(service-mut "newTagSlideoutService" "tagsListHideAway")
+        startOpen=(service-prop "newTagSlideoutService" "hasExistingTags")
         focusOnOpenSelector=".start-focus"
-        onOpen=(route-action "onOpenCreateTagInTagList")
-        onClose=(route-action "onCloseCreateTagInTagList") as |hideShow|}}
+        onOpen=(service-action "newTagSlideoutService" "onOpenCreateInTagList") as |hideShow|}}
         {{#if hideShow.isOpen}}
-            {{form/tag-model tag=newTag}}
+            {{model-form/tag tag=(service-prop "newTagSlideoutService" "newTag")
+                firstControlClass="start-focus"}}
         {{else}}
             <ul class="result-list">
-                {{#if model.phone.isFulfilled}}
-                    {{#each model.phone.content.tags as |tag|}}
-                        <li class="result-item">
-                            <div class="row">
-                                {{#link-to "main.tag"
-                                        (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
-                                        (get tag (constant "PROP_NAME.URL_IDENT"))
-                                    tagName="div"
-                                    classNames="control-text"
-                                    tabindex="0"}}
-                                    <div class="horizontal-items clickable pad-all">
-                                        {{color-badge color=tag.hexColor text=tag.name}}
-                                        <span class="badge">
-                                            {{tag.numMembers}}
-                                            <span class="icon-person"></span>
-                                        </span>
-                                    </div>
-                                {{/link-to}}
-                            </div>
-                        </li>
-                    {{/each}}
-                {{/if}}
+                {{#each (service-prop "newTagSlideoutService" "existingTags") as |tag|}}
+                    <li class="result-item">
+                        <div class="row">
+                            {{#link-to "main.tag"
+                                    (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                                    (get tag (constant "PROP_NAME.URL_IDENT"))
+                                tagName="div"
+                                classNames="control-text"
+                                tabindex="0"}}
+                                <div class="horizontal-items clickable pad-all">
+                                    {{color-badge color=tag.hexColor text=tag.name}}
+                                    <span class="badge">
+                                        {{tag.numMembers}}
+                                        <span class="icon-person"></span>
+                                    </span>
+                                </div>
+                            {{/link-to}}
+                        </div>
+                    </li>
+                {{/each}}
             </ul>
             <div class="form">
                 <div class="form__group">

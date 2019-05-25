@@ -1,13 +1,13 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
 import MediaElement from 'textup-frontend/models/media-element';
 import MutationObserver from 'mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce, debounce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     // read-only data attributes passed in
     hasPersonalNumber: PropTypes.bool,
     hasItemsInRecord: PropTypes.bool,
@@ -28,7 +28,7 @@ export default Component.extend(PropTypesMixin, {
     onCall: PropTypes.func,
     onText: PropTypes.func,
     onScheduleMessage: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { audio: [], images: [], hasPersonalNumber: false, hasItemsInRecord: false };
   },
@@ -36,8 +36,8 @@ export default Component.extend(PropTypesMixin, {
 
   didInsertElement() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this, this._attachListeners);
-    run.scheduleOnce('afterRender', this, this._storeInitialHeight);
+    scheduleOnce('afterRender', this, this._attachListeners);
+    scheduleOnce('afterRender', this, this._storeInitialHeight);
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -85,7 +85,7 @@ export default Component.extend(PropTypesMixin, {
     this.set('_previousHeight', this.$().innerHeight());
   },
   _notifyMutation() {
-    run.debounce(this, this._onHeightChange, 500);
+    debounce(this, this._onHeightChange, 500);
   },
   _onHeightChange() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {

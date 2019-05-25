@@ -37,7 +37,7 @@
                             class="form__input"
                             autocorrect="off"
                             autocapitalize="off"
-                            enter=(route-action "login" username password storeCredentials)}}
+                            enter=(action "login" username password storeCredentials)}}
                     </div>
                     <div class="form__group">
                         <label class="form__label" for="Password">Password</label>
@@ -46,7 +46,7 @@
                             placeholder="Password"
                             class="form__input"
                             allowShowPassword=true
-                            enter=(route-action "login" username password storeCredentials)}}
+                            enter=(action "login" username password storeCredentials)}}
                     </div>
                     <div class="form__group">
                         <div class="xs-row-2 flex flex--align-center">
@@ -85,7 +85,7 @@
                 {{else}}
                     <div class="flex__item">
                         {{async-button classNames="btn btn-default"
-                            action=(route-action "login" username password storeCredentials)
+                            action=(action "login" username password storeCredentials)
                             default="Log in"
                             pending="Logging in..."}}
                     </div>

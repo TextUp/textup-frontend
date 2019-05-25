@@ -3,11 +3,11 @@
 <div class="bg-color bg-light pad-t pad-b min-viewport-height">
 	<div class="content-container content-container--width-small">
 		{{notification-summary notification=model
-			onOpen=(route-action "openInApp" model)}}
+			onOpen=(action "openInApp" model)}}
 		{{#each model.details as |detail|}}
 			{{care-record-preview name=detail.name
 				recordClusters=detail.recordClusters
-				onOpen=(route-action "openCareRecord" model detail)}}
+				onOpen=(action "openCareRecord" model detail)}}
 		{{/each}}
 	</div>
 </div>

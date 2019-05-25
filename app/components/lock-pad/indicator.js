@@ -1,13 +1,12 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     indicatorNum: PropTypes.number,
     numFilled: PropTypes.number,
-  },
-
+  }),
   getDefaultProps() {
     return { indicatorNum: 0, numFilled: 0 };
   },

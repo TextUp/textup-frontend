@@ -1,26 +1,29 @@
-{{#slideout-pane
-    headerComponent=(component "slideout-pane/title" title="Edit Note")
-    footerComponent=(component "slideout-pane/actions"
-        showFooter=true
-        onPrimary=(route-action "finishEditNoteSlideout")
-        disablePrimary=(not (v-get editingRecordNote "isValid"))
-        primaryLabel=(if editingRecordNote.hasBeenDeleted "Confirm Delete" "Update")
-        primaryProgressLabel=(if editingRecordNote.hasBeenDeleted "Deleting..." "Updating")
-        primaryClass=(if editingRecordNote.hasBeenDeleted "btn btn-danger")
-        secondaryLabel=(if editingRecordNote.hasBeenDeleted "Undo" "Cancel")
-        onSecondary=(if editingRecordNote.hasBeenDeleted (route-action "onRestoreNote" editingRecordNote))
-        showDelete=(not editingRecordNote.hasBeenDeleted)
-        onMarkForDelete=(route-action "onMarkNoteForDeletion" editingRecordNote))
-    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(route-action "cancelEditNoteSlideout")
-    forceKeepOpen=editingRecordNote.isSaving as |slideout|}}
-    {{form/record-note class="pad-t"
-        recordNote=editingRecordNote
-        onAddImage=(route-action "onAddImage" editingRecordNote)
-        onAddAudio=(route-action "onAddAudio" editingRecordNote)
-        onRemoveMedia=(route-action "onRemoveMedia" editingRecordNote)
-        onAddLocation=(route-action "onNoteAddLocation" editingRecordNote)
-        onRemoveLocation=(route-action "onNoteRemoveLocation" editingRecordNote)
-        onLocationError=(route-action "onLocationError")
-        readOnly=(and (type/is-contact model) (not model.allowEdits))}}
-{{/slideout-pane}}
+{{#with (service-prop "noteSlideoutService" "recordNote") as |recordNote|}}
+    {{#slideout-pane
+        headerComponent=(component "slideout-pane/title" title="Edit Note")
+        footerComponent=(component "slideout-pane/actions"
+            showFooter=true
+            onPrimary=(service-action "noteSlideoutService" "finishSlideout")
+            disablePrimary=(service-prop "noteSlideoutService" "shouldDisablePrimaryAction")
+            primaryLabel=(if recordNote.hasBeenDeleted "Confirm Delete" "Update")
+            primaryProgressLabel=(if recordNote.hasBeenDeleted "Deleting..." "Updating")
+            primaryClass=(if recordNote.hasBeenDeleted "btn btn-danger")
+            secondaryLabel=(if recordNote.hasBeenDeleted "Undo" "Cancel")
+            onSecondary=(if recordNote.hasBeenDeleted
+                (action (service-mut "noteSlideoutService" "recordNote.hasBeenDeleted") false))
+            showDelete=(not (service-prop "noteSlideoutService" "recordNote.hasBeenDeleted"))
+            onMarkForDelete=(action (service-mut "noteSlideoutService" "recordNote.hasBeenDeleted") true))
+        direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+        onClose=(service-action "noteSlideoutService" "cancelSlideout")
+        forceKeepOpen=(service-prop "noteSlideoutService" "shouldForceKeepOpen")}}
+        {{model-form/record-note class="pad-t"
+            recordNote=recordNote
+            onAddImage=(service-action "mediaService" "addImage" recordNote)
+            onAddAudio=(service-action "mediaService" "addAudio" recordNote)
+            onRemoveMedia=(service-action "mediaService" "removeMedia" recordNote)
+            onAddLocation=(service-action "recordItemService" "addLocationToNote" recordNote)
+            onRemoveLocation=(service-action "recordItemService" "removeLocationFromNote" recordNote)
+            onLocationError=(service-action "mapService" "handleError")
+            readOnly=(service-prop "noteSlideoutService" "isReadOnly")}}
+    {{/slideout-pane}}
+{{/with}}

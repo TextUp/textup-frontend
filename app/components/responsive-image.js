@@ -1,14 +1,14 @@
-import { sort } from '@ember/object/computed';
 import Component from '@ember/component';
-import { isNone, tryInvoke } from '@ember/utils';
-import { run, scheduleOnce, debounce } from '@ember/runloop';
-import { get, computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import MediaElementVersion from 'textup-frontend/models/media-element-version';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { get, computed } from '@ember/object';
+import { isNone, tryInvoke } from '@ember/utils';
+import { run, scheduleOnce, debounce } from '@ember/runloop';
+import { sort } from '@ember/object/computed';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     versions: PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(MediaElementVersion),
@@ -18,7 +18,7 @@ export default Component.extend(PropTypesMixin, {
     alt: PropTypes.string,
     onSuccess: PropTypes.func,
     onFailure: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { versions: [], alt: Constants.IMAGE.DEFAULT_ALT };
   },
@@ -57,7 +57,7 @@ export default Component.extend(PropTypesMixin, {
   // Internal properties
   // -------------------
 
-  _sortVersionsBy: ['width'],
+  _sortVersionsBy: Object.freeze(['width']),
   _sortedVersions: sort('versions', '_sortVersionsBy'),
   _sourceSet: computed('_sizes', '_sortedVersions.@each.{source,width}', function() {
     if (isNone(this.get('_sizes'))) {

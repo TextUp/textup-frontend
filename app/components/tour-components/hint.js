@@ -1,15 +1,15 @@
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import HintUtils from 'textup-frontend/utils/hint-info';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Component.extend(PropTypesMixin, {
   tutorialService: service(),
 
-  propTypes: {
+  propTypes: Object.freeze({
     hintId: PropTypes.string.isRequired,
-  },
+  }),
 
   classNames: 'hint',
 

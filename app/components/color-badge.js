@@ -1,14 +1,14 @@
-import { htmlSafe } from '@ember/template';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/template';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     text: PropTypes.string.isRequired,
     color: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { color: Constants.COLOR.BRAND };
   },

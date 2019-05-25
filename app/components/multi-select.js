@@ -1,23 +1,12 @@
 import $ from 'jquery';
-import { Promise } from 'rsvp';
-import {
-  next,
-  cancel,
-  scheduleOnce,
-  debounce,
-  throttle
-} from '@ember/runloop';
-import { merge } from '@ember/polyfills';
-import { computed, get, set } from '@ember/object';
-import { notEmpty, alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import {
-  isPresent as here,
-  isEmpty,
-  tryInvoke,
-  isBlank
-} from '@ember/utils';
 import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
+import RSVP from 'rsvp';
+import { computed, get, set } from '@ember/object';
+import { isPresent as here, isEmpty, tryInvoke, isBlank } from '@ember/utils';
+import { merge } from '@ember/polyfills';
+import { next, cancel, scheduleOnce, debounce, throttle } from '@ember/runloop';
+import { notEmpty, alias } from '@ember/object/computed';
 
 export default Component.extend({
   displayProperty: null,
@@ -194,7 +183,7 @@ export default Component.extend({
   // ----------------
 
   insertOrUpdate(skipFocus, val, index, event) {
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       let promise;
       const $highlight = this.get('_currentHighlight'),
         hasHighlight = $highlight && $highlight.length,
@@ -426,12 +415,12 @@ export default Component.extend({
   },
   _defaultFilter(searchString, item) {
     const fProp = this.get('filterProperty'),
-          dProp = this.get('displayProperty'),
-          iProp = this.get('identityProperty'),
-          prop = here(fProp) ? fProp : here(iProp) ? iProp : dProp,
-          // escape js regex special characters from https://stackoverflow.com/a/9310752,
-          // instead of escaping special characters, replace with whitespace, effectively discarding
-          cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
+      dProp = this.get('displayProperty'),
+      iProp = this.get('identityProperty'),
+      prop = here(fProp) ? fProp : here(iProp) ? iProp : dProp,
+      // escape js regex special characters from https://stackoverflow.com/a/9310752,
+      // instead of escaping special characters, replace with whitespace, effectively discarding
+      cleanedSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, ' ');
     let matchExp;
     let matchString = (item && prop ? get(item, prop) : item).toString();
     // also clean the string to match in the same way

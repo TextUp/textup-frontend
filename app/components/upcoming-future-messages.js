@@ -1,18 +1,18 @@
-import { empty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { empty } from '@ember/object/computed';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     nextFutureFire: PropTypes.date,
-    onClick: PropTypes.func
-  },
+    onClick: PropTypes.func,
+  }),
   classNames: 'upcoming-future-messages',
   classNameBindings: [
     '_dateMissing:upcoming-future-messages--no-upcoming',
-    '_isInPast:upcoming-future-messages--no-upcoming'
+    '_isInPast:upcoming-future-messages--no-upcoming',
   ],
 
   click() {
@@ -25,5 +25,5 @@ export default Component.extend(PropTypesMixin, {
   _isInPast: computed('nextFutureFire', function() {
     return this.get('nextFutureFire') < Date.now();
   }),
-  _dateMissing: empty('nextFutureFire')
+  _dateMissing: empty('nextFutureFire'),
 });

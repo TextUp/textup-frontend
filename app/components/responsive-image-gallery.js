@@ -1,28 +1,23 @@
 /* global PhotoSwipe */
 /* global PhotoSwipeUI_Default */
 
-import { assign, merge } from '@ember/polyfills';
-
-import { computed } from '@ember/object';
-import { tryInvoke, isPresent } from '@ember/utils';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MediaElement from 'textup-frontend/models/media-element';
 import PhotoSwipeComponent from 'ember-photoswipe/components/photo-swipe';
+import PhotoUtils from 'textup-frontend/utils/photo';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import {
-  getPreviewBounds,
-  shouldRebuildResponsiveGallery,
-  formatResponsiveMediaImageForGallery,
-} from 'textup-frontend/utils/photo';
+import { assign, merge } from '@ember/polyfills';
+import { computed } from '@ember/object';
+import { tryInvoke, isPresent } from '@ember/utils';
 
 export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
-  propTypes: {
+  propTypes: Object.freeze({
     images: PropTypes.oneOfType([
       PropTypes.null,
       PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     ]),
     thumbnailClass: PropTypes.string, // for thumbnail coordinates function
-  },
+  }),
   getDefaultProps() {
     return { images: [], thumbnailClass: '' };
   },
@@ -86,7 +81,7 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     if (isPresent(thumbnailClass)) {
       const displayedItem = this.$(`.${thumbnailClass}`).get(index);
       if (displayedItem) {
-        return getPreviewBounds(displayedItem);
+        return PhotoUtils.getPreviewBounds(displayedItem);
       }
     }
   },
@@ -108,7 +103,14 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     } else {
       const prevWidth = this.get('_prevResizeWidth'),
         prevDensity = this.get('_prevResizeDensity');
-      if (shouldRebuildResponsiveGallery(prevWidth, prevDensity, viewportWidth, pixelDensity)) {
+      if (
+        PhotoUtils.shouldRebuildResponsiveGallery(
+          prevWidth,
+          prevDensity,
+          viewportWidth,
+          pixelDensity
+        )
+      ) {
         tryInvoke(this.get('pswp'), 'invalidateCurrItems');
         this._updateResizeProps(viewportWidth, pixelDensity);
       }
@@ -132,7 +134,11 @@ export default PhotoSwipeComponent.extend(PropTypesMixin, HasWormhole, {
     const viewportWidth = this.get('pswp.viewportSize.x'),
       pixelDensity = window.devicePixelRatio,
       mediaImage = this.get('images').objectAt(index),
-      result = formatResponsiveMediaImageForGallery(viewportWidth, pixelDensity, mediaImage);
+      result = PhotoUtils.formatResponsiveMediaImageForGallery(
+        viewportWidth,
+        pixelDensity,
+        mediaImage
+      );
     if (result) {
       merge(item, result);
     }

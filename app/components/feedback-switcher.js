@@ -1,15 +1,15 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     src: PropTypes.string.isRequired,
     nativeAppSrc: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     hasCordovaClasses: PropTypes.string,
     noCordovaClasses: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { hasCordovaClasses: '', noCordovaClasses: '' };
   },

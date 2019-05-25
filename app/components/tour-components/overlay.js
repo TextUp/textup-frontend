@@ -1,25 +1,25 @@
 import $ from 'jquery';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce, join } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, HasWormhole, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     elementToHighlight: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     showOverlay: PropTypes.bool,
     svgClasses: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { showOverlay: true };
   },
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   // Internal properties
@@ -48,13 +48,13 @@ export default Component.extend(PropTypesMixin, HasWormhole, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.join(() => this.set('_elementDimensions', null));
+    join(() => this.set('_elementDimensions', null));
   },
   _setElementDimensions() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.join(() => {
+    join(() => {
       const elementToHighlight = $(this.get('elementToHighlight'))[0];
       if (elementToHighlight) {
         this.set('_elementDimensions', elementToHighlight.getBoundingClientRect());

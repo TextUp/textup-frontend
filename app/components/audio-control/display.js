@@ -1,18 +1,18 @@
-import { htmlSafe } from '@ember/template';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 import { formatSecondsAsTimeElapsed } from 'textup-frontend/utils/time';
 import { getWidthProportionFromLeft } from 'textup-frontend/utils/bounds';
+import { htmlSafe } from '@ember/template';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     message: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
     currentNumSeconds: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
     maxNumSeconds: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
-    onSelect: PropTypes.func
-  },
+    onSelect: PropTypes.func,
+  }),
 
   classNames: 'audio-control__display',
 
@@ -56,7 +56,7 @@ export default Component.extend(PropTypesMixin, {
     if (currentNumSeconds >= maxNumSeconds) {
       widthVal = 100;
     } else {
-      widthVal = Math.max(currentNumSeconds, 0) / maxNumSeconds * 100;
+      widthVal = (Math.max(currentNumSeconds, 0) / maxNumSeconds) * 100;
     }
     return htmlSafe(`width: ${widthVal}%;`);
   }),
@@ -70,5 +70,5 @@ export default Component.extend(PropTypesMixin, {
     if (widthProportion > 0) {
       tryInvoke(this, 'onSelect', [widthProportion, event]);
     }
-  }
+  },
 });

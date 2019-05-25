@@ -1,20 +1,20 @@
-import { filterBy } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import MediaElement from 'textup-frontend/models/media-element';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { filterBy } from '@ember/object/computed';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     audio: PropTypes.oneOfType([
       PropTypes.null,
-      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement))
+      PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     ]),
     itemClass: PropTypes.string,
     maxNumToDisplay: PropTypes.number,
     sortPropName: PropTypes.string,
-    sortLowToHigh: PropTypes.bool
-  },
+    sortLowToHigh: PropTypes.bool,
+  }),
   getDefaultProps() {
     return { audio: [], itemClass: '', sortLowToHigh: true };
   },
@@ -45,5 +45,5 @@ export default Component.extend(PropTypesMixin, {
         maxNum = this.get('maxNumToDisplay');
       return (maxNum <= numAudio) & (maxNum >= 0) ? audio.slice(0, maxNum) : audio;
     }
-  })
+  }),
 });

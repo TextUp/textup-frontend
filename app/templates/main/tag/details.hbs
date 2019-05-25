@@ -10,8 +10,8 @@
 				(array
 					(get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
 					(get model (constant "PROP_NAME.URL_IDENT"))))
-            onEdit=(route-action "startExistingTagSlideout")
-        	onExport=(route-action "startSingleExportSlideout" model)}}
+            onEdit=(service-action "existingTagSlideoutService" "openSlideout" model)
+        	onExport=(service-action "exportSlideoutService" "startSingleExportSlideout" model)}}
 	</div>
 	{{#if model.isDeleted}}
 		<div class="section-body row">
@@ -38,22 +38,22 @@
 
 	        images=careRecordText.media.content.displayedImages
 	        audio=careRecordText.media.content.displayedAudio
-	        onAddImage=(route-action "onAddImage" careRecordText)
-	        onAddAudio=(route-action "onAddAudio" careRecordText)
-	        onRemoveMedia=(route-action "onRemoveMedia" careRecordText)
+	        onAddImage=(service-action "mediaService" "addImage" careRecordText)
+		    onAddAudio=(service-action "mediaService" "addAudio" careRecordText)
+		    onRemoveMedia=(service-action "mediaService" "removeMedia" careRecordText)
 
 	        doRegister=(action (mut careRecordRef))
-	        onLoadRecordItems=(route-action "onLoadRecordItems")
-	        onRefreshRecordItems=(route-action "onRefreshRecordItems")
+	        onLoadRecordItems=(action "onLoadRecordItems")
+	        onRefreshRecordItems=(action "onRefreshRecordItems")
 
-	        onText=(route-action "onText")
+	        onText=(action "onText")
 
-	        onAddNote=(route-action "startAddNoteSlideout")
-	        onEditNote=(route-action "startEditNoteSlideout")
-	        onViewNoteHistory=(route-action "startViewNoteHistorySlideout")
-	        onRestoreNote=(route-action "onRestoreNote")
+	        onAddNote=(service-action "noteSlideoutService" "openNewNoteSlideout" model)
+        	onEditNote=(service-action "noteSlideoutService" "openExistingNoteSlideout" model)
+	        onViewNoteHistory=(service-action "noteRevisionSlideoutService" "openSlideout")
+	        onRestoreNote=(service-action "recordItemService" "restoreDeletedNote")
 
-	        onScheduleMessage=(route-action "startNewScheduleMessageSlideout")
-	        onViewScheduledMessages=(route-action "startViewScheduledMessagesSlideout")}}
+	        onScheduleMessage=(service-action "newFutureMessageSlideoutService" "openSlideout" model)
+	        onViewScheduledMessages=(service-action "existingFutureMessageSlideoutService" "openSlideout" model)}}
 	{{/if}}
 </div>

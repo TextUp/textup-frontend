@@ -1,16 +1,16 @@
-import { equal } from '@ember/object/computed';
-import Component from '@ember/component';
-import { typeOf, tryInvoke, isPresent } from '@ember/utils';
-import { run } from '@ember/runloop';
-import { on } from '@ember/object/evented';
-import { observer, computed } from '@ember/object';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
+import { removeObserver, addObserver } from '@ember/object/observers';
+import { run, scheduleOnce, once, next } from '@ember/runloop';
+import { typeOf, tryInvoke, isPresent } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     contentClass: PropTypes.string,
     data: PropTypes.oneOfType([PropTypes.null, PropTypes.array]),
     numItems: PropTypes.oneOfType([PropTypes.null, PropTypes.number]),
@@ -21,7 +21,7 @@ export default Component.extend(PropTypesMixin, {
     doRegister: PropTypes.func,
     onRefresh: PropTypes.func,
     onLoad: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return {
       data: [],
@@ -39,22 +39,17 @@ export default Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
     this._scheduleResetAll();
+    // `didReceiveAttrs` is not called when the `data` object has items added to it. This hook is only
+    // called when the reference is changed to an entirely separate `data` object. Therefore, we rely
+    // on an observer to watch for `data` reference AND `data` item changes
+    addObserver(this, 'data.[]', this, this._scheduleCheckIfLoadFinish);
   },
-
-  // Internal observers
-  // ------------------
-
-  // `didReceiveAttrs` is not called when the `data` object has items added to it. This hook is only
-  // called when the reference is changed to an entirely separate `data` object. Therefore, we rely
-  // on an observer to watch for `data` reference AND `data` item changes
-  _dataObserver: on(
-    'init',
-    observer('data.[]', function() {
-      run.once(this, this._checkIfLoadFinish);
-    })
-  ),
+  willDestroyElement() {
+    this._super(...arguments);
+    removeObserver(this, 'data.[]', this, this._scheduleCheckIfLoadFinish);
+  },
 
   // Internal properties
   // -------------------
@@ -106,7 +101,7 @@ export default Component.extend(PropTypesMixin, {
   // _checkIfLoadFinish -> checkNearEnd -> onLoad. _checkIfLoadFinish expects `_didStartLoad` to be
   // TRUE because it itself will reset this flag back to false for the onLoad handler called later on
   _scheduleResetAll() {
-    run(() => run.scheduleOnce('afterRender', this, this._resetAll));
+    run(() => scheduleOnce('afterRender', this, this._resetAll));
   },
   _resetAll() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
@@ -169,6 +164,9 @@ export default Component.extend(PropTypesMixin, {
       _didStartLoad: true,
     });
   },
+  _scheduleCheckIfLoadFinish() {
+    once(this, this._checkIfLoadFinish);
+  },
   _checkIfLoadFinish() {
     if (this.get('_didStartLoad')) {
       const prevNumItems = this.get('_prevNumItems'),
@@ -189,11 +187,11 @@ export default Component.extend(PropTypesMixin, {
       });
       // Need to schedule to run in the next run loop to all for appropriate restoring of the user's
       // position before we attempt to check if near end
-      run.next(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
+      next(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
     } else {
       // When items are added to the data array and the user does not manually trigger a restore,
       // then we want to restore the user position here regardless
-      run.next(() => callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition')));
+      next(() => callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition')));
     }
   },
 });

@@ -1,10 +1,9 @@
-import { getOwner } from '@ember/application';
-import Service, { inject as service } from '@ember/service';
-import { assign } from '@ember/polyfills';
-import { set, computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
+import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TaskData from 'textup-frontend/data/task-data';
+import { assign } from '@ember/polyfills';
+import { set, computed } from '@ember/object';
 
 export const TASK_ID_KEY = 'id';
 export const TASK_STATUS_KEY = 'status';
@@ -14,6 +13,7 @@ export default Service.extend({
   authService: service(),
   notifications: service('notification-messages-service'),
   storageService: service(),
+  supportSlideoutService: service(),
 
   // Properties
   // ----------
@@ -112,9 +112,7 @@ export default Service.extend({
   },
 
   _openSupportSlideout() {
-    getOwner(this)
-      .lookup('route:main')
-      .send('startFeedbackSlideout');
+    this.get('supportSlideoutService').openSlideout();
     this.get('notifications').clearAll();
   },
 });

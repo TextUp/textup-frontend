@@ -1,5 +1,5 @@
-import { Promise } from 'rsvp';
 import Component from '@ember/component';
+import RSVP from 'rsvp';
 
 export default Component.extend({
   location: null,
@@ -7,7 +7,7 @@ export default Component.extend({
 
   actions: {
     onSelect(latLng, description) {
-      return new Promise(
+      return new RSVP.Promise(
         function(resolve) {
           const { lat, lng } = latLng;
           // deconstruct property or else we remove the computed property association
@@ -24,7 +24,7 @@ export default Component.extend({
       );
     },
     onDeselect() {
-      return new Promise(
+      return new RSVP.Promise(
         function(resolve) {
           this.setProperties({
             location: null,

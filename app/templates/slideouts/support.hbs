@@ -1,0 +1,87 @@
+{{#slideout-pane
+	headerComponent=(component "slideout-pane/title" title="Support")
+    onClose=(service-action "supportSlideoutService" "cancelSlideout")
+    focusSelector=".start-focus"
+    bodyClass="full-height" as |slideout|}}
+	<div class="flex flex--direction-vertical full-height flex--align-stretch">
+		<div class="flex__item flex__item--no-shrink">
+			<iframe name="hidden-iframe"
+				id="hidden-iframe"
+				class="hidden"
+				sandbox=""
+				referrerpolicy="no-referrer"></iframe>
+			<form action="https://docs.google.com/a/textup.org/forms/d/e/1FAIpQLSduC2lU79S3AZn_eGIfHmythLVSTaq_hl5lMJBNYQ8Gjsyfxw/formResponse"
+				class="form"
+				target="hidden-iframe"
+				method="POST"
+				onsubmit={{slideout.actions.close}}>
+				<div class="form__group">
+					<a href={{config "links.featureVoting"}}
+						target="_blank"
+						rel="noopener noreferrer"
+						alt="TextUp feature voting page"
+						class="button button--expand">
+						Suggest a new TextUp feature
+					</a>
+				</div>
+				{{#if (service-prop "supportSlideoutService" "shouldAllowRestartTour")}}
+					<div class="form__group">
+						<button type="button"
+	                        class="button button--expand"
+	                        onclick={{service-action "supportSlideoutService" "restartTour"}}>
+							Restart the Getting Started tour
+						</button>
+					</div>
+				{{/if}}
+				<div class="form__group">
+					<span class="form__label form__label--multiline">
+						Have a question or comment? Contact TextUp Support directly.
+					</span>
+					{{textarea rows="3"
+						autoresize=true
+						class="form__input form__input--multiline start-focus"
+						value=(get (service "supportSlideoutService") "message")
+						placeholder="Your message here..."
+						aria-label="Your message here..."
+						name="entry.2102104798"}}
+				</div>
+				{{#if (service-prop "supportSlideoutService" "hasMessage")}}
+					<div class="form__group flex flex--spacing-between flex--justify-center">
+				        <div class="flex__item">
+				            <button class="btn" type="button"
+				                onclick={{action (service-mut "supportSlideoutService" "message") ""}}>
+				                Clear
+				            </button>
+				        </div>
+				        <div class="flex__item">
+				            <button type="submit" class="btn btn-default">
+								Submit
+							</button>
+				    	</div>
+				    </div>
+				{{/if}}
+			    <input type="text"
+			    	class="hidden"
+			    	name="entry.1271619718"
+			    	value={{service-prop "authService" "authUser.name"}}>
+			    <input type="text"
+			    	class="hidden"
+			    	name="entry.826110677"
+			    	value={{service-prop "authService" "authUser.username"}}>
+			    <input type="text"
+			    	class="hidden"
+			    	name="entry.1793501464"
+			    	value={{service-prop "authService" "authUser.email"}}>
+			    <input type="hidden" name="fvv" value="1">
+				<input type="hidden" name="pageHistory" value="0">
+				<input type="hidden" name="fbzx" value="487974052139568420">
+			</form>
+			<hr>
+		</div>
+		{{feedback-switcher src=(config "links.supportHubEmbedded")
+			nativeAppSrc=(config "links.supportHubNativeApp")
+			text="Search the TextUp Support Hub"
+			hasCordovaClasses="flex__item flex__item--grow flex--direction-vertical flex--align-stretch flex"
+			noCordovaClasses="form__group"}}
+	</div>
+{{/slideout-pane}}

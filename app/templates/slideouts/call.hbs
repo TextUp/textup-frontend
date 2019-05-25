@@ -2,12 +2,12 @@
     headerComponent=(component "slideout-pane/title" title="Call")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishCallSlideout")
-        disablePrimary=(or isCallingForNumber (not callByNumber) (not callByNumberIsValid))
-        primaryLabel=(if isCallingForNumber "Calling..." "Call")
+        onPrimary=(service-action "callSlideoutService" "finishSlideout")
+        disablePrimary=(service-prop "callSlideoutService" "shouldDisablePrimaryAction")
+        primaryLabel=(service-prop "callSlideoutService" "primaryActionLabel")
         primaryProgressLabel="Calling...")
-    onClose=(route-action "cancelCallSlideout")
-    forceKeepOpen=isCallingForNumber
+    onClose=(service-action "callSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "callSlideoutService" "shouldForceKeepOpen")
     focusSelector=".number-control" as |slideout|}}
     <div class="pad-t pad-l pad-r">
         <div class="form-element">
@@ -20,9 +20,9 @@
                         class="form-control form-control--only-bottom text-biggest text-center"
                         pattern="[0-9]*"
                         placeholder="Enter number here"
-                        value=callByNumber
-                        key-up=(route-action "onCallNumberChange")
-                        focus-out=(route-action "onCallNumberChange")}}
+                        value=(service-prop "callSlideoutService" "numToCall")
+                        key-up=(service-action "callSlideoutService" "onCallNumberChange")
+                        focus-out=(service-action "callSlideoutService" "onCallNumberChange")}}
                 {{else}}
                     <div tabindex="0"
                         onfocus={{hideShow.actions.open}}
@@ -30,27 +30,27 @@
                         <input type="tel"
                             disabled="disabled"
                             class="form-control form-control--only-bottom text-biggest text-center"
-                            value={{phone-number callByNumber}}>
+                            value={{phone-number (service-prop "callSlideoutService" "numToCall")}}>
                     </div>
                 {{/if}}
             {{/hide-show}}
-            <div class="row margin-t margin-b text-center text-small">
-                {{#if callByNumberContact}}
+            {{#with (service-prop "callSlideoutService" "contactToCall") as |contactToCall|}}
+                <div class="row margin-t margin-b text-center text-small">
                     <span class="center text-ellipses xs-full-row">
-                        <span class="text-bold">{{callByNumberContact.name}}</span>
-                        {{#if callByNumberMoreNum}}
-                            and {{callByNumberMoreNum}} {{pluralize "other" callByNumberMoreNum}}
-                        {{/if}}
+                        <span class="text-bold">{{contactToCall.name}}</span>
+                        {{#with (service-prop "callSlideoutService" "contactToCallOtherNumCount") as |numCount|}}
+                            and {{numCount}} {{pluralize "other" numCount}}
+                        {{/with}}
                     </span>
-                {{/if}}
-            </div>
+                </div>
+            {{/with}}
         </div>
         <div class="form-element margin-b-double">
-            {{number-control val=callByNumber
+            {{number-control val=(service-prop "callSlideoutService" "numToCall")
                 showAlphabet=true
                 numDigits=10
-                doChange=(route-action "onCallNumberChange")
-                onSubmit=(route-action "finishCallSlideout")}}
+                doChange=(service-action "callSlideoutService" "onCallNumberChange")
+                onSubmit=(service-action "callSlideoutService" "finishSlideout")}}
         </div>
     </div>
 {{/slideout-pane}}

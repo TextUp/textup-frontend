@@ -1,64 +1,64 @@
-import { alias } from '@ember/object/computed';
-import { Promise } from 'rsvp';
-import { inject as service } from '@ember/service';
-import Controller from '@ember/controller';
-import { computed } from '@ember/object';
 import Constants from 'textup-frontend/constants';
+import Controller from '@ember/controller';
+import RSVP from 'rsvp';
 import TextUtils from 'textup-frontend/utils/text';
-import TypeUtils from 'textup-frontend/utils/type';
+import { alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   requestService: service(),
   stateService: service(),
-  tutorialService: service(),
 
   queryParams: ['filter'],
   filter: null,
-  tag: null,
-  contactsList: null,
 
+  contactsList: null,
   phone: alias('stateService.owner.phone.content'),
   filterName: computed('phone.contactsFilter', function() {
     return TextUtils.capitalize(this.get('phone.contactsFilter') || Constants.CONTACT.FILTER.ALL);
   }),
 
-  setup(newTag = null) {
-    const contactsList = this.get('contactsList'),
-      phone = this.get('phone');
+  actions: {
+    doRefreshContacts() {
+      this.get('phone').clearContacts();
+      return this._doLoad();
+    },
+    doLoadMoreContacts() {
+      return this._doLoad();
+    },
+    toggleSelected(contact) {
+      if (contact) {
+        this.transitionTo('main.contacts.many');
+        contact.toggleProperty('isSelected');
+      }
+    },
+  },
+
+  resetState() {
+    // reset scroll
+    const contactsList = this.get('contactsList');
     if (contactsList) {
       contactsList.actions.resetAll();
     }
-    phone.clearContacts();
-    if (TypeUtils.isTag(newTag)) {
-      this.set('tag', newTag);
-      phone.set('contactsFilter', null);
-    } else {
-      this.set('tag', null);
-      phone.set('contactsFilter', this.get('filter'));
-    }
-  },
-
-  doRefreshContacts() {
+    // update controller properties
     const phone = this.get('phone');
     phone.clearContacts();
-    return this.doLoadMoreContacts();
+    phone.set('contactsFilter', this.get('filter'));
   },
 
-  doLoadMoreContacts() {
-    return new Promise((resolve, reject) => {
-      const tag = this.get('tag'),
-        phone = this.get('phone');
+  // Internal
+  // --------
+
+  _doLoad() {
+    return new RSVP.Promise((resolve, reject) => {
+      const phone = this.get('phone');
       // if we are in the middle of transitioning to admin, then we no longer have a phone on owner
       if (phone) {
         // teamId added by `contact` adapter
         this.get('requestService')
           .handleIfError(
-            this.get('store').query('contact', {
-              max: 20,
-              status: phone.get('contactStatuses'),
-              offset: phone.get('contacts.length'),
-              tagId: tag ? tag.get('id') : null,
-            })
+            this.get('store').query(Constants.MODEL_NAME.CONTACT, this._buildLoadParams())
           )
           .then(results => {
             phone.set('totalNumContacts', results.get('meta.total'));
@@ -69,5 +69,13 @@ export default Controller.extend({
         resolve();
       }
     });
+  },
+  _buildLoadParams() {
+    const phone = this.get('phone');
+    return {
+      max: 20,
+      status: phone.get('contactStatuses'),
+      offset: phone.get('contacts.length'),
+    };
   },
 });

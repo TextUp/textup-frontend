@@ -20,5 +20,5 @@ export function urlIdent(modelName, id) {
 // see: https://github.com/emberjs/ember.js/issues/15569
 // see: https://discuss.emberjs.com/t/why-use-rsvp-promise-instead-of-es6-promises/13568
 export function ensurePromise(promise) {
-  return promise instanceof window.Promise ? promise : new RSVP.resolve(promise);
+  return promise instanceof window.Promise ? promise : RSVP.resolve(promise);
 }

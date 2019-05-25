@@ -5,7 +5,7 @@ import defaultIfAbsent from 'textup-frontend/utils/default-if-absent';
 import { A } from '@ember/array';
 import { computed, set } from '@ember/object';
 import { isPresent, tryInvoke, typeOf } from '@ember/utils';
-import { run, scheduleOnce, later, next } from '@ember/runloop';
+import { scheduleOnce, later, next, throttle } from '@ember/runloop';
 
 export default Component.extend({
   location: null, // must be object with keys 'lat' and 'lng'
@@ -56,7 +56,7 @@ export default Component.extend({
   // ------
 
   didInsertElement() {
-    run.scheduleOnce('afterRender', this._setupMapbox.bind(this));
+    scheduleOnce('afterRender', this._setupMapbox.bind(this));
   },
   willDestroyElement() {
     const map = this.get('_map');
@@ -120,7 +120,7 @@ export default Component.extend({
     if (!query) {
       return;
     }
-    run.throttle(
+    throttle(
       this,
       function() {
         this.get('_geocoder').query(

@@ -12,9 +12,9 @@
         (route-action "closeSlideout"))
     forceKeepOpen=newTeam.isSaving
     focusSelector=".start-focus" as |slideout|}}
-    <div class="form">
-        {{partial "partials/team/create-edit"}}
-    </div>
-    {{form/location-model entity=newTeam
+    {{model-form/team team=newTeam
+        firstControlClass="start-focus"
+        canModifyPhone=true
+        onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
         onLocationError=(service-action "mapService" "handleError")}}
 {{/slideout-pane}}

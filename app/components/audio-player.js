@@ -1,15 +1,15 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 import { humanizeMediaError } from 'textup-frontend/utils/audio';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     audio: PropTypes.oneOfType([PropTypes.null, PropTypes.instanceOf(MediaElement)]),
     disabled: PropTypes.bool,
-    message: PropTypes.string
-  },
+    message: PropTypes.string,
+  }),
   getDefaultProps() {
     return { disabled: false };
   },
@@ -144,5 +144,5 @@ export default Component.extend(PropTypesMixin, {
     // setting currentTime automatically triggers ontimechange
     this.get('_audioElement').currentTime = 0;
     this._onStoppedState();
-  }
+  },
 });

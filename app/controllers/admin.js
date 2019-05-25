@@ -1,8 +1,10 @@
+import Constants from 'textup-frontend/constants';
 import Controller from '@ember/controller';
+import { computed } from '@ember/object';
 
 export default Controller.extend({
-  filter: 'active',
-  pending: [],
+  filter: Constants.STAFF.FILTER.ACTIVE,
+  pending: computed(() => []),
   numPending: null,
-  people: []
+  people: computed(() => []),
 });

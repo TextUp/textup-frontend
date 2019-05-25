@@ -1,5 +1,5 @@
 import Service, { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
+import { later } from '@ember/runloop';
 import { tryInvoke } from '@ember/utils';
 
 export default Service.extend({
@@ -8,7 +8,7 @@ export default Service.extend({
 
   createNew(owner) {
     const fMessage = this.get('store').createRecord('future-message', {
-      language: owner.get('language')
+      language: owner.get('language'),
     });
     fMessage.set('owner', owner);
     return fMessage;
@@ -19,7 +19,7 @@ export default Service.extend({
         .persist(fMessage)
         // reload the current model to reload the future messages to ensure that
         // they are in the correct state (such as for language)
-        .then(() => run.later(() => this._tryReloadOwner(fMessage), 2000))
+        .then(() => later(() => this._tryReloadOwner(fMessage), 2000))
     );
   },
 
@@ -31,5 +31,5 @@ export default Service.extend({
     if (owner) {
       tryInvoke(owner, 'reload');
     }
-  }
+  },
 });

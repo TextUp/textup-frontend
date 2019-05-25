@@ -1,0 +1,29 @@
+{{#if shouldShow}}
+    {{#if (or _currentStatusNotProvided _isCurrentlyAdmin)}}
+        <li tabindex="0"
+            class="dropdown-item"
+            onclick={{action _onChange (constant "STAFF.STATUS.STAFF")}}>
+            Make staff
+        </li>
+    {{/if}}
+    {{#if (or _currentStatusNotProvided _isCurrentlyStaff)}}
+        <li tabindex="0"
+            class="dropdown-item"
+            onclick={{action _onChange (constant "STAFF.STATUS.ADMIN")}}>
+            Make admin
+        </li>
+    {{/if}}
+    {{#if _isCurrentlyBlocked}}
+        <li tabindex="0"
+            class="dropdown-item"
+            onclick={{action _onChange (constant "STAFF.STATUS.STAFF")}}>
+            Reactivate
+        </li>
+    {{else}}
+        <li tabindex="0"
+            class="dropdown-item"
+            onclick={{action _onChange (constant "STAFF.STATUS.BLOCKED")}}>
+            Deactivate
+        </li>
+    {{/if}}
+{{/if}}

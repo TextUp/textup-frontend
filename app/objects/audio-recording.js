@@ -1,13 +1,14 @@
 import { notEmpty } from '@ember/object/computed';
 import Evented from '@ember/object/evented';
 import EmberObject, { computed } from '@ember/object';
-import { run } from '@ember/runloop';
+import { join } from '@ember/runloop';
 import { tryInvoke } from '@ember/utils';
 import { getAudioStream } from 'textup-frontend/utils/audio';
 
 // Borrows heavily from: https://github.com/kaliatech/web-audio-recording-tests/blob/master/src/shared/RecorderService.js
 
-const SCRIPT_PROCESSOR_BUFFER_SIZE = 2048, NUM_CHANNELS = 1;
+const SCRIPT_PROCESSOR_BUFFER_SIZE = 2048,
+  NUM_CHANNELS = 1;
 
 export default EmberObject.extend(Evented, {
   willDestroy() {
@@ -189,7 +190,7 @@ export default EmberObject.extend(Evented, {
   },
 
   _cleanup() {
-    run.join(() => {
+    join(() => {
       const audioNodeProperties = [
           '_sourceNode',
           '_inputGainNode',

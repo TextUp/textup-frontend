@@ -1,0 +1,19 @@
+<div class="form__group">
+    <label class="form__label" for="Team Name">Team Name</label>
+    {{input value=team.name
+        type="text"
+        placeholder="Team Name"
+        class="form__input {{firstControlClass}}"
+        validateObj=team
+        validateField="name"
+        validate="bottom"}}
+</div>
+<div class="form__group">
+    <label class="form__label" for="Team Color">Team Color</label>
+    {{color-control color=team.hexColor}}
+</div>
+{{model-form/phone phoneOwner=team
+    canModifyPhone=canModifyPhone
+    onSearchAvailableNumbers=(optional-action onSearchAvailableNumbers)}}
+{{yield}}
+{{model-form/location entity=team onLocationError=(optional-action onLocationError)}}

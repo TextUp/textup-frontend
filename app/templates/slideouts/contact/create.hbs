@@ -2,16 +2,19 @@
     headerComponent=(component "slideout-pane/title" title="New Contact")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishNewContactSlideout")
-        disablePrimary=(not (v-get newContact "isValid"))
+        onPrimary=(service-action "newContactSlideoutService" "finishSlideout")
+        disablePrimary=(not (service-prop "newContactSlideoutService" "newContact.validations.isValid"))
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onClose=(route-action "cancelNewContactSlideout")
-    forceKeepOpen=newContact.isSaving
+    onClose=(service-action "newContactSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "newContactSlideoutService" "newContact.isSaving")
     focusSelector=".start-focus" as |slideout|}}
-    {{form/contact-model contact=newContact
-        onGoToDuplicates=(route-action "newContactGoToDuplicateContact")
-        onChangeNumbers=(action (mut newContact.numbers))
-        onAddNumber=(service-action "contactService" "checkNumberDuplicate" newContact)
-        onRemoveNumber=(service-action "contactService" "removeNumberDuplicate" newContact)}}
+    {{model-form/contact firstControlClass="start-focus"
+        contact=(service-prop "newContactSlideoutService" "newContact")
+        onGoToDuplicates=(service-action "newContactSlideoutService" "goToDuplicate")
+        onChangeNumbers=(service-mut "newContactSlideoutService" "newContact.numbers")
+        onAddNumber=(service-action "contactService" "checkNumberDuplicate"
+            (service-prop "newContactSlideoutService" "newContact"))
+        onRemoveNumber=(service-action "contactService" "removeNumberDuplicate"
+            (service-prop "newContactSlideoutService" "newContact"))}}
 {{/slideout-pane}}

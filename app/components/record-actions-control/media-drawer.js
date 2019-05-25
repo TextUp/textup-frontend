@@ -1,22 +1,22 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     audio: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     images: PropTypes.arrayOf(PropTypes.instanceOf(MediaElement)),
     doRegister: PropTypes.func,
     onAddAudio: PropTypes.func,
     onRemoveMedia: PropTypes.func,
-  },
+  }),
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   // Internal properties

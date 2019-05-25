@@ -1,17 +1,17 @@
 import $ from 'jquery';
-import { debug } from '@ember/debug';
-import Evented from '@ember/object/evented';
-import Service, { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
-import RSVP from 'rsvp';
-import { typeOf, isPresent } from '@ember/utils';
-import { run } from '@ember/runloop';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import Evented from '@ember/object/evented';
 import LocaleUtils from 'textup-frontend/utils/locale';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
+import { debug } from '@ember/debug';
+import { next } from '@ember/runloop';
+import { typeOf, isPresent } from '@ember/utils';
 
 export const LOG_IN_FAIL_MSG = 'Incorrect or blank username or password';
 
@@ -87,7 +87,7 @@ export default Service.extend(Evented, {
     this.get('router').transitionTo('index');
     // unload all after we finish the route transition and leave the logged-in route
     // so that cleanup doesn't happen while all the models are still displayed on the page
-    run.next(() => this.get('store').unloadAll());
+    next(() => this.get('store').unloadAll());
   },
 
   storeAuthResponseSuccess(responseObj, resolve = null) {

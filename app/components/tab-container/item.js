@@ -1,16 +1,16 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import RSVP from 'rsvp';
-import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
+import { run, scheduleOnce, join } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func.isRequired,
     onDestroy: PropTypes.func.isRequired,
     title: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { title: '' };
   },
@@ -20,11 +20,11 @@ export default Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didReceiveAttrs() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => this.set('_publicAPI.title', this.get('title')));
+    scheduleOnce('afterRender', () => this.set('_publicAPI.title', this.get('title')));
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -51,7 +51,7 @@ export default Component.extend(PropTypesMixin, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.join(() => {
+    join(() => {
       if (shouldShow) {
         this._show().then(() => this._notPending());
       } else {
@@ -63,7 +63,7 @@ export default Component.extend(PropTypesMixin, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    return run.join(() => {
+    return join(() => {
       this.set('_shouldRender', true);
       return new RSVP.Promise(resolve => this.$().fadeIn('fast', resolve));
     });
@@ -72,7 +72,7 @@ export default Component.extend(PropTypesMixin, {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    return run.join(() => new RSVP.Promise(resolve => this.$().fadeOut('fast', resolve)));
+    return join(() => new RSVP.Promise(resolve => this.$().fadeOut('fast', resolve)));
   },
 
   _notPending() {

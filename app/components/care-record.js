@@ -1,16 +1,16 @@
-import { notEmpty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 import { format } from 'textup-frontend/utils/phone-number';
+import { join, scheduleOnce } from '@ember/runloop';
+import { notEmpty } from '@ember/object/computed';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     // Properties
     // ----------
 
@@ -61,7 +61,7 @@ export default Component.extend(PropTypesMixin, {
     noAddToRecordMessage: PropTypes.string,
     startCallMessage: PropTypes.string,
     addNoteInPastMessage: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return {
       canAddToRecord: false,
@@ -77,8 +77,8 @@ export default Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.join(() =>
-      run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
+    join(() =>
+      scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]))
     );
   },
 

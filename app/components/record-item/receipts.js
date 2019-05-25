@@ -1,23 +1,23 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { isArray } from '@ember/array';
-import { typeOf, isEmpty } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordItem from 'textup-frontend/models/record-item';
+import { computed } from '@ember/object';
+import { isArray } from '@ember/array';
 import { pluralize } from 'textup-frontend/utils/text';
+import { typeOf, isEmpty } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     item: PropTypes.instanceOf(RecordItem).isRequired,
-    disabled: PropTypes.bool
-  },
+    disabled: PropTypes.bool,
+  }),
   getDefaultProps() {
     return { disabled: false };
   },
   classNames: ['record-item__receipts'],
   classNameBindings: [
     'disabled:record-item__receipts--disabled',
-    '_hasReceipts::record-item__receipts--disabled'
+    '_hasReceipts::record-item__receipts--disabled',
   ],
 
   // Internal properties
@@ -66,5 +66,5 @@ export default Component.extend(PropTypesMixin, {
     } else {
       this.set('_showDetails', false);
     }
-  }
+  },
 });

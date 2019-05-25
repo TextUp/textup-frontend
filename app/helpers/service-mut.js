@@ -1,7 +1,7 @@
 import Helper from '@ember/component/helper';
+import { get, set } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { typeOf, isPresent } from '@ember/utils';
-import { get, set } from '@ember/object';
 
 export function getServicePropertySetter([serviceName, propName], { value = '' }) {
   const service = getOwner(this).lookup(`service:${serviceName}`);

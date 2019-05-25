@@ -1,15 +1,15 @@
-import { htmlSafe } from '@ember/template';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
 import MutationObserver from 'mutation-observer';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/template';
+import { scheduleOnce, throttle } from '@ember/runloop';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     showText: PropTypes.string,
     hideText: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { showText: 'Show more', hideText: 'Show less' };
   },
@@ -20,7 +20,7 @@ export default Component.extend(PropTypesMixin, {
 
   didInsertElement() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this._startObservingContents.bind(this));
+    scheduleOnce('afterRender', this._startObservingContents.bind(this));
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -35,9 +35,7 @@ export default Component.extend(PropTypesMixin, {
   _style: computed('_isOpen', '_contentsHeight', function() {
     const isOpen = this.get('_isOpen'),
       contentsHeight = this.get('_contentsHeight');
-    return isOpen && contentsHeight
-      ? new htmlSafe(`max-height: ${contentsHeight}px;`)
-      : null;
+    return isOpen && contentsHeight ? new htmlSafe(`max-height: ${contentsHeight}px;`) : null;
   }),
 
   _shouldShowControl: computed('_contentsHeight', function() {
@@ -75,7 +73,7 @@ export default Component.extend(PropTypesMixin, {
   },
 
   _updateContentsHeight() {
-    run.throttle(
+    throttle(
       () => this.setProperties({ _contentsHeight: this.get('_$contents').outerHeight() }),
       1000
     );

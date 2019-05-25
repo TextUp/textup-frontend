@@ -4,11 +4,7 @@
             {{entity.name}}
         </p>
     </div>
-    <div class="flex__item text-right">
-        {{#with entity as |person|}}
-            {{partial 'partials/staff/indicators'}}
-        {{/with}}
-    </div>
+    {{staff-indicators class="flex__item text-right" staff=entity}}
 </div>
 <div class="flex text-small">
     <div class="flex__item">

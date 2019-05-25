@@ -75,7 +75,9 @@
                                         </span>
                                     </li>
                                     <li class="dropdown-divider"></li>
-                                    {{partial "partials/staff/status"}}
+                                    {{status-list/staff shouldShow=(and person (not person.isAuthUser))
+                                        currentStatus=person.status
+                                        onChange=(service-action "staffService" "updateStatus" person)}}
                                 </ul>
                             {{/pop-over}}
                         </span>
@@ -112,40 +114,36 @@
             {{#tab-container/item doRegister=tabContainer1.actions.register
                 onDestroy=tabContainer1.actions.unregister
                 title="Details"}}
-                <div class="form">
-                    {{#with person as |staff|}}
-                        {{partial "partials/staff/edit"}}
-                    {{/with}}
-                    {{#if person.isDirty}}
-                        {{!-- separate if loops to prevent multiple-set deprecation --}}
-                        {{#if (and (not usernameDropdown.isOpen)
-                            (not passwordDropdown.isOpen)
-                            (not codeDropdown.isOpen))}}
-                            <div class="flex flex--justify-center flex--spacing-between">
-                                <div class="flex__item">
-                                    <button class="btn" type="button"
-                                        onclick={{service-action "dataService" "revert" person
-                                            (action (mut person.phoneAction) null)}}>
-                                        Cancel
-                                    </button>
-                                </div>
-                                <div class="flex__item">
-                                    {{async-button classNames="btn btn-default"
-                                        disableWhen=(not (v-get person "isValid"))
-                                        action=(route-action "persistWithPhone" person)
-                                        default="Update"
-                                        pending="Updating..."}}
-                                </div>
+                {{#model-form/staff staff=person
+                    canModifyPhone=true
+                    onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
+                    onRevert=(service-action "dataService" "revert" person)
+                    onSave=(service-action "dataService" "persist" person)
+                    onUpdateLockCode=(service-action "staffService" "updateLockCode" person)
+                    onUpdatePassword=(service-action "staffService" "updatePassword" person)
+                    onUpdateUsername=(service-action "staffService" "updateUsername" person)
+                    onValidateCredentials=(service-action "validateAuthService" "checkPassword"
+                        person.username)
+                    as |staffForm|}}
+                    {{#if (and person.isDirty (not staffForm.isModifyingAPropertyRequiringConfirm))}}
+                        <div class="flex flex--justify-center flex--spacing-between">
+                            <div class="flex__item">
+                                <button class="btn"
+                                    type="button"
+                                    onclick={{service-action "dataService" "revert" person}}>
+                                    Cancel
+                                </button>
                             </div>
-                        {{/if}}
+                            <div class="flex__item">
+                                {{async-button classNames="btn btn-default"
+                                    disableWhen=(not (v-get person "isValid"))
+                                    action=(route-action "persistWithPhone" person)
+                                    default="Update"
+                                    pending="Updating..."}}
+                            </div>
+                        </div>
                     {{/if}}
-                </div>
-                <hr>
-                {{#with person as |staff|}}
-                    {{partial "partials/staff/code-with-confirm"}}
-                    {{partial "partials/staff/username-with-confirm"}}
-                    {{partial "partials/staff/password-with-confirm"}}
-                {{/with}}
+                {{/model-form/staff}}
             {{/tab-container/item}}
             {{#if person.allActivePhoneOwners}}
                 {{#tab-container/item classNames="pad-all"

@@ -3,21 +3,21 @@ import CookieConsent from 'cookieconsent'; // eslint-disable-line
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 
 // [NOTE] need to import CookieConsent to load the library into the global namespace
 
 export default Component.extend(PropTypesMixin, HasAppRoot, {
-  propTypes: {
+  propTypes: Object.freeze({
     theme: PropTypes.string,
     learnMoreLink: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { theme: 'cookie-consent', learnMoreLink: 'https://cookiesandyou.com/' };
   },
 
   didInsertElement() {
-    run.scheduleOnce('afterRender', this._initCookieConsent.bind(this));
+    scheduleOnce('afterRender', this._initCookieConsent.bind(this));
   },
 
   // Internal handlers

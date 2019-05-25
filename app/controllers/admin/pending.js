@@ -1,9 +1,9 @@
+import Constants from 'textup-frontend/constants';
+import Controller, { inject as controller } from '@ember/controller';
+import RSVP from 'rsvp';
 import { alias } from '@ember/object/computed';
 import { copy } from '@ember/object/internals';
-import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
-import Controller, { inject as controller } from '@ember/controller';
-import Constants from 'textup-frontend/constants';
 
 export default Controller.extend({
   adminService: service(),
@@ -31,7 +31,7 @@ export default Controller.extend({
       this._handlePending(staff);
     },
     loadMore() {
-      return new Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         const pendingStaff = this.get('pendingStaff');
         this.get('requestService')
           .handleIfError(

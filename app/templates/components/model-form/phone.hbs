@@ -1,0 +1,139 @@
+{{!-- settings to show for all phone owners --}}
+{{#if phoneOwner.phone.content.isActive}}
+    <div class="form__group">
+        <label class="form__label" for="TextUp Phone">TextUp Phone</label>
+        {{!-- this number is read-only --}}
+        {{phone-control number=phoneOwner.phone.content.number}}
+    </div>
+    <div class="form__group">
+        <div class="xs-2-row-3 control-text">
+            <label class="form__label" for="Phone Default Language">
+                Phone Default Language
+            </label>
+        </div>
+        <select name="scheduled-message-language" class="xs-row-3 form__input"
+            onchange={{action (mut phoneOwner.phone.content.language) value="target.value"}}>
+            {{#each (constant "LANGUAGES") as |langauge|}}
+                <option value={{langauge}}
+                    selected={{if (eq langauge phoneOwner.phone.content.language) "selected"}}>
+                    {{capitalize (lowercase langauge) 1}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
+{{/if}}
+{{!-- actions to modify or set up phone --}}
+{{#if canModifyPhone}}
+    {{#if phoneOwner.phone.content.isActive}}
+        <div class="form__group">
+            <div class="xs-2-row-3 control-text">
+                <label class="form__label" for="TextUp phone">
+                    Modify TextUp phone?
+                </label>
+            </div>
+            {{#multi-toggle classNames="xs-row-3"
+                selectIndex=(if (eq phoneOwner.phoneAction null) 0
+                    (if (eq phoneOwner.phoneAction (constant "ACTION.PHONE.CHANGE_NUMBER")) 1
+                        (if (eq phoneOwner.phoneAction (constant "ACTION.PHONE.TRANSFER")) 2 3)))
+                wrapAround=true as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_GRAY")
+                    onSelect=(action (mut phoneOwner.phoneAction) null)}}
+                    No Change
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_BLUE")
+                    onSelect=(action (mut phoneOwner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
+                    Change Number
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.BRAND")
+                    onSelect=(action (mut phoneOwner.phoneAction) (constant "ACTION.PHONE.TRANSFER"))}}
+                    Transfer
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.RED")
+                    onSelect=(action (mut phoneOwner.phoneAction) "deactivateBeforeConfirm")}}
+                    Deactivate
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
+    {{else}}
+        <div class="form__group">
+            <div class="xs-2-row-3 control-text">
+                <label class="form__label" for="TextUp phone">
+                    {{#if (and phoneOwner.phone.content (not phoneOwner.phone.content.isActive))}}
+                        Reactivate TextUp phone?
+                    {{else}}
+                        Set up a TextUp phone?
+                    {{/if}}
+                </label>
+            </div>
+            {{#multi-toggle classNames="xs-row-3"
+                selectIndex=(if (eq phoneOwner.phoneAction null) 0 1)
+                wrapAround=true as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_GRAY")
+                    onSelect=(action (mut phoneOwner.phoneAction) null)}}
+                    No
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_BLUE")
+                    onSelect=(action (mut phoneOwner.phoneAction) (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
+                    Yes
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
+    {{/if}}
+
+    {{!-- phone action options --}}
+    {{#if (eq phoneOwner.phoneAction (constant "ACTION.PHONE.TRANSFER"))}}
+        {{single-select/mutable-transfer-phone classNames="form__group"
+            data=_phoneOwnerOrg.teams.content
+            org=_phoneOwnerOrg
+            phoneOwner=phoneOwner
+            selected=(mut phoneOwner.phoneActionData)}}
+    {{/if}}
+    {{#if (or (eq phoneOwner.phoneAction "deactivateBeforeConfirm")
+        (eq phoneOwner.phoneAction (constant "ACTION.PHONE.DEACTIVATE")))}}
+        <div class="form__group">
+            <div class="form__label form__label--multiline form__label--emphasize">
+                Deactivating a TextUp phone preserves information, but <span class="text-bold">you will lose the TextUp phone"s number</span>. Are you sure you want to deactivate?
+            </div>
+            {{#multi-toggle wrapAround=true as |toggle doRegister|}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_GRAY")
+                    onSelect=(action (mut phoneOwner.phoneAction) "deactivateBeforeConfirm")}}
+                    No
+                {{/multi-toggle/item}}
+                {{#multi-toggle/item doRegister=doRegister
+                    color=(constant "COLOR.LIGHT_BLUE")
+                    onSelect=(action (mut phoneOwner.phoneAction) (constant "ACTION.PHONE.DEACTIVATE"))}}
+                    Yes
+                {{/multi-toggle/item}}
+            {{/multi-toggle}}
+        </div>
+    {{/if}}
+    {{#if (eq phoneOwner.phoneAction (constant "ACTION.PHONE.CHANGE_NUMBER"))}}
+        <div class="form__group">
+            {{#single-select selected=phoneOwner.phoneActionData
+                displayProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
+                identityProperty=(constant "PROP_NAME.AVAILABLE_NUMBER")
+                allowCreate=false
+                searchPlaceholder="Pick your TextUp number"
+                noResultsMessage="Start typing to search for a phone number"
+                onInsert=(action (mut phoneOwner.phoneActionData))
+                onRemove=(action (mut phoneOwner.phoneActionData) null)
+                doSearch=(optional-action onSearchAvailableNumbers) as |item select|}}
+                <div class="text-ellipsis">
+                    <span class="text-bold">
+                        {{phone-number (get item (constant "PROP_NAME.AVAILABLE_NUMBER"))}}
+                    </span>
+                    {{#if item.region}}
+                        <span class="pad-l text-normal">{{item.region}}</span>
+                    {{/if}}
+                </div>
+            {{/single-select}}
+        </div>
+    {{/if}}
+{{/if}}

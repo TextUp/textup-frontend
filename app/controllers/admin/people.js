@@ -1,11 +1,11 @@
-import { alias } from '@ember/object/computed';
-import { Promise } from 'rsvp';
-import { on } from '@ember/object/evented';
-import { inject as service } from '@ember/service';
-import Controller, { inject as controller } from '@ember/controller';
-import { computed, observer } from '@ember/object';
-import { run } from '@ember/runloop';
 import Constants from 'textup-frontend/constants';
+import Controller, { inject as controller } from '@ember/controller';
+import RSVP from 'rsvp';
+import { alias } from '@ember/object/computed';
+import { computed, observer } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import { run } from '@ember/runloop';
 
 export default Controller.extend({
   requestService: service(),
@@ -64,7 +64,7 @@ export default Controller.extend({
   },
 
   _loadMore(offset = 0) {
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       const org = this.get('stateService.ownerAsOrg'),
         team = this.get('team');
       this.get('requestService')

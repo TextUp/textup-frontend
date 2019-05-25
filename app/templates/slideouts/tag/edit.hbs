@@ -1,20 +1,23 @@
-{{#slideout-pane
-    headerComponent=(component "slideout-pane/title"
-        title=(concat "Edit " editingTag.name))
-    footerComponent=(component "slideout-pane/actions"
-        showFooter=true
-        onPrimary=(route-action "finishExistingTagSlideout")
-        disablePrimary=(not (v-get editingTag "isValid"))
-        primaryLabel=(if editingTag.isDeleted "Confirm Delete" "Update")
-        primaryProgressLabel=(if editingTag.isDeleted "Deleting..." "Updating")
-        primaryClass=(if editingTag.isDeleted "btn btn-danger")
-        secondaryLabel=(if editingTag.isDeleted "Undo" "Cancel")
-        onSecondary=(if editingTag.isDeleted (route-action "onTagUndoDelete"))
-        showDelete=(not editingTag.isDeleted)
-        onMarkForDelete=(route-action "onTagMarkForDelete"))
-    direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(route-action "cancelExistingTagSlideout")
-    forceKeepOpen=editingTag.isSaving
-    focusSelector=".start-focus" as |slideout|}}
-    {{form/tag-model tag=editingTag}}
-{{/slideout-pane}}
+{{#with (service-prop "existingTagSlideoutService" "tag.isDeleted") as |isDeleted|}}
+    {{#slideout-pane
+        headerComponent=(component "slideout-pane/title"
+            title=(concat "Edit " (service-prop "existingTagSlideoutService" "tag.name")))
+        footerComponent=(component "slideout-pane/actions"
+            showFooter=true
+            onPrimary=(service-action "existingTagSlideoutService" "finishSlideout")
+            disablePrimary=(service-prop "existingTagSlideoutService" "shouldDisablePrimaryAction")
+            primaryLabel=(if isDeleted "Confirm Delete" "Update")
+            primaryProgressLabel=(if isDeleted "Deleting..." "Updating")
+            primaryClass=(if isDeleted "btn btn-danger")
+            secondaryLabel=(if isDeleted "Undo" "Cancel")
+            onSecondary=(if isDeleted (service-action "existingTagSlideoutService" "tryRollbackText"))
+            showDelete=(not isDeleted)
+            onMarkForDelete=(service-action "existingTagSlideoutService" "onTagMarkForDelete"))
+        direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
+        onClose=(service-action "existingTagSlideoutService" "cancelSlideout")
+        forceKeepOpen=(service-prop "existingTagSlideoutService" "shouldForceKeepOpen")
+        focusSelector=".start-focus" as |slideout|}}
+        {{model-form/tag tag=(service-prop "existingTagSlideoutService" "tag")
+            firstControlClass="start-focus"}}
+    {{/slideout-pane}}
+{{/with}}

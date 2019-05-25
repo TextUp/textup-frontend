@@ -4,20 +4,20 @@ import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 import { htmlSafe } from '@ember/template';
-import { run } from '@ember/runloop';
+import { run, scheduleOnce, throttle } from '@ember/runloop';
 import { typeOf, tryInvoke, isNone } from '@ember/utils';
 
 export const MIN_REQUIRED_PULL_LENGTH_IN_PX = 100;
 export const MAX_PULL_LENGTH_IN_PX = 150;
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     direction: PropTypes.oneOf(Object.values(Constants.INFINITE_SCROLL.DIRECTION)),
     disabled: PropTypes.bool,
     doRegister: PropTypes.func,
     onRefresh: PropTypes.func,
     refreshMessage: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return {
       direction: Constants.INFINITE_SCROLL.DIRECTION.DOWN,
@@ -35,14 +35,14 @@ export default Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   touchStart(event) {
     this._startPull(this._touchEventPosition(event));
   },
   touchMove(event) {
-    run.throttle(this, this._continuePull, this._touchEventPosition(event), 100);
+    throttle(this, this._continuePull, this._touchEventPosition(event), 100);
   },
   touchEnd() {
     this._endPull();
@@ -52,7 +52,7 @@ export default Component.extend(PropTypesMixin, {
     this._startPull(this._mouseEventPosition(event));
   },
   mouseMove(event) {
-    run.throttle(this, this._continuePull, this._mouseEventPosition(event), 100);
+    throttle(this, this._continuePull, this._mouseEventPosition(event), 100);
   },
   mouseUp() {
     this._endPull();

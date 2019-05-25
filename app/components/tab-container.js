@@ -1,16 +1,16 @@
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { isPresent, tryInvoke } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
+import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { scheduleOnce } from '@ember/runloop';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     startIndex: PropTypes.number,
     doRegister: PropTypes.func,
     onChange: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { startIndex: 0 };
   },
@@ -19,7 +19,7 @@ export default Component.extend(PropTypesMixin, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
 
   // Internal properties
@@ -58,18 +58,18 @@ export default Component.extend(PropTypesMixin, {
     if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       this.get('_items').pushObject(item);
-      run.scheduleOnce('afterRender', this, this._tryInitializeNav);
+      scheduleOnce('afterRender', this, this._tryInitializeNav);
     });
   },
   _removeTabItem(item) {
     if (!isPresent(item) || this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
-    run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       this.get('_items').removeObject(item);
-      run.scheduleOnce('afterRender', this, this._tryInitializeNav);
+      scheduleOnce('afterRender', this, this._tryInitializeNav);
     });
   },
 
@@ -110,7 +110,7 @@ export default Component.extend(PropTypesMixin, {
     this.set('_publicAPI.currentIndex', currentIndex); // normalize index if needed
     items.forEach((item, index) => item.actions.initialize(currentIndex === index));
     if (this.get('_hasMultipleTabs')) {
-      run.scheduleOnce('afterRender', this, this._setupMultipleTabs);
+      scheduleOnce('afterRender', this, this._setupMultipleTabs);
     }
   },
   _setupMultipleTabs() {

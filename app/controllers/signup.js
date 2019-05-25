@@ -4,5 +4,6 @@ import Controller from '@ember/controller';
 // injection to work in the `signup.index` controller
 
 export default Controller.extend({
+  staff: null,
   selected: null,
 });

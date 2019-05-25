@@ -1,13 +1,13 @@
-import { debug } from '@ember/debug';
-import { guidFor } from '@ember/object/internals';
 import $ from 'jquery';
+import config from 'textup-frontend/config/environment';
 import Evented from '@ember/object/evented';
+import RSVP from 'rsvp';
 import Service from '@ember/service';
 import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
+import { debug } from '@ember/debug';
+import { guidFor } from '@ember/object/internals';
+import { later, cancel } from '@ember/runloop';
 import { typeOf, isPresent } from '@ember/utils';
-import config from 'textup-frontend/config/environment';
 
 export const KEY_REQUEST_SEND_STORAGE_FOR_THIS_TAB = 'textup-request-storage-data-to-be-sent';
 export const KEY_RECEIVE_REQUESTED_STORAGE_FROM_OTHER_TAB = 'textup-receive-requested-storage-data';
@@ -39,13 +39,13 @@ export default Service.extend(Evented, {
       // set a key on localStorage (which spans tabs) to trigger other tabs to send their storage
       this._safeSet(window.localStorage, KEY_REQUEST_SEND_STORAGE_FOR_THIS_TAB, Date.now());
       // (1) The sync event times out and we cancel the event binding (finish scenario 2)
-      const syncTimeoutTimer = run.later(() => {
+      const syncTimeoutTimer = later(() => {
         this.off(config.events.storage.updated, this);
         resolve();
       }, STORAGE_EVENT_SYNC_TIMEOUT_IN_MS);
       // (2) The sync finish event has been triggered and we cancel the timer (finish scenario 1)
       this.one(config.events.storage.updated, this, function() {
-        run.cancel(syncTimeoutTimer);
+        cancel(syncTimeoutTimer);
         resolve();
       });
     });

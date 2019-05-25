@@ -23,24 +23,20 @@ export default Mixin.create({
   _futureMessagesSorting: ['nextFireDate:asc'],
   _sortedFutureMessages: sort('_uniqueFutureMessages', '_futureMessagesSorting'),
 
-  _nextFutureFire: computed(
-    '_sortedFutureMessages.@each.nextFireDate',
-    '_sortedFutureMessages.@each.isDone',
-    function() {
-      const fMsgs = this.get('_sortedFutureMessages'),
-        currentTime = new Date().getTime();
-      let nextFire;
-      fMsgs.forEach(fMsg => {
-        if (!fMsg.get('isDone')) {
-          const thisTime = fMsg.get('nextFireDate');
-          if (thisTime && thisTime.getTime() > currentTime) {
-            nextFire = !nextFire || thisTime.getTime() < nextFire.getTime() ? thisTime : nextFire;
-          }
+  _nextFutureFire: computed('_sortedFutureMessages.@each.{nextFireDate,isDone}', function() {
+    const fMsgs = this.get('_sortedFutureMessages'),
+      currentTime = new Date().getTime();
+    let nextFire;
+    fMsgs.forEach(fMsg => {
+      if (!fMsg.get('isDone')) {
+        const thisTime = fMsg.get('nextFireDate');
+        if (thisTime && thisTime.getTime() > currentTime) {
+          nextFire = !nextFire || thisTime.getTime() < nextFire.getTime() ? thisTime : nextFire;
         }
-      });
-      return nextFire;
-    }
-  ),
+      }
+    });
+    return nextFire;
+  }),
 
   // Methods
   // -------

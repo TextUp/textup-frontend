@@ -1,13 +1,13 @@
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
 import $ from 'jquery';
-import { tryInvoke } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
+import Component from '@ember/component';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { join, scheduleOnce, next, later, debounce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export const PULSING_CLASS = 'task-element__should-animate-pulse';
 export const TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS = 2000;
@@ -15,7 +15,7 @@ export const SHOW_ME_START_DELAY_IN_MS = 200;
 export const SHOW_ME_BETWEEN_STEPS_DELAY_IN_MS = 1500;
 
 export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
-  propTypes: {
+  propTypes: Object.freeze({
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
@@ -25,7 +25,7 @@ export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     shouldShow: PropTypes.bool,
     elementsToPulse: PropTypes.arrayOf(PropTypes.string),
     elementsToPulseMobile: PropTypes.arrayOf(PropTypes.string),
-  },
+  }),
   getDefaultProps() {
     return { shouldShow: true };
   },
@@ -34,14 +34,14 @@ export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didReceiveAttrs() {
     this._super(...arguments);
     this.set('_temporaryComplete', false);
     this._cleanupPulses();
     if (this.get('shouldShow')) {
-      run.next(this, this._startPulsing);
+      next(this, this._startPulsing);
     }
   },
   willDestroyElement() {
@@ -75,20 +75,20 @@ export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     this._removeAllCurrentPulsing();
     if (taskId === this.get('id') && shouldShowCompleteMessage) {
       this.set('_temporaryComplete', true);
-      run.later(this, this.get('completeTask'), taskId, TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS);
+      later(this, this.get('completeTask'), taskId, TEMPORARY_COMPLETE_SHOW_DURATION_IN_MS);
     } else {
       this.get('completeTask')(taskId);
     }
   },
   _debounceShowUserSteps() {
-    run.debounce(this, this._showUserSteps, 1000, true);
+    debounce(this, this._showUserSteps, 1000, true);
   },
   _showUserSteps() {
     if (this.get('isDestroying') || this.get('isDestroyed')) {
       return;
     }
     this._getCurrentElementSelectors().forEach((elementSelector, index) => {
-      run.later(
+      later(
         () => $(elementSelector).click(),
         SHOW_ME_START_DELAY_IN_MS + index * SHOW_ME_BETWEEN_STEPS_DELAY_IN_MS
       );
@@ -130,7 +130,7 @@ export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     });
   },
   _pulseElementAfterDelay(elementSelector) {
-    run.next(this, this._pulseElement, elementSelector);
+    next(this, this._pulseElement, elementSelector);
   },
   _pulseElement(elementSelector) {
     $(elementSelector).addClass(PULSING_CLASS);
@@ -145,8 +145,8 @@ export default Component.extend(PropTypesMixin, HasEvents, HasAppRoot, {
     this._removeAllPulsingFromList(this.get('elementsToPulseMobile'));
   },
   _removePulseFromElement(elementSelector) {
-    run.join(() => {
-      run.scheduleOnce('afterRender', () => {
+    join(() => {
+      scheduleOnce('afterRender', () => {
         this.get('_root').off(this._event('click'), elementSelector);
         $(elementSelector).removeClass(PULSING_CLASS);
       });

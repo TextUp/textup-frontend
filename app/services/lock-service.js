@@ -1,17 +1,17 @@
-import { readOnly } from '@ember/object/computed';
-import { getOwner } from '@ember/application';
-import Evented from '@ember/object/evented';
-import Service, { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
-import { typeOf } from '@ember/utils';
 import AppUtils from 'textup-frontend/utils/app';
 import ArrayUtils from 'textup-frontend/utils/array';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
+import Evented from '@ember/object/evented';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';
 import TypeUtils from 'textup-frontend/utils/type';
+import { getOwner } from '@ember/application';
+import { join, scheduleOnce } from '@ember/runloop';
+import { readOnly } from '@ember/object/computed';
+import { typeOf } from '@ember/utils';
 
 export default Service.extend(Evented, {
   authService: service(),
@@ -49,7 +49,7 @@ export default Service.extend(Evented, {
 
   scheduleCheckIfShouldStartLocked() {
     if (this.get('_isInitialRender')) {
-      run.join(() => run.scheduleOnce('afterRender', this, this._checkIfShouldStartLocked));
+      join(() => scheduleOnce('afterRender', this, this._checkIfShouldStartLocked));
     }
   },
   syncLockStatusWithTransition(transition) {

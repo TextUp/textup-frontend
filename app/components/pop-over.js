@@ -1,27 +1,27 @@
 import $ from 'jquery';
-import { htmlSafe } from '@ember/template';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import RSVP from 'rsvp';
-import { run } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 import BoundUtils from 'textup-frontend/utils/bounds';
+import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import MutationObserver from 'mutation-observer';
 import PlatformUtils from 'textup-frontend/utils/platform';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/template';
+import { run, scheduleOnce, later, next, join, debounce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
     onReposition: PropTypes.func,
     bodyClickWillClose: PropTypes.bool,
     position: PropTypes.oneOfType([PropTypes.null, PropTypes.string]),
-  },
+  }),
   getDefaultProps() {
     return { bodyClickWillClose: true };
   },
@@ -29,11 +29,11 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didInsertElement() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this, this._attachListeners);
+    scheduleOnce('afterRender', this, this._attachListeners);
   },
   // only do this on subsequent render this pop-over happens to be open
   didUpdateAttrs() {
@@ -103,7 +103,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
         return resolve();
       }
       const counter = this.get('_openCounter') + 1;
-      run.later(this._finishOpening.bind(this, counter, resolve, reject), 10);
+      later(this._finishOpening.bind(this, counter, resolve, reject), 10);
       // need to allow the body to appear in the DOM before we can adjust its position
       run(() => this.setProperties({ _isOpening: true, _openCounter: counter }));
     });
@@ -119,12 +119,12 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     this._adjustPosition().then(() => {
       const bodyContents = this.get('_bodyContents');
       if (bodyContents && bodyContents.length) {
-        run.scheduleOnce('afterRender', () => bodyContents.focus());
+        scheduleOnce('afterRender', () => bodyContents.focus());
       }
       this.setProperties({ _isOpening: false, '_publicAPI.isOpen': true });
       tryInvoke(this, 'onOpen');
       // schedule after render to allow the DOM to reflect the property changes
-      run.scheduleOnce('afterRender', resolve);
+      scheduleOnce('afterRender', resolve);
     }, reject);
   },
 
@@ -132,10 +132,10 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     if (this.get('bodyClickWillClose')) {
       if (PlatformUtils.isIOS() || PlatformUtils.isAndroid()) {
         // on iOS event order is different so wait to allow action to happen before closing
-        run.later(this, this._close, 400);
+        later(this, this._close, 400);
       } else {
         // allow action to happen first before removing the floating style on the pop-over
-        run.next(this, this._close);
+        next(this, this._close);
       }
     }
   },
@@ -147,8 +147,8 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
       // so that we don't trigger the _open if we are clicking right on top of the trigger
       // but actually closing because of the overlay, not the trigger
       const counter = this.get('_closeCounter') + 1;
-      run.later(this._finishClosing.bind(this, counter, resolve), 500);
-      run.join(() =>
+      later(this._finishClosing.bind(this, counter, resolve), 500);
+      join(() =>
         this.setProperties({
           _isClosing: true, // intermediate state for closing animation
           _bodyPositionTop: null,
@@ -171,7 +171,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     this.setProperties({ _isClosing: false, '_publicAPI.isOpen': false });
     tryInvoke(this, 'onClose');
     // schedule after render to allow the DOM to reflect the property changes
-    run.scheduleOnce('afterRender', resolve);
+    scheduleOnce('afterRender', resolve);
   },
 
   _reposition() {
@@ -234,6 +234,6 @@ export default Component.extend(PropTypesMixin, HasWormhole, HasEvents, {
     }
   },
   _repositionOnChange() {
-    run.debounce(this, this._reposition, 500);
+    debounce(this, this._reposition, 500);
   },
 });

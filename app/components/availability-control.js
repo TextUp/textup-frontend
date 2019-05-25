@@ -1,16 +1,16 @@
 import Component from '@ember/component';
-import { tryInvoke } from '@ember/utils';
 import OwnerPolicy from 'textup-frontend/models/owner-policy';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     self: PropTypes.instanceOf(OwnerPolicy),
     others: PropTypes.array,
     onAvailabilityTypeChange: PropTypes.func,
     onManualAvailabilityChange: PropTypes.func,
     onScheduleAvailabilityChange: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { others: [] };
   },

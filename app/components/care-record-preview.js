@@ -1,16 +1,16 @@
-import { notEmpty } from '@ember/object/computed';
 import Component from '@ember/component';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { notEmpty } from '@ember/object/computed';
 import { RecordCluster } from 'textup-frontend/objects/record-cluster';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     name: PropTypes.string,
     noItemsMessage: PropTypes.string,
     recordClusters: PropTypes.arrayOf(PropTypes.instanceOf(RecordCluster)),
     onOpen: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { noItemsMessage: 'No messages received or sent.', recordClusters: [] };
   },

@@ -30,29 +30,34 @@
         </div>
         <div class="single-body-content">
             {{#with (service-prop "authService" "authUser") as |staff|}}
-                {{partial "partials/staff/settings"}}
-                {{#if staff.hasDirtyAttributes}}
-                    {{!-- separate if loops to prevent multiple-set deprecation --}}
-                    {{#if (and (not usernameDropdown.isOpen)
-                        (not passwordDropdown.isOpen)
-                        (not codeDropdown.isOpen))}}
-                        <div class="pad-t text-center">
-                            <button class="btn" type="button"
-                                onclick={{service-action "dataService" "revert" staff}}>
-                                Cancel
-                            </button>
-                            {{async-button classNames="btn btn-default"
-                                disableWhen=(not (v-get staff "isValid"))
-                                action=(service-action "dataService" "persist" staff)
-                                default="Update"
-                                pending="Updating..."}}
+                {{#model-form/staff staff=staff
+                    onRevert=(service-action "dataService" "revert" staff)
+                    onSave=(service-action "dataService" "persist" staff)
+                    onUpdateLockCode=(service-action "staffService" "updateLockCode" staff)
+                    onUpdatePassword=(service-action "staffService" "updatePassword" staff)
+                    onUpdateUsername=(service-action "staffService" "updateUsername" staff)
+                    onValidateCredentials=(service-action "validateAuthService" "checkPassword"
+                        staff.username)
+                    as |staffForm|}}
+                    {{#if (and staff.isDirty (not staffForm.isModifyingAPropertyRequiringConfirm))}}
+                        <div class="flex flex--justify-center flex--spacing-between">
+                            <div class="flex__item">
+                                <button class="btn"
+                                    type="button"
+                                    onclick={{service-action "dataService" "revert" staff}}>
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="flex__item">
+                                {{async-button classNames="btn btn-default"
+                                    disableWhen=(not (v-get staff "isValid"))
+                                    action=(service-action "dataService" "persist" staff)
+                                    default="Update"
+                                    pending="Updating..."}}
+                            </div>
                         </div>
                     {{/if}}
-                {{/if}}
-                <hr>
-                {{partial "partials/staff/code-with-confirm"}}
-                {{partial "partials/staff/username-with-confirm"}}
-                {{partial "partials/staff/password-with-confirm"}}
+                {{/model-form/staff}}
             {{/with}}
         </div>
     </div>

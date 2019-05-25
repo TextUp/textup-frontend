@@ -2,18 +2,21 @@
     headerComponent=(component "slideout-pane/title" title="Schedule Message")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishNewScheduleMessageSlideout")
-        disablePrimary=(not (v-get newFutureMessage "isValid"))
+        onPrimary=(service-action "newFutureMessageSlideoutService" "finishSlideout")
+        disablePrimary=(service-prop "newFutureMessageSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Schedule"
         primaryProgressLabel="Scheduling...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     focusSelector=".start-focus"
-    forceKeepOpen=newFutureMessage.isSaving
-    onClose=(route-action "cancelNewScheduleMessageSlideout") as |slideout|}}
-    {{form/future-message classNames="pad-t"
-        futureMessage=newFutureMessage
-        personalNumber=(service-prop "authService" "authUser.personalNumber")
-        onAddImage=(route-action "onAddImage" newFutureMessage)
-        onAddAudio=(route-action "onAddAudio" newFutureMessage)
-        onRemoveMedia=(route-action "onRemoveMedia" newFutureMessage)}}
+    forceKeepOpen=(service-prop "newFutureMessageSlideoutService" "shouldForceKeepOpen")
+    onClose=(service-action "newFutureMessageSlideoutService" "cancelSlideout") as |slideout|}}
+    {{#with (service-prop "newFutureMessageSlideoutService" "futureMessage") as |futureMessage|}}
+        {{model-form/future-message classNames="pad-t"
+            firstControlClass="start-focus"
+            futureMessage=futureMessage
+            personalNumber=(service-prop "authService" "authUser.personalNumber")
+            onAddImage=(service-action "mediaService" "addImage" futureMessage)
+            onAddAudio=(service-action "mediaService" "addAudio" futureMessage)
+            onRemoveMedia=(service-action "mediaService" "removeMedia" futureMessage)}}
+    {{/with}}
 {{/slideout-pane}}

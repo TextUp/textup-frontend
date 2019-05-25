@@ -7,14 +7,14 @@ import Staff from 'textup-frontend/models/staff';
 // prop-type for this component to sometimes be null
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     onLogOut: PropTypes.func.isRequired,
     user: PropTypes.oneOfType([PropTypes.null, PropTypes.instanceOf(Staff)]),
     doRegister: PropTypes.func,
     activeName: PropTypes.string,
     activeNumber: PropTypes.string,
     toggleClass: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { toggleClass: '' };
   },

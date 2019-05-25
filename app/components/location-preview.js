@@ -1,20 +1,20 @@
 import Component from '@ember/component';
-import { run } from '@ember/runloop';
-import { typeOf, tryInvoke } from '@ember/utils';
-import { getWithDefault, computed } from '@ember/object';
 import config from 'textup-frontend/config/environment';
 import Location from 'textup-frontend/models/location';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { buildPreviewUrl } from 'textup-frontend/utils/location';
+import { getWithDefault, computed } from '@ember/object';
+import { run, scheduleOnce } from '@ember/runloop';
+import { typeOf, tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     location: PropTypes.instanceOf(Location).isRequired,
     onSuccess: PropTypes.func,
     onFailure: PropTypes.func,
     loadingMessage: PropTypes.string,
     errorMessage: PropTypes.string,
-  },
+  }),
   getDefaultProps() {
     return { loadingMessage: 'Loading', errorMessage: 'Could not load preview' };
   },
@@ -28,7 +28,7 @@ export default Component.extend(PropTypesMixin, {
   didInsertElement() {
     this._super(...arguments);
     // wait until after render so that client height and width will not be null
-    run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {
         return;
       }
@@ -57,7 +57,7 @@ export default Component.extend(PropTypesMixin, {
     }
     const { lat, lng } = latLng;
     // schedule this method call so we don't try to modify classes multiple times in a single render
-    run.scheduleOnce('actions', this._startLoadProps.bind(this));
+    scheduleOnce('actions', this._startLoadProps.bind(this));
     return [{ source: buildPreviewUrl(lat, lng, this._getLargestDimension()) }];
   }),
   _shouldLoad: false,

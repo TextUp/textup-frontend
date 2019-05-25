@@ -1,15 +1,15 @@
-import { scheduleOnce, next } from '@ember/runloop';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { isPresent, tryInvoke } from '@ember/utils';
-import { and } from '@ember/object/computed';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Component from '@ember/component';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { and } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { isPresent, tryInvoke } from '@ember/utils';
+import { scheduleOnce, next } from '@ember/runloop';
 
 export default Component.extend(PropTypesMixin, HasWormhole, {
-  propTypes: {
+  propTypes: Object.freeze({
     datePlaceholder: PropTypes.string,
     timePlaceholder: PropTypes.string,
     dateFormat: PropTypes.string,
@@ -22,7 +22,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, {
     showTime: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.null, PropTypes.date]), // cannot be number because time input does not populate correctly
     onSelect: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return {
       datePlaceholder: 'Select date',
@@ -151,9 +151,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, {
         scheduleOnce('afterRender', this, function() {
           if (!this.isDestroying && !this.isDestroyed) {
             tryInvoke(this, 'onSelect', [newVal]);
-            this._tryUpdateTimeOptions(() =>
-              tryInvoke(this, 'onSelect', [this.get('_value')])
-            );
+            this._tryUpdateTimeOptions(() => tryInvoke(this, 'onSelect', [this.get('_value')]));
           }
         });
       }

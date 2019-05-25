@@ -1,20 +1,20 @@
 import $ from 'jquery';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
-import { run } from '@ember/runloop';
-import RSVP from 'rsvp';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Component from '@ember/component';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
 import { distance } from 'textup-frontend/utils/coordinate';
 import { isOrContainsElement } from 'textup-frontend/utils/element';
+import { next, run, scheduleOnce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 const TOUCH_TAP_MAX_DISTANCE_IN_PX = 20;
 
 export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
@@ -25,7 +25,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     focusOutToClose: PropTypes.bool,
     animate: PropTypes.bool,
     disabled: PropTypes.bool,
-  },
+  }),
   getDefaultProps() {
     return {
       startOpen: false,
@@ -39,12 +39,12 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didInsertElement() {
     this._super(...arguments);
     if (this.get('startOpen')) {
-      run.scheduleOnce('afterRender', this, this._open);
+      scheduleOnce('afterRender', this, this._open);
     }
     this._startCloseListeners();
   },
@@ -87,7 +87,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
         this.setProperties({ '_publicAPI.isOpen': true });
         // needs more a delay than 'afterRender' to ensure that initialization work
         // when opening the hide-show has completed
-        run.next(this, this._afterOpen.bind(this, resolve));
+        next(this, this._afterOpen.bind(this, resolve));
       });
     });
   },

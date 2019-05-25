@@ -9,7 +9,9 @@ export default Route.extend({
     if (team && !team.get('location.content')) {
       const id = team.get('id');
       team.unloadRecord();
-      return this.store.findRecord('team', id).then(found => this.set('_newModel', found));
+      return this.get('store')
+        .findRecord('team', id)
+        .then(found => this.set('_newModel', found));
     } else {
       this.set('_newModel', team);
     }

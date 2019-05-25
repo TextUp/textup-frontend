@@ -1,17 +1,14 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import {
-  extractImagesFromEvent,
-  eventHasFiles
-} from 'textup-frontend/utils/photo';
+import { computed } from '@ember/object';
+import { extractImagesFromEvent, eventHasFiles } from 'textup-frontend/utils/photo';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     onAdd: PropTypes.func.isRequired,
-    labelClass: PropTypes.string
-  },
+    labelClass: PropTypes.string,
+  }),
   classNames: ['photo-control__add'],
 
   // Internal properties
@@ -62,5 +59,5 @@ export default Component.extend(PropTypesMixin, {
       $input[0].value = null;
     }
     this.setProperties({ _isLoading: false, _isLoadError: !isSuccess });
-  }
+  },
 });

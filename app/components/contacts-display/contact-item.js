@@ -1,21 +1,21 @@
 import Component from '@ember/component';
-import { tryInvoke } from '@ember/utils';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
 import { ContactObject } from 'textup-frontend/objects/contact-object';
+import { join, scheduleOnce } from '@ember/runloop';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     doRegister: PropTypes.func,
     data: PropTypes.instanceOf(ContactObject),
-  },
+  }),
 
   classNames: 'contacts_display__contact_item',
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didReceiveAttrs() {
     this._super(...arguments);
@@ -40,19 +40,19 @@ export default Component.extend(PropTypesMixin, {
   // -----------------
 
   _onChange(event) {
-    run.join(() => {
+    join(() => {
       this.set('_publicAPI.isSelect', event.target.checked);
     });
   },
 
   _select() {
-    run.join(() => {
+    join(() => {
       this.set('_publicAPI.isSelect', true);
     });
   },
 
   _deselect() {
-    run.join(() => {
+    join(() => {
       this.set('_publicAPI.isSelect', false);
     });
   },

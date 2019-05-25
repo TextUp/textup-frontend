@@ -1,0 +1,150 @@
+<div class="form__group">
+    <label class="form__label" for="Staff Name">Staff Name</label>
+    {{input value=staff.name
+        type="text"
+        placeholder="Staff Name"
+        class="form__input {{firstControlClass}}"
+        validateObj=staff
+        validateField="name"
+        validate="bottom"}}
+</div>
+{{#if staff.isNew}}
+    <div class="form__group">
+        <label class="form__label" for="Username">Username</label>
+        {{input value=staff.username
+            type="text"
+            placeholder="Username"
+            class="form__input"
+            autocorrect="off"
+            autocapitalize="off"
+            validateObj=staff
+            validateField="username"
+            validate="bottom"}}
+    </div>
+{{/if}}
+<div class="form__group">
+    <label class="form__label" for="Staff Email">Staff Email</label>
+    {{input value=staff.email
+        type="email"
+        placeholder="Staff Email"
+        class="form__input"
+        validateObj=staff
+        validateField="email"
+        validate="bottom"}}
+</div>
+{{#if (not staff.isNew)}}
+    <div class="form__group form__group--no-vertical-space">
+        <label class="form__label" for="Personal Number">Personal Number</label>
+        {{#hide-show classNames="input-group-element"
+            focusOnOpenSelector=".phone-control" as |hideShow|}}
+            {{#if hideShow.isOpen}}
+                <div class="input-group">
+                    <span class="input-group-addon blend-in">
+                        <button class="btn" type="button" onclick={{hideShow.actions.close}}>
+                            <span class="icon-x"></span>
+                        </button>
+                    </span>
+                    {{#phone-control/mutable-validated number=staff.personalNumber
+                        controlClass="blend-in"
+                        forceDefaultValidate=true
+                        onValidateSuccess=(action _onSaveAndThen hideShow.actions.close)}}
+                    {{else}}
+                        <span class="fa fa-arrow-right"></span>
+                    {{/phone-control/mutable-validated}}
+                </div>
+            {{else}}
+                <div tabindex="0"
+                    onfocus={{hideShow.actions.open}}
+                    onclick={{hideShow.actions.open}}>
+                    {{#phone-control number=staff.personalNumber
+                        showControl=true
+                        controlClass="blend-in"}}
+                    {{else}}
+                        <span class="icon-pencil"></span>
+                    {{/phone-control}}
+                </div>
+                <div class="text-right margin-t-half">
+                    <button class="btn-link" onclick={{action (mut staff.personalNumber) ""}}>
+                        Clear personal number
+                    </button>
+                </div>
+            {{/if}}
+        {{/hide-show}}
+    </div>
+    <hr>
+{{/if}}
+{{model-form/phone phoneOwner=staff
+    canModifyPhone=canModifyPhone
+    onSearchAvailableNumbers=(optional-action onSearchAvailableNumbers)}}
+
+{{yield _publicAPI}}
+
+{{#if (not staff.isNew)}}
+    <hr>
+    {{#model-form/staff/with-confirm onOpen=(action _onOpenWithConfirm)
+        onClose=(action _onCloseWithConfirm)
+        onRevert=(optional-action onRevert)
+        onValidate=(optional-action onValidateCredentials)
+        onSave=(optional-action onUpdateUsername)
+        isSelf=staff.isAuthUser
+        closedLabel="Update username"
+        openedLabel="Cancel updating username"
+        selfLabel="Changing your own username will require logging back in." as |withConfirm|}}
+        <div class="form__group">
+            <label class="form__label" for="New Username">
+                New Username for {{staff.name}}
+            </label>
+            {{input type="text"
+                class="form__input"
+                placeholder="New Username"
+                value=withConfirm.boundProperty}}
+        </div>
+    {{/model-form/staff/with-confirm}}
+    {{#model-form/staff/with-confirm doRegister=(action (mut _passwordWithConfirm))
+        onOpen=(action _onOpenPasswordWithConfirm)
+        onClose=(action _onCloseWithConfirm)
+        onRevert=(optional-action onRevert)
+        onValidate=(optional-action onValidateCredentials)
+        onSave=(optional-action onUpdatePassword)
+        showControls=(eq _newPasswordCopy _passwordWithConfirm.boundProperty)
+        isSelf=staff.isAuthUser
+        closedLabel="Update password"
+        openedLabel="Cancel updating password"
+        selfLabel="Changing your own password will require logging back in." as |withConfirm|}}
+        <div class="form__group">
+            <label class="form__label" for="New Password">
+                New Password for {{staff.name}}
+            </label>
+            {{input type="password"
+                allowShowPassword=true
+                class="form__input"
+                placeholder="New Password"
+                value=withConfirm.boundProperty}}
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="Confirm New">
+                Confirm New for {{staff.name}}
+            </label>
+            {{input type="password"
+                allowShowPassword=true
+                class="form__input"
+                placeholder="Confirm New Password"
+                value=_newPasswordCopy}}
+        </div>
+    {{/model-form/staff/with-confirm}}
+    {{#model-form/staff/with-confirm onOpen=(action _onOpenWithConfirm)
+        onClose=(action _onCloseWithConfirm)
+        onRevert=(optional-action onRevert)
+        onValidate=(optional-action onValidateCredentials)
+        onSave=(optional-action onUpdateLockCode)
+        closedLabel="Update lock code"
+        openedLabel="Cancel updating lock code" as |withConfirm|}}
+        <div class="form__group">
+            <label class="form__label" for="New Lock Code">
+                New Lock Code for {{staff.name}}
+            </label>
+            {{lock-pad val=withConfirm.boundProperty
+                doUpdateVal=(action (mut withConfirm.boundProperty))}}
+        </div>
+    {{/model-form/staff/with-confirm}}
+{{/if}}

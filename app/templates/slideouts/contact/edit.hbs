@@ -1,20 +1,23 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(phone-number (get model (constant "PROP_NAME.READABLE_IDENT"))))
+        title=(phone-number (service-prop "existingContactSlideoutService" "contactReadableIdent")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishExistingContactSlideout")
-        disablePrimary=(or (not model.allowEdits) (not (v-get model "isValid")))
+        onPrimary=(service-action "existingContactSlideoutService" "finishSlideout")
+        disablePrimary=(service-prop "existingContactSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(route-action "cancelExistingContactSlideout")
-    forceKeepOpen=model.isSaving
+    onClose=(service-action "existingContactSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "existingContactSlideoutService" "shouldForceKeepOpen")
     focusSelector=".start-focus" as |slideout|}}
-    {{form/contact-model contact=model
-        onGoToDuplicates=(route-action "existingContactGoToDuplicateContact")
-        onChangeNumbers=(action (mut model.numbers))
-        onAddNumber=(service-action "contactService" "checkNumberDuplicate" model)
-        onRemoveNumber=(service-action "contactService" "removeNumberDuplicate" model)}}
+    {{model-form/contact firstControlClass="start-focus"
+        contact=(service-prop "existingContactSlideoutService" "contact")
+        onGoToDuplicates=(service-action "existingContactSlideoutService" "goToDuplicate")
+        onChangeNumbers=(service-mut "existingContactSlideoutService" "contact.numbers")
+        onAddNumber=(service-action "contactService" "checkNumberDuplicate"
+            (service-mut "existingContactSlideoutService" "contact"))
+        onRemoveNumber=(service-action "contactService" "removeNumberDuplicate"
+            (service-mut "existingContactSlideoutService" "contact"))}}
 {{/slideout-pane}}
 

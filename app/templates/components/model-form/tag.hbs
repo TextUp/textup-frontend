@@ -1,0 +1,38 @@
+<div class="form__group">
+    <label class="form__label" for="Tag Name">Tag Name</label>
+    {{input class=(concat "form__input " firstControlClass)
+        disabled=tag.isDeleted
+        value=tag.name
+        type="text"
+        placeholder="Tag Name"
+        validateObj=tag
+        validateField="name"
+        validate="bottom"}}
+</div>
+<div class="form__group">
+    {{#tour-components/hint hintId=(constant "HINT.TAG_COLOR")}}
+        <label class="form__label" for="Tag Color">Tag Color</label>
+        {{color-control color=tag.hexColor
+            disabled=tag.isDeleted}}
+    {{/tour-components/hint}}
+</div>
+<div class="form__group">
+    {{#tour-components/hint hintId=(constant "HINT.TAG_LANGUAGE")}}
+        <div class="row">
+            <div class="xs-2-row-3 control-text">
+                <label  class="form__label"for="Language">
+                    Tag Language
+                </label>
+            </div>
+            <select name="tag-language" class="xs-row-3 form__input"
+                onchange={{action (mut tag.language) value="target.value"}}>
+                {{#each (constant "LANGUAGES") as |_lang|}}
+                    <option value={{_lang}}
+                        selected={{if (eq _lang tag.language) "selected"}}>
+                        {{capitalize (lowercase _lang) 1}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+    {{/tour-components/hint}}
+</div>

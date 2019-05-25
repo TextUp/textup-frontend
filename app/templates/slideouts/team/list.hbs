@@ -16,10 +16,10 @@
         onOpen=(route-action "initializeNewTeam")
         onClose=(service-action "dataService" "revert" newTeam) as |hideShow|}}
         {{#if hideShow.isOpen}}
-            <div class="pad-t">
-                {{partial "partials/team/create-edit"}}
-            </div>
-            {{form/location-model entity=newTeam
+            {{model-form/team team=newTeam
+                firstControlClass="start-focus"
+                canModifyPhone=true
+                onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
                 onLocationError=(service-action "mapService" "handleError")}}
         {{else}}
             <ul class="result-list">
@@ -32,7 +32,30 @@
                                 tabindex="0"}}
                                 <div class="horizontal-items pad-all clickable">
                                     {{color-badge color=team.hexColor text=team.name}}
-                                    {{partial "partials/team/indicators"}}
+                                    {{#if team.phone.content}}
+                                        {{#if team.phone.content.isActive}}
+                                            <span class="badge">
+                                                {{#tool-tip tagName='span'
+                                                    side=(constant "TOOLTIP.SIDE.RIGHT")
+                                                    title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
+                                                    <span class="icon-phone"></span>
+                                                {{/tool-tip}}
+                                            </span>
+                                        {{else}}
+                                            <span class="badge">
+                                                {{#tool-tip tagName='span'
+                                                    class='text-lighten'
+                                                    side=(constant "TOOLTIP.SIDE.RIGHT")
+                                                    title='Has inactive phone'}}
+                                                    <span class="icon-phone"></span>
+                                                {{/tool-tip}}
+                                            </span>
+                                        {{/if}}
+                                    {{/if}}
+                                    <span class="badge">
+                                        {{team.numMembers}}
+                                        <span class="icon-person"></span>
+                                    </span>
                                 </div>
                             {{/link-to}}
                         </div>

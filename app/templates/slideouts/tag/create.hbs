@@ -1,13 +1,14 @@
 {{#slideout-pane
-    headerComponent=(component "slideout-pane/title" title='New Tag')
+    headerComponent=(component "slideout-pane/title" title="New Tag")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "finishNewTagSlideout")
-        disablePrimary=(not (v-get newTag 'isValid'))
+        onPrimary=(service-action "newTagSlideoutService" "finishNewTagSlideout")
+        disablePrimary=(service-prop "newTagSlideoutService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onClose=(route-action "cancelNewTagSlideout")
-    forceKeepOpen=newTag.isSaving
-    focusSelector='.start-focus' as |slideout|}}
-    {{form/tag-model tag=newTag}}
+    onClose=(service-action "newTagSlideoutService" "cancelSlideout")
+    forceKeepOpen=(service-prop "newTagSlideoutService" "shouldForceKeepOpen")
+    focusSelector=".start-focus" as |slideout|}}
+    {{model-form/tag tag=(service-prop "newTagSlideoutService" "newTag")
+        firstControlClass="start-focus"}}
 {{/slideout-pane}}

@@ -1,11 +1,13 @@
-{{title selected.length " selected"}}
+{{title selectedContacts.length " selected"}}
 
 <div class="details">
 	<div class="section-header">
 		<div class="horizontal-items xs-2-row-3 l-4-row-10 pull-left">
             {{!-- close button on smaller screens --}}
             <span class="clear-badge display-xs display-s no-space">
-                <button class="btn btn-plain" type="button" {{action "leave"}}>
+                <button class="btn btn-plain"
+                    type="button"
+                    onclick={{action "deselectAllContactsAndExit"}}>
                     <span class="icon-left-arrow"></span>
                 </button>
             </span>
@@ -14,117 +16,130 @@
                     <button class="btn"
                         type="button"
                         onclick={{popOver.actions.toggle}}>
-                        <span class="display-xs">{{selected.length}} selected</span>
+                        <span class="display-xs">{{selectedContacts.length}} selected</span>
                         <span class="display-s display-m display-l">Select</span>
                         <span class="icon-thin-down-arrow"></span>
                     </button>
                 {{else}}
                     <ul class="dropdown">
-                        <li tabindex="0" class="dropdown-item" {{action "selectAll"}}>
+                        <li tabindex="0"
+                            class="dropdown-item"
+                            onclick={{action "selectAllContacts"}}>
                             All
                         </li>
-                        <li tabindex="0" class="dropdown-item" {{action "selectAllMyContacts"}}>
+                        <li tabindex="0"
+                            class="dropdown-item"
+                            onclick={{action "selectAllMyContacts"}}>
                             My contacts
                         </li>
-                        <li tabindex="0" class="dropdown-item" {{action "leave"}}>
+                        <li tabindex="0"
+                            class="dropdown-item"
+                            onclick={{action "deselectAllContactsAndExit"}}>
                             None
                         </li>
                     </ul>
                 {{/pop-over}}
 			</span>
             <span class="clear-badge display-s display-m display-l">
-                {{#tool-tip title=(concat selected.length
+                {{#tool-tip title=(concat selectedContacts.length
                         " "
-                        (pluralize "contact" selected.length)
+                        (pluralize "contact" selectedContacts.length)
                         " selected")
                     classNames="btn-expand"}}
-                    <span class="text-bold">{{selected.length}}</span>
+                    <span class="text-bold">{{selectedContacts.length}}</span>
                     <span class="icon-person"></span>
                 {{/tool-tip}}
         	</span>
             <span class="clear-badge display-s display-m display-l">
-                {{#tool-tip title=(concat sharedWithMeSelected.length " " "shared with me selected")
+                {{#tool-tip title=(concat selectedAndSharedContacts.length " " "shared with me selected")
                     classNames="btn-expand"}}
-                    <span class="text-bold">{{sharedWithMeSelected.length}}</span>
+                    <span class="text-bold">{{selectedAndSharedContacts.length}}</span>
                     <span class="fa fa-share fa-flip-horizontal"></span>
                 {{/tool-tip}}
             </span>
 		</div>
-        {{#if selected}}
+        {{#if selectedContacts}}
             <div class="horizontal-items xs-row-3 l-6-row-10 pull-right">
                 {{!-- for all except large screens --}}
                 <span class="clear-badge no-space display-xs display-s display-m">
                     {{#pop-over as |popOver|}}
-                        <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
+                        <button class="btn"
+                            type="button"
+                            onclick={{popOver.actions.toggle}}>
                             Actions
                             <span class="icon-thin-down-arrow"></span>
                         </button>
                     {{else}}
                         <ul class="dropdown">
-                            {{#if (or noSharedWithMeSelected selectedCanMessage)}}
-                                <li tabindex="0" class="dropdown-item"
-                                    type="button"
-                                    onclick={{route-action "startComposeSlideout" selected}}>
+                            {{#if (or hasNoSharedContactsSelected canMessageSelectedContacts)}}
+                                <li tabindex="0"
+                                    class="dropdown-item"
+                                    onclick={{service-action "composeSlideoutService" "openSlideout" selectedContacts}}>
                                     Compose
                                 </li>
                             {{/if}}
-                            {{#if noSharedWithMeSelected}}
+                            {{#if hasNoSharedContactsSelected}}
                                 <li tabindex="0"
                                     class="dropdown-item"
-                                    onclick={{route-action "startTagMembershipSlideout" selected}}>
+                                    onclick={{service-action "tagMembershipSlideoutService" "openSlideout" selectedContacts}}>
                                     Tags
                                 </li>
-                                <li tabindex="0" class="dropdown-item"
-                                    onclick={{route-action "startContactSharingSlideout" selected}}>
+                                <li tabindex="0"
+                                    class="dropdown-item"
+                                    onclick={{service-action "sharingSlideoutService" "openSlideout" selectedContacts}}>
                                     Share
                                 </li>
                             {{/if}}
                             {{#if (can-download)}}
-                                <li tabindex="0" class="dropdown-item"
-                                    onclick={{route-action "startMultipleExportSlideout" selected}}>
+                                <li tabindex="0"
+                                    class="dropdown-item"
+                                    onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout" selectedContacts}}>
                                     Export records
                                 </li>
                             {{/if}}
                             <li class="dropdown-divider"></li>
-                            {{record-owner-header/contact-status-list contacts=selected
-                                onChange=(route-action "onContactStatusChange" selected)}}
+                            {{status-list/contact contacts=selectedContacts
+                                onChange=(service-action "contactService" "updateStatus" selectedContacts)}}
                         </ul>
                     {{/pop-over}}
                 </span>
                 {{!-- for large screens --}}
                 <span class="clear-badge no-space display-l">
                     {{#pop-over as |popOver|}}
-                        <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
+                        <button class="btn"
+                            type="button"
+                            onclick={{popOver.actions.toggle}}>
                             Status
                             <span class="icon-thin-down-arrow"></span>
                         </button>
                     {{else}}
                         <ul class="dropdown">
-                            {{record-owner-header/contact-status-list contacts=selected
-                                onChange=(route-action "onContactStatusChange" selected)}}
+                            {{status-list/contact contacts=selectedContacts
+                                onChange=(service-action "contactService" "updateStatus" selectedContacts)}}
                         </ul>
                     {{/pop-over}}
                 </span>
-                {{#if (or noSharedWithMeSelected selectedCanMessage)}}
+                {{#if (or hasNoSharedContactsSelected canMessageSelectedContacts)}}
                     <span class="display-l clear-badge no-space">
                         <button class="btn btn-default"
                             type="button"
-                            onclick={{route-action "startComposeSlideout" selected}}>
+                            onclick={{service-action "composeSlideoutService" "openSlideout" selectedContacts}}>
                             Compose
                         </button>
                     </span>
                 {{/if}}
-                {{#if noSharedWithMeSelected}}
+                {{#if hasNoSharedContactsSelected}}
                     <span class="display-l clear-badge no-space">
                         <button class="btn"
                             type="button"
-                            onclick={{route-action "startTagMembershipSlideout" selected}}>
+                            onclick={{service-action "tagMembershipSlideoutService" "openSlideout" selectedContacts}}>
                             Tags
                         </button>
                     </span>
                     <span class="display-l clear-badge no-space">
-                        <button class="btn" type="button"
-                            onclick={{route-action "startContactSharingSlideout" selected}}>
+                        <button class="btn"
+                            type="button"
+                            onclick={{service-action "sharingSlideoutService" "openSlideout" selectedContacts}}>
                             Share
                         </button>
                     </span>
@@ -133,15 +148,16 @@
                     <span class="display-l clear-badge no-space">
                         <button class="btn"
                             type="button"
-                            onclick={{route-action "startMultipleExportSlideout" selected}}>
+                            onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout" selectedContacts}}>
                             Export
                         </button>
                     </span>
                 {{/if}}
                 {{!-- close button on larger screens --}}
                 <span class="clear-badge display-m display-l">
-                    <button class="btn btn-plain" type="button"
-                        {{action "leave"}}>
+                    <button class="btn btn-plain"
+                        type="button"
+                        onclick={{action "deselectAllContactsAndExit"}}>
                         <span class="icon-x"></span>
                     </button>
                 </span>
@@ -150,16 +166,30 @@
     </div>
     <div class="section-body display-m display-l">
 		<ul class="tile-list">
-			{{#each selected as |contact|}}
+			{{#each selectedContacts as |contact|}}
 				<li class="m-row-2 l-row-3">
 					<div class="tile-list-item text-center">
-                        <span class="pull-left">
-                            {{partial "partials/contact/indicators"}}
-                        </span>
+                        {{#if contact.isShared}}
+                            <span class="pull-left">
+                                <span class="display-xs display-s display-m">
+                                    <span class="badge text-smaller">Shared</span>
+                                </span>
+                                <span class="display-l">
+                                    {{#tool-tip tagName="span"
+                                        classNames="badge text-smaller"
+                                        title=(concat (if contact.isDelegatePermission
+                                            "Collaborating with "
+                                            (if contact.isViewPermission "Viewing only from " "Shared by")) contact.sharedByName)}}
+                                        Shared
+                                    {{/tool-tip}}
+                                </span>
+                            </span>
+                        {{/if}}
 						{{phone-number contact.name}}
 						<span class="pull-right">
-                            <button class="btn btn-plain" type="button"
-                                {{action "deselect" contact}}>
+                            <button class="btn btn-plain"
+                                type="button"
+                                onclick={{action "deselectContact" contact}}>
                                 <span class="icon-x"></span>
                             </button>
                         </span>

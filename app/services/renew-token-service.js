@@ -1,9 +1,10 @@
 import $ from 'jquery';
-import Service, { inject as service } from '@ember/service';
-import RSVP from 'rsvp';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
+import { bind } from '@ember/runloop';
 
 export const KEY_ALREADY_OVERRIDDEN = '_alreadyOverriden';
 export const KEY_ALREADY_RENEWED = '_alreadyTriedToRenew';
@@ -36,9 +37,12 @@ export default Service.extend({
           grant_type: Constants.RESPONSE_KEY.REFRESH_TOKEN,
           [Constants.RESPONSE_KEY.REFRESH_TOKEN]: this.get('authService.refreshToken'),
         },
-      }).then(responseObj => {
-        this.get('authService').storeAuthResponseSuccess(responseObj, resolve);
-      }, reject);
+      }).then(
+        bind(this, function(responseObj) {
+          this.get('authService').storeAuthResponseSuccess(responseObj, resolve);
+        }),
+        reject
+      );
     });
   },
 

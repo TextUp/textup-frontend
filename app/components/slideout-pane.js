@@ -1,16 +1,16 @@
-import Component from '@ember/component';
 import $ from 'jquery';
-import { computed } from '@ember/object';
-import { run } from '@ember/runloop';
-import { tryInvoke, isNone } from '@ember/utils';
 import ArrayUtils from 'textup-frontend/utils/array';
+import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { scheduleOnce, join, next, later } from '@ember/runloop';
+import { tryInvoke, isNone } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
-  propTypes: {
+  propTypes: Object.freeze({
     onClose: PropTypes.func.isRequired,
     doRegister: PropTypes.func,
     headerComponent: PropTypes.EmberComponent,
@@ -26,7 +26,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     // example when performing a longer process that hasn't finished yet.
     forceKeepOpen: PropTypes.bool,
     onOpen: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return {
       direction: Constants.SLIDEOUT.DIRECTION.LEFT,
@@ -48,11 +48,11 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
 
   init() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
+    scheduleOnce('afterRender', () => tryInvoke(this, 'doRegister', [this.get('_publicAPI')]));
   },
   didInsertElement() {
     this._super(...arguments);
-    run.scheduleOnce('afterRender', this, this._open);
+    scheduleOnce('afterRender', this, this._open);
   },
   willDestroyElement() {
     this._super(...arguments);
@@ -105,7 +105,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
   },
 
   _close(forceClose, ...thens) {
-    run.join(() => {
+    join(() => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {
         return;
       }
@@ -118,7 +118,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     });
   },
   _open() {
-    run.join(() => {
+    join(() => {
       if (this.get('isDestroying') || this.get('isDestroyed') || this.get('_publicAPI.isOpen')) {
         return;
       }
@@ -126,8 +126,8 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
       this._insertOverlay();
       tryInvoke(this, 'onOpen', [this.get('_publicAPI')]);
       // attach click handler later on so we don't catch the click that opens up this slideout
-      run.next(() => $(document).on(this._event('click'), this._handleClickOutToClose.bind(this)));
-      run.later(this, this._focusAfterOpen, this.get('focusDelay'));
+      next(() => $(document).on(this._event('click'), this._handleClickOutToClose.bind(this)));
+      later(this, this._focusAfterOpen, this.get('focusDelay'));
     });
   },
   _focusAfterOpen() {

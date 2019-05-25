@@ -1,15 +1,15 @@
 import Component from '@ember/component';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { get } from '@ember/object';
 import { typeOf, tryInvoke } from '@ember/utils';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     onAction: PropTypes.func.isRequired,
     error: PropTypes.bool,
     disabled: PropTypes.bool,
-    type: PropTypes.oneOf(['button', 'submit', 'reset'])
-  },
+    type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  }),
   getDefaultProps() {
     return { error: false, disabled: false, type: 'button' };
   },
@@ -19,7 +19,7 @@ export default Component.extend(PropTypesMixin, {
   classNameBindings: [
     'error:action-button--error',
     'disabled:action-button--disabled',
-    '_isLoading:action-button--loading'
+    '_isLoading:action-button--loading',
   ],
 
   click() {
@@ -46,5 +46,5 @@ export default Component.extend(PropTypesMixin, {
       return;
     }
     this.setProperties({ error: !isSuccess, _isLoading: false });
-  }
+  },
 });

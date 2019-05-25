@@ -1,0 +1,57 @@
+{{#hide-show doRegister=(action (mut _hideShow))
+    focusOnOpenSelector=".start-focus"
+    onOpen=(action _onHideShowOpen)
+    onClose=(action _onHideShowClose) as |hideShow|}}
+    <div class="form__group">
+        <button class="button button--expand"
+            type="button"
+            onclick={{hideShow.actions.toggle}}>
+            {{#if hideShow.isOpen}}
+                {{openedLabel}}
+                <span class="margin-l icon-up-arrow"></span>
+            {{else}}
+                {{closedLabel}}
+                <span class="margin-l icon-thin-down-arrow"></span>
+            {{/if}}
+        </button>
+    </div>
+    {{#if hideShow.isOpen}}
+        {{#if isSelf}}
+            <div class="form__group">
+                <span class="form__label form__label--multiline">
+                    {{selfLabel}}
+                </span>
+            </div>
+        {{/if}}
+        <div class="form__group">
+            <label class="form__label" for="Your Password">
+                Your Password
+            </label>
+            {{input type="password"
+                allowShowPassword=true
+                class="form__input start-focus"
+                placeholder="Your Password"
+                value=_currentPassword}}
+        </div>
+
+        {{yield _publicAPI}}
+
+        {{#if _shouldShowControls}}
+            <div class="form__group flex flex--justify-center flex--spacing-between">
+                <div class="flex__item">
+                    <button class="btn"
+                        type="button"
+                        onclick={{action _onCancelAndClose}}>
+                        Cancel
+                    </button>
+                </div>
+                <div class="flex__item">
+                    {{async-button classNames="btn btn-default"
+                        action=(action _onValidateAndSaveAndClose)
+                        default="Update"
+                        pending="Updating..."}}
+                </div>
+            </div>
+        {{/if}}
+    {{/if}}
+{{/hide-show}}

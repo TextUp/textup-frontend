@@ -6,22 +6,23 @@ import IsPublic from 'textup-frontend/mixins/route/is-public';
 
 export default Route.extend(IsPublic, {
   model() {
+    this._super(...arguments);
     return $.ajax({
       type: Constants.REQUEST_METHOD.GET,
       url: `${config.host}/v1/public/organizations?status[]=approved`,
     }).then(({ organizations = [] }) => {
       return organizations.map(org => {
-        return this.store.push(this.store.normalize('organization', org));
+        return this.get('store').push(this.get('store').normalize('organization', org));
       });
     });
   },
   setupController(controller) {
     this._super(...arguments);
-    controller.set('staff', this.store.createRecord('staff'));
+    controller.set('staff', this.get('store').createRecord('staff'));
   },
-  deactivate() {
-    const controller = this.controller,
-      newStaff = controller.get('staff'),
+  resetController(controller) {
+    this._super(...arguments);
+    const newStaff = controller.get('staff'),
       selected = controller.get('selected');
     if (newStaff) {
       controller.set('staff', null);

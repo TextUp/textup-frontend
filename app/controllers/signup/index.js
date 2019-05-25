@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import { Promise } from 'rsvp';
-import { inject as service } from '@ember/service';
-import Controller, { inject as controller } from '@ember/controller';
-import { alias } from '@ember/object/computed';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import Controller, { inject as controller } from '@ember/controller';
+import RSVP from 'rsvp';
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   requestService: service(),
@@ -15,7 +15,7 @@ export default Controller.extend({
 
   actions: {
     select(org) {
-      return new Promise(resolve => {
+      return new RSVP.Promise(resolve => {
         this.set('selected', org);
         resolve();
       });
@@ -24,7 +24,7 @@ export default Controller.extend({
       this.set('selected', null);
     },
     search(val) {
-      return new Promise((resolve, reject) => {
+      return new RSVP.Promise((resolve, reject) => {
         this.get('requestService')
           .handleIfError(
             $.ajax({
@@ -34,7 +34,8 @@ export default Controller.extend({
           )
           .then(data => {
             const orgs = data.organizations,
-              doPushOrg = org => this.store.push(this.store.normalize('organization', org)),
+              doPushOrg = org =>
+                this.get('store').push(this.get('store').normalize('organization', org)),
               models = orgs ? orgs.map(doPushOrg) : [];
             resolve(models);
           }, reject);

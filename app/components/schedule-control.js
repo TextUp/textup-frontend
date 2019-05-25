@@ -1,16 +1,16 @@
-import { tryInvoke } from '@ember/utils';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
 import callIfPresent from 'textup-frontend/utils/call-if-present';
+import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import Schedule from 'textup-frontend/models/schedule';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     schedule: PropTypes.instanceOf(Schedule).isRequired,
     scheduleClass: PropTypes.string,
     onChange: PropTypes.func,
-  },
+  }),
   getDefaultProps() {
     return { scheduleClass: '' };
   },
@@ -29,10 +29,7 @@ export default Component.extend(PropTypesMixin, {
     this.setProperties({ _newRangeTimes: [] });
   },
   _handleAdd(dayOfWeek, timeRange, then) {
-    tryInvoke(this, 'onChange', [
-      dayOfWeek,
-      [...this._copyDayOfWeekRanges(dayOfWeek), timeRange],
-    ]);
+    tryInvoke(this, 'onChange', [dayOfWeek, [...this._copyDayOfWeekRanges(dayOfWeek), timeRange]]);
     callIfPresent(this, then);
   },
   _handleUpdate(dayOfWeek, dataIndex, newRange) {

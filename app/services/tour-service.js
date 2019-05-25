@@ -1,7 +1,7 @@
-import { readOnly } from '@ember/object/computed';
 import Service, { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
 import StorageUtils from 'textup-frontend/utils/storage';
+import { join, scheduleOnce } from '@ember/runloop';
+import { readOnly } from '@ember/object/computed';
 
 export default Service.extend({
   authService: service(),
@@ -19,7 +19,7 @@ export default Service.extend({
     if (tourManager) {
       this.set('_tourManager', tourManager);
       if (this._shouldStartTour()) {
-        run.join(() => run.scheduleOnce('afterRender', tourManager.actions.startTour));
+        join(() => scheduleOnce('afterRender', tourManager.actions.startTour));
       }
     }
   },

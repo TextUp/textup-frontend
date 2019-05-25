@@ -43,7 +43,7 @@
                 </div>
                 {{#action-button classNames='btn-default xs-full-row m-3-row-10'
                     disabled=(not (service-prop "userSetupService" "verificationCode"))
-                    onAction=(route-action "finishPersonalNumberSetup")}}
+                    onAction=(action "finishPersonalNumberSetup")}}
                     Finish set up
                 {{/action-button}}
             </div>
@@ -52,7 +52,7 @@
 	    	<span>
 	    		<button class="btn btn-span btn-default btn-plain"
                     type="button"
-	    			onclick={{route-action "skipSetup"}}>
+	    			onclick={{action "skipSetup"}}>
 	    			I'll add my personal phone later...
 	    		</button>
 	    	</span>

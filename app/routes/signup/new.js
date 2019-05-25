@@ -8,8 +8,8 @@ export default Route.extend({
     if (signupController.get('selected')) {
       controller.set('org', signupController.get('selected'));
     } else {
-      const newOrg = this.store.createRecord('organization', {
-        location: this.store.createRecord('location'),
+      const newOrg = this.get('store').createRecord('organization', {
+        location: this.get('store').createRecord('location'),
       });
       controller.set('org', newOrg);
       // set next so that setting select is not overwritten
@@ -29,7 +29,7 @@ export default Route.extend({
           selected = signupController.get('selected');
         if (staff && staff.get('isDeleted') === false) {
           staff.rollbackAttributes();
-          signupController.set('staff', this.store.createRecord('staff'));
+          signupController.set('staff', this.get('store').createRecord('staff'));
         }
         if (selected) {
           selected.get('location.content').rollbackAttributes();

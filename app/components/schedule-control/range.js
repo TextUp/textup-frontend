@@ -1,15 +1,15 @@
-import { tryInvoke } from '@ember/utils';
 import Component from '@ember/component';
-import { computed } from '@ember/object';
-import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import moment from 'moment';
+import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import { computed } from '@ember/object';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
-  propTypes: {
+  propTypes: Object.freeze({
     data: PropTypes.arrayOf(PropTypes.string), // Format: ["0230", "2301"]
     onChange: PropTypes.func,
-    timeInterval: PropTypes.number
-  },
+    timeInterval: PropTypes.number,
+  }),
   getDefaultProps() {
     return { data: [], timeInterval: 30 };
   },
@@ -41,7 +41,7 @@ export default Component.extend(PropTypesMixin, {
   },
   _handleEndChange(newEnd) {
     tryInvoke(this, 'onChange', [
-      [this.get('data').objectAt(0), this._convertDateToTimeString(newEnd)]
+      [this.get('data').objectAt(0), this._convertDateToTimeString(newEnd)],
     ]);
   },
 
@@ -53,5 +53,5 @@ export default Component.extend(PropTypesMixin, {
   },
   _convertDateToTimeString(date) {
     return date ? moment(date).format('HHmm') : null;
-  }
+  },
 });
