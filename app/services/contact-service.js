@@ -8,8 +8,8 @@ import { assign } from '@ember/polyfills';
 import { isBlank } from '@ember/utils';
 
 export default Service.extend({
+  contactListService: service(),
   dataService: service(),
-  router: service(),
   stateService: service(),
   store: service(),
 
@@ -21,18 +21,10 @@ export default Service.extend({
       language: this.get('stateService.owner.phone.content.language'),
     });
   },
-  persistNewAndTryAddToPhone(contact) {
-    const stateService = this.get('stateService'),
-      phone = stateService.get('owner.phone.content');
+  persistNew(contact) {
     return this.get('dataService')
       .persist(contact)
-      .then(() => {
-        // add new contact to the beginning of the currently-shown list if it is viewing all contacts
-        // and not a specific tag's contacts. Phone will handle filtering for statuses + sorting.
-        if (TypeUtils.isPhone(phone) && stateService.get('viewingContacts')) {
-          phone.addContacts(contact);
-        }
-      });
+      .then(() => this.get('contactListService').tryAddNewToContacts(contact));
   },
 
   checkNumberDuplicate(contact, contactNumObj) {
@@ -58,14 +50,6 @@ export default Service.extend({
         // to give the impression that all have been updated.
         contactsArray.forEach(contact => contact.set('isSelected', false));
       });
-  },
-
-  showFilteredContacts(filter) {
-    const phone = this.get('stateService.owner.phone.content');
-    if (phone) {
-      phone.set('contactsFilter', filter);
-    }
-    this.get('router').transitionTo('main.contacts', { queryParams: { filter } });
   },
 
   searchContacts(search, params = {}) {

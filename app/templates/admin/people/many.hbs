@@ -54,17 +54,17 @@
             <div class="horizontal-items xs-row-3 l-6-row-10 pull-right">
                 <span class="clear-badge no-space display-xs display-s display-m">
                     {{#pop-over as |popOver|}}
-                        <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
+                        <button class="btn"
+                            type="button"
+                            onclick={{popOver.actions.toggle}}>
                             Actions
                             <span class="icon-thin-down-arrow"></span>
                         </button>
                     {{else}}
                         <ul class="dropdown">
-                            <li tabindex="0" class="dropdown-item"
-                                {{action "toggleSlideout"
-                                    "slideouts/team/membership"
-                                    "admin/people/many"
-                                    (constant "SLIDEOUT.OUTLET.DETAIL")}}>
+                            <li tabindex="0"
+                                class="dropdown-item"
+                                onclick={{service-action "slideout/teamMembershipService" "openSlideout" selected}}>
                                 Edit teams
                             </li>
                             {{#if (not selectedMe)}}
@@ -77,7 +77,9 @@
                 {{#if (not selectedMe)}}
                     <span class="clear-badge no-space display-l">
                         {{#pop-over as |popOver|}}
-                            <button class="btn" type="button" onclick={{popOver.actions.toggle}}>
+                            <button class="btn"
+                                type="button"
+                                onclick={{popOver.actions.toggle}}>
                                 Status
                                 <span class="icon-thin-down-arrow"></span>
                             </button>
@@ -89,11 +91,9 @@
                     </span>
                 {{/if}}
                 <span class="clear-badge display-l">
-                    <button class="btn" type="button"
-                        {{action "toggleSlideout"
-                            "slideouts/team/membership"
-                            "admin/people/many"
-                            (constant "SLIDEOUT.OUTLET.DETAIL")}}>
+                    <button class="btn"
+                        type="button"
+                        onclick={{service-action "slideout/teamMembershipService" "openSlideout" selected}}>
                         Teams
                     </button>
                 </span>

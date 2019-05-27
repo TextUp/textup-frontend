@@ -3,39 +3,31 @@ import Route from '@ember/routing/route';
 
 export default Route.extend({
   adminService: service(),
-  dataService: service(),
 
-  model(params) {
-    const id = params.id;
+  backRouteParams: Object.freeze(['admin.people']),
+
+  model({ id }) {
     if (id) {
       const found = this.get('store').peekRecord('staff', id);
-      return found ? found : this.get('store').findRecord('staff', id);
+      return found
+        ? found
+        : this.get('store')
+            .findRecord('staff', id)
+            .catch(() => this.transitionTo(...this.get('backRouteParams')));
     } else {
-      this.transitionTo('admin.people');
+      this.transitionTo(...this.get('backRouteParams'));
     }
   },
   setupController(controller, model) {
     this._super(...arguments);
-    controller.set('person', model);
-    controller.set('team', null);
+    controller.set('backRouteParams', this.get('backRouteParams'));
+    this.get('adminService').setEditingStaff(model.get('id'));
   },
-  deactivate() {
+  resetController(controller, isExiting) {
     this._super(...arguments);
-    this.get('adminService').clearEditingStaff();
-  },
-
-  actions: {
-    // use will transition so that current model is
-    // still the model of the route we are about to leave
-    willTransition() {
-      this._super(...arguments);
-      this.get('dataService').revert(this.get('currentModel'));
-      return true;
-    },
-    didTransition() {
-      this._super(...arguments);
-      this.get('adminService').setEditingStaff(this.get('currentModel.id'));
-      return true;
-    },
+    AppUtils.tryRollback(controller.get('model'));
+    if (isExiting) {
+      this.get('adminService').clearEditingStaff();
+    }
   },
 });

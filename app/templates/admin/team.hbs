@@ -1,0 +1,53 @@
+{{title model.name separator=" - "}}
+
+ <div class="content">
+    <div class="section-header">
+        <span class="display-l">
+            <span class="indicator pull-left"
+                style="background-color:{{model.hexColor}};"></span>
+        </span>
+        <div class="tag-title">
+            <h4 class="text-ellipsis">
+                {{model.name}}
+            </h4>
+            <p>
+                {{service-prop "staffListService" "totalNumPeople"}}
+                {{pluralize "person" (service-prop "staffListService" "totalNumPeople")}}
+            </p>
+        </div>
+        {{#if (not model.isDeleted)}}
+            {{#link-to "admin.team.edit" (get model (constant "PROP_NAME.URL_IDENT"))
+                classNames="pull-right-to-edge full-height"
+                activeClass="bg-color bg-dark"}}
+                {{#tool-tip title="Edit Team"
+                    tagName="button"
+                    classNames="btn btn-plain btn-expand"}}
+                    <span class="fa fa-sliders"></span>
+                {{/tool-tip}}
+            {{/link-to}}
+        {{/if}}
+    </div>
+    {{#infinite-scroll classNames="section-body bg-color bg-lightest"
+        contentClass="result-list"
+        data=(service-prop "staffListService" "people")
+        numTotal=(service-prop "staffListService" "totalNumPeople")
+        doRegister=(action (mut peopleList))
+        onLoad=(service-action "staffListService" "loadMore")
+        onRefresh=(service-action "staffListService" "refresh") as |person|}}
+        {{#entity-display class="result-item"
+            entityIdentifier=person.name
+            linkTarget="admin.team.person"
+            linkParam=(array (get model (constant "PROP_NAME.URL_IDENT")) person.id)
+            isSelected=person.isSelected
+            onSelect=(action "toggleSelected" person)}}
+            {{entity-display/staff entity=person}}
+        {{/entity-display}}
+    {{else}}
+        <div class="no-results">
+            No people have been added to
+            <span class="text-bold">{{model.name}}</span>
+            yet.
+        </div>
+    {{/infinite-scroll}}
+</div>
+{{outlet}}

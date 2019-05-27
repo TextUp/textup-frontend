@@ -15,7 +15,7 @@ export default Service.extend({
       language: this.get('stateService.owner.phone.content.language'),
     });
   },
-  persistNewAndTryAddToPhone(newTag) {
+  persistNew(newTag) {
     return this.get('dataService')
       .persist(newTag)
       .then(() => {

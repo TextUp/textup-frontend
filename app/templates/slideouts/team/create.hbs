@@ -2,17 +2,14 @@
     headerComponent=(component "slideout-pane/title" title="New Team")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "createTeam" newTeam
-            (route-action "closeSlideout"))
-        disablePrimary=(not (v-get newTeam "isValid"))
+        onPrimary=(service-action "slideout/teamService" "finishNewTeamSlideout")
+        disablePrimary=(service-prop "slideout/teamService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onOpen=(route-action "initializeNewTeam")
-    onClose=(service-action "dataService" "revert" newTeam
-        (route-action "closeSlideout"))
-    forceKeepOpen=newTeam.isSaving
-    focusSelector=".start-focus" as |slideout|}}
-    {{model-form/team team=newTeam
+    onClose=(service-action "slideout/teamService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/teamService" "shouldForceKeepOpen")
+    focusSelector=".start-focus"}}
+    {{model-form/team team=(service-prop "slideout/teamService" "newTeam")
         firstControlClass="start-focus"
         canModifyPhone=true
         onSearchAvailableNumbers=(service-action "numberService" "listAvailable")

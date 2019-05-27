@@ -2,6 +2,8 @@ import MainContactsController from 'textup-frontend/controllers/main/contacts';
 import { assign } from '@ember/polyfills';
 
 export default MainContactsController.extend({
+  contactListService: service(),
+
   actions: {
     // @Override
     toggleSelected(contact) {
@@ -15,14 +17,6 @@ export default MainContactsController.extend({
   // @Override
   resetState() {
     this._super(...arguments);
-    this.get('phone').resetContactsFilter();
-  },
-
-  // Internal
-  // --------
-
-  // @Override
-  _buildLoadParams() {
-    return assign(this._super(...arguments), { tagId: this.get('model.id') });
+    this.get('contactListService').resetState(this.get('model.id'));
   },
 });

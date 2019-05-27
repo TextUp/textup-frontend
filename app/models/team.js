@@ -7,7 +7,7 @@ import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
-import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
+import ModelOwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations(
@@ -28,7 +28,7 @@ export default DS.Model.extend(
   Dirtiable,
   HasReadableIdentifier,
   HasUrlIdentifier,
-  OwnsPhone,
+  ModelOwnsPhone,
   Validations,
   {
     // Overrides

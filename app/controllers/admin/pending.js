@@ -8,7 +8,6 @@ import { inject as service } from '@ember/service';
 export default Controller.extend({
   adminService: service(),
   dataService: service(),
-  numberService: service(),
   requestService: service(),
   stateService: service(),
 

@@ -43,18 +43,6 @@ export default Service.extend({
       });
   },
 
-  clearList(models, propName, ...thens) {
-    ArrayUtils.ensureArrayAndAllDefined(models)
-      .filter(TypeUtils.isAnyModel)
-      .forEach(model => {
-        const val = model.get(propName);
-        if (isArray(val)) {
-          val.clear();
-        }
-      });
-    ArrayUtils.tryCallAll(thens);
-  },
-
   revert(models, ...thens) {
     ArrayUtils.ensureArrayAndAllDefined(models)
       .filter(TypeUtils.isAnyModel)

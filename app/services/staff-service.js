@@ -2,6 +2,7 @@ import $ from 'jquery';
 import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import humanId from 'human-id';
 import Service, { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 
@@ -14,10 +15,19 @@ export default Service.extend({
   notifications: service('notification-messages-service'),
   requestService: service(),
   router: service(),
+  staffListService: service(),
   store: service(),
 
   // Methods
   // -------
+
+  createNew(org) {
+    return this.get('store').createRecord(Constants.MODEL_NAME.STAFF, {
+      org,
+      status: Constants.STAFF.STATUS.STAFF,
+      password: humanId({ separator: '-', capitalize: false }),
+    });
+  },
 
   updateLockCode(staff, newVal) {
     staff.set('lockCode', newVal);
@@ -36,14 +46,7 @@ export default Service.extend({
     toBeSaved.forEach(staff => staff.set('status', newStatus));
     return this.get('dataService')
       .persist(toBeSaved)
-      .then(updatedStaffs => {
-        // [FUTURE] make this a computed property so we don't have to manually notify
-        const adminController = getOwner(this).lookup('controller:admin');
-        if (adminController) {
-          adminController.notifyPropertyChange('people');
-        }
-        updatedStaffs.forEach(staff => staff.set('isSelected', false));
-      });
+      .then(() => toBeSaved.forEach(staff => staff.set('isSelected', false)));
   },
   persistNewAndLogIn(newStaff, organization) {
     // ensure that new staff is created under specified org
@@ -59,6 +62,11 @@ export default Service.extend({
         })
       )
       .then(result => this._logInAfterCreate(result.staff, newStaff.get('password')));
+  },
+  persistNew(newStaff) {
+    return this.get('dataService')
+      .persist(newStaff)
+      .then(() => this.get('staffListService').tryAddNewToStaffs(newStaff));
   },
 
   // Internal

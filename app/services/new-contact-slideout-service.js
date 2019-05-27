@@ -31,7 +31,7 @@ export default Service.extend({
   },
   finishSlideout() {
     return this.get('contactService')
-      .persistNewAndTryAddToPhone(this.get('newContact'))
+      .persistNew(this.get('newContact'))
       .then(() => {
         this.cancelSlideout();
         this.get('tutorialService').startCompleteTask(Constants.TASK.CONTACT);

@@ -1,29 +1,29 @@
 {{#slideout-pane
-    headerComponent=(component "slideout-pane/title" title=(if model.teams "Teams" "New Team"))
+    headerComponent=(component "slideout-pane/title"
+        title=(service-prop "slideout/teamService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=teamsListHideAway.isOpen
-        onPrimary=(route-action "createTeam" newTeam teamsListHideAway.actions.close)
-        disablePrimary=(not (v-get newTeam "isValid"))
+        showFooter=(service-prop "slideout/teamService" "teamsListHideAway.isOpen")
+        onPrimary=(service-action "slideout/teamService" "finishCreateInTeamList")
+        disablePrimary=(service-prop "slideout/teamService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        onSecondary=(service-action "dataService" "revert" newTeam teamsListHideAway.actions.close)
-        hideSecondary=(not model.existingTeams.content))
-    onClose=(service-action "dataService" "revert" newTeam (route-action "closeSlideout"))
-    forceKeepOpen=newTeam.isSaving as |slideout|}}
-    {{#hide-show doRegister=(action (mut teamsListHideAway))
-        startOpen=(if model.teams false true)
+        onSecondary=(service-action "slideout/teamService" "cancelCreateInTeamList")
+        hideSecondary=(service-prop "slideout/teamService" "noExistingTeams"))
+    onClose=(service-action "slideout/teamService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/teamService" "shouldForceKeepOpen")}}
+    {{#hide-show doRegister=(service-mut "slideout/teamService" "teamsListHideAway")
+        startOpen=(service-prop "slideout/teamService" "noExistingTeams")
         focusOnOpenSelector=".start-focus"
-        onOpen=(route-action "initializeNewTeam")
-        onClose=(service-action "dataService" "revert" newTeam) as |hideShow|}}
+        onOpen=(service-action "slideout/teamService" "onOpenCreateInTeamList") as |hideShow|}}
         {{#if hideShow.isOpen}}
-            {{model-form/team team=newTeam
+            {{model-form/team team=(service-prop "slideout/teamService" "newTeam")
                 firstControlClass="start-focus"
                 canModifyPhone=true
                 onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
                 onLocationError=(service-action "mapService" "handleError")}}
         {{else}}
             <ul class="result-list">
-                {{#each model.teams as |team|}}
+                {{#each (service-prop "slideout/team-service" "existingTeams") as |team|}}
                     <li class="result-item">
                         <div class="row">
                             {{#link-to "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))
@@ -35,18 +35,18 @@
                                     {{#if team.phone.content}}
                                         {{#if team.phone.content.isActive}}
                                             <span class="badge">
-                                                {{#tool-tip tagName='span'
+                                                {{#tool-tip tagName="span"
                                                     side=(constant "TOOLTIP.SIDE.RIGHT")
-                                                    title=(concat 'TextUp Phone ' (phone-number team.phone.content.number))}}
+                                                    title=(concat "TextUp Phone " (phone-number team.phone.content.number))}}
                                                     <span class="icon-phone"></span>
                                                 {{/tool-tip}}
                                             </span>
                                         {{else}}
                                             <span class="badge">
-                                                {{#tool-tip tagName='span'
-                                                    class='text-lighten'
+                                                {{#tool-tip tagName="span"
+                                                    class="text-lighten"
                                                     side=(constant "TOOLTIP.SIDE.RIGHT")
-                                                    title='Has inactive phone'}}
+                                                    title="Has inactive phone"}}
                                                     <span class="icon-phone"></span>
                                                 {{/tool-tip}}
                                             </span>
@@ -65,7 +65,7 @@
             <div class="form">
                 <div class="form__group">
                     <button class="button button--expand"
-                        type='button'
+                        type="button"
                         onclick={{hideShow.actions.open}}>
                         <span class="icon-thin-plus"></span>
                     </button>

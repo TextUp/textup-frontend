@@ -1,3 +1,4 @@
+import Constants from 'textup-frontend/constants';
 import DS from 'ember-data';
 import OwnsPhone from 'textup-frontend/mixins/serializer/owns-phone';
 
@@ -5,7 +6,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
     org: { deserialize: 'records', serialize: 'ids' },
     // any changes happen with teamActions on the individual tags
-    teams: { deserialize: 'records', serialize: false },
+    [Constants.MODEL_NAME.TEAMS]: { deserialize: 'records', serialize: false },
     channelName: { serialize: false },
   },
 

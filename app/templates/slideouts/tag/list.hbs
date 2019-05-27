@@ -8,11 +8,11 @@
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
         onSecondary=(service-action "newTagSlideoutService" "cancelCreateInTagList")
-        hideSecondary=(not (service-prop "newTagSlideoutService" "hasExistingTags")))
+        hideSecondary=(service-prop "newTagSlideoutService" "noExistingTags"))
     onClose=(service-action "newTagSlideoutService" "cancelSlideout")
     forceKeepOpen=(service-prop "newTagSlideoutService" "shouldForceKeepOpen") as |slideout|}}
     {{#hide-show doRegister=(service-mut "newTagSlideoutService" "tagsListHideAway")
-        startOpen=(service-prop "newTagSlideoutService" "hasExistingTags")
+        startOpen=(service-prop "newTagSlideoutService" "noExistingTags")
         focusOnOpenSelector=".start-focus"
         onOpen=(service-action "newTagSlideoutService" "onOpenCreateInTagList") as |hideShow|}}
         {{#if hideShow.isOpen}}

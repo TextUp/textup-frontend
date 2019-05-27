@@ -4,8 +4,14 @@ export default AdminPeoplePersonRoute.extend({
   controllerName: 'admin/people/person',
   templateName: 'admin/people/person',
 
-  setupController(controller) {
+  // @Override
+  backRouteParams: null,
+
+  activate() {
     this._super(...arguments);
-    controller.set('team', this.controllerFor('admin.team').get('team'));
+    this.set('backRouteParams', [
+      'admin.team',
+      this.modelFor('admin.team').get(Constants.PROP_NAME.URL_IDENT),
+    ]);
   },
 });

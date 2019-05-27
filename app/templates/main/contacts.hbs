@@ -4,10 +4,12 @@
             <div class="contacts-title">
                 <div class="display-xs display-s display-m">
                     <div class="margin-r-4x">
-                        <h4 class="text-ellipsis">{{filterName}}</h4>
+                        <h4 class="text-ellipsis">
+                            {{capitalize (service-prop "contactListService" "filter")}}
+                        </h4>
                         <p>
-                            {{phone.totalNumContacts}}
-                            {{pluralize "contact" phone.totalNumContacts}}
+                            {{service-prop "contactListService" "totalNumContacts"}}
+                            {{pluralize "contact" (service-prop "contactListService" "totalNumContacts")}}
                         </p>
                     </div>
                     <div class="pull-right-to-edge full-height">
@@ -19,10 +21,12 @@
                     </div>
                 </div>
                 <div class="display-l">
-                    <h4 class="text-ellipsis">{{filterName}}</h4>
+                    <h4 class="text-ellipsis">
+                        {{capitalize (service-prop "contactListService" "filter")}}
+                    </h4>
                     <p>
-                        {{phone.totalNumContacts}}
-                        {{pluralize "contact" phone.totalNumContacts}}
+                        {{service-prop "contactListService" "totalNumContacts"}}
+                        {{pluralize "contact" (service-prop "contactListService" "totalNumContacts")}}
                     </p>
                 </div>
             </div>
@@ -40,49 +44,31 @@
         </div>
         {{#if hideShow.isOpen}}
             <ul class="reset-list">
-                <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ALL")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall
-                        (service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ALL"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">All</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.UNREAD")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall
-                        (service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Unread</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.ARCHIVED")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall
-                        (service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Archived</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter (constant "CONTACT.FILTER.BLOCKED")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall
-                        (service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Blocked</p>
-                    </div>
-                </li>
+                {{#each (object-values (constant "CONTACT.FILTER")) as |filter|}}
+                    <li class="menu-item {{is-contact-filter filter}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (service-action "contactListService" "showFilteredContacts" filter)}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">{{capitalize filter}}</p>
+                        </div>
+                    </li>
+                {{/each}}
             </ul>
         {{/if}}
     {{/hide-show}}
     <div id="tour-contactsList" class="section-body flex flex--align-stretch flex--direction-vertical">
         {{#infinite-scroll classNames="flex__item flex__item--grow bg-color bg-lightest"
             contentClass="result-list"
-            data=phone.contacts
-            numTotal=phone.totalNumContacts
+            data=(service-prop "contactListService" "contacts")
+            numTotal=(service-prop "contactListService" "totalNumContacts")
             doRegister=(action (mut contactsList))
-            onRefresh=(action "doRefreshContacts")
-            onLoad=(action "doLoadMoreContacts") as |contact|}}
+            onRefresh=(service-action "contactListService" "refresh")
+            onLoad=(service-action "contactListService" "loadMore") as |contact|}}
             {{#entity-display class="result-item"
                 entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
                 linkTarget="main.contacts.contact"
-                linkParams=(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                linkParams=(array
+                    (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
                     contact.id)
                 bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
                 isSelected=contact.isSelected
@@ -90,7 +76,7 @@
                 {{entity-display/contact entity=contact}}
             {{/entity-display}}
         {{else}}
-            {{#if (eq filter (constant "CONTACT.FILTER.ALL"))}}
+            {{#if (is-contact-filter (constant "CONTACT.FILTER.ALL") ifTrue=true ifFalse=false)}}
                 <div class="no-results">
                     <p class="margin-b">No contacts yet! Get started by creating a new contact.</p>
                     <button type="button"
@@ -115,5 +101,4 @@
         </div>
     </div>
 </div>
-
 {{outlet}}

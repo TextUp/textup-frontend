@@ -12,13 +12,13 @@ export default MainContactsContactRoute.extend({
   // @Override
   backRouteName: 'main.tag',
   // @Override
-  backRouteLinkParams: computed(
-    `authService.authUser.${Constants.PROP_NAME.URL_IDENT}`,
-    function() {
-      return [
-        this.get(`authService.authUser.${Constants.PROP_NAME.URL_IDENT}`),
-        this.modelFor('main.tag').get(Constants.PROP_NAME.URL_IDENT),
-      ];
-    }
-  ),
+  backRouteLinkParams: null,
+
+  activate() {
+    this._super(...arguments);
+    this.set('backRouteLinkParams', [
+      this.get(`authService.authUser.${Constants.PROP_NAME.URL_IDENT}`),
+      this.modelFor('main.tag').get(Constants.PROP_NAME.URL_IDENT),
+    ]);
+  },
 });

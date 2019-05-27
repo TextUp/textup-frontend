@@ -2,43 +2,14 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 
 export default Route.extend({
-  stateService: service(),
-
   queryParams: { filter: { refreshModel: true } },
 
-  setupController() {
+  setupController(controller) {
     this._super(...arguments);
-    this._resetController();
+    controller.resetState();
   },
-
-  actions: {
-    didTransition() {
-      this._super(...arguments);
-      if (!this.get('stateService.viewingPeople') || this.get('_changedFilter')) {
-        this._resetController();
-      }
-      this.set('_changedFilter', false);
-      // return true to allow bubbling to close slideout handler
-      return true;
-    },
-    changeFilter(filter) {
-      this.set('_changedFilter', true);
-      this.transitionTo({
-        queryParams: {
-          filter: filter,
-        },
-      });
-    },
-  },
-
-  _resetController() {
-    const controller = this.controller;
-    controller.set('team', null);
-    controller.set('people', []);
-    controller.set('numPeople', null);
-    const peopleList = controller.get('_peopleList');
-    if (peopleList) {
-      peopleList.actions.resetAll();
-    }
+  resetController(controller) {
+    this._super(...arguments);
+    controller.resetState();
   },
 });

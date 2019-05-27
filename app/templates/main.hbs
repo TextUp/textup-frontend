@@ -168,30 +168,13 @@
                         <span class="icon-thin-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
-                <div class="menu-item
-                    {{if (and (service-prop "stateService" "viewingContacts")
-                        (eq filter (constant "CONTACT.FILTER.ALL"))) "active"}}"
-                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ALL")}}>
-                    <span>All</span>
-                </div>
-                <div class="menu-item
-                    {{if (and (service-prop "stateService" "viewingContacts")
-                        (eq filter (constant "CONTACT.FILTER.UNREAD"))) "active"}}"
-                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.UNREAD")}}>
-                    <span>Unread</span>
-                </div>
-                <div class="menu-item
-                    {{if (and (service-prop "stateService" "viewingContacts")
-                        (eq filter (constant "CONTACT.FILTER.ARCHIVED"))) "active"}}"
-                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.ARCHIVED")}}>
-                    <span>Archived</span>
-                </div>
-                <div class="menu-item
-                    {{if (and (service-prop "stateService" "viewingContacts")
-                        (eq filter (constant "CONTACT.FILTER.BLOCKED"))) "active"}}"
-                    onclick={{service-action "contactService" "showFilteredContacts" (constant "CONTACT.FILTER.BLOCKED")}}>
-                    <span>Blocked</span>
-                </div>
+                {{#each (object-values (constant "CONTACT.FILTER")) as |filter|}}
+                    <div class="menu-item {{is-contact-filter filter}}"
+                        tabIndex="0"
+                        onclick={{service-action "contactListService" "showFilteredContacts" filter}}>
+                        <span>{{capitalize filter}}</span>
+                    </div>
+                {{/each}}
             </div>
             <div class="display-l">
                 <div class="menu-divider"></div>

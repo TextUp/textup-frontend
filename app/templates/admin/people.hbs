@@ -1,115 +1,58 @@
-{{#if team}}
-    {{title team.name separator=" - "}}
-{{/if}}
-
  <div class="content">
     {{#hide-show clickOutToClose=true as |hideShow|}}
         <div class="section-header">
-            {{#if team}}
-                <span class="display-l">
-                    <span class="indicator pull-left"
-                        style="background-color:{{team.hexColor}};"></span>
-                </span>
-                <div class="tag-title">
-                    <h4 class="text-ellipsis">
-                        {{team.name}}
-                    </h4>
-                    <p>
-                        {{numPeople}}
-                        {{pluralize "person" numPeople}}
-                    </p>
-                </div>
-                {{#if (not team.isDeleted)}}
-                    {{#link-to "admin.team.edit" (get team (constant "PROP_NAME.URL_IDENT"))
-                        classNames="pull-right-to-edge full-height"
-                        activeClass="bg-color bg-dark"}}
-                        {{#tool-tip title="Edit Team"
-                            tagName="button"
-                            classNames="btn btn-plain btn-expand"}}
-                            <span class="fa fa-sliders"></span>
-                        {{/tool-tip}}
-                    {{/link-to}}
-                {{/if}}
-            {{else}}
-                <div class="contacts-title">
-                    <h4 class="text-ellipsis">{{capitalize filter}}</h4>
-                    <p>
-                        {{numPeople}}
-                        {{pluralize "person" numPeople}}
-                    </p>
-                </div>
-                <div class="pull-right-to-edge full-height display-l">
-                    <button type="button"
-                        class="btn btn-plain btn-expand"
-                        onclick={{hideShow.actions.toggle}}>
-                        {{#if hideShow.isOpen}}
-                            <span class="icon-x"></span>
-                        {{else}}
-                            <span class="fa fa-filter"></span>
-                        {{/if}}
-                    </button>
-                </div>
-            {{/if}}
+            <div class="contacts-title">
+                <h4 class="text-ellipsis">
+                    {{capitalize (service-prop "staffListService" "filter")}}
+                </h4>
+                <p>
+                    {{service-prop "staffListService" "totalNumPeople"}}
+                    {{pluralize "person" (service-prop "staffListService" "totalNumPeople")}}
+                </p>
+            </div>
+            <div class="pull-right-to-edge full-height display-l">
+                <button type="button"
+                    class="btn btn-plain btn-expand"
+                    onclick={{hideShow.actions.toggle}}>
+                    {{#if hideShow.isOpen}}
+                        <span class="icon-x"></span>
+                    {{else}}
+                        <span class="fa fa-filter"></span>
+                    {{/if}}
+                </button>
+            </div>
         </div>
         {{#if hideShow.isOpen}}
             <ul class="reset-list">
-                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ACTIVE")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.ACTIVE"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Active</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.ADMINS")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.ADMINS"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Admins</p>
-                    </div>
-                </li>
-                <li class="menu-item {{if (eq filter (constant "STAFF.FILTER.DEACTIVATED")) "active"}}"
-                    onclick={{action hideShow.actions.closeThenCall (route-action "changeFilter" (constant "STAFF.FILTER.DEACTIVATED"))}}>
-                    <div class="offset-xs-row-10 xs-8-row-10 text-left">
-                        <p class="text-bold text-ellipsis">Deactivated</p>
-                    </div>
-                </li>
+                {{#each (object-values (constant "STAFF.FILTER")) as |filter|}}
+                    <li class="menu-item {{is-staff-filter filter}}"
+                        onclick={{action hideShow.actions.closeThenCall
+                            (service-action "staffListService" "showFilteredStaffs" filter)}}>
+                        <div class="offset-xs-row-10 xs-8-row-10 text-left">
+                            <p class="text-bold text-ellipsis">{{capitalize filter}}</p>
+                        </div>
+                    </li>
+                {{/each}}
             </ul>
         {{/if}}
     {{/hide-show}}
     {{#infinite-scroll classNames="section-body bg-color bg-lightest"
         contentClass="result-list"
-        data=people
-        numTotal=numPeople
-        doRegister=(action (mut _peopleList))
-        onLoad=(action "loadMore")
-        onRefresh=(action "refresh") as |person|}}
-        {{#if team}}
-            {{#entity-display class="result-item"
-                entityIdentifier=person.name
-                linkTarget="admin.team.person"
-                linkParam=(array (get team (constant "PROP_NAME.URL_IDENT")) person.id)
-                isSelected=person.isSelected
-                onSelect=(route-action "toggleSelected" person)}}
-                {{entity-display/staff entity=person}}
-            {{/entity-display}}
-        {{else}}
-            {{#entity-display class="result-item"
-                entityIdentifier=person.name
-                linkTarget="admin.people.person"
-                linkParam=(array person.id)
-                isSelected=person.isSelected
-                onSelect=(route-action "toggleSelected" person)}}
-                {{entity-display/staff entity=person}}
-            {{/entity-display}}
-        {{/if}}
+        data=(service-prop "staffListService" "people")
+        numTotal=(service-prop "staffListService" "totalNumPeople")
+        doRegister=(action (mut peopleList))
+        onLoad=(service-action "staffListService" "loadMore")
+        onRefresh=(service-action "staffListService" "refresh") as |person|}}
+        {{#entity-display class="result-item"
+            entityIdentifier=person.name
+            linkTarget="admin.people.person"
+            linkParam=(array person.id)
+            isSelected=person.isSelected
+            onSelect=(action "toggleSelected" person)}}
+            {{entity-display/staff entity=person}}
+        {{/entity-display}}
     {{else}}
-        {{#if team}}
-            <div class="no-results">
-                No people have been added to
-                <span class="text-bold">{{team.name}}</span>
-                yet.
-            </div>
-        {{else}}
-            <div class="no-results">No people match this criteria.</div>
-        {{/if}}
+        <div class="no-results">No people match this criteria.</div>
     {{/infinite-scroll}}
 </div>
 {{outlet}}

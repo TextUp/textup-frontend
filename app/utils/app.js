@@ -6,6 +6,12 @@ export function controllerNameForRoute(route) {
   return Route.detectInstance(route) ? route.get('controllerName') || route.get('routeName') : '';
 }
 
+export function tryRollback(model) {
+  if (TypeUtils.isAnyModel(model)) {
+    model.rollbackAttributes();
+  }
+}
+
 export function abortTransition(transition) {
   if (TypeUtils.isTransition(transition)) {
     transition.abort();

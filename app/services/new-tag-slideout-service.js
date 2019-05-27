@@ -18,9 +18,9 @@ export default Service.extend({
   tagsListHideAway: null,
   shouldForceKeepOpen: readOnly('newTag.isSaving'),
   shouldDisablePrimaryAction: readOnly('newTag.validations.isInvalid'),
-  hasExistingTags: empty('existingTags'),
-  slideoutTitle: computed('hasExistingTags', function() {
-    return this.get('hasExistingTags') ? 'Tags' : 'New Tag';
+  noExistingTags: empty('existingTags'),
+  slideoutTitle: computed('noExistingTags', function() {
+    return this.get('noExistingTags') ? 'New Tag' : 'Tags';
   }),
 
   // Methods
@@ -48,36 +48,29 @@ export default Service.extend({
   },
 
   cancelSlideout() {
-    this._tryRevertNewTag();
+    AppUtils.tryRollback(this.get('newTag'));
     this.get('slideoutService').closeSlideout();
   },
   cancelCreateInTagList() {
-    this._tryRevertNewTag();
-    const hideAway = this.get('tagsListHideAway');
-    if (hideAway && hideAway.actions) {
-      tryInvoke(hideAway.actions, 'close');
-    }
+    AppUtils.tryRollback(this.get('newTag'));
+    PropertyUtils.tryInvoke(this.get('tagsListHideAway'), 'actions.close');
   },
 
   finishNewTagSlideout() {
-    return this._tryPersistNewTag().then(() => this.cancelSlideout());
+    return this._tryPersistNewTag().then(() => this.get('slideoutService').closeSlideout());
   },
   finishCreateInTagList() {
-    return this._tryPersistNewTag().then(() => this.cancelCreateInTagList());
+    return this._tryPersistNewTag().then(() =>
+      PropertyUtils.tryInvoke(this.get('tagsListHideAway'), 'actions.close')
+    );
   },
 
   // Internal
   // --------
 
-  _tryRevertNewTag() {
-    const newTag = this.get('newTag');
-    if (newTag) {
-      newTag.rollbackAttributes();
-    }
-  },
   _tryPersistNewTag() {
     return this.get('tagService')
-      .persistNewAndTryAddToPhone(this.get('newTag'))
+      .persistNew(this.get('newTag'))
       .then(() => this.get('tutorialService').startCompleteTask(Constants.TASK.TAG));
   },
 });

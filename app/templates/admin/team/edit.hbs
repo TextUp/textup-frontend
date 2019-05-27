@@ -4,24 +4,24 @@
 	<div class="section-header">
 		<div class="pull-left horizontal-items s-2-row-3">
 			<div class="clear-badge display-xs display-s no-space">
-				{{#link-to params=(if team.isDeleted
+				{{#link-to params=(if model.isDeleted
 						(array "admin.people")
-						(array "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))))}}
+						(array "admin.team" (get model (constant "PROP_NAME.URL_IDENT"))))}}
 					<span class="pad-all">
 						<span class="icon-left-arrow"></span>
 					</span>
 	        	{{/link-to}}
 			</div>
 			<div class="clear-badge no-space">
-				<h5>{{team.name}}</h5>
+				<h5>{{model.name}}</h5>
 			</div>
 			<div class="badge margin-l">
-				{{team.numMembers}}
+				{{model.numMembers}}
 				<span class="icon-person"></span>
 			</div>
 			<span class="no-space clear-badge display-m display-l">
                 <button class="btn btn-danger btn-plain" type="button"
-                    onclick={{service-action "dataService" "markForDelete" team}}>
+                    onclick={{service-action "dataService" "markForDelete" model}}>
                     <span class="fa fa-trash"></span>
                 </button>
 			</span>
@@ -29,14 +29,14 @@
 		<div class="pull-right horizontal-items s-row-3">
 			<span class="no-space clear-badge display-xs display-s">
                 <button class="btn btn-danger btn-plain" type="button"
-                    onclick={{service-action "dataService" "markForDelete" team}}>
+                    onclick={{service-action "dataService" "markForDelete" model}}>
                     <span class="fa fa-trash"></span>
                 </button>
 			</span>
 			<span class="no-space clear-badge display-m display-l">
-				{{#link-to params=(if team.isDeleted
+				{{#link-to params=(if model.isDeleted
 						(array "admin.people")
-						(array "admin.team" (get team (constant "PROP_NAME.URL_IDENT"))))}}
+						(array "admin.team" (get model (constant "PROP_NAME.URL_IDENT"))))}}
 					<span class="pad-all">
 						<span class="icon-x"></span>
 					</span>
@@ -44,51 +44,51 @@
 			</span>
 		</div>
     </div>
-    {{#if (and team.isDeleted team.hasDirtyAttributes)}}
+    {{#if (and model.isDeleted model.hasDirtyAttributes)}}
 		<div class="section-body bg-color">
 			<div class="center">
-				<p>{{team.name}} is about to be deleted.</p>
+				<p>{{model.name}} is about to be deleted.</p>
 				<div class="horizontal-items text-center margin-t-double margin-b">
 			        <div class="clear-badge no-space">
 			            <button class="btn btn-plain" type="button"
-			                onclick={{service-action "dataService" "revert" team}}>
+			                onclick={{service-action "dataService" "revert" model}}>
 			                Undo
 			            </button>
 			        </div>
 			        <div class="clear-badge no-space">
 			        	{{async-button classNames="btn btn-plain btn-danger"
-		                    action=(service-action "dataService" "persist" team)
+		                    action=(service-action "dataService" "persist" model)
 		                    default="Confirm Delete"
 		                    pending="Deleting..."}}
 			        </div>
 			    </div>
 			</div>
 		</div>
-	{{else if team.isDeleted}}
+	{{else if model.isDeleted}}
 		<div class="section-body bg-color">
 			<div class="center">
-				<p>{{team.name}} has been deleted.</p>
+				<p>{{model.name}} has been deleted.</p>
 			</div>
 		</div>
     {{else}}
     	<div class="section-body bg-color bg-lightest">
-			{{#model-form/team team=team
+			{{#model-form/team team=model
 				canModifyPhone=true
 				onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
 				onLocationError=(service-action "mapService" "handleError")}}
-				{{#if team.isDirty}}
+				{{#if model.isDirty}}
 		    		<div class="flex flex--justify-center flex--spacing-between">
 				        <div class="flex__item">
 				            <button class="btn"
 				            	type="button"
-				                onclick={{service-action "dataService" "revert" team}}>
+				                onclick={{service-action "dataService" "revert" model}}>
 				                Cancel
 				            </button>
 				        </div>
 				        <div class="flex__item">
 				            {{async-button classNames="btn btn-default"
-		                        disableWhen=(not (v-get team "isValid"))
-		                        action=(route-action "persistWithPhone" team)
+		                        disableWhen=(not (v-get model "isValid"))
+		                        action=(service-action "phoneService" "persistPhoneOwner" model)
 		                        default="Update"
 		                        pending="Updating..."}}
 				        </div>

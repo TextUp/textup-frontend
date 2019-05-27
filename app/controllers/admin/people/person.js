@@ -1,5 +1,7 @@
 import Controller from '@ember/controller';
 
 export default Controller.extend({
-	person: null,
+  backRouteParams: null,
+  personSettingsTabs: null,
+  phoneAvailabilityTabs: null,
 });

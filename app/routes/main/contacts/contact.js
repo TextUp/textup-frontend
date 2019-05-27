@@ -21,9 +21,11 @@ export default MainTagDetailsRoute.extend({
         ? found
         : this.get('store')
             .findRecord('contact', id)
-            .catch(() => this.transitionTo(this.get('backRouteName')));
+            .catch(() =>
+              this.transitionTo(this.get('backRouteName'), ...this.get('backRouteLinkParams'))
+            );
     } else {
-      this.transitionTo(this.get('backRouteName'));
+      this.transitionTo(this.get('backRouteName'), ...this.get('backRouteLinkParams'));
     }
   },
   setupController(controller) {

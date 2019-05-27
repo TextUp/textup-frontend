@@ -12,8 +12,8 @@
             </h4>
             {{#if (not model.isDeleted)}}
                 <p>
-                    {{phone.totalNumContacts}}
-                    {{pluralize "contact" phone.totalNumContacts}}
+                    {{service-prop "contactListService" "totalNumContacts"}}
+                    {{pluralize "contact" (service-prop "contactListService" "totalNumContacts")}}
                 </p>
             {{/if}}
         </div>
@@ -34,15 +34,16 @@
     <div id="tour-contactsList" class="section-body flex flex--align-stretch flex--direction-vertical">
         {{#infinite-scroll classNames="flex__item flex__item--grow bg-color bg-lightest"
             contentClass="result-list"
-            data=phone.contacts
-            numTotal=phone.totalNumContacts
+            data=(service-prop "contactListService" "contacts")
+            numTotal=(service-prop "contactListService" "totalNumContacts")
             doRegister=(action (mut contactsList))
-            onRefresh=(action "doRefreshContacts")
-            onLoad=(action "doLoadMoreContacts") as |contact|}}
+            onRefresh=(service-action "contactListService" "refresh")
+            onLoad=(service-action "contactListService" "loadMore") as |contact|}}
             {{#entity-display class="result-item"
                 entityIdentifier=(get contact (constant "PROP_NAME.READABLE_IDENT"))
                 linkTarget="main.tag.contact"
-                linkParams=(array (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
+                linkParams=(array
+                    (get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
                     (get model (constant "PROP_NAME.URL_IDENT"))
                     contact.id)
                 bodyClass=(if contact.isUnread (constant "CONTACT.FILTER.UNREAD"))
@@ -67,5 +68,4 @@
         </div>
     </div>
 </div>
-
 {{outlet}}

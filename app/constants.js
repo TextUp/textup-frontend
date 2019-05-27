@@ -72,6 +72,7 @@ export default {
   MODEL: {
     CONTACT: 'contact',
     FUTURE_MESSAGE: 'future-message',
+    LOCATION: 'location',
     ORG: 'organization',
     PHONE: 'phone',
     RECORD_CALL: 'record-call',
@@ -128,6 +129,7 @@ export default {
       ARCHIVED: 'ARCHIVED',
       BLOCKED: 'BLOCKED',
     },
+    // preserve this filter order for displaying in template
     FILTER: {
       ALL: 'all',
       UNREAD: 'unread',
@@ -142,6 +144,7 @@ export default {
       PENDING: 'PENDING',
       STAFF: 'STAFF',
     },
+    // preserve this filter order for displaying in template
     FILTER: {
       ACTIVE: 'active',
       ADMINS: 'admins',

@@ -11,6 +11,10 @@ export function isTransition(obj) {
   );
 }
 
+export function isAnyObject(obj) {
+  return typeOf(obj) === 'instance' && typeOf(obj) === 'object';
+}
+
 export function isAnyModel(obj) {
   return typeOf(obj) === 'instance' && isPresent(get(obj, Constants.PROP_NAME.MODEL_NAME));
 }

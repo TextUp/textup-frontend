@@ -3,7 +3,7 @@
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
         onPrimary=(service-action "newContactSlideoutService" "finishSlideout")
-        disablePrimary=(not (service-prop "newContactSlideoutService" "newContact.validations.isValid"))
+        disablePrimary=(service-prop "newContactSlideoutService" "newContact.validations.isInvalid")
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     onClose=(service-action "newContactSlideoutService" "cancelSlideout")

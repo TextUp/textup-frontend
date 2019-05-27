@@ -1,24 +1,17 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(if selected
-            (concat "Teams (" selected.length " selected)")
-            (concat person.name " Teams")))
+        title=(service-prop "slideout/teamMembershipService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=teamsHaveActions
-        onPrimary=(route-action "updateTeamMemberships"
-            (service-prop "stateService" "owner.teams")
-            (if selected selected person)
-            (service-action "dataService" "clearList" (service-prop "stateService" "owner.teams") "actions"
-                (route-action "closeSlideout")))
+        showFooter=(service-prop "slideout/teamMembershipService" "anyTeamChanges")
+        onPrimary=(service-action "slideout/teamMembershipService" "finishSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "dataService" "clearList" (service-prop "stateService" "owner.teams") "actions"
-        (route-action "closeSlideout")) as |slideout|}}
-    {{#multi-toggle/group-by-bucket anyChanges=(mut teamsHaveActions)
-        itemBucketProperty="teams"
-        items=(if selected selected person)
-        buckets=(service-prop "stateService" "owner.teams") as |team|}}
+    onClose=(service-action "slideout/teamMembershipService" "cancelSlideout") as |slideout|}}
+    {{#multi-toggle/group-by-bucket anyChanges=(get (service "slideout/teamMembershipService") "anyTeamChanges")
+        itemBucketProperty=(constant "MODEL_NAME.TEAMS")
+        items=(service-prop "slideout/teamMembershipService" "staffs")
+        buckets=(service-prop "slideout/teamMembershipService" "teams") as |team|}}
             {{color-badge color=team.hexColor text=team.name}}
     {{else}}
         <li class="no-results">No teams yet.</li>

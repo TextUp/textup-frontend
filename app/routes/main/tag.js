@@ -5,15 +5,14 @@ import { inject as service } from '@ember/service';
 export default MainContactsRoute.extend({
   stateService: service(),
 
-  // @Override
-  queryParams: null,
-
   serialize(model) {
     return { tag_identifier: model.get(Constants.PROP_NAME.URL_IDENT) };
   },
-  model({ tag_identifier: tagIdent }) {
-    const tags = this.get('stateService.owner.phone.content.tags'),
-      tag = tags.findBy(Constants.PROP_NAME.URL_IDENT, tagIdent);
+  model({ tag_identifier }) {
+    const tag = this.get('stateService.owner.phone.content.tags').findBy(
+      Constants.PROP_NAME.URL_IDENT,
+      tag_identifier
+    );
     if (tag) {
       return tag;
     } else {

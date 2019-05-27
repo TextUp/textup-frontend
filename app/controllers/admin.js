@@ -3,8 +3,8 @@ import Controller from '@ember/controller';
 import { computed } from '@ember/object';
 
 export default Controller.extend({
-  filter: Constants.STAFF.FILTER.ACTIVE,
-  pending: computed(() => []),
+  pending: null,
   numPending: null,
-  people: computed(() => []),
+
+  accountSwitcher: null,
 });

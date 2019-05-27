@@ -74,29 +74,25 @@
                 <div class="menu-divider">
                     People
                     <button class="btn btn-plain v-center-right"
-                        {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                        type="button"
+                        onclick={{service-action "slideout/staffService" "openSlideout"
+                            (service-prop "stateService" "ownerAsOrg")}}>
                         <span class="icon-thin-plus"></span>
                     </button >
                 </div>
-                <div class="menu-item
-                    {{if (and (not (service-prop "stateService" "viewingTeam")) (eq filter (constant "STAFF.FILTER.ACTIVE"))) "active"}}"
-                    {{action "changeFilter" (constant "STAFF.FILTER.ACTIVE")}}>
-                    <span>Active</span>
-                </div>
-                <div class="menu-item
-                    {{if (and (not (service-prop "stateService" "viewingTeam")) (eq filter (constant "STAFF.FILTER.ADMINS"))) "active"}}"
-                    {{action "changeFilter" (constant "STAFF.FILTER.ADMINS")}}>
-                    <span>Admins</span>
-                </div>
-                <div class="menu-item
-                    {{if (and (not (service-prop "stateService" "viewingTeam")) (eq filter (constant "STAFF.FILTER.DEACTIVATED"))) "active"}}"
-                    {{action "changeFilter" (constant "STAFF.FILTER.DEACTIVATED")}}>
-                    <span>Deactivated</span>
-                </div>
+                {{#each (object-values (constant "STAFF.FILTER")) as |filter|}}
+                    <div class="menu-item {{is-staff-filter filter}}"
+                        tabIndex="0"
+                        onclick={{service-action "staffListService" "showFilteredStaffs" filter}}>
+                        <span>{{capitalize filter}}</span>
+                    </div>
+                {{/each}}
             </div>
             <div class="display-l">
                 <div class="menu-item menu-slideout"
-                    {{action "toggleSlideout" "slideouts/staff/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    tabindex="0"
+                    onclick={{service-action "slideout/staffService" "openSlideout"
+                        (service-prop "stateService" "ownerAsOrg")}}>
                     {{#tool-tip classNames="btn-expand" title="Add Staff" side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="icon-add-contact"></span>
                     {{/tool-tip}}
@@ -113,8 +109,10 @@
             <div class="display-xs display-s display-m">
                 <div class="menu-divider">
                     Teams
-                    <button class="btn btn-plain v-center-right"
-                        {{action "toggleSlideout" "slideouts/team/create" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    <button type="button"
+                        class="btn btn-plain v-center-right"
+                        onclick={{service-action "slideout/teamService" "openNewTeamSlideout"
+                            (service-prop "stateService" "ownerAsOrg")}}>
                         <span class="icon-thin-plus"></span>
                     </button >
                 </div>
@@ -133,7 +131,9 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    {{action "toggleSlideout" "slideouts/team/list" "admin" (constant "SLIDEOUT.OUTLET.DEFAULT")}}>
+                    tabindex="0"
+                    onclick={{service-action "slideout/teamService" "openTeamListSlideout"
+                        (service-prop "stateService" "ownerAsOrg")}}>
                     {{#tool-tip classNames="btn-expand" title="Teams" side=(constant "TOOLTIP.SIDE.RIGHT")}}
                         <span class="fa fa-users"></span>
                     {{/tool-tip}}
@@ -144,12 +144,14 @@
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
+                    tabindex="0"
                     onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     <span>Support</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
+                    tabindex="0"
                     onclick={{service-action "supportSlideoutService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"

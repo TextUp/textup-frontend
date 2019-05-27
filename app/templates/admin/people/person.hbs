@@ -1,14 +1,11 @@
-{{title person.name}}
+{{title model.name}}
 
 <div class="details full-height">
 	<div class="section-header">
 		<div class="row full-height">
 			<div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
                 full-height row ">
-                {{#link-to params=(if team
-                        (array "admin.team" (get team (constant "PROP_NAME.URL_IDENT")))
-                        (array "admin.people"))
-                	classNames="pull-left"}}
+                {{#link-to params=backRouteParams classNames="pull-left"}}
 					<span class="pad-all">
 						<span class="icon-left-arrow"></span>
 					</span>
@@ -16,13 +13,13 @@
             </div>
 			<div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
                 full-height contact-info
-                {{if person.hasTeams "has-details"}}">
+                {{if model.hasTeams "has-details"}}">
 				<div class="contact-summary">
                     <div class="horizontal-items">
                         <span class="clear-badge no-space">
-                            <h5>{{person.name}}</h5>
+                            <h5>{{model.name}}</h5>
                         </span>
-                        {{#if person.isAdmin}}
+                        {{#if model.isAdmin}}
 							<span class="display-s display-m display-l">
 								<span class="margin-l badge">Admin</span>
 							</span>
@@ -32,11 +29,9 @@
                 <div class="contact-details">
                     <div class="horizontal-items full-height">
                         <span class="clickable display-l"
-                            onclick={{route-action "toggleSlideout"
-                            	"slideouts/team/membership"
-                            	"admin.people.person"
-                                (constant "SLIDEOUT.OUTLET.DETAIL")}}>
-							{{#each person.teams as |team|}}
+                            tabindex="0"
+                            onclick={{service-action "slideout/teamMembershipService" "openSlideout" model}}>
+							{{#each model.teams as |team|}}
 				                {{color-badge classNames="clickable"
                                     text=team.name
                                     color=team.hexColor}}
@@ -48,7 +43,7 @@
 			<div class="xs-6-row-20 s-2-row-10 m-6-row-20 l-5-row-20
                 full-height row">
                 <div class="horizontal-items pull-right">
-					{{#if (not person.isAuthUser)}}
+					{{#if (not model.isAuthUser)}}
                         <span class="clear-badge no-space">
                             {{#pop-over as |popOver|}}
                                 <button class="btn"
@@ -61,44 +56,38 @@
                                 <ul class="dropdown">
                                     <li tabindex="0"
                                         class="dropdown-item"
-                                        onclick={{service-action "passwordResetService" "getToken" person.username}}>
+                                        onclick={{service-action "passwordResetService" "getToken" model.username}}>
                                         Send password reset
                                     </li>
-                                    <li tabindex="0" class="dropdown-item"
-                                        {{action "toggleSlideout"
-                                            "slideouts/team/membership"
-                                            "admin.people.person"
-                                            (constant "SLIDEOUT.OUTLET.DETAIL")}}>
+                                    <li tabindex="0"
+                                        class="dropdown-item"
+                                        onclick={{service-action "slideout/teamMembershipService" "openSlideout" model}}>
                                         Teams
                                         <span class="badge">
-                                            {{person.teams.content.length}}
+                                            {{model.teams.content.length}}
                                         </span>
                                     </li>
                                     <li class="dropdown-divider"></li>
-                                    {{status-list/staff shouldShow=(and person (not person.isAuthUser))
-                                        currentStatus=person.status
-                                        onChange=(service-action "staffService" "updateStatus" person)}}
+                                    {{status-list/staff shouldShow=(and model (not model.isAuthUser))
+                                        currentStatus=model.status
+                                        onChange=(service-action "staffService" "updateStatus" model)}}
                                 </ul>
                             {{/pop-over}}
                         </span>
                     {{else}}
                     	<span class="clear-badge no-space">
-                            <button type="button" class="btn"
-                                {{action "toggleSlideout"
-	                            	"slideouts/team/membership"
-	                            	"admin.people.person"
-                                    (constant "SLIDEOUT.OUTLET.DETAIL")}}>
+                            <button type="button"
+                                class="btn"
+                                onclick={{service-action "slideout/teamMembershipService" "openSlideout" model}}>
                                 Teams
                                 <span class="badge tint">
-                                    {{person.teams.content.length}}
+                                    {{model.teams.content.length}}
                                 </span>
                             </button>
                         </span>
                     {{/if}}
                     <span class="clear-badge display-m display-l">
-                        {{#link-to params=(if team
-                            (array "admin.team" (get team (constant "PROP_NAME.URL_IDENT")))
-                            (array "admin.people"))}}
+                        {{#link-to params=backRouteParams}}
 							<span class="pad-all">
 								<span class="icon-x"></span>
 							</span>
@@ -109,35 +98,35 @@
 		</div>
     </div>
     <div class="section-body bg-color bg-lightest">
-        {{#tab-container onChange=(service-action "dataService" "revert" person)
-            animation="fade" as |tabContainer1|}}
-            {{#tab-container/item doRegister=tabContainer1.actions.register
-                onDestroy=tabContainer1.actions.unregister
+        {{#tab-container onChange=(service-action "dataService" "revert" model)
+            animation="fade" as |personSettingsTabs|}}
+            {{#tab-container/item doRegister=personSettingsTabs.actions.register
+                onDestroy=personSettingsTabs.actions.unregister
                 title="Details"}}
-                {{#model-form/staff staff=person
+                {{#model-form/staff staff=model
                     canModifyPhone=true
                     onSearchAvailableNumbers=(service-action "numberService" "listAvailable")
-                    onRevert=(service-action "dataService" "revert" person)
-                    onSave=(service-action "dataService" "persist" person)
-                    onUpdateLockCode=(service-action "staffService" "updateLockCode" person)
-                    onUpdatePassword=(service-action "staffService" "updatePassword" person)
-                    onUpdateUsername=(service-action "staffService" "updateUsername" person)
+                    onRevert=(service-action "dataService" "revert" model)
+                    onSave=(service-action "dataService" "persist" model)
+                    onUpdateLockCode=(service-action "staffService" "updateLockCode" model)
+                    onUpdatePassword=(service-action "staffService" "updatePassword" model)
+                    onUpdateUsername=(service-action "staffService" "updateUsername" model)
                     onValidateCredentials=(service-action "validateAuthService" "checkPassword"
-                        person.username)
+                        model.username)
                     as |staffForm|}}
-                    {{#if (and person.isDirty (not staffForm.isModifyingAPropertyRequiringConfirm))}}
+                    {{#if (and model.isDirty (not staffForm.isModifyingAPropertyRequiringConfirm))}}
                         <div class="flex flex--justify-center flex--spacing-between">
                             <div class="flex__item">
                                 <button class="btn"
                                     type="button"
-                                    onclick={{service-action "dataService" "revert" person}}>
+                                    onclick={{service-action "dataService" "revert" model}}>
                                     Cancel
                                 </button>
                             </div>
                             <div class="flex__item">
                                 {{async-button classNames="btn btn-default"
-                                    disableWhen=(not (v-get person "isValid"))
-                                    action=(route-action "persistWithPhone" person)
+                                    disableWhen=(not (v-get model "isValid"))
+                                    action=(service-action "phoneService" "persistPhoneOwner" model)
                                     default="Update"
                                     pending="Updating..."}}
                             </div>
@@ -145,17 +134,17 @@
                     {{/if}}
                 {{/model-form/staff}}
             {{/tab-container/item}}
-            {{#if person.allActivePhoneOwners}}
+            {{#if model.allActivePhoneOwners}}
                 {{#tab-container/item classNames="pad-all"
-                    doRegister=tabContainer1.actions.register
-                    onDestroy=tabContainer1.actions.unregister
-                    title=(concat "Availability (" person.allActivePhoneOwners.length " " (pluralize "phone" person.allActivePhoneOwners.length)")")}}
+                    doRegister=personSettingsTabs.actions.register
+                    onDestroy=personSettingsTabs.actions.unregister
+                    title=(concat "Availability (" model.allActivePhoneOwners.length " " (pluralize "phone" model.allActivePhoneOwners.length)")")}}
                     {{#tab-container classNames="flex__item tab-container--nav-outline"
-                        animation="fade" as |tabContainer2|}}
-                        {{#each person.allActivePhoneOwners as |phoneOwner|}}
+                        animation="fade" as |phoneAvailabilityTabs|}}
+                        {{#each model.allActivePhoneOwners as |phoneOwner|}}
                             {{#tab-container/item classNames="pad-t flex flex--direction-vertical flex--align-stretch flex--spacing-between"
-                                doRegister=tabContainer2.actions.register
-                                onDestroy=tabContainer2.actions.unregister
+                                doRegister=phoneAvailabilityTabs.actions.register
+                                onDestroy=phoneAvailabilityTabs.actions.unregister
                                 title=(concat phoneOwner.name " - " (phone-number phoneOwner.phone.content.number))}}
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
@@ -174,11 +163,14 @@
                                     </div>
                                 {{/if}}
                                 {{availability-control
-                                    self=(owner-policy/self phoneOwner.phone.content person)
-                                    others=(owner-policy/others phoneOwner.phone.content person)
-                                    onAvailabilityTypeChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manual")))
-                                    onManualAvailabilityChange=(action (mut (get (owner-policy/self phoneOwner.phone.content person) "schedule.manualIsAvailable")))
-                                    onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange" (get (owner-policy/self phoneOwner.phone.content person) "schedule"))}}
+                                    self=(owner-policy/self phoneOwner.phone.content model)
+                                    others=(owner-policy/others phoneOwner.phone.content model)
+                                    onAvailabilityTypeChange=(action
+                                        (mut (get (owner-policy/self phoneOwner.phone.content model) "schedule.manual")))
+                                    onManualAvailabilityChange=(action
+                                        (mut (get (owner-policy/self phoneOwner.phone.content model) "schedule.manualIsAvailable")))
+                                    onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange"
+                                        (get (owner-policy/self phoneOwner.phone.content model) "schedule"))}}
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">

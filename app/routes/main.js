@@ -50,15 +50,8 @@ export default Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSetup, {
   },
   resetController(controller) {
     this._super(...arguments);
-    // close account slideout and drawer after transition
-    const accountSwitcher = controller.get('accountSwitcher'),
-      slidingMenu = controller.get('slidingMenu');
-    if (accountSwitcher) {
-      accountSwitcher.actions.close();
-    }
-    if (slidingMenu) {
-      slidingMenu.actions.close();
-    }
+    PropertyUtils.tryInvoke(controller.get('accountSwitcher'), 'actions.close');
+    PropertyUtils.tryInvoke(controller.get('slidingMenu'), 'actions.close');
   },
   redirect(model, transition) {
     this._super(...arguments);

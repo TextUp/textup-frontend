@@ -127,7 +127,7 @@ export default Service.extend({
           numbers: [ContactNumberObject.create({ number: this.get('numToCall') })],
         });
         this.get('contactService')
-          .persistNewAndTryAddToPhone(newContact)
+          .persistNew(newContact)
           .then(() => resolve(newContact), reject);
       }
     });

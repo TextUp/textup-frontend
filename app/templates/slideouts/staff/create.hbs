@@ -2,19 +2,14 @@
     headerComponent=(component "slideout-pane/title" title="New Staff")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(route-action "createStaff" newStaff
-            (route-action "cleanNewStaff" newStaff
-                (route-action "closeSlideout")))
-        disablePrimary=(not (v-get newStaff "isValid"))
+        onPrimary=(service-action "slideout/staffService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/staffService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
-    onOpen=(route-action "initializeNewStaff")
-    onClose=(service-action "dataService" "revert" newStaff
-        (route-action "cleanNewStaff" newStaff
-            (route-action "closeSlideout")))
-    forceKeepOpen=newStaff.isSaving
-    focusSelector=".start-focus" as |slideout|}}
-    {{model-form/staff staff=newStaff
+    onClose=(service-action "slideout/staffService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/staffService" "shouldForceKeepOpen")
+    focusSelector=".start-focus"}}
+    {{model-form/staff staff=(service-prop "slideout/staffService" "staff")
         firstControlClass="start-focus"
         canModifyPhone=true
         onSearchAvailableNumbers=(service-action "numberService" "listAvailable")}}

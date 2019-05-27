@@ -4,7 +4,7 @@ import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
-import OwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
+import ModelOwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
 import { alias, notEmpty, equal } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
 import { computed } from '@ember/object';
@@ -41,7 +41,7 @@ export default DS.Model.extend(
   Dirtiable,
   HasReadableIdentifier,
   HasUrlIdentifier,
-  OwnsPhone,
+  ModelOwnsPhone,
   Validations,
   {
     authService: service(),
@@ -97,8 +97,8 @@ export default DS.Model.extend(
     isStaff: equal('status', Constants.STAFF.STATUS.STAFF),
     isAdmin: equal('status', Constants.STAFF.STATUS.ADMIN),
 
-    teams: DS.hasMany('team'),
-    hasTeams: notEmpty('teams'),
+    [Constants.MODEL_NAME.TEAMS]: DS.hasMany('team'),
+    hasTeams: notEmpty(Constants.MODEL_NAME.TEAMS),
 
     allActivePhoneOwners: computed('phone.content.isActive', '_teamsWithPhones.[]', function() {
       const phoneOwners = this.get('phone.content.isActive') ? [this] : [];

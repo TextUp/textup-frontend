@@ -1,29 +1,14 @@
 import Route from '@ember/routing/route';
 
-export default Route.extend({
-  _newModel: null,
+// TODO check to see if this still happens:
+// newly-created teams will lose their location reference, so we will re-fetch the team
+// if this has happened
 
-  afterModel(team) {
-    // newly-created teams will lose their location reference, so we will re-fetch the team
-    // if this has happened
-    if (team && !team.get('location.content')) {
-      const id = team.get('id');
-      team.unloadRecord();
-      return this.get('store')
-        .findRecord('team', id)
-        .then(found => this.set('_newModel', found));
-    } else {
-      this.set('_newModel', team);
-    }
-  },
-  setupController(controller) {
+export default Route.extend({
+  resetController(controller, isExiting) {
     this._super(...arguments);
-    controller.set('team', this.get('_newModel'));
-  },
-  deactivate() {
-    const team = this.controller.get('team');
-    if (team.get('hasDirtyAttributes')) {
-      team.rollbackAttributes();
+    if (isExiting) {
+      AppUtils.tryRollback(controller.get('model'));
     }
   },
 });
