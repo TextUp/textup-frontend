@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:new-contact-slideout-service', 'Unit | Service | new contact slideout service', {
+moduleFor('service:slideout/new-future-message-service', 'Unit | Service | slideout/new future message service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

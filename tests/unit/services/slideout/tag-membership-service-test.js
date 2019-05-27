@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:existing-tag-slideout-service', 'Unit | Service | existing tag slideout service', {
+moduleFor('service:slideout/tag-membership-service', 'Unit | Service | slideout/tag membership service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

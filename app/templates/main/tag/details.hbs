@@ -10,8 +10,8 @@
 				(array
 					(get (service-prop "authService" "authUser") (constant "PROP_NAME.URL_IDENT"))
 					(get model (constant "PROP_NAME.URL_IDENT"))))
-            onEdit=(service-action "existingTagSlideoutService" "openSlideout" model)
-        	onExport=(service-action "exportSlideoutService" "startSingleExportSlideout" model)}}
+            onEdit=(service-action "slideout/existingTagService" "openSlideout" model)
+        	onExport=(service-action "slideout/exportService" "startSingleExportSlideout" model)}}
 	</div>
 	{{#if model.isDeleted}}
 		<div class="section-body row">
@@ -48,12 +48,12 @@
 
 	        onText=(action "onText")
 
-	        onAddNote=(service-action "noteSlideoutService" "openNewNoteSlideout" model)
-        	onEditNote=(service-action "noteSlideoutService" "openExistingNoteSlideout" model)
-	        onViewNoteHistory=(service-action "noteRevisionSlideoutService" "openSlideout")
+	        onAddNote=(service-action "slideout/noteService" "openNewNoteSlideout" model)
+        	onEditNote=(service-action "slideout/noteService" "openExistingNoteSlideout" model)
+	        onViewNoteHistory=(service-action "slideout/noteRevisionService" "openSlideout")
 	        onRestoreNote=(service-action "recordItemService" "restoreDeletedNote")
 
-	        onScheduleMessage=(service-action "newFutureMessageSlideoutService" "openSlideout" model)
-	        onViewScheduledMessages=(service-action "existingFutureMessageSlideoutService" "openSlideout" model)}}
+	        onScheduleMessage=(service-action "slideout/newFutureMessageService" "openSlideout" model)
+	        onViewScheduledMessages=(service-action "slideout/existingFutureMessageService" "openSlideout" model)}}
 	{{/if}}
 </div>

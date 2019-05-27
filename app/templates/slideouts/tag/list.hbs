@@ -1,26 +1,26 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(service-prop "newTagSlideoutService" "slideoutTitle"))
+        title=(service-prop "slideout/newTagService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(service-prop "newTagSlideoutService" "tagsListHideAway.isOpen")
-        onPrimary=(service-action "newTagSlideoutService" "finishCreateInTagList")
-        disablePrimary=(service-prop "newTagSlideoutService" "shouldDisablePrimaryAction")
+        showFooter=(service-prop "slideout/newTagService" "tagsListHideAway.isOpen")
+        onPrimary=(service-action "slideout/newTagService" "finishCreateInTagList")
+        disablePrimary=(service-prop "slideout/newTagService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating..."
-        onSecondary=(service-action "newTagSlideoutService" "cancelCreateInTagList")
-        hideSecondary=(service-prop "newTagSlideoutService" "noExistingTags"))
-    onClose=(service-action "newTagSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "newTagSlideoutService" "shouldForceKeepOpen") as |slideout|}}
-    {{#hide-show doRegister=(service-mut "newTagSlideoutService" "tagsListHideAway")
-        startOpen=(service-prop "newTagSlideoutService" "noExistingTags")
+        onSecondary=(service-action "slideout/newTagService" "cancelCreateInTagList")
+        hideSecondary=(service-prop "slideout/newTagService" "noExistingTags"))
+    onClose=(service-action "slideout/newTagService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/newTagService" "shouldForceKeepOpen") as |slideout|}}
+    {{#hide-show doRegister=(service-mut "slideout/newTagService" "tagsListHideAway")
+        startOpen=(service-prop "slideout/newTagService" "noExistingTags")
         focusOnOpenSelector=".start-focus"
-        onOpen=(service-action "newTagSlideoutService" "onOpenCreateInTagList") as |hideShow|}}
+        onOpen=(service-action "slideout/newTagService" "onOpenCreateInTagList") as |hideShow|}}
         {{#if hideShow.isOpen}}
-            {{model-form/tag tag=(service-prop "newTagSlideoutService" "newTag")
+            {{model-form/tag tag=(service-prop "slideout/newTagService" "newTag")
                 firstControlClass="start-focus"}}
         {{else}}
             <ul class="result-list">
-                {{#each (service-prop "newTagSlideoutService" "existingTags") as |tag|}}
+                {{#each (service-prop "slideout/newTagService" "existingTags") as |tag|}}
                     <li class="result-item">
                         <div class="row">
                             {{#link-to "main.tag"

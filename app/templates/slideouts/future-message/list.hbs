@@ -6,13 +6,13 @@
         {{#each futureMessageOwner.futureMessages as |futureMessage|}}
             {{#hide-show tagName="li" as |hideShow|}}
                 {{#future-message classNames="border-b" message=futureMessage}}
-                    {{#if (and (service-prop "existingFutureMessageSlideoutService" "shouldAllowEdits")
+                    {{#if (and (service-prop "slideout/existingFutureMessageService" "shouldAllowEdits")
                         (not futureMessage.isDone))}}
                         <div class="border-l flex__item flex__item--no-shrink">
                             <button class="btn-span btn btn-plain full-height"
                                 type="button"
                                 onclick={{if hideShow.isOpen
-                                    (service-action "existingFutureMessageSlideoutService" "cancelEditing"
+                                    (service-action "slideout/existingFutureMessageService" "cancelEditing"
                                         futureMessage
                                         hideShow.actions.close)
                                     hideShow.actions.open}}>
@@ -32,10 +32,10 @@
                         isValid=(v-get futureMessage "isValid")
                         onMarkForDelete=(service-action "dataService" "markForDelete" futureMessage)
                         onUndoDelete=(service-action "dataService" "revert" futureMessage)
-                        onCancel=(service-action "existingFutureMessageSlideoutService" "cancelEditing"
+                        onCancel=(service-action "slideout/existingFutureMessageService" "cancelEditing"
                             futureMessage
                             hideShow.actions.close)
-                        onSave=(service-action "existingFutureMessageSlideoutService" "saveAfterEditing"
+                        onSave=(service-action "slideout/existingFutureMessageService" "saveAfterEditing"
                             futureMessage
                             hideShow.actions.close)}}
                     {{model-form/future-message classNames="pad-t pad-b-double border-b"
@@ -51,7 +51,7 @@
                 <p class="margin-b">No scheduled messages yet.</p>
                 <button type="button"
                     class="btn-link"
-                    onclick={{service-action "newFutureMessageSlideoutService" "openSlideout" model}}>
+                    onclick={{service-action "slideout/newFutureMessageService" "openSlideout" model}}>
                     Schedule a message.
                 </button>
             </li>

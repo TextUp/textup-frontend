@@ -1,23 +1,23 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat (service-prop "notificationSlideoutService" "phoneOwnerName") " Notifications"))
+        title=(concat (service-prop "slideout/notificationService" "phoneOwnerName") " Notifications"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(service-prop "notificationSlideoutService" "shouldShowFooter")
-        onPrimary=(service-action "notificationSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "notificationSlideoutService" "shouldDisablePrimaryAction")
+        showFooter=(service-prop "slideout/notificationService" "shouldShowFooter")
+        onPrimary=(service-action "slideout/notificationService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/notificationService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
-    onClose=(service-action "notificationSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "notificationSlideoutService" "shouldForceKeepOpen") as |slideout|}}
+    onClose=(service-action "slideout/notificationService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/notificationService" "shouldForceKeepOpen") as |slideout|}}
     <div class="form">
         <div class="form__group">
             <label for="Away Message" class="form__label form__label--emphasize">
-                {{service-prop "notificationSlideoutService" "phoneOwnerName"}}'s Away Message
+                {{service-prop "slideout/notificationService" "phoneOwnerName"}}'s Away Message
             </label>
             <span class="form__label form__label--multiline">
                 TextUp will reply with this message to texts
-                <b>received by {{service-prop "notificationSlideoutService" "phoneOwnerName"}}</b> when
-                {{#if (service-prop "notificationSlideoutService" "isPhoneOwnerATeam")}}
+                <b>received by {{service-prop "slideout/notificationService" "phoneOwnerName"}}</b> when
+                {{#if (service-prop "slideout/notificationService" "isPhoneOwnerATeam")}}
                     no one is
                 {{else}}
                     you are not
@@ -34,10 +34,10 @@
                         autoresize=true
                         maxLengthContainerClass="margin-b"
                         class="form-control"
-                        maxLength=(service-prop "notificationSlideoutService" "activePhone.awayMessageMaxLength")
+                        maxLength=(service-prop "slideout/notificationService" "activePhone.awayMessageMaxLength")
                         maxLengthPosition=(constant "MAX_LENGTH.POSITION.BOTTOM")
-                        value=(get (service-prop "notificationSlideoutService" "activePhone") "awayMessage")
-                        validateObj=(service-prop "notificationSlideoutService" "activePhone")
+                        value=(get (service-prop "slideout/notificationService" "activePhone") "awayMessage")
+                        validateObj=(service-prop "slideout/notificationService" "activePhone")
                         validateField="awayMessage"
                         validate="bottom"}}
                 {{/if}}
@@ -45,24 +45,24 @@
                     tabindex={{if hideShow.isOpen "" "0"}}
                     onfocus={{hideShow.actions.open}}
                     onclick={{hideShow.actions.toggle}}>
-                    {{service-prop "notificationSlideoutService" "activePhone.awayMessage"}}
-                    <b>{{service-prop "notificationSlideoutService" "awayMessageSuffix"}}</b>
+                    {{service-prop "slideout/notificationService" "activePhone.awayMessage"}}
+                    <b>{{service-prop "slideout/notificationService" "awayMessageSuffix"}}</b>
                 </div>
             {{/hide-show}}
         </div>
         <div class="form__group">
             <label for="Voicemail" class="form__label form__label--emphasize">
-                {{service-prop "notificationSlideoutService" "phoneOwnerName"}}'s Voicemail
+                {{service-prop "slideout/notificationService" "phoneOwnerName"}}'s Voicemail
             </label>
             <div class="row margin-t">
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-false"
                         type="radio"
-                        class={{if (service-prop "notificationSlideoutService" "activePhone.useVoicemailRecordingIfPresent")
+                        class={{if (service-prop "slideout/notificationService" "activePhone.useVoicemailRecordingIfPresent")
                             "input--not-checked"
                             "input--checked"}}
                         onclick={{action
-                            (service-mut "notificationSlideoutService" "activePhone.useVoicemailRecordingIfPresent")
+                            (service-mut "slideout/notificationService" "activePhone.useVoicemailRecordingIfPresent")
                             false}}>
                 </div>
                 <label for="use-voicemail-recording-false"
@@ -71,19 +71,19 @@
                 </label>
                 {{#multi-toggle classNames="xs-full-row s-row-2"
                     selectIndex=(if (eq
-                        (service-prop "notificationSlideoutService" "activePhone.voice")
+                        (service-prop "slideout/notificationService" "activePhone.voice")
                         (constant "VOICE_TYPE.MALE")) 0 1) as |toggle doRegister|}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=(constant "COLOR.LIGHT_BLUE")
                         onSelect=(action
-                            (service-mut "notificationSlideoutService" "activePhone.voice")
+                            (service-mut "slideout/notificationService" "activePhone.voice")
                             (constant "VOICE_TYPE.MALE"))}}
                         Male voice
                     {{/multi-toggle/item}}
                     {{#multi-toggle/item doRegister=doRegister
                         color=(constant "COLOR.BRAND")
                         onSelect=(action
-                            (service-mut "notificationSlideoutService" "activePhone.voice")
+                            (service-mut "slideout/notificationService" "activePhone.voice")
                             (constant "VOICE_TYPE.FEMALE"))}}
                         Female voice
                     {{/multi-toggle/item}}
@@ -93,11 +93,11 @@
                 <div class="xs-2-row-20 s-row-20 control-text control-text--no-ellipsis">
                     <input id="use-voicemail-recording-true"
                         type="radio"
-                        class={{if (service-prop "notificationSlideoutService" "activePhone.useVoicemailRecordingIfPresent")
+                        class={{if (service-prop "slideout/notificationService" "activePhone.useVoicemailRecordingIfPresent")
                             "input--checked"
                             "input--not-checked"}}
                         onclick={{action
-                            (service-mut "notificationSlideoutService" "activePhone.useVoicemailRecordingIfPresent")
+                            (service-mut "slideout/notificationService" "activePhone.useVoicemailRecordingIfPresent")
                             true}}>
                 </div>
                 <label for="use-voicemail-recording-true"
@@ -107,16 +107,16 @@
             </div>
             <div class="offset-s-row-20">
                 {{#audio-control showAddIfNone=true
-                    audio=(service-prop "notificationSlideoutService" "activePhone.media.content.displayedAudio")
+                    audio=(service-prop "slideout/notificationService" "activePhone.media.content.displayedAudio")
                     listProps=(hash maxNumToDisplay=1 sortPropName="whenCreated" sortLowToHigh=false)
-                    onAdd=(service-action "notificationSlideoutService" "onFinishRecordingGreeting")
+                    onAdd=(service-action "slideout/notificationService" "onFinishRecordingGreeting")
                     startAddMessage="Redo recording"
                     cancelAddMessage="Cancel redo" as |hideShow|}}
                     {{#if hideShow.isOpen}}
                         <div class="flex__item">
                             {{async-button classNames="button button--expand"
-                                disabledWhen=(service-prop "notificationSlideoutService" "shouldDisableVoicemailGreetingCall")
-                                action=(service-action "notificationSlideoutService" "onRequestVoicemailGreetingCall")
+                                disabledWhen=(service-prop "slideout/notificationService" "shouldDisableVoicemailGreetingCall")
+                                action=(service-action "slideout/notificationService" "onRequestVoicemailGreetingCall")
                                 default="Call me to record"
                                 pending="Calling your personal phone..."}}
                         </div>
@@ -124,7 +124,7 @@
                 {{/audio-control}}
             </div>
         </div>
-        {{#with (service-prop "notificationSlideoutService" "selfPolicy") as |selfPolicy|}}
+        {{#with (service-prop "slideout/notificationService" "selfPolicy") as |selfPolicy|}}
             <hr>
             <div class="form__group">
                 <label for="notification-type" class="control-text form__label xs-full-row s-row-2">
@@ -183,24 +183,24 @@
 
         <hr>
 
-        {{#if (service-prop "notificationSlideoutService" "isMissingPersonalNumber")}}
+        {{#if (service-prop "slideout/notificationService" "isMissingPersonalNumber")}}
             <div class="bg-color pad-all margin-b border-radius-all">
                 You have connected a personal phone number to your account. For text notifications to be sent,
                 <button type="button"
                     class="btn-link"
                     onclick={{action
                         slideout.actions.close
-                        (service-action "accountSlideoutService" "openSlideout")}}>
+                        (service-action "slideout/accountService" "openSlideout")}}>
                     please add a personal phone number to your account.
                 </button>
             </div>
         {{/if}}
         {{availability-control
-            self=(service-prop "notificationSlideoutService" "selfPolicy")
-            others=(service-prop "notificationSlideoutService" "otherPolicies")
-            onAvailabilityTypeChange=(service-mut "notificationSlideoutService" "selfPolicy.schedule.manual")
-            onManualAvailabilityChange=(service-mut "notificationSlideoutService" "selfPolicy.schedule.manualIsAvailable")
+            self=(service-prop "slideout/notificationService" "selfPolicy")
+            others=(service-prop "slideout/notificationService" "otherPolicies")
+            onAvailabilityTypeChange=(service-mut "slideout/notificationService" "selfPolicy.schedule.manual")
+            onManualAvailabilityChange=(service-mut "slideout/notificationService" "selfPolicy.schedule.manualIsAvailable")
             onScheduleAvailabilityChange=(service-action "scheduleService" "replaceRange"
-                (service-prop "notificationSlideoutService" "selfPolicy.schedule"))}}
+                (service-prop "slideout/notificationService" "selfPolicy.schedule"))}}
     </div>
 {{/slideout-pane}}

@@ -6,10 +6,10 @@
             contact=model
             backRouteName=backRouteName
             linkParams=backRouteLinkParams
-            onEdit=(service-action "existingContactSlideoutService" "openSlideout" model)
-            onEditSharing=(service-action "sharingSlideoutService" "openSlideout" model)
-            onEditTagMembership=(service-action "tagMembershipSlideoutService" "openSlideout" model)
-            onExport=(service-action "exportSlideoutService" "startSingleExportSlideout" model)
+            onEdit=(service-action "slideout/existingContactService" "openSlideout" model)
+            onEditSharing=(service-action "slideout/sharingService" "openSlideout" model)
+            onEditTagMembership=(service-action "slideout/tagMembershipService" "openSlideout" model)
+            onExport=(service-action "slideout/exportService" "startSingleExportSlideout" model)
             onStatusChange=(action "onContactStatusChange" model)}}
     </div>
     {{care-record classNames="section-body row"
@@ -40,11 +40,11 @@
 
         onEndOngoingCall=(service-action "recordItemService" "endOngoingCall")
 
-        onAddNote=(service-action "noteSlideoutService" "openNewNoteSlideout" model)
-        onEditNote=(service-action "noteSlideoutService" "openExistingNoteSlideout" model)
-        onViewNoteHistory=(service-action "noteRevisionSlideoutService" "openSlideout")
+        onAddNote=(service-action "slideout/noteService" "openNewNoteSlideout" model)
+        onEditNote=(service-action "slideout/noteService" "openExistingNoteSlideout" model)
+        onViewNoteHistory=(service-action "slideout/noteRevisionService" "openSlideout")
         onRestoreNote=(service-action "recordItemService" "restoreDeletedNote")
 
-        onScheduleMessage=(service-action "newFutureMessageSlideoutService" "openSlideout" model)
-        onViewScheduledMessages=(service-action "existingFutureMessageSlideoutService" "openSlideout" model)}}
+        onScheduleMessage=(service-action "slideout/newFutureMessageService" "openSlideout" model)
+        onViewScheduledMessages=(service-action "slideout/existingFutureMessageService" "openSlideout" model)}}
 </div>

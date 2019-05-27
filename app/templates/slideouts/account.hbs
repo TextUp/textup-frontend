@@ -6,15 +6,15 @@
         user=(service-prop "authService" "authUser")
         onLogOut=(service-action "authService" "logout"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(service-prop "accountSlideoutService" "shouldShowFooter")
-        onPrimary=(service-action "accountSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "accountSlideoutService" "shouldDisablePrimaryAction")
+        showFooter=(service-prop "slideout/accountService" "shouldShowFooter")
+        onPrimary=(service-action "slideout/accountService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/accountService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
         primaryProgressLabel="Updating..."
-        onSecondary=(service-action "accountSlideoutService" "revertAllChanges"))
-    onClose=(service-action "accountSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "accountSlideoutService" "shouldForceKeepOpen")}}
-    {{#tab-container onChange=(service-action "accountSlideoutService" "revertAllChanges") as |tabContainer|}}
+        onSecondary=(service-action "slideout/accountService" "revertAllChanges"))
+    onClose=(service-action "slideout/accountService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/accountService" "shouldForceKeepOpen")}}
+    {{#tab-container onChange=(service-action "slideout/accountService" "revertAllChanges") as |tabContainer|}}
         {{#with (service-prop "stateService" "ownerAsOrg") as |org|}}
             {{#tab-container/item doRegister=tabContainer.actions.register
                 onDestroy=tabContainer.actions.unregister
@@ -36,7 +36,7 @@
             onDestroy=tabContainer.actions.unregister
             title="My Account"}}
             {{#with (service-prop "authService" "authUser") as |staff|}}
-                {{model-form/staff doRegister=(service-mut "accountSlideoutService" "staffForm")
+                {{model-form/staff doRegister=(service-mut "slideout/accountService" "staffForm")
                     staff=staff
                     onRevert=(service-action "dataService" "revert" staff)
                     onSave=(service-action "dataService" "persist" staff)

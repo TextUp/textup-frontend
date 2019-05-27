@@ -1,14 +1,14 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(service-prop "sharingSlideoutService" "slideoutTitle"))
+        title=(service-prop "slideout/sharingService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(service-prop "sharingSlideoutService" "anySharingChanges")
-        onPrimary=(service-action "sharingSlideoutService" "finishSlideout")
+        showFooter=(service-prop "slideout/sharingService" "anySharingChanges")
+        onPrimary=(service-action "slideout/sharingService" "finishSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "sharingSlideoutService" "cancelSlideout") as |slideout|}}
-    {{multi-toggle/share anyChanges=(get (service "sharingSlideoutService") "anySharingChanges")
-        contacts=(service-prop "sharingSlideoutService" "contacts")
+    onClose=(service-action "slideout/sharingService" "cancelSlideout") as |slideout|}}
+    {{multi-toggle/share anyChanges=(get (service "slideout/sharingService") "anySharingChanges")
+        contacts=(service-prop "slideout/sharingService" "contacts")
         staffs=(service-prop "sharingService" "staffCandidates")}}
 {{/slideout-pane}}

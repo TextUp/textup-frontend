@@ -2,43 +2,43 @@
     headerComponent=(component "slideout-pane/title" title=(concat "Export records"))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "exportSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "exportSlideoutService" "shouldDisablePrimaryAction")
+        onPrimary=(service-action "slideout/exportService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/exportService" "shouldDisablePrimaryAction")
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
-    onClose=(service-action "exportSlideoutService" "cancelSlideout")
+    onClose=(service-action "slideout/exportService" "cancelSlideout")
     focusSelector=".multi-select-new-input" as |slideout|}}
     <div class="form">
         <div class="form__group">
             <label for="export-scope" class="form__label">
                 Export records for
             </label>
-            {{#multi-toggle selectIndex=(if (service-prop "exportSlideoutService" "isForEntirePhone") 0 1) as |toggle doRegister|}}
+            {{#multi-toggle selectIndex=(if (service-prop "slideout/exportService" "isForEntirePhone") 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.BRAND")
-                    onSelect=(action (service-mut "exportSlideoutService" "isForEntirePhone") true)}}
+                    onSelect=(action (service-mut "slideout/exportService" "isForEntirePhone") true)}}
                     all of {{service-prop "stateService" "owner.name"}}
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.LIGHT_BLUE")
-                    onSelect=(action (service-mut "exportSlideoutService" "isForEntirePhone") false)}}
+                    onSelect=(action (service-mut "slideout/exportService" "isForEntirePhone") false)}}
                     selected contacts and tags
                 {{/multi-toggle/item}}
             {{/multi-toggle}}
         </div>
-        {{#if (not (service-prop "exportSlideoutService" "isForEntirePhone"))}}
+        {{#if (not (service-prop "slideout/exportService" "isForEntirePhone"))}}
             <div class="form__group">
                 <label for="export-selected-owners" class="form__label">
                     Select contacts and tags to export records for
                 </label>
-                {{#multi-select data=(service-prop "exportSlideoutService" "tagRecordOwners")
-                    selected=(service-prop "exportSlideoutService" "recordOwners")
+                {{#multi-select data=(service-prop "slideout/exportService" "tagRecordOwners")
+                    selected=(service-prop "slideout/exportService" "recordOwners")
                     filterProperty=(constant "PROP_NAME.FILTER_VAL")
                     displayProperty=(constant "PROP_NAME.READABLE_IDENT")
                     identityProperty=(constant "PROP_NAME.URL_IDENT")
                     doSearch=(service-action "contactService" "searchContacts")
-                    onInsert=(service-action "exportSlideoutService" "insertRecordOwner")
-                    onRemove=(service-action "exportSlideoutService" "removeRecordOwner") as |recipient|}}
+                    onInsert=(service-action "slideout/exportService" "insertRecordOwner")
+                    onRemove=(service-action "slideout/exportService" "removeRecordOwner") as |recipient|}}
                     {{multi-select/display-badge entity=recipient}}
                 {{/multi-select}}
             </div>
@@ -47,33 +47,33 @@
             <label for="export-start-date" class="form__label">
                 Start date
             </label>
-            {{datetime-control value=(service-prop "exportSlideoutService" "startDate")
+            {{datetime-control value=(service-prop "slideout/exportService" "startDate")
                 showTime=false
                 max=(now)
-                onSelect=(service-mut "exportSlideoutService" "startDate")}}
+                onSelect=(service-mut "slideout/exportService" "startDate")}}
         </div>
         <div class="form__group">
             <label for="export-end-date" class="form__label">
                 End date
             </label>
-            {{datetime-control value=(service-prop "exportSlideoutService" "endDate")
+            {{datetime-control value=(service-prop "slideout/exportService" "endDate")
                 showTime=false
                 max=(now)
-                onSelect=(service-mut "exportSlideoutService" "endDate")}}
+                onSelect=(service-mut "slideout/exportService" "endDate")}}
         </div>
         <div class="form__group">
             <label for="export-format-type" class="form__label">
                 Export multiple records
             </label>
-            {{#multi-toggle selectIndex=(if (service-prop "exportSlideoutService" "isGroupedExport") 0 1) as |toggle doRegister|}}
+            {{#multi-toggle selectIndex=(if (service-prop "slideout/exportService" "isGroupedExport") 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.BRAND")
-                    onSelect=(action (service-mut "exportSlideoutService" "isGroupedExport") true)}}
+                    onSelect=(action (service-mut "slideout/exportService" "isGroupedExport") true)}}
                     as separate pages
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.LIGHT_BLUE")
-                    onSelect=(action (service-mut "exportSlideoutService" "isGroupedExport") false)}}
+                    onSelect=(action (service-mut "slideout/exportService" "isGroupedExport") false)}}
                     all together ordered by timestamp
                 {{/multi-toggle/item}}
             {{/multi-toggle}}

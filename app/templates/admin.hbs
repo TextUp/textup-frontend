@@ -31,7 +31,7 @@
                     toggleClass="xs-8-row-10"}}
                     <button type="button"
                         class="xs-2-row-10 textup-account-switcher__display"
-                        onclick={{service-action "accountSlideoutService" "openSlideout"}}>
+                        onclick={{service-action "slideout/accountService" "openSlideout"}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
@@ -39,7 +39,7 @@
             <div class="display-l">
                 <div class="menu-item menu-header menu-header-light"
                     tabindex="0"
-                    onclick={{service-action "accountSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/accountService" "openSlideout"}}>
                     {{#tool-tip classNames="btn-expand"
                         title=(concat "Admin (" (service-prop "stateService" "owner.name") ")")
                         side=(constant "TOOLTIP.SIDE.RIGHT")}}
@@ -145,14 +145,14 @@
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
                     tabindex="0"
-                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/supportService" "openSlideout"}}>
                     <span>Support</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
                     tabindex="0"
-                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/supportService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}

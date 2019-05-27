@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:export-slideout-service', 'Unit | Service | export slideout service', {
+moduleFor('service:slideout/compose-service', 'Unit | Service | slideout/compose service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

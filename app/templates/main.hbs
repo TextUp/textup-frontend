@@ -49,7 +49,7 @@
                     toggleClass="xs-8-row-10"}}
                     <button type="button"
                         class="xs-2-row-10 textup-account-switcher__display"
-                        onclick={{service-action "accountSlideoutService" "openSlideout"}}>
+                        onclick={{service-action "slideout/accountService" "openSlideout"}}>
                         <span class="fa fa-cog"></span>
                     </button>
                 {{/account-switcher}}
@@ -59,7 +59,7 @@
                     tabindex="0"
                     style="background-color:{{service-prop "stateService" "owner.hexColor"}};
                         color:{{contrast-color (service-prop "stateService" "owner.hexColor")}};"
-                    onclick={{service-action "accountSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/accountService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title=(concat "Account (" (service-prop "stateService" "owner.name") ")")
                         classNames="btn-expand"}}
@@ -71,7 +71,7 @@
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout
                         {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
-                        onclick={{service-action "notificationSlideoutService" "openSlideout"}}>
+                        onclick={{service-action "slideout/notificationService" "openSlideout"}}>
                         <div class="btn-expand">
                             <span id="tour-openAvailabilityButtonMobile">Notifications</span>
                         </div>
@@ -80,7 +80,7 @@
                 <div class="display-l">
                     <div class="menu-item menu-slideout
                         {{if (get (owner-policy/self (service-prop "stateService" "owner.phone.content") (service-prop "authService" "authUser")) "schedule.isAvailableNow") "success"}}"
-                        onclick={{service-action "notificationSlideoutService" "openSlideout"}}>
+                        onclick={{service-action "slideout/notificationService" "openSlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Notifications"
                             classNames="btn-expand"}}
@@ -101,7 +101,7 @@
             {{/if}}
             <div class="display-xs display-s display-m">
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "composeSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/composeService" "openSlideout"}}>
                     <div class="btn-expand">
                         <span id="tour-openMessageButtonMobile">Compose</span>
                     </div>
@@ -110,7 +110,7 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "composeSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/composeService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Compose"
                         classNames="btn-expand"}}
@@ -120,7 +120,7 @@
             </div>
             <div class="display-xs display-s display-m">
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "callSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/callService" "openSlideout"}}>
                     <div class="btn-expand">
                         <span id="tour-openCallButtonMobile">Call</span>
                     </div>
@@ -128,7 +128,7 @@
             </div>
             <div class="display-l">
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "callSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/callService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Call"
                         classNames="btn-expand"}}
@@ -139,7 +139,7 @@
             {{#if (can-download)}}
                 <div class="display-xs display-s display-m">
                     <div class="menu-item menu-slideout"
-                        onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout"}}>
+                        onclick={{service-action "slideout/exportService" "startMultipleExportSlideout"}}>
                         <div class="btn-expand">
                             <span id="tour-openExportButtonMobile">Export</span>
                         </div>
@@ -147,7 +147,7 @@
                 </div>
                 <div class="display-l">
                     <div class="menu-item menu-slideout"
-                        onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout"}}>
+                        onclick={{service-action "slideout/exportService" "startMultipleExportSlideout"}}>
                         {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                             title="Export"
                             classNames="btn-expand"}}
@@ -164,7 +164,7 @@
                     Contacts
                     <button class="btn btn-plain v-center-right"
                         type="button"
-                        onclick={{service-action "newContactSlideoutService" "openSlideout"}}>
+                        onclick={{service-action "slideout/newContactService" "openSlideout"}}>
                         <span class="icon-thin-plus" id="tour-addNewContactButton"></span>
                     </button >
                 </div>
@@ -179,7 +179,7 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "newContactSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/newContactService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Add Contact"
                         classNames="btn-expand"}}
@@ -213,7 +213,7 @@
                     Tags
                     <button class="btn btn-plain v-center-right"
                         type="button"
-                        onclick={{service-action "newTagSlideoutService" "openNewTagSlideout"}}>
+                        onclick={{service-action "slideout/newTagService" "openNewTagSlideout"}}>
                         <span class="icon-thin-plus" id="tour-createNewTagButtonMobile"></span>
                     </button >
                 </div>
@@ -241,7 +241,7 @@
             <div class="display-l">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout" id="tour-openTagsListButton"
-                    onclick={{service-action "newTagSlideoutService" "openTagListSlideout"}}>
+                    onclick={{service-action "slideout/newTagService" "openTagListSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Tags"
                         classNames="btn-expand"}}
@@ -254,13 +254,13 @@
             <div class="display-xs display-s display-m">
                 <div class="menu-divider"></div>
                 <div class="menu-item menu-slideout"
-                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/supportService" "openSlideout"}}>
                     <span>Support</span>
                 </div>
             </div>
             <div class="display-l">
                 <div class="border-t menu-item menu-slideout"
-                    onclick={{service-action "supportSlideoutService" "openSlideout"}}>
+                    onclick={{service-action "slideout/supportService" "openSlideout"}}>
                     {{#tool-tip side=(constant "TOOLTIP.SIDE.RIGHT")
                         title="Support"
                         classNames="btn-expand"}}

@@ -3,7 +3,7 @@
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideoutService" "closeSlideout") as |slideout|}}
     <ul class="result-list">
-        {{#each (service-prop "noteRevisionSlideoutService" "recordNote.revisions") as |revision index|}}
+        {{#each (service-prop "slideout/noteRevisionService" "recordNote.revisions") as |revision index|}}
             {{#record-note-revision classNames="result-item"
                 tagName="li"
                 revision=revision}}

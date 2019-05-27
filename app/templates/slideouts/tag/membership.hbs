@@ -1,18 +1,18 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(service-prop "tagMembershipSlideoutService" "slideoutTitle"))
+        title=(service-prop "slideout/tagMembershipService" "slideoutTitle"))
     footerComponent=(component "slideout-pane/actions"
-        showFooter=(service-prop "tagMembershipSlideoutService" "anyMembershipChanges")
-        onPrimary=(service-action "tagMembershipSlideoutService" "finishSlideout")
+        showFooter=(service-prop "slideout/tagMembershipService" "anyMembershipChanges")
+        onPrimary=(service-action "slideout/tagMembershipService" "finishSlideout")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "tagMembershipSlideoutService" "cancelSlideout") as |slideout|}}
+    onClose=(service-action "slideout/tagMembershipService" "cancelSlideout") as |slideout|}}
     {{#multi-toggle/group-by-bucket
-        anyChanges=(get (service "tagMembershipSlideoutService") "anyMembershipChanges")
+        anyChanges=(get (service "slideout/tagMembershipService") "anyMembershipChanges")
         itemBucketProperty=(constant "PROP_NAME.TAGS")
-        items=(service-prop "tagMembershipSlideoutService" "contacts")
-        buckets=(service-prop "tagMembershipSlideoutService" "tags") as |tag|}}
+        items=(service-prop "slideout/tagMembershipService" "contacts")
+        buckets=(service-prop "slideout/tagMembershipService" "tags") as |tag|}}
         {{color-badge color=tag.hexColor text=tag.name}}
     {{else}}
         <li class="no-results">No tags yet.</li>

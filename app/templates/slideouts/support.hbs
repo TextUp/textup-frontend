@@ -1,6 +1,6 @@
 {{#slideout-pane
 	headerComponent=(component "slideout-pane/title" title="Support")
-    onClose=(service-action "supportSlideoutService" "cancelSlideout")
+    onClose=(service-action "slideout/supportService" "cancelSlideout")
     focusSelector=".start-focus"
     bodyClass="full-height" as |slideout|}}
 	<div class="flex flex--direction-vertical full-height flex--align-stretch">
@@ -24,11 +24,11 @@
 						Suggest a new TextUp feature
 					</a>
 				</div>
-				{{#if (service-prop "supportSlideoutService" "shouldAllowRestartTour")}}
+				{{#if (service-prop "slideout/supportService" "shouldAllowRestartTour")}}
 					<div class="form__group">
 						<button type="button"
 	                        class="button button--expand"
-	                        onclick={{service-action "supportSlideoutService" "restartTour"}}>
+	                        onclick={{service-action "slideout/supportService" "restartTour"}}>
 							Restart the Getting Started tour
 						</button>
 					</div>
@@ -40,16 +40,16 @@
 					{{textarea rows="3"
 						autoresize=true
 						class="form__input form__input--multiline start-focus"
-						value=(get (service "supportSlideoutService") "message")
+						value=(get (service "slideout/supportService") "message")
 						placeholder="Your message here..."
 						aria-label="Your message here..."
 						name="entry.2102104798"}}
 				</div>
-				{{#if (service-prop "supportSlideoutService" "hasMessage")}}
+				{{#if (service-prop "slideout/supportService" "hasMessage")}}
 					<div class="form__group flex flex--spacing-between flex--justify-center">
 				        <div class="flex__item">
 				            <button class="btn" type="button"
-				                onclick={{action (service-mut "supportSlideoutService" "message") ""}}>
+				                onclick={{action (service-mut "slideout/supportService" "message") ""}}>
 				                Clear
 				            </button>
 				        </div>

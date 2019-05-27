@@ -2,15 +2,15 @@
     headerComponent=(component "slideout-pane/title" title="New Note")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "noteSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "noteSlideoutService" "shouldDisablePrimaryAction")
+        onPrimary=(service-action "slideout/noteService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/noteService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
         primaryProgressLabel="Creating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "noteSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "noteSlideoutService" "shouldForceKeepOpen")
+    onClose=(service-action "slideout/noteService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/noteService" "shouldForceKeepOpen")
     focusSelector=".start-focus"}}
-    {{#with (service-prop "noteSlideoutService" "recordNote") as |recordNote|}}
+    {{#with (service-prop "slideout/noteService" "recordNote") as |recordNote|}}
         {{model-form/record-note class="pad-t"
             firstControlClass="start-focus"
             recordNote=recordNote
@@ -20,6 +20,6 @@
             onAddLocation=(service-action "recordItemService" "addLocationToNote" recordNote)
             onRemoveLocation=(service-action "recordItemService" "removeLocationFromNote" recordNote)
             onLocationError=(service-action "mapService" "handleError")
-            readOnly=(service-prop "noteSlideoutService" "isReadOnly")}}
+            readOnly=(service-prop "slideout/noteService" "isReadOnly")}}
     {{/with}}
 {{/slideout-pane}}

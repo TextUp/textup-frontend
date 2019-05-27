@@ -2,12 +2,12 @@
     headerComponent=(component "slideout-pane/title" title="Call")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "callSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "callSlideoutService" "shouldDisablePrimaryAction")
-        primaryLabel=(service-prop "callSlideoutService" "primaryActionLabel")
+        onPrimary=(service-action "slideout/callService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/callService" "shouldDisablePrimaryAction")
+        primaryLabel=(service-prop "slideout/callService" "primaryActionLabel")
         primaryProgressLabel="Calling...")
-    onClose=(service-action "callSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "callSlideoutService" "shouldForceKeepOpen")
+    onClose=(service-action "slideout/callService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/callService" "shouldForceKeepOpen")
     focusSelector=".number-control" as |slideout|}}
     <div class="pad-t pad-l pad-r">
         <div class="form-element">
@@ -20,9 +20,9 @@
                         class="form-control form-control--only-bottom text-biggest text-center"
                         pattern="[0-9]*"
                         placeholder="Enter number here"
-                        value=(service-prop "callSlideoutService" "numToCall")
-                        key-up=(service-action "callSlideoutService" "onCallNumberChange")
-                        focus-out=(service-action "callSlideoutService" "onCallNumberChange")}}
+                        value=(service-prop "slideout/callService" "numToCall")
+                        key-up=(service-action "slideout/callService" "onCallNumberChange")
+                        focus-out=(service-action "slideout/callService" "onCallNumberChange")}}
                 {{else}}
                     <div tabindex="0"
                         onfocus={{hideShow.actions.open}}
@@ -30,15 +30,15 @@
                         <input type="tel"
                             disabled="disabled"
                             class="form-control form-control--only-bottom text-biggest text-center"
-                            value={{phone-number (service-prop "callSlideoutService" "numToCall")}}>
+                            value={{phone-number (service-prop "slideout/callService" "numToCall")}}>
                     </div>
                 {{/if}}
             {{/hide-show}}
-            {{#with (service-prop "callSlideoutService" "contactToCall") as |contactToCall|}}
+            {{#with (service-prop "slideout/callService" "contactToCall") as |contactToCall|}}
                 <div class="row margin-t margin-b text-center text-small">
                     <span class="center text-ellipses xs-full-row">
                         <span class="text-bold">{{contactToCall.name}}</span>
-                        {{#with (service-prop "callSlideoutService" "contactToCallOtherNumCount") as |numCount|}}
+                        {{#with (service-prop "slideout/callService" "contactToCallOtherNumCount") as |numCount|}}
                             and {{numCount}} {{pluralize "other" numCount}}
                         {{/with}}
                     </span>
@@ -46,11 +46,11 @@
             {{/with}}
         </div>
         <div class="form-element margin-b-double">
-            {{number-control val=(service-prop "callSlideoutService" "numToCall")
+            {{number-control val=(service-prop "slideout/callService" "numToCall")
                 showAlphabet=true
                 numDigits=10
-                doChange=(service-action "callSlideoutService" "onCallNumberChange")
-                onSubmit=(service-action "callSlideoutService" "finishSlideout")}}
+                doChange=(service-action "slideout/callService" "onCallNumberChange")
+                onSubmit=(service-action "slideout/callService" "finishSlideout")}}
         </div>
     </div>
 {{/slideout-pane}}

@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:account-slideout-service', 'Unit | Service | account slideout service', {
+moduleFor('service:slideout/sharing-service', 'Unit | Service | slideout/sharing service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

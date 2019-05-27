@@ -1,23 +1,23 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(phone-number (service-prop "existingContactSlideoutService" "contactReadableIdent")))
+        title=(phone-number (service-prop "slideout/existingContactService" "contactReadableIdent")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "existingContactSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "existingContactSlideoutService" "shouldDisablePrimaryAction")
+        onPrimary=(service-action "slideout/existingContactService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/existingContactService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
         primaryProgressLabel="Updating...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "existingContactSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "existingContactSlideoutService" "shouldForceKeepOpen")
+    onClose=(service-action "slideout/existingContactService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/existingContactService" "shouldForceKeepOpen")
     focusSelector=".start-focus" as |slideout|}}
     {{model-form/contact firstControlClass="start-focus"
-        contact=(service-prop "existingContactSlideoutService" "contact")
-        onGoToDuplicates=(service-action "existingContactSlideoutService" "goToDuplicate")
-        onChangeNumbers=(service-mut "existingContactSlideoutService" "contact.numbers")
+        contact=(service-prop "slideout/existingContactService" "contact")
+        onGoToDuplicates=(service-action "slideout/existingContactService" "goToDuplicate")
+        onChangeNumbers=(service-mut "slideout/existingContactService" "contact.numbers")
         onAddNumber=(service-action "contactService" "checkNumberDuplicate"
-            (service-mut "existingContactSlideoutService" "contact"))
+            (service-mut "slideout/existingContactService" "contact"))
         onRemoveNumber=(service-action "contactService" "removeNumberDuplicate"
-            (service-mut "existingContactSlideoutService" "contact"))}}
+            (service-mut "slideout/existingContactService" "contact"))}}
 {{/slideout-pane}}
 

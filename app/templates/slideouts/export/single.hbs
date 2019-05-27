@@ -1,32 +1,32 @@
 {{#slideout-pane
     headerComponent=(component "slideout-pane/title"
-        title=(concat "Exporting " (service-prop "exportSlideoutService" "recordOwnerName")))
+        title=(concat "Exporting " (service-prop "slideout/exportService" "recordOwnerName")))
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "exportSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "exportSlideoutService" "shouldDisablePrimaryAction")
+        onPrimary=(service-action "slideout/exportService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/exportService" "shouldDisablePrimaryAction")
         primaryLabel="Export"
         primaryProgressLabel="Exporting...")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
-    onClose=(service-action "exportSlideoutService" "cancelSlideout") as |slideout|}}
+    onClose=(service-action "slideout/exportService" "cancelSlideout") as |slideout|}}
     <div class="form">
         <div class="form__group">
             <label for="export-start-date" class="form__label">
                 Start date
             </label>
-            {{datetime-control value=(service-prop "exportSlideoutService" "startDate")
+            {{datetime-control value=(service-prop "slideout/exportService" "startDate")
                 showTime=false
                 max=(now)
-                onSelect=(service-mut "exportSlideoutService" "startDate")}}
+                onSelect=(service-mut "slideout/exportService" "startDate")}}
         </div>
         <div class="form__group">
             <label for="export-end-date" class="form__label">
                 End date
             </label>
-            {{datetime-control value=(service-prop "exportSlideoutService" "endDate")
+            {{datetime-control value=(service-prop "slideout/exportService" "endDate")
                 showTime=false
                 max=(now)
-                onSelect=(service-mut "exportSlideoutService" "endDate")}}
+                onSelect=(service-mut "slideout/exportService" "endDate")}}
         </div>
     </div>
 {{/slideout-pane}}

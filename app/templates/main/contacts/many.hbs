@@ -74,26 +74,26 @@
                             {{#if (or hasNoSharedContactsSelected canMessageSelectedContacts)}}
                                 <li tabindex="0"
                                     class="dropdown-item"
-                                    onclick={{service-action "composeSlideoutService" "openSlideout" selectedContacts}}>
+                                    onclick={{service-action "slideout/composeService" "openSlideout" selectedContacts}}>
                                     Compose
                                 </li>
                             {{/if}}
                             {{#if hasNoSharedContactsSelected}}
                                 <li tabindex="0"
                                     class="dropdown-item"
-                                    onclick={{service-action "tagMembershipSlideoutService" "openSlideout" selectedContacts}}>
+                                    onclick={{service-action "slideout/tagMembershipService" "openSlideout" selectedContacts}}>
                                     Tags
                                 </li>
                                 <li tabindex="0"
                                     class="dropdown-item"
-                                    onclick={{service-action "sharingSlideoutService" "openSlideout" selectedContacts}}>
+                                    onclick={{service-action "slideout/sharingService" "openSlideout" selectedContacts}}>
                                     Share
                                 </li>
                             {{/if}}
                             {{#if (can-download)}}
                                 <li tabindex="0"
                                     class="dropdown-item"
-                                    onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout" selectedContacts}}>
+                                    onclick={{service-action "slideout/exportService" "startMultipleExportSlideout" selectedContacts}}>
                                     Export records
                                 </li>
                             {{/if}}
@@ -123,7 +123,7 @@
                     <span class="display-l clear-badge no-space">
                         <button class="btn btn-default"
                             type="button"
-                            onclick={{service-action "composeSlideoutService" "openSlideout" selectedContacts}}>
+                            onclick={{service-action "slideout/composeService" "openSlideout" selectedContacts}}>
                             Compose
                         </button>
                     </span>
@@ -132,14 +132,14 @@
                     <span class="display-l clear-badge no-space">
                         <button class="btn"
                             type="button"
-                            onclick={{service-action "tagMembershipSlideoutService" "openSlideout" selectedContacts}}>
+                            onclick={{service-action "slideout/tagMembershipService" "openSlideout" selectedContacts}}>
                             Tags
                         </button>
                     </span>
                     <span class="display-l clear-badge no-space">
                         <button class="btn"
                             type="button"
-                            onclick={{service-action "sharingSlideoutService" "openSlideout" selectedContacts}}>
+                            onclick={{service-action "slideout/sharingService" "openSlideout" selectedContacts}}>
                             Share
                         </button>
                     </span>
@@ -148,7 +148,7 @@
                     <span class="display-l clear-badge no-space">
                         <button class="btn"
                             type="button"
-                            onclick={{service-action "exportSlideoutService" "startMultipleExportSlideout" selectedContacts}}>
+                            onclick={{service-action "slideout/exportService" "startMultipleExportSlideout" selectedContacts}}>
                             Export
                         </button>
                     </span>

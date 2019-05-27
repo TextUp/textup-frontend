@@ -2,25 +2,25 @@
     headerComponent=(component "slideout-pane/title" title="Compose")
     footerComponent=(component "slideout-pane/actions"
         showFooter=true
-        onPrimary=(service-action "composeSlideoutService" "finishSlideout")
-        disablePrimary=(service-prop "composeSlideoutService" "shouldDisablePrimaryAction")
+        onPrimary=(service-action "slideout/composeService" "finishSlideout")
+        disablePrimary=(service-prop "slideout/composeService" "shouldDisablePrimaryAction")
         primaryLabel="Send"
         primaryProgressLabel="Sending...")
-    onClose=(service-action "composeSlideoutService" "cancelSlideout")
-    forceKeepOpen=(service-prop "composeSlideoutService" "shouldForceKeepOpen")
+    onClose=(service-action "slideout/composeService" "cancelSlideout")
+    forceKeepOpen=(service-prop "slideout/composeService" "shouldForceKeepOpen")
     focusSelector=".multi-select-new-input" as |slideout|}}
 	<div class="form">
 		<div class="form__group">
             {{#tour-components/hint hintId=(constant "HINT.COMPOSE")}}
-				{{#multi-select data=(service-prop "composeSlideoutService" "tagRecipients")
-			    	selected=(service-prop "composeSlideoutService" "recipients")
+				{{#multi-select data=(service-prop "slideout/composeService" "tagRecipients")
+			    	selected=(service-prop "slideout/composeService" "recipients")
 			    	filterProperty=(constant "PROP_NAME.FILTER_VAL")
                     displayProperty=(constant "PROP_NAME.READABLE_IDENT")
 			    	identityProperty=(constant "PROP_NAME.URL_IDENT")
 			    	doSearch=(service-action "contactService" "searchContacts")
-			    	doCreate=(service-action "composeSlideoutService" "createRecipient")
-			    	onInsert=(service-action "composeSlideoutService" "insertRecipient")
-					onRemove=(service-action "composeSlideoutService" "removeRecipient") as |recipient|}}
+			    	doCreate=(service-action "slideout/composeService" "createRecipient")
+			    	onInsert=(service-action "slideout/composeService" "insertRecipient")
+					onRemove=(service-action "slideout/composeService" "removeRecipient") as |recipient|}}
 					{{multi-select/display-badge entity=recipient}}
 				{{/multi-select}}
             {{/tour-components/hint}}
@@ -31,7 +31,7 @@
 				autoresize=true
 				class="form__input form__input--multiline"
 				maxLength=(constant "DEFAULT.OUTGOING_TEXT_NUM_CHARACTERS")
-				value=(get (service "composeSlideoutService") "recipients")
+				value=(get (service "slideout/composeService") "recipients")
 				placeholder="Type your message here"}}
 		</div>
 	</div>

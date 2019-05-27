@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:support-slideout-service', 'Unit | Service | support slideout service', {
+moduleFor('service:slideout/existing-future-message-service', 'Unit | Service | slideout/existing future message service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });
