@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Component from '@ember/component';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
@@ -111,7 +110,7 @@ export default Component.extend(PropTypesMixin, HasAppRoot, HasEvents, {
     });
   },
   _closeThenCall(action) {
-    return this._close().then(() => callIfPresent(null, action, [...arguments].slice(1)));
+    return this._close().then(() => PropertyUtils.callIfPresent(action, [...arguments].slice(1)));
   },
   // for target vs relatedTarget: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/relatedTarget
   _tryCloseOnFocusout({ relatedTarget }) {

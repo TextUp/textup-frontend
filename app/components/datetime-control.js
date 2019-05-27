@@ -1,4 +1,3 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Component from '@ember/component';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
@@ -230,7 +229,7 @@ export default Component.extend(PropTypesMixin, HasWormhole, {
     next(() => {
       if (!this.isDestroying && !this.isDestroyed) {
         this.set('_isRerenderingControls', false);
-        callIfPresent(this, then);
+        PropertyUtils.callIfPresent(then);
       }
     });
   },

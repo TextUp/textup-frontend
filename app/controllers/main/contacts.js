@@ -23,7 +23,7 @@ export default Controller.extend({
   },
 
   resetState() {
-    PropertyUtils.tryInvoke(this.get('contactsList'), 'actions.resetAll');
+    PropertyUtils.callIfPresent(this.get('contactsList.actions.resetAll'));
     this.get('contactListService').resetState();
   },
 });

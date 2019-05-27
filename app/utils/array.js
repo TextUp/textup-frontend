@@ -1,6 +1,5 @@
 import { typeOf } from '@ember/utils';
 import { isArray } from '@ember/array';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 
 export function normalizeIndex(numItems, index) {
   if (typeOf(index) !== 'number' || typeOf(numItems) !== 'number') {
@@ -28,5 +27,5 @@ export function ensureAllDefined(obj) {
 
 // [FUTURE] remove this sort of chained callback throughout the app
 export function tryCallAll(callbacks) {
-  ensureArrayAndAllDefined(callbacks).forEach(fn => callIfPresent(null, fn));
+  ensureArrayAndAllDefined(callbacks).forEach(fn => PropertyUtils.callIfPresent(fn));
 }

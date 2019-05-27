@@ -1,4 +1,3 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
 import TypeUtils from 'textup-frontend/utils/type';
@@ -31,11 +30,11 @@ export default Service.extend({
     if (TypeUtils.isAnyModel(fMessage)) {
       fMessage.rollbackAttributes();
     }
-    callIfPresent(this, doClose);
+    PropertyUtils.callIfPresent(doClose);
   },
   saveAfterEditing(fMessage, doClose) {
     return this.get('dataService')
       .persist(fMessage)
-      .then(() => callIfPresent(this, doClose));
+      .then(() => PropertyUtils.callIfPresent(doClose));
   },
 });

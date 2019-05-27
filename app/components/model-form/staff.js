@@ -1,4 +1,3 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Component from '@ember/component';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
@@ -70,7 +69,7 @@ export default Component.extend(PropTypesMixin, {
 
   _onSaveAndThen(then) {
     return PropertyUtils.ensurePromise(tryInvoke(this, 'onSave')).then(() =>
-      callIfPresent(null, then)
+      PropertyUtils.callIfPresent(then)
     );
   },
 });

@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Route from '@ember/routing/route';
 import StorageUtils from 'textup-frontend/utils/storage';
 import { inject as service } from '@ember/service';
@@ -29,7 +28,7 @@ export default Route.extend({
         searchResults: [],
         numTotalSearchResults: null,
       });
-      callIfPresent(null, controller.get('searchList.actions.resetAll'));
+      PropertyUtils.callIfPresent(controller.get('searchList.actions.resetAll'));
     }
   },
 });

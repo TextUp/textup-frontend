@@ -16,12 +16,7 @@ export default Controller.extend({
     onLoadRecordItems() {
       return this.get('recordItemService')
         .loadRecordItems(this.get('model'))
-        .then(() => {
-          const careRecordRef = this.get('careRecordRef');
-          if (careRecordRef && careRecordRef.actions) {
-            tryInvoke(careRecordRef.actions, 'restorePosition');
-          }
-        });
+        .then(() => PropertyUtils.callIfPresent(this.get('careRecordRef.actions.restorePosition')));
     },
     onRefreshRecordItems() {
       return this.get('recordItemService').loadRecordItems(this.get('model'), {
@@ -58,9 +53,6 @@ export default Controller.extend({
     if (careRecordText) {
       careRecordText.rollbackAttributes();
     }
-    const careRecordRef = this.get('careRecordRef');
-    if (careRecordRef && careRecordRef.actions) {
-      tryInvoke(careRecordRef.actions, 'resetAll');
-    }
+    PropertyUtils.callIfPresent(this.get('careRecordRef.actions.resetAll'));
   },
 });

@@ -25,6 +25,6 @@ export default Controller.extend({
 
   resetState() {
     this.get('staffListService').resetState();
-    PropertyUtils.tryInvoke(this.get('peopleList'), 'actions.resetAll');
+    PropertyUtils.callIfPresent(this.get('peopleList.actions.resetAll'));
   },
 });

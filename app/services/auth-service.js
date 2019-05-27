@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Evented from '@ember/object/evented';
@@ -102,7 +101,7 @@ export default Service.extend(Evented, {
         staffObj
       );
       this._retryAttemptedTransitionAfterLogIn().finally(() =>
-        callIfPresent(null, resolve, [staffObj])
+        PropertyUtils.callIfPresent(resolve, [staffObj])
       );
     }
   },
@@ -114,7 +113,7 @@ export default Service.extend(Evented, {
 
   _logInFail(reject) {
     this.get('notifications').error(LOG_IN_FAIL_MSG);
-    callIfPresent(null, reject);
+    PropertyUtils.callIfPresent(reject);
   },
   _retryAttemptedTransitionAfterLogIn() {
     return new RSVP.Promise(resolve => {
@@ -213,6 +212,6 @@ export default Service.extend(Evented, {
     storageService.sendStorageToOtherTabs();
     this.setProperties({ token: null, refreshToken: null, authUser: null });
     this.trigger(config.events.auth.clear);
-    callIfPresent(null, reject);
+    PropertyUtils.callIfPresent(reject);
   },
 });

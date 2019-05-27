@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import RSVP from 'rsvp';
@@ -83,7 +82,7 @@ export default Service.extend({
   },
 
   _newBeforeSend(originalBeforeSend, xhr, ...otherArgs) {
-    callIfPresent(null, originalBeforeSend, [xhr, ...otherArgs]);
+    PropertyUtils.callIfPresent(originalBeforeSend, [xhr, ...otherArgs]);
     xhr.setRequestHeader(Constants.REQUEST_HEADER.AUTH, this.get('authService.authHeader'));
   },
 

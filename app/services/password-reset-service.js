@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Service, { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 
@@ -56,10 +55,10 @@ export default Service.extend({
 
   _getTokenSuccess(resolve) {
     this.get('notifications').success(GET_TOKEN_SUCCESS_MSG);
-    callIfPresent(null, resolve);
+    PropertyUtils.callIfPresent(resolve);
   },
   _updatePasswordSuccess(resolve) {
     this.get('notifications').success(RESET_PASSWORD_SUCCESS_MSG);
-    callIfPresent(null, resolve);
+    PropertyUtils.callIfPresent(resolve);
   },
 });

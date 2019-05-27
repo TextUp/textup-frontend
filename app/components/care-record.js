@@ -172,21 +172,14 @@ export default Component.extend(PropTypesMixin, {
   },
 
   _tryResetAll() {
-    const scrollEl = this.get('_recordClustersScroll');
-    if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'resetAll');
-    }
+    PropertyUtils.callIfPresent(this.get('_recordClustersScroll.actions.resetAll'));
   },
   _tryRestorePosition(shouldAnimate = false) {
-    const scrollEl = this.get('_recordClustersScroll');
-    if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'restorePosition', [shouldAnimate]);
-    }
+    PropertyUtils.callIfPresent(this.get('_recordClustersScroll.actions.restorePosition'), [
+      shouldAnimate,
+    ]);
   },
   _tryResetScroll() {
-    const scrollEl = this.get('_recordClustersScroll');
-    if (scrollEl && scrollEl.actions) {
-      tryInvoke(scrollEl.actions, 'resetPosition', [true]);
-    }
+    PropertyUtils.callIfPresent(this.get('_recordClustersScroll.actions.resetPosition'), [true]);
   },
 });

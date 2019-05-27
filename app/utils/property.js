@@ -13,17 +13,6 @@ export function mustGet(obj, propName, errorString) {
   return retVal;
 }
 
-// TODO propagate
-export function tryInvoke(obj, propName, args) {
-  if (TypeUtils.isAnyObject(obj)) {
-    const retVal = get(obj, propName);
-    if (typeOf(retVal) === 'function') {
-      return retVal.apply(obj, args);
-    }
-  }
-}
-
-// TODO propagate
 export function callIfPresent(fn, args) {
   return typeOf(fn) === 'function' ? fn.apply(null, args) : undefined;
 }

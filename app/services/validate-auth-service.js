@@ -1,7 +1,6 @@
 import Service, { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
 import ArrayUtils from 'textup-frontend/utils/array';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 
@@ -18,7 +17,7 @@ export default Service.extend({
       }
       this._doValidate({ username, password }).then(() => {
         ArrayUtils.tryCallAll(thens);
-        callIfPresent(null, resolve);
+        PropertyUtils.callIfPresent(resolve);
       }, reject);
     });
   },

@@ -107,10 +107,7 @@ export default Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onAddImage', [...arguments]);
   },
   _onStartAddAudio() {
-    const drawer = this.get('_mediaDrawer');
-    if (drawer && drawer.actions) {
-      tryInvoke(drawer.actions, 'startAddAudio');
-    }
+    PropertyUtils.callIfPresent(this.get('_mediaDrawer.actions.startAddAudio'));
   },
   _onAddAudio() {
     tryInvoke(this, 'onAddAudio', [...arguments]);

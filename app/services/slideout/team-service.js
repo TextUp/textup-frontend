@@ -55,7 +55,7 @@ export default Service.extend({
   },
   cancelCreateInTeamList() {
     AppUtils.tryRollback(this.get('newTeam'));
-    PropertyUtils.tryInvoke(this.get('teamListHideAway'), 'actions.close');
+    PropertyUtils.callIfPresent(this.get('teamListHideAway.actions.close'));
   },
 
   finishNewTeamSlideout() {
@@ -66,7 +66,7 @@ export default Service.extend({
   finishCreateInTeamList() {
     return this.get('teamService')
       .persistNew(this.get('newTeam'))
-      .then(() => PropertyUtils.tryInvoke(this.get('teamListHideAway'), 'actions.close'));
+      .then(() => PropertyUtils.callIfPresent(this.get('teamListHideAway.actions.close')));
   },
 
   // Internal

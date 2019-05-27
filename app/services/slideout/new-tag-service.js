@@ -53,7 +53,7 @@ export default Service.extend({
   },
   cancelCreateInTagList() {
     AppUtils.tryRollback(this.get('newTag'));
-    PropertyUtils.tryInvoke(this.get('tagsListHideAway'), 'actions.close');
+    PropertyUtils.callIfPresent(this.get('tagsListHideAway.actions.close'));
   },
 
   finishNewTagSlideout() {
@@ -61,7 +61,7 @@ export default Service.extend({
   },
   finishCreateInTagList() {
     return this._tryPersistNewTag().then(() =>
-      PropertyUtils.tryInvoke(this.get('tagsListHideAway'), 'actions.close')
+      PropertyUtils.callIfPresent(this.get('tagsListHideAway.actions.close'))
     );
   },
 

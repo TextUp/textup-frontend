@@ -1,6 +1,5 @@
 import AppUtils from 'textup-frontend/utils/app';
 import ArrayUtils from 'textup-frontend/utils/array';
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import config from 'textup-frontend/config/environment';
 import Evented from '@ember/object/evented';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
@@ -133,11 +132,11 @@ export default Service.extend(Evented, {
     this.trigger(config.events.lock.unlocked);
     this.get('notifications').clearAll();
     this._resetAttempts();
-    callIfPresent(null, resolve);
+    PropertyUtils.callIfPresent(resolve);
   },
   _onVerifyFail(reject) {
     this._recordOneMoreAttempt();
-    callIfPresent(null, reject);
+    PropertyUtils.callIfPresent(reject);
   },
   _resetLockCode() {
     this.set('lockCode', '');

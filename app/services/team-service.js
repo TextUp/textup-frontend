@@ -24,7 +24,7 @@ export default Service.extend({
     //   // location also disassociates the team and its location
     //   const model = this.get('currentModel');
     //   model.get('teams').then(teams => teams.unshiftObject(persistedTeam));
-    //   callIfPresent(this, then);
+    //   PropertyUtils.callIfPresent(then);
     // });
   },
 });

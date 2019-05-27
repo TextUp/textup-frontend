@@ -1,4 +1,3 @@
-import callIfPresent from 'textup-frontend/utils/call-if-present';
 import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import PropertyUtils from 'textup-frontend/utils/property';
@@ -109,15 +108,17 @@ export default Component.extend(PropTypesMixin, {
     }
     this._resetProperties();
     PropertyUtils.ensurePromise(
-      callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'))
-    ).then(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
+      PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.resetPosition'))
+    ).then(() => PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.checkNearEnd')));
   },
 
   _resetPosition() {
-    return callIfPresent(null, this.get('_scrollContainer.actions.resetPosition'), [...arguments]);
+    return PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.resetPosition'), [
+      ...arguments,
+    ]);
   },
   _restorePosition() {
-    return callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition'), [
+    return PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.restoreUserPosition'), [
       ...arguments,
     ]);
   },
@@ -187,11 +188,13 @@ export default Component.extend(PropTypesMixin, {
       });
       // Need to schedule to run in the next run loop to all for appropriate restoring of the user's
       // position before we attempt to check if near end
-      next(() => callIfPresent(null, this.get('_scrollContainer.actions.checkNearEnd')));
+      next(() => PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.checkNearEnd')));
     } else {
       // When items are added to the data array and the user does not manually trigger a restore,
       // then we want to restore the user position here regardless
-      next(() => callIfPresent(null, this.get('_scrollContainer.actions.restoreUserPosition')));
+      next(() =>
+        PropertyUtils.callIfPresent(this.get('_scrollContainer.actions.restoreUserPosition'))
+      );
     }
   },
 });

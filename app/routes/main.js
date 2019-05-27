@@ -50,8 +50,8 @@ export default Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSetup, {
   },
   resetController(controller) {
     this._super(...arguments);
-    PropertyUtils.tryInvoke(controller.get('accountSwitcher'), 'actions.close');
-    PropertyUtils.tryInvoke(controller.get('slidingMenu'), 'actions.close');
+    PropertyUtils.callIfPresent(controller.get('accountSwitcher.actions.close'));
+    PropertyUtils.callIfPresent(controller.get('slidingMenu.actions.close'));
   },
   redirect(model, transition) {
     this._super(...arguments);
