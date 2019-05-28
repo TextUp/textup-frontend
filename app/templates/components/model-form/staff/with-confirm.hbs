@@ -46,10 +46,10 @@
                     </button>
                 </div>
                 <div class="flex__item">
-                    {{async-button classNames="btn btn-default"
-                        action=(action _onValidateAndSaveAndClose)
-                        default="Update"
-                        pending="Updating..."}}
+                    {{#action-button class="btn btn-default"
+                        onAction=(action _onValidateAndSaveAndClose)}}
+                        Update
+                    {{/action-button}}
                 </div>
             </div>
         {{/if}}

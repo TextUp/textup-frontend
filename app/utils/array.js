@@ -1,5 +1,6 @@
-import { typeOf } from '@ember/utils';
+import PropertyUtils from 'textup-frontend/utils/property';
 import { isArray } from '@ember/array';
+import { typeOf } from '@ember/utils';
 
 export function normalizeIndex(numItems, index) {
   if (typeOf(index) !== 'number' || typeOf(numItems) !== 'number') {

@@ -1,8 +1,9 @@
-import { notEmpty, sort, readOnly } from '@ember/object/computed';
-import { getWithDefault, get, computed } from '@ember/object';
-import { tryInvoke, typeOf } from '@ember/utils';
+import AppUtils from 'textup-frontend/utils/app';
 import DS from 'ember-data';
 import RecordItem from './record-item';
+import { typeOf } from '@ember/utils';
+import { get, computed } from '@ember/object';
+import { notEmpty, sort, readOnly } from '@ember/object/computed';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -34,7 +35,7 @@ export default RecordItem.extend(Validations, {
 
   rollbackAttributes() {
     this.set('_addAfterDate', null);
-    tryInvoke(getWithDefault(this, 'location.content', {}), 'rollbackAttributes');
+    AppUtils.tryRollback(this.get('location.content'));
     return this._super(...arguments);
   },
   hasManualChanges: computed('media.isDirty', 'location.isDirty', function() {

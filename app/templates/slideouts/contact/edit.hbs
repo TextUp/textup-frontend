@@ -5,8 +5,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/existingContactService" "finishSlideout")
         disablePrimary=(service-prop "slideout/existingContactService" "shouldDisablePrimaryAction")
-        primaryLabel="Update"
-        primaryProgressLabel="Updating...")
+        primaryLabel="Update")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideout/existingContactService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/existingContactService" "shouldForceKeepOpen")

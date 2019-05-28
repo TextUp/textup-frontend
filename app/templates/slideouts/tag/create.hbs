@@ -4,8 +4,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/newTagService" "finishNewTagSlideout")
         disablePrimary=(service-prop "slideout/newTagService" "shouldDisablePrimaryAction")
-        primaryLabel="Create"
-        primaryProgressLabel="Creating...")
+        primaryLabel="Create")
     onClose=(service-action "slideout/newTagService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/newTagService" "shouldForceKeepOpen")
     focusSelector=".start-focus" as |slideout|}}

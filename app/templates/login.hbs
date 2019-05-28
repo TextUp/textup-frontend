@@ -76,18 +76,18 @@
                         </button>
                     </div>
                     <div class="flex__item">
-                        {{async-button classNames="btn btn-default"
-                            disableWhen=(not resetUsername)
-                            action=(service-action "passwordResetService" "getToken" resetUsername)
-                            default="Send reset"
-                            pending="Sending..."}}
+                        {{#action-button class="btn btn-default"
+                            disabled=(not resetUsername)
+                            onAction=(service-action "passwordResetService" "getToken" resetUsername)}}
+                            Send reset
+                        {{/action-button}}
                     </div>
                 {{else}}
                     <div class="flex__item">
-                        {{async-button classNames="btn btn-default"
-                            action=(action "login" username password storeCredentials)
-                            default="Log in"
-                            pending="Logging in..."}}
+                        {{#action-button class="btn btn-default"
+                            onAction=(action "login" username password storeCredentials)}}
+                            Log in
+                        {{/action-button}}
                     </div>
                 {{/if}}
             </div>

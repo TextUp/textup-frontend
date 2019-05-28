@@ -5,8 +5,7 @@
         showFooter=(service-prop "slideout/notificationService" "shouldShowFooter")
         onPrimary=(service-action "slideout/notificationService" "finishSlideout")
         disablePrimary=(service-prop "slideout/notificationService" "shouldDisablePrimaryAction")
-        primaryLabel="Update"
-        primaryProgressLabel="Updating...")
+        primaryLabel="Update")
     onClose=(service-action "slideout/notificationService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/notificationService" "shouldForceKeepOpen") as |slideout|}}
     <div class="form">
@@ -114,11 +113,11 @@
                     cancelAddMessage="Cancel redo" as |hideShow|}}
                     {{#if hideShow.isOpen}}
                         <div class="flex__item">
-                            {{async-button classNames="button button--expand"
-                                disabledWhen=(service-prop "slideout/notificationService" "shouldDisableVoicemailGreetingCall")
-                                action=(service-action "slideout/notificationService" "onRequestVoicemailGreetingCall")
-                                default="Call me to record"
-                                pending="Calling your personal phone..."}}
+                            {{#action-button class="button button--expand"
+                                disabled=(service-prop "slideout/notificationService" "shouldDisableVoicemailGreetingCall")
+                                onAction=(service-action "slideout/notificationService" "onRequestVoicemailGreetingCall")}}
+                                Call me to record
+                            {{/action-button}}
                         </div>
                     {{/if}}
                 {{/audio-control}}

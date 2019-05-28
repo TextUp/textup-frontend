@@ -1,12 +1,13 @@
-import { readOnly, equal, or } from '@ember/object/computed';
-import { isPresent } from '@ember/utils';
-import { computed } from '@ember/object';
-import RSVP from 'rsvp';
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
+import RSVP from 'rsvp';
+import { computed } from '@ember/object';
+import { isPresent } from '@ember/utils';
+import { readOnly, equal, or } from '@ember/object/computed';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -40,6 +41,11 @@ const Validations = buildValidations({
 export default DS.Model.extend(Dirtiable, HasReadableIdentifier, HasUrlIdentifier, Validations, {
   // Overrides
   // ---------
+
+  rollbackAttributes() {
+    AppUtils.tryRollback(this.get('location.content'));
+    return this._super(...arguments);
+  },
 
   hasManualChanges: computed('location.isDirty', function() {
     return !!this.get('location.isDirty');

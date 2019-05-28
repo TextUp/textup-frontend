@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import MediaElement from 'textup-frontend/models/media-element';
 import MutationObserver from 'mutation-observer';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { computed } from '@ember/object';
 import { scheduleOnce, debounce } from '@ember/runloop';
@@ -103,37 +104,11 @@ export default Component.extend(PropTypesMixin, {
   _onContentChange(newVal) {
     tryInvoke(this, 'onContentChange', [newVal]); // do NOT debounce or else typing will be very laggy
   },
-  _onAddImage() {
-    tryInvoke(this, 'onAddImage', [...arguments]);
-  },
   _onStartAddAudio() {
     PropertyUtils.callIfPresent(this.get('_mediaDrawer.actions.startAddAudio'));
   },
-  _onAddAudio() {
-    tryInvoke(this, 'onAddAudio', [...arguments]);
-  },
-  _onRemoveMedia() {
-    tryInvoke(this, 'onRemoveMedia', [...arguments]);
-  },
 
-  _onOptionsClose() {
-    tryInvoke(this, 'onOptionsClose', [...arguments]);
-  },
-
-  // record modification handlers
-  _addNoteInPast() {
-    tryInvoke(this, 'onAddNoteInPast');
-  },
-  _addNoteNow() {
-    tryInvoke(this, 'onAddNote');
-  },
-  _startCall() {
-    tryInvoke(this, 'onCall');
-  },
   _onSendText() {
     return tryInvoke(this, 'onText', [this.get('contents'), this.get('images')]);
-  },
-  _scheduleMessage() {
-    tryInvoke(this, 'onScheduleMessage');
   },
 });

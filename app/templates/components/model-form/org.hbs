@@ -32,7 +32,7 @@
         {{#if (not (unbound org.isTimeoutStandard))}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.LIGHT_GRAY")
-                onSelect=(action _onRevertTimeout)}}
+                onSelect=(optional-action onRevertTimeout)}}
                 {{org.timeoutInSeconds}} seconds
             {{/multi-toggle/item}}
         {{/if}}
@@ -52,4 +52,4 @@
         validate="bottom"
         value=org.awayMessageSuffix}}
 </div>
-{{model-form/location entity=org onLocationError=(action _onLocationError)}}
+{{model-form/location entity=org onLocationError=(optional-action onLocationError)}}

@@ -1,4 +1,6 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
+import PropertyUtils from 'textup-frontend/utils/property';
 import Service, { inject as service } from '@ember/service';
 import TypeUtils from 'textup-frontend/utils/type';
 import { computed } from '@ember/object';
@@ -27,9 +29,7 @@ export default Service.extend({
     );
   },
   cancelEditing(fMessage, doClose) {
-    if (TypeUtils.isAnyModel(fMessage)) {
-      fMessage.rollbackAttributes();
-    }
+    AppUtils.tryRollback(fMessage);
     PropertyUtils.callIfPresent(doClose);
   },
   saveAfterEditing(fMessage, doClose) {

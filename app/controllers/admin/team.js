@@ -1,5 +1,5 @@
 import AdminPeopleController from 'textup-frontend/controllers/admin/people';
-import { assign } from '@ember/polyfills';
+import { inject as service } from '@ember/service';
 
 export default AdminPeopleController.extend({
   staffListService: service(),

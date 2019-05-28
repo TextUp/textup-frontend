@@ -1,6 +1,11 @@
+import AppUtils from 'textup-frontend/utils/app';
+import ArrayUtils from 'textup-frontend/utils/array';
 import Constants from 'textup-frontend/constants';
 import RSVP from 'rsvp';
 import Service, { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import { later } from '@ember/runloop';
+import { readOnly } from '@ember/object/computed';
 
 export default Service.extend({
   dataService: service(),
@@ -36,9 +41,7 @@ export default Service.extend({
     );
   },
   cancelSlideout() {
-    ArrayUtils.ensureArrayAndAllDefined(this.get('teams')).forEach(team =>
-      team.rollbackAttributes()
-    );
+    ArrayUtils.ensureArrayAndAllDefined(this.get('teams')).forEach(AppUtils.tryRollback);
     this.get('slideoutService').closeSlideout();
   },
   finishSlideout() {
@@ -50,7 +53,7 @@ export default Service.extend({
           // [FUTURE] allow batch-fetching staff
           later(() => {
             this.get('requestService')
-              .handleIfError(all(this.get('staffs').map(staff => staff.reload())))
+              .handleIfError(RSVP.all(this.get('staffs').map(staff => staff.reload())))
               .then(() => {
                 this.get('slideoutService').closeSlideout();
                 resolve();

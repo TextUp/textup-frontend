@@ -1,10 +1,11 @@
-import { isEmpty } from '@ember/utils';
-import Service, { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-import RSVP from 'rsvp';
-import { isArray } from '@ember/array';
+import AppUtils from 'textup-frontend/utils/app';
 import ArrayUtils from 'textup-frontend/utils/array';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
 import TypeUtils from 'textup-frontend/utils/type';
+import { get } from '@ember/object';
+import { isArray } from '@ember/array';
+import { isEmpty } from '@ember/utils';
 
 export default Service.extend({
   loadingSlider: service(),
@@ -44,9 +45,7 @@ export default Service.extend({
   },
 
   revert(models, ...thens) {
-    ArrayUtils.ensureArrayAndAllDefined(models)
-      .filter(TypeUtils.isAnyModel)
-      .forEach(model => model.rollbackAttributes());
+    ArrayUtils.ensureArrayAndAllDefined(models).forEach(AppUtils.tryRollback);
     ArrayUtils.tryCallAll(thens);
   },
 

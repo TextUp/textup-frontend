@@ -3,7 +3,6 @@ import Constants from 'textup-frontend/constants';
 import ContactNumberObject from 'textup-frontend/objects/contact-number-object';
 import RSVP from 'rsvp';
 import Service, { inject as service } from '@ember/service';
-import TypeUtils from 'textup-frontend/utils/type';
 import { assign } from '@ember/polyfills';
 import { isBlank } from '@ember/utils';
 

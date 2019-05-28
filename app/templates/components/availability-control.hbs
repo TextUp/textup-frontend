@@ -10,12 +10,12 @@
                 selectIndex=(if self.schedule.manual 0 1) as |toggle doRegister|}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.BRAND")
-                    onSelect=(action _handleType true)}}
+                    onSelect=(optional-action onAvailabilityTypeChange true)}}
                     Manually
                 {{/multi-toggle/item}}
                 {{#multi-toggle/item doRegister=doRegister
                     color=(constant "COLOR.LIGHT_BLUE")
-                    onSelect=(action _handleType false)}}
+                    onSelect=(optional-action onAvailabilityTypeChange false)}}
                     By schedule
                 {{/multi-toggle/item}}
             {{/multi-toggle}}
@@ -33,12 +33,12 @@
             selectIndex=(if self.schedule.manualIsAvailable 0 1) as |toggle doRegister|}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.BRAND")
-                onSelect=(action _handleManualAvailability true)}}
+                onSelect=(optional-action onManualAvailabilityChange true)}}
                 Yes
             {{/multi-toggle/item}}
             {{#multi-toggle/item doRegister=doRegister
                 color=(constant "COLOR.LIGHT_BLUE")
-                onSelect=(action _handleManualAvailability false)}}
+                onSelect=(optional-action onManualAvailabilityChange false)}}
                 No
             {{/multi-toggle/item}}
         {{/multi-toggle}}
@@ -61,7 +61,7 @@
     {{#schedule-control
         scheduleClass="pad-l pad-r"
         schedule=self.schedule
-        onChange=(action _handleScheduleAvailability) as |info|}}
+        onChange=(optional-action onScheduleAvailabilityChange) as |info|}}
         {{#if others}}
             {{#hide-show as |hideShow|}}
                 <button type="button"

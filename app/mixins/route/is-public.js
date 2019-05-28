@@ -1,8 +1,8 @@
-import { inject as service } from '@ember/service';
+import LoadingSliderMixin from 'textup-frontend/mixins/loading-slider';
 import Mixin from '@ember/object/mixin';
-import Loading from 'textup-frontend/mixins/loading-slider';
+import { inject as service } from '@ember/service';
 
-export default Mixin.create(Loading, {
+export default Mixin.create(LoadingSliderMixin, {
   authService: service(),
 
   beforeModel() {

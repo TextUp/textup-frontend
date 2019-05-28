@@ -1,9 +1,6 @@
-import Constants from 'textup-frontend/constants';
 import Controller from '@ember/controller';
-import RSVP from 'rsvp';
-import TextUtils from 'textup-frontend/utils/text';
+import PropertyUtils from 'textup-frontend/utils/property';
 import { alias } from '@ember/object/computed';
-import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({

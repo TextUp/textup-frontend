@@ -49,11 +49,11 @@
                                 </button>
                             </div>
                             <div class="flex__item">
-                                {{async-button classNames="btn btn-default"
-                                    disableWhen=(not (v-get staff "isValid"))
-                                    action=(service-action "dataService" "persist" staff)
-                                    default="Update"
-                                    pending="Updating..."}}
+                                {{#action-button class="btn btn-default"
+                                    disabled=(not (v-get staff "isValid"))
+                                    onAction=(service-action "dataService" "persist" staff)}}
+                                    Update
+                                {{/action-button}}
                             </div>
                         </div>
                     {{/if}}

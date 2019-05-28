@@ -4,8 +4,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/callService" "finishSlideout")
         disablePrimary=(service-prop "slideout/callService" "shouldDisablePrimaryAction")
-        primaryLabel=(service-prop "slideout/callService" "primaryActionLabel")
-        primaryProgressLabel="Calling...")
+        primaryLabel=(service-prop "slideout/callService" "primaryActionLabel"))
     onClose=(service-action "slideout/callService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/callService" "shouldForceKeepOpen")
     focusSelector=".number-control" as |slideout|}}

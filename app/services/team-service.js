@@ -6,9 +6,9 @@ export default Service.extend({
   store: service(),
 
   createNew(org) {
-    return this.get('store').createRecord(Constants.MODEL_NAME.TEAM, {
+    return this.get('store').createRecord(Constants.MODEL.TEAM, {
       org,
-      location: this.get('store').createRecord(Constants.MODEL_NAME.LOCATION, {
+      location: this.get('store').createRecord(Constants.MODEL.LOCATION, {
         address: org.get('location.address'),
         lat: org.get('location.lat'),
         lng: org.get('location.lng'),

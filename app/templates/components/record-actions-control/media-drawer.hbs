@@ -10,7 +10,7 @@
                 sortLowToHigh=listProps.sortLowToHigh as |audioElement index|}}
                 <button type="button"
                     class="button"
-                    onclick={{action _onRemoveMedia audioElement index}}>
+                    onclick={{optional-action onRemoveMedia audioElement index}}>
                     <span class="icon-x"></span>
                 </button>
             {{else}}
@@ -31,7 +31,7 @@
             {{photo-control classNames="record-actions-control__media-drawer"
                 images=images
                 imageDisplayComponent=(constant "PHOTO_CONTROL.DISPLAY.GRID")
-                onRemove=(action _onRemoveMedia)}}
+                onRemove=(optional-action onRemoveMedia)}}
         {{/if}}
     {{/if}}
 {{/liquid-spacer}}

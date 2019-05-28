@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
 
@@ -23,10 +24,7 @@ export default Service.extend({
     );
   },
   cancelSlideout() {
-    const newContact = this.get('newContact');
-    if (newContact) {
-      newContact.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('newContact'));
     this.get('slideoutService').closeSlideout();
   },
   finishSlideout() {

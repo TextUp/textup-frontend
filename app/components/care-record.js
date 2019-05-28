@@ -2,11 +2,11 @@ import Component from '@ember/component';
 import MediaElement from 'textup-frontend/models/media-element';
 import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
+import RecordCluster from 'textup-frontend/objects/record-cluster';
 import { computed } from '@ember/object';
 import { format } from 'textup-frontend/utils/phone-number';
 import { join, scheduleOnce } from '@ember/runloop';
 import { notEmpty } from '@ember/object/computed';
-import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
@@ -104,50 +104,6 @@ export default Component.extend(PropTypesMixin, {
   // Internal handlers
   // -----------------
 
-  // call-specific handlers
-  _onEndOngoingCall() {
-    tryInvoke(this, 'onEndOngoingCall', [...arguments]);
-  },
-
-  // note-specific handlers
-  _onEditNote() {
-    tryInvoke(this, 'onEditNote', [...arguments]);
-  },
-  _onRestoreNote() {
-    tryInvoke(this, 'onRestoreNote', [...arguments]);
-  },
-  _onViewNoteHistory() {
-    tryInvoke(this, 'onViewNoteHistory', [...arguments]);
-  },
-
-  // record display handlers
-  _onLoadRecordItems() {
-    return tryInvoke(this, 'onLoadRecordItems', [...arguments]);
-  },
-  _onRefreshRecordItems() {
-    return tryInvoke(this, 'onRefreshRecordItems', [...arguments]);
-  },
-  _onViewScheduledMessages() {
-    tryInvoke(this, 'onViewScheduledMessages', [...arguments]);
-  },
-
-  // content-related handlers
-  _onContentChange() {
-    tryInvoke(this, 'onContentChange', [...arguments]);
-  },
-  _onAddImage() {
-    tryInvoke(this, 'onAddImage', [...arguments]);
-  },
-  _onAddAudio() {
-    tryInvoke(this, 'onAddAudio', [...arguments]);
-  },
-  _onRemoveMedia() {
-    tryInvoke(this, 'onRemoveMedia', [...arguments]);
-  },
-  _onOptionsClose() {
-    tryInvoke(this, 'onOptionsClose', [...arguments]);
-  },
-
   // record modification handlers
   _addNoteInPast(addAfterRecordItem) {
     this.set('_isAddingNoteInPast', false);
@@ -166,9 +122,6 @@ export default Component.extend(PropTypesMixin, {
     return PropertyUtils.ensurePromise(tryInvoke(this, 'onText', [...arguments])).then(() =>
       this._tryResetScroll()
     );
-  },
-  _onScheduleMessage() {
-    tryInvoke(this, 'onScheduleMessage', [...arguments]);
   },
 
   _tryResetAll() {

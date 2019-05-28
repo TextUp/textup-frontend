@@ -1,16 +1,17 @@
 import $ from 'jquery';
-import Service, { inject as service } from '@ember/service';
-import { assign } from '@ember/polyfills';
-import { isArray } from '@ember/array';
-import { get } from '@ember/object';
-import RSVP from 'rsvp';
+import AppUtils from 'textup-frontend/utils/app';
 import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import FileUtils from 'textup-frontend/utils/file';
 import LocaleUtils from 'textup-frontend/utils/locale';
 import moment from 'moment';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
 import TypeUtils from 'textup-frontend/utils/type';
+import { assign } from '@ember/polyfills';
+import { get } from '@ember/object';
+import { isArray } from '@ember/array';
 
 export const FALLBACK_FILE_NAME = 'textup-export.pdf';
 
@@ -112,10 +113,7 @@ export default Service.extend({
   },
   removeLocationFromNote(rNote) {
     if (TypeUtils.isNote(rNote)) {
-      const loc = rNote.get('location.content');
-      if (loc) {
-        loc.rollbackAttributes();
-      }
+      AppUtils.tryRollback(rNote.get('location.content'));
       rNote.set('location', null);
     }
   },

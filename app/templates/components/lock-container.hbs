@@ -6,12 +6,12 @@
         </div>
         {{lock-pad focusOnInit=true
             val=val
-            doUpdateVal=(action _onChange)
+            doUpdateVal=(optional-action onChange)
             doValidate=(action _onValidate)}}
         <div class="single-footer">
             <p class="emphasize text-white">Not {{username}}?</p>
             <h4>
-                <button type="button" class="btn-link text-white" onclick={{action _onLogOut}}>
+                <button type="button" class="btn-link text-white" onclick={{optional-action onLogOut}}>
                     Log Out
                 </button>
             </h4>

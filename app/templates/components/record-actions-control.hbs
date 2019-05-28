@@ -2,10 +2,10 @@
 {{#record-actions-control/media-drawer doRegister=(action (mut _mediaDrawer))
     audio=audio
     images=images
-    onAddAudio=(action _onAddAudio)
-    onRemoveMedia=(action _onRemoveMedia)}}
+    onAddAudio=(optional-action onAddAudio)
+    onRemoveMedia=(optional-action onRemoveMedia)}}
     <div class="record-actions-control__action-container">
-        {{#pop-over onClose=(action _onOptionsClose) as |popOver|}}
+        {{#pop-over onClose=(optional-action onOptionsClose) as |popOver|}}
             <button class="btn btn-default btn-plain record-actions-control__dropdown-trigger"
                 type="button"
                 onclick={{popOver.actions.toggle}}>
@@ -13,21 +13,21 @@
             </button>
         {{else}}
             <ul class="dropdown">
-                <li tabindex="0" class="dropdown-item" onclick={{action _scheduleMessage}}>
+                <li tabindex="0" class="dropdown-item" onclick={{optional-action onScheduleMessage}}>
                     Schedule message
                 </li>
                 {{#if hasPersonalNumber}}
-                    <li tabindex="0" class="dropdown-item" onclick={{action _startCall}}>
+                    <li tabindex="0" class="dropdown-item" onclick={{optional-action onCall}}>
                         Make call
                     </li>
                 {{/if}}
                 <li class="dropdown-divider"></li>
                 {{#if hasItemsInRecord}}
-                    <li tabindex="0" class="dropdown-item" onclick={{action  _addNoteInPast}}>
+                    <li tabindex="0" class="dropdown-item" onclick={{optional-action onAddNoteInPast}}>
                         Add past note
                     </li>
                 {{/if}}
-                <li tabindex="0" class="dropdown-item" onclick={{action _addNoteNow}}>
+                <li tabindex="0" class="dropdown-item" onclick={{optional-action onAddNote}}>
                     Add note
                 </li>
             </ul>
@@ -50,7 +50,7 @@
                     </button>
                 {{else}}
                     <ul class="dropdown">
-                        {{#photo-control/add tagName="li" labelClass="dropdown-item" onAdd=(action _onAddImage)}}
+                        {{#photo-control/add tagName="li" labelClass="dropdown-item" onAdd=(optional-action onAddImage)}}
                             Add images
                         {{/photo-control/add}}
                         <li tabindex="0" class="dropdown-item" onclick={{action _onStartAddAudio}}>
@@ -59,7 +59,7 @@
                     </ul>
                 {{/pop-over}}
             {{else}}
-                {{#photo-control/add labelClass="compose-text__control" onAdd=(action _onAddImage)}}
+                {{#photo-control/add labelClass="compose-text__control" onAdd=(optional-action onAddImage)}}
                     {{#count-badge count=_numMedia}}
                         <span class="fa fa-picture-o"></span>
                     {{/count-badge}}

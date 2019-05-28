@@ -4,8 +4,7 @@
     footerComponent=(component "slideout-pane/actions"
         showFooter=(service-prop "slideout/tagMembershipService" "anyMembershipChanges")
         onPrimary=(service-action "slideout/tagMembershipService" "finishSlideout")
-        primaryLabel="Update"
-        primaryProgressLabel="Updating...")
+        primaryLabel="Update")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideout/tagMembershipService" "cancelSlideout") as |slideout|}}
     {{#multi-toggle/group-by-bucket

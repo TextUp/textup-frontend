@@ -4,8 +4,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/noteService" "finishSlideout")
         disablePrimary=(service-prop "slideout/noteService" "shouldDisablePrimaryAction")
-        primaryLabel="Create"
-        primaryProgressLabel="Creating...")
+        primaryLabel="Create")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideout/noteService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/noteService" "shouldForceKeepOpen")

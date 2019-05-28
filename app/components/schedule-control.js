@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import Schedule from 'textup-frontend/models/schedule';
 import { computed } from '@ember/object';

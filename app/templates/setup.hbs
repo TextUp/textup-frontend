@@ -23,7 +23,7 @@
                 {{phone-control classNames="xs-full-row m-7-row-10 margin-b"
                     number=(service-prop "userSetupService" "inProgressPersonalNumber")
                     onChange=(service-mut "userSetupService" "inProgressPersonalNumber")}}
-                {{#action-button classNames='btn-default xs-full-row m-3-row-10'
+                {{#action-button class='btn-default xs-full-row m-3-row-10'
                     disabled=(not (service-prop "userSetupService" "inProgressPersonalNumber"))
                     onAction=(service-action "userSetupService" "startPersonalNumberSetup")}}
                     Get code
@@ -41,7 +41,7 @@
                         autocorrect="off"
                         autocapitalize="off">
                 </div>
-                {{#action-button classNames='btn-default xs-full-row m-3-row-10'
+                {{#action-button class='btn-default xs-full-row m-3-row-10'
                     disabled=(not (service-prop "userSetupService" "verificationCode"))
                     onAction=(action "finishPersonalNumberSetup")}}
                     Finish set up

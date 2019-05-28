@@ -1,4 +1,9 @@
+import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
+import TextUtils from 'textup-frontend/utils/text';
+import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
+import { readOnly, filter, uniqBy, sort } from '@ember/object/computed';
 
 export const FILTER_TO_STATUSES = Object.freeze({
   [Constants.CONTACT.FILTER.ALL]: [
@@ -56,7 +61,7 @@ export default Service.extend({
   loadMore() {
     // teamId added by `contact` adapter
     return this.get('requestService')
-      .handleIfError(this.get('store').query(Constants.MODEL_NAME.CONTACT, this._buildLoadParams()))
+      .handleIfError(this.get('store').query(Constants.MODEL.CONTACT, this._buildLoadParams()))
       .then(results => {
         this.get('_contacts').pushObjects(results.toArray());
         this.set('totalNumContacts', results.get('meta.total'));

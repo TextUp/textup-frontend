@@ -1,10 +1,10 @@
-import { inject as service } from '@ember/service';
-import Route from '@ember/routing/route';
-import { isPresent } from '@ember/utils';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
-import Loading from 'textup-frontend/mixins/loading-slider';
+import LoadingSliderMixin from 'textup-frontend/mixins/loading-slider';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
 
-export default Route.extend(HasSlideoutOutlet, Loading, {
+export default Route.extend(HasSlideoutOutlet, LoadingSliderMixin, {
   authService: service(),
   lockService: service(),
   notifications: service('notification-messages-service'),

@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -15,11 +14,4 @@ export default Component.extend(PropTypesMixin, {
 
   classNames: 'record-actions-control__overlay',
   classNameBindings: 'show:record-actions-control__overlay--open',
-
-  // Internal handlers
-  // -----------------
-
-  _close() {
-    tryInvoke(this, 'onClose', [...arguments]);
-  },
 });

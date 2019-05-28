@@ -101,17 +101,17 @@
             onClose=(action (mut showPrivacyPolicy) false)}}
     </div>
     <div class="single-body-footer text-center">
-        {{async-button classNames="btn btn-default"
-            disableWhen=(or (not (v-get staff "isValid"))
+        {{#action-button class="btn btn-default"
+            disabled=(or (not (v-get staff "isValid"))
                 (not isValidCaptcha)
+                (not staff.captcha)
                 (not staff.lockCode)
                 (not staff.password)
                 (not (eq staff.password confirmPassword))
                 (not didAcceptPolicies))
-            action=(service-action "staffService" "persistNewAndLogIn" staff selected)
-            default="Finish"
-            pending="Almost..."
-            reset=staff.captcha}}
+            onAction=(service-action "staffService" "persistNewAndLogIn" staff selected)}}
+            Finish
+        {{/action-button}}
     </div>
 </div>
 <div class="single-footer">

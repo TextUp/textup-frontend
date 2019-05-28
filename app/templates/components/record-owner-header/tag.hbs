@@ -1,6 +1,6 @@
 <div class="xs-3-row-20 s-row-10 display-xs display-xs display-s
     full-height row ">
-    {{#link-to params=_linkParams classNames='pull-left'}}
+    {{#link-to params=_linkParams classNames="pull-left"}}
         <span class="pad-all">
             <span class="icon-left-arrow"></span>
         </span>
@@ -8,15 +8,15 @@
 </div>
 <div class="xs-11-row-20 s-7-row-10 m-14-row-20 l-15-row-20
     full-height contact-info">
-    <div class='contact-summary'>
-        <div class="horizontal-items clickable" onclick={{action _onEdit}}>
+    <div class="contact-summary">
+        <div class="horizontal-items clickable" onclick={{optional-action onEdit}}>
             <span class="clear-badge no-space clickable">
                 <h5>{{tag.name}}</h5>
             </span>
             <span class="display-s display-m display-l">
                 <div class="margin-l badge clickable">
                     {{tag.numMembers}}
-                    {{pluralize 'members' tag.numMembers}}
+                    {{pluralize "members" tag.numMembers}}
                 </div>
             </span>
         </div>
@@ -35,16 +35,16 @@
                         </button>
                     {{else}}
                         <ul class="dropdown">
-                            <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
+                            <li tabindex="0" class="dropdown-item" onclick={{optional-action onEdit}}>
                                 Details
                             </li>
-                            <li tabindex='0' class='dropdown-item' onclick={{action _onExport}}>
+                            <li tabindex="0" class="dropdown-item" onclick={{optional-action onExport}}>
                                 Export records
                             </li>
                         </ul>
                     {{/pop-over}}
                 {{else}}
-                    <button class="btn" type="button" onclick={{action _onEdit}}>
+                    <button class="btn" type="button" onclick={{optional-action onEdit}}>
                         Details
                     </button>
                 {{/if}}

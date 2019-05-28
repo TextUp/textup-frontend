@@ -1,5 +1,6 @@
-import { inject as service } from '@ember/service';
+import AppUtils from 'textup-frontend/utils/app';
 import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
 export default Route.extend({
   adminService: service(),

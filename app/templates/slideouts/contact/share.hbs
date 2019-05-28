@@ -4,8 +4,7 @@
     footerComponent=(component "slideout-pane/actions"
         showFooter=(service-prop "slideout/sharingService" "anySharingChanges")
         onPrimary=(service-action "slideout/sharingService" "finishSlideout")
-        primaryLabel="Update"
-        primaryProgressLabel="Updating...")
+        primaryLabel="Update")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideout/sharingService" "cancelSlideout") as |slideout|}}
     {{multi-toggle/share anyChanges=(get (service "slideout/sharingService") "anySharingChanges")

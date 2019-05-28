@@ -2,6 +2,7 @@ import AppAccessUtils from 'textup-frontend/utils/app-access';
 import Constants from 'textup-frontend/constants';
 import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet';
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
+import PropertyUtils from 'textup-frontend/utils/property';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';

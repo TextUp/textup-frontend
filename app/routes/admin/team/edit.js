@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Route from '@ember/routing/route';
 
 // TODO check to see if this still happens:

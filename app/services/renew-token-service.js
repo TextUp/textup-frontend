@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import PropertyUtils from 'textup-frontend/utils/property';
 import RSVP from 'rsvp';
 import Service, { inject as service } from '@ember/service';
 import { bind } from '@ember/runloop';

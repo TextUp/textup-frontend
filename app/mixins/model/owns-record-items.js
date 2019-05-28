@@ -1,11 +1,11 @@
-import { alias, readOnly, uniqBy, sort } from '@ember/object/computed';
-import Mixin from '@ember/object/mixin';
-import { computed } from '@ember/object';
-import { typeOf } from '@ember/utils';
 import DS from 'ember-data';
+import Mixin from '@ember/object/mixin';
+import RecordCluster from 'textup-frontend/objects/record-cluster';
 import RecordItemModel from 'textup-frontend/models/record-item';
+import { alias, readOnly, uniqBy, sort } from '@ember/object/computed';
+import { computed } from '@ember/object';
 import { pluralize } from 'textup-frontend/utils/text';
-import { RecordCluster } from 'textup-frontend/objects/record-cluster';
+import { typeOf } from '@ember/utils';
 
 export default Mixin.create({
   // Properties

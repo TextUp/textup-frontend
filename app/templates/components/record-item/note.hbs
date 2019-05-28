@@ -38,17 +38,17 @@
             <ul class="dropdown">
                 {{#if (not readOnly)}}
                     {{#if note.hasBeenDeleted}}
-                        <li tabindex="0" class="dropdown-item" onclick={{action _onRestore note}}>
+                        <li tabindex="0" class="dropdown-item" onclick={{optional-action onRestore note}}>
                             Restore
                         </li>
                     {{else}}
-                        <li tabindex="0" class="dropdown-item" onclick={{action _onEdit note}}>
+                        <li tabindex="0" class="dropdown-item" onclick={{optional-action onEdit note}}>
                             Edit
                         </li>
                     {{/if}}
                 {{/if}}
                 {{#if note.hasRevisions}}
-                    <li tabindex="0" class="dropdown-item" onclick={{action _onViewHistory note}}>
+                    <li tabindex="0" class="dropdown-item" onclick={{optional-action onViewHistory note}}>
                         See version history
                     </li>
                 {{/if}}

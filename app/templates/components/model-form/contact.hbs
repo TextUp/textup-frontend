@@ -81,7 +81,7 @@
                             {{#each dupObj.duplicates as |dupContact|}}
                                 {{#with (get dupContact (constant "PROP_NAME.READABLE_IDENT")) as |thisIdent|}}
                                     <span class="link"
-                                        onclick={{action _onGoToDuplicates dupContact.id}}>
+                                        onclick={{optional-action onGoToDuplicates dupContact.id}}>
                                         {{!-- tildes present to trim whitespace --}}
                                         {{~phone-number thisIdent ~}}
                                     </span>
@@ -95,9 +95,9 @@
         {{/if}}
         {{sortable-group/numbers numbers=contact.numbers
             readonly=(not contact.allowEdits)
-            onChange=(action _onChangeNumbers)
-            onAdded=(action _onAddNumber)
-            onRemoved=(action _onRemoveNumber)
+            onChange=(optional-action onChangeNumbers)
+            onAdded=(optional-action onAddNumber)
+            onRemoved=(optional-action onRemoveNumber)
             validateObj=contact
             validateField="numbers"
             validate="bottom"}}

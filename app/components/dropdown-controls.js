@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -14,21 +13,5 @@ export default Component.extend(PropTypesMixin, {
   }),
   getDefaultProps() {
     return { isMarkedForDelete: false, isDirty: false, isValid: false };
-  },
-
-  // Internal handlers
-  // -----------------
-
-  _onMarkForDelete() {
-    tryInvoke(this, 'onMarkForDelete');
-  },
-  _onUndoDelete() {
-    tryInvoke(this, 'onUndoDelete');
-  },
-  _onCancel() {
-    tryInvoke(this, 'onCancel');
-  },
-  _onSave() {
-    tryInvoke(this, 'onSave');
   },
 });

@@ -4,12 +4,7 @@ import HasSlideoutOutlet from 'textup-frontend/mixins/route/has-slideout-outlet'
 import IsAuthenticated from 'textup-frontend/mixins/route/is-authenticated';
 import RequiresSetup from 'textup-frontend/mixins/route/requires-setup';
 import Route from '@ember/routing/route';
-import RSVP, { all } from 'rsvp';
-import { copy } from '@ember/object/internals';
-import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { isArray } from '@ember/array';
-import { later } from '@ember/runloop';
 
 export default Route.extend(HasSlideoutOutlet, IsAuthenticated, RequiresSetup, {
   adminService: service(),

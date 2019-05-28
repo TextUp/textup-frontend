@@ -14,6 +14,11 @@ export function getServicePropertySetter([serviceName, propName], { value = '' }
   if (typeOf(value) !== 'string') {
     throw new Error(`Value property to extract name '${value}' must evaluate to a string`);
   }
+  if (typeOf(get(service, propName)) === 'function') {
+    throw new Error(
+      `Helper service-mut for service '${serviceName}' and propName '${propName}' should not attempt to override an existing function.`
+    );
+  }
   return function(newVal) {
     return set(service, propName, newVal && value ? get(newVal, value) : newVal);
   };

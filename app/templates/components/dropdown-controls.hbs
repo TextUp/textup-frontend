@@ -1,9 +1,9 @@
 <div class="input-group text-center">
     {{#if (not isMarkedForDelete)}}
         <div class="input-group-addon">
-            {{#tool-tip tagName='span' title='Delete'}}
-                <button class="btn-span btn btn-plain btn-danger" type='button'
-                    onclick={{action _onMarkForDelete}}>
+            {{#tool-tip tagName="span" title="Delete"}}
+                <button class="btn-span btn btn-plain btn-danger" type="button"
+                    onclick={{optional-action onMarkForDelete}}>
                     <span class="fa fa-trash-o"></span>
                 </button>
             {{/tool-tip}}
@@ -11,34 +11,26 @@
     {{/if}}
     {{#if (or isDirty isMarkedForDelete)}}
         <div class="input-group-addon">
-            {{#tool-tip tagName='span' title='Undo'}}
-                <button class="btn-span btn btn-plain" type='button'
-                    onclick={{if isMarkedForDelete (action _onUndoDelete) (action _onCancel)}}>
+            {{#tool-tip tagName="span" title="Undo"}}
+                <button class="btn-span btn btn-plain" type="button"
+                    onclick={{if isMarkedForDelete (optional-action onUndoDelete) (optional-action onCancel)}}>
                     <span class="fa fa-undo"></span>
                 </button>
             {{/tool-tip}}
         </div>
         <div class="input-group-addon">
             {{#if isMarkedForDelete}}
-                {{async-button classNames='btn-span btn btn-plain btn-danger'
-                    action=(action _onSave)
-                    default='Confirm delete'
-                    pending='Deleting...'}}
+                {{#action-button class="btn-span btn btn-plain btn-danger"
+                    onAction=(optional-action onSave)}}
+                    Delete
+                {{/action-button}}
             {{else}}
-                {{#tool-tip tagName='span' title='Update'}}
-                    {{#async-button classNames='btn-span btn btn-plain'
-                        disableWhen=(not isValid)
-                        action=(action _onSave)
-                        default='Update'
-                        pending='Updating...' as |btn|}}
-                        {{#if (eq btn.textState 'pending')}}
-                            <span class="fa fa-spin fa-circle-o-notch"></span>
-                        {{else if (eq btn.textState 'rejected')}}
-                            <span class="fa fa-exclamation-triangle"></span>
-                        {{else}}
-                            <span class="icon-save"></span>
-                        {{/if}}
-                    {{/async-button}}
+                {{#tool-tip tagName="span" title="Update"}}
+                    {{#action-button class="btn-span btn btn-plain"
+                        disabled=(not isValid)
+                        onAction=(optional-action onSave)}}
+                        Update
+                    {{/action-button}}
                 {{/tool-tip}}
             {{/if}}
         </div>

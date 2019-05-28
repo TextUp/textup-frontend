@@ -3,7 +3,7 @@
         type="checkbox"
         checked={{if isSelected 'checked'}}
         class="entity-display__toggle__control"
-        onChange={{action _onToggleSelect}}>
+        onChange={{optional-action onSelect}}>
     <label for={{concat this.elementId "--toggle"}}
         class="entity-display__toggle__label">
         <span class="sr-only">Select {{entityIdentifier}}</span>

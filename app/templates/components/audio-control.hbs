@@ -18,7 +18,7 @@
             {{/if}}
         </div>
         {{#if hideShow.isOpen}}
-            {{audio-recorder onFinish=(action hideShow.actions.closeThenCall (action _onAdd))}}
+            {{audio-recorder onFinish=(action hideShow.actions.closeThenCall (optional-action onAdd))}}
         {{/if}}
     {{/hide-show}}
 </div>
@@ -29,7 +29,7 @@
     {{#if _showRemove}}
         <button type="button"
             class="button"
-            onclick={{action _onRemove el index}}>
+            onclick={{optional-action onRemove el index}}>
             <span class="icon-x"></span>
         </button>
     {{/if}}

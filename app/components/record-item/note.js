@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RecordNote from 'textup-frontend/models/record-note';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -15,17 +14,4 @@ export default Component.extend(PropTypesMixin, {
     return { readOnly: false };
   },
   classNames: ['record-item', 'record-item--note'],
-
-  // Internal handlers
-  // -----------------
-
-  _onEdit() {
-    tryInvoke(this, 'onEdit', [...arguments]);
-  },
-  _onRestore() {
-    tryInvoke(this, 'onRestore', [...arguments]);
-  },
-  _onViewHistory() {
-    tryInvoke(this, 'onViewHistory', [...arguments]);
-  },
 });

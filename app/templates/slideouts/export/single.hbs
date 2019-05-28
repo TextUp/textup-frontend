@@ -5,8 +5,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/exportService" "finishSlideout")
         disablePrimary=(service-prop "slideout/exportService" "shouldDisablePrimaryAction")
-        primaryLabel="Export"
-        primaryProgressLabel="Exporting...")
+        primaryLabel="Export")
     direction=(constant "SLIDEOUT.DIRECTION.RIGHT")
     onClose=(service-action "slideout/exportService" "cancelSlideout") as |slideout|}}
     <div class="form">

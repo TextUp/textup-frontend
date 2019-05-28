@@ -1,6 +1,7 @@
 import Constants from 'textup-frontend/constants';
 import ModelOwnsPhone from 'textup-frontend/mixins/model/owns-phone';
 import Service, { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 
 export default Service.extend({
   dataService: service(),

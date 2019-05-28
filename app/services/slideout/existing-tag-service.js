@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
 import { readOnly } from '@ember/object/computed';
@@ -39,9 +40,6 @@ export default Service.extend({
     }
   },
   tryRollbackText() {
-    const tag = this.get('tag');
-    if (tag) {
-      tag.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('tag'));
   },
 });

@@ -97,8 +97,8 @@ export default DS.Model.extend(
     isStaff: equal('status', Constants.STAFF.STATUS.STAFF),
     isAdmin: equal('status', Constants.STAFF.STATUS.ADMIN),
 
-    [Constants.MODEL_NAME.TEAMS]: DS.hasMany('team'),
-    hasTeams: notEmpty(Constants.MODEL_NAME.TEAMS),
+    [Constants.MODEL.TEAMS]: DS.hasMany('team'),
+    hasTeams: notEmpty(Constants.MODEL.TEAMS),
 
     allActivePhoneOwners: computed('phone.content.isActive', '_teamsWithPhones.[]', function() {
       const phoneOwners = this.get('phone.content.isActive') ? [this] : [];

@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Route from '@ember/routing/route';
 
 export default Route.extend({
@@ -8,7 +9,7 @@ export default Route.extend({
         const signupController = this.controllerFor('signup'),
           staff = signupController.get('staff');
         if (staff.get('isDeleted') === false) {
-          staff.rollbackAttributes();
+          AppUtils.tryRollback(staff);
           signupController.set('staff', this.get('store').createRecord('staff'));
         }
       }

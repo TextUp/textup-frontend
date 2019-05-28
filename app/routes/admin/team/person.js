@@ -1,4 +1,5 @@
 import AdminPeoplePersonRoute from 'textup-frontend/routes/admin/people/person';
+import Constants from 'textup-frontend/constants';
 
 export default AdminPeoplePersonRoute.extend({
   controllerName: 'admin/people/person',

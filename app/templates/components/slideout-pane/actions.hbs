@@ -2,7 +2,7 @@
     <div class="flex__item">
         <button type="button"
             class="btn btn-plain btn-danger slideout-pane__footer__delete"
-            onclick={{onMarkForDelete}}>
+            onclick={{optional-action onMarkForDelete}}>
             <span class="fa fa-trash"></span>
         </button>
     </div>
@@ -11,15 +11,15 @@
     <div class="flex__item">
         <button type="button"
             class="btn slideout-pane__footer__secondary"
-            onclick={{if onSecondary onSecondary onClose}}>
+            onclick={{if onSecondary (optional-action onSecondary) (optional-action onClose)}}>
             {{secondaryLabel}}
         </button>
     </div>
 {{/if}}
 <div class="flex__item">
-    {{async-button class=(if primaryClass primaryClass "btn btn-default")
-        action=onPrimary
-        disableWhen=disablePrimary
-        default=primaryLabel
-        pending=primaryProgressLabel}}
+    {{#action-button class=(if primaryClass primaryClass "btn btn-default")
+        onAction=(optional-action onPrimary)
+        disabled=disablePrimary}}
+        {{primaryLabel}}
+    {{/action-button}}
 </div>

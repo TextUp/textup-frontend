@@ -1,10 +1,10 @@
-import { tryInvoke } from '@ember/utils';
-import { getWithDefault, computed } from '@ember/object';
-import TypeUtils from 'textup-frontend/utils/type';
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import moment from 'moment';
+import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -58,7 +58,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // ---------
 
   rollbackAttributes() {
-    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
+    AppUtils.tryRollback(this.get('media.content'));
     return this._super(...arguments);
   },
   didUpdate() {

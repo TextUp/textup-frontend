@@ -4,8 +4,7 @@
         showFooter=true
         onPrimary=(service-action "slideout/composeService" "finishSlideout")
         disablePrimary=(service-prop "slideout/composeService" "shouldDisablePrimaryAction")
-        primaryLabel="Send"
-        primaryProgressLabel="Sending...")
+        primaryLabel="Send")
     onClose=(service-action "slideout/composeService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/composeService" "shouldForceKeepOpen")
     focusSelector=".multi-select-new-input" as |slideout|}}

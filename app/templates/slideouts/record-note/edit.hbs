@@ -5,8 +5,7 @@
             showFooter=true
             onPrimary=(service-action "slideout/noteService" "finishSlideout")
             disablePrimary=(service-prop "slideout/noteService" "shouldDisablePrimaryAction")
-            primaryLabel=(if recordNote.hasBeenDeleted "Confirm Delete" "Update")
-            primaryProgressLabel=(if recordNote.hasBeenDeleted "Deleting..." "Updating")
+            primaryLabel=(if recordNote.hasBeenDeleted "Delete" "Update")
             primaryClass=(if recordNote.hasBeenDeleted "btn btn-danger")
             secondaryLabel=(if recordNote.hasBeenDeleted "Undo" "Cancel")
             onSecondary=(if recordNote.hasBeenDeleted

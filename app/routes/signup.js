@@ -1,8 +1,9 @@
 import $ from 'jquery';
-import Route from '@ember/routing/route';
+import AppUtils from 'textup-frontend/utils/app';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import IsPublic from 'textup-frontend/mixins/route/is-public';
+import Route from '@ember/routing/route';
 
 export default Route.extend(IsPublic, {
   model() {
@@ -22,16 +23,8 @@ export default Route.extend(IsPublic, {
   },
   resetController(controller) {
     this._super(...arguments);
-    const newStaff = controller.get('staff'),
-      selected = controller.get('selected');
-    if (newStaff) {
-      controller.set('staff', null);
-      newStaff.rollbackAttributes();
-    }
-    if (selected) {
-      controller.set('selected', null);
-      selected.get('location.content').rollbackAttributes();
-      selected.rollbackAttributes();
-    }
+    AppUtils.tryRollback(controller.get('staff'));
+    AppUtils.tryRollback(controller.get('selected'));
+    controller.setProperties({ staff: null, selected: null });
   },
 });

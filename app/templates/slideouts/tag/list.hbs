@@ -6,7 +6,6 @@
         onPrimary=(service-action "slideout/newTagService" "finishCreateInTagList")
         disablePrimary=(service-prop "slideout/newTagService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
-        primaryProgressLabel="Creating..."
         onSecondary=(service-action "slideout/newTagService" "cancelCreateInTagList")
         hideSecondary=(service-prop "slideout/newTagService" "noExistingTags"))
     onClose=(service-action "slideout/newTagService" "cancelSlideout")

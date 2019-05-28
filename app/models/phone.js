@@ -1,11 +1,10 @@
-import ArrayUtils from 'textup-frontend/utils/array';
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import MF from 'ember-data-model-fragments';
-import { get, getWithDefault, computed } from '@ember/object';
-import { isPresent, tryInvoke } from '@ember/utils';
-import { readOnly, uniqBy, sort } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -26,7 +25,7 @@ export default DS.Model.extend(Dirtiable, Validations, {
   // ---------
 
   rollbackAttributes() {
-    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
+    AppUtils.tryRollback(this.get('media.content'));
     return this._super(...arguments);
   },
   hasManualChanges: computed('media.isDirty', function() {

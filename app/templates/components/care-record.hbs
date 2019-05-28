@@ -5,14 +5,14 @@
     numTotal=totalNumRecordItems
     direction=(constant "INFINITE_SCROLL.DIRECTION.UP")
     doRegister=(action (mut _recordClustersScroll))
-    onRefresh=(action _onRefreshRecordItems)
-    onLoad=(action _onLoadRecordItems) as |cluster|}}
+    onRefresh=(optional-action onRefreshRecordItems)
+    onLoad=(optional-action onLoadRecordItems) as |cluster|}}
     {{#record-cluster classNames="care-record__add-note"
         cluster=cluster
-        callOptions=(hash onEndOngoing=(action _onEndOngoingCall))
-        noteOptions=(hash onEdit=(action _onEditNote)
-            onRestore=(action _onRestoreNote)
-            onViewHistory=(action _onViewNoteHistory)
+        callOptions=(hash onEndOngoing=(optional-action onEndOngoingCall))
+        noteOptions=(hash onEdit=(optional-action onEditNote)
+            onRestore=(optional-action onRestoreNote)
+            onViewHistory=(optional-action onViewNoteHistory)
             readOnly=(not canModifyExistingInRecord)) as |item|}}
         {{#if (and _isAddingNoteInPast (not item.hasBeenDeleted))}}
             <button class="care-record__add-note__button"
@@ -26,7 +26,8 @@
     <div class="care-record__body__message">{{noRecordItemsMessage}}</div>
 {{/infinite-scroll}}
 
-{{upcoming-future-messages nextFutureFire=nextFutureFire onClick=(action _onViewScheduledMessages)}}
+{{upcoming-future-messages nextFutureFire=nextFutureFire
+    onClick=(optional-action onViewScheduledMessages)}}
 
 {{#record-actions-control hasPersonalNumber=_hasPersonalNumber
     hasItemsInRecord=_hasItemsInRecord
@@ -34,16 +35,16 @@
     audio=audio
     contents=contents
     onHeightChange=(action _tryRestorePosition true)
-    onContentChange=(action _onContentChange)
-    onAddImage=(action _onAddImage)
-    onAddAudio=(action _onAddAudio)
-    onRemoveMedia=(action _onRemoveMedia)
-    onOptionsClose=(action _onOptionsClose)
+    onContentChange=(optional-action onContentChange)
+    onAddImage=(optional-action onAddImage)
+    onAddAudio=(optional-action onAddAudio)
+    onRemoveMedia=(optional-action onRemoveMedia)
+    onOptionsClose=(optional-action onOptionsClose)
     onAddNoteInPast=(action (mut _isAddingNoteInPast) true)
     onAddNote=(action _addNoteNow)
     onCall=(action _onCall)
     onText=(action _onText)
-    onScheduleMessage=(action _onScheduleMessage)}}
+    onScheduleMessage=(optional-action onScheduleMessage)}}
     {{#record-actions-control/overlay show=(not canAddToRecord) showCloseButton=false}}
         {{noAddToRecordMessage}}
     {{/record-actions-control/overlay}}

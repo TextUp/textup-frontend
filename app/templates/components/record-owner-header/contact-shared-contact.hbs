@@ -10,7 +10,7 @@
     {{if contact.isShared 'is-shared'}}
     {{if (or contact.hasTags contact.isShared) 'has-details'}}">
     <div class='contact-summary'>
-        <div class="horizontal-items clickable" onclick={{action _onEdit}}>
+        <div class="horizontal-items clickable" onclick={{optional-action onEdit}}>
             <span class="clear-badge no-space clickable">
                 <h5>{{phone-number contact.name}}</h5>
             </span>
@@ -41,7 +41,7 @@
                 <span>
                     {{!-- add click to increase click area on small screens --}}
                     <span class="display-xs">
-                        <span class="badge clickable" onclick={{action _onEdit}}>
+                        <span class="badge clickable" onclick={{optional-action onEdit}}>
                             Shared
                         </span>
                     </span>
@@ -62,7 +62,7 @@
                     </span>
                 {{/if}}
             {{/if}}
-            <span class='clickable display-l' onclick={{action _onEditTagMembership}}>
+            <span class='clickable display-l' onclick={{optional-action onEditTagMembership}}>
                 {{#each contact.tags as |tag|}}
                     {{color-badge classNames='clickable' color=tag.hexColor text=tag.name}}
                 {{/each}}
@@ -81,30 +81,30 @@
                 </button>
             {{else}}
                 <ul class="dropdown">
-                    <li tabindex='0' class='dropdown-item' onclick={{action _onEdit}}>
+                    <li tabindex='0' class='dropdown-item' onclick={{optional-action onEdit}}>
                         Details
                     </li>
                     {{#if (not contact.isShared)}}
-                        <li tabindex='0' class='dropdown-item' onclick={{action _onEditSharing}}>
+                        <li tabindex='0' class='dropdown-item' onclick={{optional-action onEditSharing}}>
                             Share
                             <span class="badge">
                                 {{contact.sharedWith.length}}
                             </span>
                         </li>
                         <li tabindex='0' class='dropdown-item'
-                            onclick={{action _onEditTagMembership}}>
+                            onclick={{optional-action onEditTagMembership}}>
                             Tags
                             <span class="badge">{{contact.tags.content.length}}</span>
                         </li>
                     {{/if}}
                     {{#if (can-download)}}
-                        <li tabindex='0' class='dropdown-item' onclick={{action _onExport}}>
+                        <li tabindex='0' class='dropdown-item' onclick={{optional-action onExport}}>
                             Export records
                         </li>
                     {{/if}}
                     <li class='dropdown-divider'></li>
                     {{status-list/contact contacts=contact
-                        onChange=(action _onStatusChange)}}
+                        onChange=(optional-action onStatusChange)}}
                 </ul>
             {{/pop-over}}
         </span>

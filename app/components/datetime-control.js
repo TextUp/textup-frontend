@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import HasWormhole from 'textup-frontend/mixins/component/has-wormhole';
 import moment from 'moment';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { and } from '@ember/object/computed';
 import { computed } from '@ember/object';

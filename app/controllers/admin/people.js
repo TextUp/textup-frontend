@@ -1,11 +1,7 @@
-import Constants from 'textup-frontend/constants';
-import Controller, { inject as controller } from '@ember/controller';
-import RSVP from 'rsvp';
+import Controller from '@ember/controller';
+import PropertyUtils from 'textup-frontend/utils/property';
 import { alias } from '@ember/object/computed';
-import { computed, observer } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
-import { run } from '@ember/runloop';
 
 export default Controller.extend({
   staffListService: service(),

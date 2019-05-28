@@ -3,6 +3,7 @@ import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import Evented from '@ember/object/evented';
 import LocaleUtils from 'textup-frontend/utils/locale';
+import PropertyUtils from 'textup-frontend/utils/property';
 import RSVP from 'rsvp';
 import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';

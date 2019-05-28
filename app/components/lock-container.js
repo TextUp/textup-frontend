@@ -102,9 +102,6 @@ export default Component.extend(PropTypesMixin, HasEvents, {
     }
   },
 
-  _onChange() {
-    tryInvoke(this, 'onChange', [...arguments]);
-  },
   _onValidate() {
     return new RSVP.Promise((resolve, reject) => {
       if (this.get('isDestroying') || this.get('isDestroyed')) {
@@ -121,9 +118,6 @@ export default Component.extend(PropTypesMixin, HasEvents, {
       return;
     }
     this._doUnlock();
-  },
-  _onLogOut() {
-    tryInvoke(this, 'onLogOut', [...arguments]);
   },
 
   _updateLastActive() {

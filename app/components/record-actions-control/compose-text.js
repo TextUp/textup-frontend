@@ -29,9 +29,6 @@ export default Component.extend(PropTypesMixin, {
   // Internal handlers
   // -----------------
 
-  _onClearContents() {
-    tryInvoke(this, 'onClearContents', [...arguments]);
-  },
   _onSend() {
     const textarea = this.get('_$textarea');
     if (textarea) {

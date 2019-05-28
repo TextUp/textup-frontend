@@ -2,7 +2,7 @@
     {{yield}}
 </p>
 {{#if showCloseButton}}
-    <button type="button" class="btn btn-plain" onclick={{action _close}}>
+    <button type="button" class="btn btn-plain" onclick={{optional-action onClose}}>
         {{closeButtonLabel}}
     </button>
 {{/if}}

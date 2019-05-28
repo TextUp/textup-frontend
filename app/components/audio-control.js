@@ -5,7 +5,6 @@ import { computed } from '@ember/object';
 import { empty } from '@ember/object/computed';
 import { isRecordingSupported } from 'textup-frontend/utils/audio';
 import { next } from '@ember/runloop';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -68,11 +67,5 @@ export default Component.extend(PropTypesMixin, {
     if (hideShow) {
       hideShow.actions.open();
     }
-  },
-  _onAdd() {
-    tryInvoke(this, 'onAdd', [...arguments]);
-  },
-  _onRemove() {
-    tryInvoke(this, 'onRemove', [...arguments]);
   },
 });

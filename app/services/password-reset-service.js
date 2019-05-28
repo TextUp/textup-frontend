@@ -1,8 +1,9 @@
 import $ from 'jquery';
-import Service, { inject as service } from '@ember/service';
-import RSVP from 'rsvp';
 import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
+import PropertyUtils from 'textup-frontend/utils/property';
+import RSVP from 'rsvp';
+import Service, { inject as service } from '@ember/service';
 
 export const GET_TOKEN_SUCCESS_MSG =
   'All good! The password reset should be in your inbox in a few minutes.';

@@ -1,8 +1,8 @@
+import Constants from 'textup-frontend/constants';
 import EmberObject from '@ember/object';
+import RecordCluster from 'textup-frontend/objects/record-cluster';
 import { assign } from '@ember/polyfills';
 import { run } from '@ember/runloop';
-import Constants from 'textup-frontend/constants';
-import { RecordCluster } from 'textup-frontend/objects/record-cluster';
 
 // `assert.throws` will not accept an arrow function as the second argument
 // see: https://github.com/nodejs/node/issues/3275

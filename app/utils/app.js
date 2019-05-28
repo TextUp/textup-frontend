@@ -1,10 +1,4 @@
-import Route from '@ember/routing/route';
 import TypeUtils from 'textup-frontend/utils/type';
-
-// TODO remove?
-export function controllerNameForRoute(route) {
-  return Route.detectInstance(route) ? route.get('controllerName') || route.get('routeName') : '';
-}
 
 export function tryRollback(model) {
   if (TypeUtils.isAnyModel(model)) {

@@ -1,11 +1,11 @@
-import { alias, notEmpty } from '@ember/object/computed';
-import Mixin from '@ember/object/mixin';
-import { getWithDefault, computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
+import Mixin from '@ember/object/mixin';
+import { alias, notEmpty } from '@ember/object/computed';
+import { computed } from '@ember/object';
 import { validator } from 'ember-cp-validations';
 
 // Validations are ininheritable: https://github.com/offirgolan/ember-cp-validations/issues/111
@@ -32,7 +32,7 @@ export default Mixin.create(Dirtiable, HasUrlIdentifier, {
   rollbackAttributes() {
     this.set('phoneAction', null);
     this.set('phoneActionData', null);
-    tryInvoke(getWithDefault(this, 'phone.content', {}), 'rollbackAttributes');
+    AppUtils.tryRollback(this.get('phone.content'));
     return this._super(...arguments);
   },
   didUpdate() {

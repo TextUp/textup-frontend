@@ -42,9 +42,4 @@ export default Component.extend(PropTypesMixin, {
     tryInvoke(this, 'onAddAudio', [...arguments]);
     this.set('_isAddingAudio', false);
   },
-
-  // no matter audio or image, always passed element then index
-  _onRemoveMedia() {
-    tryInvoke(this, 'onRemoveMedia', [...arguments]);
-  },
 });

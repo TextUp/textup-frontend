@@ -1,7 +1,7 @@
 import Component from '@ember/component';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
-import { get } from '@ember/object';
-import { typeOf, tryInvoke } from '@ember/utils';
+import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -26,11 +26,11 @@ export default Component.extend(PropTypesMixin, {
     if (this.get('disabled')) {
       return;
     }
-    const result = tryInvoke(this, 'onAction', [...arguments]);
-    if (result && typeOf(get(result, 'then')) === 'function') {
-      this.setProperties({ error: false, _isLoading: true });
-      result.then(() => this._afterLoad(true), () => this._afterLoad(false));
-    }
+    this.setProperties({ error: false, _isLoading: true });
+    PropertyUtils.ensurePromise(tryInvoke(this, 'onAction', [...arguments])).then(
+      this._afterLoad.bind(this, true),
+      this._afterLoad.bind(this, false)
+    );
   },
 
   // Internal properties

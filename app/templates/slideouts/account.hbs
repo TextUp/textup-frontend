@@ -10,7 +10,6 @@
         onPrimary=(service-action "slideout/accountService" "finishSlideout")
         disablePrimary=(service-prop "slideout/accountService" "shouldDisablePrimaryAction")
         primaryLabel="Update"
-        primaryProgressLabel="Updating..."
         onSecondary=(service-action "slideout/accountService" "revertAllChanges"))
     onClose=(service-action "slideout/accountService" "cancelSlideout")
     forceKeepOpen=(service-prop "slideout/accountService" "shouldForceKeepOpen")}}

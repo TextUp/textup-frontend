@@ -1,5 +1,4 @@
 import RSVP from 'rsvp';
-import TypeUtils from 'textup-frontend/utils/type';
 import { getWithDefault } from '@ember/object';
 import { typeOf } from '@ember/utils';
 

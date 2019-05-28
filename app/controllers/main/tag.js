@@ -1,5 +1,5 @@
 import MainContactsController from 'textup-frontend/controllers/main/contacts';
-import { assign } from '@ember/polyfills';
+import { inject as service } from '@ember/service';
 
 export default MainContactsController.extend({
   contactListService: service(),

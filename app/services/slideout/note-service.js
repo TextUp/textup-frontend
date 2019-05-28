@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
 import TypeUtils from 'textup-frontend/utils/type';
@@ -42,10 +43,7 @@ export default Service.extend({
   },
 
   cancelSlideout() {
-    const recordNote = this.get('recordNote');
-    if (recordNote) {
-      recordNote.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('recordNote'));
     this.get('slideoutService').closeSlideout();
   },
   finishSlideout() {

@@ -3,6 +3,7 @@ import ArrayUtils from 'textup-frontend/utils/array';
 import config from 'textup-frontend/config/environment';
 import Evented from '@ember/object/evented';
 import IsPublicRouteMixin from 'textup-frontend/mixins/route/is-public';
+import PropertyUtils from 'textup-frontend/utils/property';
 import RSVP from 'rsvp';
 import Service, { inject as service } from '@ember/service';
 import StorageUtils from 'textup-frontend/utils/storage';

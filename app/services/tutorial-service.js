@@ -13,7 +13,7 @@ export default Service.extend({
   authService: service(),
   notifications: service('notification-messages-service'),
   storageService: service(),
-  slideout/supportService: service(),
+  supportSlideoutService: service('slideout/supportService'),
 
   // Properties
   // ----------
@@ -112,7 +112,7 @@ export default Service.extend({
   },
 
   _openSupportSlideout() {
-    this.get('slideout/supportService').openSlideout();
+    this.get('supportSlideoutService').openSlideout();
     this.get('notifications').clearAll();
   },
 });

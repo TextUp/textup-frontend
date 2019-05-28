@@ -1,13 +1,13 @@
-import { notEmpty } from '@ember/object/computed';
-import { tryInvoke } from '@ember/utils';
-import { getWithDefault, computed } from '@ember/object';
-import { assign } from '@ember/polyfills';
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasReadableIdentifier from 'textup-frontend/mixins/model/has-readable-identifier';
 import HasUrlIdentifier from 'textup-frontend/mixins/model/has-url-identifier';
 import ModelOwnsPhone, { OwnsPhoneValidations } from 'textup-frontend/mixins/model/owns-phone';
+import { computed } from '@ember/object';
+import { assign } from '@ember/polyfills';
+import { notEmpty } from '@ember/object/computed';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations(
@@ -36,7 +36,7 @@ export default DS.Model.extend(
 
     rollbackAttributes() {
       this.get('actions').clear();
-      tryInvoke(getWithDefault(this, 'location.content', {}), 'rollbackAttributes');
+      AppUtils.tryRollback(this.get('location.content'));
       return this._super(...arguments);
     },
     didUpdate() {

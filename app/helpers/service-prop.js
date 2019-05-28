@@ -16,7 +16,13 @@ export default Helper.extend({
     if (!this.get('_isSetUp')) {
       this._setUp(service, serviceName, propName);
     }
-    return get(service, propName);
+    const propVal = get(service, propName);
+    if (typeOf(propVal) === 'function') {
+      throw new Error(
+        `Helper service-prop for service '${serviceName}' and propName '${propName}' should not return a function. If you want to return a function, use service-action instead for proper context.`
+      );
+    }
+    return propVal;
   },
 
   // Internal properties

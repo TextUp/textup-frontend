@@ -6,7 +6,6 @@
         onPrimary=(service-action "slideout/teamService" "finishCreateInTeamList")
         disablePrimary=(service-prop "slideout/teamService" "shouldDisablePrimaryAction")
         primaryLabel="Create"
-        primaryProgressLabel="Creating..."
         onSecondary=(service-action "slideout/teamService" "cancelCreateInTeamList")
         hideSecondary=(service-prop "slideout/teamService" "noExistingTeams"))
     onClose=(service-action "slideout/teamService" "cancelSlideout")

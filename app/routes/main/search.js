@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import PropertyUtils from 'textup-frontend/utils/property';
 import Route from '@ember/routing/route';
 import StorageUtils from 'textup-frontend/utils/storage';
 import { inject as service } from '@ember/service';

@@ -4,7 +4,6 @@ import config from 'textup-frontend/config/environment';
 import Constants from 'textup-frontend/constants';
 import humanId from 'human-id';
 import Service, { inject as service } from '@ember/service';
-import { getOwner } from '@ember/application';
 
 export const SUCCESS_MSG = 'Almost done creating your account...';
 export const COMPLETE_MSG_PREFIX = 'Success! Welcome ';
@@ -22,7 +21,7 @@ export default Service.extend({
   // -------
 
   createNew(org) {
-    return this.get('store').createRecord(Constants.MODEL_NAME.STAFF, {
+    return this.get('store').createRecord(Constants.MODEL.STAFF, {
       org,
       status: Constants.STAFF.STATUS.STAFF,
       password: humanId({ separator: '-', capitalize: false }),

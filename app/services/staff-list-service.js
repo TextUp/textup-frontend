@@ -1,4 +1,9 @@
-import Service from '@ember/service';
+import Constants from 'textup-frontend/constants';
+import Service, { inject as service } from '@ember/service';
+import TextUtils from 'textup-frontend/utils/text';
+import TypeUtils from 'textup-frontend/utils/type';
+import { computed } from '@ember/object';
+import { readOnly, filter, uniqBy } from '@ember/object/computed';
 
 export const FILTER_TO_STATUSES = Object.freeze({
   [Constants.STAFF.FILTER.ACTIVE]: [Constants.STAFF.STATUS.STAFF, Constants.STAFF.STATUS.ADMIN],
@@ -50,7 +55,7 @@ export default Service.extend({
   },
   loadMore() {
     return this.get('requestService')
-      .handleIfError(this.get('store').query(Constants.MODEL_NAME.STAFF, this._buildLoadParams()))
+      .handleIfError(this.get('store').query(Constants.MODEL.STAFF, this._buildLoadParams()))
       .then(results => {
         this.get('_people').pushObjects(results.toArray());
         this.set('totalNumPeople', results.get('meta.total'));

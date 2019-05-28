@@ -1,10 +1,11 @@
-import { alias, readOnly } from '@ember/object/computed';
-import { getWithDefault, get, computed } from '@ember/object';
-import { tryInvoke, typeOf } from '@ember/utils';
+import AppUtils from 'textup-frontend/utils/app';
 import Dirtiable from 'textup-frontend/mixins/model/dirtiable';
 import DS from 'ember-data';
 import HasAuthor from 'textup-frontend/mixins/model/has-author';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
+import { typeOf } from '@ember/utils';
+import { alias, readOnly } from '@ember/object/computed';
+import { getWithDefault, get, computed } from '@ember/object';
 
 export default DS.Model.extend(Dirtiable, HasAuthor, {
   // Overrides
@@ -13,7 +14,7 @@ export default DS.Model.extend(Dirtiable, HasAuthor, {
   rollbackAttributes() {
     this.get('_recipients').clear();
     this.get('_newNumberRecipients').clear();
-    tryInvoke(getWithDefault(this, 'media.content', {}), 'rollbackAttributes');
+    AppUtils.tryRollback(this.get('media.content'));
     return this._super(...arguments);
   },
   didUpdate() {

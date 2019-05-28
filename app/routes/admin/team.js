@@ -1,6 +1,5 @@
 import AdminPeopleRoute from 'textup-frontend/routes/admin/people';
 import Constants from 'textup-frontend/constants';
-import { inject as service } from '@ember/service';
 
 export default AdminPeopleRoute.extend({
   serialize(model) {

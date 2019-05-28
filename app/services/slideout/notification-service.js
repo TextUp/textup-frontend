@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import OwnerPolicyUtils from 'textup-frontend/utils/owner-policy';
 import RSVP from 'rsvp';
@@ -53,14 +54,8 @@ export default Service.extend({
     );
   },
   cancelSlideout() {
-    const phoneOwner = this.get('_activePhoneOwner'),
-      authUser = this.get('authService.authUser');
-    if (phoneOwner) {
-      phoneOwner.rollbackAttributes();
-    }
-    if (authUser) {
-      authUser.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('_activePhoneOwner'));
+    AppUtils.tryRollback(this.get('authService.authUser'));
     this.get('tutorialService').startCompleteTask(Constants.TASK.AVAILABILITY);
     this.get('slideoutService').closeSlideout();
   },
@@ -78,9 +73,7 @@ export default Service.extend({
       const phone = this.get('activePhone');
       phone.get('media').then(foundMedia => {
         // so we're not also sending all of the prior attempts too
-        if (foundMedia) {
-          foundMedia.rollbackAttributes();
-        }
+        AppUtils.tryRollback(foundMedia);
         const media = foundMedia || this.get('store').createRecord('media');
         media.addAudio(mimeType, data);
         phone.setProperties({ media });

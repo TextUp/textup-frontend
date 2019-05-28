@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import PhoneNumberUtils from 'textup-frontend/utils/phone-number';
 import RSVP from 'rsvp';
@@ -62,7 +63,7 @@ export default Service.extend({
           getOwner('controller:main/contacts').send('doRefreshContacts');
         }
       })
-      .catch(() => rText.rollbackAttributes());
+      .catch(() => AppUtils.tryRollback(rText));
   },
 
   createRecipient(number) {

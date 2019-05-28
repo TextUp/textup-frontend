@@ -6,8 +6,7 @@
             showFooter=true
             onPrimary=(service-action "slideout/existingTagService" "finishSlideout")
             disablePrimary=(service-prop "slideout/existingTagService" "shouldDisablePrimaryAction")
-            primaryLabel=(if isDeleted "Confirm Delete" "Update")
-            primaryProgressLabel=(if isDeleted "Deleting..." "Updating")
+            primaryLabel=(if isDeleted "Delete" "Update")
             primaryClass=(if isDeleted "btn btn-danger")
             secondaryLabel=(if isDeleted "Undo" "Cancel")
             onSecondary=(if isDeleted (service-action "slideout/existingTagService" "tryRollbackText"))

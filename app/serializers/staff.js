@@ -6,7 +6,7 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, OwnsPhone, {
   attrs: {
     org: { deserialize: 'records', serialize: 'ids' },
     // any changes happen with teamActions on the individual tags
-    [Constants.MODEL_NAME.TEAMS]: { deserialize: 'records', serialize: false },
+    [Constants.MODEL.TEAMS]: { deserialize: 'records', serialize: false },
     channelName: { serialize: false },
   },
 

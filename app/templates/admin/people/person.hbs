@@ -124,11 +124,11 @@
                                 </button>
                             </div>
                             <div class="flex__item">
-                                {{async-button classNames="btn btn-default"
-                                    disableWhen=(not (v-get model "isValid"))
-                                    action=(service-action "phoneService" "persistPhoneOwner" model)
-                                    default="Update"
-                                    pending="Updating..."}}
+                                {{#action-button class="btn btn-default"
+                                    disabled=(not (v-get model "isValid"))
+                                    onAction=(service-action "phoneService" "persistPhoneOwner" model)}}
+                                    Update
+                                {{/action-button}}
                             </div>
                         </div>
                     {{/if}}
@@ -149,16 +149,16 @@
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">
-                                            <button class="btn" type='button'
+                                            <button class="btn" type="button"
                                             onclick={{service-action "dataService" "revert" phoneOwner}}>
                                                 Cancel
                                             </button>
                                         </div>
                                         <div class="flex__item">
-                                            {{async-button classNames='btn btn-default'
-                                            action=(service-action "dataService" "persist" phoneOwner)
-                                            default='Update'
-                                            pending='Updating...'}}
+                                            {{#action-button class="btn btn-default"
+                                                onAction=(service-action "dataService" "persist" phoneOwner)}}
+                                                Update
+                                            {{/action-button}}
                                         </div>
                                     </div>
                                 {{/if}}
@@ -174,16 +174,16 @@
                                 {{#if phoneOwner.isDirty}}
                                     <div class="flex__item flex flex--justify-center flex--spacing-between">
                                         <div class="flex__item">
-                                            <button class="btn" type='button'
+                                            <button class="btn" type="button"
                                             onclick={{service-action "dataService" "revert" phoneOwner}}>
                                                 Cancel
                                             </button>
                                         </div>
                                         <div class="flex__item">
-                                            {{async-button classNames='btn btn-default'
-                                            action=(service-action "dataService" "persist" phoneOwner)
-                                            default='Update'
-                                            pending='Updating...'}}
+                                            {{#action-button class="btn btn-default"
+                                                onAction=(service-action "dataService" "persist" phoneOwner)}}
+                                                Update
+                                            {{/action-button}}
                                         </div>
                                     </div>
                                 {{/if}}

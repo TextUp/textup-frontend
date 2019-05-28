@@ -1,5 +1,7 @@
-import { next } from '@ember/runloop';
+import AppUtils from 'textup-frontend/utils/app';
+import Constants from 'textup-frontend/constants';
 import Route from '@ember/routing/route';
+import { next } from '@ember/runloop';
 
 export default Route.extend({
   setupController(controller) {
@@ -8,15 +10,13 @@ export default Route.extend({
     if (signupController.get('selected')) {
       controller.set('org', signupController.get('selected'));
     } else {
-      const newOrg = this.get('store').createRecord('organization', {
-        location: this.get('store').createRecord('location'),
+      const newOrg = this.get('store').createRecord(Constants.MODEL.ORG, {
+        location: this.get('store').createRecord(Constants.MODEL.LOCATION),
       });
       controller.set('org', newOrg);
       // set next so that setting select is not overwritten
       // by the setup process, which sets selected to null
-      next(this, function() {
-        signupController.set('selected', newOrg);
-      });
+      next(this, () => signupController.set('selected', newOrg));
     }
   },
 
@@ -24,18 +24,13 @@ export default Route.extend({
     willTransition({ targetName }) {
       this._super(...arguments);
       if (targetName === 'signup.index') {
-        const signupController = this.controllerFor('signup'),
-          staff = signupController.get('staff'),
-          selected = signupController.get('selected');
-        if (staff && staff.get('isDeleted') === false) {
-          staff.rollbackAttributes();
-          signupController.set('staff', this.get('store').createRecord('staff'));
-        }
-        if (selected) {
-          selected.get('location.content').rollbackAttributes();
-          selected.rollbackAttributes();
-          signupController.set('selected', null);
-        }
+        const signupController = this.controllerFor('signup');
+        AppUtils.tryRollback(signupController.get('staff'));
+        AppUtils.tryRollback(signupController.get('selected'));
+        signupController.setProperties({
+          staff: this.get('store').createRecord(Constants.MODEL.STAFF),
+          selected: null,
+        });
       }
     },
   },

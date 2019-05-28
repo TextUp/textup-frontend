@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Component from '@ember/component';
 import HasAppRoot from 'textup-frontend/mixins/component/has-app-root';
 import HasEvents from 'textup-frontend/mixins/component/has-events';
+import PropertyUtils from 'textup-frontend/utils/property';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import RSVP from 'rsvp';
 import { computed } from '@ember/object';

@@ -9,7 +9,6 @@ export default Component.extend(PropTypesMixin, {
     onPrimary: PropTypes.func.isRequired,
     disablePrimary: PropTypes.bool,
     primaryLabel: PropTypes.string.isRequired,
-    primaryProgressLabel: PropTypes.string.isRequired,
     primaryClass: PropTypes.string,
 
     onSecondary: PropTypes.func,
@@ -23,6 +22,7 @@ export default Component.extend(PropTypesMixin, {
     return {
       showFooter: false,
       primaryClass: '',
+      primaryLabel: 'Save',
       disablePrimary: false,
       hideSecondary: false,
       secondaryLabel: 'Cancel',

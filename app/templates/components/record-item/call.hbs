@@ -30,7 +30,7 @@
             title="End ongoing call"}}
             <button class="btn btn-plain btn-expand {{if call.outgoing "" "btn-default"}}"
                 type="button"
-                onclick={{action _onEndOngoing call}}>
+                onclick={{optional-action onEndOngoing call}}>
                 {{#if call.endOngoing}}
                     <span class="fa fa-circle-o-notch fa-spin"></span>
                 {{else}}

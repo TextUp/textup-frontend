@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import Constants from 'textup-frontend/constants';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { notEmpty, equal } from '@ember/object/computed';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -26,11 +25,4 @@ export default Component.extend(PropTypesMixin, {
   _isCurrentlyAdmin: equal('currentStatus', Constants.STAFF.STATUS.ADMIN),
   _isCurrentlyStaff: equal('currentStatus', Constants.STAFF.STATUS.STAFF),
   _isCurrentlyBlocked: equal('currentStatus', Constants.STAFF.STATUS.BLOCKED),
-
-  // Internal handlers
-  // -----------------
-
-  _onChange() {
-    tryInvoke(this, 'onChange', [...arguments]);
-  },
 });

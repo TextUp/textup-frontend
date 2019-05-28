@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import Contact from 'textup-frontend/models/contact';
 import PropTypesMixin, { PropTypes } from 'ember-prop-types';
 import { computed } from '@ember/object';
-import { tryInvoke } from '@ember/utils';
 
 export default Component.extend(PropTypesMixin, {
   propTypes: Object.freeze({
@@ -25,23 +24,4 @@ export default Component.extend(PropTypesMixin, {
   _linkParams: computed('backRouteName', 'linkParams', function() {
     return [this.get('backRouteName'), ...this.get('linkParams')];
   }),
-
-  // Internal handlers
-  // -----------------
-
-  _onEdit() {
-    tryInvoke(this, 'onEdit', [...arguments]);
-  },
-  _onEditSharing() {
-    tryInvoke(this, 'onEditSharing', [...arguments]);
-  },
-  _onEditTagMembership() {
-    tryInvoke(this, 'onEditTagMembership', [...arguments]);
-  },
-  _onExport() {
-    tryInvoke(this, 'onExport', [...arguments]);
-  },
-  _onStatusChange() {
-    tryInvoke(this, 'onStatusChange', [...arguments]);
-  },
 });

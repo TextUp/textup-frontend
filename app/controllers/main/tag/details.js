@@ -1,8 +1,9 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Controller from '@ember/controller';
+import PropertyUtils from 'textup-frontend/utils/property';
 import RSVP from 'rsvp';
 import { inject as service } from '@ember/service';
-import { tryInvoke } from '@ember/utils';
 
 export default Controller.extend({
   dataService: service(),
@@ -49,10 +50,7 @@ export default Controller.extend({
     this.set('careRecordText', this.get('recordItemService').createNewText(recordOwner));
   },
   resetState() {
-    const careRecordText = this.get('careRecordText');
-    if (careRecordText) {
-      careRecordText.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('careRecordText'));
     PropertyUtils.callIfPresent(this.get('careRecordRef.actions.resetAll'));
   },
 });

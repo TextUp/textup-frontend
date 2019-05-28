@@ -1,3 +1,4 @@
+import PropertyUtils from 'textup-frontend/utils/property';
 import { helper } from '@ember/component/helper';
 import { typeOf } from '@ember/utils';
 

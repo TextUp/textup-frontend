@@ -1,3 +1,4 @@
+import AppUtils from 'textup-frontend/utils/app';
 import Constants from 'textup-frontend/constants';
 import Service, { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
@@ -40,14 +41,8 @@ export default Service.extend({
     );
   },
   revertAllChanges() {
-    const owner = this.get('stateService.owner'),
-      authUser = this.get('authService.authUser');
-    if (owner) {
-      owner.rollbackAttributes();
-    }
-    if (authUser) {
-      authUser.rollbackAttributes();
-    }
+    AppUtils.tryRollback(this.get('stateService.owner'));
+    AppUtils.tryRollback(this.get('authService.authUser'));
   },
   cancelSlideout() {
     this.revertAllChanges();
